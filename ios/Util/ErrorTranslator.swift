@@ -243,5 +243,7 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "INVALID_DATA"
     case .INVALID_STARTING_POSITION:
       return "INVALID_STARTING_POSITION"
+    case .CANNOT_DO_THIS_IN_DFU_MODE:
+      return "CANNOT_DO_THIS_IN_DFU_MODE"
     }
 }
