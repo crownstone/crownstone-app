@@ -1,7 +1,7 @@
 export default {
   Ability_DimmerSettings:{
     __filename: "../../js/views/deviceViews/abilities/settings/Ability_DimmerSettings.tsx",
-    Dimming_compatibilty:                function() { return "Dimming compatibilty" },
+    Dimming_compatibility:               function() { return "Dimming compatibility" },
     Disable_dimming:                     function() { return "Disable dimming" },
     Dimming_allows_you_to_set:           function() { return "Dimming allows you to set the mood, and to use the Twilight mode behaviours." },
     It_is_up_to_you_to_determ:           function() { return "It is up to you to determine which devices can be dimmed. Naturally, you wouldn't want to dim anything other than lights!" },

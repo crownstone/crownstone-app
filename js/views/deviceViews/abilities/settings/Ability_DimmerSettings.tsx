@@ -53,7 +53,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
               <NavigationBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-information-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}} />}
-                label={ lang("Dimming_compatibilty")}
+                label={ lang("Dimming_compatibility")}
                 callback={() => { this.props.information(); }}
               />
               <Separator  />
