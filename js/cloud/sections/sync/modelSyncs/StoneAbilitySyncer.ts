@@ -7,7 +7,7 @@
 import { SyncingSphereItemBase, SyncingStoneItemBase } from "./SyncingBase";
 import { shouldUpdateInCloud, shouldUpdateLocally } from "../shared/syncUtil";
 import { CLOUD } from "../../../cloudAPI";
-
+import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
 
 const ABILITY_TYPE = {
   dimming:      "dimming",
@@ -96,7 +96,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       let localAbility = localAbilities[ability_in_cloud.type];
       // this ability is present both locally and in the cloud!
       if (localAbility) {
-        if (shouldUpdateInCloud(localAbility, ability_in_cloud)) {
+        if (shouldUpdateInCloud(localAbility, ability_in_cloud) && Permissions.inSphere(this.localSphereId).canUploadAbilities) {
           // update in cloud
           updateAbilityInCloud(localAbility, ability_in_cloud.type);
         }

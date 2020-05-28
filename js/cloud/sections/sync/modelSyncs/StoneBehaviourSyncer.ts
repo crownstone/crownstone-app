@@ -8,6 +8,7 @@ import { SyncingStoneItemBase } from "./SyncingBase";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { transferBehaviours } from "../../../transferData/transferBehaviours";
 import { shouldUpdateInCloud, shouldUpdateLocally } from "../shared/syncUtil";
+import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
 
 export class StoneBehaviourSyncer extends SyncingStoneItemBase {
 
@@ -127,7 +128,7 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
       if (localBehaviour.cloudId) {
         this.actions.push({ type: 'REMOVE_STONE_RULE', sphereId: this.localSphereId, stoneId: this.localStoneId, ruleId: localBehaviourId });
       }
-      else {
+      else if (Permissions.inSphere(this.localSphereId).canUploadBehaviours) {
         let localDataForCloud = {...localBehaviour};
         this.transferPromises.push(
           transferBehaviours.createOnCloud(
@@ -145,7 +146,7 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
 
 
   syncLocalBehaviourDown(localId, behaviourInState, behaviour_in_cloud) {
-    if (shouldUpdateInCloud(behaviourInState, behaviour_in_cloud)) {
+    if (shouldUpdateInCloud(behaviourInState, behaviour_in_cloud) && Permissions.inSphere(this.localSphereId).canUploadBehaviours) {
       let localDataForCloud = {...behaviourInState};
       this.transferPromises.push(
         transferBehaviours.updateOnCloud({
