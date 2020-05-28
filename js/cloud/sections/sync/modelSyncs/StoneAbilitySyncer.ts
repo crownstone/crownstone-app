@@ -96,6 +96,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       let localAbility = localAbilities[ability_in_cloud.type];
       // this ability is present both locally and in the cloud!
       if (localAbility) {
+
         if (shouldUpdateInCloud(localAbility, ability_in_cloud) && Permissions.inSphere(this.localSphereId).canUploadAbilities) {
           // update in cloud
           updateAbilityInCloud(localAbility, ability_in_cloud.type);
@@ -111,16 +112,17 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       }
     }
 
-
-    for (let i = 0; i < localAbilityTypes.length; i++) {
-      if (abilitiesPresentInCloud[localAbilityTypes[i]] === false) {
-        updateAbilityInCloud(localAbilities[localAbilityTypes[i]], localAbilityTypes[i]);
+    if (Permissions.inSphere(this.localSphereId).canUploadAbilities) {
+      for (let i = 0; i < localAbilityTypes.length; i++) {
+        if (abilitiesPresentInCloud[localAbilityTypes[i]] === false) {
+          updateAbilityInCloud(localAbilities[localAbilityTypes[i]], localAbilityTypes[i]);
+        }
       }
-    }
 
-    if (Object.keys(abilitiesToSetInCloud).length > 0) {
-      // update Cloud.
-      this.transferPromises.push(CLOUD.forStone(this.cloudStoneId).setStoneAbilities(abilitiesToSetInCloud));
+      if (Object.keys(abilitiesToSetInCloud).length > 0) {
+        // update Cloud.
+        this.transferPromises.push(CLOUD.forStone(this.cloudStoneId).setStoneAbilities(abilitiesToSetInCloud));
+      }
     }
 
     return Promise.all(this.transferPromises);
