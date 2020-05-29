@@ -12,7 +12,7 @@ import {
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
 
-import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth } from "../styles";
+import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth, getScreenHeight } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 
@@ -34,7 +34,7 @@ export class Background extends Component<{
 
   render() {
     let hasNavBar = false;
-    let height = screenHeight;
+    let height = getScreenHeight();
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
       height -= topBarHeight;
     }
@@ -44,7 +44,6 @@ export class Background extends Component<{
     }
 
     let overrideStyle = this.props.style || {};
-
     return (
       <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
         { this.props.image    ? <BackgroundImage height={height} image={this.props.image} /> : undefined }

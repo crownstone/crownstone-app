@@ -10,7 +10,16 @@ import {
   View
 } from "react-native";
 
-import { styles, screenHeight, topBarHeight, tabBarHeight, screenWidth, statusBarHeight, colors } from "../../styles";
+import {
+  styles,
+  screenHeight,
+  topBarHeight,
+  tabBarHeight,
+  screenWidth,
+  statusBarHeight,
+  colors,
+  getScreenHeight
+} from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
 
@@ -66,7 +75,7 @@ export class AnimatedBackground extends Component<{
 
 
   render() {
-    let height = screenHeight;
+    let height = getScreenHeight();
     let hasNavBar = false;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
       height -= topBarHeight;

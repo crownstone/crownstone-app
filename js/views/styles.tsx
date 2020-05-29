@@ -15,12 +15,24 @@ export let tabBarHeight    = isIPhoneX ? 49 + 34: 49;
 export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
 export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
-export let screenWidth = Dimensions.get('window').width;
+export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height;
-if (Platform.OS === 'android') {
-  screenHeight = ExtraDimensions.getRealWindowHeight() - ExtraDimensions.getStatusBarHeight() - ExtraDimensions.getSoftMenuBarHeight()
-  statusBarHeight = ExtraDimensions.getStatusBarHeight()
+
+export function getScreenHeight() {
+  if (Platform.OS === 'android') {
+    statusBarHeight = ExtraDimensions.getStatusBarHeight()
+    screenHeight = Dimensions.get('window').height - statusBarHeight;
+  }
+  else {
+    screenHeight = Dimensions.get('window').height;
+  }
+  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+  availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+  return screenHeight;
 }
+
+getScreenHeight();
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
