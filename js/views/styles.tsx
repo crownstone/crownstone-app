@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
+import { Dimensions, PixelRatio, Platform, StyleSheet, StatusBar} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 import ExtraDimensions from 'react-native-extra-dimensions-android';
@@ -18,10 +18,16 @@ export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height;
 
+
 export function getScreenHeight() {
   if (Platform.OS === 'android') {
     statusBarHeight = ExtraDimensions.getStatusBarHeight()
-    screenHeight = Dimensions.get('window').height - statusBarHeight;
+    if (Dimensions.get('screen').height !== Dimensions.get('window').height && StatusBar.currentHeight > 24) {
+      Dimensions.get('screen').height - statusBarHeight;
+    }
+    else {
+      Dimensions.get('window').height - statusBarHeight;
+    }
   }
   else {
     screenHeight = Dimensions.get('window').height;
@@ -49,8 +55,6 @@ export const stylesUpdateConstants = () =>  {
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
-
-      console.log('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), "ExtraDimensions.getStatusBarHeight()", ExtraDimensions.getStatusBarHeight(), "ExtraDimensions.getRealWindowHeight()",ExtraDimensions.getRealWindowHeight(),"ExtraDimensions.getSoftMenuBarHeight()", ExtraDimensions.getSoftMenuBarHeight(), 'constants', constants)
     })
 }
 
