@@ -40,6 +40,7 @@ export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMar
 export const stylesUpdateConstants = () =>  {
   Navigation.constants()
     .then((constants) => {
+      getScreenHeight();
       let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
       statusBarHeight = tmpStatusBarHeight;
 
@@ -48,6 +49,8 @@ export const stylesUpdateConstants = () =>  {
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+      console.log('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), "ExtraDimensions.getStatusBarHeight()", ExtraDimensions.getStatusBarHeight(), "ExtraDimensions.getRealWindowHeight()",ExtraDimensions.getRealWindowHeight(),"ExtraDimensions.getSoftMenuBarHeight()", ExtraDimensions.getSoftMenuBarHeight(), 'constants', constants)
     })
 }
 
