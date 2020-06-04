@@ -37,6 +37,6 @@ export class Splash extends Component<any, any> {
           <View style={{flex:0.5}} />
         </View>
       </Background>
-    )
+    );
   }
 }

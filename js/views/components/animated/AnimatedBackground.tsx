@@ -18,7 +18,7 @@ import {
   screenWidth,
   statusBarHeight,
   colors,
-  getScreenHeight
+  updateScreenHeight
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
@@ -75,7 +75,7 @@ export class AnimatedBackground extends Component<{
 
 
   render() {
-    let height = getScreenHeight();
+    let height = screenHeight;
     let hasNavBar = false;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
       height -= topBarHeight;
@@ -86,20 +86,25 @@ export class AnimatedBackground extends Component<{
     }
 
     return (
-      <View style={[styles.fullscreen, {height:height}]}>
+      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+        let {x, y, width, height} = event.nativeEvent.layout;
+        updateScreenHeight(height);
+      }}>
         <View style={[styles.fullscreen, {height:height}]}>
-          <BackgroundImage height={height} image={this.staticImage} />
+          <View style={[styles.fullscreen, {height:height}]}>
+            <BackgroundImage height={height} image={this.staticImage} />
+          </View>
+          <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
+            <BackgroundImage height={height} image={this.animatedImage} />
+          </Animated.View>
+          { this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
+          { this.props.dimStatusBar             && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
+          <NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />
+          <View style={{flex:1, overflow:"hidden"}}>
+            { this.props.children }
+          </View>
+          { hasNavBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
         </View>
-        <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
-          <BackgroundImage height={height} image={this.animatedImage} />
-        </Animated.View>
-        { this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
-        { this.props.dimStatusBar             && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
-        <NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />
-        <View style={{flex:1, overflow:"hidden"}}>
-          { this.props.children }
-        </View>
-        { hasNavBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
       </View>
     );
   }

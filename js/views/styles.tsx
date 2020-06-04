@@ -17,37 +17,37 @@ export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isIPhoneX ? 44 
 export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth  = Dimensions.get('window').width;
-export let screenHeight = Dimensions.get('window').height;
+export let screenHeight = Dimensions.get('window').height; // initial guess
 
-
-export function getScreenHeight() {
-  if (Platform.OS === 'android') {
-    statusBarHeight = ExtraDimensions.getStatusBarHeight()
-    if (Dimensions.get('screen').height !== Dimensions.get('window').height && statusBarHeight > 24) {
-      screenHeight = Dimensions.get('screen').height - statusBarHeight;
-    }
-    else {
-      screenHeight = Dimensions.get('window').height - statusBarHeight;
-    }
+if (Platform.OS === 'android') {
+  statusBarHeight = ExtraDimensions.getStatusBarHeight()
+  if (Dimensions.get('screen').height !== Dimensions.get('window').height && statusBarHeight > 24) {
+    screenHeight = Dimensions.get('screen').height - statusBarHeight;
   }
   else {
-    screenHeight = Dimensions.get('window').height;
+    screenHeight = Dimensions.get('window').height - statusBarHeight;
   }
-  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-  availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
-
-  return screenHeight;
 }
-
-getScreenHeight();
+else {
+  screenHeight = Dimensions.get('window').height;
+}
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
+export function updateScreenHeight(height) {
+  if (height !== screenHeight) {
+
+    screenHeight = height;
+
+    availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+    availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+  }
+}
+
 export const stylesUpdateConstants = () =>  {
   Navigation.constants()
     .then((constants) => {
-      getScreenHeight();
       let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
       statusBarHeight = tmpStatusBarHeight;
 
