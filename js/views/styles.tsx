@@ -36,8 +36,7 @@ export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
 export function updateScreenHeight(height) {
-  if (height !== screenHeight) {
-
+  if (height > 0 && height !== screenHeight && height > 0.5*Dimensions.get('screen').height) {
     screenHeight = height;
 
     availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;

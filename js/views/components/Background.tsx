@@ -42,20 +42,21 @@ export class Background extends Component<{
 
   render() {
     let hasNavBar = false;
-    let height = screenHeight;
+    let heightOffset = 0;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
-      height -= topBarHeight;
+      heightOffset += topBarHeight;
     }
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) {
       hasNavBar = true;
-      height -= tabBarHeight;
+      heightOffset += tabBarHeight;
     }
+    let height = screenHeight - heightOffset;
 
     let overrideStyle = this.props.style || {};
     return (
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
-        updateScreenHeight(height);
+        updateScreenHeight(height+heightOffset);
       }}>
         <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           { this.props.image    ? <BackgroundImage height={height} image={this.props.image} /> : undefined }

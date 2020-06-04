@@ -75,20 +75,21 @@ export class AnimatedBackground extends Component<{
 
 
   render() {
-    let height = screenHeight;
     let hasNavBar = false;
+    let heightOffset = 0;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
-      height -= topBarHeight;
+      heightOffset += topBarHeight;
     }
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) {
       hasNavBar = true;
-      height -= tabBarHeight;
+      heightOffset += tabBarHeight;
     }
+    let height = screenHeight - heightOffset;
 
     return (
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
-        updateScreenHeight(height);
+        updateScreenHeight(height+heightOffset);
       }}>
         <View style={[styles.fullscreen, {height:height}]}>
           <View style={[styles.fullscreen, {height:height}]}>

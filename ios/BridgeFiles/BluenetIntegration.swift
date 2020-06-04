@@ -945,6 +945,63 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
    
+  @objc func getCrownstoneUptime(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+      LOGGER.info("BluenetBridge: Called getCrownstoneUptime")
+      GLOBAL_BLUENET.bluenet.debug.getUptime()
+        .done{result in callback([["error" : false, "data": NSNumber(value: result)]])}
+        .catch{err in
+          if let bleErr = err as? BluenetError {
+            callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+          }
+          else {
+            callback([["error" : true, "data": "UNKNOWN ERROR IN getCrownstoneUptime \(err)"]])
+          }
+      }
+    }
+  
+  @objc func getAdcRestarts(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    LOGGER.info("BluenetBridge: Called getAdcRestarts")
+    GLOBAL_BLUENET.bluenet.debug.getAdcRestarts()
+      .done{result in callback([["error" : false, "data": result ]])}
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getAdcRestarts \(err)"]])
+        }
+    }
+  }
+  
+   @objc func getSwitchHistory(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+     LOGGER.info("BluenetBridge: Called getSwitchHistory")
+     GLOBAL_BLUENET.bluenet.debug.getSwitchHistory()
+       .done{switchHistory in callback([["error" : false, "data": switchHistory ]])}
+       .catch{err in
+         if let bleErr = err as? BluenetError {
+           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+         }
+         else {
+           callback([["error" : true, "data": "UNKNOWN ERROR IN getSwitchHistory \(err)"]])
+         }
+     }
+   }
+  
+   @objc func getPowerSamples(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+     LOGGER.info("BluenetBridge: Called getPowerSamples")
+     GLOBAL_BLUENET.bluenet.debug.getPowerSamples(triggeredSwitchcraft: true)
+       .done{powerSamples in callback([["error" : false, "data": powerSamples ]])}
+       .catch{err in
+         if let bleErr = err as? BluenetError {
+           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+         }
+         else {
+           callback([["error" : true, "data": "UNKNOWN ERROR IN getPowerSamples \(err)"]])
+         }
+     }
+   }
+  
+  
    @objc func switchDimmer(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
      wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control.switchPWM(state.floatValue))
    }
