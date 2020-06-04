@@ -4,6 +4,7 @@ import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 import ExtraDimensions from 'react-native-extra-dimensions-android';
 import { Navigation } from "react-native-navigation";
+import { LOG } from "../logging/Log";
 
 export const deviceModel = DeviceInfo.getModel();
 
@@ -55,6 +56,8 @@ export const stylesUpdateConstants = () =>  {
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+      LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), "ExtraDimensions.getStatusBarHeight()", ExtraDimensions.getStatusBarHeight(), "ExtraDimensions.getRealWindowHeight()",ExtraDimensions.getRealWindowHeight(),"ExtraDimensions.getSoftMenuBarHeight()", ExtraDimensions.getSoftMenuBarHeight(), 'constants', constants)
     })
 }
 
