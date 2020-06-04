@@ -23,11 +23,11 @@ export let screenHeight = Dimensions.get('window').height;
 export function getScreenHeight() {
   if (Platform.OS === 'android') {
     statusBarHeight = ExtraDimensions.getStatusBarHeight()
-    if (Dimensions.get('screen').height !== Dimensions.get('window').height && StatusBar.currentHeight > 24) {
-      Dimensions.get('screen').height - statusBarHeight;
+    if (Dimensions.get('screen').height !== Dimensions.get('window').height && statusBarHeight > 24) {
+      screenHeight = Dimensions.get('screen').height - statusBarHeight;
     }
     else {
-      Dimensions.get('window').height - statusBarHeight;
+      screenHeight = Dimensions.get('window').height - statusBarHeight;
     }
   }
   else {
