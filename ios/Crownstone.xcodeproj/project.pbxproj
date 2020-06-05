@@ -110,7 +110,6 @@
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
 		FA6FBC6B20A98EBD00EEEF18 /* Crownstone2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */; };
-		FA7AFCD924893CFE00E08596 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA7AFCD824893CFE00E08596 /* ZIPFoundation.framework */; };
 		FA86C68221CCEECD00811933 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA86C68021CCEECD00811933 /* Interface.storyboard */; };
 		FA86C68421CCEECF00811933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86C68321CCEECF00811933 /* Assets.xcassets */; };
 		FA86C68B21CCEECF00811933 /* WatchTower Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -129,6 +128,7 @@
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
 		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
+		FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF2D2B1248A9093003973F6 /* Zip.framework */; };
 		FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55F5CEDF77EE4B91A302901C /* Fontisto.ttf */; };
 		FDE6E52417DF40F4A46D33F6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */; };
 /* End PBXBuildFile section */
@@ -589,7 +589,6 @@
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone2.ttf; path = ../js/fonts/Crownstone2.ttf; sourceTree = "<group>"; };
-		FA7AFCD824893CFE00E08596 /* ZIPFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZIPFoundation.framework; path = Carthage/Build/iOS/ZIPFoundation.framework; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FA86C67E21CCEECD00811933 /* WatchTower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchTower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA86C68121CCEECD00811933 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -613,6 +612,7 @@
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
 		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
+		FAF2D2B1248A9093003973F6 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -647,6 +647,7 @@
 				FA274EF82410171B00D7C858 /* libreact-native-maps.a in Frameworks */,
 				FA274EF92410171B00D7C858 /* libreact-native-slider.a in Frameworks */,
 				FA274EFA2410171B00D7C858 /* libreact-native-splash-screen.a in Frameworks */,
+				FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */,
 				FA274EFB2410171B00D7C858 /* libReact-RCTActionSheet.a in Frameworks */,
 				FA274EFC2410171B00D7C858 /* libReact-RCTAnimation.a in Frameworks */,
 				FA274EFD2410171B00D7C858 /* libReact-RCTBlob.a in Frameworks */,
@@ -669,7 +670,6 @@
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
 				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
-				FA7AFCD924893CFE00E08596 /* ZIPFoundation.framework in Frameworks */,
 				FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
 				FAAEF8F92417C3790078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
@@ -780,7 +780,7 @@
 				FA3F740C23F6F2ED009045A7 /* Roboto-Thin.ttf */,
 				FA3F740423F6F2EC009045A7 /* Roboto-ThinItalic.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA7AFCD824893CFE00E08596 /* ZIPFoundation.framework */,
+				FAF2D2B1248A9093003973F6 /* Zip.framework */,
 				FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */,
 				FACF2AD52463157000B88E0D /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
@@ -1715,7 +1715,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ZIPFoundation.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
@@ -2018,7 +2018,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2058,7 +2058,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2209,7 +2209,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2273,7 +2273,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2334,7 +2334,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2385,7 +2385,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (

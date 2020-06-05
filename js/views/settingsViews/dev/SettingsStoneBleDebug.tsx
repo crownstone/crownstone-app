@@ -298,9 +298,13 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             let counter = 0;
             data.forEach((powerSampleSet) => {
               for (let i = 0; i < powerSampleSet.samples.length; i++) {
-                plotData.push({x: counter, y: powerSampleSet.multiplier * (powerSampleSet.samples[i] - powerSampleSet.offset)});
+                let convertedValue = powerSampleSet.multiplier * (powerSampleSet.samples[i] - powerSampleSet.offset);
+                if (powerSampleSet.multiplier == 0) {
+                  convertedValue = powerSampleSet.samples[i];
+                }
+                plotData.push({x: counter, y: convertedValue});
+                counter += 1;
               }
-              counter += 1;
             })
 
             this.setState({debugInformationText: null, debugData: plotData, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
