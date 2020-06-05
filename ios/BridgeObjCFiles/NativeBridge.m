@@ -197,6 +197,11 @@ RCT_EXTERN_METHOD(switchRelay: (nonnull NSNumber *)state callback:(RCTResponseSe
 RCT_EXTERN_METHOD(switchDimmer:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getResetCounter:(RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(getCrownstoneUptime:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getAdcRestarts:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getSwitchHistory:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getPowerSamples:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+
 // Bart Config Methods
 RCT_EXTERN_METHOD(getSwitchcraftThreshold: (RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMaxChipTemp: (RCTResponseSenderBlock)callback)

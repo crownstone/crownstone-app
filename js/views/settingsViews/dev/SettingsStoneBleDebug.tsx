@@ -266,9 +266,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             }
             data.forEach((switchHistory) => {
               resultString += xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
-                " " + switchHistory.switchCommand +
+                "\n" + switchHistory.switchCommand +
                 " -> " + switchHistory.switchState +
-                " from:" + getSource(switchHistory) + "\n";
+                " from:" + getSource(switchHistory) + "\n\n";
             })
 
             this.setState({debugInformationText: resultString});
