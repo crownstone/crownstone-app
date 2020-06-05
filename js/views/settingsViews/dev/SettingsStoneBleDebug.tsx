@@ -26,6 +26,7 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { DataUtil } from "../../../util/DataUtil";
 import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
+import { StoneUtil } from "../../../util/StoneUtil";
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -216,7 +217,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             let data : AdcRestart = returnData.data;
             LOGe.info("STONE DEBUG INFORMATION: getAdcRestarts", data);
-            let resultString = "Restarts:" + data.restartCount + "\nLast seen: " + xUtil.getDateTimeFormat(data.timestamp)
+            let resultString = "\n\nRestarts:" + data.restartCount + "\n\nLast ADC restart: " + xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(data.timestamp))
 
             this.setState({debugInformationText: resultString});
           })
@@ -236,30 +237,38 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData: null});
         core.eventBus.emit("showLoading", "Get switch history...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : SwitchHistory[] = returnData.data;
             LOGe.info("STONE DEBUG INFORMATION: SwitchHistory", data);
             let resultString = "";
-            let getSource = function(source) {
-              switch(source) {
+            let getSource = function(switchHistory) {
+              switch(switchHistory.sourceType) {
                 case 0:
-                  return "None";
+                  switch(switchHistory.sourceId) {
+                    case 0:
+                      return "None";
+                    case 2:
+                      return "Internal";
+                    case 3:
+                      return "Uart";
+                    case 4:
+                      return "Connection";
+                    case 5:
+                      return "Switchcraft";
+                  }
                 case 1:
-                  return "Behaviour";
-                case 2:
-                  return "Internal";
+                  return "Behaviour ID: " + switchHistory.sourceId;
                 case 3:
-                  return "Uart";
-                case 4:
-                  return "Connection";
-                case 5:
-                  return "SwitchCraft";
+                  return "Broadcast DeviceId: " + switchHistory.sourceId;;
               }
             }
             data.forEach((switchHistory) => {
-              resultString += xUtil.getDateTimeFormat(switchHistory.timestamp) + " " + switchHistory.switchCommand + " -> " + switchHistory.switchState + " from:" + getSource(switchHistory.source) + "\n";
+              resultString += xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
+                " " + switchHistory.switchCommand +
+                " -> " + switchHistory.switchState +
+                " from:" + getSource(switchHistory) + "\n";
             })
 
             this.setState({debugInformationText: resultString});
@@ -285,8 +294,16 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             let data : PowerSamples[] = returnData.data;
             LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", data);
+            let plotData = [];
+            let counter = 0;
+            data.forEach((powerSampleSet) => {
+              for (let i = 0; i < powerSampleSet.samples.length; i++) {
+                plotData.push({x: counter, y: powerSampleSet.multiplier * (powerSampleSet.samples[i] - powerSampleSet.offset)});
+              }
+              counter += 1;
+            })
 
-            this.setState({debugInformationText: null, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+            this.setState({debugInformationText: null, debugData: plotData, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
@@ -319,7 +336,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             backgroundColor: colors.white.hex,
             minHeight: 300
           }}>
-            <Text>{ xUtil.getDateTimeFormat(this.state.debugTimestamp) }</Text>
+            <Text>{ xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp)) }</Text>
             <Graph
               width={screenWidth}
               height={availableScreenHeight/2}

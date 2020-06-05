@@ -141,7 +141,10 @@ interface SwitchHistory {
   timestamp:     number,
   switchCommand: number,
   switchState:   number,
-  source:        number,
+  sourceData:    number,
+  sourceId:      number,
+  sourceType:    number,
+  viaMesh:       boolean,
 }
 interface PowerSamples {
   type:           number,
