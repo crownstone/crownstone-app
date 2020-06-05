@@ -291,7 +291,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={background} hasTopBar={false}>
+        <AnimatedBackground image={background}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>
