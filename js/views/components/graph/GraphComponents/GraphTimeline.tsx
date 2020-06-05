@@ -72,12 +72,12 @@ export class GraphTimeline extends LiveComponent<any, any> {
 
     let minYfx = minY - padding;
 
-    let timeRange = this.props.range.end.valueOf()-this.props.range.start.valueOf(); //ms
+    let timeRange = this.props.range.end-this.props.range.start; //ms
     let factor = options.width / timeRange;
     let ty = maxY + 30;
 
-    this.startTimeStamp = this.props.range.start.valueOf() - this.timePaddingFactor*timeRange;
-    this.endTimeStamp = this.props.range.end.valueOf() + this.timePaddingFactor*timeRange;
+    this.startTimeStamp = this.props.range.start - this.timePaddingFactor*timeRange;
+    this.endTimeStamp = this.props.range.end + this.timePaddingFactor*timeRange;
 
     let step = new TimeStep(new Date(this.startTimeStamp), new Date(this.endTimeStamp), 30 / factor);
 

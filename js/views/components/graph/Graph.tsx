@@ -26,15 +26,28 @@ import { xUtil } from "../../../util/StandAloneUtil";
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
 
-export class Graph extends LiveComponent<{width: number, height: number, data: GraphData[], dataHash: any}, any> {
+export class Graph extends LiveComponent<{
+  width: number,
+  height: number,
+  data: GraphData[],
+  dataHash: any,
+  live?: boolean,
+  autofit?: boolean,
+  dataAxis?: boolean,
+  options?:any,
+  fade?:boolean,
+  showPoints?:boolean,
+  lineColor?:string,
+  hideUI? : boolean,
+}, any> {
   data : any[] = [];
   options : any;
   interval : any;
-
   times = [];
 
-  range = {start: new Date(), end: new Date()};
+  range = {start: new Date().valueOf(), end: new Date().valueOf()};
   maxY = 0;
+  minY = 0;
 
   dataStepLines : any[] = [];
 
@@ -67,25 +80,25 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
       this.setOptions(props.options);
     }
 
-    let now = new Date().valueOf();
-    this.range.start = new Date(now - RANGE);
-    this.range.end   = new Date(now + OVERSHOOT);
+    this.setRange()
   }
 
 
   componentDidMount() {
-    this.loadData();
     let redraw = () => {
-      let now = new Date().valueOf();
-      this.range.start = new Date(now - RANGE);
-      this.range.end   = new Date(now + OVERSHOOT);
-
-      this.forceUpdate();
+      this.setRange();
       this.interval = requestAnimationFrame(() => {
         redraw();
+        this.forceUpdate()
       });
     };
-    redraw();
+
+    if (this.props.live !== false) {
+      redraw();
+    }
+    else {
+      this.setRange();
+    }
   }
 
   componentWillUnmount() {
@@ -94,10 +107,7 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.dataHash !== this.props.dataHash) {
-      let now = new Date().valueOf();
-      this.range.start = new Date(now - RANGE);
-      this.range.end   = new Date(now + OVERSHOOT);
-      this.loadData();
+      this.setRange();
     }
   }
 
@@ -116,7 +126,26 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
       options.labels = {enabled: options.labels};
     }
 
-    xUtil.deepExtend(options, this.options);
+    xUtil.deepExtend(this.options, options);
+  }
+
+  setRange() {
+    if (this.props.autofit) {
+      let min = 1e9;
+      let max = -1e9;
+      for (let i = 0; i < this.props.data.length; i++) {
+        min = Math.min(this.props.data[i].x, min);
+        max = Math.max(this.props.data[i].x, max);
+      }
+      this.range.start = min;
+      this.range.end = max;
+    }
+    else {
+      let now = new Date().valueOf();
+      this.range.start = new Date(now - RANGE).valueOf();
+      this.range.end = new Date(now + OVERSHOOT).valueOf();
+    }
+    this.loadData();
   }
 
   loadData() {
@@ -124,7 +153,7 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
     this.data = [];
     if (this.props.data) {
       for (let i = 0; i < this.props.data.length; i++) {
-        if (this.props.data[i].x > new Date().valueOf() - 1.25 * RANGE) {
+        if (this.props.data[i].x > new Date().valueOf() - 1.25 * RANGE || this.props.live === false) {
           this.data.push({
             x:  this.props.data[i].x,
             tx: this.props.data[i].x,
@@ -136,11 +165,11 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
 
       if (this.data.length > 0) {
         // GraphingEngine.transformXToFit(this.data, this.options);
-        this.maxY = GraphingEngine.transformYToFit(this.data, this.options);
+        [this.minY, this.maxY] = GraphingEngine.transformYToFit(this.data, this.options);
       }
 
       // precalc the datastep spacing
-      let dataStep = new DataStep(0, this.maxY, this.options.height- this.options.padding - this.options.paddingBottom, 25);
+      let dataStep = new DataStep(this.minY, this.maxY, this.options.height- this.options.padding - this.options.paddingBottom, 25);
       this.dataStepLines = dataStep.getLines();
 
     }
@@ -153,8 +182,8 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
 
   _transformDataToScreen() {
     if (this.data && this.data.length > 0) {
-      let startTimestamp = this.range.start.valueOf();
-      let timeRange = this.range.end.valueOf() - startTimestamp; //ms
+      let startTimestamp = this.range.start;
+      let timeRange = this.range.end - startTimestamp; //ms
       let factor = this.props.width / timeRange;
 
       for (let i = 0; i < this.data.length; i++) {
@@ -174,7 +203,6 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
       let shadingPath = GraphingEngine.getShadingPath(pathArray, this.options);
       let linePath = 'M' + pathArray[0][0]+ ","+pathArray[0][1] + " " + GraphingEngine.serializePath(pathArray, type, false);
 
-
       let items = [];
 
       if (this.options.shaded.enabled === true) {
@@ -193,7 +221,7 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
         <Path
           key="path1"
           d={linePath}
-          stroke="white"
+          stroke={ this.props.lineColor || "white" }
           fillOpacity={0}
           strokeWidth={2}
           strokeLinecap="round"
@@ -206,19 +234,26 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
 
   _getPoints() {
     let points = [];
+
+    if (this.props.showPoints === false) {
+      return points;
+    }
+
     let opacity = 1;
     let fadeThreshold = 12;
     let dx = this.options.padding - fadeThreshold;
     for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i].x < dx) {
-        continue;
+      opacity = 1;
+      if (this.props.fade !== false) {
+        if (this.data[i].x < dx) {
+          continue;
+        }
+        if (this.data[i].x < this.options.padding) {
+          opacity = (this.data[i].x-dx)/fadeThreshold;
+          opacity *= opacity;
+        }
       }
 
-      opacity = 1;
-      if (this.data[i].x < this.options.padding) {
-        opacity = (this.data[i].x-dx)/fadeThreshold;
-        opacity *= opacity;
-      }
       points.push(
         <Circle
           key={'point' + i}
@@ -241,7 +276,6 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
     // console.timeEnd("RenderGraph")
 
     this._transformDataToScreen();
-
     return (
       <View style={{position:'relative', top:0, left:0, width: this.props.width, height: this.props.height}}>
         <View style={{position:'absolute', top:0, left:0}}>
@@ -250,26 +284,27 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
             height={this.props.height}
           >
             <GraphDefs
+              hideFadeArea={this.props.fade === false}
               options={this.options}
             />
             {this._getCurves()}
             {this._getPoints()}
           </Svg>
         </View>
-        <GraphDataAxis
+        { this.props.hideUI !== true && <GraphDataAxis
           options={this.options}
           datastepLines={this.dataStepLines}
           color={colors.csBlue.hex}
-        />
-        <GraphAxis
+        />}
+        { this.props.hideUI !== true && <GraphAxis
           options={this.options}
           color={colors.csBlue.hex}
-        />
-        <GraphTimeline
+        />}
+        { this.props.hideUI !== true && <GraphTimeline
           range={this.range}
           options={this.options}
           color={colors.csBlue.hex}
-        />
+        />}
       </View>
     );
   }

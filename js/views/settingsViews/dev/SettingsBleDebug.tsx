@@ -50,7 +50,6 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
     }
 
     let rssiData = StoneAvailabilityTracker.getRssi(this.props.stoneId) > -1000 ? (StoneAvailabilityTracker.getRssi(this.props.stoneId) + " in ") : '';
-
       items.push({
       mediumIcon: <IconCircle
         icon={stone && stone.config.icon || 'ios-analytics'}
@@ -79,6 +78,8 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
+    let stoneList = [];
+    let sortData = {};
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
       let location = Util.data.getLocationFromStone(sphere, stone);
@@ -88,9 +89,14 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
       }
-
-      this._pushCrownstoneItem(items, sphereId, stone, stoneId, locationTitle, locationColor);
+      sortData[stoneId] = locationTitle;
+      stoneList.push({locationName: locationTitle, data: { sphereId, stone, stoneId, locationTitle, locationColor }})
     });
+
+    stoneList.sort((a,b) => { return a.locationName > b.locationName ? 1 : -1 })
+    stoneList.forEach((item) => {
+      this._pushCrownstoneItem(items, item.data.sphereId, item.data.stone, item.data.stoneId, item.data.locationTitle, item.data.locationColor);
+    })
 
     this._pushCrownstoneItem(items, sphereId, null, null, null, colors.csOrange.hex);
 

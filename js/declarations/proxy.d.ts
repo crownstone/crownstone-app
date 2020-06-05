@@ -126,8 +126,34 @@ interface BluenetPromiseWrapperProtocol {
     tapToToggleEnabled:boolean,
     deviceToken:number,
     ttlMinutes:number) : Promise< void >,
+
+  getCrownstoneUptime()                        : Promise<number>,
+  getAdcRestarts()                             : Promise<AdcRestart>,
+  getSwitchHistory()                           : Promise<SwitchHistory[]>,
+  getPowerSamples(triggeredSwitchcraft : bool) : Promise<PowerSamples[]>,
 }
 
+interface AdcRestart {
+  restartCount: number,
+  timestamp:    number,
+}
+interface SwitchHistory {
+  timestamp:     number,
+  switchCommand: number,
+  switchState:   number,
+  source:        number,
+}
+interface PowerSamples {
+  type:           number,
+  index:          number,
+  count:          number,
+  timestamp:      number,
+  delay:          number,
+  sampleInterval: number,
+  offset:         number,
+  multiplier:     number,
+  samples:        number[],
+}
 
 interface behaviourDebug {
   time                : number

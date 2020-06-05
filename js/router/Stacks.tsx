@@ -49,9 +49,9 @@ export const Stacks = {
     //   stack: {
     //     children: [
     //       { component: {
-    //           name: "PictureSlideShow", passProps:
+    //           name: "SettingsStoneBleDebug", passProps:
     //             {
-    //
+    //               sphereId: "99a49137-f02a-f488-6389-ba7622f5183", stoneId: "6fde3cd2-c92a-fb67-18e3-f40cd6b7644a"
     //             },
     //         }}
     //     ],

@@ -215,7 +215,14 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
                                    ignoreForPresence:boolean,
                                    tapToToggleEnabled:boolean,
                                    deviceToken:number,
-                                   ttlMinutes:number) => { return BluenetPromise('broadcastUpdateTrackedDevice', referenceId, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); }
+                                   ttlMinutes:number) => { return BluenetPromise('broadcastUpdateTrackedDevice', referenceId, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
+
+
+  getCrownstoneUptime:        () => { return BluenetPromise('getCrownstoneUptime'); },
+  getAdcRestarts:             () => { return BluenetPromise('getAdcRestarts'); },
+  getSwitchHistory:           () => { return BluenetPromise('getSwitchHistory'); },
+  getPowerSamples:            (triggeredSwitchcraft: boolean) => { return BluenetPromise('getPowerSamples', triggeredSwitchcraft); }
+
 };
 
 

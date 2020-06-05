@@ -15,7 +15,7 @@ import {
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, } from '../../styles'
+import { availableScreenHeight, colors, screenWidth } from "../../styles";
 import {Util} from "../../../util/Util";
 import {Scheduler} from "../../../logic/Scheduler";
 import { core } from "../../../core";
@@ -25,6 +25,7 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { DataUtil } from "../../../util/DataUtil";
 import { LOGe } from "../../../logging/Log";
+import { Graph } from "../../components/graph/Graph";
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -58,7 +59,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       directAdvertisementTimestamp: null,
       ibeaconPayload: '',
       ibeaconTimestamp: null,
-      debugInformation: null
+      debugInformationText: null, debugData: null, debugTimestamp: new Date().valueOf(), debugDataHash: null
     };
   }
 
@@ -122,18 +123,14 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
 
+
+
     items.push({
       label: lang("Get_Behaviour_Debug_Infor"),
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformation: null});
-        let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
-        if (!stone) { Alert.alert(
-lang("_Stone_is_missing__I_cant_header"),
-lang("_Stone_is_missing__I_cant_body"),
-[{text:lang("_Stone_is_missing__I_cant_left")}]); return;}
-
+        this.setState({debugInformationText: null, debugData: null});
         core.eventBus.emit("showLoading", "Getting Debug Info...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
@@ -172,9 +169,8 @@ lang("_Stone_is_missing__I_cant_body"),
             data.storedBehaviours = mapBitmaskArray(data.storedBehaviours);
 
             let string = xUtil.stringify(data, 2);
-            console.log("STONE DEBUG INFORMATION:", string);
             LOGe.info("STONE DEBUG INFORMATION:", string);
-            this.setState({debugInformation: string});
+            this.setState({debugInformationText: string});
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
@@ -184,7 +180,123 @@ lang("_Stone_is_missing__I_cant_body"),
       }
     });
 
-    if (this.state.debugInformation) {
+    items.push({
+      label: "Get Crownstone Uptime",
+      icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData: null});
+        core.eventBus.emit("showLoading", "Getting Crownstone Uptime...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: UPTIME", data);
+            this.setState({debugInformationText: xUtil.getDurationFormat(data*1000)});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    items.push({
+      label: "Get ADC Restarts",
+      icon: <IconButton name={"ios-outlet"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData: null});
+        core.eventBus.emit("showLoading", "Get ADC Restarts...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : AdcRestart = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getAdcRestarts", data);
+            let resultString = "Restarts:" + data.restartCount + "\nLast seen: " + xUtil.getDateTimeFormat(data.timestamp)
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    items.push({
+      label: "Get Switch History",
+      icon: <IconButton name={"ios-list-box"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData: null});
+        core.eventBus.emit("showLoading", "Get switch history...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : SwitchHistory[] = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: SwitchHistory", data);
+            let resultString = "";
+            let getSource = function(source) {
+              switch(source) {
+                case 0:
+                  return "None";
+                case 1:
+                  return "Behaviour";
+                case 2:
+                  return "Internal";
+                case 3:
+                  return "Uart";
+                case 4:
+                  return "Connection";
+                case 5:
+                  return "SwitchCraft";
+              }
+            }
+            data.forEach((switchHistory) => {
+              resultString += xUtil.getDateTimeFormat(switchHistory.timestamp) + " " + switchHistory.switchCommand + " -> " + switchHistory.switchState + " from:" + getSource(switchHistory.source) + "\n";
+            })
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    items.push({
+      label: "Get Switchcraft Buffers",
+      icon: <IconButton name={"md-battery-charging"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData: null, debugTimestamp: null, debugDataHash: null});
+        core.eventBus.emit("showLoading", "Get Switchcraft Buffers...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getPowerSamples', triggeredSwitchcraft:true}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : PowerSamples[] = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", data);
+
+            this.setState({debugInformationText: null, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    if (this.state.debugInformationText) {
       items.push({
         __item:
           <View style={{
@@ -195,10 +307,37 @@ lang("_Stone_is_missing__I_cant_body"),
               padding: 15,
               color: colors.black.hex,
               fontSize: 12
-            }}>{this.state.debugInformation}</Text>
+            }}>{this.state.debugInformationText}</Text>
           </View>
       });
     }
+
+    if (this.state.debugData) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            minHeight: 300
+          }}>
+            <Text>{ xUtil.getDateTimeFormat(this.state.debugTimestamp) }</Text>
+            <Graph
+              width={screenWidth}
+              height={availableScreenHeight/2}
+              data={this.state.debugData}
+              dataHash={this.state.debugDataHash}
+              live={false}
+              autofit={true}
+              options={{shaded: false, interpolation: false}}
+              fade={false}
+              showPoints={false}
+              lineColor={'red'}
+              hideUI={true}
+            />
+          </View>
+      });
+    }
+    
+    
 
 
     let largeLabel = 'Examining Sphere';

@@ -945,7 +945,7 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
    
-  @objc func getCrownstoneUptime(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+  @objc func getCrownstoneUptime(_ callback: @escaping RCTResponseSenderBlock) {
       LOGGER.info("BluenetBridge: Called getCrownstoneUptime")
       GLOBAL_BLUENET.bluenet.debug.getUptime()
         .done{result in callback([["error" : false, "data": NSNumber(value: result)]])}
@@ -959,7 +959,7 @@ open class BluenetJS: RCTEventEmitter {
       }
     }
   
-  @objc func getAdcRestarts(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+  @objc func getAdcRestarts(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called getAdcRestarts")
     GLOBAL_BLUENET.bluenet.debug.getAdcRestarts()
       .done{result in callback([["error" : false, "data": result ]])}
@@ -973,7 +973,7 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-   @objc func getSwitchHistory(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+   @objc func getSwitchHistory(_ callback: @escaping RCTResponseSenderBlock) {
      LOGGER.info("BluenetBridge: Called getSwitchHistory")
      GLOBAL_BLUENET.bluenet.debug.getSwitchHistory()
        .done{switchHistory in callback([["error" : false, "data": switchHistory ]])}
@@ -987,9 +987,9 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
   
-   @objc func getPowerSamples(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+   @objc func getPowerSamples(_ triggeredSwitchcraft: NSNumber, callback: @escaping RCTResponseSenderBlock) {
      LOGGER.info("BluenetBridge: Called getPowerSamples")
-     GLOBAL_BLUENET.bluenet.debug.getPowerSamples(triggeredSwitchcraft: true)
+     GLOBAL_BLUENET.bluenet.debug.getPowerSamples(triggeredSwitchcraft: triggeredSwitchcraft.boolValue)
        .done{powerSamples in callback([["error" : false, "data": powerSamples ]])}
        .catch{err in
          if let bleErr = err as? BluenetError {

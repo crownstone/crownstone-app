@@ -236,6 +236,18 @@ class BatchCommandHandlerClass {
               case 'getBehaviourDebugInformation':
                 actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation();
                 break;
+              case 'getCrownstoneUptime':
+                actionPromise = BluenetPromiseWrapper.getCrownstoneUptime();
+                break;
+              case 'getAdcRestarts':
+                actionPromise = BluenetPromiseWrapper.getAdcRestarts();
+                break;
+              case 'getSwitchHistory':
+                actionPromise = BluenetPromiseWrapper.getSwitchHistory();
+                break;
+              case 'getPowerSamples':
+                actionPromise = BluenetPromiseWrapper.getPowerSamples(command.triggeredSwitchcraft);
+                break;
               case 'registerTrackedDevice':
                 let locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
                 actionPromise = BluenetPromiseWrapper.registerTrackedDevice(

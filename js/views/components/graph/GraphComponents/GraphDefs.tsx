@@ -15,11 +15,15 @@ export class GraphDefs extends Component<any, any> {
 
   render() {
     let options = this.props.options;
+
+    let hideSide = (
+      <ClipPath id="showBody">
+        <Rect x={options.padding} y={0} width={options.width} height={options.height} />
+      </ClipPath>
+    );
     return (
       <Defs key="GradientDiff">
-        <ClipPath id="showBody">
-          <Rect x={options.padding} y={0} width={options.width} height={options.height} />
-        </ClipPath>
+        { this.props.hideFadeArea !== true && hideSide }
         <ClipPath id="showSide">
           <Rect x={0} y={0} width={options.padding} height={options.height} />
         </ClipPath>

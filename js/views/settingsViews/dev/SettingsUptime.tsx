@@ -103,7 +103,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
       for (let i = 1; i < this.timeArray.length; i++) {
         let dt = this.timeArray[i] - this.timeArray[i - 1];
         if (dt > 2 * 60 * 1000) {
-          stringPart += " --- " + getString((this.timeArray[i - 1])) + " (" + calcGap(this.timeArray[i-1] - timeStart) + ")";
+          stringPart += " --- " + getString((this.timeArray[i - 1])) + " (" + xUtil.getDurationFormat(this.timeArray[i-1] - timeStart) + ")";
           content.push(stringPart);
           gaps.push(dt);
           stringPart = getString(this.timeArray[i]);
@@ -119,7 +119,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         gaps.push(dt);
       }
       else {
-        stringPart += " --- now"  + " (" + calcGap(now - timeStart) + ")";;
+        stringPart += " --- now"  + " (" + xUtil.getDurationFormat(now - timeStart) + ")";
       }
       content.push(stringPart);
     }
@@ -138,7 +138,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         return items;
       }
       for (let i = 1; i < this.state.content.length; i++) {
-        items.push(<Text key={'gap' + i} style={gapStyle}>{calcGap(this.state.gaps[i - 1])}</Text>)
+        items.push(<Text key={'gap' + i} style={gapStyle}>{xUtil.getDurationFormat(this.state.gaps[i - 1])}</Text>)
         items.push(<Text key={'content' + i} style={contentStyle}>{this.state.content[i]}</Text>)
       }
 
@@ -170,22 +170,5 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         </ScrollView>
       </BackgroundNoNotification>
     );
-  }
-}
-
-let calcGap = function(ms) {
-  let days = Math.floor(ms / (24*3600*1000))
-  let hours = Math.floor(ms / (3600*1000))%24;
-  let minutes = Math.floor(ms / (60*1000))%60;
-  let seconds = Math.floor(ms / (1000))% 60
-  if (ms > 24*3600*1000) {
-    return days + "d " + hours + "h " + minutes + "m " + seconds + 's';
-  }
-  else if (ms > 3600*1000) {
-    // show hours
-    return hours + "h " + minutes + "m " + seconds + 's';
-  }
-  else {
-    return minutes + "m " + seconds + 's';
   }
 }

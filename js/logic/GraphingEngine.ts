@@ -38,7 +38,7 @@ export const GraphingEngine = {
     let minYval = minValue;
     let maxYval = maxValue || dataset[0].y;
     for (let i = 0; i < dataset.length; i++) {
-      // minYval = Math.min(dataset[i].y, minYval);
+      minYval = Math.min(dataset[i].y, minYval);
       maxYval = Math.max(dataset[i].y, maxYval);
     }
 
@@ -49,10 +49,9 @@ export const GraphingEngine = {
     let lowerLimit = options.height - options.paddingBottom;
     for (let i = 0; i < dataset.length; i++) {
       // large Y means 0, small y is max so this inverts the values.
-      dataset[i].y = lowerLimit - dataset[i].y*mappingFactor;
+      dataset[i].y = lowerLimit - (dataset[i].y - minYval)*mappingFactor;
     }
-
-    return maxYval;
+    return [minYval, maxYval];
   },
 
   calcPath(dataset, options : any) {

@@ -10,6 +10,26 @@ export const xUtil = {
     return str;
   },
 
+  getDurationFormat: function(ms) {
+    let days = Math.floor(ms / (24*3600*1000))
+    let hours = Math.floor(ms / (3600*1000))%24;
+    let minutes = Math.floor(ms / (60*1000))%60;
+    let seconds = Math.floor(ms / (1000))% 60
+    if (ms > 24*3600*1000) {
+      return days + "d " + hours + "h " + minutes + "m " + seconds + 's';
+    }
+    else if (ms > 3600*1000) {
+      // show hours
+      return hours + "h " + minutes + "m " + seconds + 's';
+    }
+    else if (ms > 60*1000) {
+      return minutes + "m " + seconds + 's';
+    }
+    else {
+      return seconds + 's';
+    }
+  },
+
   getDateHourId: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';
