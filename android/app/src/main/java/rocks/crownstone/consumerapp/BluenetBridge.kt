@@ -41,6 +41,7 @@ import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
 import rocks.crownstone.bluenet.packets.keepAlive.MultiKeepAlivePacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyPacket
+import rocks.crownstone.bluenet.packets.powerSamples.PowerSamplesType
 import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
 import rocks.crownstone.bluenet.scanhandling.NearestDeviceListEntry
@@ -2790,6 +2791,80 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+
+	@ReactMethod
+	@Synchronized
+	fun getCrownstoneUptime(callback: Callback) {
+		Log.i(TAG, "getCrownstoneUptime")
+		bluenet.debugData.getUptime()
+				.success { resolveCallback(callback, it.toDouble()) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getAdcRestarts(callback: Callback) {
+		Log.i(TAG, "getAdcRestarts")
+		bluenet.debugData.getAdcRestarts()
+				.success {
+					val retVal = Arguments.createMap()
+					retVal.putDouble("restartCount", it.count.toDouble())
+					retVal.putDouble("timestamp", it.lastTimestamp.toDouble())
+					resolveCallback(callback, retVal) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getSwitchHistory(callback: Callback) {
+		Log.i(TAG, "getSwitchHistory")
+		bluenet.debugData.getSwitchHistory()
+				.success {
+					val retVal = Arguments.createArray()
+					for (item in it.list) {
+						val itemMap = Arguments.createMap()
+						itemMap.putDouble("timestamp", item.timestamp.toDouble())
+						itemMap.putInt("switchCommand", item.command.toInt())
+						itemMap.putInt("switchState", item.state.state.toInt())
+						itemMap.putBoolean("viaMesh", item.source.viaMesh)
+						itemMap.putInt("sourceReserved", item.source.reserved.toInt())
+						itemMap.putInt("sourceData", item.source.reserved.toInt())
+						itemMap.putInt("sourceType", item.source.type.num.toInt())
+						itemMap.putInt("sourceId", item.source.id.toInt())
+						retVal.pushMap(itemMap)
+					}
+					resolveCallback(callback, retVal) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getPowerSamples(triggeredSwitchcraft: Boolean, callback: Callback) {
+		Log.i(TAG, "getPowerSamples")
+		bluenet.debugData.getPowerSamples(PowerSamplesType.SWITCHCRAFT)
+				.success {
+					val retVal = Arguments.createArray()
+					for (item in it) {
+						val itemMap = Arguments.createMap()
+						itemMap.putInt("type", item.type.num.toInt())
+						itemMap.putInt("index", item.index.toInt())
+						itemMap.putInt("count", item.count.toInt())
+						itemMap.putDouble("timestamp", item.timestamp.toDouble())
+						itemMap.putInt("delay", item.delayUs.toInt())
+						itemMap.putInt("sampleInterval", item.sampleIntervalUs.toInt())
+						itemMap.putInt("offset", item.offset.toInt())
+						itemMap.putDouble("multiplier", item.multiplier.toDouble())
+						val samplesArray = Arguments.createArray()
+						for (sample in item.samples) {
+							samplesArray.pushInt(sample.toInt())
+						}
+						itemMap.putArray("samples", samplesArray)
+						retVal.pushMap(itemMap)
+					}
+					resolveCallback(callback, retVal) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
 //endregion
 
 
