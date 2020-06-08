@@ -1813,7 +1813,7 @@ export default {
     Mesh_Topology:                       function() { return "Mesh Topology" },
     test:                                function() { return "test" },
     Developer_Menu:                      function() { return "Developer Menu" },
-    View_uptime:                         function() { return "View uptime" },
+    View_uptime:                         function() { return "View app uptime" },
     View_when_the_app_was_run:           function() { return "View when the app was running." },
     Database_Explorer:                   function() { return "Database Explorer" },
     Show_sync_button_for_beha:           function() { return "Show sync button for behaviour" },
