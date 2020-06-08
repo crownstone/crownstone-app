@@ -145,13 +145,20 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     items.push({
       label: lang("View_uptime"),
       type: 'navigation',
-      icon: <IconButton name="md-calendar" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.black.hex}}/>,
+      icon: <IconButton name="md-calendar" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
       callback: () => {
         NavigationUtil.navigate("SettingsUptime")
       }
     });
+    items.push({
+      label: "View localization uptime",
+      type: 'navigation',
+      icon: <IconButton name="ios-home" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.black.hex}}/>,
+      callback: () => {
+        NavigationUtil.navigate("SettingsLocalizationMonitor")
+      }
+    });
     items.push({label: lang("View_when_the_app_was_run"), type: 'explanation', below: true});
-
 
 
     items.push({label: lang("CLOUD"), type: 'explanation', below: false, alreadyPadded: true});

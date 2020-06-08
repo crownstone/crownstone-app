@@ -48,6 +48,7 @@ import { SphereStateManager } from "./SphereStateManager";
 import { UptimeMonitor } from "./UptimeMonitor";
 import { TrackingNumberManager } from "./TrackingNumberManager";
 import { ActiveSphereManager } from "./ActiveSphereManager";
+import { LocalizationMonitor } from "./LocalizationMonitor";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -449,6 +450,7 @@ class BackgroundProcessHandlerClass {
     FirmwareWatcher.init();
     LogProcessor.init();
     LocationHandler.init();
+    LocalizationMonitor.init();
     MapProvider.init();
     MessageCenter.init();
     NotificationHandler.init();

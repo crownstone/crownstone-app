@@ -117,6 +117,7 @@ import { SceneAdd }                                from "../views/scenesViews/Sc
 import { ScenePictureGallery }                     from "../views/scenesViews/ScenePictureGallery";
 import { SceneEdit } from "../views/scenesViews/SceneEdit";
 import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownstones";
+import { SettingsLocalizationMonitor } from "../views/settingsViews/dev/SettingsLocalizationMonitor";
 
 
 export const Views = {
@@ -188,6 +189,7 @@ export const Views = {
   SettingsRedownloadFromCloud:       SettingsRedownloadFromCloud,
   SettingsStoneBleDebug:             SettingsStoneBleDebug,
   SettingsUptime:                    SettingsUptime,
+  SettingsLocalizationMonitor:       SettingsLocalizationMonitor,
   SphereBehaviour:                   SphereBehaviour,
   SphereCrownstoneOverview:          SphereCrownstoneOverview,
   SphereEdit:                        SphereEdit,

@@ -58,7 +58,6 @@ export class Background extends Component<{
     return (
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
-
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }}>
         <KeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
