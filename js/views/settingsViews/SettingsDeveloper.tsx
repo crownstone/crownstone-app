@@ -151,7 +151,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       }
     });
     items.push({
-      label: "View localization uptime",
+      label: "View localization history",
       type: 'navigation',
       icon: <IconButton name="ios-home" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.black.hex}}/>,
       callback: () => {

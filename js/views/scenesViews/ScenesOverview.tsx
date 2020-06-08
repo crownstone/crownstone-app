@@ -18,6 +18,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { Navigation } from "react-native-navigation";
 import { ScaledImage } from "../components/ScaledImage";
+import { RoundedBackground } from "../components/RoundedBackground";
 
 
 const className = "ScenesOverview";
@@ -210,16 +211,9 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <View style={{backgroundColor: colors.csBlueDarker.hex, flex:1}}>
-        <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius: SceneConstants.roundness, overflow: 'hidden'}}>
-          <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
-          <View>
-            <Background image={core.background.lightBlur} style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
-              {content}
-            </Background>
-          </View>
-        </View>
-      </View>
+      <RoundedBackground image={core.background.lightBlur} style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
+        {content}
+      </RoundedBackground>
     );
   }
 }
