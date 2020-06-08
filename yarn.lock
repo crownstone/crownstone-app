@@ -665,13 +665,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@egjs/hammerjs@^2.0.17":
-  version "2.0.17"
-  resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
-  integrity sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==
-  dependencies:
-    "@types/hammerjs" "^2.0.36"
-
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -1131,11 +1124,6 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
-
-"@types/hammerjs@^2.0.36":
-  version "2.0.36"
-  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.36.tgz#17ce0a235e9ffbcdcdf5095646b374c2bf615a4c"
-  integrity sha512-7TUK/k2/QGpEAv/BCwSHlYu3NXZhQ9ZwBYpzr9tjlPIL2C5BeGhH3DmVavRx3ZNyELX5TLC91JTz/cen6AAtIQ==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
@@ -3032,11 +3020,6 @@ hoist-non-react-statics@3.x.x, hoist-non-react-statics@^3.3.0:
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   dependencies:
     react-is "^16.7.0"
-
-hoist-non-react-statics@^2.3.1:
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
-  integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
 
 hosted-git-info@^2.1.4:
   version "2.8.8"
@@ -5258,11 +5241,6 @@ react-native-device-info@5.5.3:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-5.5.3.tgz#6652fb46c4602a1dd3a5d6a18d2266ecdf97fec7"
   integrity sha512-bzUVTPHca+FfNco1qaOM1+idoeII8zdpGRsR+RK+DWhwp9utHZWfbkonZZ9XFm/U+i3mirNxt6oaKV+vUMjMzg==
 
-react-native-draggable-flatlist@^2.3.1:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.3.2.tgz#4d84b2f7298d2426a4e5a95290c3b10861d81bf2"
-  integrity sha512-IoVmTwfUX+dvkgmIrJdPkwfgARJDCY+/KGVhYLGUzPvYpIIlcwhv7Vn6430GyEaO9TPsgnSVsOwVprnN16tn3Q==
-
 react-native-extra-dimensions-android@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/react-native-extra-dimensions-android/-/react-native-extra-dimensions-android-1.2.5.tgz#8ade91029aaac7519bf305116d39019e618a60f0"
@@ -5275,16 +5253,6 @@ react-native-fs@~2.16.6:
   dependencies:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
-
-react-native-gesture-handler@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.6.1.tgz#678e2dce250ed66e93af409759be22cd6375dd17"
-  integrity sha512-gQgIKhDiYf754yzhhliagLuLupvGb6ZyBdzYzr7aus3Fyi87TLOw63ers+r4kGw0h26oAWTAdHd34JnF4NeL6Q==
-  dependencies:
-    "@egjs/hammerjs" "^2.0.17"
-    hoist-non-react-statics "^2.3.1"
-    invariant "^2.2.4"
-    prop-types "^15.7.2"
 
 react-native-image-picker@^2.3.1:
   version "2.3.1"

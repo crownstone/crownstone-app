@@ -20,20 +20,20 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 
-export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, eventBus, isBeingDragged}) {
+export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   const [editMode, setEditMode] = useState(stateEditMode);
-  const [drag, setDrag] = useState(isBeingDragged);
+  // const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
 
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
-  useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
+  // useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
-  let color = drag ? colors.blue.rgba(0.5) : colors.white.hex
+  let color = colors.white.hex;
   let subtext = getLocationSubtext(sphereId, scene);
 
   if (activated) { subtext = "Setting the scene!"; }
-  if (editMode)  { subtext = "Press and hold to change the order!"; }
-  if (drag)      { subtext = "Drag me up or down!"; }
+  if (editMode)  { subtext = "Tap to edit!"; }
+  // if (drag)      { subtext = "Drag me up or down!"; }
 
   let image = getScenePictureSource(scene);
 
@@ -60,9 +60,9 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
             NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId});
           }
         }}
-        onLongPress={dragAction}
+        // onLongPress={dragAction}
       >
-      <SlideSideFadeInView visible={drag} width={40} />
+      {/*<SlideSideFadeInView visible={drag} width={40} />*/}
         { image ? <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
          : <MissingImage /> }
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>
@@ -76,7 +76,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
           </View>
           <View style={{flex:1}} />
         </View>
-        <SlideSideFadeInView visible={!drag} width={SceneConstants.buttonWidth} duration={300} style={{backgroundColor: color}}>
+        <SlideSideFadeInView visible={true} width={SceneConstants.buttonWidth} duration={300} style={{backgroundColor: color}}>
           <EditIcons
             color={color}
             editMode={editMode}
