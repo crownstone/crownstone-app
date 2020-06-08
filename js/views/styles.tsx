@@ -7,14 +7,13 @@ import { Navigation } from "react-native-navigation";
 import { LOG } from "../logging/Log";
 
 export const deviceModel = DeviceInfo.getModel();
-
-export let isIPhoneX = deviceModel.indexOf('iPhone X') !== -1;
+export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 11') !== -1;
 
 export let topBarMargin    = 0
-export let tabBarMargin    = isIPhoneX ? 34 : 0 ; // Status bar in iOS is 20 high
-export let tabBarHeight    = isIPhoneX ? 49 + 34: 49;
-export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
-export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
+export let tabBarMargin    = isModernIosModel ? 34 : 0 ; // Status bar in iOS is 20 high
+export let tabBarHeight    = isModernIosModel ? 49 + 34: 49;
+export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isModernIosModel ? 44 : 20); // Status bar in iOS is 20 high
+export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isModernIosModel ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height; // initial guess
@@ -33,24 +32,30 @@ else {
 }
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+export let availableModalHeight  = screenHeight - topBarHeight;
 
-export function updateScreenHeight(height) {
-  if (height > 0 && height !== screenHeight && height > 0.5*Dimensions.get('screen').height) {
-    screenHeight = height;
+export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
+  if (Platform.OS === 'android') {
+    let heightOffset = 0;
+    if (topBarAvailable) { heightOffset += topBarHeight; }
+    if (tabBarAvailable) { heightOffset += tabBarHeight; }
 
-    availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-    availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+    let totalHeight = height + heightOffset;
+    if (height > 0 && height !== screenHeight && height > 0.5 * Dimensions.get('screen').height) {
+      screenHeight = height;
+
+      availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+      availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+    }
   }
 }
-
 export const stylesUpdateConstants = () =>  {
-  Navigation.constants()
+  return Navigation.constants()
     .then((constants) => {
       let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
       statusBarHeight = tmpStatusBarHeight;
 
-      topBarHeight = constants.topBarHeight > 0 ? constants.topBarHeight : topBarHeight;
+      topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
       tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
