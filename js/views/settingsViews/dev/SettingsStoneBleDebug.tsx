@@ -64,7 +64,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       debugData1: null,
       debugData2: null,
       debugTimestamp: new Date().valueOf(),
-      debugDataHash: null
+      debugDataHash: null,
+      annotation: ''
     };
   }
 
@@ -392,8 +393,23 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
-    
-    
+    if (this.state.debugData1 || this.state.debugData2) {
+      items.push({
+        label: "Annotate",
+        type: 'textEdit',
+        value: this.state.annotation,
+        callback: (newText) => {
+          this.setState({annotation: newText});
+        },
+        endCallback: (newText) => {
+          if (newText) {
+            LOGe.info("ANNOTATION: ", newText)
+            Alert.alert("Annotated!", '', [{ text: "That is amazing!" }]);
+            this.setState({ annotation: '' })
+          }
+        }
+      })
+    }
 
 
     let largeLabel = 'Examining Sphere';
@@ -440,7 +456,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       .then((returnData) => {
         core.eventBus.emit("hideLoading");
         let data : PowerSamples[] = returnData.data;
-        LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", data);
+        LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", type, data);
 
         let getData = function(buffer: PowerSamples, initialCountValue: number = 0, dataContainer = []) : [number, any[]] {
           let counter = initialCountValue;
