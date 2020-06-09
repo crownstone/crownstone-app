@@ -19,6 +19,7 @@
     "moment": "^2.24.0",
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
+    "qs": "^6.9.4",
     "react": "16.13.0",
     "react-native": "0.61.5",
     "react-native-console-time-polyfill": "^0.0.6",

@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsLogging", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { ScrollView } from 'react-native';
+import { Alert, Linking, ScrollView } from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
@@ -14,10 +14,16 @@ import {colors, } from '../../styles'
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
-import {clearLogs} from "../../../logging/LogUtil";
+import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { FileUtil } from "../../../util/FileUtil";
+import { UPTIME_LOG_PREFIX } from "../../../backgroundProcesses/UptimeMonitor";
+import { LOGe } from "../../../logging/Log";
+
+const querystring = require('qs');
+const RNFS = require('react-native-fs');
 
 export class SettingsLogging extends LiveComponent<any, any> {
   static options(props) {
@@ -26,6 +32,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
 
   unsubscribe;
+  constructor(props) {
+    super(props);
+
+    this.state = {showEmailSettings: false, subject: ''}
+  }
 
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
@@ -161,7 +172,67 @@ export class SettingsLogging extends LiveComponent<any, any> {
       }
     });
 
-    items.push({ type:'spacer' });
+    items.push({
+      type:'explanation',
+      label: "EMAIL LOGS OF THE LAST 15 MINUTES"
+    });
+
+    if (this.state.showEmailSettings) {
+      items.push({
+        label: "Subject",
+        type: 'textEdit',
+        value: this.state.subject,
+        callback: (newText) => {
+          this.setState({subject: newText});
+        },
+      })
+      items.push({
+        label: "Send email now!",
+        type: 'button',
+        style: {color: colors.blue.hex},
+        icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          getLogs()
+            .then((result) => {
+              let url = `mailto:${state.user.email}`;
+
+              // Create email link query
+              const query = querystring.stringify({
+                subject: "LOGS",
+                body: result,
+              });
+
+              if (query.length) {
+                url += `?${query}`;
+              }
+
+              // check if we can use this link
+              Linking.canOpenURL(url)
+                .then((canOpen) => {
+                  if (canOpen) {
+                    Linking.openURL(url);
+                  }
+                  else {
+                    Alert.alert("Can't email")
+                  }
+                })
+            })
+        }
+      });
+    }
+    else {
+      items.push({
+        label: "Email logs",
+        type: 'button',
+        style: { color: colors.blue.hex },
+        icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.blue.hex }}/>,
+        callback: (newValue) => {
+          this.setState({ showEmailSettings: true })
+        }
+      });
+    }
+
+
     items.push({ type:'spacer' });
     items.push({ type:'spacer' });
 
@@ -177,4 +248,33 @@ export class SettingsLogging extends LiveComponent<any, any> {
       </BackgroundNoNotification>
     );
   }
+}
+
+function getLogs() {
+  let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+  let storagePath = FileUtil.getPath();
+  let filesToOpen = [];
+  let openedFiles = [];
+
+  let timestamp = new Date().valueOf() - 15*60*1000; // 15 mins
+
+  return RNFS.readFile(storagePath + "/" + filename)
+    .then((data) => {
+      let lines = data.split("\n");
+
+      let string = '';
+      for (let i = lines.length-1; i > 0; i--) {
+        let parts = lines[i].split(" - ");
+        let time = Number(parts[0]);
+
+        if (time > 0 && time < timestamp) {
+          break;
+        }
+
+        string += lines[i] + "\n";
+      }
+      return string;
+    })
+    .catch((err) => {console.log("CANT",err) })
+
 }

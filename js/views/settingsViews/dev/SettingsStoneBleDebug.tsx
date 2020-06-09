@@ -16,8 +16,8 @@ import {
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { availableScreenHeight, colors, screenWidth } from "../../styles";
-import {Util} from "../../../util/Util";
-import {Scheduler} from "../../../logic/Scheduler";
+import { Util } from "../../../util/Util";
+import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { IconButton } from "../../components/IconButton";

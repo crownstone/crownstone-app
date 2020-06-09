@@ -30,9 +30,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
     super(props);
 
     this.extractUptime();
-
     this.timeArray = [];
-
     this.state = { content:[], gaps:[], updating:false }
   }
 
