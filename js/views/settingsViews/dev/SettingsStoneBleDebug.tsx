@@ -60,7 +60,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       directAdvertisementTimestamp: null,
       ibeaconPayload: '',
       ibeaconTimestamp: null,
-      debugInformationText: null, debugData: null, debugTimestamp: new Date().valueOf(), debugDataHash: null
+      debugInformationText: null,
+      debugData1: null,
+      debugData2: null,
+      debugTimestamp: new Date().valueOf(),
+      debugDataHash: null
     };
   }
 
@@ -128,7 +132,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     items.push({
       label: lang("Get_Behaviour_Debug_Infor"),
-      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
         this.setState({debugInformationText: null, debugData: null});
@@ -183,10 +187,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     items.push({
       label: "Get Crownstone Uptime",
-      icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
         core.eventBus.emit("showLoading", "Getting Crownstone Uptime...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
@@ -206,10 +210,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     items.push({
       label: "Get ADC Restarts",
-      icon: <IconButton name={"ios-outlet"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      icon: <IconButton name={"ios-outlet"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLighter.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
         core.eventBus.emit("showLoading", "Get ADC Restarts...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
@@ -231,10 +235,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     items.push({
       label: "Get Switch History",
-      icon: <IconButton name={"ios-list-box"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      icon: <IconButton name={"ios-list-box"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
         core.eventBus.emit("showLoading", "Get switch history...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
@@ -282,38 +286,45 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     });
 
     items.push({
-      label: "Get Switchcraft Buffers",
-      icon: <IconButton name={"md-battery-charging"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      label: "Get triggered switchcraft buffers",
+      icon: <IconButton name={"md-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData: null, debugTimestamp: null, debugDataHash: null});
-        core.eventBus.emit("showLoading", "Get Switchcraft Buffers...");
-
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getPowerSamples', triggeredSwitchcraft:true}, {}, 2, "From StoneDebug")
-          .then((returnData) => {
-            core.eventBus.emit("hideLoading");
-            let data : PowerSamples[] = returnData.data;
-            LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", data);
-            let plotData = [];
-            let counter = 0;
-            data.forEach((powerSampleSet) => {
-              for (let i = 0; i < powerSampleSet.samples.length; i++) {
-                let convertedValue = powerSampleSet.multiplier * (powerSampleSet.samples[i] - powerSampleSet.offset);
-                if (powerSampleSet.multiplier == 0) {
-                  convertedValue = powerSampleSet.samples[i];
-                }
-                plotData.push({x: counter, y: convertedValue});
-                counter += 1;
-              }
-            })
-
-            this.setState({debugInformationText: null, debugData: plotData, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
-          })
-          .catch((err) => {
-            core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
-          })
-        BatchCommandHandler.executePriority()
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        core.eventBus.emit("showLoading", "Get triggered switchcraft buffers...");
+        this.getBuffers(stone, "triggeredSwitchcraft")
+      }
+    });
+    items.push({
+      label: "Get missed switchcraft buffers",
+      icon: <IconButton name={"ios-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        Alert.alert("Not implemented yet.","Ask Bart. Nicely.", [{text:"OK"}])
+        return;
+        // this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        // core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
+        // this.getBuffers(stone, "missedSwitchcraft")
+      }
+    });
+    items.push({
+      label: "Get filtered buffers",
+      icon: <IconButton name={"ios-podium"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        core.eventBus.emit("showLoading", "Get filtered buffer...");
+        this.getBuffers(stone, "filteredBuffer")
+      }
+    });
+    items.push({
+      label: "Get unfiltered buffers",
+      icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        core.eventBus.emit("showLoading", "Get unfiltered buffer...");
+        this.getBuffers(stone, "unfilteredBuffer")
       }
     });
 
@@ -333,18 +344,42 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       });
     }
 
-    if (this.state.debugData) {
+    if (this.state.debugData1) {
       items.push({
         __item:
           <View style={{
             backgroundColor: colors.white.hex,
             minHeight: 300
           }}>
-            <Text>{ xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp)) }</Text>
+            <Text>{xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp))}</Text>
+            <Graph
+              width={screenWidth}
+              height={availableScreenHeight / 2}
+              data={this.state.debugData1}
+              dataHash={this.state.debugDataHash}
+              live={false}
+              autofit={true}
+              options={{ shaded: false, interpolation: false }}
+              fade={false}
+              showPoints={false}
+              lineColor={'red'}
+              hideUI={true}
+            />
+          </View>
+      });
+    }
+    if (this.state.debugData2) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            minHeight: 300
+          }}>
+            <Text>{ "Current:" }</Text>
             <Graph
               width={screenWidth}
               height={availableScreenHeight/2}
-              data={this.state.debugData}
+              data={this.state.debugData2}
               dataHash={this.state.debugDataHash}
               live={false}
               autofit={true}
@@ -395,11 +430,51 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     });
     items.push({label: lang("Time_received__no_data",this.state.advertisementTimestamp,new Date(this.state.advertisementTimestamp)), type: 'explanation', below: true});
 
-
-
     items.push({ type: 'spacer' });
 
     return items;
+  }
+
+  getBuffers(stone, type : PowersampleDataType) {
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getPowerSamples', type: type}, {}, 2, "From StoneDebug")
+      .then((returnData) => {
+        core.eventBus.emit("hideLoading");
+        let data : PowerSamples[] = returnData.data;
+        LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", data);
+
+        let getData = function(buffer: PowerSamples, initialCountValue: number = 0, dataContainer = []) : [number, any[]] {
+          let counter = initialCountValue;
+          for (let i = 0; i < buffer.samples.length; i++) {
+            let convertedValue = buffer.multiplier * (buffer.samples[i] - buffer.offset);
+            if (buffer.multiplier == 0) {
+              convertedValue = buffer.samples[i];
+            }
+            dataContainer.push({x: counter, y: convertedValue});
+            counter += 1;
+          }
+          return [counter, dataContainer];
+        }
+
+        if (type == "filteredBuffer" || type == "unfilteredBuffer") {
+          let voltage = getData(data[0])[1];
+          let current = getData(data[1])[1];
+          this.setState({debugInformationText: null, debugData1: voltage, debugData2: current, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+        }
+        else {
+          let counter = 0;
+          let plotData = [];
+          data.forEach((powerSampleSet) => {
+            let result = getData(powerSampleSet, counter, plotData)
+            counter = result[0];
+          })
+          this.setState({debugInformationText: null, debugData1: plotData, debugData2:0, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+        }
+      })
+      .catch((err) => {
+        core.eventBus.emit("hideLoading");
+        Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+      })
+    BatchCommandHandler.executePriority()
   }
 
   render() {

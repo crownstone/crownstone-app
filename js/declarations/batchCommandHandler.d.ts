@@ -77,9 +77,11 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'getCrownstoneUptime' } |
   { commandName : 'getAdcRestarts' } |
   { commandName : 'getSwitchHistory' } |
-  { commandName : 'getPowerSamples', triggeredSwitchcraft: boolean } |
+  { commandName : 'getPowerSamples', type: PowersampleDataType } |
   { commandName : 'registerTrackedDevice', trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number }
 
+
+type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer"
 interface commandSummary {
   stone     : any,
   stoneId   : string,

@@ -221,7 +221,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getCrownstoneUptime:        () => { return BluenetPromise('getCrownstoneUptime'); },
   getAdcRestarts:             () => { return BluenetPromise('getAdcRestarts'); },
   getSwitchHistory:           () => { return BluenetPromise('getSwitchHistory'); },
-  getPowerSamples:            (triggeredSwitchcraft: boolean) => { return BluenetPromise('getPowerSamples', triggeredSwitchcraft); }
+  getPowerSamples:            (type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); }
 
 };
 

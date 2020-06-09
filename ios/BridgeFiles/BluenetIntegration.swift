@@ -987,9 +987,27 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
   
-   @objc func getPowerSamples(_ triggeredSwitchcraft: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     LOGGER.info("BluenetBridge: Called getPowerSamples")
-     GLOBAL_BLUENET.bluenet.debug.getPowerSamples(triggeredSwitchcraft: triggeredSwitchcraft.boolValue)
+   @objc func getPowerSamples(_ type: String, callback: @escaping RCTResponseSenderBlock) {
+      LOGGER.info("BluenetBridge: Called getPowerSamples")
+      var typeEnum = PowerSampleType.triggeredSwitchcraft
+      if type == "triggeredSwitchcraft" {
+        typeEnum = PowerSampleType.triggeredSwitchcraft
+      }
+      else if type == "missedSwitchcraft" {
+        typeEnum = PowerSampleType.missedSwitchcraft
+      }
+      else if type == "filteredBuffer" {
+        typeEnum = PowerSampleType.filteredBuffer
+      }
+      else if type == "unfilteredBuffer" {
+        typeEnum = PowerSampleType.unfilteredBuffer
+      }
+      else {
+        callback([["error" : true, "data": "Invalid type provided" ]])
+        return
+      }
+
+      GLOBAL_BLUENET.bluenet.debug.getPowerSamples(type: typeEnum)
        .done{powerSamples in callback([["error" : false, "data": powerSamples ]])}
        .catch{err in
          if let bleErr = err as? BluenetError {
@@ -998,7 +1016,7 @@ open class BluenetJS: RCTEventEmitter {
          else {
            callback([["error" : true, "data": "UNKNOWN ERROR IN getPowerSamples \(err)"]])
          }
-     }
+      }
    }
   
   

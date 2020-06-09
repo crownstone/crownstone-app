@@ -322,6 +322,26 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
   }
 
 
+  _getDebugIcon(stone) {
+    let wrapperStyle : ViewStyle = {
+      width: 35,
+      height: 35,
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      alignItems: 'center',
+      justifyContent: "center"
+    };
+    return (
+      <TouchableOpacity
+        onPress={() => { NavigationUtil.navigate( "SettingsStoneBleDebug",{sphereId: this.props.sphereId, stoneId: this.props.stoneId}) }}
+        style={wrapperStyle}>
+        <Icon name={"ios-bug"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
+      </TouchableOpacity>
+    );
+  }
+
+
   _getSpecificInformation(stone) {
     let label;
     switch (stone.config.type) {
@@ -499,6 +519,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
 
         <View style={{ height: 40}} />
         { stone.config.locked === false && stoneCanSwitch && Permissions.inSphere(this.props.sphereId).canLockCrownstone ? this._getLockIcon(stone) : undefined }
+        { state.user.developer ? this._getDebugIcon(stone) : undefined }
       </Background>
     )
   }
