@@ -246,7 +246,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.getSwitchHistory();
                 break;
               case 'getPowerSamples':
-                actionPromise = BluenetPromiseWrapper.getPowerSamples(command.triggeredSwitchcraft);
+                actionPromise = BluenetPromiseWrapper.getPowerSamples(command.type);
                 break;
               case 'registerTrackedDevice':
                 let locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;

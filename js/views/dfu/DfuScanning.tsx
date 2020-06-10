@@ -268,7 +268,6 @@ export class DfuScanning extends LiveComponent<any, any> {
     this.stateMap    = {};
     this.stoneIdsToUpdate = [];
     const { stoneArray, ids } = this._getStoneList();
-
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>

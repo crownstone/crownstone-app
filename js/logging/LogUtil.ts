@@ -3,7 +3,7 @@ import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 
-const LOG_PREFIX = 'CrownstoneAppLog';
+export const LOG_PREFIX = 'CrownstoneAppLog';
 
 export function getLoggingFilename(timestamp, prefix) {
   let monthNumber = new Date(timestamp).getMonth()+1;

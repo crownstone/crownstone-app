@@ -74,11 +74,11 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
               { !this.props.visible && !this.props.closeEnough ?
                 <Text style={{fontSize: 14}}>{ lang("Searching___") }</Text> :
                 undefined }
-              { !this.props.visible && !this.props.closeEnough && locationName ?
-                <Text style={{fontSize: 12}}>{ lang("Located_in__",locationName) }</Text> :
-                undefined }
               { this.props.closeEnough ?
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>{ lang("Close_enough_for_update_") }</Text> :
+                undefined }
+              { locationName ?
+                <Text style={{fontSize: 12}}>{ lang("Located_in__",locationName) }</Text> :
                 undefined }
             </View>
           </View>

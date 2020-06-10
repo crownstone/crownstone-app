@@ -130,7 +130,7 @@ interface BluenetPromiseWrapperProtocol {
   getCrownstoneUptime()                        : Promise<number>,
   getAdcRestarts()                             : Promise<AdcRestart>,
   getSwitchHistory()                           : Promise<SwitchHistory[]>,
-  getPowerSamples(triggeredSwitchcraft : bool) : Promise<PowerSamples[]>,
+  getPowerSamples(type : PowersampleDataType)  : Promise<PowerSamples[]>,
 }
 
 interface AdcRestart {

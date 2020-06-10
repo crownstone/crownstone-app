@@ -165,7 +165,7 @@ export class Graph extends LiveComponent<{
 
       if (this.data.length > 0) {
         // GraphingEngine.transformXToFit(this.data, this.options);
-        [this.minY, this.maxY] = GraphingEngine.transformYToFit(this.data, this.options);
+        [this.minY, this.maxY] = GraphingEngine.transformYToFit(this.data, this.options, 1e9, -1e9);
       }
 
       // precalc the datastep spacing
