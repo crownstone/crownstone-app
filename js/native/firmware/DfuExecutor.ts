@@ -10,6 +10,8 @@ import { DfuStateHandler } from "./DfuStateHandler";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
 import { BluenetPromiseWrapper } from "../libInterface/BluenetPromise";
 import { Scheduler } from "../../logic/Scheduler";
+import { Animated } from "react-native";
+import add = Animated.add;
 
 
 export const DfuExecutionInformation = {
@@ -497,11 +499,8 @@ export class DfuExecutor {
   _checkFirmwareOperations(firmwareCandidate) {
     if (!firmwareCandidate.dependsOnFirmwareVersion) { return Promise.resolve(); }
 
-    // if the current firmware is missing, and there is a dependency from the newest one, do the old one first
-    if (
-       (firmwareCandidate.dependsOnFirmwareVersion && this.currentFirmwareVersion === null ) ||
-       (firmwareCandidate.dependsOnFirmwareVersion && xUtil.versions.isLower(this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion))
-       ) {
+    // console.log("_checkFirmwareOperations", firmwareCandidate, this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion)
+    let addFirmwareOperation = () => {
       this.amountOfFirmwares += 1;
       LOGi.dfu("Executor: Extra firmware step required.");
       // we need to download the old BL first.
@@ -509,6 +508,20 @@ export class DfuExecutor {
         .then((previousFirmware) => {
           return this._checkFirmwareOperations(previousFirmware)
         })
+    }
+
+    // if the current firmware is missing, and there is a dependency from the newest one, do the old one first
+    if (firmwareCandidate.dependsOnFirmwareVersion && this.currentFirmwareVersion === null ) {
+      // if the bootloader version of this firmware version is lower than the one we have, we probably already have this firmware version.
+      if (xUtil.versions.isLower(firmwareCandidate.dependsOnBootloaderVersion, this.currentBootloaderVersion)) {
+        return Promise.resolve();
+      }
+      else {
+        return addFirmwareOperation();
+      }
+    }
+    else if (firmwareCandidate.dependsOnFirmwareVersion && xUtil.versions.isLower(this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion)) {
+      return addFirmwareOperation();
     }
     else {
       return Promise.resolve();
@@ -595,69 +608,83 @@ export class DfuExecutor {
 
     // if the current firmware is missing, and there is a dependency from the newest one, do the old one first
     if (
-         (firmwareCandidate.dependsOnFirmwareVersion && this.currentFirmwareVersion === null ) ||
-         (firmwareCandidate.dependsOnFirmwareVersion && xUtil.versions.isLower(this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion))
-       ) {
-      // we need to download the old FW first.
-      return DfuUtil.getFirmwareInformation(firmwareCandidate.dependsOnFirmwareVersion, this.hardwareVersion)
-        .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })
-        .then((previousFirmware) => {
-          return this._handleFirmware(previousFirmware)
-        })
-        .then(() => {
-          return this._handleFirmware(firmwareCandidate);
-        })
+        (firmwareCandidate.dependsOnFirmwareVersion && this.currentFirmwareVersion === null ) ||
+        (firmwareCandidate.dependsOnFirmwareVersion && xUtil.versions.isLower(this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion))
+      ) {
+      // if the bootloader version of this firmware version is lower than the one we have, we probably already have this firmware version.
+      return this._addFirmwareStep(firmwareCandidate);
     }
     else {
-      LOGi.dfu("Executor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
-
       // we can do the DFU now.
-      let downloadedFirmwarePath = null;;
-      this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
-      return DfuUtil.downloadFirmware(firmwareCandidate)
-        .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })
-        .then((downloadPath) => {
-          LOGi.dfu("Executor: firmware download complete.");
-
-          this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.1, DfuExecutionInformation.DOWNLOAD_SUCCESS);
-          downloadedFirmwarePath = downloadPath;
-          return this._searchForCrownstone();
-        })
-        .then((crownstoneMode) => {
-          LOGi.dfu("Executor: crownstone located.", crownstoneMode);
-
-          this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.2, DfuExecutionInformation.UPDATE_PUT_IN_DFU_MODE);
-          return this.dfuHelper.putInDFU(crownstoneMode);
-        })
-        .then(() => {
-          LOGi.dfu("Executor: crownstone put in dfu mode.");
-          return this._searchForCrownstone();
-        })
-        .then((crownstoneMode) => {
-          LOGi.dfu("Executor: dfu crownstone located. Update starting...");
-          this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.3, DfuExecutionInformation.UPDATE_START);
-          return this.dfuHelper.updateFirmware(crownstoneMode, downloadedFirmwarePath, this._getUpdateCallback(DfuPhases.FIRMWARE, this.currentStep));
-        })
-        .then(() => {
-          LOGi.dfu("Executor: Firmware updated to", firmwareCandidate.version);
-          this.currentFirmwareVersion = firmwareCandidate.version;
-          core.store.dispatch({
-            type: "UPDATE_STONE_CONFIG",
-            stoneId: this.stoneId,
-            sphereId: this.sphereId,
-            data: {
-              firmwareVersion: firmwareCandidate.version,
-            }
-          });
-          this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
-          return FileUtil.safeDeleteFile(downloadedFirmwarePath).catch(() => {});
-        })
-        .then(() => {
-          if (this._debugRepeatFirmware()) {
-            return this._handleFirmware(firmwareCandidate)
-          }
-        })
+      this._performFirmwareUpdate(firmwareCandidate);
     }
+  }
+
+  _addFirmwareStep(firmwareCandidate) {
+    // we need to download the old FW first.
+    return DfuUtil.getFirmwareInformation(firmwareCandidate.dependsOnFirmwareVersion, this.hardwareVersion)
+      .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })
+      .then((previousFirmware) => {
+        // if the bootloader version of this firmware version is lower than the one we have, we probably already have this firmware version.
+        if (xUtil.versions.isLower(previousFirmware.dependsOnBootloaderVersion, this.currentBootloaderVersion)) {
+          LOGi.dfu("Executor: bootloader of previous version is older than what we have. Not required to backtrack further!");
+          return this._performFirmwareUpdate(firmwareCandidate);
+        }
+        else {
+          return this._handleFirmware(previousFirmware)
+        }
+      })
+      .then(() => {
+        return this._handleFirmware(firmwareCandidate);
+      })
+  }
+  _performFirmwareUpdate(firmwareCandidate) {
+    LOGi.dfu("Executor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
+    let downloadedFirmwarePath = null;;
+    this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
+    return DfuUtil.downloadFirmware(firmwareCandidate)
+      .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })
+      .then((downloadPath) => {
+        LOGi.dfu("Executor: firmware download complete.");
+
+        this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.1, DfuExecutionInformation.DOWNLOAD_SUCCESS);
+        downloadedFirmwarePath = downloadPath;
+        return this._searchForCrownstone();
+      })
+      .then((crownstoneMode) => {
+        LOGi.dfu("Executor: crownstone located.", crownstoneMode);
+
+        this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.2, DfuExecutionInformation.UPDATE_PUT_IN_DFU_MODE);
+        return this.dfuHelper.putInDFU(crownstoneMode);
+      })
+      .then(() => {
+        LOGi.dfu("Executor: crownstone put in dfu mode.");
+        return this._searchForCrownstone();
+      })
+      .then((crownstoneMode) => {
+        LOGi.dfu("Executor: dfu crownstone located. Update starting...");
+        this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.3, DfuExecutionInformation.UPDATE_START);
+        return this.dfuHelper.updateFirmware(crownstoneMode, downloadedFirmwarePath, this._getUpdateCallback(DfuPhases.FIRMWARE, this.currentStep));
+      })
+      .then(() => {
+        LOGi.dfu("Executor: Firmware updated to", firmwareCandidate.version);
+        this.currentFirmwareVersion = firmwareCandidate.version;
+        core.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: this.stoneId,
+          sphereId: this.sphereId,
+          data: {
+            firmwareVersion: firmwareCandidate.version,
+          }
+        });
+        this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
+        return FileUtil.safeDeleteFile(downloadedFirmwarePath).catch(() => {});
+      })
+      .then(() => {
+        if (this._debugRepeatFirmware()) {
+          return this._handleFirmware(firmwareCandidate)
+        }
+      })
   }
 
 
