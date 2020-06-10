@@ -221,13 +221,13 @@ export class DfuBatch extends LiveComponent<any, any> {
         {this.state.cancelled &&
         <View style={{
           position: 'absolute',
-          top: 0.3 * availableModalHeight,
+          top: 130,
           width: screenWidth,
           height: 60,
           ...styles.centered
         }}>
-          <View style={{width: 220, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
-            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 18, paddingRight:20}}>Cancelling...</Text>
+          <View style={{width: 250, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{'Cancelling after this Crownstone...'}</Text>
             <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
           </View>
         </View>
