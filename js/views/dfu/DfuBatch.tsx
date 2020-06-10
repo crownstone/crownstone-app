@@ -6,12 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   ScrollView, Text, Vibration,
   View
 } from "react-native";
-import { colors, screenWidth, styles} from "../styles";
+import { availableModalHeight, colors, screenWidth, styles } from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -22,11 +23,12 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
+import { LiveComponent } from "../LiveComponent";
 
 const CLASSNAME = "DFU_BATCH";
-export class DfuBatch extends Component<any, any> {
+export class DfuBatch extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Updating_"), disableBack: true});
+    return TopBarUtil.getOptions({title: lang("Updating_"), cancel: true, disableBack: true});
   }
 
   failedUpdate = {};
@@ -40,21 +42,27 @@ export class DfuBatch extends Component<any, any> {
       icon2Visible:  Math.random() < 0.5,
       icon3Visible:  Math.random() < 0.5,
       headerColor:  0,
+      cancelled: false,
       updatingCrownstoneIndex: 0
     };
   }
 
   componentDidMount(): void {
     BackButtonHandler.override(CLASSNAME, () => { Alert.alert(
-lang("_This_process_cannot_be_i_header"),
-lang("_This_process_cannot_be_i_body"),
-[{text:lang("_This_process_cannot_be_i_left")}])})
+      lang("_This_process_cannot_be_i_header"),
+      lang("_This_process_cannot_be_i_body"),
+      [{text:lang("_This_process_cannot_be_i_left")}])})
   }
 
   componentWillUnmount(): void {
     BackButtonHandler.clearOverride(CLASSNAME);
   }
 
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'cancel') {
+      this.setState({cancelled: true});
+    }
+  }
 
 
   _renderer(item, index, stoneId) {
@@ -81,8 +89,19 @@ lang("_This_process_cannot_be_i_body"),
 
   _getNext(stoneId, index, success, attemptCount, cloudIssue = false) {
     if (success) {
-      this.finishedUpdate[index] = {stoneId : stoneId, state: true};;
+      this.finishedUpdate[index] = { stoneId: stoneId, state: true };
       this.failedUpdate[index] = false;
+    }
+    else {
+      this.finishedUpdate[index] = { stoneId: stoneId, state: false };
+      this.failedUpdate[index] = { stoneId: stoneId, attempts: attemptCount };
+    }
+
+    if (this.state.cancelled === true) {
+      return this._doRetries(false);
+    }
+
+    if (success) {
       if (this.state.updatingCrownstoneIndex + 1 === this.props.stoneIdsToUpdate.length) {
         // DONE, do the retries
         this._doRetries()
@@ -93,8 +112,6 @@ lang("_This_process_cannot_be_i_body"),
       }
     }
     else {
-      this.finishedUpdate[index] = {stoneId : stoneId, state: false};
-      this.failedUpdate[index] = {stoneId : stoneId, attempts: attemptCount};
       if (this.state.updatingCrownstoneIndex + 1 === this.props.stoneIdsToUpdate.length) {
         // do the retries! If it failed by the cloud issue, we can tell the wrap up screen here.
         this._doRetries(cloudIssue)
@@ -108,18 +125,20 @@ lang("_This_process_cannot_be_i_body"),
 
   _doRetries(cloudIssue = false) {
     let indexToRetry = null;
-    let maxRetries = 2;
+    let maxRetries = 1;
     if (Platform.OS === 'android') {
-      maxRetries = 4;
+      maxRetries = 3;
     }
-    let amountOfCrownstones = this.props.stoneIdsToUpdate.length
-    for (let i = 0; i < this.props.stoneIdsToUpdate.length; i++) {
-      let index = (i + this.state.updatingCrownstoneIndex+1) % amountOfCrownstones;
-      if (this.finishedUpdate[index] && this.finishedUpdate[index].state === false &&
-          this.failedUpdate[index]   && this.failedUpdate[index].attempts < maxRetries ||
+    if (this.state.cancelled === false) {
+      let amountOfCrownstones = this.props.stoneIdsToUpdate.length
+      for (let i = 0; i < this.props.stoneIdsToUpdate.length; i++) {
+        let index = (i + this.state.updatingCrownstoneIndex + 1) % amountOfCrownstones;
+        if (this.finishedUpdate[index] && this.finishedUpdate[index].state === false &&
+          this.failedUpdate[index] && this.failedUpdate[index].attempts < maxRetries ||
           !this.finishedUpdate[index]) {
-        indexToRetry = index;
-        break;
+          indexToRetry = index;
+          break;
+        }
       }
     }
 
@@ -198,6 +217,21 @@ lang("_This_process_cannot_be_i_body"),
             renderer={this._renderer.bind(this)}
           />
         </ScrollView>
+
+        {this.state.cancelled &&
+        <View style={{
+          position: 'absolute',
+          top: 0.3 * availableModalHeight,
+          width: screenWidth,
+          height: 60,
+          ...styles.centered
+        }}>
+          <View style={{width: 220, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 18, paddingRight:20}}>Cancelling...</Text>
+            <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
+          </View>
+        </View>
+        }
       </Background>
     );
   }
