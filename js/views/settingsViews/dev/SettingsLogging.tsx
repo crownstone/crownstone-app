@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsLogging", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { Alert, Linking, ScrollView } from "react-native";
+import { Alert, KeyboardAvoidingView, Linking, Platform, ScrollView } from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
@@ -174,7 +174,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: "EMAIL LOGS OF THE LAST 15 MINUTES"
+      label: "EMAIL LOGS OF THE LAST 5 MINUTES"
     });
 
     if (this.state.showEmailSettings) {
@@ -192,13 +192,14 @@ export class SettingsLogging extends LiveComponent<any, any> {
         style: {color: colors.blue.hex},
         icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
         callback:(newValue) => {
+          core.eventBus.emit("showLoading","Generating Email...");
           getLogs()
             .then((result) => {
               let url = `mailto:${state.user.email}`;
 
               // Create email link query
               const query = querystring.stringify({
-                subject: "LOGS",
+                subject: this.state.subject,
                 body: result,
               });
 
@@ -210,10 +211,14 @@ export class SettingsLogging extends LiveComponent<any, any> {
               Linking.canOpenURL(url)
                 .then((canOpen) => {
                   if (canOpen) {
-                    Linking.openURL(url);
+                    Linking.openURL(url)
+                      .then(() => {
+                        core.eventBus.emit("hideLoading");
+                      });
                   }
                   else {
-                    Alert.alert("Can't email")
+                    core.eventBus.emit("hideLoading");
+                    Alert.alert("Can't email.")
                   }
                 })
             })
@@ -242,9 +247,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundNoNotification image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
+          <ScrollView keyboardShouldPersistTaps="always">
+            <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </BackgroundNoNotification>
     );
   }
@@ -256,10 +263,11 @@ function getLogs() {
   let filesToOpen = [];
   let openedFiles = [];
 
-  let timestamp = new Date().valueOf() - 15*60*1000; // 15 mins
+  let timestamp = new Date().valueOf() - 5*60*1000; // 15 mins
 
   return RNFS.readFile(storagePath + "/" + filename)
     .then((data) => {
+      console.time("startParse")
       let lines = data.split("\n");
 
       let string = '';
@@ -273,8 +281,10 @@ function getLogs() {
 
         string += lines[i] + "\n";
       }
+      console.timeEnd("startParse")
+
       return string;
     })
-    .catch((err) => {console.log("CANT",err) })
+    .catch((err) => { console.log("CANT",err) })
 
 }

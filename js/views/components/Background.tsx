@@ -47,14 +47,16 @@ export class Background extends Component<{
     let height = screenHeight;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) { hasTopBar = true; }
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) { hasTabBar = true; }
-    if (hasTabBar && hasTopBar) { height = availableScreenHeight; }
-    else if (hasTopBar)         { height = availableModalHeight; }
+    if (hasTabBar && hasTopBar)       { height = availableScreenHeight;      }
+    else if (hasTabBar && !hasTopBar) { height = screenHeight - tabBarHeight }
+    else if (hasTopBar)               { height = availableModalHeight;       }
     return [height, hasTopBar, hasTabBar];
   }
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = this.getHeight();
     let overrideStyle = this.props.style || {};
+
     return (
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;

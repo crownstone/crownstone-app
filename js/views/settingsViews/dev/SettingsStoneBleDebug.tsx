@@ -393,23 +393,22 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
-    if (this.state.debugData1 || this.state.debugData2) {
-      items.push({
-        label: "Annotate",
-        type: 'textEdit',
-        value: this.state.annotation,
-        callback: (newText) => {
-          this.setState({annotation: newText});
-        },
-        endCallback: (newText) => {
-          if (newText) {
-            LOGe.info("ANNOTATION: ", newText)
-            Alert.alert("Annotated!", '', [{ text: "That is amazing!" }]);
-            this.setState({ annotation: '' })
-          }
+
+    items.push({
+      label: "Annotate",
+      type: 'textEdit',
+      value: this.state.annotation,
+      callback: (newText) => {
+        this.setState({annotation: newText});
+      },
+      endCallback: (newText) => {
+        if (newText) {
+          LOGe.info("ANNOTATION: ", newText)
+          Alert.alert("Annotated!", '', [{ text: "That is amazing!" }]);
+          this.setState({ annotation: '' })
         }
-      })
-    }
+      }
+    })
 
 
     let largeLabel = 'Examining Sphere';

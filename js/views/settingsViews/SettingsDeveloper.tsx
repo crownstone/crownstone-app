@@ -452,12 +452,11 @@ lang("_Reset_Done__Rediscovery__body"),
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hideNotifications={true} hideOrangeLine={true} >
+      <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
           title={ lang("test")}
           titleObject={
-
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
               <View style={{flex:1, width: screenWidth-160, alignItems:'center', justifyContent:'center'}}>
                 <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ lang("Developer_Menu") }</Text>
@@ -468,11 +467,11 @@ lang("_Reset_Done__Rediscovery__body"),
           leftAction={() => { NavigationUtil.back(); }}
         />
         <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <SlideFadeInView visible={this.state.devAppVisible} height={160}>
             <ListEditableItems items={getDevAppItems()} separatorIndent={true} />
           </SlideFadeInView>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
         </ScrollView>
       </BackgroundNoNotification>
     );
