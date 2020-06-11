@@ -26,7 +26,7 @@ let scanFilesRecursivelyInPath = function(dirPath) {
       fileList.push(elementPath)
       scanFile(elementPath);
     }
-    else if (stat.isDirectory()) {
+    else if (stat.isDirectory() && config.PATH_EXCLUSIONS[elementPath] === undefined) {
       // console.log( "'%s' is a directory.", elementPath );
       scanFilesRecursivelyInPath(elementPath)
     }

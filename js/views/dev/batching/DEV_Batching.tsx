@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_Batching", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_Batching", key)(a,b,c,d,e);
+// }
 import React, { Component } from "react";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";

@@ -6,6 +6,7 @@ let extractor = require("./extractor");
 
 const LANGUAGE_FILE_PATH = '../../js/'
 
+
 let translationData = {};
 
 let fileList = [];
@@ -26,7 +27,7 @@ let parseFilesRecursivelyInPath = function(dirPath) {
       fileList.push(elementPath)
       parseFile(elementPath, false);
     }
-    else if (stat.isDirectory()) {
+    else if (stat.isDirectory() && config.PATH_EXCLUSIONS[elementPath] === undefined) {
       // console.log( "'%s' is a directory.", elementPath );
       parseFilesRecursivelyInPath(elementPath)
     }

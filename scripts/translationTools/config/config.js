@@ -12,9 +12,16 @@ const FILE_KEY_EXCEPTIONS = {
   '__UNIVERSAL': true
 };
 
+const PATH_EXCLUSIONS = {
+  "../../js/views/dev" : true,
+  "../../js/settingsViews/dev" : true,
+
+}
+
 module.exports = {
   FILE_EXCLUSIONS,
   FILE_KEY_EXCEPTIONS,
+  PATH_EXCLUSIONS,
   ENGLISH_BASE_LANGUAGE_PATH: "../../js/localization/en/us/en_us.ts",
   BASE_CODE_PATH:             "../../js",
   LOCALIZATION_BASE_PATH:     "../../js/localization",

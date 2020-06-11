@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_FirmwareTest", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_FirmwareTest", key)(a,b,c,d,e);
+// }
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
@@ -163,7 +163,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
     let setupData = null;
     if (state.devApp.sphereUsedForSetup === DevAppState.sphereId) {
-      setupData = DevAppState.getSetupData()
+      setupData = DevAppState.getSetupData();
     }
 
     clearTimeout(this.bleStateResetTimeout);

@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_SelectionComponents", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_SelectionComponents", key)(a,b,c,d,e);
+// }
 import { TouchableOpacity, ViewStyle, Text, View } from "react-native";
 import { colors, screenWidth, styles } from "../../styles";
 import { Component } from "react";

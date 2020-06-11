@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_StoneSelector", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_StoneSelector", key)(a,b,c,d,e);
+// }
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {

@@ -33,7 +33,7 @@ let parsePath = function(dirPath) {
     if (stat.isFile() && (ext === "tsx")) {
       parseFileInteractive(elementPath)
     }
-    else if (stat.isDirectory()) {
+    else if (stat.isDirectory() && config.PATH_EXCLUSIONS[elementPath] === undefined) {
       // console.log( "'%s' is a directory.", elementPath );
       parsePath(elementPath)
     }

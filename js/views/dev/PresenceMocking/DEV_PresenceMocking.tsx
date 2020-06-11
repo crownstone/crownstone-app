@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_PresenceMocking", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_PresenceMocking", key)(a,b,c,d,e);
+// }
 import React from "react";
 import { Background } from "../../components/Background";
 import { core } from "../../../core";

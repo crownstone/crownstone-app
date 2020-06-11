@@ -1,9 +1,9 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DEV_SelectionFilter", key)(a,b,c,d,e);
-}
+//
+// import { Languages } from "../../../Languages"
+//
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("DEV_SelectionFilter", key)(a,b,c,d,e);
+// }
 import { SlideInView } from "../../components/animated/SlideInView";
 import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
 import React from "react";
