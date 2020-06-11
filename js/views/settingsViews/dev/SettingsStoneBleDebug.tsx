@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsStoneBleDebug", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   Alert,
@@ -417,33 +411,33 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     }
 
     items.push({label: largeLabel, type: 'largeExplanation'});
-    items.push({label: lang("iBeacon_UUID___niBeacon_M",this._ibeaconUuid.toUpperCase(),this._major,this._minor, this._handle), type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
+    items.push({label: "iBeacon UUID" + this._ibeaconUuid.toUpperCase() + "\nMajor:" + this._major+ "\nMinor:" +this._minor+ "\nHandle:" + this._handle, type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
     items.push({label: "Latest iBeacon data:", type: 'largeExplanation', style:{paddingTop:0}});
     items.push({__item:
       <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
-        <Text style={{padding:15, color: new Date().valueOf() - this.state.ibeaconTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{ lang("No_Data",this.state.ibeaconPayload) }</Text>
+        <Text style={{padding:15, color: new Date().valueOf() - this.state.ibeaconTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.ibeaconPayload || "No Data"}</Text>
       </View>
     });
-    items.push({label: lang("Time_received__no_data",this.state.ibeaconTimestamp,new Date(this.state.ibeaconTimestamp)), type: 'explanation', below: true});
+    items.push({label: this.state.ibeaconTimestamp ? "Time received: " + new Date(this.state.ibeaconTimestamp) : "No data yet", type: 'explanation', below: true});
 
     items.push({label: "Green Background means external state.", type: 'largeExplanation'});
 
     items.push({label: "Latest Direct Advertisement data:", type: 'largeExplanation'});
     items.push({__item:
         <View style={{backgroundColor: this.state.directAdvertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
-          <Text style={{padding:15, color: new Date().valueOf() - this.state.directAdvertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{ lang("No_Data",this.state.directAdvertisementPayload) }</Text>
+          <Text style={{padding:15, color: new Date().valueOf() - this.state.directAdvertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.directAdvertisementPayload || "No Data"}</Text>
         </View>
     });
-    items.push({label: lang("Time_received__no_data",this.state.directAdvertisementTimestamp,new Date(this.state.directAdvertisementTimestamp)), type: 'explanation', below: true});
+    items.push({label: this.state.directAdvertisementTimestamp ? "Time received: " + new Date(this.state.directAdvertisementTimestamp) : "No data yet", type: 'explanation', below: true});
 
 
     items.push({label: "Latest Applied Advertisement data:", type: 'largeExplanation'});
     items.push({__item:
         <View style={{backgroundColor: this.state.advertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
-          <Text style={{padding:15, color: new Date().valueOf() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{ lang("No_Data",this.state.advertisementPayload) }</Text>
+          <Text style={{padding:15, color: new Date().valueOf() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.advertisementPayload || "No Data"}</Text>
         </View>
     });
-    items.push({label: lang("Time_received__no_data",this.state.advertisementTimestamp,new Date(this.state.advertisementTimestamp)), type: 'explanation', below: true});
+    items.push({label: this.state.advertisementTimestamp ? "Time received: " + new Date(this.state.advertisementTimestamp) : "No data yet", type: 'explanation', below: true});
 
     items.push({ type: 'spacer' });
 

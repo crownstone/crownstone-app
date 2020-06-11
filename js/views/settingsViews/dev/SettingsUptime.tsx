@@ -1,9 +1,3 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsUptime", key)(a,b,c,d,e);
-}
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { RefreshControl, ScrollView, Text, TextStyle, View } from "react-native";

@@ -118,9 +118,11 @@ RCT_EXTERN_METHOD(getSchedules:(RCTResponseSenderBlock)callback)
 // no op
 RCT_EXTERN_METHOD(sendNoOp:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(sendMeshNoOp:(RCTResponseSenderBlock)callback)
-
-
 RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
+
+// Soft on
+RCT_EXTERN_METHOD(setSoftOnSpeed:(nonnull NSNumber *)speed callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getSoftOnSpeed:(RCTResponseSenderBlock)callback)
 
 // Broadcast
 RCT_EXTERN_METHOD(broadcastBehaviourSettings:(NSString *)referenceId enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)

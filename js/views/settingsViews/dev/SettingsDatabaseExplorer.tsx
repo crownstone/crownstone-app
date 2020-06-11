@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsDatabaseExplorer", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   ScrollView, View, Text, TouchableOpacity, Alert, TextStyle, ViewStyle

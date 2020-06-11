@@ -1,9 +1,3 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationDebugCircle", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -138,8 +132,8 @@ class LocalizationDebugCircleClass extends Component<any, any> {
               justifyContent:'center'
             }}>
               {this.getIcon()}
-              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("P__",p) }</Text>
-              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize - 2}}>{ lang("S_______M__",this.props.probabilityData.sampleSize,this.consecutiveMatches) }</Text>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ "P:" + p }</Text>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize - 2}}>{ "S,M:" + this.props.probabilityData.sampleSize + "," + this.consecutiveMatches }</Text>
             </View>
         </View>
       </View>

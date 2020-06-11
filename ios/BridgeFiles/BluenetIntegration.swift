@@ -1019,6 +1019,14 @@ open class BluenetJS: RCTEventEmitter {
       }
    }
   
+  @objc func setSoftOnSpeed(_ speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("setSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config.setSoftOnSpeed(speed))
+  }
+  
+  @objc func getSoftOnSpeed(_ speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("getSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config.getSoftOnSpeed())
+  }
+  
   
    @objc func switchDimmer(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
      wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control.switchPWM(state.floatValue))

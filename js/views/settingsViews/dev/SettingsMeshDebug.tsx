@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsMeshDebug", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   Alert,
@@ -60,7 +54,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: lang("Any",stone,stone.config.name),
+      label: stone ? stone.config.name : "Any",
       subtext: subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
@@ -91,7 +85,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     });
 
 
-    core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St", channel)});
+    core.eventBus.emit('showProgress', {progress: 0, progressText: "Setting mesh channels:" + channel});
 
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1;
@@ -107,7 +101,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        core.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Setting_Mesh_Channels_n_n",channel,this.refreshCount,this.refreshAmountRequired)});
+        core.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: "Setting mesh channels:" +  channel + " " + this.refreshCount +"/"+ this.refreshAmountRequired});
       }
     };
 
@@ -124,7 +118,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
           .catch(() => {
             Alert.alert(
               "Missed one",
-              lang("_Missed_one__I_could_not__body",stone.config.name),
+               "I could not find:" + stone.config.name,
               [{text:"OK"}]);
             evaluateRefreshProgress()
           })
@@ -170,19 +164,19 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
     items.push({
       type:'button',
-      label: lang("Set_to_Channel___", 37),
+      label: "Set to channel 37",
       callback: () => { this._setChannel(37); }
     });
 
     items.push({
       type:'button',
-      label: lang("Set_to_Channel___", 38),
+      label: "Set to channel 38",
       callback: () => { this._setChannel(38); }
     });
 
     items.push({
       type: 'button',
-      label: lang("Set_to_Channel___", 39),
+      label: "Set to channel 39",
       callback: () => { this._setChannel(39); }
     });
 

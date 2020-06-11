@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsLocalizationDebug", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   Text,
@@ -201,7 +195,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
             <Text style={{
               color: colors.white.hex,
               fontSize:17, fontWeight:'bold'}}
-            >{ lang("_Crownstones_in_vector",this._amountOfStones,this._amountOfStones,1) }</Text>
+            >{ "Crownstones in vector " + this._amountOfStones }</Text>
           </View>
           <ForceDirectedView
             ref={this.refName}

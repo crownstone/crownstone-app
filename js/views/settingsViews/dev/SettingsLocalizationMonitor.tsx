@@ -1,9 +1,3 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsUptime", key)(a,b,c,d,e);
-}
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { RefreshControl, ScrollView, Text, TextStyle, View } from "react-native";
@@ -155,7 +149,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
     }
 
     if (items.length === 0) {
-      items.push(<Text style={contentStyle} key={"noData"}>{ lang("No_data_yet___") }</Text>);
+      items.push(<Text style={contentStyle} key={"noData"}>{ "No data yet" }</Text>);
     }
     return items;
   }

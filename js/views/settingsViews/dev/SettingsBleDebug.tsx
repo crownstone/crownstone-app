@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsBleDebug", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   ScrollView} from 'react-native';
@@ -57,7 +51,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: lang("Any", stone, stone && stone.config.name),
+      label: stone ? "Any" : stone.config && stone.config.name,
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
