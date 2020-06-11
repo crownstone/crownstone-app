@@ -23,10 +23,14 @@ let revertFile = function(filePath, allowReplace, BASE) {
   Object.keys(BASE[filename]).forEach((key) => {
     if (key == '__filename') { return; }
 
-    let value = BASE[filename][key].substr(21);
-    value = value.substr(0, value.length-3)
+    let value = BASE[filename][key].substr(20);
+    value = value.substr(0, value.length-2);
+
     content = content.replace("lang(\"" + key + "\")", value);
   })
+  if (allowReplace) {
+    fs.writeFileSync(filePath, content);
+  }
 }
 
 

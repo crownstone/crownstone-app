@@ -31,8 +31,8 @@ loadBaseLanguageFile();
 
 
 // parse all files in js folder
-let {fileMap, fileList, translationData, success} = reverter.revertTranslation(Object.keys(config.PATH_EXCLUSIONS)[0], BASE)
+Object.keys(config.PATH_EXCLUSIONS).forEach((revertPath) => {
+  let {fileMap, fileList, translationData, success} = reverter.revertTranslation(revertPath, BASE)
+})
 
-if (success) {
-  console.log("\n\nEverything looks fantastic!\n\n")
-}
+console.log("DONE")

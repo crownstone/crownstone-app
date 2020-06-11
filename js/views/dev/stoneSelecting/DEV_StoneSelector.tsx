@@ -40,7 +40,7 @@ let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
 export class DEV_StoneSelector extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Select_Crownstone"), nav: {id: 'stop', text:'Pause'}, leftNav: {id:'sort', text:'Sorted'}})
+    return TopBarUtil.getOptions({title: "Select Crownstone", nav: {id: 'stop', text:'Pause'}, leftNav: {id:'sort', text:'Sorted'}})
   }
 
   unsubscribe = [];
@@ -95,9 +95,9 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     }
     BackButtonHandler.override('DEV_APP_MAIN', () => {
       Alert.alert(
-lang("_You_MUST_kill_the_app__n_header"),
-lang("_You_MUST_kill_the_app__n_body"),
-[{text: lang("_You_MUST_kill_the_app__n_left"), onPress: () => {
+"You MUST kill the app, not just go back.",
+"Everything will be effed-up if you don't kill the app.",
+[{text: "OK. FINE!", onPress: () => {
             AppUtil.quit()
           }
         }],
@@ -354,11 +354,11 @@ lang("_You_MUST_kill_the_app__n_body"),
           paddingLeft:10,
           paddingRight:10
         }}>
-        <Text style={{...smallText}}>{ lang("Filter_") }</Text>
+        <Text style={{...smallText}}>{ "Filter:" }</Text>
         <TextInput
           autoFocus={this.state.showHandleFilter}
           value={this.state.handleFilter}
-          placeholder={ lang("Handle__MAC__address_filt")}
+          placeholder={ "Handle (MAC) address filter"}
           style={{flex:1, fontSize:16}}
           onChangeText={(newText) => {
             let validString = "";
@@ -405,7 +405,7 @@ lang("_You_MUST_kill_the_app__n_body"),
             borderColor: "#fff"
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{ lang("Perform_Batch_") }</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{ "Perform Batch!" }</Text>
         </TouchableOpacity>
       )
     }
@@ -419,9 +419,9 @@ lang("_You_MUST_kill_the_app__n_body"),
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>
-          <FilterButton label={ lang("Filters")} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>
+          <FilterButton label={ "Filters"} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>
           <View style={{flex:1}}/>
-          <FilterButton label={ lang("HF_Scanning")} selected={this.state.HFscanning} callback={() => {
+          <FilterButton label={ "HF Scanning"} selected={this.state.HFscanning} callback={() => {
             if (this.state.HFscanning === false) {
               this.startHFScanning(2000);
             }
@@ -430,7 +430,7 @@ lang("_You_MUST_kill_the_app__n_body"),
             }
           }}/>
           <View style={{flex:1}}/>
-          <FilterButton label={ lang("MAC")} selected={this.state.showHandleFilter} callback={() => {
+          <FilterButton label={ "MAC"} selected={this.state.showHandleFilter} callback={() => {
             this.setState({showHandleFilter: !this.state.showHandleFilter})
           }}/>
           <View style={{flex:1, maxWidth:15}}/>
@@ -442,7 +442,7 @@ lang("_You_MUST_kill_the_app__n_body"),
             visible={!this.state.showHandleFilter}
             height={50}
             style={{flexDirection:'row', width:screenWidth, height: 50,...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
-            <Text style={{...smallText, width: 50}}>{ lang("Rssi_") }</Text>
+            <Text style={{...smallText, width: 50}}>{ "Rssi:" }</Text>
             <Slider
               style={{ width: screenWidth - 120, height: 40 }}
               minimumValue={-100}
@@ -455,7 +455,7 @@ lang("_You_MUST_kill_the_app__n_body"),
                 this.setState({rssiFilter: value});
               }}
             />
-            <Text style={{...smallText, width:70}}>{ lang("_dB",this.state.rssiFilter) }</Text>
+            <Text style={{...smallText, width:70}}>{ this.state.rssiFilter + ' dB' }</Text>
           </SlideInView>
         </View>
 

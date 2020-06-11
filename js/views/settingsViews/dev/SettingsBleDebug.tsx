@@ -22,7 +22,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("BLE_Debug")});
+    return TopBarUtil.getOptions({title:  "BLE Debug"});
   }
 
   unsubscribe : any;
@@ -73,7 +73,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
     const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
-    if (!sphereId) { return [{label: lang("You_have_to_be_in_a_spher"), type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug BLE", type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
@@ -84,7 +84,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
       let stone = stones[stoneId];
       let location = Util.data.getLocationFromStone(sphere, stone);
       let locationColor = colors.gray.hex;
-      let locationTitle =  lang("Floating___");
+      let locationTitle =  "Floating...";
       if (location) {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;

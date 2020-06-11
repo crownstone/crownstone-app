@@ -84,10 +84,10 @@ export class DEV_DFU extends LiveComponent<{
     let items = [];
 
     if (this.state.mode === 'unverified') {
-      items.push({label: lang("Disabled_for_unverified_C"), type: 'info'});
+      items.push({label: "Disabled for unverified Crownstone.", type: 'info'});
     }
     else {
-      items.push({label: lang("AVAILABLE_DFU_ZIPS"), type: 'explanation', color: explanationColor});
+      items.push({label: "AVAILABLE DFU ZIPS", type: 'explanation', color: explanationColor});
       let hasFirmwares = false;
       this.state.availableFirmwares.forEach((fw) => {
         let textColor = colors.blue.hex;
@@ -109,24 +109,24 @@ export class DEV_DFU extends LiveComponent<{
       })
 
       if (!hasFirmwares) {
-        items.push({label: lang("No_firmwares_on_phone_"), type: 'info'});
+        items.push({label: "No firmwares on phone.", type: 'info'});
       }
 
       items.push({type: 'spacer'});
       items.push({
-        label: lang("Check_for_Zips"),
+        label: "Check for Zips",
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
           this.getZips()
         }
       });
-      items.push({label: lang("Zips_can_be_put_on_phone_"), type: 'explanation', color: explanationColor, below:true});
+      items.push({label: "Zips can be put on phone via iTunes.", type: 'explanation', color: explanationColor, below:true});
 
 
       if (this.state.activeFirmware !== null) {
         items.push({
-          label: lang("DFUing_up_Crownstone___Pe",this.state.dfuActive),
+          label: this.state.dfuActive ? "DFUing up Crownstone..." : "Perform DFU",
           type: 'button',
           style: { color: colors.blue.hex },
           progress: this.state.dfuProgress,
@@ -137,14 +137,14 @@ export class DEV_DFU extends LiveComponent<{
       }
       else {
         items.push({
-          label: lang("Perform_DFU"),
+          label: "Perform DFU",
           type: 'button',
           style: {color:colors.lightGray.hex},
           callback: () => {
             Alert.alert(
-lang("_Select_a_firmware__Cant__header"),
-lang("_Select_a_firmware__Cant__body"),
-[{text:lang("_Select_a_firmware__Cant__left")}])
+"Select a firmware",
+"Can't DFU without FW",
+[{text:"OK"}])
           }
         });
       }
@@ -152,7 +152,7 @@ lang("_Select_a_firmware__Cant__body"),
       if (this.state.dfuActive) {
         items.push({
           __item: <View style={{flexDirection:'row', width: screenWidth, height: 50, backgroundColor: colors.white.hex, alignItems:'center', justifyContent:'center'}}>
-            <ActivityIndicator color={colors.csBlueDark.hex} size={"large"} /><Text style={{fontSize:16, color:colors.csBlueDark.hex, fontWeight:'bold'}}>{ lang("Firmware_is_updating___") }</Text>
+            <ActivityIndicator color={colors.csBlueDark.hex} size={"large"} /><Text style={{fontSize:16, color:colors.csBlueDark.hex, fontWeight:'bold'}}>{ "Firmware is updating..." }</Text>
             <View style={{position:'absolute', bottom:0, height:5, width: this.state.dfuProgress * screenWidth, backgroundColor: colors.green.hex}} />
           </View>
 

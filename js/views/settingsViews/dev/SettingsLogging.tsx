@@ -27,7 +27,7 @@ const RNFS = require('react-native-fs');
 
 export class SettingsLogging extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Logging")});
+    return TopBarUtil.getOptions({title:  "Logging"});
   }
 
 
@@ -60,26 +60,26 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: lang("SET_LOGGING_LEVELS"),
+      label: "SET LOGGING LEVELS",
     });
 
     let logLevelsData = {
-      log_info:           { label: lang("General"),         explanation: ''},
-      log_promiseManager: { label: lang("PromiseManager"),  explanation: ''},
-      log_native:         { label: lang("Native"),          explanation: ''},
-      log_nav:            { label: lang("Navigation"),      explanation: ''},
-      log_advertisements: { label: lang("Advertisements"),  explanation: ''},
-      log_behaviour:      { label: lang("Behaviour"),       explanation: ''},
-      log_mesh:           { label: lang("Mesh"),            explanation: ''},
-      log_broadcast:      { label: lang("Broadcast"),       explanation: ''},
-      log_notifications:  { label: lang("Notifications"),   explanation: ''},
-      log_scheduler:      { label: lang("Scheduler"),       explanation: ''},
-      log_ble:            { label: lang("BLE"),             explanation: ''},
-      log_dfu:            { label: lang("DFU"),             explanation: ''},
-      log_bch:            { label: lang("Batch_C_Handler"), explanation: ''},
-      log_events:         { label: lang("Events"),          explanation: ''},
-      log_store:          { label: lang("Store"),           explanation: ''},
-      log_cloud:          { label: lang("Cloud"),           explanation: ''},
+      log_info:           { label: "General",         explanation: ''},
+      log_promiseManager: { label: "PromiseManager",  explanation: ''},
+      log_native:         { label: "Native",          explanation: ''},
+      log_nav:            { label: "Navigation",      explanation: ''},
+      log_advertisements: { label: "Advertisements",  explanation: ''},
+      log_behaviour:      { label: "Behaviour",       explanation: ''},
+      log_mesh:           { label: "Mesh",            explanation: ''},
+      log_broadcast:      { label: "Broadcast",       explanation: ''},
+      log_notifications:  { label: "Notifications",   explanation: ''},
+      log_scheduler:      { label: "Scheduler",       explanation: ''},
+      log_ble:            { label: "BLE",             explanation: ''},
+      log_dfu:            { label: "DFU",             explanation: ''},
+      log_bch:            { label: "Batch C Handler", explanation: ''},
+      log_events:         { label: "Events",          explanation: ''},
+      log_store:          { label: "Store",           explanation: ''},
+      log_cloud:          { label: "Cloud",           explanation: ''},
     };
 
     let logLevels = Object.keys(logLevelsData);
@@ -93,12 +93,12 @@ export class SettingsLogging extends LiveComponent<any, any> {
     levels[LOG_LEVEL.none] = "none";
 
     let values = [
-      {label: lang("disabled"), value: LOG_LEVEL.none},
-      {label: lang("error"),    value: LOG_LEVEL.error},
-      {label: lang("warning"),  value: LOG_LEVEL.warning},
-      {label: lang("info"),     value: LOG_LEVEL.info},
-      {label: lang("debug"),    value: LOG_LEVEL.debug},
-      {label: lang("verbose"),  value: LOG_LEVEL.verbose},
+      {label: "disabled", value: LOG_LEVEL.none},
+      {label: "error",    value: LOG_LEVEL.error},
+      {label: "warning",  value: LOG_LEVEL.warning},
+      {label: "info",     value: LOG_LEVEL.info},
+      {label: "debug",    value: LOG_LEVEL.debug},
+      {label: "verbose",  value: LOG_LEVEL.verbose},
     ];
 
     logLevels.forEach((level) => {
@@ -124,11 +124,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: lang("NATIVE_EXTENDED_LOGGING"),
+      label: "NATIVE EXTENDED LOGGING",
     });
 
     items.push({
-      label: lang("Native_Extended_Logging"),
+      label: "Native Extended Logging",
       value: state.development.nativeExtendedLogging,
       type: 'switch',
       icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
@@ -143,20 +143,20 @@ export class SettingsLogging extends LiveComponent<any, any> {
     });
     items.push({
       type:'explanation',
-      label: lang("Basic_native_logging_is_a"),
+      label: "Basic native logging is already enabled when logging is enabled in the developer menu.",
       below:true,
     });
 
     items.push({
       type:'explanation',
-      label: lang("DISABLE_LOGGING"),
+      label: "DISABLE LOGGING",
       alreadyPadded: true
     });
 
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({
-      label: lang("Disable_Logging"),
+      label: "Disable Logging",
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {

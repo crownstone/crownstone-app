@@ -25,7 +25,7 @@ import { BackgroundNoNotification } from "../../components/BackgroundNoNotificat
 
 export class SettingsMeshDebug extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Mesh_Debug")});
+    return TopBarUtil.getOptions({title:  "Mesh Debug"});
   }
 
   unsubscribe : any;
@@ -77,7 +77,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
-    if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug Mesh", type: 'largeExplanation'}]; }
 
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
@@ -97,11 +97,11 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
       this.refreshCount += 1;
       if (this.refreshCount >= this.refreshAmountRequired) {
         Alert.alert(
-          lang("_All_done___This_went_ver_header"),
-          lang("_All_done___This_went_ver_body"),
-          [{text:lang("_All_done___This_went_ver_left")}]
+          "All done!",
+          "This went very well!",
+          [{text:"Nice."}]
         );
-        core.eventBus.emit('updateProgress', { progress: 1, progressText: lang("Done") });
+        core.eventBus.emit('updateProgress', { progress: 1, progressText: "Done" });
         setTimeout(() => { core.eventBus.emit("hideProgress");}, 500);
 
         MeshUtil.clearMeshNetworkIds(store, sphereId);
@@ -123,9 +123,9 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
           })
           .catch(() => {
             Alert.alert(
-              lang("_Missed_one__I_could_not__header"),
+              "Missed one",
               lang("_Missed_one__I_could_not__body",stone.config.name),
-              [{text:lang("_Missed_one__I_could_not__left")}]);
+              [{text:"OK"}]);
             evaluateRefreshProgress()
           })
       }
@@ -139,21 +139,21 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
-    if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug Mesh", type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
     items.push({
       type:'explanation',
-      label: lang("VISIBLE_STONES"),
+      label: "VISIBLE STONES",
     });
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
       let location = Util.data.getLocationFromStone(sphere, stone);
       let locationColor = colors.gray.hex;
-      let locationTitle =  lang("Floating___");
+      let locationTitle =  "Floating...";
       if (location) {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
@@ -165,7 +165,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: lang("ACTIONS"),
+      label: "ACTIONS",
     });
 
     items.push({

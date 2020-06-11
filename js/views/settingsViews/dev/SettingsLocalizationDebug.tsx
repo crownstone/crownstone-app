@@ -25,7 +25,7 @@ import { BackgroundNoNotification } from "../../components/BackgroundNoNotificat
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Localization_Debug")});
+    return TopBarUtil.getOptions({title:  "Localization Debug"});
   }
 
 
@@ -188,7 +188,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
 
 
     if (sphereId === null) {
-      return <View style={{flex: 1}} ><Text>{ lang("You_have_to_be_in_a_Spher") }</Text></View>;
+      return <View style={{flex: 1}} ><Text>{ "You have to be in a Sphere" }</Text></View>;
     }
     else {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);

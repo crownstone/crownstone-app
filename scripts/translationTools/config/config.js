@@ -14,7 +14,7 @@ const FILE_KEY_EXCEPTIONS = {
 
 const PATH_EXCLUSIONS = {
   "../../js/views/dev" : true,
-  "../../js/settingsViews/dev" : true,
+  "../../js/views/settingsViews/dev" : true,
 
 }
 

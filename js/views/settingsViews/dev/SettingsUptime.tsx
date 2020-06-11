@@ -22,7 +22,7 @@ const RNFS = require('react-native-fs');
 
 export class SettingsUptime extends LiveComponent<any, {content: string[], gaps: number[], updating: boolean}> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Uptime"), clear:true});
+    return TopBarUtil.getOptions({title: "Uptime", clear:true});
   }
 
   timeArray = [];
@@ -144,7 +144,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
     }
 
     if (items.length === 0) {
-      items.push(<Text style={contentStyle} key={"noData"}>{ lang("No_data_yet___") }</Text>);
+      items.push(<Text style={contentStyle} key={"noData"}>{ "No data yet..." }</Text>);
     }
     return items;
   }

@@ -37,7 +37,7 @@ const textStyle : TextStyle = {
 
 export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Database_Explorer"), update: true});
+    return TopBarUtil.getOptions({title: "Database Explorer", update: true});
   }
 
   expanded = { "BASE": {} };

@@ -43,7 +43,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
   processSubscriptions = []
 
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Batch_Operations"), closeModal: true})
+    return TopBarUtil.getOptions({title: "Batch Operations", closeModal: true})
   }
 
   constructor(props) {
@@ -154,7 +154,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
 
   _getDfuItems() {
     let items = [];
-    items.push({label: lang("AVAILABLE_DFU_ZIPS"), type: 'explanation', color: colors.black.hex});
+    items.push({label: "AVAILABLE DFU ZIPS", type: 'explanation', color: colors.black.hex});
     let hasFirmwares = false;
     this.state.availableFirmwares.forEach((fw) => {
       let textColor = colors.blue.hex;
@@ -176,7 +176,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
     })
 
     if (!hasFirmwares) {
-      items.push({label: lang("No_firmwares_on_phone_"), type: 'info'});
+      items.push({label: "No firmwares on phone.", type: 'info'});
     }
 
     return items;
@@ -307,7 +307,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
                   onPress={() => { this.runDFU() }}
                   style={{padding:15, width: 0.4*screenWidth, ...styles.centered, borderRadius: 30, backgroundColor: colors.green.rgba(0.7), borderWidth: 2, borderColor: "#fff"}}
                 >
-                  <Text style={{fontSize:20, fontWeight: 'bold'}}>{ lang("Execute") }</Text>
+                  <Text style={{fontSize:20, fontWeight: 'bold'}}>{ "Execute" }</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -321,16 +321,16 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <View style={{flex:1, maxHeight:15}}/>
-            <Text style={{fontSize:20, fontWeight: 'bold', padding:15}}>{ lang("Crownstones_") }</Text>
+            <Text style={{fontSize:20, fontWeight: 'bold', padding:15}}>{ "Crownstones:" }</Text>
             <View style={{flex:1, maxHeight:30}}/>
             { this.getSelectedStones() }
             <View style={{flex:1, maxHeight:30}}/>
-            <Text style={{fontSize:20, fontWeight: 'bold', padding:15}}>{ lang("Select_operation_") }</Text>
+            <Text style={{fontSize:20, fontWeight: 'bold', padding:15}}>{ "Select operation:" }</Text>
             <View style={{flex:1, maxHeight:30}}/>
             <View style={{flex:1, width:0.8*screenWidth, alignSelf:'center'}}>
-              <BigFilterButton label={ lang("Get_Reset_Counter")}    selected={this.state.operation === 'resetCounter'}    callback={() => { this.setState({operation:'resetCounter'}) }}    style={{width:0.8*screenWidth}}/>
-              <BigFilterButton label={ lang("Get_Firmware_Version")} selected={this.state.operation === 'firmwareVersion'} callback={() => { this.setState({operation:'firmwareVersion'}) }} style={{width:0.8*screenWidth}}/>
-              <BigFilterButton label={ lang("DFU")}                  selected={this.state.operation === 'DFU'}             callback={() => { this.setState({operation:'DFU'}) }}             style={{width:0.8*screenWidth}}/>
+              <BigFilterButton label={ "Get Reset Counter"}    selected={this.state.operation === 'resetCounter'}    callback={() => { this.setState({operation:'resetCounter'}) }}    style={{width:0.8*screenWidth}}/>
+              <BigFilterButton label={ "Get Firmware Version"} selected={this.state.operation === 'firmwareVersion'} callback={() => { this.setState({operation:'firmwareVersion'}) }} style={{width:0.8*screenWidth}}/>
+              <BigFilterButton label={ "DFU"}                  selected={this.state.operation === 'DFU'}             callback={() => { this.setState({operation:'DFU'}) }}             style={{width:0.8*screenWidth}}/>
             </View>
             <View style={{flex:1}}/>
             <View style={{width: screenWidth, flexDirection:'row', marginBottom:15}}>
@@ -339,7 +339,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
                 onPress={() => { NavigationUtil.dismissModal() }}
                 style={{padding:15, width: 0.4*screenWidth, ...styles.centered, borderRadius: 30, backgroundColor: colors.gray.rgba(0.7), borderWidth: 2, borderColor: "#fff"}}
               >
-                <Text style={{fontSize:20, fontWeight: 'bold'}}>{ lang("Close") }</Text>
+                <Text style={{fontSize:20, fontWeight: 'bold'}}>{ "Close" }</Text>
               </TouchableOpacity>
               <View style={{flex:1}}/>
               <TouchableOpacity
@@ -350,7 +350,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
                   this.performBatchOperation() }}
                 style={{padding:15, width: 0.4*screenWidth, ...styles.centered, borderRadius: 30, backgroundColor: colors.green.rgba(0.7), borderWidth: 2, borderColor: "#fff"}}
               >
-                <Text style={{fontSize:20, fontWeight: 'bold'}}>{ lang("Run") }</Text>
+                <Text style={{fontSize:20, fontWeight: 'bold'}}>{ "Run" }</Text>
               </TouchableOpacity>
               <View style={{flex:1}}/>
             </View>
@@ -411,7 +411,7 @@ export class CrownstoneBatchEntry extends Component<{item: any, value: string, p
               <View style={{ flex: 1 }}/>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ width: 60 }}>{this.props.item.data.name}</Text>
-                {!hasType || <Text>{ lang("___") }</Text>}
+                {!hasType || <Text>{ " - " }</Text>}
                 {!hasType || <Text>{this.props.item.data.serviceData.deviceType}</Text>}
                 {sphere !== null ? <Text style={{ fontSize: 13, fontWeight: 'bold' }}>{str}</Text> : undefined}
                 <View style={{ flex: 1 }}/>
@@ -471,9 +471,9 @@ export class CrownstoneBatchEntry extends Component<{item: any, value: string, p
 //             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
 //               <View style={{flexDirection: 'column'}}>
 //                 <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '300'}}>{this.props.name}</Text>
-//                 { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Waiting_to_update___") }</Text>: undefined }
-//                 { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_finished") }</Text> : undefined }
-//                 { this.state.updateFailed ?     <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_failed") }</Text> : undefined }
+//                 { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ "Waiting to update..." }</Text>: undefined }
+//                 { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ "Update finished" }</Text> : undefined }
+//                 { this.state.updateFailed ?     <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ "Update failed" }</Text> : undefined }
 //               </View>
 //             </View>
 //             { this.props.isUpdating ? <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} /> : null}
