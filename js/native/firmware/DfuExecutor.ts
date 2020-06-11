@@ -616,7 +616,7 @@ export class DfuExecutor {
     }
     else {
       // we can do the DFU now.
-      this._performFirmwareUpdate(firmwareCandidate);
+      return this._performFirmwareUpdate(firmwareCandidate);
     }
   }
 
@@ -638,6 +638,8 @@ export class DfuExecutor {
         return this._handleFirmware(firmwareCandidate);
       })
   }
+
+
   _performFirmwareUpdate(firmwareCandidate) {
     LOGi.dfu("Executor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
     let downloadedFirmwarePath = null;;

@@ -129,8 +129,8 @@ export class DfuBatch extends LiveComponent<any, any> {
     if (Platform.OS === 'android') {
       maxRetries = 3;
     }
+    let amountOfCrownstones = this.props.stoneIdsToUpdate.length
     if (this.state.cancelled === false) {
-      let amountOfCrownstones = this.props.stoneIdsToUpdate.length
       for (let i = 0; i < this.props.stoneIdsToUpdate.length; i++) {
         let index = (i + this.state.updatingCrownstoneIndex + 1) % amountOfCrownstones;
         if (this.finishedUpdate[index] && this.finishedUpdate[index].state === false &&
