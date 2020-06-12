@@ -67,8 +67,6 @@ export class SwitchBar extends Component<any, any> {
   }
 
   _getButton(navBarHeight, fontColor) {
-
-
     let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle];
 
 
@@ -96,7 +94,12 @@ export class SwitchBar extends Component<any, any> {
         <Switch
           disabled={this.props.disabled || false}
           value={this.props.value}
-          onValueChange={(newValue) => {this.props.setActiveElement(); this.props.callback(newValue)}}
+          onValueChange={(newValue) => {
+            if (this.props.setActiveElement) {
+              this.props.setActiveElement();
+            }
+            this.props.callback(newValue);
+          }}
         />
       </View>
     )

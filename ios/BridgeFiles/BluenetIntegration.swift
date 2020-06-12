@@ -657,6 +657,12 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("setTapToToggle", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggle(enabled: stateBool))
   }
   
+  
+  @objc func getTapToToggleThresholdOffset(callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("getTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config.getTapToToggleThresholdOffset())
+  }
+  
+  
   @objc func setTapToToggleThresholdOffset(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("setTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggleThresholdOffset(threshold: state.int8Value))
   }

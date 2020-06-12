@@ -1,14 +1,19 @@
 import { combineReducers } from "redux";
-import { getTime, update } from "../reducerUtil";
+import { getTime, refreshDefaults, update } from "../reducerUtil";
 
-let defaultAbilityFormat = {
+let dimmingAbilityFormat = {
+  enabled: false,
+  enabledTarget: false,
+  softOnSpeed: 10,
+  syncedToCrownstone: true,
+  updatedAt: 0
+};
+let switchcraftAbilityFormat = {
   enabled: false,
   enabledTarget: false,
   syncedToCrownstone: true,
   updatedAt: 0
 };
-
-
 let tapToToggleAbilityFormat = {
   enabled: false,
   enabledTarget: false,
@@ -19,13 +24,14 @@ let tapToToggleAbilityFormat = {
 };
 
 
-let dimmingReducer = (state = defaultAbilityFormat, action) => {
+let dimmingReducer = (state = dimmingAbilityFormat, action) => {
   switch (action.type) {
     case 'UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD':
       if (action.data) {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.softOnSpeed        = update(action.data.softOnSpeed,   newState.softOnSpeed);
         newState.syncedToCrownstone = true;
         newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
@@ -36,6 +42,7 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.softOnSpeed        = update(action.data.softOnSpeed,   newState.softOnSpeed);
         newState.syncedToCrownstone = false;
         newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
@@ -49,13 +56,15 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
       newState = {...state};
       newState.syncedToCrownstone = false;
       return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, dimmingAbilityFormat);
     default:
       return state;
   }
 };
 
 
-let switchcraftReducer = (state = defaultAbilityFormat, action) => {
+let switchcraftReducer = (state = switchcraftAbilityFormat, action) => {
   switch (action.type) {
     case 'UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD':
       if (action.data) {
@@ -85,6 +94,8 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
       newState = {...state};
       newState.syncedToCrownstone = false;
       return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, switchcraftAbilityFormat);
     default:
       return state;
   }
@@ -125,6 +136,8 @@ let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
       newState = {...state};
       newState.syncedToCrownstone = false;
       return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, tapToToggleAbilityFormat);
     default:
       return state;
   }

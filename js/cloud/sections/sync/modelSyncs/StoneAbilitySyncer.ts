@@ -16,7 +16,7 @@ const ABILITY_TYPE = {
 };
 
 const ABILITY_PROPERTY_TYPE = {
-  dimming:      {},
+  dimming:      { softOnSpeed: 'softOnSpeed'},
   switchcraft:  {},
   tapToToggle:  { rssiOffset: 'rssiOffset' },
 };
@@ -36,8 +36,12 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
     let updateAbilityInCloud = (ability, type) => {
       abilitiesToSetInCloud[type] = {enabled: ability.enabledTarget, syncedToCrownstone: ability.syncedToCrownstone, updatedAt: ability.updatedAt}
       switch (type) {
+        case ABILITY_TYPE.dimming:
+          abilitiesToSetInCloud[type].properties = [{type: ABILITY_PROPERTY_TYPE.dimming.softOnSpeed, value: ability.softOnSpeed}]
+          break;
         case ABILITY_TYPE.tapToToggle:
           abilitiesToSetInCloud[type].properties = [{type: ABILITY_PROPERTY_TYPE.tapToToggle.rssiOffset, value: ability.rssiOffsetTarget}]
+          break;
         default:
           break;
       }
@@ -47,12 +51,24 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       switch(ability_in_cloud.type) {
         case ABILITY_TYPE.dimming:
           let actionType = "UPDATE_ABILITY_DIMMER";
+
+          let softOnSpeed = localAbility && localAbility.softOnSpeed || 0;
+          if (ability_in_cloud.properties && ability_in_cloud.properties.length > 0) {
+            for (let i = 0; i < ability_in_cloud.properties.length; i++) {
+              if (ability_in_cloud.properties[i].type === ABILITY_PROPERTY_TYPE.dimming.softOnSpeed) {
+                softOnSpeed = ability_in_cloud.properties[i].value;
+              }
+            }
+          }
+          let softOnSpeedData = {softOnSpeed: softOnSpeed}
+
           if (ability_in_cloud.syncedToCrownstone) {
             actionType = "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD"
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabledTarget: ability_in_cloud.enabled,
-            updatedAt: ability_in_cloud.updatedAt
+            updatedAt: ability_in_cloud.updatedAt,
+            ...softOnSpeedData
           }});
           break;
         case ABILITY_TYPE.switchcraft:
@@ -96,7 +112,6 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       let localAbility = localAbilities[ability_in_cloud.type];
       // this ability is present both locally and in the cloud!
       if (localAbility) {
-
         if (shouldUpdateInCloud(localAbility, ability_in_cloud) && Permissions.inSphere(this.localSphereId).canUploadAbilities) {
           // update in cloud
           updateAbilityInCloud(localAbility, ability_in_cloud.type);

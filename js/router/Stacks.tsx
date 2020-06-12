@@ -49,9 +49,9 @@ export const Stacks = {
     //   stack: {
     //     children: [
     //       { component: {
-    //           name: "SettingsStoneBleDebug", passProps:
+    //           name: "Ability_DimmerSettings", passProps:
     //             {
-    //               sphereId: "99a49137-f02a-f488-6389-ba7622f5183", stoneId: "6fde3cd2-c92a-fb67-18e3-f40cd6b7644a"
+    //               stoneId: "eccd7d40-ba7a-e3aa-6c36-e221baee8519", sphereId: "f13f7c32-7a81-6822-f711-d872afe6624b"
     //             },
     //         }}
     //     ],

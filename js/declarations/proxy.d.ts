@@ -69,6 +69,9 @@ interface BluenetPromiseWrapperProtocol {
 
   setTapToToggle(enabled: boolean)              : Promise<void>,
   setTapToToggleThresholdOffset(rssiThresholdOffset: number): Promise<void>,
+  getTapToToggleThresholdOffset()               : Promise< number >,
+  setSoftOnSpeed(speed: number)                 : Promise< void >,
+  getSoftOnSpeed()                              : Promise< number >,
 
   syncBehaviours(behaviours: behaviourTransfer[]): Promise<behaviourTransfer[]>,
   getBehaviourMasterHash(behaviours: behaviourTransfer[]): Promise<number>,

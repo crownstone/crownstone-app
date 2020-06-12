@@ -245,5 +245,7 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "INVALID_STARTING_POSITION"
     case .CANNOT_DO_THIS_IN_DFU_MODE:
       return "CANNOT_DO_THIS_IN_DFU_MODE"
+    case .INVALID_SOFT_ON_SPEED_VALUE:
+      return "INVALID_SOFT_ON_SPEED_VALUE"
     }
 }

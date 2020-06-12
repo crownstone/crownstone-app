@@ -24,6 +24,9 @@ import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
+import { SliderBar } from "../../../components/editComponents/SliderBar";
+import { DataUtil } from "../../../../util/DataUtil";
+import { SwitchBar } from "../../../components/editComponents/SwitchBar";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -31,10 +34,95 @@ export class Ability_DimmerSettings extends Component<any, any> {
     return TopBarUtil.getOptions({title: lang("Dimmer_Settings")});
   }
 
+  storeEventUnsubscriber = null;
+
+  constructor(props) {
+    super(props);
+    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    this.state = {
+      softOnSpeed: stone.abilities.dimming.softOnSpeed
+    }
+  }
+
+
+  componentDidMount(): void {
+    this.storeEventUnsubscriber = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId]) {
+        return this.forceUpdate();
+      }
+    });
+
+  }
+
+  componentWillUnmount(): void {
+    this.storeEventUnsubscriber();
+  }
+
+
   disable() {
     core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false }});
     NavigationUtil.back();
   }
+
+  _getExplanation(speed) {
+    if (speed > 18) {
+      return "Really fast!"
+    }
+    else if (speed > 15) {
+      return "Fast!"
+    }
+    else if (speed > 11) {
+      return "Quickly!"
+    }
+    else if (speed > 7) {
+      return "Normally."
+    }
+    else if (speed > 3) {
+      return "Gently.."
+    }
+    else if (speed > 0) {
+      return "Slowly..."
+    }
+  }
+
+  _getSoftOn() {
+    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    if (stone) {
+      return (
+        <React.Fragment>
+        <SwitchBar
+          largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
+          label={"Use smoothing"}
+          value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
+          callback={(value) => {
+            let numericValue = 8;
+            if (!value) {
+              numericValue = 100;
+            }
+            core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: numericValue }})
+            this.setState({softOnSpeed: numericValue})
+          }}
+        />
+          { stone.abilities.dimming.softOnSpeed !== 0 && stone.abilities.dimming.softOnSpeed !== 100 && (
+            <SliderBar
+              label={ "Should I fade slowly or quickly?"}
+              callback={(value) => {
+                core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: value }});
+                this.setState({softOnSpeed: value})
+              }}
+              min={1}
+              max={20}
+              value={this.state.softOnSpeed}
+              explanation={this._getExplanation(this.state.softOnSpeed)}
+            />
+          )}
+        </React.Fragment>
+      )
+    }
+    return <View/>
+  }
+
 
   render() {
     return (
@@ -56,6 +144,8 @@ export class Ability_DimmerSettings extends Component<any, any> {
                 label={ lang("Dimming_compatibility")}
                 callback={() => { this.props.information(); }}
               />
+              <Separator  />
+              { this._getSoftOn() }
               <Separator  />
               <ButtonBar
                 setActiveElement={()=>{ }}

@@ -233,6 +233,9 @@ class BatchCommandHandlerClass {
               case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;
+              case 'setSoftOnSpeed':
+                actionPromise = BluenetPromiseWrapper.setSoftOnSpeed(command.softOnSpeed);
+                break;
               case 'getBehaviourDebugInformation':
                 actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation();
                 break;

@@ -158,6 +158,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   setTapToToggle:                 (enabled: boolean)             => { return BluenetPromise('setTapToToggle' ,enabled); },
   setTapToToggleThresholdOffset:  (rssiThresholdOffset: number)  => { return BluenetPromise('setTapToToggleThresholdOffset', rssiThresholdOffset); },
+  getTapToToggleThresholdOffset:  ()                             => { return BluenetPromise('getTapToToggleThresholdOffset'); },
+  setSoftOnSpeed:                 (speed: number)                => { return BluenetPromise('setSoftOnSpeed', speed); },
+  getSoftOnSpeed:                 ()                             => { return BluenetPromise('getSoftOnSpeed'); },
 
   syncBehaviours:                 (behaviours: behaviourTransfer[]) => { return BluenetPromise('syncBehaviours', behaviours); },
   getBehaviourMasterHash:         (behaviours: behaviourTransfer[]) => { return BluenetPromise('getBehaviourMasterHash', behaviours); },

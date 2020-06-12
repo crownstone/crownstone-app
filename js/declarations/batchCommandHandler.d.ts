@@ -69,6 +69,7 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
   { commandName : 'allowDimming',   value: boolean } |
+  { commandName : 'setSoftOnSpeed', softOnSpeed: number } |
   { commandName : 'setTapToToggle', value: boolean } |
   { commandName : 'setTapToToggleThresholdOffset', rssiOffset: number } |
   { commandName : 'setMeshChannel', channel: number } |
