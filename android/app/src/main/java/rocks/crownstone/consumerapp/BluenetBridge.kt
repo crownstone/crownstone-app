@@ -2839,9 +2839,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun getPowerSamples(triggeredSwitchcraft: Boolean, callback: Callback) {
-		Log.i(TAG, "getPowerSamples")
-		bluenet.debugData.getPowerSamples(PowerSamplesType.SWITCHCRAFT)
+	fun getPowerSamples(typeStr: String, callback: Callback) {
+		Log.i(TAG, "getPowerSamples $typeStr")
+		val type: PowerSamplesType = when (typeStr) {
+			"triggeredSwitchcraft" -> PowerSamplesType.SWITCHCRAFT
+			"missedSwitchcraft" -> PowerSamplesType.SWITCHCRAFT_NON_TRIGGERED
+			"filteredBuffer" -> PowerSamplesType.NOW_FILTERED
+			"unfilteredBuffer" -> PowerSamplesType.NOW_UNFILTERED
+			else -> PowerSamplesType.UNKNOWN
+		}
+
+		bluenet.debugData.getPowerSamples(type)
 				.success {
 					val retVal = Arguments.createArray()
 					for (item in it) {
