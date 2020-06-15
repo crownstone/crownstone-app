@@ -243,25 +243,38 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             LOGe.info("STONE DEBUG INFORMATION: SwitchHistory", data);
             let resultString = "";
             let getSource = function(switchHistory) {
+              let str = '';
               switch(switchHistory.sourceType) {
                 case 0:
                   switch(switchHistory.sourceId) {
                     case 0:
-                      return "None";
+                      str = "None"; break;
                     case 2:
-                      return "Internal";
+                      str =  "Internal"; break;
                     case 3:
-                      return "Uart";
+                      str =  "Uart"; break;
                     case 4:
-                      return "Connection";
+                      str =  "Connection"; break;
                     case 5:
-                      return "Switchcraft";
+                      str =  "Switchcraft"; break;
+                    case 5:
+                      str =  "TapToToggle"; break;
+                    default:
+                      str = 'UNKNOWN'
                   }
+                  break;
                 case 1:
-                  return "Behaviour ID: " + switchHistory.sourceId;
+                  str =  "Behaviour ID: " + switchHistory.sourceId; break;
                 case 3:
-                  return "Broadcast DeviceId: " + switchHistory.sourceId;;
+                  str =  "Broadcast DeviceId: " + switchHistory.sourceId; break;
               }
+              if (switchHistory.viaMesh) {
+                str += " via mesh"
+              }
+              else {
+                str += " directly."
+              }
+              return str;
             }
             data.forEach((switchHistory) => {
               resultString += xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
