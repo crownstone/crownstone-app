@@ -159,7 +159,7 @@ function TimePart(props : {
                       minimumValue={-120}
                       maximumValue={120}
                       step={15}
-                      value={offsetMinutes || 0}
+                      value={Number(offsetMinutes) || 0}
                       minimumTrackTintColor={colors.gray.hex}
                       maximumTrackTintColor={colors.gray.hex}
                       onValueChange={(value) => {

@@ -404,7 +404,7 @@ export function StoneRow({sphereId, stoneId, locationName, selection, initialSel
 
 
 export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCallback, margins}) {
-  let [switchState, setSwitchState] = useState(state);
+  let [switchState, setSwitchState] = useState(Number(state));
   let stone = DataUtil.getStone(sphereId, stoneId);
 
   let height  = 80;

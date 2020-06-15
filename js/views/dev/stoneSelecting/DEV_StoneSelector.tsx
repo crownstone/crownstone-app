@@ -448,7 +448,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
               minimumValue={-100}
               maximumValue={-30}
               step={1}
-              value={this.state.rssiFilter}
+              value={Number(this.state.rssiFilter)}
               minimumTrackTintColor={colors.gray.hex}
               maximumTrackTintColor={colors.gray.hex}
               onValueChange={(value) => {
