@@ -308,11 +308,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
-        Alert.alert("Not implemented yet.","Ask Bart. Nicely.", [{text:"OK"}])
-        return;
-        // this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
-        // core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
-        // this.getBuffers(stone, "missedSwitchcraft")
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
+        this.getBuffers(stone, "missedSwitchcraft")
       }
     });
     items.push({
