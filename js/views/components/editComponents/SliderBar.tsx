@@ -19,7 +19,7 @@ const EXPLANATION_HEIGHT = 40;
 const SLIDER_HEIGHT = 60;
 
 export function SliderBar(props) {
-  let [sliderValue, setSliderValue] = useState( props.value );
+  let [sliderValue, setSliderValue] = useState( Number(props.value) );
   let [sliderHidden, setSliderHidden] = useState(props.sliderHidden === true)
 
   let iconWidth   = 0;
