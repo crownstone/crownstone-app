@@ -119,6 +119,7 @@ import { Platform } from "react-native";
   export let LOG_TO_FILE          = false;   // log everything that is logged to a file.
   export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
   export let LOG_MAX_STORAGE_TIME_DAYS = 7 // max amount of days to store logs.
+  export let LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS = 2 // max amount of days to store logs.
 
 /******************** /LOGGING ********************/
 

@@ -1,6 +1,6 @@
 import { Scheduler } from "../logic/Scheduler";
 import { FileUtil } from "../util/FileUtil";
-import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
+import { LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 import { getLoggingFilename } from "../logging/LogUtil";
 import { core } from "../core";
 
@@ -40,7 +40,7 @@ function cleanLogs() {
   _cleanLogs(logPath);
 }
 
-function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
+function _cleanLogs(logPath, amountOfDaysStored = LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS) {
   let allowedLogFiles = {};
 
   for (let i = 0; i < amountOfDaysStored; i++) {

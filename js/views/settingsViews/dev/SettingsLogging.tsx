@@ -261,7 +261,6 @@ function getLogs() {
 
   return RNFS.readFile(storagePath + "/" + filename)
     .then((data) => {
-      console.time("startParse")
       let lines = data.split("\n");
 
       let string = '';
@@ -275,7 +274,6 @@ function getLogs() {
 
         string += lines[i] + "\n";
       }
-      console.timeEnd("startParse")
 
       return string;
     })

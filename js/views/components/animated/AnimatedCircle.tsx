@@ -24,18 +24,18 @@ export class AnimatedCircle extends Component<any, any> {
     this.value = 0;
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  shouldComponentUpdate(nextProps) {
     let change = false;
     if (this.value === 0) {
-      if (this.props.color !== this.color1) {
+      if (nextProps.color !== this.color1) {
         change = true;
-        this.color2 = this.props.color;
+        this.color2 = nextProps.color;
       }
     }
     else {
-      if (this.props.color !== this.color2) {
+      if (nextProps.color !== this.color2) {
         change = true;
-        this.color1 = this.props.color;
+        this.color1 = nextProps.color;
       }
     }
 
@@ -44,6 +44,7 @@ export class AnimatedCircle extends Component<any, any> {
       Animated.timing(this.state.colorPhase, {toValue: newValue, duration: this.props.duration || 300}).start();
       this.value = newValue;
     }
+    return true;
   }
 
   render() {

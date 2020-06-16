@@ -3,7 +3,7 @@ import * as React from 'react';
 import {
   Alert,
   ScrollView,
-  Text,
+  Text, TouchableOpacity,
   View
 } from "react-native";
 
@@ -56,7 +56,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       ibeaconTimestamp: null,
       debugInformationText: null,
       debugData1: null,
+      debugData1UI: 0,
       debugData2: null,
+      debugData2UI: 0,
       debugTimestamp: new Date().valueOf(),
       debugDataHash: null,
       annotation: ''
@@ -358,6 +360,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             minHeight: 300
           }}>
             <Text>{xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp))}</Text>
+            <TouchableOpacity onPress={() => { this.setState({debugData1UI: (this.state.debugData1UI+1)%2 })}}>
             <Graph
               width={screenWidth}
               height={availableScreenHeight / 2}
@@ -367,10 +370,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
               autofit={true}
               options={{ shaded: false, interpolation: false }}
               fade={false}
-              showPoints={false}
+              showPoints={this.state.debugData1UI > 0}
               lineColor={'red'}
               hideUI={true}
             />
+            </TouchableOpacity>
           </View>
       });
     }
@@ -382,19 +386,21 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             minHeight: 300
           }}>
             <Text>{ "Current:" }</Text>
-            <Graph
-              width={screenWidth}
-              height={availableScreenHeight/2}
-              data={this.state.debugData2}
-              dataHash={this.state.debugDataHash}
-              live={false}
-              autofit={true}
-              options={{shaded: false, interpolation: false}}
-              fade={false}
-              showPoints={false}
-              lineColor={'red'}
-              hideUI={true}
-            />
+            <TouchableOpacity onPress={() => { this.setState({debugData2UI: (this.state.debugData2UI+1)%2 })}}>
+              <Graph
+                width={screenWidth}
+                height={availableScreenHeight/2}
+                data={this.state.debugData2}
+                dataHash={this.state.debugDataHash}
+                live={false}
+                autofit={true}
+                options={{shaded: false, interpolation: false}}
+                fade={false}
+                showPoints={this.state.debugData2UI > 0}
+                lineColor={'red'}
+                hideUI={true}
+              />
+            </TouchableOpacity>
           </View>
       });
     }
@@ -507,4 +513,5 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     );
   }
 }
+
 
