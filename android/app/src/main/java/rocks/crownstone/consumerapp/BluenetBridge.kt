@@ -2556,7 +2556,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setTapToToggle(value: Boolean, callback: Callback) {
-		Log.i(TAG, "setTapToToggle")
+		Log.i(TAG, "setTapToToggle $value")
 		bluenet.config.setTapToToggleEnabled(value)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -2565,11 +2565,39 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setTapToToggleThresholdOffset(value: Int, callback: Callback) {
-		Log.i(TAG, "setTapToToggleThresholdOffset")
+		Log.i(TAG, "setTapToToggleThresholdOffset $value")
 		bluenet.config.setTapToToggleRssiThresholdOffset(value.toByte())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+
+	@ReactMethod
+	@Synchronized
+	fun getTapToToggleThresholdOffset(callback: Callback) {
+		Log.i(TAG, "getTapToToggleThresholdOffset")
+		bluenet.config.getTapToToggleRssiThresholdOffset()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun setSoftOnSpeed(value: Int, callback: Callback) {
+		Log.i(TAG, "setSoftOnSpeed $value")
+		bluenet.config.setSoftOnSpeed(value.toUint8())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getSoftOnSpeed(callback: Callback) {
+		Log.i(TAG, "getSoftOnSpeed")
+		bluenet.config.getSoftOnSpeed()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
 //endregion
 
 //##################################################################################################
