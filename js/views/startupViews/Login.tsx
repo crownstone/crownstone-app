@@ -322,7 +322,7 @@ lang("arguments___arguments___O_body",content),
     core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Getting_user_data_")});
 
     // give the access token and the userId to the cloud api
-    CLOUD.setAccess(accessToken);
+    CLOUD.setAccessToken(accessToken);
     CLOUD.setUserId(userId);
 
     // load the user into the database

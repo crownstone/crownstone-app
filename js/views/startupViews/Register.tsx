@@ -43,7 +43,7 @@ export class Register extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    CLOUD.setAccess(undefined);
+    CLOUD.setAccessToken(undefined);
 
     this.leavingView = false;
     this.user = {

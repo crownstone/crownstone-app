@@ -57,7 +57,7 @@ function combineSections() {
  */
 export const CLOUD : any = combineSections();
 
-CLOUD.setAccess =          function(accessToken)      : any { TokenStore.accessToken  = accessToken;      return CLOUD; };
+CLOUD.setAccessToken =     function(accessToken)      : any { TokenStore.accessToken  = accessToken;      return CLOUD; };
 CLOUD.setUserId =          function(userId)           : any { TokenStore.userId       = userId;           return CLOUD; }; // cloudId === localId
 CLOUD.forUser =            function(userId)           : any { TokenStore.userId       = userId;           return CLOUD; }; // cloudId === localId
 CLOUD.forDevice =          function(deviceId)         : any { TokenStore.deviceId     = deviceId;         return CLOUD; }; // cloudId === localId

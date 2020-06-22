@@ -13,7 +13,8 @@ class UptimeMonitorClass {
 
   init() {
     if (this._initialized === false) {
-
+      Scheduler.setRepeatingTrigger(UPTIME_TRIGGER_ID, {repeatEveryNSeconds:60}, true);
+      Scheduler.loadCallback(UPTIME_TRIGGER_ID, () => {this.storeUptime()}, true);
     }
     this._initialized = true;
   }

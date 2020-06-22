@@ -52,7 +52,7 @@ export const sync = {
     // set the authentication tokens
     let userId = state.user.userId;
     let accessToken = state.user.accessToken;
-    CLOUD.setAccess(accessToken);
+    CLOUD.setAccessToken(accessToken);
     CLOUD.setUserId(userId);
 
     core.eventBus.emit("CloudSyncStarting");
@@ -223,7 +223,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
         background: true,
       })
         .then((response) => {
-          CLOUD.setAccess(response.id);
+          CLOUD.setAccessToken(response.id);
           CLOUD.setUserId(response.userId);
           core.store.dispatch({type:'USER_APPEND', data: {accessToken: response.id}});
           return retryThisAfterRecovery();

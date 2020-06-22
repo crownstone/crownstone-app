@@ -51,7 +51,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: stone ? "Any" : stone.config && stone.config.name,
+      label: stone ? stone.config && stone.config.name : "Any",
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',

@@ -386,7 +386,7 @@ class BackgroundProcessHandlerClass {
     // if we have an accessToken, we proceed with logging in automatically
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
-      CLOUD.setAccess(state.user.accessToken);
+      CLOUD.setAccessToken(state.user.accessToken);
       CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
@@ -397,7 +397,7 @@ class BackgroundProcessHandlerClass {
               background: true
             })
             .then((response) => {
-              CLOUD.setAccess(response.id);
+              CLOUD.setAccessToken(response.id);
               CLOUD.setUserId(response.userId);
               core.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
             })
