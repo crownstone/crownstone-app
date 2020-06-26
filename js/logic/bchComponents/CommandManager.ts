@@ -12,7 +12,7 @@ export class CommandManager {
   commands  : batchCommands = {};
 
   load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) : Promise<bchReturnType> {
-    if (stone.config.locked === true && command.commandName === "multiSwitch") {
+    if (stone.config.locked === true && (command.commandName === "multiSwitch" || command.commandName === "turnOn")) {
       return new Promise((resolve, reject) => { reject({code: BCH_ERROR_CODES.STONE_IS_LOCKED, message:"Stone is Locked"}); });
     }
     else {
@@ -58,51 +58,57 @@ export class CommandManager {
     for (let i = 0; i < uuids.length; i++) {
       let todo = this.commands[uuids[i]];
 
-      if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
-        let duplicate = false;
-        switch(todo.command.commandName) {
-          case 'multiSwitch':
-          case 'getBootloaderVersion':
-          case 'getFirmwareVersion':
-          case 'getHardwareVersion':
-          case 'commandFactoryReset':
-          case 'sendNoOp':
-          case 'sendMeshNoOp':
-          case 'getTime':
-          case 'meshSetTime':
-          case 'setTime':
-          case 'setSunTimes':
-          case 'clearErrors':
-          case 'lockSwitch':
-          case 'setSwitchCraft':
-          case 'allowDimming':
-          case 'setTapToToggle':
-          case 'setTapToToggleThresholdOffset':
-          case 'setMeshChannel':
-          case 'setupPulse':
-            duplicate = true;
-            break
-          case 'addBehaviour':
-          case 'updateBehaviour':
-          case 'removeBehaviour':
-          case 'syncBehaviour':
-          case 'getBehaviour':
-            duplicate = xUtil.deepCompare(todo.command, command);
-            break;
-          case 'registerTrackedDevice':
-            if (command.commandName === "registerTrackedDevice") {
-              duplicate = todo.command.trackingNumber === command.trackingNumber;
-            }
-            break;
-          default:
-            duplicate = true;
-        }
+      if (todo.sphereId === sphereId && todo.stoneId === stoneId) {
+        let conflictingCommand = todo.command.commandName === command.commandName ||
+                                 todo.command.commandName === 'multiSwitch' && command.commandName === 'turnOn' ||
+                                 todo.command.commandName === 'turnOn'      && command.commandName === 'multiSwitch';
+        if (conflictingCommand) {
+          let duplicate = false;
+          switch(todo.command.commandName) {
+            case 'multiSwitch':
+            case 'turnOn':
+            case 'getBootloaderVersion':
+            case 'getFirmwareVersion':
+            case 'getHardwareVersion':
+            case 'commandFactoryReset':
+            case 'sendNoOp':
+            case 'sendMeshNoOp':
+            case 'getTime':
+            case 'meshSetTime':
+            case 'setTime':
+            case 'setSunTimes':
+            case 'clearErrors':
+            case 'lockSwitch':
+            case 'setSwitchCraft':
+            case 'allowDimming':
+            case 'setTapToToggle':
+            case 'setTapToToggleThresholdOffset':
+            case 'setMeshChannel':
+            case 'setupPulse':
+              duplicate = true;
+              break
+            case 'addBehaviour':
+            case 'updateBehaviour':
+            case 'removeBehaviour':
+            case 'syncBehaviour':
+            case 'getBehaviour':
+              duplicate = xUtil.deepCompare(todo.command, command);
+              break;
+            case 'registerTrackedDevice':
+              if (command.commandName === "registerTrackedDevice") {
+                duplicate = todo.command.trackingNumber === command.trackingNumber;
+              }
+              break;
+            default:
+              duplicate = true;
+          }
 
-        if (duplicate) {
-          if (todo.promise.pending === false) {
-            clean(todo);
-          } else {
-            LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+          if (duplicate) {
+            if (todo.promise.pending === false) {
+              clean(todo);
+            } else {
+              LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+            }
           }
         }
       }
@@ -427,10 +433,10 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
       options: batchCommand.options,
       handle: stoneConfig.handle,
       state: command.state,
+      // state: command.commandName === 'turnOn' ? 255 : Math.max(0,Math.min(100,100*command.state)),
       cleanup: batchCommand.cleanup,
       promise: batchCommand.promise
     };
   }
-
   return payload;
 };
