@@ -2,6 +2,8 @@ import * as React from 'react'; import { Component, PureComponent } from "react"
 import { AppState } from 'react-native';
 import { Navigation } from "react-native-navigation";
 import { NavigationUtil } from "../util/NavigationUtil";
+import { core } from "../core";
+import { TopBarUtil } from "../util/TopBarUtil";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {
@@ -14,10 +16,17 @@ export class LiveComponent<a, b> extends Component<a, b> {
   constructor(props) {
     super(props);
 
+    let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
+      console.log("FORCE_RERENDER", props.componentId)
+      Navigation.mergeOptions(props.componentId,{passProps:{}})
+      this.forceUpdate();
+    });
+
     let unmounter = this.componentWillUnmount;
     // let renderer = this.render;
     this.componentWillUnmount = () => {
       this.___cleanup();
+      removeRefreshListener()
       if (unmounter) {
         unmounter.call(this)
       }

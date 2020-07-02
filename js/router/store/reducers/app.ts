@@ -10,6 +10,8 @@ let defaultState = {
   hasSeenDeviceSettings: false,
   hasZoomedOutForSphereOverview: false,
 
+  // langauge: null,
+
   migratedDataToVersion: null,
   updatedAt: 1
 };
@@ -56,6 +58,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.indoorLocalizationEnabled    = update(action.data.indoorLocalizationEnabled,    newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled           = update(action.data.tapToToggleEnabled,           newState.tapToToggleEnabled);
         newState.migratedDataToVersion        = update(action.data.migratedDataToVersion,        newState.migratedDataToVersion);
+        // newState.language                     = update(action.data.language,                     newState.language);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);

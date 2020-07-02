@@ -1527,7 +1527,11 @@ export default {
   },
   SettingsApp:{
     __filename: "../js/views/settingsViews/SettingsApp.tsx",
+    LANGUAGE:                            function() { return "LANGUAGE" },
+    Language:                            function() { return "Language" },
     FEATURES:                            function() { return "FEATURES" },
+    English:                             function() { return "English" },
+    Nederlands:                          function() { return "Nederlands" },
     Use_Tap_To_Toggle:                   function() { return "Use Tap To Toggle" },
     Tap_to_toggle_allows_you_:           function() { return "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!" },
     If_indoor_localization_is:           function() { return "If indoor localization is disabled, tap to toggle does only work when the app is on the screen." },

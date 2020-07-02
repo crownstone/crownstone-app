@@ -49,6 +49,7 @@ import { UptimeMonitor } from "./UptimeMonitor";
 import { TrackingNumberManager } from "./TrackingNumberManager";
 import { ActiveSphereManager } from "./ActiveSphereManager";
 import { LocalizationMonitor } from "./LocalizationMonitor";
+import { Languages } from "../Languages";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -66,6 +67,7 @@ class BackgroundProcessHandlerClass {
 
   start() {
     if (!this.started) {
+
       LOG.info("BackgroundProcessHandler: Starting the background processes.");
       // start the BLE things.
       // route the events to React Native
@@ -113,6 +115,8 @@ class BackgroundProcessHandlerClass {
 
         // pass the store to the singletons
         LOG.info("BackgroundProcessHandler: Starting singletons.");
+        Languages.updateLocale();
+
         this.startSingletons();
 
         this.startCloudService();

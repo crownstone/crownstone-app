@@ -9,6 +9,7 @@ let defaultSettings = {
   passwordHash: null,
   userId: null,
   isNew: true,
+  language: null,
   picture: null,
   pictureId: null,
   firmwareVersionsAvailable: {},
@@ -82,15 +83,16 @@ export default (state = defaultSettings, action : any = {}) => {
     case 'USER_UPDATE':
       if (action.data) {
         let newState = {...state};
-        newState.firstName              = update(action.data.firstName,    newState.firstName);
-        newState.lastName               = update(action.data.lastName,     newState.lastName);
-        newState.email                  = update(action.data.email,        newState.email);
-        newState.passwordHash           = update(action.data.passwordHash, newState.passwordHash);
-        newState.isNew                  = update(action.data.isNew,        newState.isNew);
-        newState.accessToken            = update(action.data.accessToken,  newState.accessToken);
-        newState.userId                 = update(action.data.userId,       newState.userId);
-        newState.picture                = update(action.data.picture,      newState.picture);
-        newState.pictureId              = update(action.data.pictureId,  newState.pictureId);
+        newState.firstName              = update(action.data.firstName,           newState.firstName);
+        newState.lastName               = update(action.data.lastName,            newState.lastName);
+        newState.email                  = update(action.data.email,               newState.email);
+        newState.passwordHash           = update(action.data.passwordHash,        newState.passwordHash);
+        newState.isNew                  = update(action.data.isNew,               newState.isNew);
+        newState.language               = update(action.data.language,            newState.language);
+        newState.accessToken            = update(action.data.accessToken,         newState.accessToken);
+        newState.userId                 = update(action.data.userId,              newState.userId);
+        newState.picture                = update(action.data.picture,             newState.picture);
+        newState.pictureId              = update(action.data.pictureId,           newState.pictureId);
         newState.uploadLocation         = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState      = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
         newState.uploadDeviceDetails    = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);

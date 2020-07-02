@@ -668,6 +668,7 @@ export const NavigationUtil = {
     Navigation.mergeOptions(componentId, {popGesture: state});
   },
 
+
   /**
    * This method is meant to call a view from a modal or an overlay. It will handle not knowing which tab you're on gracefully.
    * @param livesOnTab

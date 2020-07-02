@@ -20,6 +20,7 @@ import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SliderBar } from "../components/editComponents/SliderBar";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -97,12 +98,34 @@ export class SettingsApp extends LiveComponent<any, any> {
     let state = store.getState();
 
     let items = [];
+    items.push({label: lang("LANGUAGE"), type: 'explanation', below: false});
+    let dropDownItems = [];
+    dropDownItems.push({ label: lang("English")   , value: 'en_us' });
+    dropDownItems.push({ label: lang("Nederlands"), value: 'nl_nl' });
+    items.push({
+      type: 'dropdown',
+      label: lang("Language"),
+      buttons: false,
+      mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      value: state.user.language || "en_us",
+      dropdownHeight: 130,
+      items: dropDownItems,
+      callback: (value) => {
+        // store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { language: value } });
+        store.dispatch({ type: 'USER_UPDATE', data: { language: value } });
+        Languages.updateLocale();
+        core.eventBus.emit("FORCE_RERENDER")
+      }
+    });
+
+
+
     items.push({label: lang("FEATURES"), type: 'explanation', below: false});
     items.push({
       label: lang("Use_Tap_To_Toggle"),
       value: state.app.tapToToggleEnabled,
       type: 'switch',
-      mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
       callback:(newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
@@ -119,7 +142,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           <SliderBar
             label={ lang("Sensitivity")}
             sliderHidden={true}
-            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
+            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}} />}
             callback={(value) => {
               let deviceId = Util.data.getCurrentDeviceId(state);
               core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: -value}})
@@ -146,7 +169,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
-      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue3.hex}}/>,
+      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',

@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import { SlideFadeInView }  from '../animated/SlideFadeInView'
-import { styles, colors, screenWidth } from '../../styles'
+import { styles, colors, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
 
 
 export class Dropdown extends Component<any, any> {
@@ -135,7 +135,12 @@ export class Dropdown extends Component<any, any> {
   }
 
   render() {
-    let dropHeight = this.props.dropdownHeight || 216;
+    let navBarHeight = this.props.barHeight || NORMAL_ROW_SIZE;
+    if (this.props.largeIcon || this.props.size === "large")        { navBarHeight = LARGE_ROW_SIZE; }
+    else if (this.props.mediumIcon || this.props.size === "medium") { navBarHeight = MID_ROW_SIZE; }
+    else if (this.props.icon)                                       { navBarHeight = NORMAL_ROW_SIZE; }
+
+      let dropHeight = this.props.dropdownHeight || 216;
     let totalHeight = dropHeight;
     if (this.props.buttons === true) {
       totalHeight += 50;
@@ -162,7 +167,9 @@ export class Dropdown extends Component<any, any> {
             }
             this.setState({open:!this.state.open});
           }}>
-            <View style={[styles.listView, {height:this.props.barHeight}]}>
+            <View style={[styles.listView, {height: navBarHeight}]}>
+              {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+              {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
               {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
               {this.props.valueRight === true ?
                 <Text style={[{fontSize:16}, this.props.labelStyle]}>{this.props.label}</Text>
@@ -173,7 +180,7 @@ export class Dropdown extends Component<any, any> {
             </View>
           </TouchableHighlight>
           <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
-            <View style={{position:'relative', top: -0.5*(dropHeight-this.props.barHeight), height: dropHeight}}>
+            <View style={{position:'relative', top: -0.5*(dropHeight - navBarHeight), height: dropHeight}}>
               {this._getPicker()}
             </View>
             {this._getButtonBar()}
