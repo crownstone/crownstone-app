@@ -98,26 +98,29 @@ export class SettingsApp extends LiveComponent<any, any> {
     let state = store.getState();
 
     let items = [];
-    items.push({label: lang("LANGUAGE"), type: 'explanation', below: false});
-    let dropDownItems = [];
-    dropDownItems.push({ label: lang("English")   , value: 'en_us' });
-    dropDownItems.push({ label: lang("Nederlands"), value: 'nl_nl' });
-    items.push({
-      type: 'dropdown',
-      label: lang("Language"),
-      buttons: false,
-      mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-      value: state.user.language || "en_us",
-      dropdownHeight: 130,
-      items: dropDownItems,
-      callback: (value) => {
-        // store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { language: value } });
-        store.dispatch({ type: 'USER_UPDATE', data: { language: value } });
-        Languages.updateLocale();
-        core.eventBus.emit("FORCE_RERENDER")
-      }
-    });
 
+    if (state.user.developer) {
+      items.push({ label: lang("LANGUAGE"), type: 'explanation', below: false });
+      let dropDownItems = [];
+      dropDownItems.push({ label: lang("English"),    value: 'en_us' });
+      dropDownItems.push({ label: lang("Nederlands"), value: 'nl_nl' });
+      items.push({
+        type: 'dropdown',
+        label: lang("Language"),
+        buttons: false,
+        mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
+                                buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+        value: state.user.language || "en_us",
+        dropdownHeight: 130,
+        items: dropDownItems,
+        callback: (value) => {
+          // store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { language: value } });
+          store.dispatch({ type: 'USER_UPDATE', data: { language: value } });
+          Languages.updateLocale();
+          core.eventBus.emit("FORCE_RERENDER")
+        }
+      });
+    }
 
 
     items.push({label: lang("FEATURES"), type: 'explanation', below: false});

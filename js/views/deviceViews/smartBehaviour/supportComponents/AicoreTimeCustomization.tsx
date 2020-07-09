@@ -57,7 +57,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
         <TimePart
           width={this.props.width}
           initialLabel={ lang("When_should_I_start_")}
-          finalLabel={"I'll start at:"}
+          finalLabel={lang("Ill_start_at_")}
           visible={true}
           instantEdit={this.state.instantEdit}
           timeObj={this.fromTime}
@@ -240,7 +240,7 @@ function TimePart(props : {
                   basic={true}
                   key={"resultButton" + index}
                   index={index}
-                  label={ Platform.OS === "android" ? "That's a good time!" : lang("Tap_to_select_time_")}
+                  label={ Platform.OS === "android" ? "That's a good time!" + test : lang("Tap_to_select_time_")}
                   image={require("../../../../images/icons/clock.png")}
                   callback={() => {
                     setFinished(true);

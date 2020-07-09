@@ -19,6 +19,16 @@ import { LOGe } from "../../../logging/Log";
 const querystring = require('qs');
 const RNFS = require('react-native-fs');
 
+type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
+interface iEmailData { [key: string]: emailDataType }
+
+const EMAIL_DATA_TYPE = {
+  allBuffers:           'allBuffers',
+  switchCraftBuffers:   'switchCraftBuffers',
+  measurementBuffers:   'measurementBuffers',
+  logs:                 'logs',
+}
+
 export class SettingsLogging extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  "Logging"});
@@ -29,7 +39,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = {showEmailSettings: false, subject: ''}
+    this.state = {showEmailSettings: false, emailType: 'logs'}
   }
 
   componentDidMount() {
@@ -173,51 +183,53 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     if (this.state.showEmailSettings) {
       items.push({
-        label: "Subject",
-        type: 'textEdit',
-        value: this.state.subject,
-        callback: (newText) => {
-          this.setState({subject: newText});
-        },
+        type:'dropdown',
+        value: this.state.emailType,
+        label: 'Email Data:',
+        items:[{label: EMAIL_DATA_TYPE.logs}, {label: EMAIL_DATA_TYPE.allBuffers}, {label: EMAIL_DATA_TYPE.switchCraftBuffers}, {label: EMAIL_DATA_TYPE.measurementBuffers}],
+        callback: (data) => { this.setState({emailType: data})}
       })
-      items.push({
-        label: "Send email now!",
-        type: 'button',
-        style: {color: colors.blue.hex},
-        icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          core.eventBus.emit("showLoading","Generating Email...");
-          getLogs()
-            .then((result) => {
-              let url = `mailto:${state.user.email}`;
 
-              // Create email link query
-              const query = querystring.stringify({
-                subject: this.state.subject,
-                body: result,
-              });
+      if (this.state.emailType !== null) {
+        items.push({
+          label: "Send email now!",
+          type: 'button',
+          style: {color: colors.blue.hex},
+          icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+          callback:(newValue) => {
+            core.eventBus.emit("showLoading","Generating Email...");
+            getLogs(this.state.emailType)
+              .then((result) => {
+                let url = `mailto:${state.user.email}`;
 
-              if (query.length) {
-                url += `?${query}`;
-              }
+                // Create email link query
+                const query = querystring.stringify({
+                  subject: this.state.subject,
+                  body: result,
+                });
 
-              // check if we can use this link
-              Linking.canOpenURL(url)
-                .then((canOpen) => {
-                  if (canOpen) {
-                    Linking.openURL(url)
-                      .then(() => {
-                        core.eventBus.emit("hideLoading");
-                      });
-                  }
-                  else {
-                    core.eventBus.emit("hideLoading");
-                    Alert.alert("Can't email.")
-                  }
-                })
-            })
-        }
-      });
+                if (query.length) {
+                  url += `?${query}`;
+                }
+
+                // check if we can use this link
+                Linking.canOpenURL(url)
+                  .then((canOpen) => {
+                    if (canOpen) {
+                      Linking.openURL(url)
+                        .then(() => {
+                          core.eventBus.emit("hideLoading");
+                        });
+                    }
+                    else {
+                      core.eventBus.emit("hideLoading");
+                      Alert.alert("Can't email.")
+                    }
+                  })
+              })
+          }
+        });
+      }
     }
     else {
       items.push({
@@ -225,11 +237,28 @@ export class SettingsLogging extends LiveComponent<any, any> {
         type: 'button',
         style: { color: colors.blue.hex },
         icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.blue.hex }}/>,
-        callback: (newValue) => {
+        callback: () => {
           this.setState({ showEmailSettings: true })
         }
       });
     }
+
+    items.push({
+      label: "Delete collected data",
+      type: 'button',
+      icon: <IconButton name="ios-trash" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.red.hex }}/>,
+      callback: () => {
+        Alert.alert("Sure about that?","This will delete all collected power curves.",[{text:'no'},{text:"yes", onPress: () => {
+          let storagePath = FileUtil.getPath();
+          FileUtil.safeDeleteFile(storagePath + '/false-positive.dat')
+          FileUtil.safeDeleteFile(storagePath + '/true-positive.dat')
+          FileUtil.safeDeleteFile(storagePath + '/false-negative.dat')
+          FileUtil.safeDeleteFile(storagePath + '/true-negative.dat')
+          FileUtil.safeDeleteFile(storagePath + '/filteredData.dat')
+          FileUtil.safeDeleteFile(storagePath + '/unfilteredData.dat')
+        }}])
+      }
+    });
 
 
     items.push({ type:'spacer' });
@@ -251,32 +280,102 @@ export class SettingsLogging extends LiveComponent<any, any> {
   }
 }
 
-function getLogs() {
-  let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+function getLogs(type : emailDataType) : Promise<string> {
   let storagePath = FileUtil.getPath();
-  let filesToOpen = [];
-  let openedFiles = [];
+  if (type === 'logs') {
+    let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+    let timestamp = new Date().valueOf() - 5*60*1000; // 15 mins
+    return RNFS.readFile(storagePath + '/' + filename)
+      .then((data) => {
+        let lines = data.split("\n");
 
-  let timestamp = new Date().valueOf() - 5*60*1000; // 15 mins
+        let string = '';
+        for (let i = lines.length-1; i > 0; i--) {
+          let parts = lines[i].split(" - ");
+          let time = Number(parts[0]);
 
-  return RNFS.readFile(storagePath + "/" + filename)
-    .then((data) => {
-      let lines = data.split("\n");
+          if (time > 0 && time < timestamp) {
+            break;
+          }
 
-      let string = '';
-      for (let i = lines.length-1; i > 0; i--) {
-        let parts = lines[i].split(" - ");
-        let time = Number(parts[0]);
-
-        if (time > 0 && time < timestamp) {
-          break;
+          string += lines[i] + "\n";
         }
 
-        string += lines[i] + "\n";
-      }
-
-      return string;
-    })
-    .catch((err) => { console.log("CANT",err) })
+        return string;
+      })
+      .catch((err) => { console.log("CANT",err) })
+  }
+  else {
+    let data = '';
+    if (type === 'allBuffers') {
+      return RNFS.readFile(storagePath + '/false-positive.dat').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FalsePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/true-positive.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TruePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/false-negative.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FalseNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/true-negative.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TrueNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/filteredData.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FilteredData:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/unfilteredData.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###UnfilteredData:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+    else if (type === 'switchCraftBuffers') {
+      return RNFS.readFile(storagePath + '/false-positive.dat').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FalsePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/true-positive.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TruePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/false-negative.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FalseNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/true-negative.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TrueNegative:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+    else if (type === "measurementBuffers") {
+      return RNFS.readFile(storagePath + '/filteredData.dat').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FilteredData:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/unfilteredData.dat').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###UnfilteredData:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+  }
 
 }

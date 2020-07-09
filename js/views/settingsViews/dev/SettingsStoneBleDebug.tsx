@@ -9,7 +9,7 @@ import {
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { availableScreenHeight, colors, screenWidth } from "../../styles";
+import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
 import { Util } from "../../../util/Util";
 import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../core";
@@ -21,6 +21,8 @@ import { DataUtil } from "../../../util/DataUtil";
 import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
 import { StoneUtil } from "../../../util/StoneUtil";
+import { FileUtil } from "../../../util/FileUtil";
+const RNFS = require('react-native-fs');
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -31,6 +33,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   _major  : string;
   _minor  : string;
   _handle : string;
+
+  visibleBuffer : PowerSamples[] | null = null;
 
   constructor(props) {
     super(props);
@@ -55,6 +59,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       ibeaconPayload: '',
       ibeaconTimestamp: null,
       debugInformationText: null,
+      typeOfData: null,
       debugData1: null,
       debugData1UI: 0,
       debugData2: null,
@@ -300,7 +305,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"md-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'triggeredSwitchcraft'});
         core.eventBus.emit("showLoading", "Get triggered switchcraft buffers...");
         this.getBuffers(stone, "triggeredSwitchcraft")
       }
@@ -310,7 +315,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'missedSwitchcraft'});
         core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
         this.getBuffers(stone, "missedSwitchcraft")
       }
@@ -320,7 +325,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-podium"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'filteredBuffer'});
         core.eventBus.emit("showLoading", "Get filtered buffer...");
         this.getBuffers(stone, "filteredBuffer")
       }
@@ -330,7 +335,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'unfilteredBuffer'});
         core.eventBus.emit("showLoading", "Get unfiltered buffer...");
         this.getBuffers(stone, "unfilteredBuffer")
       }
@@ -404,6 +409,68 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
+    if (this.state.typeOfData === 'triggeredSwitchcraft' || this.state.typeOfData === 'missedSwitchcraft' && this.visibleBuffer !== null) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            height: 80,
+            flexDirection:'row',
+            padding:5,
+          }}>
+            <View style={{flex:1}} />
+            <TouchableOpacity style={{backgroundColor:colors.red.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.4, padding:5}} onPress={() => {
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'false-positive.dat' : 'false-negative.dat');
+              if (this.visibleBuffer) {
+                RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
+              }
+              this.setState({typeOfData : null});
+              this.visibleBuffer = null;
+              Alert.alert("Noted.")
+            }}>
+              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>Incorrect</Text>
+            </TouchableOpacity>
+            <View style={{flex:1}} />
+            <TouchableOpacity style={{backgroundColor:colors.green.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.4, padding:5}} onPress={() => {
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'true-positive.dat' : 'true-negative.dat');
+              if (this.visibleBuffer) {
+                RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
+              }
+              this.setState({typeOfData : null});
+              this.visibleBuffer = null;
+              Alert.alert("Noted.")
+            }}>
+              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>Correct</Text>
+            </TouchableOpacity>
+            <View style={{flex:1}} />
+          </View>
+      });
+    }
+    else if (this.state.typeOfData === 'filteredData' || this.state.typeOfData === 'unfilteredData' && this.visibleBuffer !== null) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            height: 80,
+            flexDirection:'row',
+            padding:5,
+          }}>
+            <View style={{flex:1}} />
+            <TouchableOpacity style={{backgroundColor:colors.blue.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.8, padding:5}} onPress={() => {
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'filteredData' ? 'filteredData.dat' : 'unfilteredData.dat');
+              if (this.visibleBuffer) {
+                RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
+              }
+              this.setState({typeOfData : null});
+              this.visibleBuffer = null;
+              Alert.alert("Noted.")
+            }}>
+              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>Store</Text>
+            </TouchableOpacity>
+            <View style={{flex:1}} />
+          </View>
+      });
+    }
 
     items.push({
       label: "Annotate",
@@ -462,10 +529,12 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   }
 
   getBuffers(stone, type : PowersampleDataType) {
+    this.visibleBuffer = null;
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getPowerSamples', type: type}, {}, 2, "From StoneDebug")
       .then((returnData) => {
         core.eventBus.emit("hideLoading");
         let data : PowerSamples[] = returnData.data;
+        this.visibleBuffer = returnData.data;
         LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", type, data);
 
         let getData = function(buffer: PowerSamples, initialCountValue: number = 0, dataContainer = []) : [number, any[]] {

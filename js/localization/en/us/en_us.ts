@@ -146,6 +146,7 @@ export default {
     _The_start_and_ending_time_left:     function() { return "OK" },
     I_want_something_else_:              function() { return "I want something else!" },
     TAP_TIME_TO_CHANGE:                  function() { return "TAP TIME TO CHANGE" },
+    Ill_start_at_:                       function() { return "I'll start at:" },
   },
   AicoreTimeCustomizationOverlay:{
     __filename: "../../js/views/overlays/AicoreTimeCustomizationOverlay.tsx",
