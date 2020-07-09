@@ -305,9 +305,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"md-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
+        this.getBuffers(stone, "triggeredSwitchcraft")
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'triggeredSwitchcraft'});
         core.eventBus.emit("showLoading", "Get triggered switchcraft buffers...");
-        this.getBuffers(stone, "triggeredSwitchcraft")
       }
     });
     items.push({
@@ -315,9 +315,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
+        this.getBuffers(stone, "missedSwitchcraft")
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'missedSwitchcraft'});
         core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
-        this.getBuffers(stone, "missedSwitchcraft")
       }
     });
     items.push({
@@ -325,9 +325,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-podium"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
+        this.getBuffers(stone, "filteredBuffer")
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'filteredBuffer'});
         core.eventBus.emit("showLoading", "Get filtered buffer...");
-        this.getBuffers(stone, "filteredBuffer")
       }
     });
     items.push({
@@ -335,9 +335,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
+        this.getBuffers(stone, "unfilteredBuffer")
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'unfilteredBuffer'});
         core.eventBus.emit("showLoading", "Get unfiltered buffer...");
-        this.getBuffers(stone, "unfilteredBuffer")
       }
     });
 
@@ -409,7 +409,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
-    if (this.state.typeOfData === 'triggeredSwitchcraft' || this.state.typeOfData === 'missedSwitchcraft' && this.visibleBuffer !== null) {
+    if ((this.state.typeOfData === 'triggeredSwitchcraft' || this.state.typeOfData === 'missedSwitchcraft') && this.visibleBuffer !== null) {
       items.push({
         __item:
           <View style={{
@@ -446,7 +446,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
-    else if (this.state.typeOfData === 'filteredData' || this.state.typeOfData === 'unfilteredData' && this.visibleBuffer !== null) {
+    else if ((this.state.typeOfData === 'filteredData' || this.state.typeOfData === 'unfilteredData') && this.visibleBuffer !== null) {
       items.push({
         __item:
           <View style={{
