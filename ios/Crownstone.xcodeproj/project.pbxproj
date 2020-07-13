@@ -126,6 +126,7 @@
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
+		FAC6D1AF24BCAABA007AA96F /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6D17D24BCAABA007AA96F /* KNN.swift */; };
 		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
 		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
 		FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF2D2B1248A9093003973F6 /* Zip.framework */; };
@@ -449,6 +450,20 @@
 			remoteGlobalIDString = C777CF2FB1E39A45CBBDB54E8693F471;
 			remoteInfo = RNReanimated;
 		};
+		FAC6D17824BCAA8A007AA96F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BFE9675E9E0EFBEB42444001DBD1685D;
+			remoteInfo = KDTree;
+		};
+		FAC6D17A24BCAA8A007AA96F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 484E6781D8E6CE2FB8F6C8D7C9578D97;
+			remoteInfo = RNShare;
+		};
 		FAE05691243765B0003BE780 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -603,6 +618,7 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
+		FAC6D17D24BCAABA007AA96F /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KNN.swift; sourceTree = "<group>"; };
 		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FAF2D2B1248A9093003973F6 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
@@ -851,6 +867,7 @@
 			isa = PBXGroup;
 			children = (
 				FA0177D31FC46359001C8FD6 /* Portal.swift */,
+				FAC6D17D24BCAABA007AA96F /* KNN.swift */,
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
 				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
 			);
@@ -873,6 +890,7 @@
 				FA274E7E2410144F00D7C858 /* libFBReactNativeSpec.a */,
 				FA274E802410144F00D7C858 /* libFolly.a */,
 				FA274E822410144F00D7C858 /* libglog.a */,
+				FAC6D17924BCAA8A007AA96F /* libKDTree.a */,
 				FA274E842410144F00D7C858 /* libPods-Crownstone.a */,
 				FA274E862410144F00D7C858 /* libPods-CrownstoneTests.a */,
 				FA274E882410144F00D7C858 /* libRCTTypeSafety.a */,
@@ -907,6 +925,7 @@
 				FA345D9424111FEA00C288D3 /* libRNLocalize.a */,
 				FABC3D0624349B9100F4002E /* libRNReanimated.a */,
 				FA6FDE11244DDD82002BEB27 /* libRNSentry.a */,
+				FAC6D17B24BCAA8A007AA96F /* libRNShare.a */,
 				FA274EC02410144F00D7C858 /* libRNSVG.a */,
 				FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */,
 				FA274EC42410144F00D7C858 /* libRNVectorIcons.a */,
@@ -1475,6 +1494,20 @@
 			remoteRef = FABC3D0524349B9100F4002E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FAC6D17924BCAA8A007AA96F /* libKDTree.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libKDTree.a;
+			remoteRef = FAC6D17824BCAA8A007AA96F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAC6D17B24BCAA8A007AA96F /* libRNShare.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNShare.a;
+			remoteRef = FAC6D17A24BCAA8A007AA96F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FAE05692243765B0003BE780 /* libreact-native-image-picker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1751,6 +1784,7 @@
 				FA60DD1820F3ADA7002A795E /* Util.swift in Sources */,
 				FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */,
 				FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */,
+				FAC6D1AF24BCAABA007AA96F /* KNN.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
 				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
@@ -2026,7 +2060,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "-DDEBUG";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/KDTree/KDTree.modulemap\" -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";

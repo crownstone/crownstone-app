@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if DEBUG
             print("DEBUG")
             let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+            print("BUNDLE URL", jsBundleUrl)
         #else
             print("RELEASE")
             let jsBundleUrl =  Bundle.main.url(forResource: "main", withExtension: "jsbundle")

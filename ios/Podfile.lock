@@ -19,6 +19,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - KDTree (1.3.2)
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -192,7 +193,7 @@ PODS:
     - React
   - react-native-maps (0.26.1):
     - React
-  - react-native-slider (2.0.9):
+  - react-native-slider (3.0.0):
     - React
   - react-native-splash-screen (3.2.0):
     - React
@@ -250,6 +251,8 @@ PODS:
   - RNSentry (1.3.7):
     - React
     - Sentry (~> 4.4.0)
+  - RNShare (3.7.0):
+    - React
   - RNSVG (11.0.1):
     - React
   - RNUncontrolledDatePickerIOS (1.0.0):
@@ -267,6 +270,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - KDTree (from `https://github.com/AlexDM0/KDTree.git`, branch `master`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -304,6 +308,7 @@ DEPENDENCIES:
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNUncontrolledDatePickerIOS (from `../node_modules/react-native-uncontrolled-date-picker-ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -325,6 +330,9 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  KDTree:
+    :branch: master
+    :git: https://github.com/AlexDM0/KDTree.git
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -393,6 +401,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNSentry:
     :path: "../node_modules/@sentry/react-native"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNUncontrolledDatePickerIOS:
@@ -402,6 +412,11 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
+CHECKOUT OPTIONS:
+  KDTree:
+    :commit: 606be46d7710b0de3ee92e3746d86d06f13872da
+    :git: https://github.com/AlexDM0/KDTree.git
+
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
@@ -409,6 +424,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  KDTree: db7eeb3e1d9d8e17234bc9f58b41e0254562850b
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -423,7 +439,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 784fb2b5603021a91f059c03dfe32f8fca624b28
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
-  react-native-slider: e51492f1264d882a8815b71c5870f8978e52887d
+  react-native-slider: 12bd76d3d568c9c5500825db54123d44b48e4ad4
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -443,12 +459,13 @@ SPEC CHECKSUMS:
   RNLocalize: b6df30cc25ae736d37874f9bce13351db2f56796
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNSentry: 370623102247ebea20191b5fb549ecc7a275b324
+  RNShare: a1d5064df7a0ebe778d001869b3f0a124bf0a491
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   RNUncontrolledDatePickerIOS: fe14888be90717d80d179ff4b3fd04e4046e3600
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 58165e51bdd5abb0734891ba08eb48cf3e4eb6b3
+PODFILE CHECKSUM: fc23c65fe961f519c2361deb7373b22d262586b7
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3

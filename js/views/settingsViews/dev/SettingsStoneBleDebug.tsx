@@ -137,7 +137,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData: null});
+        this.setState({debugInformationText: null, debugData: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Debug Info...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
@@ -192,7 +192,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Crownstone Uptime...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
@@ -215,7 +215,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-outlet"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLighter.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get ADC Restarts...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
@@ -240,7 +240,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       icon: <IconButton name={"ios-list-box"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
       callback: () => {
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get switch history...");
 
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
@@ -420,7 +420,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           }}>
             <View style={{flex:1}} />
             <TouchableOpacity style={{backgroundColor:colors.red.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.4, padding:5}} onPress={() => {
-              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'false-positive.dat' : 'false-negative.dat');
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'power-samples-switchcraft-false-positive.log' : 'power-samples-switchcraft-false-negative.log');
               if (this.visibleBuffer) {
                 RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
               }
@@ -432,7 +432,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity style={{backgroundColor:colors.green.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.4, padding:5}} onPress={() => {
-              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'true-positive.dat' : 'true-negative.dat');
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'triggeredSwitchcraft' ? 'power-samples-switchcraft-true-positive.log' : 'power-samples-switchcraft-true-negative.log');
               if (this.visibleBuffer) {
                 RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
               }
@@ -446,7 +446,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           </View>
       });
     }
-    else if ((this.state.typeOfData === 'filteredData' || this.state.typeOfData === 'unfilteredData') && this.visibleBuffer !== null) {
+    else if ((this.state.typeOfData === 'filteredBuffer' || this.state.typeOfData === 'unfilteredBuffer') && this.visibleBuffer !== null) {
       items.push({
         __item:
           <View style={{
@@ -457,7 +457,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           }}>
             <View style={{flex:1}} />
             <TouchableOpacity style={{backgroundColor:colors.blue.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.8, padding:5}} onPress={() => {
-              let dataPath = FileUtil.getPath(this.state.typeOfData === 'filteredData' ? 'filteredData.dat' : 'unfilteredData.dat');
+              let dataPath = FileUtil.getPath(this.state.typeOfData === 'filteredData' ? 'power-samples-filteredData.log' : 'power-samples-unfilteredData.log');
               if (this.visibleBuffer) {
                 RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
               }
