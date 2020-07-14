@@ -92,20 +92,21 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let padding = 8;
   let height  = 90+2*padding;
   let margins = 30;
+  let imageSize = height-2*padding;
 
   let fullyDisabled = getDisabledState(props.stone, props.type);
   let active = getActiveState(props.stone, props.type);
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
   let helpColor = colors.black.rgba(0.5);
-
+  // synced = false
   return (
     <View style={{width:screenWidth, marginBottom: margins}}>
       <View style={{flexDirection:'row', width: screenWidth-margins, height:height, marginLeft:margins, borderRadius:0.5*height, borderBottomRightRadius: 0, borderTopRightRadius: 0, backgroundColor: colors.white.hex, marginBottom:5, padding:padding, paddingRight:10}}>
-        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={height-2*padding} />
-        <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
+        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={imageSize} />
+        <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10, width: screenWidth - margins - imageSize - 120}}>
           <View style={{flexDirection:'row'}}>
-            <Text style={deviceStyles.text}>{data.label}</Text>
+            <Text style={{...deviceStyles.text, textAlign:'left'}}>{data.label}</Text>
             <FadeInView visible={!synced}><ActivityIndicator color={colors.csBlueDark.hex} size={ "small"} style={{marginLeft:10}}/></FadeInView>
           </View>
           <SlideFadeInView visible={!synced} height={40} style={{alignItems:'center'}}>
