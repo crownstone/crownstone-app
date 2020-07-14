@@ -4,6 +4,11 @@ import {
 import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
+import { Languages } from "../../../../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AicoreTwilight", key)(a,b,c,d,e);
+}
 
 const EMPTY_RULE : twilight = {
   action:   { type: "DIM_WHEN_TURNED_ON", data: 60 },
@@ -35,7 +40,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
 
 
   _getChunks(sphereId: string) {
-    let intentionStr = "If I'm turned on";
+    let intentionStr = lang("If_Im_turned_on");
     let timeStr   = AicoreUtil.extractTimeString(this.rule, true);
     if (timeStr) {
       timeStr += ',';

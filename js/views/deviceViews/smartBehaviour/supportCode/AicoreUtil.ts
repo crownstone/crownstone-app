@@ -4,6 +4,13 @@ import {
   AICORE_TIME_DETAIL_TYPES,
   AICORE_TIME_TYPES
 } from "../../../../Enums";
+
+
+import { Languages } from "../../../../Languages";
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AicoreUtil", key)(a,b,c,d,e);
+}
+
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { core } from "../../../../core";
 import { AicoreTimeData } from "./AicoreTimeData";
@@ -24,13 +31,13 @@ export const AicoreUtil = {
 
   extractActionString(rule : behaviour | twilight) {
     if (rule.action.type === "DIM_WHEN_TURNED_ON") {
-      return "I'll dim to " + Math.round(rule.action.data ) + "% instead";
+      return lang("Ill_dim_to___instead", Math.round(rule.action.data ))
     }
     if (rule.action.data < 100) {
-      return "dimmed at " + Math.round(rule.action.data) + "%";
+      return lang("dimmed_at__", Math.round(rule.action.data))
     }
     else if (rule.action.data == 100) {
-      return "on";
+      return lang("on")
     }
   },
 
@@ -39,12 +46,12 @@ export const AicoreUtil = {
     let presenceStr = null;
     switch (rule.presence.type) {
       case AICORE_PRESENCE_TYPES.SOMEBODY:
-        presencePrefix = "if";
-        presenceStr   = "somebody";
+        presencePrefix = lang("if");
+        presenceStr   = lang("somebody");
         break;
       case AICORE_PRESENCE_TYPES.NOBODY:
-        presencePrefix = "if";
-        presenceStr   = "nobody";
+        presencePrefix = lang("if")
+        presenceStr   = lang("nobody")
         break;
       case AICORE_PRESENCE_TYPES.SPECIFIC_USERS:
         presenceStr = null; break; // TODO: implement profiles
@@ -64,12 +71,12 @@ export const AicoreUtil = {
 
       switch (pd.type) {
         case AICORE_LOCATIONS_TYPES.SPHERE:
-          locationPrefix = "is";
-          locationStr = "home";
+          locationPrefix = lang("is")
+          locationStr = lang("home")
           break;
         case AICORE_LOCATIONS_TYPES.LOCATION:
           if (pd.locationIds.length > 0) {
-            locationPrefix = "is in the";
+            locationPrefix = lang("is_in_the")
             // we will now construct a roomA_name, roomB_name or roomC_name line.
             locationStr = AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
@@ -79,7 +86,7 @@ export const AicoreUtil = {
                 locationStr += ", " + locationName;
               }
 
-              locationStr += " or " + AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[pd.locationIds.length - 1]);
+              locationStr += lang("_or_") + AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[pd.locationIds.length - 1]);
             }
           }
       }
@@ -99,35 +106,35 @@ export const AicoreUtil = {
       let noOffset = (tr.from as aicoreTimeDataSun).offsetMinutes === 0 && (tr.to as aicoreTimeDataSun).offsetMinutes === 0;
       if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNSET) && noOffset) {
         // "while the sun is up"
-        timeStr = "while the sun is up";
+        timeStr = lang("while_the_sun_is_up")
       }
       else if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNRISE) && noOffset) {
         // "while its dark outside"
-        timeStr = "while it's dark outside";
+        timeStr = lang("while_its_dark_outside");
       }
       else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK || forceBetween) {
         // this makes "between X and Y"
         let fromStr = AicoreUtil.getTimeStr(tr.from);
         let toStr   = AicoreUtil.getTimeStr(tr.to);
-        timeStr = "between " + fromStr + " and " + toStr;
+        timeStr = lang("between__and_", fromStr,toStr)
       }
       else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && (tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNSET)) {
         // this makes "from xxxxx until xxxxx"
         let fromStr = AicoreUtil.getTimeStr(tr.from);
         let toStr   = AicoreUtil.getTimeStr(tr.to);
-        timeStr = "from " + fromStr + " until " + toStr;
+        timeStr = lang("from__until_", fromStr,toStr)
       }
       else if (tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK && (tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET)) {
         // this makes "from xxxxx until xxxxx"
         let fromStr = AicoreUtil.getTimeStr(tr.from);
         let toStr   = AicoreUtil.getTimeStr(tr.to);
-        timeStr = "from " + fromStr + " until " + toStr;
+        timeStr = lang("from__until_", fromStr,toStr)
       }
       else {
         // these are "from xxxxx to xxxxx"
         let fromStr = AicoreUtil.getTimeStr(tr.from);
         let toStr   = AicoreUtil.getTimeStr(tr.to);
-        timeStr = "from " + fromStr + " to " + toStr;
+        timeStr = lang("from__to_", fromStr,toStr)
       }
     }
 
@@ -141,12 +148,12 @@ export const AicoreUtil = {
     if (rule.endCondition && rule.endCondition.type) {
       switch (rule.endCondition.presence.data.type) {
         case "SPHERE":
-          endConditionPrefix += "Afterwards, I'll";
-          endConditionStr += "stay on if someone is still at home";
+          endConditionPrefix += lang("Afterwards__Ill")
+          endConditionStr += lang("stay_on_if_someone_is_sti");
           break;
         case "LOCATION":
-          endConditionPrefix += "Afterwards, I'll";
-          endConditionStr += "stay on if someone is still in the room";
+          endConditionPrefix += lang("Afterwards__Ill");
+          endConditionStr += lang("stay_on_if_someone_is_stil");
           break;
       }
     }
@@ -159,7 +166,7 @@ export const AicoreUtil = {
     if (locationData) {
       return locationData.name;
     }
-    return "(deleted location)";
+    return lang("_deleted_location_")
   },
 
 
@@ -183,30 +190,30 @@ export const AicoreUtil = {
         if (mins%60 === 0) {
           let hours = mins/60;
           if (hours === 1) {
-            return "1 hour";
+            return lang("__hour");
           }
-          return hours + " hours"
+          return lang("_hours", hours)
         }
         else if (mins < 60) {
-          return mins + " minutes"
+          return lang("_minutes", mins)
         }
         else {
-          return Math.floor(mins/60) + " hrs, " + mins%60 + ' mins'
+          return lang("_hrs___mins", Math.floor(mins/60),mins%60)
         }
       };
 
       if (obj.offsetMinutes < 0) {
-        str += getTimeNotation(obj.offsetMinutes) + " before "
+        str += lang("_before_", getTimeNotation(obj.offsetMinutes))
       }
       else {
-        str += getTimeNotation(obj.offsetMinutes) + " after "
+        str += lang("_after_", getTimeNotation(obj.offsetMinutes))
       }
     }
     if (obj.type === "SUNSET") {
-      str += "sunset"
+      str += lang("sunset")
     }
     else if (obj.type === "SUNRISE") {
-      str += "sunrise"
+      str += lang("sunrise")
     }
     return str;
   },
@@ -529,16 +536,16 @@ export const AicoreUtil = {
 
       if (enoughForLocalization === false) {
         Alert.alert(
-          "Indoor localization not available...",
-          "We need at least " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + " Crownstones to be able to determine which room you're in.\n\n" +
-          endLine, [{text:"OK"}]
+          lang("Indoor_localization_not_a"),
+          lang("We_need_at_least__Crownst", AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) +
+          endLine, [{text:lang("OK")}]
         );
         return false;
       }
       else if (enoughForLocalization && requiresFingerprints) {
         Alert.alert(
-          "Not all rooms are trained yet!",
-          "Make sure you train all the rooms in your Sphere in order to enable indoor localization.", [{text:"OK"}]
+          lang("Not_all_rooms_are_trained"),
+          lang("Make_sure_you_train_all_t"), [{text:lang("OK")}]
         );
         return true;
       }
