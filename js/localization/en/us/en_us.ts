@@ -128,6 +128,9 @@ export default {
     OK:                                  function() { return "OK" },
     Your_AI:                             function() { return "Your AI" },
   },
+  AicoreBehaviour:{
+    I_will_be:                           function() { return "I will be" },
+  },
   AicoreTimeCustomization:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/AicoreTimeCustomization.tsx",
     When_should_I_start_:                function() { return "When should I start?" },
@@ -1739,7 +1742,7 @@ export default {
     Ensure_there_is_power_on_:           function() { return "Ensure there is power on the Crownstone and that you can reach it.\n\nIf you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below)." },
     Retry_a_few_times___If_th:           function() { return "Retry a few times.\n\nIf that fails, turn your bluetooth off and on.\n\n" + arguments[0] + "Check if there are updates available in the " + arguments[1] + ".\n\n" +
                                                   "Certain Android phones have issues with Bluetooth. If you have a different phone available, log in there with your account and use that phone to do the setup."},
-    This_could_happen_due_to_:           function() { return "This could happen due to Tap-to-Toggle. If this is the case, you can retrain or disable it.\n\nRoom enter and room exit behaviour is currently not accounting for multiple users. We are working hard on much smarter behaviour that will solve this issue.\n\nSphere enter and sphere exit require you to be in range of the Crownstones as well as the app running in the background." },
+    This_could_happen_due_to_:           function() { return "This could happen due to Tap-to-Toggle. If this is the case, you can retrain or disable it.\n\nSphere enter and sphere exit require you to be in range of the Crownstones as well as the app running in the background." },
     Sometimes_something_goes_:           function() { return "Sometimes something goes wrong in the persisting of the local data.\n\nTo solve this you can try to redownload the data from the Cloud. Press the button below to do this." },
     Sometimes_something_goes_w:          function() { return "Sometimes something goes wrong in the persisting of the local data.\n\nTo solve this you can try to redownload the data from the Cloud. Press the button below to do this." },
     It_could_be_that_youre_no:           function() { return "It could be that you're not close enough to the nearest Crownstone. Try going closer.\n\n" + "If that does not work, try to restarting your Bluetooth, restarting the App or even restarting your Phone.\n\n" + "If that does not work either, you can try to press the button below to resync with the Cloud. This will delete all your local preferences and replace it by the data in the Cloud." },
