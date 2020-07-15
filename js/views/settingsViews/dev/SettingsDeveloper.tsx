@@ -1,40 +1,34 @@
-import { LiveComponent }          from "../LiveComponent";
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsDeveloper", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   Alert, Platform,
   ScrollView, Text, TouchableWithoutFeedback, View
 } from "react-native";
 
-import { IconButton } from '../components/IconButton'
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { Bluenet } from '../../native/libInterface/Bluenet'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { colors, screenWidth } from "../styles";
-import {Util} from "../../util/Util";
-import {clearLogs} from "../../logging/LogUtil";
+import { IconButton } from '../../components/IconButton'
+import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
+import { ListEditableItems } from '../../components/ListEditableItems'
+import { colors, screenWidth } from "../../styles";
+import { LiveComponent } from "../../LiveComponent";
+import { core } from "../../../core";
+import { clearLogs } from "../../../logging/LogUtil";
+import { Bluenet } from "../../../native/libInterface/Bluenet";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { CLOUD } from "../../../cloud/cloudAPI";
+import { Scheduler } from "../../../logic/Scheduler";
+import { Util } from "../../../util/Util";
+import { MeshUtil } from "../../../util/MeshUtil";
+import { CLOUD_ADDRESS } from "../../../ExternalConfig";
+import { TopbarImitation } from "../../components/TopbarImitation";
+import { topBarStyle } from "../../components/topbar/TopbarStyles";
+import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
+import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
+import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
+import { LocationHandler } from "../../../native/localization/LocationHandler";
+import { OverlayManager } from "../../../backgroundProcesses/OverlayManager";
+import { ScaledImage } from "../../components/ScaledImage";
+import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
+import { Stacks } from "../../../router/Stacks";
 
-import {MeshUtil} from "../../util/MeshUtil";
-import {CLOUD_ADDRESS} from "../../ExternalConfig";
-import {Scheduler} from "../../logic/Scheduler";
-import { core } from "../../core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { Stacks } from "../../router/Stacks";
-import { LocationHandler } from "../../native/localization/LocationHandler";
-import { DevAppState } from "../../backgroundProcesses/dev/DevAppState";
-import { ScaledImage } from "../components/ScaledImage";
-import { TopbarImitation } from "../components/TopbarImitation";
-import { topBarStyle } from "../components/topbar/TopbarStyles";
-import { SlideFadeInView } from "../components/animated/SlideFadeInView";
-import { BroadcastStateManager } from "../../backgroundProcesses/BroadcastStateManager";
-import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
-import { OverlayManager } from "../../backgroundProcesses/OverlayManager";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -95,14 +89,13 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
 
-    items.push({label: lang("LOGGING"), type: 'explanation', below: false});
+    items.push({label: "LOGGING", type: 'explanation', below: false});
     if (!dev.logging_enabled) {
       items.push({
-        label: lang("Enable_Logging"),
+        label: "Enable Logging",
         value: dev.logging_enabled,
         type: 'switch',
-        icon: <IconButton name="ios-create" size={22}  color="#fff"
-                          buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: (newValue) => {
           if (newValue === false) {
             clearAllLogs();
@@ -114,11 +107,11 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           Bluenet.enableLoggingToFile(newValue);
         }
       });
-      items.push({label: lang("Logging_will_keep_a_histo"), type: 'explanation', below: true});
+      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
     }
     else {
       items.push({
-        label: lang("Logging_Configuration"),
+        label: "Logging Configuration",
         type: 'navigation',
         icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
@@ -126,24 +119,24 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         }
       });
       items.push({
-        label: lang("Clear_Logs_"),
+        label: "Clear Logs!",
         type: 'button',
         style: {color: colors.menuBackground.hex},
         icon: <IconButton name="ios-cut" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
           Alert.alert(
-            lang("_Clear_all_Logs___Press_O_header"),
-            lang("_Clear_all_Logs___Press_O_body"),
-            [{text:lang("_Clear_all_Logs___Press_O_left"), style: 'cancel'},{
-            text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}])
+            "Clear all Logs?",
+            "Press OK to clear logs.",
+            [{text:"Cancel", style: 'cancel'},{
+            text: "OK", onPress: () => {clearAllLogs();}}])
         }
       });
-      items.push({label: lang("Logging_will_keep_a_histor"), type: 'explanation', below: true});
+      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
     }
 
 
     items.push({
-      label: lang("View_uptime"),
+      label: "View app uptime",
       type: 'navigation',
       icon: <IconButton name="md-calendar" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
       callback: () => {
@@ -158,48 +151,48 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         NavigationUtil.navigate("SettingsLocalizationMonitor")
       }
     });
-    items.push({label: lang("View_when_the_app_was_run"), type: 'explanation', below: true});
+    items.push({label: "View when the app was running.", type: 'explanation', below: true});
 
 
-    items.push({label: lang("CLOUD"), type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label: lang("Sync_Now_"),
+      label: "Sync Now!",
       type: 'button',
       style: {color: colors.black.hex},
       icon: <IconButton name="md-cloud-download" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback: () => {
         if (CLOUD.__currentlySyncing === false) {
-          core.eventBus.emit("showLoading", lang("Syncing___"));
+          core.eventBus.emit("showLoading", "Syncing...");
           CLOUD.sync(store, true)
-            .then(() => { core.eventBus.emit("showLoading",lang("Done_")); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
+            .then(() => { core.eventBus.emit("showLoading","Done!"); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
             .catch((err) => { core.eventBus.emit("hideLoading"); Alert.alert(
-              lang("_Error_during_sync__argum_header"),
-              lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
-              [{text:lang("_Error_during_sync__argum_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}]) })
+              "Error during sync.",
+              err && err.message || JSON.stringify(err),
+              [{text:"OK", onPress: () => { core.eventBus.emit("hideLoading"); }}]) })
         }
         else {
           Alert.alert(
-lang("_Sync_already_in_progress_header"),
-lang("_Sync_already_in_progress_body"),
-[{text:lang("_Sync_already_in_progress_left")}]);
+"Sync already in progress.",
+"There already is an active syncing process running in the background. Syncing can take a long time if there are a lot op power measurements that require syncing.",
+[{text:"OK"}]);
         }
     }});
     items.push({
-      label: lang("Test_Notifications"),
+      label: "Test Notifications",
       type: 'button',
       style: {color: colors.black.hex},
       icon: <IconButton name="ios-jet" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:() => {
-        core.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
+        core.eventBus.emit("showLoading", "Requesting Notifications...");
 
         let clearScheduledTimeout = null;
         let cleanup = null;
         let unsubscribe = core.eventBus.on("NotificationReceived", (data) => {
           if (data.type === "testNotification") {
             Alert.alert(
-            lang("_Notification_Received____header"),
-            lang("_Notification_Received____body"),
-    [{text:lang("_Notification_Received____left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
+            "Notification Received!",
+            "Everything is working as it should be!",
+    [{text:"Great!", onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
             cleanup()
           }
         });
@@ -209,9 +202,9 @@ lang("_Sync_already_in_progress_body"),
         clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
           cleanup();
           Alert.alert(
-            lang("_Nothing_Received_____May_header"),
-            lang("_Nothing_Received_____May_body"),
-    [{text:lang("_Nothing_Received_____May_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
+            "Nothing Received...",
+            "Maybe try again?",
+    [{text:"OK...", onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
         }, 4000);
 
         cleanup = () => {
@@ -224,16 +217,16 @@ lang("_Sync_already_in_progress_body"),
           CLOUD.forDevice(deviceId).sendTestNotification().catch((err) => {
             cleanup();
             Alert.alert(
-lang("_Could_not_send_Request___header"),
-lang("_Could_not_send_Request___body",JSON.stringify(err)),
-[{text:lang("_Could_not_send_Request___left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
+          "Could not send Request!",
+       "There was an error. \n" +JSON.stringify(err),
+        [{text:"Hmm..", onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
           });
         }
         else {
           Alert.alert(
-            lang("_No_device_Id___There_was_header"),
-            lang("_No_device_Id___There_was_body"),
-            [{text:lang("_No_device_Id___There_was_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
+            "No device Id!",
+            "There was an error.",
+            [{text:"Hmm..", onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
           cleanup();
         }
       }});
@@ -242,39 +235,39 @@ lang("_Could_not_send_Request___body",JSON.stringify(err)),
 
     // let deviceId = Util.data.getCurrentDeviceId(state);
     // let device = deviceId && state.devices[deviceId] || null;
-    items.push({label: lang("DEBUG_VIEWS"), type: 'explanation'});
+    items.push({label: "DEBUG VIEWS", type: 'explanation'});
     items.push({
-      label: lang("BLE_Debug"),
+      label: "BLE Debug",
       type: 'navigation',
       icon: <IconButton name="ios-build" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsBleDebug");
       }});
     items.push({
-      label: lang("Localization_Debug"),
+      label: "Localization Debug",
       type: 'navigation',
       icon: <IconButton name="md-locate" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsLocalizationDebug");
       }})
     items.push({
-      label: lang("Database_Explorer"),
+      label: "Database Explorer",
       type: 'navigation',
       icon: <IconButton name="md-folder" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlueDark.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsDatabaseExplorer");
       }});
 
-    items.push({label: lang("MESH"), type: 'explanation', below: false});
+    items.push({label: "MESH", type: 'explanation', below: false});
     items.push({
-      label: lang("Change_Channels"),
+      label: "Change Channels",
       type: 'navigation',
       icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsMeshDebug");
       }});
     items.push({
-      label: lang("Show_RSSI_in_Topology"),
+      label: "Show RSSI in Topology",
       value: dev.show_rssi_values_in_mesh,
       type: 'switch',
       icon: <IconButton name="ios-calculator" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
@@ -282,31 +275,31 @@ lang("_Could_not_send_Request___body",JSON.stringify(err)),
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
       }});
     items.push({
-      label: lang("Reset_networks"),
+      label: "Reset networks",
       type:  'button',
       style: {color: colors.black.hex},
       icon:  <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:() => {
         Alert.alert(
-lang("_Are_you_sure___This_will_header"),
-lang("_Are_you_sure___This_will_body"),
-[{text:lang("_Are_you_sure___This_will_left"), onPress: () => {
+"Are you sure?",
+"This will reset all mesh networks in the current Sphere.",
+[{text:"Do it.", onPress: () => {
               const store = core.store;
               const state = store.getState();
               let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
               MeshUtil.clearMeshNetworkIds(store, sphereId);
               MeshUtil.clearTopology(store, sphereId);
               Alert.alert(
-lang("_Reset_Done__Rediscovery__header"),
-lang("_Reset_Done__Rediscovery__body"),
-[{text:lang("_Reset_Done__Rediscovery__left")}]);
-            }},{text: lang("Cancel")}
+"Reset Done",
+"Rediscovery will start automatically.",
+[{text:"OK"}]);
+            }},{text: "Cancel"}
           ]
         )
       }
     });
     items.push({
-      label: lang("Mesh_Topology"),
+      label: "Mesh Topology",
       type: 'navigation',
       icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
       callback:() => {
@@ -314,13 +307,13 @@ lang("_Reset_Done__Rediscovery__body"),
       }});
 
     // if (user.betaAccess) {
-    //   items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
+    //   items.push({label: "ALPHA FEATURES WILL LOOK LIKE THIS", type: 'explanation', below: false});
     // }
     // else {
-    //   items.push({label: lang("EXPERIMENTAL_FEATURES"), type: 'explanation', below: false});
+    //   items.push({label: "EXPERIMENTAL FEATURES", type: 'explanation', below: false});
     // }
 //     items.push({
-//       label: lang("Join_Alpha_Program"),
+//       label: "Join Alpha Program",
 //       value: user.betaAccess,
 //       experimental: user.betaAccess,
 //       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex}}/>,
@@ -334,10 +327,10 @@ lang("_Reset_Done__Rediscovery__body"),
 //         };
 //         if (newValue) {
 //           Alert.alert(
-// lang("_EXPERIMENTAL___Switchcra_header"),
-// lang("_EXPERIMENTAL___Switchcra_body"),
-// [{text:lang("_EXPERIMENTAL___Switchcra_left"), style:'cancel'}, {
-// text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
+// "EXPERIMENTAL!",
+// "Switchcraft is currently in the experimental phase. It will not detect all switches, " + "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" + "Use this at your own risk! Are you sure?",
+// [{text:"I'll wait.", style:'cancel'}, {
+// text:"Yes.", onPress: storeIt}]
 //           );
 //         }
 //         else {
@@ -345,7 +338,7 @@ lang("_Reset_Done__Rediscovery__body"),
 //         }
 //       }});
     // items.push({
-    //   label: lang("FeaturePreview"),
+    //   label: "Feature Preview",
     //   value: dev.preview,
     //   icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blueDark.hex}}/>,
     //   type: 'switch',
@@ -358,10 +351,10 @@ lang("_Reset_Done__Rediscovery__body"),
     //     };
     //     if (newValue) {
     //       Alert.alert(
-    //         lang("_EXPERIMENTAL___Preview_header"),
-    //         lang("_EXPERIMENTAL___Preview_body"),
-    //         [{text:lang("_EXPERIMENTAL___Preview_left"), style:'cancel'}, {
-    //           text:lang("_EXPERIMENTAL___Preview_right"), onPress: storeIt}]
+    //         "EXPERIMENTAL!",
+    //         "Preview will enable new views in parts of the app as a preview into future versions. These might not work at all.\n\nThis is for demonstration purposes, not for home use. Are you sure?",
+    //         [{text:"I'll wait.", style:'cancel'}, {
+    //           text:"Yes.", onPress: storeIt}]
     //       );
     //     }
     //     else {
@@ -371,7 +364,7 @@ lang("_Reset_Done__Rediscovery__body"),
 
     items.push({type:'spacer'});
     items.push({
-      label: lang("Show_sync_button_for_beha"),
+      label: "Show sync button for behaviour",
       value: dev.show_sync_button_in_behaviour,
       icon: <IconButton name={"md-refresh-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex}}/>,
       type: 'switch',
@@ -383,9 +376,9 @@ lang("_Reset_Done__Rediscovery__body"),
       }});
 
 
-    items.push({label: lang("FIRMWARE_EARLY_ACCESS"), type: 'explanation'});
+    items.push({label: "FIRMWARE EARLY ACCESS", type: 'explanation'});
     items.push({
-      label: lang("Beta_Firmware_Access"),
+      label: "Beta Firmware Access",
       value: dev.firmwareEarlyAccessLevel >= 50,
       icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       type: 'switch',
@@ -404,7 +397,7 @@ lang("_Reset_Done__Rediscovery__body"),
 
     if (state.development.devAppVisible) {
       items.push({
-        label: lang("Alpha_Firmware_Access"),
+        label: "Alpha Firmware Access",
         value: dev.firmwareEarlyAccessLevel >= 100,
         icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex}}/>,
         type: 'switch',
@@ -421,12 +414,12 @@ lang("_Reset_Done__Rediscovery__body"),
           });
         }});
     }
-    items.push({label: lang("WARNING__Early_access_bui"), type: 'explanation', below: true});
+    items.push({label: "WARNING: Early access builds may be broken and can brick your Crownstones. No guarantees are provided on early access builds", type: 'explanation', below: true});
 
 
-    items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});
+    items.push({label: "RESET DEVELOPER STATE", type: 'explanation'});
     items.push({
-      label: lang("Disable_Developer_Mode"),
+      label: "Disable Developer Mode",
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:() => {
@@ -442,7 +435,7 @@ lang("_Reset_Done__Rediscovery__body"),
         NavigationUtil.back();
     }});
 
-    items.push({label: lang("CLOUD_URL__",CLOUD_ADDRESS), type: 'explanation'});
+    items.push({label: "CLOUD URL: " + CLOUD_ADDRESS, type: 'explanation'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
 
@@ -455,11 +448,11 @@ lang("_Reset_Done__Rediscovery__body"),
       <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
-          title={ lang("test")}
+          title={ "test"}
           titleObject={
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
               <View style={{flex:1, width: screenWidth-160, alignItems:'center', justifyContent:'center'}}>
-                <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ lang("Developer_Menu") }</Text>
+                <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ "Developer Menu" }</Text>
               </View>
             </TouchableWithoutFeedback>
 
@@ -482,12 +475,12 @@ lang("_Reset_Done__Rediscovery__body"),
 export function getDevAppItems() {
     let items = [];
 
-    items.push({ label: lang("GO_TO_DEV_APP"), type: 'explanation' });
+    items.push({ label: "GO TO DEV APP", type: 'explanation' });
     items.push({
-      label: lang("Go_to_dev_app"),
+      label: "Go to dev app",
       type: 'button',
       style: { color: colors.black.hex, fontWeight: 'bold' },
-      icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
+      icon: <ScaledImage source={require('../../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
       callback: () => {
         OnScreenNotifications.removeAllNotifications();
         BroadcastStateManager.destroy();
@@ -504,12 +497,12 @@ export function getDevAppItems() {
       }
     });
     items.push({
-      label: lang("This_can_brick_your_Crown"),
+      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
       type: 'explanation',
       below: true
     });
     items.push({
-      label: lang("Developer_Menu"),
+      label: "Developer Menu",
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
@@ -517,7 +510,7 @@ export function getDevAppItems() {
       }
     });
   items.push({
-    label: lang("Debug_options_for_develop"),
+    label: "Debug options for developers.",
     type: 'explanation',
     below: true
   });

@@ -18,7 +18,6 @@ let revertFile = function(filePath, allowReplace, BASE) {
   let content    = fs.readFileSync(filePath, "utf8")
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
-
   if (BASE[filename] === undefined) { return }
   Object.keys(BASE[filename]).forEach((key) => {
     if (key == '__filename') { return; }
@@ -28,6 +27,7 @@ let revertFile = function(filePath, allowReplace, BASE) {
 
     content = content.replace("lang(\"" + key + "\")", value);
   })
+
   if (allowReplace) {
     fs.writeFileSync(filePath, content);
   }

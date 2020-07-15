@@ -20,12 +20,12 @@ import {styles, colors, } from '../styles'
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { getDevAppItems } from "./SettingsDeveloper";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { AppUtil } from "../../util/AppUtil";
 import { LOGe } from "../../logging/Log";
 import { IconButton } from "../components/IconButton";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { getDevAppItems } from "./dev/SettingsDeveloper";
 
 export class SettingsOverview extends LiveComponent<any, any> {
   static options(props) {
