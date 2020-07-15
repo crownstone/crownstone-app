@@ -10,7 +10,7 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import { colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../core";
-import { clearLogs } from "../../../logging/LogUtil";
+import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
@@ -28,7 +28,20 @@ import { OverlayManager } from "../../../backgroundProcesses/OverlayManager";
 import { ScaledImage } from "../../components/ScaledImage";
 import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
 import { Stacks } from "../../../router/Stacks";
+import { FileUtil } from "../../../util/FileUtil";
+import Share from "react-native-share";
+const RNFS = require('react-native-fs');
 
+
+type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
+interface iEmailData { [key: string]: emailDataType }
+
+const EMAIL_DATA_TYPE = {
+  allBuffers:           'allBuffers',
+  switchCraftBuffers:   'switchCraftBuffers',
+  measurementBuffers:   'measurementBuffers',
+  logs:                 'logs',
+}
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -45,8 +58,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     let state = core.store.getState();
 
-
-    this.state = { devAppVisible: state.development.devAppVisible && this.props.fromOverview !== true }
+    this.state = { devAppVisible: state.development.devAppVisible && this.props.fromOverview !== true, showSharingSettings: false, sharingDataType: 'logs' }
   }
 
   componentDidMount() {
@@ -107,33 +119,124 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           Bluenet.enableLoggingToFile(newValue);
         }
       });
-      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
     }
     else {
       items.push({
         label: "Logging Configuration",
         type: 'navigation',
-        icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        icon: <IconButton name="ios-create" size={22} color="#fff"
+                          buttonStyle={{ backgroundColor: colors.green2.hex }}/>,
         callback: () => {
-          NavigationUtil.navigate( "SettingsLogging");
+          NavigationUtil.navigate("SettingsLogging");
         }
       });
       items.push({
         label: "Clear Logs!",
         type: 'button',
-        style: {color: colors.menuBackground.hex},
-        icon: <IconButton name="ios-cut" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
+        style: { color: colors.csBlueDark.hex },
+        icon: <IconButton name="ios-cut" size={22} color="#fff"
+                          buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
         callback: () => {
           Alert.alert(
             "Clear all Logs?",
             "Press OK to clear logs.",
-            [{text:"Cancel", style: 'cancel'},{
-            text: "OK", onPress: () => {clearAllLogs();}}])
+            [{ text: "Cancel", style: 'cancel' }, {
+              text: "OK", onPress: () => {
+                clearAllLogs();
+              }
+            }])
         }
       });
-      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
     }
+      if (this.state.showSharingSettings) {
+        items.push({label: "SHARE WITH LOVELY DEVELOPERS", type: 'explanation', below: false});
+        items.push({
+          type:'dropdown',
+          value: this.state.sharingDataType,
+          label: 'Share Data:',
+          items:[{label: EMAIL_DATA_TYPE.logs}, {label: EMAIL_DATA_TYPE.allBuffers}, {label: EMAIL_DATA_TYPE.switchCraftBuffers}, {label: EMAIL_DATA_TYPE.measurementBuffers}],
+          callback: (data) => { this.setState({sharingDataType: data})}
+        })
 
+        if (this.state.sharingDataType !== null) {
+
+          items.push({
+            label: "Share data now!",
+            type: 'button',
+            style: {color: colors.purple.hex},
+            icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+            callback:(newValue) => {
+              let shareDataType = this.state.sharingDataType;
+              let storagePath = FileUtil.getPath();
+              let options = {};
+              if (shareDataType === 'logs') {
+                let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+                options = {urls:[
+                    "file://" + storagePath + filename,
+                  ]}
+              }
+              else if (shareDataType === 'allBuffers') {
+                options = {urls:[
+                    "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+                    "file://" + storagePath + '/power-samples-filteredData.log',
+                    "file://" + storagePath + '/power-samples-unfilteredData.log',
+                  ]}
+              }
+              else if (shareDataType === 'switchCraftBuffers') {
+                options = {urls:[
+                    "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+                    "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+                  ]}
+              }
+              else if (shareDataType === "measurementBuffers") {
+                options = {urls:[
+                    "file://" + storagePath + '/power-samples-filteredData.log',
+                    "file://" + storagePath + '/power-samples-unfilteredData.log',
+                  ]}
+              }
+
+              Share.open(options)
+                .then((res) => { console.log(res) })
+                .catch((err) => { err && console.log(err); });
+            }});
+        }
+      }
+      else {
+        items.push({
+          label: "Share Data",
+          type: 'button',
+          style: { color: colors.purple.hex },
+          icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.purple.hex }}/>,
+          callback: () => {
+            this.setState({ showSharingSettings: true })
+          }
+        });
+      }
+
+      items.push({
+        label: "Delete collected data",
+        type: 'button',
+        style: { color: colors.csBlueDarker.hex },
+        icon: <IconButton name="ios-trash" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csBlueDarker.hex }}/>,
+        callback: () => {
+          Alert.alert("Sure about that?","This will delete all collected power curves.",[{text:'no'},{text:"yes", onPress: () => {
+              let storagePath = FileUtil.getPath();
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-positive.log')
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-positive.log')
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-negative.log')
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-negative.log')
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-filteredData.log')
+              FileUtil.safeDeleteFile(storagePath + '/power-samples-unfilteredData.log')
+            }}])
+        }
+      });
+
+    items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
     items.push({
       label: "View app uptime",
@@ -517,3 +620,103 @@ export function getDevAppItems() {
     return items;
 }
 
+
+function getLogs(type : emailDataType) : Promise<string> {
+  let storagePath = FileUtil.getPath();
+  if (type === 'logs') {
+    let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+    let timestamp = new Date().valueOf() - 5*60*1000; // 15 mins
+    return RNFS.readFile(storagePath + '/' + filename)
+      .then((data) => {
+        let lines = data.split("\n");
+
+        let string = '';
+        for (let i = lines.length-1; i > 0; i--) {
+          let parts = lines[i].split(" - ");
+          let time = Number(parts[0]);
+
+          if (time > 0 && time < timestamp) {
+            break;
+          }
+
+          string += lines[i] + "\n";
+        }
+
+        return string;
+      })
+      .catch((err) => { console.log("CANT",err) })
+  }
+  else {
+    let data = '';
+    if (type === 'allBuffers') {
+      return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-positive.log').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FalsePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-positive.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TruePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-negative.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FalseNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-negative.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TrueNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-filteredData.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FilteredData:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-unfilteredData.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###UnfilteredData:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+    else if (type === 'switchCraftBuffers') {
+      return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-positive.log').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FalsePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-positive.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TruePositive:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-negative.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###FalseNegative:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-negative.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###TrueNegative:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+    else if (type === "measurementBuffers") {
+      return RNFS.readFile(storagePath + '/power-samples-filteredData.log').catch(() => {})
+        .then((d) => {
+          data += "\n\n###FilteredData:\n"
+          data += d;
+          return RNFS.readFile(storagePath + '/power-samples-unfilteredData.log').catch(() => {})
+        })
+        .then((d) => {
+          data += "\n\n###UnfilteredData:\n"
+          data += d;
+          return data;
+        }).catch(() => {})
+    }
+  }
+
+}
