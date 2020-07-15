@@ -33,6 +33,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
   sphereId = null;
   currentLocation = null;
   appLocation = null;
+  knnLocation = null;
   _amountOfStones = 0;
 
   constructor(props) {
@@ -54,6 +55,9 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       this._amountOfStones = data.length;
+    }));
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentLocationKNN, (data) => {
+      this.knnLocation = data.location
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {
       this.forceUpdate();
@@ -158,6 +162,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
           key={locationId}
           inLocation={locationId === this.currentLocation}
           isAppLocation={locationId === this.appLocation}
+          isKnnLocation={locationId === this.knnLocation}
           probabilityData={this.roomData[locationId] || {}}
           backgroundColor={this._calculateColor(locationId)}
         />

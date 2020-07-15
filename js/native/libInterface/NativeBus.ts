@@ -42,6 +42,7 @@ export class NativeBusClass {
       enterRoom:            "enterLocation",                    // data type = {region: sphereId, location: locationId}
       exitRoom:             "exitLocation",                     // data type = {region: sphereId, location: locationId}
       currentRoom:          "currentLocation",                  // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
+      currentLocationKNN:   "currentLocationKNN",               // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
 
       libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
       libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }

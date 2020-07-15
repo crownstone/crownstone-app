@@ -150,6 +150,7 @@ export default {
     I_want_something_else_:              function() { return "I want something else!" },
     TAP_TIME_TO_CHANGE:                  function() { return "TAP TIME TO CHANGE" },
     Ill_start_at_:                       function() { return "I'll start at:" },
+    Thats_a_good_time_:                  function() { return "That's a good time!" },
   },
   AicoreTimeCustomizationOverlay:{
     __filename: "../../js/views/overlays/AicoreTimeCustomizationOverlay.tsx",
