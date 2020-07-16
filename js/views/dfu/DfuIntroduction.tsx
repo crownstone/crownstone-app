@@ -29,7 +29,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    let stateData = { releaseNotes: "Downloading...", inSphere: false }
+    let stateData = { releaseNotes: lang("Downloading___"), inSphere: false }
     this.interviewData = {};
 
     let state = core.store.getState();
@@ -51,8 +51,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   getCards() : interviewCards {
     return {
       start: {
-        header:"There is an update available for your Crownstones!",
-        subHeader:"This process can take a few minutes. Would you like to start now?",
+        header:lang("There_is_an_update_availa"),
+        subHeader:lang("This_process_can_take_a_f"),
         optionsBottom: true,
         options: [
           {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.dismissModal(); }},
@@ -60,7 +60,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         ]
       },
       updateInformation: {
-        header:"Here's what's new!",
+        header:lang("Heres_whats_new_"),
         subHeader: this.state.releaseNotes,
         optionsBottom: true,
         options: [
@@ -73,8 +73,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   getNotInSphereCard() : interviewCards {
     return {
       start: {
-        header: "There is an update available for your Crownstones!",
-        subHeader: "... but need to be in your Sphere to update your Crownstones.",
+        header: lang("There_is_an_update_availab"),
+        subHeader: lang("____but_need_to_be_in_you"),
         optionsBottom: true,
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -103,7 +103,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) {NavigationUtil.dismissModal();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}

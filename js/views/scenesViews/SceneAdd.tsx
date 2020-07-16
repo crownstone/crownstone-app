@@ -98,7 +98,7 @@ export class SceneAdd extends LiveComponent<any, any> {
       if (this.sceneData.data[stoneCID] === undefined) { return; }
 
       let locationId = stone.config.locationId;
-      let locationName = "Not in a room...";
+      let locationName = lang("Not_in_a_room___");
       if (locationId) {
         let location = DataUtil.getLocation(sphereId, locationId);
         locationName = location.config.name;
@@ -162,11 +162,11 @@ export class SceneAdd extends LiveComponent<any, any> {
 
     return {
       start: {
-        header:"Let's make a Scene!",
-        subHeader: "What shall we call it?",
+        header:lang("Lets_make_a_Scene_"),
+        subHeader: lang("What_shall_we_call_it_"),
         hasTextInputField: true,
         textColor: colors.white.hex,
-        placeholder: "My new scene",
+        placeholder: lang("My_new_scene"),
         options: [
           {
             label: lang("Next"),
@@ -175,14 +175,14 @@ export class SceneAdd extends LiveComponent<any, any> {
             // response: "Good choice!",
             onSelect: (result) => {
               let name = result.textfieldState;
-              this.sceneData.name = name || "My new scene";
+              this.sceneData.name = name || lang("My_new_scene");
               return true;
             }}
         ]
       },
       sphereSelection: {
-        header: "For which Sphere?",
-        subHeader: "Select the sphere where you will use this scene.",
+        header: lang("For_which_Sphere_"),
+        subHeader: lang("Select_the_sphere_where_y"),
         backgroundImage: require("../../images/backgrounds/sphereBackgroundDark.png"),
         textColor: colors.white.hex,
         component:
@@ -197,13 +197,13 @@ export class SceneAdd extends LiveComponent<any, any> {
         options: sphereOptions
       },
       stoneSelection: {
-        header: "Who's participating?",
-        subHeader: "Select the Crownstones which will be part of this scene.",
+        header: lang("Whos_participating_"),
+        subHeader: lang("Select_the_Crownstones_wh"),
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
         optionsHiddenIfNotOnTop: true,
         optionsAlwaysOnTop: Object.keys(this.sceneData.data).length > 0,
-        explanation: "Crownstones that are not selected will be left unchanged when this scene is activated.",
+        explanation: lang("Crownstones_that_are_not_"),
         component:
           <View>
             { this.getStoneSelectionList(this.sceneData.sphereId) }
@@ -221,8 +221,8 @@ lang("_Select_at_least_one______body"),
         }}]
       },
       stateSelection: {
-        header: "What to do?",
-        subHeader: "Choose the desired state for your Crownstones!",
+        header: lang("What_to_do_"),
+        subHeader: lang("Choose_the_desired_state_"),
         textColor: colors.white.hex,
         component:
           <View>
@@ -233,8 +233,8 @@ lang("_Select_at_least_one______body"),
         ]
       },
       picture: {
-        header: "And finally...",
-        subHeader: "Let's pick an image! Something to quickly remember it by.",
+        header: lang("And_finally___"),
+        subHeader: lang("Lets_pick_an_image__Somet"),
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
         editableItem: (state, setState) => {
@@ -310,7 +310,7 @@ lang("_Select_at_least_one______body"),
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => {
             if (this._interview.back() === false) {
               NavigationUtil.dismissModal();

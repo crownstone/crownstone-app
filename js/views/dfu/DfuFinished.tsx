@@ -39,8 +39,8 @@ export class DfuFinished extends LiveComponent<any, any> {
   getFailedCard() : interviewCards {
     return {
       start: {
-        header:"Something went wrong while updating the Crownstones...",
-        subHeader:"Would you like to retry?",
+        header:lang("Something_went_wrong_whil"),
+        subHeader:lang("Would_you_like_to_retry_"),
         optionsBottom: true,
         textColor: colors.white.hex,
         backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.png'),
@@ -57,8 +57,8 @@ export class DfuFinished extends LiveComponent<any, any> {
     let amountOfStones = DfuUtil.getUpdatableStones(this.props.sphereId).amountOfStones;
     return {
       start: {
-        header:"Crownstones successfully updated!",
-        subHeader: amountOfStones == 1 ? "There is just " + amountOfStones + " left to go!" :  "There are just " + amountOfStones + " left to go!",
+        header:lang("Crownstones_successfully_"),
+        subHeader: amountOfStones == 1 ? lang("There_is_just___left_to_g") : lang("There_are_just__left_to_g", amountOfStones),
         optionsBottom: true,
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -78,8 +78,8 @@ export class DfuFinished extends LiveComponent<any, any> {
   getSuccessCard() : interviewCards {
     return {
       start: {
-        header:"Crownstones successfully updated!",
-        subHeader:"All your Crownstones are now up to date! Enjoy!",
+        header:lang("Crownstones_successfully_u"),
+        subHeader:lang("All_your_Crownstones_are_"),
         optionsBottom: true,
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -98,8 +98,8 @@ export class DfuFinished extends LiveComponent<any, any> {
   getCloudIssueCard() : interviewCards {
     return {
       start: {
-        header: "I could not download the new versions...",
-        subHeader:"Please check if you're connected to the internet and try again.",
+        header: lang("I_could_not_download_the_"),
+        subHeader:lang("Please_check_if_youre_con"),
         optionsBottom: true,
         textColor: colors.white.hex,
         backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.png'),
@@ -144,7 +144,7 @@ export class DfuFinished extends LiveComponent<any, any> {
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.backTo("DfuScanning") } }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}

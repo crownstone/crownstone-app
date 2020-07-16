@@ -96,30 +96,30 @@ export class RoomAddCore extends LiveComponent<any, any> {
   getCards() : interviewCards {
     return {
       start: {
-        header:"Let's make a room!",
-        subHeader: "What would you like to call this room?",
+        header:lang("Lets_make_a_room_"),
+        subHeader: lang("What_would_you_like_to_ca"),
         hasTextInputField: true,
-        placeholder: "My new room",
+        placeholder: lang("My_new_room"),
         options: [
           {
-            label: "Next",
+            label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
-            response: "Good choice!",
+            response: lang("Good_choice_"),
             onSelect: (result) => {
               let name = result.textfieldState;
               if (name == "") {
                 Alert.alert(
-                  'Room name must be at least 1 character long.',
-                  'Please change the name and try again.',
+                  lang("Room_name_must_be_at_least"),
+                  lang("Please_change_the_name_an"),
                   [{text:'OK'}]
                 );
                 return false;
               }
               else if (!this.isRoomNameUnique(result.textfieldState)) {
                 Alert.alert(
-                  "This room already exists.",
-                  "Please pick a unique name for this room.",
+                  lang("This_room_already_exists_"),
+                  lang("Please_pick_a_unique_name"),
                   [{text:'OK'}]
                 );
                 return false;
@@ -132,9 +132,9 @@ export class RoomAddCore extends LiveComponent<any, any> {
         ]
       },
       icon: {
-        header: "Let's pick an icon!",
-        subHeader: "You can give your room and optionally a background picture!",
-        explanation: "You can always change this later in the room's settings.",
+        header: lang("Lets_pick_an_icon_"),
+        subHeader: lang("You_can_give_your_room_an"),
+        explanation: lang("You_can_always_change_thi"),
         editableItem: (state, setState) => {
           return (
             <View style={{flex:1,flexDirection: Util.shortScreen() ? 'row' : 'column'}}>
@@ -191,7 +191,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
         },
 
         options: [
-          {label: "Create room", textAlign:'right', onSelect: (result) => {
+          {label: lang("Create_room"), textAlign:'right', onSelect: (result) => {
             let icon = result.customElementState.icon || this.newRoomData.icon;
             this.newRoomData.icon = icon;
             this.createRoom()

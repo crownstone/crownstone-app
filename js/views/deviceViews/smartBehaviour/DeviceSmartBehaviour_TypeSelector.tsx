@@ -51,7 +51,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
       options.push({
         label: rule.getSentence(this.props.sphereId),
         onSelect: () => {
-          if (AicoreUtil.canBehaviourUseIndoorLocalization(this.props.sphereId, "Pick a different example as a starting point.", rule) === false) {
+          if (AicoreUtil.canBehaviourUseIndoorLocalization(this.props.sphereId, lang("Pick_a_different_example_"), rule) === false) {
             return false;
           }
 
@@ -71,8 +71,8 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
     return {
       start: {
-        header:"What sort of behaviour shall I learn?",
-        subHeader:"Pick a type to start with:",
+        header: lang("What_sort_of_behaviour_sh"),
+        subHeader:lang("Pick_a_type_to_start_with"),
         optionsBottom: true,
         textColor: colors.white.hex,
         options: [
@@ -104,30 +104,30 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
           }],
       },
       presence: {
-        header: "Presence Aware Behaviour",
+        header: lang("Presence_Aware_Behaviour"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
         backgroundImage: require('../../../images/backgrounds/presence.png'),
-        subHeader: "Pick an example and change it to your liking!",
+        subHeader: lang("Pick_an_example_and_change"),
         image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex  },
         optionsBottom: true,
         options: this.getOptions(presenceExamples, "Presence Aware")
       },
       smartTimer: {
-        header: "Smart Timer",
+        header: lang("Smart_Timer"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
         backgroundImage: require('../../../images/backgrounds/smartTimer.png'),
-        subHeader: "Pick an example and change it to your liking!",
+        subHeader: lang("Pick_an_example_and_chang"),
         image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
         options: this.getOptions(smartTimerExamples, "Smart Timer")
       },
       dimmingRequired: {
-        header: "Dimming required",
+        header: lang("Dimming_required"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
-        subHeader: "Twilight requires me to be able to dim. Would you like to enable the dimming ability on this Crownstone?",
+        subHeader: lang("Twilight_requires_me_to_b"),
         backgroundImage: require('../../../images/backgrounds/twilight.png'),
         optionsBottom: true,
         options: [
@@ -148,10 +148,10 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         ]
       },
       twilight: {
-        header: "Twilight Mode",
+        header: lang("Twilight_Mode"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
-        subHeader: "Pick an example and change it to your liking!",
+        subHeader: lang("Pick_an_example_and_change_"),
         backgroundImage: require('../../../images/backgrounds/twilight.png'),
         image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 292, sourceHeight: 399, height: 0.25*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
@@ -209,7 +209,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview

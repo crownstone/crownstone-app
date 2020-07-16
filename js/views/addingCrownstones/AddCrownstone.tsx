@@ -45,8 +45,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
   getCards() : interviewCards {
     return {
       start: {
-        header:"Let's add a Crownstone!",
-        subHeader:"What sort of Crownstone would you like to add?",
+        header:lang("Lets_add_a_Crownstone_"),
+        subHeader:lang("What_sort_of_Crownstone_w"),
         optionsCenter: true,
         options: [
           {label: lang("Plug"),                       image: {source: require('../../images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: "A Plug it is!"},
@@ -57,7 +57,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       },
       buy: {
         textColor: colors.white.hex,
-        subHeader: "Tap the button below to go to the shop!",
+        subHeader: lang("Tap_the_button_below_to_g"),
         backgroundImage: require('../../images/backgrounds/builtinDarkBackground.png'),
         optionsBottom: true,
         options: [
@@ -65,14 +65,14 @@ export class AddCrownstone extends LiveComponent<any, any> {
         ]
       },
       installingPlug: {
-        subHeader:"Insert the plug into a power outlet and hold your phone close by. Tap next when you're ready!",
+        subHeader:lang("Insert_the_plug_into_a_po"),
         backgroundImage: require('../../images/backgrounds/plugBackground.png'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinZero_step1: {
-        subHeader: "Is the Built-in Zero already installed?",
+        subHeader: lang("Is_the_Built_in_Zero_alre"),
         backgroundImage: require('../../images/backgrounds/builtinZeroBackground.png'),
         options: [
           {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
@@ -81,7 +81,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         ]
       },
       installingBuiltinOne_step1: {
-        subHeader: "Is your Built-in One already installed?",
+        subHeader: lang("Is_your_Built_in_One_alre"),
         backgroundImage: require('../../images/backgrounds/builtinOneBackground.png'),
         options: [
           {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
@@ -90,8 +90,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
         ]
       },
       installingBuiltin_step2: {
-        header: "Installation",
-        subHeader: "Do you wish to use this Crownstone behind a power socket or with a ceiling light?",
+        header: lang("Installation"),
+        subHeader: lang("Do_you_wish_to_use_this_C"),
         backgroundImage: require('../../images/backgrounds/installationBackground.png'),
         options: [
           {label: lang("Behind_a_socket_"),      image: {source: require('../../images/addCrownstone/socket.png')},        nextCard: "installingBuiltin_instructions_socket"},
@@ -99,32 +99,32 @@ export class AddCrownstone extends LiveComponent<any, any> {
         ]
       },
       installingBuiltin_instructions_socket: {
-        header: "Installing behind a socket",
-        subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
+        header: lang("Installing_behind_a_socke"),
+        subHeader: lang("Please_follow_the_instruc"),
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
         options: [
           {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endSocket"},
         ]
       },
       installingBuiltin_instructions_light: {
-        header: "Installing in a ceiling light",
-        subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
+        header: lang("Installing_in_a_ceiling_l"),
+        subHeader: lang("Please_follow_the_instruct"),
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
           {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endLight"},
         ]
       },
       installingBuiltin_endSocket: {
-        header: "Let's get close!",
-        subHeader: "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
+        header: lang("Lets_get_close_"),
+        subHeader: lang("Hold_your_phone_close_to_"),
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltin_endLight: {
-        header: "Let's get close!",
-        subHeader: "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
+        header: lang("Lets_get_close_"),
+        subHeader: lang("Hold_your_phone_near_the_"),
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
@@ -146,7 +146,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => {
             if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
