@@ -82,10 +82,10 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
             editMode={editMode}
             editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId}) }}
             deleteCallback={() => { Alert.alert(
-lang("_Are_you_sure___Do_you_wa_header"),
-lang("_Are_you_sure___Do_you_wa_body"),
-[{text:lang("_Are_you_sure___Do_you_wa_left")},{
-text:lang("_Are_you_sure___Do_you_wa_right"), onPress: (() => {
+              lang("_Are_you_sure___Do_you_wa_header"),
+              lang("_Are_you_sure___Do_you_wa_body"),
+              [{text:lang("_Are_you_sure___Do_you_wa_left")},{
+              text:lang("_Are_you_sure___Do_you_wa_right"), onPress: (() => {
               SortingManager.removeFromLists(sceneId);
               core.store.dispatch({
                 type:"REMOVE_SCENE",

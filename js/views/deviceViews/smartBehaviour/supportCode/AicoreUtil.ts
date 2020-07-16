@@ -63,6 +63,7 @@ export const AicoreUtil = {
   },
 
   extractLocationStrings(rule : behaviour, sphereId: string) {
+    let locationPostfix = "";
     let locationPrefix = "";
     let locationStr = "";
     if (rule.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
@@ -72,11 +73,13 @@ export const AicoreUtil = {
       switch (pd.type) {
         case AICORE_LOCATIONS_TYPES.SPHERE:
           locationPrefix = lang("is")
+          locationPostfix = lang("locationPostfix")
           locationStr = lang("home")
           break;
         case AICORE_LOCATIONS_TYPES.LOCATION:
           if (pd.locationIds.length > 0) {
             locationPrefix = lang("is_in_the")
+            locationPostfix = lang("locationPostfix")
             // we will now construct a roomA_name, roomB_name or roomC_name line.
             locationStr = AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
@@ -92,7 +95,7 @@ export const AicoreUtil = {
       }
     }
 
-    return { locationPrefix, locationStr };
+    return { locationPrefix, locationStr, locationPostfix };
   },
 
 

@@ -44,7 +44,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let intentionStr = lang("I_will_be");
     let actionStr = AicoreUtil.extractActionString(this.rule);
     let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
-    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
+    let { locationPrefix, locationStr, locationPostfix } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
     let timeStr = AicoreUtil.extractTimeString(this.rule);
     let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
 

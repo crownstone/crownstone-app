@@ -181,6 +181,7 @@ export default {
     is:                                  function() { return "is" },
     home:                                function() { return "home" },
     is_in_the:                           function() { return "is in the" },
+    locationPostfix:                     function() { return "" },
     __hour:                              function() { return "1 hour" },
     _hours:                              function() { return arguments[0] + " hours" },
     _minutes:                            function() { return arguments[0] + " minutes" },
@@ -259,10 +260,6 @@ export default {
   },
   DeviceAbilities:{
     __filename: "../../js/views/deviceViews/DeviceAbilities.tsx",
-    dimming:                             function() { return "dimming" },
-    switchcraft:                         function() { return "switchcraft" },
-    tapToToggle:                         function() { return "tapToToggle" },
-    small:                               function() { return "small" },
     My_Abilities:                        function() { return "My Abilities" },
     These_are_the_things_I_ca:           function() { return "These are the things I can do for you!\n" + (arguments[0] ? "You can enable or disable my abilities\nto suit your needs." : "The sphere admin can enable or disable\nmy abilities to suit your needs.") },
     Waiting_to_notify_the_nCr:           function() { return "Waiting to notify the\nCrownstone..." },
@@ -379,7 +376,6 @@ export default {
   DeviceOverview:{
     __filename: "../js/views/deviceViews/DeviceOverview.tsx",
     Edit:                                function() { return "Edit" },
-    Change:                              function() { return "Change" },
     Searching___:                        function() { return "Searching..." },
     Once_I_hear_from_this_Cro:           function() { return "Once I hear from this Crownstone, the button will reappear." },
     Abilities:                           function() { return "Abilities" },
@@ -503,7 +499,6 @@ export default {
     _Visible_:                           function() { return "(Visible)" },
     _Barely_visible_:                    function() { return "(Barely visible)" },
     _Too_far_away_:                      function() { return "(Too far away)" },
-    large:                               function() { return "large" },
     Working___:                          function() { return arguments[0] && "Working..." || "" },
   },
   DfuDeviceOverviewEntry:{
@@ -558,7 +553,6 @@ export default {
   },
   DfuIntroduction:{
     __filename: "../js/views/overlays/DfuOverlay.tsx",
-    __:                                  function() { return arguments[0] + " %" },
     Not_right_now___:                    function() { return "Not right now..." },
     Lets_do_it_:                         function() { return "Let's do it!" },
     Start_the_update_:                   function() { return "Start the update!" },
@@ -601,7 +595,6 @@ export default {
   },
   DimmerSlider:{
     __filename: "../../js/views/components/DimmerSlider.tsx",
-    small:                               function() { return "small" },
     The_dimmer_is_starting_up:           function() { return "The dimmer is starting up..." },
     Smooth_sliding_will_be_av:           function() { return "Smooth sliding will be available once I'm close enough to the Crownstone to enable dimming on it." },
   },
@@ -974,7 +967,6 @@ export default {
   },
   NumericOverlay:{
     __filename: "../../js/views/overlays/NumericOverlay.tsx",
-    small:                               function() { return "small" },
     Set_:                                function() { return "Set!" },
   },
   NumericSet:{
@@ -1003,9 +995,6 @@ export default {
   },
   PictureView:{
     __filename: "../js/views/cameraViews/PictureView.tsx",
-    Done:                                function() { return "Done" },
-    Cancel:                              function() { return "Cancel" },
-    Retry:                               function() { return "Retry" },
   },
   PlaceFloatingCrownstonesInRoom:{
     __filename: "../../js/views/roomViews/PlaceFloatingCrownstonesInRoom.tsx",
@@ -1292,7 +1281,6 @@ export default {
     terms_:                              function() { return "terms" },
     __:                                  function() { return " & " },
     privacy_policy:                      function() { return "privacy policy" },
-    Register:                            function() { return "Register" },
     First_name:                          function() { return "First name" },
     Last_name:                           function() { return "Last name" },
     Email_address:                       function() { return "Email address" },
@@ -1447,8 +1435,6 @@ export default {
     _Youre_not_in_the_Sphere__header:    function() { return "You're not in the Sphere" },
     _Youre_not_in_the_Sphere__body:      function() { return "Training is only possible if you're in the Sphere. Try again when you are." },
     _Youre_not_in_the_Sphere__left:      function() { return "OK" },
-    Edit:                                function() { return "Edit" },
-    Train:                               function() { return "Train" },
     _Retrain_Room__Only_do_th_header:    function() { return "Retrain Room" },
     _Retrain_Room__Only_do_th_body:      function() { return "Only do this if you experience issues with the indoor localization." },
     _Retrain_Room__Only_do_th_left:      function() { return "Cancel" },
@@ -1582,7 +1568,6 @@ export default {
   },
   SceneItem:{
     __filename: "../../js/views/scenesViews/supportComponents/SceneItem.tsx",
-    large:                               function() { return "large" },
     _Are_you_sure___Do_you_wa_header:    function() { return "Are you sure?" },
     _Are_you_sure___Do_you_wa_body:      function() { return "Do you want to delete this scene?" },
     _Are_you_sure___Do_you_wa_left:      function() { return "Cancel" },
@@ -1936,7 +1921,6 @@ export default {
   },
   SmartBehaviourRule:{
     __filename: "../../js/views/deviceViews/smartBehaviour/supportComponents/SmartBehaviourRule.tsx",
-    small:                               function() { return "small" },
     _Started_Yesterday_:                 function() { return "(Started Yesterday)" },
     _Are_you_sure___Since_thi_header:    function() { return "Are you sure?" },
     _Are_you_sure___Since_thi_body:      function() { return "Since this behaviour is only active on this day, removing it will remove it completely." },
@@ -1953,7 +1937,6 @@ export default {
   },
   SmartHomeStateButton:{
     __filename: "../../js/views/main/buttons/SmartHomeStateButton.tsx",
-    small:                               function() { return "small" },
   },
   Sphere:{
     __filename: "../js/views/main/Sphere.tsx",
@@ -2013,7 +1996,6 @@ export default {
   },
   SphereEditMap:{
     __filename: "../../js/views/main/editSubviews/SphereEditMap.tsx",
-    small:                               function() { return "small" },
     Use_this_location_:                  function() { return "Use this location!" },
   },
   SphereEditSettings:{
@@ -2091,7 +2073,6 @@ export default {
   },
   SphereOverview:{
     __filename: "../js/views/main/SphereOverview.tsx",
-    Edit:                                function() { return "Edit" },
     No_Spheres_available_:               function() { return "No Spheres available." },
     Press_Edit_in_the_upper_r:           function() { return "Press Edit in the upper right corner to create your own Sphere or wait to be added to those of others." },
     Sphere_Overview:                     function() { return "Sphere Overview" },
