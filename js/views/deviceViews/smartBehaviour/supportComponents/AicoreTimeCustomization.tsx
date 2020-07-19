@@ -240,7 +240,7 @@ function TimePart(props : {
                   basic={true}
                   key={"resultButton" + index}
                   index={index}
-                  label={ Platform.OS === "android" ? "That's a good time!" + test : lang("Tap_to_select_time_")}
+                  label={ Platform.OS === "android" ? lang("Thats_a_good_time_") : lang("Tap_to_select_time_")}
                   image={require("../../../../images/icons/clock.png")}
                   callback={() => {
                     setFinished(true);

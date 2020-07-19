@@ -149,18 +149,18 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     if (this.state.isUpdating) {
       let progressLabel = null;
       switch (this.state.phase) {
-        case DfuPhases.PREPARATION:                 progressLabel = "Preparing...";                        break;
-        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = "Getting update information...";       break;
-        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = "Looking for Crownstone...";           break;
-        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = "Checking versions...";                break;
-        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = "Checking Firmware version...";        break;
-        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = "Checking Bootloader version...";      break;
-        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = "Checking Bootloader steps...";        break;
-        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = "Preparing Crownstone for update...";  break;
-        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = "Checking Firmware steps...";          break;
-        case DfuPhases.BOOTLOADER:                  progressLabel = "Updating Bootloader..."; break;
-        case DfuPhases.FIRMWARE:                    progressLabel = "Updating Firmware...";   break;
-        case DfuPhases.SETUP:                       progressLabel = "Finalizing...";          break;
+        case DfuPhases.PREPARATION:                 progressLabel = lang("Preparing___");              break;
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = lang("Getting_update_informatio"); break;
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = lang("Looking_for_Crownstone___"); break;
+        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = lang("Checking_versions___");      break;
+        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = lang("Checking_Firmware_version"); break;
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = lang("Checking_Bootloader_versi"); break;
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = lang("Checking_Bootloader_steps"); break;
+        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = lang("Preparing_Crownstone_for_"); break;
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = lang("Checking_Firmware_steps__"); break;
+        case DfuPhases.BOOTLOADER:                  progressLabel = lang("Updating_Bootloader___");    break;
+        case DfuPhases.FIRMWARE:                    progressLabel = lang("Updating_Firmware___");      break;
+        case DfuPhases.SETUP:                       progressLabel = lang("Finalizing___");             break;
       }
 
       switch (this.state.phase) {

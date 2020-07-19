@@ -82,8 +82,8 @@ export class Register extends LiveComponent<any, any> {
   getCards() : interviewCards {
     return {
       start: {
-        header:"Welcome!",
-        subHeader:"What should I call you?",
+        header:lang("Welcome_"),
+        subHeader:lang("What_should_I_call_you_"),
         optionsBottom: true,
         editableItem: (state, setState) => {
           return (
@@ -151,8 +151,8 @@ export class Register extends LiveComponent<any, any> {
         ]
       },
       picture: {
-        header: "Nice to meet you " + this.user.firstName + "!",
-        subHeader: "Would you like to add a profile picture?",
+        header: lang("Nice_to_meet_you__", this.user.firstName),
+        subHeader: lang("Would_you_like_to_add_a_p"),
         editableItem: (state, setState) => {
           return (
             <View style={{...styles.centered, flex:1}}>
@@ -193,8 +193,8 @@ export class Register extends LiveComponent<any, any> {
         }]
       },
       email: {
-        header: this.user.picture ? "Fantastic picture!" : "You're almost done!",
-        subHeader: this.user.picture ? "Now let's create your account!" : "Let's create your account!",
+        header: this.user.picture ? lang("Fantastic_picture_") : lang("Youre_almost_done_"),
+        subHeader: this.user.picture ? lang("Now_lets_create_your_acco") : lang("Lets_create_your_account_"),
         optionsBottom: true,
         editableItem: (state, setState) => {
           return (
@@ -297,11 +297,9 @@ export class Register extends LiveComponent<any, any> {
         ]
       },
       finished: {
-        header:"That's it!",
-        subHeader: "We have sent an email to:\n\n" +
-          (this.user.email || "" ).toLowerCase() + "\n\n" +
-          "Please tap the link in the email to activate your account and log in!",
-        explanation:"If you do not see the email, try checking your spam folder.",
+        header:lang("Thats_it_"),
+        subHeader: lang("We_have_sent_an_email_to__", (this.user.email || "" ).toLowerCase()),
+        explanation:lang("If_you_do_not_see_the_ema"),
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -323,7 +321,7 @@ export class Register extends LiveComponent<any, any> {
 
   requestRegistration() {
     // show the processing screen
-    core.eventBus.emit('showLoading', 'Sending Registration Request...');
+    core.eventBus.emit('showLoading', lang("Sending_Registration_Requ"));
     CLOUD.registerUser({
       email: this.user.email.toLowerCase(),
       password: sha1(this.user.password),
@@ -367,7 +365,7 @@ export class Register extends LiveComponent<any, any> {
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}

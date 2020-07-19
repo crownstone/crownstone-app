@@ -40,12 +40,12 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
   getCards() : interviewCards {
     return {
       start: {
-        header: "Who's participating?",
-        subHeader: "Select the Crownstones which will be part of this scene.",
+        header: lang("Whos_participating_"),
+        subHeader: lang("Select_the_Crownstones_wh"),
         optionsAlwaysOnTop: true,
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
-        explanation: "Crownstones that are not selected will be left unchanged when this scene is activated.",
+        explanation: lang("Crownstones_that_are_not_"),
         component:
           <View>
             { this.getStoneSelectionList(this.props.sphereId) }
@@ -72,7 +72,7 @@ lang("_Select_at_least_one______body"),
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : "Cancel"}
+          left={Platform.OS === 'android' ? null : lang("Cancel")}
           leftAction={() => { if (this._interview.back() === false) {
             if (this.props.isModal !== false) {
               NavigationUtil.dismissModal();

@@ -15,20 +15,10 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { UPTIME_LOG_PREFIX } from "../../../backgroundProcesses/UptimeMonitor";
 import { LOGe } from "../../../logging/Log";
-import Share from "react-native-share";
 
-const querystring = require('qs');
-const RNFS = require('react-native-fs');
 
-type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
-interface iEmailData { [key: string]: emailDataType }
 
-const EMAIL_DATA_TYPE = {
-  allBuffers:           'allBuffers',
-  switchCraftBuffers:   'switchCraftBuffers',
-  measurementBuffers:   'measurementBuffers',
-  logs:                 'logs',
-}
+
 
 export class SettingsLogging extends LiveComponent<any, any> {
   static options(props) {
@@ -37,11 +27,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
 
   unsubscribe;
-  constructor(props) {
-    super(props);
-
-    this.state = {showSharingSettings: false, sharingDataType: 'logs'}
-  }
 
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
@@ -177,95 +162,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
       }
     });
 
-    items.push({
-      type:'explanation',
-      label: "SHARE DATA WITH LOVELY DEVELOPERS"
-    });
-
-    if (this.state.showSharingSettings) {
-      items.push({
-        type:'dropdown',
-        value: this.state.sharingDataType,
-        label: 'Share Data:',
-        items:[{label: EMAIL_DATA_TYPE.logs}, {label: EMAIL_DATA_TYPE.allBuffers}, {label: EMAIL_DATA_TYPE.switchCraftBuffers}, {label: EMAIL_DATA_TYPE.measurementBuffers}],
-        callback: (data) => { this.setState({sharingDataType: data})}
-      })
-
-      if (this.state.sharingDataType !== null) {
-        items.push({
-          label: "Share data now!",
-          type: 'button',
-          style: {color: colors.blue.hex},
-          icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-          callback:(newValue) => {
-            let shareDataType = this.state.sharingDataType;
-            let storagePath = FileUtil.getPath();
-            let options = {};
-            if (shareDataType === 'logs') {
-              let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
-              options = {urls:[
-                "file://" + storagePath + filename,
-              ]}
-            }
-            else if (shareDataType === 'allBuffers') {
-              options = {urls:[
-                "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-                "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-                "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-                "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-                "file://" + storagePath + '/power-samples-filteredData.log',
-                "file://" + storagePath + '/power-samples-unfilteredData.log',
-              ]}
-            }
-            else if (shareDataType === 'switchCraftBuffers') {
-              options = {urls:[
-                "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-                "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-                "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-                "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-              ]}
-            }
-            else if (shareDataType === "measurementBuffers") {
-              options = {urls:[
-                "file://" + storagePath + '/power-samples-filteredData.log',
-                "file://" + storagePath + '/power-samples-unfilteredData.log',
-              ]}
-            }
-
-            Share.open(options)
-              .then((res) => { console.log(res) })
-              .catch((err) => { err && console.log(err); });
-        }});
-      }
-    }
-    else {
-      items.push({
-        label: "Share Data",
-        type: 'button',
-        style: { color: colors.blue.hex },
-        icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.blue.hex }}/>,
-        callback: () => {
-          this.setState({ showSharingSettings: true })
-        }
-      });
-    }
-
-    items.push({
-      label: "Delete collected data",
-      type: 'button',
-      icon: <IconButton name="ios-trash" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.red.hex }}/>,
-      callback: () => {
-        Alert.alert("Sure about that?","This will delete all collected power curves.",[{text:'no'},{text:"yes", onPress: () => {
-          let storagePath = FileUtil.getPath();
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-positive.log')
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-positive.log')
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-negative.log')
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-negative.log')
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-filteredData.log')
-          FileUtil.safeDeleteFile(storagePath + '/power-samples-unfilteredData.log')
-        }}])
-      }
-    });
 
 
     items.push({ type:'spacer' });
@@ -285,104 +181,4 @@ export class SettingsLogging extends LiveComponent<any, any> {
       </BackgroundNoNotification>
     );
   }
-}
-
-function getLogs(type : emailDataType) : Promise<string> {
-  let storagePath = FileUtil.getPath();
-  if (type === 'logs') {
-    let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
-    let timestamp = new Date().valueOf() - 5*60*1000; // 15 mins
-    return RNFS.readFile(storagePath + '/' + filename)
-      .then((data) => {
-        let lines = data.split("\n");
-
-        let string = '';
-        for (let i = lines.length-1; i > 0; i--) {
-          let parts = lines[i].split(" - ");
-          let time = Number(parts[0]);
-
-          if (time > 0 && time < timestamp) {
-            break;
-          }
-
-          string += lines[i] + "\n";
-        }
-
-        return string;
-      })
-      .catch((err) => { console.log("CANT",err) })
-  }
-  else {
-    let data = '';
-    if (type === 'allBuffers') {
-      return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-positive.log').catch(() => {})
-        .then((d) => {
-          data += "\n\n###FalsePositive:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-positive.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###TruePositive:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-negative.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###FalseNegative:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-negative.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###TrueNegative:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-filteredData.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###FilteredData:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-unfilteredData.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###UnfilteredData:\n"
-          data += d;
-          return data;
-        }).catch(() => {})
-    }
-    else if (type === 'switchCraftBuffers') {
-      return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-positive.log').catch(() => {})
-        .then((d) => {
-          data += "\n\n###FalsePositive:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-positive.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###TruePositive:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-false-negative.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###FalseNegative:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-switchcraft-true-negative.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###TrueNegative:\n"
-          data += d;
-          return data;
-        }).catch(() => {})
-    }
-    else if (type === "measurementBuffers") {
-      return RNFS.readFile(storagePath + '/power-samples-filteredData.log').catch(() => {})
-        .then((d) => {
-          data += "\n\n###FilteredData:\n"
-          data += d;
-          return RNFS.readFile(storagePath + '/power-samples-unfilteredData.log').catch(() => {})
-        })
-        .then((d) => {
-          data += "\n\n###UnfilteredData:\n"
-          data += d;
-          return data;
-        }).catch(() => {})
-    }
-  }
-
 }

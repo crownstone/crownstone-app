@@ -220,7 +220,7 @@ export class SetupCrownstone extends LiveComponent<{
   getCards() : interviewCards {
     let state = core.store.getState();
 
-    let namePlaceholder = "My New Crownstone";
+    let namePlaceholder = lang("My_New_Crownstone");
 
     let sphereId = this.props.sphereId;
 
@@ -240,7 +240,7 @@ export class SetupCrownstone extends LiveComponent<{
         label: location.name,
         icon: location.icon,
         nextCard: 'waitToFinish',
-        response: "I'm almost done!",
+        response: lang("Im_almost_done_"),
         onSelect: () => {
           this.newCrownstoneState.location       = location;
           this.newCrownstoneState.configFinished = true;
@@ -312,8 +312,8 @@ export class SetupCrownstone extends LiveComponent<{
     ];
 
     let restorationCard = {
-      header: "Restoring Crownstone...",
-      subHeader: "This should only take a minute!",
+      header: lang("Restoring_Crownstone___"),
+      subHeader: lang("This_should_only_take_a_m"),
       backgroundImage: require('../../images/backgrounds/fadedLightBackground.png'),
       component: (
         <View style={{...styles.centered, flex:1}}>
@@ -333,8 +333,8 @@ export class SetupCrownstone extends LiveComponent<{
 
     let problemCards = {
       problemCloud: {
-        header:"Something went wrong..",
-        subHeader: "Please verify that you are connected to the internet and try again.",
+        header: lang("Something_went_wrong__"),
+        subHeader: lang("Please_verify_that_you_ar"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
@@ -348,8 +348,8 @@ export class SetupCrownstone extends LiveComponent<{
         options: failedOptions
       },
       problemBle: {
-        header:"Something went wrong..",
-        subHeader: "Please restart the Bluetooth on your phone and make sure you're really close to this Crownstone!",
+        header: lang("Something_went_wrong__"),
+        subHeader: lang("Please_restart_the_Blueto"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
@@ -363,8 +363,8 @@ export class SetupCrownstone extends LiveComponent<{
         options: failedOptions
       },
       problem: {
-        header:"Something went wrong..",
-        subHeader: "Please try again later!",
+        header:lang("Something_went_wrong__"),
+        subHeader: lang("Please_try_again_later_"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
@@ -383,8 +383,8 @@ export class SetupCrownstone extends LiveComponent<{
         ]
       },
       aborted: {
-        header:"Aborted.",
-        subHeader: "The Crownstone was not added to your Sphere.",
+        header:lang("Aborted_"),
+        subHeader: lang("The_Crownstone_was_not_ad"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
@@ -415,8 +415,8 @@ export class SetupCrownstone extends LiveComponent<{
 
     return {
       start: {
-        header:"Let's get started!",
-        subHeader: "What shall I call this Crownstone?",
+        header:lang("Lets_get_started_"),
+        subHeader: lang("What_shall_I_call_this_Cr"),
         hasTextInputField: true,
         placeholder: namePlaceholder,
         options: [
@@ -424,7 +424,7 @@ export class SetupCrownstone extends LiveComponent<{
             label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
-            dynamicResponse: (value) => { if (value.textfieldState === '') { return 'Default name it is!';} else { return "That's a good name!"}},
+            dynamicResponse: (value) => { if (value.textfieldState === '') { return lang("Default_name_it_is_");} else { return lang("Thats_a_good_name_")}},
             onSelect: (result) => {
               let name = result.textfieldState;
               if (name == "") {
@@ -440,9 +440,9 @@ export class SetupCrownstone extends LiveComponent<{
         ]
       },
       icon: {
-        header: "Let's pick an icon!",
-        subHeader: "Let's give this Crownstone an icon so we can quickly recognize it!",
-        explanation: "You can always change this later in the Crownstone's settings.",
+        header: lang("Lets_pick_an_icon_"),
+        subHeader: lang("Lets_give_this_Crownstone"),
+        explanation: lang("You_can_always_change_thi"),
         editableItem: (state, setState) => {
           return (
             <TouchableOpacity onPress={() => {
@@ -468,7 +468,7 @@ export class SetupCrownstone extends LiveComponent<{
           );
         },
         options: [
-          {label: lang("Next"), textAlign:'right', nextCard: 'rooms', response: "Cool, so that'll be my icon!",
+          {label: lang("Next"), textAlign:'right', nextCard: 'rooms', response: lang("Cool__so_thatll_be_my_ico"),
             onSelect: (result) => {
               let icon = result.customElementState || this.randomIcon;
               this.newCrownstoneState.icon = icon;
@@ -476,14 +476,14 @@ export class SetupCrownstone extends LiveComponent<{
         ]
       },
       rooms: {
-        header:"Let's pick a room!",
-        subHeader: "In which room did you put " + xUtil.capitalize(this.newCrownstoneState.name) + "?",
+        header: lang("Lets_pick_a_room_"),
+        subHeader: lang("In_which_room_did_you_put", xUtil.capitalize(this.newCrownstoneState.name)),
         optionsBottom: true,
         options: roomOptions
       },
       waitToFinish: {
-        header: "Working on it!",
-        subHeader: "Setting up your new Crownstone now...",
+        header: lang("Working_on_it_"),
+        subHeader: lang("Setting_up_your_new_Crown"),
         backgroundImage: require('../../images/backgrounds/fadedLightBackground.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -501,8 +501,8 @@ export class SetupCrownstone extends LiveComponent<{
         ]
       },
       setupMore: {
-        header:"That's it!",
-        subHeader: "Would you like to setup more Crownstones or is this enough for now?",
+        header:lang("Thats_it_"),
+        subHeader: lang("Would_you_like_to_setup_m"),
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -513,8 +513,8 @@ export class SetupCrownstone extends LiveComponent<{
         options: successOptions
       },
       successWhileAborting: {
-        header:"Setup complete.",
-        subHeader: "This Crownstone was added to your Sphere before I aborted the process. You can remove it from your Sphere in this Crownstone's settings if you'd like.",
+        header:lang("Setup_complete_"),
+        subHeader: lang("This_Crownstone_was_added"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
@@ -526,11 +526,8 @@ export class SetupCrownstone extends LiveComponent<{
         options: successOptions
       },
       iKnowThisOne: {
-        header:"I know this one!",
-        subHeader: "This Crownstone was already in your Sphere. I've restored it to the way it was!\n\n" +
-          "Name: " + this.newCrownstoneState.name + "\n" +
-          "Room: " + (this.newCrownstoneState.location.name || "Unknown") + "\n\n" +
-          "What would you like to do now?",
+        header:lang("I_know_this_one_"),
+        subHeader: lang("This_Crownstone_was_alrea", this.newCrownstoneState.name,this.newCrownstoneState.location.name),
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         optionsBottom: true,
         options: successOptions

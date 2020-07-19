@@ -92,20 +92,21 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let padding = 8;
   let height  = 90+2*padding;
   let margins = 30;
+  let imageSize = height-2*padding;
 
   let fullyDisabled = getDisabledState(props.stone, props.type);
   let active = getActiveState(props.stone, props.type);
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
   let helpColor = colors.black.rgba(0.5);
-
+  // synced = false
   return (
     <View style={{width:screenWidth, marginBottom: margins}}>
       <View style={{flexDirection:'row', width: screenWidth-margins, height:height, marginLeft:margins, borderRadius:0.5*height, borderBottomRightRadius: 0, borderTopRightRadius: 0, backgroundColor: colors.white.hex, marginBottom:5, padding:padding, paddingRight:10}}>
-        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={height-2*padding} />
-        <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
+        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={imageSize} />
+        <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10, width: screenWidth - margins - imageSize - 120}}>
           <View style={{flexDirection:'row'}}>
-            <Text style={deviceStyles.text}>{data.label}</Text>
+            <Text style={{...deviceStyles.text, textAlign:'left'}}>{data.label}</Text>
             <FadeInView visible={!synced}><ActivityIndicator color={colors.csBlueDark.hex} size={ "small"} style={{marginLeft:10}}/></FadeInView>
           </View>
           <SlideFadeInView visible={!synced} height={40} style={{alignItems:'center'}}>
@@ -178,7 +179,7 @@ function getData(props, stone, active) {
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_DimmerSettings", propsToPass); },
           activateCallback: () => { },
-          explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk."
+          explanation: lang("Dimming_can_be_enabled_pe")
         }
       }
       return {
@@ -187,7 +188,7 @@ function getData(props, stone, active) {
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
-        explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk."
+        explanation: lang("Dimming_can_be_enabled_pe")
       }
     case 'switchcraft':
       propsToPass.information = () => { NavigationUtil.navigate("Ability_SwitchcraftInformation"); };
@@ -198,7 +199,7 @@ function getData(props, stone, active) {
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_SwitchcraftSettings", propsToPass); },
           activateCallback: () => { },
-          explanation: "Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information."
+          explanation: lang("Use_modified_wall_switche")
         }
       }
       return {
@@ -207,7 +208,7 @@ function getData(props, stone, active) {
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
-        explanation: "Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information."
+        explanation: lang("Use_modified_wall_switche")
       }
     case 'tapToToggle':
       let state = core.store.getState();
@@ -216,20 +217,18 @@ function getData(props, stone, active) {
       let typeLabel = null;
       let activeTypeLabel = null;
       if (!tapToToggleEnabledGlobally) {
-        disabledLabel = "Tap to toggle is disabled for all Crownstones in the app settings."
+        disabledLabel = lang("Tap_to_toggle_is_disabled")
       };
 
       switch (stone.config.type) {
         case STONE_TYPES.plug:
-          activeTypeLabel = "To adjust the distance sensitivity of your phone to all Crownstones, take a look at the Settings -> App Settings." +
-            " You can customize the sensitivity of this particular Crownstone by tapping on the cogwheel.";
-          typeLabel = "Enable so you can tap your phone against this Crownstone toggle it on or off.";
+          activeTypeLabel = lang("To_adjust_the_distance_se");
+          typeLabel = lang("Enable_so_you_can_tap_you");
           break;
         case STONE_TYPES.builtin:
         case STONE_TYPES.builtinOne:
-          activeTypeLabel = "To adjust the distance sensitivity of your phone to all Crownstones, take a look at the Settings -> App Settings." +
-            " You can customize the sensitivity of this particular Crownstone by tapping on the cogwheel.";
-          typeLabel = "Usually, Built-in Crownstones have tap to toggle disabled. But, if you enable it, you can hold your phone close to this Crownstone toggle it on or off.";
+          activeTypeLabel = lang("To_adjust_the_distance_sen");
+          typeLabel = lang("Usually__Built_in_Crownst");
       }
 
       propsToPass.information = () => { NavigationUtil.navigate("Ability_TapToToggleInformation"); };

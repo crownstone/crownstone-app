@@ -157,6 +157,14 @@ class LocalizationDebugCircleClass extends Component<any, any> {
       </View>
     )
   }
+  _getIsKnnLocationIcon() {
+    let alertSize = this.outerDiameter*0.27;
+    return (
+      <View style={{position:'absolute', top: this.outerDiameter - alertSize, left: this.outerDiameter - alertSize}}>
+        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.green.hex} borderWidth={3} />
+      </View>
+    )
+  }
 
   render() {
     const store = core.store;
@@ -182,6 +190,7 @@ class LocalizationDebugCircleClass extends Component<any, any> {
           {this.getCircle()}
           {this.props.inLocation    ? this._getInLocationIcon() : undefined}
           {this.props.isAppLocation ? this._getIsAppLocationIcon() : undefined}
+          {this.props.isKnnLocation ? this._getIsKnnLocationIcon() : undefined}
         </View>
       </Animated.View>
     )

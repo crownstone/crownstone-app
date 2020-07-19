@@ -46,7 +46,7 @@ let scanFile = function(filePath) {
 
 let hasLine = function(filePath, line) {
   let content = fs.readFileSync(filePath, "utf8")
-  return content.indexOf(line) > -1;
+  return content.indexOf("lang(\"" + line + "\"") > -1 || content.indexOf("lang(\'" + line + '\'') > -1;
 }
 
 

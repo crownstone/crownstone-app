@@ -4,6 +4,11 @@ import {
 import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
+import { Languages } from "../../../../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AicoreBehaviour", key)(a,b,c,d,e);
+}
 
 const EMPTY_RULE : behaviour = {
   action:   { type: "BE_ON", data: 100 },
@@ -36,10 +41,10 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
 
 
   _getChunks(sphereId: string) {
-    let intentionStr = "I will be";
+    let intentionStr = lang("I_will_be");
     let actionStr = AicoreUtil.extractActionString(this.rule);
     let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
-    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
+    let { locationPrefix, locationStr, locationPostfix } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
     let timeStr = AicoreUtil.extractTimeString(this.rule);
     let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
 

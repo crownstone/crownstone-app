@@ -44,7 +44,7 @@ import { SphereIntegrations }             from "../views/main/editSubviews/Spher
 
 import { SettingsApp }                    from '../views/settingsViews/SettingsApp'
 import { SettingsBleDebug }               from '../views/settingsViews/dev/SettingsBleDebug'
-import { SettingsDeveloper }              from '../views/settingsViews/SettingsDeveloper'
+import { SettingsDeveloper }              from '../views/settingsViews/dev/SettingsDeveloper'
 import { SettingsDiagnostics }            from '../views/settingsViews/SettingsDiagnostics'
 import { SettingsFactoryResetStep1 }      from '../views/settingsViews/SettingsFactoryResetStep1'
 import { SettingsFactoryResetStep2 }      from '../views/settingsViews/SettingsFactoryResetStep2'

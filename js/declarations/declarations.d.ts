@@ -100,6 +100,7 @@ interface NativeBusTopics {
   enterRoom:                       string,
   exitRoom:                        string,
   currentRoom:                     string,
+  currentLocationKNN:              string,
 
   libAlert:                        string,
   libPopup:                        string,
