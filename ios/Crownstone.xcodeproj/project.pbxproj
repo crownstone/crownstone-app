@@ -3,26 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* CrownstoneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CrownstoneTests.m */; };
-		02B76B6C4BE74C6AA10E411F /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C00E76B8E8342C39BA07CC7 /* FontAwesome5_Regular.ttf */; };
-		36AD254E07C646A6966A7709 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6050E602DB5545E987715E94 /* AntDesign.ttf */; };
-		3D9F3719ACF34F349748EC35 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C648D1E337B4439DA8CF7411 /* FontAwesome.ttf */; };
-		5DD6B0E8203C49CA90170328 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEB1FEE0EEBB4A408A7AD560 /* Feather.ttf */; };
-		77CEB38785D540689B14BC04 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 140C80BD57674780B1435B6A /* Zocial.ttf */; };
-		78250BBE72AE4D3D81928B2F /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3168EF210533498EAC7B488C /* SimpleLineIcons.ttf */; };
 		842E44F72042C313CB90B8E8 /* libPods-CrownstoneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 629D4A0319D4A3CBF4D5EAAC /* libPods-CrownstoneTests.a */; };
-		8C11F33F58854209B1C1DEBF /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 46FE7150DB694F9E85D27BFC /* EvilIcons.ttf */; };
-		9E528FFD074F46F498AEBAE4 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D6D9F02B4FC4B1AAA08CCFB /* Octicons.ttf */; };
-		AFB24E413C094648A83F3994 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83EED6E7677649159ADF42F7 /* Entypo.ttf */; };
 		B5861366D51EC77A501B8E2C /* libPods-Crownstone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 147C740A2AD631171CA89CC6 /* libPods-Crownstone.a */; };
-		B68808BC5447443082C61C12 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1D30CA378FA4421A1BFF9D6 /* MaterialCommunityIcons.ttf */; };
-		B848CB6B21E44048AF3EABB6 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB52802436124542B3AD3458 /* FontAwesome5_Brands.ttf */; };
-		B9AC552EA8074410BE162F05 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3624663A3C2E47DF9D040AB4 /* Foundation.ttf */; };
-		BF81E2A6FBB44062A90F84CC /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F94E04D8F3A48E5ABC73F3E /* MaterialIcons.ttf */; };
 		FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177CE1FC462F5001C8FD6 /* ErrorTranslator.swift */; };
 		FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D31FC46359001C8FD6 /* Portal.swift */; };
 		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
@@ -126,12 +113,9 @@
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
-		FAC6D1AF24BCAABA007AA96F /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6D17D24BCAABA007AA96F /* KNN.swift */; };
 		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
 		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
 		FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF2D2B1248A9093003973F6 /* Zip.framework */; };
-		FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55F5CEDF77EE4B91A302901C /* Fontisto.ttf */; };
-		FDE6E52417DF40F4A46D33F6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -450,13 +434,6 @@
 			remoteGlobalIDString = C777CF2FB1E39A45CBBDB54E8693F471;
 			remoteInfo = RNReanimated;
 		};
-		FAC6D17824BCAA8A007AA96F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BFE9675E9E0EFBEB42444001DBD1685D;
-			remoteInfo = KDTree;
-		};
 		FAC6D17A24BCAA8A007AA96F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -618,7 +595,6 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
-		FAC6D17D24BCAABA007AA96F /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KNN.swift; sourceTree = "<group>"; };
 		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FAF2D2B1248A9093003973F6 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
@@ -867,7 +843,6 @@
 			isa = PBXGroup;
 			children = (
 				FA0177D31FC46359001C8FD6 /* Portal.swift */,
-				FAC6D17D24BCAABA007AA96F /* KNN.swift */,
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
 				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
 			);
@@ -890,7 +865,6 @@
 				FA274E7E2410144F00D7C858 /* libFBReactNativeSpec.a */,
 				FA274E802410144F00D7C858 /* libFolly.a */,
 				FA274E822410144F00D7C858 /* libglog.a */,
-				FAC6D17924BCAA8A007AA96F /* libKDTree.a */,
 				FA274E842410144F00D7C858 /* libPods-Crownstone.a */,
 				FA274E862410144F00D7C858 /* libPods-CrownstoneTests.a */,
 				FA274E882410144F00D7C858 /* libRCTTypeSafety.a */,
@@ -1088,6 +1062,8 @@
 				FA86C69C21CCEED000811933 /* PBXTargetDependency */,
 			);
 			name = Crownstone;
+			packageProductDependencies = (
+			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
 			productType = "com.apple.product-type.application";
@@ -1181,6 +1157,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				FAFC17BE24C0ADA200480FD7 /* XCRemoteSwiftPackageReference "KDTree" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
@@ -1494,13 +1473,6 @@
 			remoteRef = FABC3D0524349B9100F4002E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FAC6D17924BCAA8A007AA96F /* libKDTree.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libKDTree.a;
-			remoteRef = FAC6D17824BCAA8A007AA96F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FAC6D17B24BCAA8A007AA96F /* libRNShare.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1535,34 +1507,19 @@
 				FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */,
 				FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */,
 				FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */,
-				AFB24E413C094648A83F3994 /* Entypo.ttf in Resources */,
-				8C11F33F58854209B1C1DEBF /* EvilIcons.ttf in Resources */,
 				FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */,
-				3D9F3719ACF34F349748EC35 /* FontAwesome.ttf in Resources */,
-				B9AC552EA8074410BE162F05 /* Foundation.ttf in Resources */,
 				FA3F741123F6F2EE009045A7 /* Roboto-Italic.ttf in Resources */,
 				FA3F741623F6F2EE009045A7 /* Roboto-Light.ttf in Resources */,
 				FA3F741523F6F2EE009045A7 /* Roboto-BoldItalic.ttf in Resources */,
 				FA12B84A22451C0B003B017E /* Ionicons3.ttf in Resources */,
-				B68808BC5447443082C61C12 /* MaterialCommunityIcons.ttf in Resources */,
-				BF81E2A6FBB44062A90F84CC /* MaterialIcons.ttf in Resources */,
 				FA3F741423F6F2EE009045A7 /* Roboto-Medium.ttf in Resources */,
-				9E528FFD074F46F498AEBAE4 /* Octicons.ttf in Resources */,
 				FA3F741223F6F2EE009045A7 /* Roboto-MediumItalic.ttf in Resources */,
 				FA3F740E23F6F2EE009045A7 /* Roboto-Bold.ttf in Resources */,
-				78250BBE72AE4D3D81928B2F /* SimpleLineIcons.ttf in Resources */,
-				77CEB38785D540689B14BC04 /* Zocial.ttf in Resources */,
 				FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */,
-				5DD6B0E8203C49CA90170328 /* Feather.ttf in Resources */,
 				FA3F740123F6E47C009045A7 /* Roboto-Regular.ttf in Resources */,
 				FA3F741723F6F2EE009045A7 /* Roboto-Thin.ttf in Resources */,
 				FA3645EE22FAE03B0062591B /* flaticon_custom_selection_1.ttf in Resources */,
-				36AD254E07C646A6966A7709 /* AntDesign.ttf in Resources */,
-				B848CB6B21E44048AF3EABB6 /* FontAwesome5_Brands.ttf in Resources */,
 				FA3F740F23F6F2EE009045A7 /* Roboto-ThinItalic.ttf in Resources */,
-				02B76B6C4BE74C6AA10E411F /* FontAwesome5_Regular.ttf in Resources */,
-				FDE6E52417DF40F4A46D33F6 /* FontAwesome5_Solid.ttf in Resources */,
-				FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1605,43 +1562,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-resources.sh",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1784,7 +1710,6 @@
 				FA60DD1820F3ADA7002A795E /* Util.swift in Sources */,
 				FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */,
 				FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */,
-				FAC6D1AF24BCAABA007AA96F /* KNN.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
 				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
@@ -1903,7 +1828,11 @@
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1991,7 +1920,11 @@
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2053,14 +1986,17 @@
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.1.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 4.1.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/KDTree/KDTree.modulemap\" -DDEBUG";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
@@ -2091,13 +2027,17 @@
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.1.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 4.1.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
+				"OTHER_SWIFT_FLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
@@ -2241,7 +2181,10 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/watchOS";
 				IBSC_MODULE = WatchTower_Extension;
 				INFOPLIST_FILE = WatchTower/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2255,7 +2198,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.1.6;
+				MARKETING_VERSION = 4.1.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2304,7 +2247,10 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/watchOS";
 				IBSC_MODULE = WatchTower_Extension;
 				INFOPLIST_FILE = WatchTower/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2318,13 +2264,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.1.6;
+				MARKETING_VERSION = 4.1.9;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 5.0;
@@ -2365,8 +2312,12 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "WatchTower Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 4.1.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.1.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
@@ -2415,14 +2366,19 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "WatchTower Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 4.1.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.1.9;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "WatchTower Extension/WatchTower Extension-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 5.0;
@@ -2478,6 +2434,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FAFC17BE24C0ADA200480FD7 /* XCRemoteSwiftPackageReference "KDTree" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AlexDM0/KDTree.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

@@ -1,11 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+# Pods for Crownstone
 target 'Crownstone' do
-
-pod "KDTree", :git => 'https://github.com/AlexDM0/KDTree.git', :branch => 'master'
-
-  # Pods for Crownstone
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"

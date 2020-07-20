@@ -50,15 +50,15 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
 
 
     return {
-      intention:      { label: intentionStr,   data: null },
-      action:         { label: actionStr,      data: this.rule.action },
-      presencePrefix: { label: presencePrefix, data: null },
-      presence:       { label: presenceStr,    data: this.rule.presence },
-      locationPrefix: { label: locationPrefix, data: null },
-      location:       { label: locationStr,    data: this.rule.presence },
-      time:           { label: timeStr,        data: this.rule.time },
-      optionPrefix:   { label: endConditionPrefix,   data: null },
-      option:         { label: endConditionStr,      data: this.rule.endCondition }
+      intention:      { label: intentionStr,       data: null },
+      action:         { label: actionStr,          data: this.rule.action },
+      presencePrefix: { label: presencePrefix,     data: null },
+      presence:       { label: presenceStr,        data: this.rule.presence },
+      locationPrefix: { label: locationPrefix,     data: null },
+      location:       { label: locationStr,        data: this.rule.presence },
+      time:           { label: timeStr,            data: this.rule.time },
+      optionPrefix:   { label: endConditionPrefix, data: null },
+      option:         { label: endConditionStr,    data: this.rule.endCondition }
     }
   }
 

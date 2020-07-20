@@ -113,9 +113,6 @@ open class BluenetJS: RCTEventEmitter {
       }
     })
 
-    
-
-    
     // forward the navigation event stream to react native
     GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
       var returnArray = [NSDictionary]()
@@ -403,10 +400,9 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
-    LOGGER.info("BluenetBridge: Called loadFingerprint \(sphereId) \(locationId) \(fingerprint)")
+    LOGGER.info("BluenetBridge: Called loadFingerprint \(sphereId) \(locationId)")
     GLOBAL_BLUENET.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
   }
-  
   
   @objc func commandFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("commandFactoryReset", callback, GLOBAL_BLUENET.bluenet.control.commandFactoryReset())

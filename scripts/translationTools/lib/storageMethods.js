@@ -59,7 +59,6 @@ function getTranslationFileAsData(path) {
       }
     })
   });
-
   return __dataBlob
 }
 

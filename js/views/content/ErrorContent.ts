@@ -1,126 +1,130 @@
+import { Languages } from "../../Languages";
 
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ErrorContent", key)(a,b,c,d,e);
+}
 export const ErrorContent = {
   
   getTextDescription: function(phase, errors) {
     if (phase === 1) {
       // PHASE 1 This is only when detected. The user has to find the Crownstone to actually disable it.
       if (errors.temperatureDimmer) {
-        return "Oh no! The Crownstone tried to dim your device for you, but there was so much power required that the Crownstone overheated! I turned on the relay to protect your devices.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Oh_no__The_Crownstone_tri");
       }
       else if (errors.dimmerOnFailure) {
-        return "Oh no! I have detected a problem with the dimmer funtionality. I turned on the relay to protect your devices.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Oh_no__I_have_detected_a_");
       }
       else if (errors.dimmerOffFailure) {
-        return "Oh no! I have detected a problem with the dimmer funtionality. I turned on the relay to protect your devices.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Oh_no__I_have_detected_a_p");
       }
       else if (errors.temperatureChip) {
-        return "Oh no! The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Oh_no__The_Crownstone_got");
       }
       else if (errors.overCurrentDimmer) {
-        return "Just in time! I detected that the device that you tried to dim uses more power than is safe (100 W). I turned on the relay to protect your devices.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Just_in_time__I_detected_");
       }
       else if (errors.overCurrent) {
-        return "Just in time! I detected that the connected device uses more current than is safe (16 A). I had to turn it off.\n\nFind and tap on the Crownstone to resolve this error.";
+        return lang("Just_in_time__I_detected_t");
       }
       else {
-        return "This Crownstone needs to be restarted.\n\nFind and tap on the Crownstone to continue.";
+        return lang("This_Crownstone_needs_to_");
       }
     }
     else {
       // PHASE 2. this allows the user to reset it.
       if (errors.temperatureDimmer) {
-        return "This Crownstone became too warm because it used so much power during dimming!\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
+        return lang("This_Crownstone_became_to");
       }
       else if (errors.dimmerOnFailure) {
-        return "I detected a problem with the dimmer functionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
+        return lang("I_detected_a_problem_with");
       }
       else if (errors.dimmerOffFailure) {
-        return "I detected a problem with the dimmer functionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
+        return lang("I_detected_a_problem_with_");
       }
       else if (errors.temperatureChip) {
-        return "The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nIf you reset the error, you will be able to use it again, but check if your devices do not use too much power.";
+        return lang("The_Crownstone_got_way_to");
       }
       else if (errors.overCurrentDimmer) {
-        return "I detected that the device that you tried to dim uses more power than is safe (100 W). I had to disable it.\n\nIf you reset the error, you will be able to use it again.";
+        return lang("I_detected_that_the_devic");
       }
       else if (errors.overCurrent) {
-        return "I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nIf you reset the error, you will be able to use it again.";
+        return lang("I_detected_that_the_conne");
       }
       else {
-        return "This Crownstone needs to be restarted.";
+        return lang("This_Crownstone_needs_to_b");
       }
     }
   },
 
   getHeader: function(errors) {
     if (errors.temperatureDimmer) {
-      return "This Crownstone became too warm because it used so much power during dimming!";
+      return lang("This_Crownstone_became_too");
     }
     else if (errors.dimmerOnFailure) {
-      return "I detected a problem with the dimmer functionality.";
+      return lang("I_detected_a_problem_with_t");
     }
     else if (errors.dimmerOffFailure) {
-      return "I detected a problem with the dimmer functionality.";
+      return lang("I_detected_a_problem_with_th");
     }
     else if (errors.temperatureChip) {
-      return "The Crownstone got way too warm! I had to switch it off to protect you and your devices.";
+      return lang("The_Crownstone_got_way_too");
     }
     else if (errors.overCurrentDimmer) {
-      return "I detected that the device that you tried to dim uses more power than is safe (100 W). I had to disable it.";
+      return lang("I_detected_that_the_device");
     }
     else if (errors.overCurrent) {
-      return "I detected that the connected device uses more current than is safe (16 A). I had to disable it.";
+      return lang("I_detected_that_the_connec");
     }
     else {
-      return "This Crownstone needs to be restarted.";
+      return lang("This_Crownstone_needs_to_be");
     }
   },
 
   getSubheader: function(errors) {
     if (errors.temperatureDimmer) {
-      return "You can reset this error to restore functionality. If this happens more often, contact us at ask" + getAT() + getCompany() + "." + getRock() + " to resolve this.";
+      return lang("You_can_reset_this_error_", getAT(),getCompany(),getRock());
     }
     else if (errors.dimmerOnFailure) {
-      return "I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at ask" + getAT() + getCompany() + "." + getRock() + " to resolve this.";
+      return lang("I_turned_on_the_relay_to_", getAT(),getCompany(),getRock());
     }
     else if (errors.dimmerOffFailure) {
-      return "I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at ask" + getAT() + getCompany() + "." + getRock() + " to resolve this.";
+      return lang("I_turned_on_the_relay_to_p", getAT(),getCompany(),getRock());
     }
     else if (errors.temperatureChip) {
-      return "If you reset the error, you will be able to use it again, but check if your devices do not use too much power.";
+      return lang("If_you_reset_the_error__y");
     }
     else if (errors.overCurrentDimmer) {
-      return  "Reset the error to restore normal functionality. Try to keep the power usage down next time.";
+      return  lang("Reset_the_error_to_restor");
     }
     else if (errors.overCurrent) {
-      return "Reset the error to restore normal functionality. Try to keep the power usage down next time.";
+      return lang("Reset_the_error_to_restore");
     }
     else {
-      return "If this happens more often, contact us at ask" + getAT() + getCompany() + "." + getRock();
+      return lang("If_this_happens_more_ofte", getAT(),getCompany(),getRock());
     }
   },
 
   getButtonLabel: function(errors) {
       if (errors.temperatureDimmer) {
-        return "I'll keep an eye on it!";
+        return lang("Ill_keep_an_eye_on_it_");
       }
       else if (errors.dimmerOnFailure) {
-        return "Understood.";
+        return lang("Understood_");
       }
       else if (errors.dimmerOffFailure) {
-        return "Understood.";
+        return lang("Understood_");
       }
       else if (errors.temperatureChip) {
-        return "I'll keep an eye on it!";
+        return lang("Ill_keep_an_eye_on_it_");
       }
       else if (errors.overCurrentDimmer) {
-        return "I won't do it again!";
+        return lang("I_wont_do_it_again_");
       }
       else if (errors.overCurrent) {
-        return "I'll keep an eye on it!";
+        return lang("Ill_keep_an_eye_on_it_");
       }
       else {
-        return "Restart Crownstone.";
+        return lang("Restart_Crownstone_");
       }
   }
   

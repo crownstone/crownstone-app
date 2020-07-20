@@ -25,6 +25,7 @@ class Portal : NSObject {
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
   open var classifier : CrownstoneBasicClassifier!
+
   var watchStateManager: WatchStateManager!
   
   
@@ -43,7 +44,7 @@ class Portal : NSObject {
     
     BluenetLib.LOG.setTimestampPrinting(newState: true)
     self.classifier = CrownstoneBasicClassifier()
-    
+        
     self.bluenet = Bluenet(backgroundEnabled: true)
     
     // use the accelerometer.

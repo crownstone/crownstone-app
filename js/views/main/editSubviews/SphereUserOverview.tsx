@@ -56,7 +56,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
-              type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
+              type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  "navigation",
               icon: <IconButton name='ios-mail' size={27} radius={17}  color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
                 NavigationUtil.navigate( "SphereInvitedUser",{
@@ -71,7 +71,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
           else {
             result.push({
               label: ((users[userId].firstName + " ") || "") + (users[userId].lastName || ""),
-              type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
+              type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  "navigation",
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
                 NavigationUtil.navigate( "SphereUser",{

@@ -246,7 +246,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : SwitchHistory[] = returnData.data;
+            let data : SwitchHistory[] = returnData.data.reverse();
             LOGe.info("STONE DEBUG INFORMATION: SwitchHistory", data);
             let resultString = "";
             let getSource = function(switchHistory) {
@@ -257,15 +257,15 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
                     case 0:
                       str = "None"; break;
                     case 2:
-                      str =  "Internal"; break;
+                      str = "Internal"; break;
                     case 3:
-                      str =  "Uart"; break;
+                      str = "Uart"; break;
                     case 4:
-                      str =  "Connection"; break;
+                      str = "Connection"; break;
                     case 5:
-                      str =  "Switchcraft"; break;
+                      str = "Switchcraft"; break;
                     case 5:
-                      str =  "TapToToggle"; break;
+                      str = "TapToToggle"; break;
                     default:
                       str = 'UNKNOWN'
                   }

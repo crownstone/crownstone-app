@@ -58,7 +58,12 @@ let parseFile = function(filePath, allowReplace) {
   let reactLabelMatches = content.match(reactLabelRegex);
   // let equalsStringMatches = content.match(reactLabelRegex);
 
-  let filenameArr = filePath.split("/");
+  let separator  = '/';
+  if (filePath.indexOf('/') === -1 && filePath.indexOf("\\") !== -1) {
+    separator = "\\";
+  }
+
+  let filenameArr = filePath.split(separator);
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
   if (config.FILE_EXCLUSIONS[filename]) { return }

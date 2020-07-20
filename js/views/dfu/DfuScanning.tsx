@@ -295,11 +295,11 @@ export class DfuScanning extends LiveComponent<any, any> {
         <SlideFadeInView visible={this.stoneIdsToUpdate.length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
           <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
             <Button
-              iconPosition={ lang("right")}
+              iconPosition={'right'}
               icon={'ios-play'}
               backgroundColor={colors.blue.hex}
               iconColor={colors.blueDark.hex}
-              label={"Let's update!"}
+              label={lang("Lets_update_")}
               fontSize={17}
               iconSize={14}
               callback={() => { this._goToUpdatePhase(); }} />

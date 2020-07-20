@@ -16,7 +16,12 @@ let fileMap = {}
 
 let revertFile = function(filePath, allowReplace, BASE) {
   let content    = fs.readFileSync(filePath, "utf8")
-  let filenameArr = filePath.split("/");
+  let separator  = '/';
+  if (filePath.indexOf('/') === -1 && filePath.indexOf("\\") !== -1) {
+    separator = "\\";
+  }
+
+  let filenameArr = filePath.split(separator);
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
   if (BASE[filename] === undefined) { return }
   Object.keys(BASE[filename]).forEach((key) => {

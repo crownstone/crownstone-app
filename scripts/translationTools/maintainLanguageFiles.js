@@ -48,6 +48,7 @@ function loadFile(language) {
     createFile(language)
   }
 
+
   DATA[getLabelFromLanguage(language)] = storageMethods.getTranslationFileAsData(getPathFromLanguage(language));
 }
 function createFile(language) {
@@ -62,9 +63,9 @@ function loadBaseLanguageFile() {
 loadBaseLanguageFile();
 TRANSLATED_LANGUAGES.forEach((lang) => { loadFile(lang)} )
 
-
 // check if all files in the baseLanguage file still exist
 let {fileMap, fileList} = keyMatcher.scanFilesRecursivelyInPath('../../js');
+
 Object.keys(BASE).forEach((fileElement) => {
   if (config.FILE_KEY_EXCEPTIONS[fileElement]) { return; }
   if (fileMap[fileElement] === undefined) {

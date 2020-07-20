@@ -51,6 +51,8 @@ class EventEmitter {
     allEventNames.append("enterLocation")
     allEventNames.append("exitLocation")
     allEventNames.append("currentLocation")
+    allEventNames.append("currentLocationKNN")
+    allEventNames.append("knn_debug")
     allEventNames.append("libPopup")
     allEventNames.append("libAlert")
     allEventNames.append("classifierResult")

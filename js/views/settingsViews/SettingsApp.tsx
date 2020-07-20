@@ -59,19 +59,19 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   _getExplanation(rssiOffset) {
     if (!rssiOffset || rssiOffset === 0) {
-      return "Tap to toggle when the phone is close to a Crownstone."
+      return lang("Tap_to_toggle_when_the_ph")
     }
     else if (rssiOffset > 0 && rssiOffset <= 5) {
-      return "Tap to toggle when the phone is very close to a Crownstone."
+      return lang("Tap_to_toggle_when_the_pho")
     }
     else if (rssiOffset > 5) {
-      return "Tap to toggle when the phone is close to a Crownstone.\nNOTE: It might not be possible to get close enough!"
+      return lang("Tap_to_toggle_when_the_phon")
     }
     else if (rssiOffset < 0 && rssiOffset >= -5) {
-      return "Tap to toggle when the phone is near a Crownstone."
+      return lang("Tap_to_toggle_when_the_phone")
     }
     else if (rssiOffset < -5) {
-      return "Tap to toggle when the phone is near a Crownstone.\nNOTE: the Crownstone will keep toggling when you're in range. This might be undesired."
+      return lang("Tap_to_toggle_when_the_phone_")
     }
   }
 
@@ -99,28 +99,26 @@ export class SettingsApp extends LiveComponent<any, any> {
 
     let items = [];
 
-    if (state.user.developer) {
-      items.push({ label: lang("LANGUAGE"), type: 'explanation', below: false });
-      let dropDownItems = [];
-      dropDownItems.push({ label: lang("English"),    value: 'en_us' });
-      dropDownItems.push({ label: lang("Nederlands"), value: 'nl_nl' });
-      items.push({
-        type: 'dropdown',
-        label: lang("Language"),
-        buttons: false,
-        mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
-                                buttonStyle={{ backgroundColor: colors.green.hex }}/>,
-        value: state.user.language || "en_us",
-        dropdownHeight: 130,
-        items: dropDownItems,
-        callback: (value) => {
-          // store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { language: value } });
-          store.dispatch({ type: 'USER_UPDATE', data: { language: value } });
-          Languages.updateLocale();
-          core.eventBus.emit("FORCE_RERENDER")
-        }
-      });
-    }
+    items.push({ label: lang("LANGUAGE"), type: 'explanation', below: false });
+    let dropDownItems = [];
+    dropDownItems.push({ label: lang("English"),    value: 'en_us' });
+    dropDownItems.push({ label: lang("Nederlands"), value: 'nl_nl' });
+    items.push({
+      type: 'dropdown',
+      label: lang("Language"),
+      buttons: false,
+      mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
+                              buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+      value: state.user.language || "en_us",
+      dropdownHeight: 130,
+      items: dropDownItems,
+      callback: (value) => {
+        // store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { language: value } });
+        store.dispatch({ type: 'USER_UPDATE', data: { language: value } });
+        Languages.updateLocale();
+        core.eventBus.emit("FORCE_RERENDER")
+      }
+    });
 
 
     items.push({label: lang("FEATURES"), type: 'explanation', below: false});

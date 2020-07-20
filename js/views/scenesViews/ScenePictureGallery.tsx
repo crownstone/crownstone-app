@@ -294,7 +294,7 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
         <View style={{marginTop: 30,}}>
           <Text style={typeStyle}>{ lang("Custom_picture") }</Text>
           <Button
-            iconPosition={ lang("right")}
+            iconPosition={ "right"}
             icon={'ios-camera'}
             xl={true}
             backgroundColor={colors.blue.hex}

@@ -1,11 +1,12 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
-type aicorePresenceSomebody = { type: "SOMEBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number }
-type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number } // delay in seconds
+type aicorePresenceSomebody = { type: "SOMEBODY",            data: aicorePresenceData, delay: number }
+type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceData, delay: number } // delay in seconds
 type aicorePresenceNone     = { type: "IGNORE" }
 type aicorePresence         = aicorePresenceGeneric | aicorePresenceNone
 
+type aicorePresenceData         = aicorePresenceSphereData | aicorePresenceLocationData
 type aicorePresenceSphereData   = { type: "SPHERE" }
 type aicorePresenceLocationData = { type: "LOCATION", locationIds: number[] } // locationIds are the Uint8 UIDs so that the format is portable
 

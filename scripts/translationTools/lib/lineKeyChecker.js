@@ -23,8 +23,7 @@ let parseFilesRecursivelyInPath = function(dirPath, BASE) {
     let elementPath = path.join( dirPath, file );
     let stat = fs.statSync(elementPath)
     let ext = elementPath.substr(elementPath.length - 3);
-
-    if (stat.isFile() && (ext === "tsx")) {
+    if (stat.isFile() && (ext === "tsx" || ext === ".ts")) {
       fileList.push(elementPath)
       parseFile(elementPath, false, BASE);
     }
@@ -46,8 +45,13 @@ let parseFile = function(filePath, allowReplace, BASE) {
   let labelMatches = content.match(labelRegex);
   let filenameMatches = content.match(proposedFilenameRegex);
 
-  let filenameArr = filePath.split("/");
-  let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
+  let separator  = '/';
+  if (filePath.indexOf('/') === -1 && filePath.indexOf("\\") !== -1) {
+    separator = "\\";
+  }
+
+  let filenameArr = filePath.split(separator);
+  let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(".ts","").replace(/[^0-9a-zA-Z]/g,'_');
 
   if (config.FILE_EXCLUSIONS[filename]) { return }
 
