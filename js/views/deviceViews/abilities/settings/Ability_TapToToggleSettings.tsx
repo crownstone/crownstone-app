@@ -46,19 +46,19 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
 
   _getExplanation(rssiOffset) {
     if (!rssiOffset || rssiOffset === 0) {
-      return "Same as all Crownstones."
+      return lang("Same_as_all_Crownstones_")
     }
     else if (rssiOffset > 0 && rssiOffset <= 5) {
-      return "Requires the phone to be closer compared to the other Crownstones."
+      return lang("Requires_the_phone_to_be_")
     }
     else if (rssiOffset > 5) {
-      return "Requires the phone to be much closer compared to the other Crownstones."
+      return lang("Requires_the_phone_to_be_m")
     }
     else if (rssiOffset < 0 && rssiOffset >= -5) {
-      return "Reacts sooner compared to the other Crownstones."
+      return lang("Reacts_sooner_compared_to")
     }
     else if (rssiOffset < -5) {
-      return "Reacts much sooner than the other Crownstones."
+      return lang("Reacts_much_sooner_than_t")
     }
   }
 
@@ -74,7 +74,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
             <View style={{height:40}} />
             <Text style={styles.boldExplanation}>{ lang("If_you_dont_want_to_open_") }</Text>
             <Text style={styles.explanation}>{ lang("Your_phone_broadcasts_a_s") }</Text>
-            <Text style={styles.explanation}>{ "If you want "}<Text style={{fontWeight:'bold'}}>{ lang("this_specific_Crownstone") }</Text>{" to toggle closer or further away than the others, you can set a distance offset here." }</Text>
+            <Text style={styles.explanation}>{ lang("If_you_want_")}<Text style={{fontWeight:'bold'}}>{ lang("this_specific_Crownstone") }</Text>{lang("_to_toggle_closer_or_furt")}</Text>
             <Text style={styles.explanation}>{ lang("Tap_to_toggle_is_not_mean") }</Text>
             <View style={{height:10}} />
             <View style={{width:screenWidth}}>

@@ -1939,7 +1939,7 @@ export default {
       Select_Picture:                     false,
     },
     _Delete_this_picture__arg_header:    function() { return "Deze afbeelding verwijderen?"; },
-    _Delete_this_picture__arg_body:      function() { return "" + arguments[0] + ""; },
+    _Delete_this_picture__arg_body:      function() { return "We kunnen dit niet ongedaan maken..."; },
     _Delete_this_picture__arg_left:      function() { return "Nee"; },
     _Delete_this_picture__arg_right:     function() { return "Ja"; },
     Select_Picture:                      function() { return "Selecteer Foto"; },

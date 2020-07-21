@@ -78,9 +78,9 @@ export class ProblemWithCrownstone extends Component<any, any> {
             visible={this.state.visible}
             header={ lang("Is_the_problem_with_a_new")}
             labels={[
-              "new",
-              "existing",
-              "other"
+              lang("new"),
+              lang("existing"),
+              lang("other")
             ]}
             pressHandlers={[
               () => { this._changeContent(() => { this.setState({userInputExistingCrownstone: false}); }); },

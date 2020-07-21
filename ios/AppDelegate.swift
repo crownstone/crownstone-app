@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        #if DEBUG
+        #if CS_DEBUG
             print("DEBUG")
             let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
             print("BUNDLE URL", jsBundleUrl)
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("RELEASE")
             let jsBundleUrl =  Bundle.main.url(forResource: "main", withExtension: "jsbundle")
         #endif
-        
+
         ReactNativeNavigation.bootstrap(jsBundleUrl!, launchOptions: launchOptions)
         
         GLOBAL_BLUENET.initController(viewController: nil)

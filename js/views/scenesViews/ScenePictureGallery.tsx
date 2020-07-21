@@ -247,13 +247,38 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
     return TopBarUtil.getOptions({title: lang("Pick_a_picture"), closeModal: true });
   }
 
+
+  categories = {};
   constructor(props) {
     super(props);
+
+    this.categories = {
+      bedtime:       lang("Bedtime"),
+      board_games:   lang("Boardgames"),
+      cooking:       lang("Cooking"),
+      dinner:        lang("Dinner"),
+      eco:           lang("Eco"),
+      gaming:        lang("Gaming"),
+      good_morning:  lang("Good_morning"),
+      hobby_and_art: lang("Hobby_and_art"),
+      movie_time:    lang("Movie_time"),
+      music:         lang("Music"),
+      party:         lang("Party"),
+      relax:         lang("Relax"),
+      romantic:      lang("Romantic"),
+      sports:        lang("Sports"),
+      study:         lang("Study"),
+      weather:       lang("Weather"),
+    }
   }
 
   handleCustomImage = () => {
     const options : ImagePickerOptions = {
       title: lang("Select_Picture"),
+      takePhotoButtonTitle: lang("Take_Photo___"),
+      chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
+      chooseWhichLibraryTitle: lang("Choose_which_Library___"),
+      cancelButtonTitle: lang("CANCEL"),
       noData: true,
       mediaType: "photo",
       storageOptions: {
@@ -308,7 +333,7 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
 
     return (
       <View style={{marginTop: 30}}>
-        <Text style={typeStyle}>{item.name}</Text>
+        <Text style={typeStyle}>{this.categories[item.key] || item.name}</Text>
         <FlatList horizontal={true} data={pictureData[item.type]} removeClippedSubviews={true} initialNumToRender={4} renderItem={this.renderStockImages} showsHorizontalScrollIndicator={false} />
       </View>
     );

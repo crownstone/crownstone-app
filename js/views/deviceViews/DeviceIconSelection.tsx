@@ -17,28 +17,6 @@ import { LiveComponent } from "../LiveComponent";
 import { colors } from "../styles";
 
 
-let categories = [
-  // {key: '__new'                                    , label: lang("__new")},
-  {key: 'ceilingLights',     label: lang("ceilingLights")},
-  {key: 'furnitureLights',   label: lang("furnitureLights")},
-  {key: 'standingLights',    label: lang("standingLights")},
-  {key: 'wallMountedLights', label: lang("wallMountedLights")},
-  {key: 'miscLights',        label: lang("miscLights")},
-  {key: 'screens',           label: lang("Screens")},
-  {key: 'entertainment',     label: lang("Entertainment")},
-  {key: 'tech',              label: lang("Tech")},
-  {key: 'office',            label: lang("Office")},
-  {key: 'music',             label: lang("Music")},
-  {key: 'furniture',         label: lang("Furniture")},
-  {key: 'bathroom',          label: lang("Bathroom")},
-  {key: 'bedRoom',           label: lang("Bedroom")},
-  {key: 'sockets',           label: lang("Sockets")},
-  {key: 'tools',             label: lang("Tools")},
-  {key: 'kitchen',           label: lang("Kitchen")},
-  {key: 'outside',           label: lang("Outside")},
-  {key: 'rides',             label: lang("Rides")},
-  {key: 'miscellaneous',     label: lang("Miscellaneous")},
-];
 
 
 let listOfIcons = {
@@ -524,6 +502,30 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
   }
 
   render() {
+
+    let categories = [
+      // {key: '__new'                                    , label: lang("__new")},
+      {key: 'ceilingLights',     label: lang("ceilingLights")},
+      {key: 'furnitureLights',   label: lang("furnitureLights")},
+      {key: 'standingLights',    label: lang("standingLights")},
+      {key: 'wallMountedLights', label: lang("wallMountedLights")},
+      {key: 'miscLights',        label: lang("miscLights")},
+      {key: 'screens',           label: lang("Screens")},
+      {key: 'entertainment',     label: lang("Entertainment")},
+      {key: 'tech',              label: lang("Tech")},
+      {key: 'office',            label: lang("Office")},
+      {key: 'music',             label: lang("Music")},
+      {key: 'furniture',         label: lang("Furniture")},
+      {key: 'bathroom',          label: lang("Bathroom")},
+      {key: 'bedRoom',           label: lang("Bedroom")},
+      {key: 'sockets',           label: lang("Sockets")},
+      {key: 'tools',             label: lang("Tools")},
+      {key: 'kitchen',           label: lang("Kitchen")},
+      {key: 'outside',           label: lang("Outside")},
+      {key: 'rides',             label: lang("Rides")},
+      {key: 'miscellaneous',     label: lang("Miscellaneous")},
+    ];
+
     return (
       <Background hasNavBar={false} image={core.background.light}>
         <ScrollView>

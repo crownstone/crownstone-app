@@ -144,16 +144,16 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   render() {
     let header = null
     if (this.props.copyType === 'TO') {
-      header = "Who I shall copy my behaviour to?"
+      header = lang("Who_I_shall_copy_my_behav")
     }
     else {
-      header = "Who shall I copy behaviour from?"
+      header = lang("Who_shall_I_copy_behaviou")
     }
 
     return (
       <Background image={core.background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
         <TopbarImitation
-          title={this.props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"}
+          title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
           leftLabel={ lang("Back")}
           rightAction={() => {
@@ -167,7 +167,7 @@ lang("_No_Crownstone_selected___body"),
               this.props.callback(Object.keys(this.state.selectionMap));
             }
           }}
-          right={this.props.copyType === "FROM" ? null : "Select"}
+          right={this.props.copyType === "FROM" ? null : lang("Select")}
         />
         <NotificationLine />
         <ScrollView>
@@ -252,13 +252,13 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     if (!stoneHasRules) {
       clickable = false;
       circleBackgroundColor = colors.gray.hex;
-      subText = "No behaviours to copy...";
+      subText = lang("No_behaviours_to_copy___");
     }
     else {
-      subText = "Behaviours available to copy!";
+      subText = lang("Behaviours_available_to_c");
       circleBackgroundColor = colors.green.hex;
       if (!selected) {
-        subText += "\n(Tap to select)"
+        subText += lang("_n_Tap_to_select_")
       }
     }
   }
@@ -267,7 +267,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       if (allowOverwrite === false) {
         clickable = false;
         circleBackgroundColor = colors.csOrange.rgba(0.5);
-        subText = "Existing behaviour will be overwritten.";
+        subText = lang("Existing_behaviour_will_b");
         overrideButton = (
           <TouchableOpacity style={{backgroundColor: colors.csOrange.hex, borderRadius: 15, padding:10}} onPress={() => { setAllowOverwrite(true) }}>
             <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{ lang("Allow") }</Text>
@@ -275,9 +275,9 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
         );
       }
       else {
-        subText = "Existing behaviour will be overwritten.";
+        subText = lang("Existing_behaviour_will_be");
         if (!selected) {
-          subText += " (Tap to select)"
+          subText += lang("__Tap_to_select_")
         }
         else {
           subTextStyleOverride = {fontWeight:'bold', color: colors.black.rgba(0.8)};
@@ -289,14 +289,14 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
 
   if (updateRequired) {
     clickable = false;
-    subText = "Firmware update required...";
+    subText = lang("Firmware_update_required_");
     overrideButton = null;
     circleBackgroundColor = colors.gray.rgba(0.5);
   }
   else if (dimmingRequired && !isOrigin && !overrideButton) {
     if (stone.abilities.dimming.enabledTarget !== true) {
       clickable = false;
-      subText = "Dimming is required to copy this behaviour.";
+      subText = lang("Dimming_is_required_to_co");
       circleBackgroundColor = colors.csOrange.blend(colors.green, 0.75).rgba(0.5);
       subTextStyleOverride = {};
       overrideButton = (
@@ -312,7 +312,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
 
   if (isOrigin) {
     clickable = false;
-    subText = "This is me!";
+    subText = lang("This_is_me_");
     circleBackgroundColor = colors.blue.hex;
     overrideButton = null;
     subTextStyleOverride = {};

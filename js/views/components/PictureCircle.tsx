@@ -30,6 +30,10 @@ export class PictureCircle extends Component<any, any> {
 
     const options : ImagePickerOptions = {
       title: lang("Select_Picture"),
+      takePhotoButtonTitle: lang("Take_Photo___"),
+      chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
+      chooseWhichLibraryTitle: lang("Choose_which_Library___"),
+      cancelButtonTitle: lang("CANCEL"),
       noData: true,
       mediaType: "photo",
       storageOptions: {
@@ -71,7 +75,7 @@ export class PictureCircle extends Component<any, any> {
             else {
               Alert.alert(
                 lang("_Delete_this_picture__arg_header"),
-                lang("_Delete_this_picture__arg_body",undefined),
+                lang("_Delete_this_picture__arg_body"),
                 [
                   {text:lang("_Delete_this_picture__arg_left")},
                   {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); this.triggerOptions(); }}

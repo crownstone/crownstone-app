@@ -137,7 +137,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     if (location !== undefined) {
       locationLabel = location.config.name;
     }
-    locationLabel += " (tap to change)"
+    locationLabel += lang("__tap_to_change_")
 
     items.push({label: lang("CROWNSTONE_IS_IN_ROOM"), type: 'explanation', below: false});
     items.push({
@@ -166,10 +166,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
             [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
             text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
               if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-                Alert.alert("Can't see this one!",
-                  "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
+                Alert.alert(lang("Cant_see_this_one_"),
+                  lang("This_Crownstone_has_not_b"),
                   [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-                    {text:'Cancel',style: 'cancel', onPress: () => {}}]
+                    {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
                 )
               }
               else {
@@ -209,7 +209,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
 
   _removeCloudOnly() {
-    core.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
+    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_f"));
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -237,7 +237,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
 
   _removeCloudReset(stone) {
-    core.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
+    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -251,7 +251,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
         })
       })
       .then(() => {
-        core.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
+        core.eventBus.emit('showLoading', lang("Factory_resetting_the_Cro"));
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
           .then(() => {
             this._removeCrownstoneFromRedux(true);
@@ -432,11 +432,11 @@ export class DeviceEdit extends LiveComponent<any, any> {
               this.setState({refreshingStoneVersions: false});
             });
         }}>
-          <Text style={styles.version}>{ lang("address__",stone.config.macAddress, 'unknown') }</Text>
+          <Text style={styles.version}>{ lang("address__",stone.config.macAddress, lang("unknown")) }</Text>
           <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId, 'unknown') }</Text>
+          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId, lang("unknown")) }</Text>
         </TouchableOpacity>
       );
     }

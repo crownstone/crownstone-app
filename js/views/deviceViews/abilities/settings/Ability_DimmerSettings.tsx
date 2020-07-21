@@ -67,22 +67,22 @@ export class Ability_DimmerSettings extends Component<any, any> {
 
   _getExplanation(speed) {
     if (speed > 18) {
-      return "Really fast!"
+      return lang("Really_fast_")
     }
     else if (speed > 15) {
-      return "Fast!"
+      return lang("Fast_")
     }
     else if (speed > 11) {
-      return "Quickly!"
+      return lang("Quickly_")
     }
     else if (speed > 7) {
-      return "Normally."
+      return lang("Normally_")
     }
     else if (speed > 3) {
-      return "Gently.."
+      return lang("Gently__")
     }
     else if (speed > 0) {
-      return "Slowly..."
+      return lang("Slowly___")
     }
   }
 
@@ -93,7 +93,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
         <React.Fragment>
         <SwitchBar
           largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
-          label={"Use smoothing"}
+          label={lang("Use_smoothing")}
           value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
           callback={(value) => {
             let numericValue = 8;
@@ -106,7 +106,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
         />
           { stone.abilities.dimming.softOnSpeed !== 0 && stone.abilities.dimming.softOnSpeed !== 100 && (
             <SliderBar
-              label={ "Should I fade slowly or quickly?"}
+              label={ lang("Should_I_fade_slowly_or_q") }
               callback={(value) => {
                 core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: value }});
                 this.setState({softOnSpeed: value})

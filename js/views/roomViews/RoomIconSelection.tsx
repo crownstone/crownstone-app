@@ -22,21 +22,6 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
-let categories = [
-  {key: 'hallway', label: lang("Hallway")},
-  {key: 'livingRoom', label: lang("Living_Room")},
-  {key: 'kitchen', label: lang("Kitchen")},
-  {key: 'bathroom', label: lang("Bathroom")},
-  {key: 'office', label: lang("Office")},
-  {key: 'bedRoom', label: lang("Bedroom")},
-  {key: 'garage', label: lang("Garage")},
-  {key: 'play', label: lang("Play_Room")},
-  {key: 'furniture', label: lang("Furniture")},
-  {key: 'music', label: lang("Music_Room")},
-  {key: 'plants', label: lang("Nature___Outside")},
-  {key: 'miscellaneous', label: lang("Miscellaneous")},
-];
-
 let listOfIcons = {
   plants: [
     "fiCS1-forest",
@@ -392,6 +377,21 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
   }
 
   render() {
+    let categories = [
+      {key: 'hallway', label: lang("Hallway")},
+      {key: 'livingRoom', label: lang("Living_Room")},
+      {key: 'kitchen', label: lang("Kitchen")},
+      {key: 'bathroom', label: lang("Bathroom")},
+      {key: 'office', label: lang("Office")},
+      {key: 'bedRoom', label: lang("Bedroom")},
+      {key: 'garage', label: lang("Garage")},
+      {key: 'play', label: lang("Play_Room")},
+      {key: 'furniture', label: lang("Furniture")},
+      {key: 'music', label: lang("Music_Room")},
+      {key: 'plants', label: lang("Nature___Outside")},
+      {key: 'miscellaneous', label: lang("Miscellaneous")},
+    ];
+
     return (
       <Background hasNavBar={false} image={core.background.light}>
         <ScrollView>

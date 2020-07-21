@@ -31,8 +31,8 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   let color = colors.white.hex;
   let subtext = getLocationSubtext(sphereId, scene);
 
-  if (activated) { subtext = "Setting the scene!"; }
-  if (editMode)  { subtext = "Tap to edit!"; }
+  if (activated) { subtext = lang("Setting_the_scene_"); }
+  if (editMode)  { subtext = lang("Tap_to_edit_"); }
   // if (drag)      { subtext = "Drag me up or down!"; }
 
   let image = getScenePictureSource(scene);
@@ -138,19 +138,19 @@ function getLocationSubtext(sphereId: string, scene : SceneData) {
   });
 
   if (locations.length == locationCount) {
-    return "All rooms";
+    return lang("All_rooms");
   }
   else if (locations.length > 2) {
-    return "Multiple rooms";
+    return lang("Multiple_rooms");
   }
   else if (locations.length > 1) {
-    return locations[0] + " and " + locations[1];
+    return locations[0] + lang("_and_") + locations[1];
   }
   else if (locations.length === 1) {
     return locations[0];
   }
   else {
-    return "Not affecting rooms."
+    return lang("Not_affecting_rooms_")
   }
 
 }

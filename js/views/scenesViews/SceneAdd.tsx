@@ -134,7 +134,7 @@ export class SceneAdd extends LiveComponent<any, any> {
             style={{flexDirection:'row', width: screenWidth - 70, backgroundColor: colors.green.hex, ...styles.centered, borderRadius:10}}
             onPress={() => { executeScene(this.sceneData.data, sphereId); }}>
             <Icon name={'ios-play'} color={colors.white.hex} size={25} />
-            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize:15, padding:15, fontStyle:'italic'}}>Preview this Scene!</Text>
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize:15, padding:15, fontStyle:'italic'}}>{lang("Preview_this_Scene_")}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -490,7 +490,7 @@ export function getStoneSelectionList(sphereId, sceneData, forceUpdate) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let locationId = stone.config.locationId;
     let stoneCID = stone.config.crownstoneId;
-    let locationName = "Not in a room..."
+    let locationName = lang("Not_in_a_room___")
     if (locationId) {
       let location = DataUtil.getLocation(sphereId, locationId);
       locationName = location.config.name;

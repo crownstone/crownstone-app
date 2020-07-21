@@ -101,7 +101,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       },
       endCallback: (newText) => {
         this.changed = true;
-        newText = (newText === '') ? 'Untitled scene' : newText;
+        newText = (newText === '') ? lang("Untitled_scene") : newText;
         this.setState({name: newText});
       }
     });
@@ -167,7 +167,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       if (this.state.data[stoneCID] === undefined) { return; }
 
       let locationId = stone.config.locationId;
-      let locationName = "Not in a room...";
+      let locationName = lang("Not_in_a_room___");
       if (locationId) {
         let location = DataUtil.getLocation(this.props.sphereId, locationId);
         locationName = location.config.name;
@@ -202,7 +202,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
     items.push({type:"spacer"})
     items.push({
       type:'button',
-      label: "Test the Scene!",
+      label: lang("Test_the_Scene_"),
       style: { color: colors.green.hex, fontWeight:'bold' },
       icon: <IconButton name='ios-play' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
