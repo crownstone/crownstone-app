@@ -86,7 +86,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
       if (
         change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId]
-        ) {
+      ) {
         if (this.deleting === false) {
           this.forceUpdate();
         }
@@ -133,7 +133,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
 
     let location = locations[this.state.locationId];
-    let locationLabel = "Not in a room";
+    let locationLabel = lang("Not_in_a_room");
     if (location !== undefined) {
       locationLabel = location.config.name;
     }
@@ -164,19 +164,19 @@ export class DeviceEdit extends LiveComponent<any, any> {
             lang("_Are_you_sure___Removing__header"),
             lang("_Are_you_sure___Removing__body"),
             [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-            text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-              if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-                Alert.alert(lang("Cant_see_this_one_"),
-                  lang("This_Crownstone_has_not_b"),
-                  [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-                    {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
-                )
-              }
-              else {
-                core.eventBus.emit('showLoading', 'Looking for the Crownstone...');
-                this._removeCrownstone(stone).catch((err) => {});
-              }
-            }}]
+              text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
+                if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+                  Alert.alert(lang("Cant_see_this_one_"),
+                    lang("This_Crownstone_has_not_b"),
+                    [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+                      {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
+                  )
+                }
+                else {
+                  core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
+                  this._removeCrownstone(stone).catch((err) => {});
+                }
+              }}]
           )
         }
       });
@@ -202,14 +202,14 @@ export class DeviceEdit extends LiveComponent<any, any> {
           Alert.alert(
             lang("_Cant_see_this_one___We_c_header"),
             lang("_Cant_see_this_one___We_c_body"),
-     [{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+            [{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
               {text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {}}])})
     })
   }
 
 
   _removeCloudOnly() {
-    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_f"));
+    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -231,13 +231,13 @@ export class DeviceEdit extends LiveComponent<any, any> {
         Alert.alert(
           lang("_Encountered_Cloud_Issue__header"),
           lang("_Encountered_Cloud_Issue__body"),
-  [{text:lang("_Encountered_Cloud_Issue__left")}])
+          [{text:lang("_Encountered_Cloud_Issue__left")}])
       })
   }
 
 
   _removeCloudReset(stone) {
-    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
+    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_f"));
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -263,8 +263,8 @@ export class DeviceEdit extends LiveComponent<any, any> {
               lang("_Encountered_a_problem____header"),
               lang("_Encountered_a_problem____body"),
               [{text:lang("_Encountered_a_problem____left"), onPress: () => {
-                NavigationUtil.dismissModalAndBack();
-              }}]
+                  NavigationUtil.dismissModalAndBack();
+                }}]
             )
           });
 
@@ -278,7 +278,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
           lang("_Encountered_Cloud_Issue___header"),
           lang("_Encountered_Cloud_Issue___body"),
           [{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
-          }
+            }
           }])
       })
   }
@@ -290,17 +290,17 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
     let labelText =  lang("I_have_removed_this_Crown");
     if (factoryReset === false) {
-     labelText =  lang("I_have_removed_this_Crowns")}
+      labelText =  lang("I_have_removed_this_Crowns")}
 
     core.eventBus.emit('hideLoading');
     Alert.alert(
       lang("_Success__arguments___OKn_header"),
       lang("_Success__arguments___OKn_body",labelText),
-[{text:lang("_Success__arguments___OKn_left"), onPress: () => {
-        NavigationUtil.dismissModalAndBack();
-        SortingManager.removeFromLists(this.props.stoneId);
-        core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-      }}]
+      [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
+          NavigationUtil.dismissModalAndBack();
+          SortingManager.removeFromLists(this.props.stoneId);
+          core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        }}]
     )
   }
 
@@ -342,7 +342,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
 
   _getVersionInformation(stone) {
-    let unknownString = "Not checked.";
+    let unknownString = lang("Not_checked_");
 
     if (this.state.refreshingStoneVersions) {
       return (
@@ -422,8 +422,8 @@ export class DeviceEdit extends LiveComponent<any, any> {
               throw err;
             }))
           BatchCommandHandler.executePriority();
-          
-          
+
+
           Promise.all(promises)
             .then(() => {
               this.setState({refreshingStoneVersions: false});

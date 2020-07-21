@@ -49,7 +49,7 @@ export const createNewSphere = function(name) {
     })
     .catch((err) => {
       if (err.status == 422) {
-        return createNewSphere(name + ' new')
+        return createNewSphere(name + lang("_new"))
       }
       else {
         return new Promise((resolve, reject) => {reject(err);})
