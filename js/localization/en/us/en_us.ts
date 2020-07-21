@@ -1098,7 +1098,7 @@ export default {
     not_that:                            function() { return "not that" },
     The_nearest_Crownstone_I_:           function() { return "The nearest Crownstone I can detect is " + arguments[0] + " and it's " + arguments[1] + " close!" },
     If_youre_sure_youre_near_:           function() { return "If you're sure you're near the right Crownstone, Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below." },
-    I_didnt_hear_it_via_the_o:           function() { return "I didn't hear it via the other Crownstones right now, but it is connected to the mesh. This if normal, as Crownstones take turns to broadcast eachothers's state." },
+    I_didnt_hear_it_via_the_o:           function() { return "I didn't hear it via the other Crownstones right now, but it is connected to the mesh. This is normal, as Crownstones take turns to broadcast eachothers's state." },
     I_didnt_hear_it_via_the_m:           function() { return "I didn't hear it via the mesh though. From where I am, I can only hear this Crownstone so it's unlikely that it's close enough to other Crownstones to form a mesh." },
     I_didnt_hear_it_via_the_me:          function() { return "I didn't hear it via the mesh though. From where I am, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh." },
     I_didnt_hear_it_via_the_mes:         function() { return "I didn't hear it via the mesh right now.. This could be just a momentary issue as Crownstones take turns to broadcast eachothers's state." },
