@@ -49,10 +49,12 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader:lang("What_sort_of_Crownstone_w"),
         optionsCenter: true,
         options: [
-          {label: lang("Plug"),                       image: {source: require('../../images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: "A Plug it is!"},
-          {label: lang("Built_in_One"),               image: {source: require('../../images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
-          {label: lang("Built_in_Zero"),              image: {source: require('../../images/addCrownstone/builtin-v1.png')}, nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
-          {label: lang("I_dont_have_nCrownstones_y"), image: {source: require('../../images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: "Let's buy Crownstones!"},
+          {label: lang("Plug"),                       image: {source: require('../../images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: lang("A_Plug_it_is_")},
+          {label: lang("Built_in_One"),               image: {source: require('../../images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: lang("Lets_add_a_Built_in_One_")},
+          {label: lang("Built_in_Zero"),              image: {source: require('../../images/addCrownstone/builtin-v1.png')}, nextCard: 'installingBuiltinZero_step1', response: lang("Lets_add_a_Built_in_Zero_")},
+          {label: lang("Guidestone"),                 image: {source: require('../../images/addCrownstone/guidestone.png')}, nextCard: 'installingGuidestone',        response: lang("Lets_add_a_Guidestone_")},
+          {label: lang("Crownstone_USB"),             image: {source: require('../../images/addCrownstone/crownstone_usb.png')}, nextCard: 'installingUSB',           response: lang("Lets_add_a_Crownstone_USB")},
+          {label: lang("I_dont_have_nCrownstones_y"), image: {source: require('../../images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: lang("Lets_buy_Crownstones_")},
         ]
       },
       buy: {
@@ -62,6 +64,20 @@ export class AddCrownstone extends LiveComponent<any, any> {
         optionsBottom: true,
         options: [
           {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}); }},
+        ]
+      },
+      installingGuidestone: {
+        subHeader: lang("Insert_the_guidestone_int"),
+        backgroundImage: require('../../images/backgrounds/guidestoneBackground.png'),
+        options: [
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+        ]
+      },
+      installingUSB: {
+        subHeader: lang("Insert_the_Crownstone_USB"),
+        backgroundImage: require('../../images/backgrounds/usbBackground.png'),
+        options: [
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingPlug: {
