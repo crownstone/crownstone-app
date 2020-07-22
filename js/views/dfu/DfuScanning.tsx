@@ -286,6 +286,7 @@ export class DfuScanning extends LiveComponent<any, any> {
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
           <SeparatedItemList
+            style={{paddingBottom:140}}
             items={stoneArray}
             ids={ids}
             separatorIndent={false}

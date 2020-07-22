@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS";
 const LANGUAGE_KEY = "CROWNSTONE_LANGUAGE";
 
+import * as RNLocalize from "react-native-localize";
+
 class LanguageManager {
 
   usingBaseLanguage = false;
@@ -12,10 +14,29 @@ class LanguageManager {
   activeLocale = null;
   persistedLocale = null;
 
+  defaultLanguage = 'en_us'
+
+
   constructor() {
     this.usingBaseLanguage = true;
     this.textSource = localization_en_us;
     this.getFromDisk()
+
+    let locales = RNLocalize.getLocales();
+    if (locales.length > 0) {
+      for (let i = 0; i < locales.length; i++) {
+        let language = locales[i].languageCode;
+        if (language === "en") {
+          this.defaultLanguage = 'en_us';
+          break;
+        }
+        else if (language === "nl") {
+          this.defaultLanguage = 'nl_nl';
+          break;
+        }
+      }
+    }
+    console.log("DEFAULT", this.defaultLanguage)
   }
 
 
@@ -61,13 +82,13 @@ class LanguageManager {
       this.setLocale(state.user.language);
     }
     else {
-      this.setLocale('en_us')
+      this.setLocale(this.defaultLanguage)
     }
   }
 
   setLocale(locale : string) {
-    this.activeLocale = locale || "en_us";
-    switch (locale) {
+    this.activeLocale = locale || this.defaultLanguage;
+    switch (this.activeLocale) {
       case 'nl_nl':
         this.usingBaseLanguage = false;
         this.textSource = localization_nl_nl;
@@ -93,7 +114,7 @@ class LanguageManager {
           this.setLocale(result);
         }
         else {
-          this.setLocale('en_us');
+          this.setLocale(this.defaultLanguage);
           this.persistedLocale = null;
         }
       })
