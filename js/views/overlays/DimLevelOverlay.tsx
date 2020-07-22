@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("ListOverlay", key)(a,b,c,d,e);
+  return Languages.get("DimLevelOverlay", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
@@ -50,7 +50,7 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
             this.close();
           }}
         >
-          <Text style={{fontSize:15, fontWeight:'bold'}}>{ "Save" }</Text>
+          <Text style={{fontSize:15, fontWeight:'bold'}}>{ lang("Save") }</Text>
         </TouchableOpacity>
         <View style={{flex:0.2}} />
       </View>
@@ -86,7 +86,7 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
         getDesignElement={(innerSize) => { return (
           <ScaledImage source={require("../../images/overlayCircles/dimmingCircleGreen.png")} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}
-        title={ "Dim how much?" }
+        title={ lang("Dim_how_much_") }
         footerComponent={this._getSaveButton()}
       >
         <View style={{transform: [ { rotate: "-90deg" } ], width: slideWrapperHeight, height:200, flexDirection:'row', ...styles.centered}}>
@@ -138,7 +138,7 @@ class IndicatorClass extends Component<any, any> {
           color: colors.white.hex,
           fontSize: 18,
           fontWeight: "bold"
-        }}>{Math.round(this.props.percentage) + "%"}</Text>
+        }}>{lang("_", Math.round(this.props.percentage))}</Text>
       </View>
     );
   }

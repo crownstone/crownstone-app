@@ -660,6 +660,11 @@ export default {
     Yes:                                 function() { return "Yes" },
     ____:                                function() { return arguments[0] + (arguments[1] ? "..." : ".") },
   },
+  DimLevelOverlay:{
+    Save:                                function() { return "Save" },
+    Dim_how_much_:                       function() { return "Dim how much?" },
+    _:                                   function() { return arguments[0] + "%" },
+  },
   DimmerSlider:{
     __filename: "../../js/views/components/DimmerSlider.tsx",
     The_dimmer_is_starting_up:           function() { return "The dimmer is starting up..." },
@@ -1599,7 +1604,6 @@ export default {
     When_should_I_do_this_:              function() { return "When should I do this?" },
     Will_do_:                            function() { return "Will do!" },
     Use_Behaviour_:                      function() { return "Use Behaviour!" },
-    x_percent:                           function() { return arguments[0] + " %" },
     On:                                  function() { return "On" },
     Dimmed__:                            function() { return "Dimmed " + arguments[0] + "%" },
     Ignore_presence:                     function() { return "Ignore presence" },
@@ -1608,7 +1612,6 @@ export default {
     Select_room_s____:                   function() { return "Select room(s)..." },
     All_day:                             function() { return "All day." },
     Other___:                            function() { return "Other..." },
-    Dim_how_much_:                       function() { return "Dim how much?" },
     Select_Rooms:                        function() { return "Select Rooms" },
     Would_you_like_me_to_react:          function() { return "Would you like me to react to presence?" },
     Shall_I_do_this_at_a_certa:          function() { return "Shall I do this at a certain time?" },
