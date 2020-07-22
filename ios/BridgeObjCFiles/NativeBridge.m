@@ -146,6 +146,13 @@ RCT_EXTERN_METHOD(registerTrackedDevice:
                   ttlMinutes:(nonnull NSNumber *)ttlMinutes
                   callback:(RCTResponseSenderBlock)callback
 )
+RCT_EXTERN_METHOD(trackedDeviceHeartbeat:
+                  (nonnull NSNumber *)trackingNumber
+                  locationUid:(nonnull NSNumber *)locationUid
+                  deviceToken:(nonnull NSNumber *)deviceToken
+                  ttlMinutes:(nonnull NSNumber *)ttlMinutes
+                  callback:(RCTResponseSenderBlock)callback
+)
 RCT_EXTERN_METHOD(broadcastUpdateTrackedDevice:
                   (NSString *)referenceId
                   trackingNumber:(nonnull NSNumber *)trackingNumber

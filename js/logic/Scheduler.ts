@@ -76,7 +76,8 @@ class SchedulerClass {
         overwritableActions:   {},
         overwritableCallbacks: {},
         options:    {},
-        lastTriggerTime: performImmediatelyAfterSet ? 0 : new Date().valueOf()
+        lastTriggerTime: performImmediatelyAfterSet ? 0 : new Date().valueOf(),
+        pauseTime: null
       };
     }
     this.triggers[id].options = options;
@@ -129,12 +130,18 @@ class SchedulerClass {
   pauseTrigger(triggerId) {
     if (this.triggers[triggerId]) {
       this.triggers[triggerId].active = false;
+      this.triggers[triggerId].pauseTime = new Date().valueOf();
     }
   }
 
   resumeTrigger(triggerId) {
     if (this.triggers[triggerId]) {
       this.triggers[triggerId].active = true;
+      if (this.triggers[triggerId].pauseTime !== null) {
+        // we account for paused time so that the remainder when it was paused is the same remainder as it is when we resume.
+        this.triggers[triggerId].lastTriggerTime += new Date().valueOf() - this.triggers[triggerId].pauseTime;
+        this.triggers[triggerId].pauseTime = null;
+      }
     }
   }
 

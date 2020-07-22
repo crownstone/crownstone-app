@@ -264,6 +264,15 @@ class BatchCommandHandlerClass {
                   command.ttlMinutes,
                 );
                 break;
+              case 'trackedDeviceHeartbeat':
+                locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
+                actionPromise = BluenetPromiseWrapper.trackedDeviceHeartbeat(
+                  command.trackingNumber,
+                  locationUID,
+                  command.deviceToken,
+                  command.ttlMinutes,
+                );
+                break;
               case 'setSunTimes':
                 actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
                 break;

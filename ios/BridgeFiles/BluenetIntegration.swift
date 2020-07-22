@@ -905,6 +905,23 @@ open class BluenetJS: RCTEventEmitter {
         ttlMinutes:     ttlMinutes.uint16Value
     ))
   }
+  
+  
+  @objc func trackedDeviceHeartbeat(
+    _ trackingNumber: NSNumber,
+    locationUid: NSNumber,
+    deviceToken: NSNumber,
+    ttlMinutes: NSNumber,
+    callback: @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("trackedDeviceHeartbeat", callback,
+                   GLOBAL_BLUENET.bluenet.control.trackedDeviceHeartbeat(
+                    trackingNumber: trackingNumber.uint16Value,
+                    locationId: locationUid.uint8Value,
+                    deviceToken: deviceToken.uint32Value,
+                    ttlMinutes: ttlMinutes.uint16Value
+    ))
+  }
+    
     
   @objc func broadcastUpdateTrackedDevice(
     _ referenceId: String,

@@ -119,6 +119,12 @@ interface BluenetPromiseWrapperProtocol {
     deviceToken:number,
     ttlMinutes:number) : Promise< void >,
 
+  trackedDeviceHeartbeat(
+    trackingNumber:number,
+    locationUID:number,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void >,
+
   broadcastUpdateTrackedDevice(
     referenceId: string,
     trackingNumber:number,

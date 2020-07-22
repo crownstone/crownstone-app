@@ -79,7 +79,8 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'getAdcRestarts' } |
   { commandName : 'getSwitchHistory' } |
   { commandName : 'getPowerSamples', type: PowersampleDataType } |
-  { commandName : 'registerTrackedDevice', trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number }
+  { commandName : 'registerTrackedDevice',  trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number } |
+  { commandName : 'trackedDeviceHeartbeat', trackingNumber: number, locationUID: () => number | number, deviceToken: number, ttlMinutes: number }
 
 
 type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer"

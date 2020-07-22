@@ -247,5 +247,16 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "CANNOT_DO_THIS_IN_DFU_MODE"
     case .INVALID_SOFT_ON_SPEED_VALUE:
       return "INVALID_SOFT_ON_SPEED_VALUE"
+    
+      case .UNKNOWN_ERROR:
+        return "UNKNOWN_ERROR"
+      case .ERR_TIMEOUT:
+        return "ERR_TIMEOUT"
+      case .ERR_CANCELLED:
+        return "ERR_CANCELLED"
+      case .ERR_PROTOCOL_UNSUPPORTED:
+        return "ERR_PROTOCOL_UNSUPPORTED"
+      case .ERR_NO_ACCESS:
+        return "ERR_NO_ACCESS"
     }
 }

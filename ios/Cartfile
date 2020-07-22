@@ -4,6 +4,3 @@ github "crownstone/bluenet-ios-lib"
 
 # Custom Image Processing
 github "crownstone/image-processing-ios"
-
-# KD tree implementation
-github "Bersaelor/KDTree"

@@ -209,6 +209,10 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
                                    tapToToggleEnabled: boolean,
                                    deviceToken: number,
                                    ttlMinutes: number) => { return BluenetPromise('registerTrackedDevice', trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
+  trackedDeviceHeartbeat:         (trackingNumber: number,
+                                   locationUID: number,
+                                   deviceToken: number,
+                                   ttlMinutes: number) => { return BluenetPromise('trackedDeviceHeartbeat', trackingNumber, locationUID, deviceToken, ttlMinutes); },
 
   broadcastUpdateTrackedDevice:   (referenceId: string,
                                    trackingNumber:number,
