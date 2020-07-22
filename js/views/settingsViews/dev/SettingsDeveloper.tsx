@@ -172,7 +172,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
               if (shareDataType === 'logs') {
                 let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
                 options = {urls:[
-                    "file://" + storagePath + filename,
+                    "file://" + storagePath + "/" + filename,
                   ]}
               }
               else if (shareDataType === 'allBuffers') {
