@@ -68,6 +68,7 @@ class OverlayManagerClass {
         }
       });
 
+      core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
       core.eventBus.on('showLockOverlay',      (data) => { NavigationUtil.showOverlay('LockOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
       core.eventBus.on('showLoading',          (data) => { NavigationUtil.showOverlay('Processing',    {data: data}); })

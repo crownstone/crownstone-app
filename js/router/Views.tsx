@@ -118,6 +118,7 @@ import { ScenePictureGallery }                     from "../views/scenesViews/Sc
 import { SceneEdit } from "../views/scenesViews/SceneEdit";
 import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownstones";
 import { SettingsLocalizationMonitor } from "../views/settingsViews/dev/SettingsLocalizationMonitor";
+import { DimLevelOverlay } from "../views/overlays/DimLevelOverlay";
 
 
 export const Views = {
@@ -218,6 +219,7 @@ export const Views = {
 
   AicoreTimeCustomizationOverlay:   AicoreTimeCustomizationOverlay,
   BleStateOverlay:                  BleStateOverlay,
+  DimLevelOverlay:                  DimLevelOverlay,
   ErrorOverlay:                     ErrorOverlay,
   LibMessages:                      LibMessages,
   ListOverlay:                      ListOverlay,

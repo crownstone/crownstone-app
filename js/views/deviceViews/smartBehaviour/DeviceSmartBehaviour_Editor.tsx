@@ -32,7 +32,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
   render() {
     let header = lang("Create_my_Behaviour")
     if (this.props.ruleId) {
-      header = "Customize my Behaviour!";
+      header = lang("Customize_my_Behaviour_");
     }
 
     let height = availableModalHeight;

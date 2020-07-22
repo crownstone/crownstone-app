@@ -505,6 +505,7 @@ export default {
     Create_my_Behaviour:                 function() { return "Create my Behaviour" },
     Tap_the_underlined_parts_t:          function() { return "Tap the underlined parts to customize them!" },
     Edit_Behaviour:                      function() { return arguments[0] || "Edit Behaviour" },
+    Customize_my_Behaviour_:             function() { return "Customize my Behaviour!" },
   },
   DeviceSmartBehaviour_TypeSelector:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector.tsx",
@@ -524,6 +525,7 @@ export default {
     Pick_an_example_and_change:          function() { return "Pick an example and change it to your liking!" },
     Pick_an_example_and_change_:         function() { return "Pick an example and change it to your liking!" },
     Twilight_Mode:                       function() { return "Twilight Mode" },
+    Presence_Aware:                      function() { return "Presence Aware" },
   },
   DeviceSmartBehaviour_Wrapup:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_Wrapup.tsx",
@@ -1617,6 +1619,8 @@ export default {
     Not_right_now___:                    function() { return "Not right now..." },
     Dimming_ability_required_:           function() { return "Dimming ability required." },
     You_need_to_enable_dimmin:           function() { return "You need to enable dimming for this Crownstone in order to use it in a behaviour. Do you want to enable this now?" },
+    Is_it_OK_if_I_turn_off_at:           function() { return "Is it OK if I turn off at " + arguments[0] + " if there are still people around?" },
+    There_aleady_is_an_active:           function() { return "There aleady is an active " + (arguments[0] ? "twilight behaviour" : "behaviour") + " " + arguments[1] + "..." },
   },
   ScanningForSetupCrownstones:{
     __filename: "../../js/views/addingCrownstones/ScanningForSetupCrownstones.tsx",

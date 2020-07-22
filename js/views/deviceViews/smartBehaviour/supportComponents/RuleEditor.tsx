@@ -298,7 +298,7 @@ export class RuleEditor extends LiveComponent<
           iconColor={colors.red.hex}
           icon={'md-remove-circle'}
           key={"timeConflictSuggestion"}
-          label={ "There aleady is an active " + (this.props.twilightRule ? "twilight behaviour" : "behaviour") + " " + this.rule.getTimeString() + "..." }
+          label={ lang("There_aleady_is_an_active", this.props.twilightRule,this.rule.getTimeString()) }
           callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
       />);
     }
@@ -321,7 +321,7 @@ export class RuleEditor extends LiveComponent<
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<Button
         key={"optionSuggestion"}
-        label={"Is it OK if I turn off at " + timeStr + " if there are still people around?"}
+        label={lang("Is_it_OK_if_I_turn_off_at", timeStr)}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.OPTION); }}
       />);
     }
@@ -339,35 +339,13 @@ export class RuleEditor extends LiveComponent<
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
 
-    let dimmerOptions = [];
-    for (let i = 9; i >= 1; i = i - 1) {
-      dimmerOptions.push({ label: lang("x_percent", Math.round(i*10)), id: i*10 });
-    }
-
-    core.eventBus.emit('showListOverlay', {
-      title: lang("Dim_how_much_"),
-      showSaveButton: true,
-      getItems: () => { return dimmerOptions; },
-      customContent:
-        stone.abilities.dimming.enabledTarget ? null :
-        (props) => {
-          return (
-            <DimmerPermissionOverlay hideOverlayCallback={props.hideOverlayCallback} callback={() => {
-              core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}})
-              props.hideCustomContentCallback();
-            }} />
-          );
-      },
+    core.eventBus.emit("showDimLevelOverlay",{
+      initialValue: this.rule.willDim() ? this.rule.getDimPercentage() : exampleBehaviour.getDimPercentage(),
       callback: (value) => {
-        if (Array.isArray(value)) {
-          value = value[0];
-        }
         exampleBehaviour.setDimPercentage(value);
         this.rule.setDimPercentage(value);
         this.setState({selectedDetailField: selectionDescription})
-      },
-      selection: this.rule.willDim() ? this.rule.getDimPercentage() : exampleBehaviour.getDimPercentage(),
-      image: require("../../../../images/overlayCircles/dimmingCircleGreen.png")
+      }
     })
   }
 

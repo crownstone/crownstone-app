@@ -111,7 +111,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         subHeader: lang("Pick_an_example_and_change"),
         image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex  },
         optionsBottom: true,
-        options: this.getOptions(presenceExamples, "Presence Aware")
+        options: this.getOptions(presenceExamples, lang("Presence_Aware"))
       },
       smartTimer: {
         header: lang("Smart_Timer"),
@@ -121,7 +121,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         subHeader: lang("Pick_an_example_and_chang"),
         image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
-        options: this.getOptions(smartTimerExamples, "Smart Timer")
+        options: this.getOptions(smartTimerExamples, lang("Smart_Timer"))
       },
       dimmingRequired: {
         header: lang("Dimming_required"),
@@ -155,7 +155,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         backgroundImage: require('../../../images/backgrounds/twilight.png'),
         image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 292, sourceHeight: 399, height: 0.25*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
-        options: this.getOptions(twilightExamples, "Twilight Mode", true)
+        options: this.getOptions(twilightExamples, lang("Twilight_Mode"), true)
       },
     }
   }
