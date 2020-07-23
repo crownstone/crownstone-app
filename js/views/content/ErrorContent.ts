@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 export const ErrorContent = {
   
-  getTextDescription: function(phase, errors) {
+  getTextDescription: function(phase, errors, dimmingAllowed) {
     if (phase === 1) {
       // PHASE 1 This is only when detected. The user has to find the Crownstone to actually disable it.
       if (errors.temperatureDimmer) {
@@ -56,7 +56,7 @@ export const ErrorContent = {
     }
   },
 
-  getHeader: function(errors) {
+  getHeader: function(errors, dimmingAllowed) {
     if (errors.temperatureDimmer) {
       return lang("This_Crownstone_became_too");
     }
@@ -80,7 +80,7 @@ export const ErrorContent = {
     }
   },
 
-  getSubheader: function(errors) {
+  getSubheader: function(errors, dimmingAllowed) {
     if (errors.temperatureDimmer) {
       return lang("You_can_reset_this_error_", getAT(),getCompany(),getRock());
     }
@@ -104,7 +104,7 @@ export const ErrorContent = {
     }
   },
 
-  getButtonLabel: function(errors) {
+  getButtonLabel: function(errors, dimmingAllowed) {
       if (errors.temperatureDimmer) {
         return lang("Ill_keep_an_eye_on_it_");
       }

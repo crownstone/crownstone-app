@@ -171,7 +171,7 @@ function getData(props, stone, active) {
   let propsToPass = {stoneId: props.stoneId, sphereId: props.sphereId, information: null}
   switch (props.type) {
     case 'dimming':
-      propsToPass.information = () => { Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {}) };
+      propsToPass.information = () => { Linking.openURL(Languages.activeLocale === "nl_nl" ? 'https://crownstone.rocks/nl/compatibility/dimming/' : 'https://crownstone.rocks/compatibility/dimming/').catch(() => {}) };
       if (active) {
         return {
           image: require('../../images/overlayCircles/dimmingCircleGreen.png'),

@@ -226,7 +226,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'navigation',
       icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
       callback: () => {
-        Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+        Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://crownstone.rocks/nl/app-help/' : 'https://crownstone.rocks/app-help/' ).catch(err => {});
       }
     });
 

@@ -10,8 +10,8 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, Platform
+} from "react-native";
 
 import { IconCircle }  from './IconCircle'
 import { Icon } from './Icon';
@@ -33,7 +33,7 @@ export class PictureCircle extends Component<any, any> {
       takePhotoButtonTitle: lang("Take_Photo___"),
       chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
       chooseWhichLibraryTitle: lang("Choose_which_Library___"),
-      cancelButtonTitle: lang("CANCEL"),
+      cancelButtonTitle: Platform.OS === 'ios' ? lang("Cancel") : lang("CANCEL"),
       noData: true,
       mediaType: "photo",
       storageOptions: {

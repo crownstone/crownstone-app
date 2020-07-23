@@ -25,7 +25,7 @@ export class DeviceError extends Component<any, any> {
         <BehaviourSubmitButton
           width={ 0.8*screenWidth }
           color={ colors.blue.rgba(0.5) }
-          label={ ErrorContent.getButtonLabel(stone.errors) }
+          label={ ErrorContent.getButtonLabel(stone.errors, stone?.abilities?.dimming?.enabledTarget) }
           callback={() => {
             if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
               Alert.alert(
@@ -50,9 +50,9 @@ lang("_Stone_unavailable___You__body"),
     return (
       <View style={{flex:5, width:screenWidth, padding:30, ...styles.centered}}>
         <View style={{flex:1}} />
-        <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getHeader(stone.errors)}</Text>
+        <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getHeader(stone.errors, stone?.abilities?.dimming?.enabledTarget)}</Text>
         <View style={{flex:1}} />
-        <Text style={{color: colors.white.hex, fontSize: 15, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getSubheader(stone.errors)}</Text>
+        <Text style={{color: colors.white.hex, fontSize: 15, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getSubheader(stone.errors, stone?.abilities?.dimming?.enabledTarget)}</Text>
         <View style={{flex:1}} />
       </View>
     )

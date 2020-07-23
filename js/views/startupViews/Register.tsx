@@ -188,7 +188,6 @@ export class Register extends LiveComponent<any, any> {
         },
         options: [{
           label: lang("You_bet_I_do_Not_just_yet",this.user.picture),
-          textAlign:'right',
           nextCard:"email",
         }]
       },
@@ -204,7 +203,7 @@ export class Register extends LiveComponent<any, any> {
                 autoCapitalize={'none'}
                 focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("Email_address")}
-                keyboardType={ lang("email_address")}
+                keyboardType={ "email-address" }
                 value={state && state.email || this.user.email}
                 callback={(newValue) => {
                   let newState = {};
@@ -227,7 +226,7 @@ export class Register extends LiveComponent<any, any> {
                 autofocus={false}
                 autoCapitalize={'none'}
                 placeholder={lang("Password")}
-                keyboardType={ lang("ascii_capable")}
+                keyboardType={ "ascii-capable" }
                 focussed={this.focussingIndex === 1 || undefined}
                 value={state && state.password || this.user.password}
                 callback={(newValue) => {

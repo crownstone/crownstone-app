@@ -71,7 +71,7 @@ export class ErrorOverlay extends Component<any, any> {
       return "";
     }
 
-    return ErrorContent.getTextDescription(1, stone.errors);
+    return ErrorContent.getTextDescription(1, stone.errors, stone.abilities.dimming.enabledTarget);
   }
 
   _getButton(stone) {

@@ -44,9 +44,9 @@ export class LocationPermissionOverlay extends Component<any, any> {
             this.setState({showRequestFailed: true, notificationType: status})
             if (Platform.OS === 'ios') {
               Alert.alert(
-lang("_Request_not_allowed______header"),
-lang("_Request_not_allowed______body"),
-[{text:lang("_Request_not_allowed______left"), onPress:() => {
+                lang("_Request_not_allowed______header"),
+                lang("_Request_not_allowed______body"),
+                [{text:lang("_Request_not_allowed______left"), onPress:() => {
                 Linking.openURL('app-settings:')
               }}])
             }
@@ -79,29 +79,29 @@ lang("_Request_not_allowed______body"),
   _getTitle() {
     switch (this.state.notificationType) {
       case "foreground":
-        return "Only while-in-app permissions granted.";
+        return lang("Only_while_in_app_permiss");
       case "on":
-        return "Location Services are on!";
+        return lang("Location_Services_are_on_");
       case "off":
-        return "Location Services are disabled.";
+        return lang("Location_Services_are_dis");
       case "noPermission":
-        return "Location permission missing.";
+        return lang("Location_permission_missi");
       default: // "unknown":
-        return "Starting Location Services ...";
+        return lang("Starting_Location_Service");
     }
   }
 
   _getText() {
     switch (this.state.notificationType) {
       case "foreground":
-        return "Crownstone cannot react to your presence while the app is in the background with this permission.";
+        return lang("Crownstone_cannot_react_t");
       case "on":
-        return "Everything is great!";
+        return lang("Everything_is_great_");
       case "off":
       case "noPermission":
-        return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function.";
+        return lang("Without_location_services");
       default: // "unknown":
-        return "This should not take long!";
+        return lang("This_should_not_take_long");
     }
   }
   _getButton() {

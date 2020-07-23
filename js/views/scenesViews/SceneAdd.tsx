@@ -378,7 +378,7 @@ export function StoneRow({sphereId, stoneId, locationName, selection, initialSel
         { content }
         <SlideSideFadeInView width={50} visible={stone.config.locked}>
           <View style={{width:50, alignItems:'flex-end'}}>
-            <Icon name={"md-unlock"} color={colors.black.rgba(0.5)} size={26} />
+            <Icon name={"md-lock"} color={colors.black.rgba(0.5)} size={26} />
           </View>
         </SlideSideFadeInView>
       </TouchableOpacity>

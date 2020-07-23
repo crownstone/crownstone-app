@@ -63,7 +63,7 @@ export class LoginSplash extends Component<any, any> {
               alignItems:'flex-start',
               justifyContent:'flex-end'
             }}
-            onPress={() => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }}>
+            onPress={() => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}) }}>
             <Text style={{
               fontSize: 14,
               fontWeight: 'bold',

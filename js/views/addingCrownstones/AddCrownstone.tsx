@@ -63,7 +63,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         backgroundImage: require('../../images/backgrounds/builtinDarkBackground.png'),
         optionsBottom: true,
         options: [
-          {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}); }},
+          {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}); }},
         ]
       },
       installingGuidestone: {

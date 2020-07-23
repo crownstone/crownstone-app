@@ -47,7 +47,7 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
         textColor: colors.white.hex,
         explanation: lang("Crownstones_that_are_not_"),
         component:
-          <View>
+          <View style={{paddingBottom:50}}>
             { this.getStoneSelectionList(this.props.sphereId) }
           </View>,
         options: [{label: lang("Select"), textAlign:'right', onSelect: (result) => {
