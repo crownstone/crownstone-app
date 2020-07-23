@@ -211,6 +211,11 @@ RCT_EXTERN_METHOD(getAdcRestarts:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getSwitchHistory:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getPowerSamples:(NSString *)type callback:(RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(getMinSchedulerFreeSpace:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getLastResetReason:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getGPREGRET:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getAdcChannelSwaps:(RCTResponseSenderBlock)callback)
+
 // Bart Config Methods
 RCT_EXTERN_METHOD(getSwitchcraftThreshold: (RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMaxChipTemp: (RCTResponseSenderBlock)callback)

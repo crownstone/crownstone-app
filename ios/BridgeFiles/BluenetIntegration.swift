@@ -1038,6 +1038,26 @@ open class BluenetJS: RCTEventEmitter {
       }
    }
   
+
+  @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {
+      wrapForBluenet("getMinSchedulerFreeSpace", callback, GLOBAL_BLUENET.bluenet.debug.getMinSchedulerFreeSpace())
+  }
+  
+  @objc func getLastResetReason(_ callback: @escaping RCTResponseSenderBlock) {
+      wrapForBluenet("getLastResetReason", callback, GLOBAL_BLUENET.bluenet.debug.getLastResetReason())
+  }
+  
+  
+  @objc func getGPREGRET(_ callback: @escaping RCTResponseSenderBlock) {
+      wrapForBluenet("getGPREGRET", callback, GLOBAL_BLUENET.bluenet.debug.getGPREGRET())
+  }
+  
+  
+  @objc func getAdcChannelSwaps(_ callback: @escaping RCTResponseSenderBlock) {
+      wrapForBluenet("getAdcChannelSwaps", callback, GLOBAL_BLUENET.bluenet.debug.getAdcChannelSwaps())
+  }
+  
+  
   @objc func setSoftOnSpeed(_ speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     wrapForBluenet("setSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config.setSoftOnSpeed(speed))
   }

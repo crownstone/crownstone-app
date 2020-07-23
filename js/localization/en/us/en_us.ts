@@ -1753,6 +1753,12 @@ export default {
     Select_the_Crownstones_wh:           function() { return "Select the Crownstones which will be part of this scene." },
     Crownstones_that_are_not_:           function() { return "Crownstones that are not selected will be left unchanged when this scene is activated." },
   },
+  ScenesOverview:{
+    Add_more_scenes_by_tappin:           function() { return "Add more scenes by tapping edit!" },
+    You_do_not_have_permissio:           function() { return "You do not have permission to change scenes..." },
+    Ask_an_admin_in_your_Sphe:           function() { return "Ask an admin in your Sphere to help you out!" },
+    OK:                                  function() { return "OK" },
+  },
   SeparatedItemList:{
     __filename: "../js/views/components/SeparatedItemList.tsx",
     UNKNOWN_TYPE:                        function() { return "UNKNOWN TYPE" },

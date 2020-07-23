@@ -1,3 +1,8 @@
+import { Languages } from "../../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ScenesOverview", key)(a,b,c,d,e);
+}
 import * as React                 from 'react';
 import { Platform, Text, View, Image, Alert, ScrollView } from "react-native";
 import { screenWidth, colors}     from "../styles";
@@ -19,8 +24,6 @@ import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { Navigation } from "react-native-navigation";
 import { ScaledImage } from "../components/ScaledImage";
 import { RoundedBackground } from "../components/RoundedBackground";
-
-
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
@@ -89,7 +92,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       let state = core.store.getState();
       let activeSphereId = state.app.activeSphere;
       if (Permissions.inSphere(activeSphereId).canCreateScenes == false) {
-        Alert.alert("You do not have permission to change scenes...","Ask an admin in your Sphere to help you out!", [{text:"OK"}]);
+        Alert.alert(lang("You_do_not_have_permissio"),lang("Ask_an_admin_in_your_Sphe"), [{text:lang("OK")}]);
         return;
       }
 
@@ -178,7 +181,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
                 <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
                   <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth}}>
                     <View style={{flex:1}} />
-                    <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>Add more scenes by tapping edit!</Text>
+                    <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
                     <ScaledImage source={require("../../images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
                   </View>
                 </SlideFadeInView>

@@ -77,6 +77,10 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'getBehaviourDebugInformation' } |
   { commandName : 'getCrownstoneUptime' } |
   { commandName : 'getAdcRestarts' } |
+  { commandName : 'getMinSchedulerFreeSpace' } |
+  { commandName : 'getLastResetReason' } |
+  { commandName : 'getGPREGRET' } |
+  { commandName : 'getAdcChannelSwaps' } |
   { commandName : 'getSwitchHistory' } |
   { commandName : 'getPowerSamples', type: PowersampleDataType } |
   { commandName : 'registerTrackedDevice',  trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number } |

@@ -66,7 +66,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       debugData2UI: 0,
       debugTimestamp: new Date().valueOf(),
       debugDataHash: null,
-      annotation: ''
+      annotation: '',
+      devOptionsVisible: false,
+      bufferOptionsVisible: false
     };
   }
 
@@ -122,16 +124,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     this.unsubscribeNative.forEach((unsubscribe) => { unsubscribe() });
   }
 
-  _getItems() {
-    let items = [];
-
-    const store = core.store;
-    let state = store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let stone = sphere.stones[this.props.stoneId];
-
-
-
+  _getBehavourDebugInformation(items, stone) {
     items.push({
       label: "Get Behaviour Debug Information",
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
@@ -186,7 +179,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         BatchCommandHandler.executePriority()
       }
     });
-
+  }
+  
+  _getCrownstoneUptime(items, stone) {
     items.push({
       label: "Get Crownstone Uptime",
       icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
@@ -209,7 +204,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         BatchCommandHandler.executePriority()
       }
     });
-
+  }
+  
+  _getAdcRestarts(items, stone) {
     items.push({
       label: "Get ADC Restarts",
       icon: <IconButton name={"ios-outlet"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLighter.hex }}/>,
@@ -234,7 +231,117 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         BatchCommandHandler.executePriority()
       }
     });
+  }
+  
 
+  _getAdcChannelSwaps(items, stone) {
+    items.push({
+      label: "Get ADC Channel Swaps",
+      icon: <IconButton name={"md-git-compare"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLighter.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
+        core.eventBus.emit("showLoading", "Get ADC channel swaps...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcChannelSwaps'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : AdcSwapCount = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getAdcChannelSwaps", data);
+            let resultString = "\n\nSwaps:" + data.swapCount + "\n\nLast ADC swap: " + xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(data.timestamp))
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+  }
+
+  _getLastResetReason(items, stone) {
+    items.push({
+      label: "Get last reset reason",
+      icon: <IconButton name={"md-help-circle"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
+        core.eventBus.emit("showLoading", "Get last reset reason...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getLastResetReason'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : ResetReason = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getLastResetReason", data);
+            let resultString = JSON.stringify(data, undefined, 2);
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+  }
+
+  _getMinSchedulerFreeSpace(items, stone) {
+    items.push({
+      label: "Get min scheduler free space",
+      icon: <IconButton name={"ios-pie"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
+        core.eventBus.emit("showLoading", "Get Min Scheduler Free Space...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getMinSchedulerFreeSpace'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : number = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getMinSchedulerFreeSpace", data);
+            let resultString = data;
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+  }
+  _getGPREGRET(items, stone) {
+    items.push({
+      label: "Get GPREGRET",
+      icon: <IconButton name={"ios-options"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
+        core.eventBus.emit("showLoading", "Get GPREGRET...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getGPREGRET'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+            let data : GPREGRET = returnData.data;
+            LOGe.info("STONE DEBUG INFORMATION: getGPREGRET", data);
+            let resultString = JSON.stringify(data, undefined, 2);
+
+            this.setState({debugInformationText: resultString});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+  }
+  
+  _getSwitchHistory(items, stone) {
     items.push({
       label: "Get Switch History",
       icon: <IconButton name={"ios-list-box"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
@@ -299,7 +406,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         BatchCommandHandler.executePriority()
       }
     });
-
+  }
+  
+  _getTriggeredSwitchcraftBuffers(items, stone) {
     items.push({
       label: "Get triggered switchcraft buffers",
       icon: <IconButton name={"md-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
@@ -310,6 +419,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         core.eventBus.emit("showLoading", "Get triggered switchcraft buffers...");
       }
     });
+  }
+  
+  _getMissedSwitchcraftBuffers(items, stone) {
     items.push({
       label: "Get missed switchcraft buffers",
       icon: <IconButton name={"ios-bulb"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
@@ -320,6 +432,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         core.eventBus.emit("showLoading", "Get missed switchcraft buffers...");
       }
     });
+  }
+  
+  _getFilteredBuffers(items, stone) {
     items.push({
       label: "Get filtered buffers",
       icon: <IconButton name={"ios-podium"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
@@ -330,6 +445,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         core.eventBus.emit("showLoading", "Get filtered buffer...");
       }
     });
+  }
+  
+  _getUnfilteredBuffers(items, stone) {
     items.push({
       label: "Get unfiltered buffers",
       icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
@@ -340,6 +458,56 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         core.eventBus.emit("showLoading", "Get unfiltered buffer...");
       }
     });
+  }
+  
+  
+  _getItems() {
+    let items = [];
+
+    const store = core.store;
+    let state = store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+
+
+    this._getBehavourDebugInformation(items, stone);
+    this._getSwitchHistory(items, stone);
+    this._getCrownstoneUptime(items, stone);
+
+    if (this.state.devOptionsVisible) {
+      this._getAdcRestarts(items, stone);
+      this._getAdcChannelSwaps(items, stone);
+      this._getLastResetReason(items, stone);
+      this._getMinSchedulerFreeSpace(items, stone);
+      this._getGPREGRET(items, stone);
+    }
+    else {
+      items.push({
+        label: "Show dev options",
+        icon: <IconButton name={"md-flask"} size={20} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
+        type: 'navigation',
+        callback: () => {
+          this.setState({devOptionsVisible: true, bufferOptionsVisible: false})
+        }
+      })
+    }
+
+    if (this.state.bufferOptionsVisible) {
+      this._getTriggeredSwitchcraftBuffers(items, stone);
+      this._getMissedSwitchcraftBuffers(items, stone);
+      this._getFilteredBuffers(items, stone);
+      this._getUnfilteredBuffers(items, stone);
+    }
+    else {
+      items.push({
+        label: "Show buffer options",
+        icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+        type: 'navigation',
+        callback: () => {
+          this.setState({bufferOptionsVisible: true, devOptionsVisible: false})
+        }
+      })
+    }
 
     if (this.state.debugInformationText) {
       items.push({

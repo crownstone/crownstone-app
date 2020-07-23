@@ -226,11 +226,20 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
 
   getCrownstoneUptime:        () => { return BluenetPromise('getCrownstoneUptime'); },
+
+  getMinSchedulerFreeSpace:   () => { return BluenetPromise('getMinSchedulerFreeSpace'); },
+  getLastResetReason:         () => { return BluenetPromise('getLastResetReason'); },
+  getGPREGRET:                () => { return BluenetPromise('getGPREGRET'); },
+  getAdcChannelSwaps:         () => { return BluenetPromise('getAdcChannelSwaps'); },
+
   getAdcRestarts:             () => { return BluenetPromise('getAdcRestarts'); },
   getSwitchHistory:           () => { return BluenetPromise('getSwitchHistory'); },
   getPowerSamples:            (type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); }
 
 };
+
+
+
 
 
 

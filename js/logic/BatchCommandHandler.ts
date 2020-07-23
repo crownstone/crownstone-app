@@ -251,6 +251,18 @@ class BatchCommandHandlerClass {
               case 'getPowerSamples':
                 actionPromise = BluenetPromiseWrapper.getPowerSamples(command.type);
                 break;
+              case 'getMinSchedulerFreeSpace':
+                actionPromise = BluenetPromiseWrapper.getMinSchedulerFreeSpace();
+                break;
+              case 'getLastResetReason':
+                actionPromise = BluenetPromiseWrapper.getLastResetReason();
+                break;
+              case 'getGPREGRET':
+                actionPromise = BluenetPromiseWrapper.getGPREGRET();
+                break;
+              case 'getAdcChannelSwaps':
+                actionPromise = BluenetPromiseWrapper.getAdcChannelSwaps();
+                break;
               case 'registerTrackedDevice':
                 let locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
                 actionPromise = BluenetPromiseWrapper.registerTrackedDevice(

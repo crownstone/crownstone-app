@@ -137,11 +137,39 @@ interface BluenetPromiseWrapperProtocol {
     ttlMinutes:number) : Promise< void >,
 
   getCrownstoneUptime()                        : Promise<number>,
+
+  getMinSchedulerFreeSpace()                   : Promise<number>,
+  getLastResetReason()                         : Promise<ResetReason>,
+  getGPREGRET()                                : Promise<GPREGRET[]>,
+  getAdcChannelSwaps()                         : Promise<AdcSwapCount>,
   getAdcRestarts()                             : Promise<AdcRestart>,
+
   getSwitchHistory()                           : Promise<SwitchHistory[]>,
   getPowerSamples(type : PowersampleDataType)  : Promise<PowerSamples[]>,
 }
 
+interface GPREGRET {
+  counter?:           number,
+  brownout?:          boolean,
+  dfuMode?:           boolean,
+  storageRecovered?:  boolean,
+  raw:                number,
+}
+interface ResetReason {
+  resetPin:       boolean,
+  watchdog:       boolean,
+  softReset:      boolean,
+  lockup:         boolean,
+  gpio:           boolean,
+  lpComp:         boolean,
+  debugInterface: boolean,
+  nfc:            boolean,
+  raw:            number,
+}
+interface AdcSwapCount {
+  swapCount: number,
+  timestamp: number,
+}
 interface AdcRestart {
   restartCount: number,
   timestamp:    number,
