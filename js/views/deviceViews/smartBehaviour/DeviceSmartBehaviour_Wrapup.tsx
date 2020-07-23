@@ -246,9 +246,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       for (let i = 0; i < ruleIds.length; i++) {
         if (rules[ruleIds[i]].deleted === false && this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
           Alert.alert(
-lang("_Behaviour_already_exists_header"),
-lang("_Behaviour_already_exists_body"),
-[{text:lang("_Behaviour_already_exists_left"), onPress:() => { NavigationUtil.dismissModal();}}],
+            lang("_Behaviour_already_exists_header"),
+            lang("_Behaviour_already_exists_body"),
+            [{text:lang("_Behaviour_already_exists_left"), onPress:() => { NavigationUtil.dismissModal();}}],
             {cancelable: false}
           );
           return;
@@ -477,12 +477,12 @@ lang("_Behaviour_already_exists_body"),
   render() {
     let disabledDays = {};
 
-    let header = "Every day?";
+    let header = lang("Every_day_");
     let headerNumberOfLines = 1;
     let body = lang("Tap_the_days_below_to_let");
 
     let buttonColor = colors.green.hex;
-    let buttonLabel = "That's it!";
+    let buttonLabel = lang("Thats_it_");
 
     let changeText = null;
 
@@ -498,7 +498,7 @@ lang("_Behaviour_already_exists_body"),
       }
     }
     if (amountOfConflictingDays > 0) {
-      header = "When do I do this?"
+      header = lang("When_do_I_do_this_")
     }
 
     // if we have a rule ID, this is an edit operation, not a new rule
@@ -506,19 +506,19 @@ lang("_Behaviour_already_exists_body"),
     // Conflict resolution is done based on other rules than the existing rule.
     if (this.props.ruleId && this.ruleHasChanged) {
       headerNumberOfLines = 2;
-      header = "When shall I use the modified behaviour?";
-      body = "You can quickly apply your changes to multiple days!";
-      changeText = this._allActiveDaysAreSelected() && "Only change " + DAYS_LABEL_MAP[this.props.selectedDay] + "."  || "Change everywhere!";
+      header = lang("When_shall_I_use_the_modi");
+      body = lang("You_can_quickly_apply_you");
+      changeText = this._allActiveDaysAreSelected() && lang("Only_change__", DAYS_LABEL_MAP[this.props.selectedDay])  || lang("Change_everywhere_");
     }
     else if (this.props.ruleId && this.props.deleteRule) {
       headerNumberOfLines = 2;
-      header = "From which days shall I remove this behaviour?";
-      body = "Select the days you wish to remove this behaviour from. I've already selected the day you picked as one to remove."
+      header = lang("From_which_days_shall_I_r");
+      body = lang("Select_the_days_you_wish_")
 
       buttonColor = colors.csOrange.hex;
-      buttonLabel = 'Remove behaviour!'
+      buttonLabel = lang("Remove_behaviour_")
 
-      changeText = this._allActiveDaysAreSelected() && "Remove only " +  DAYS_LABEL_MAP[this.props.selectedDay]+ "." || "Remove everywhere.";
+      changeText = this._allActiveDaysAreSelected() && lang("Remove_only__", DAYS_LABEL_MAP[this.props.selectedDay]) || lang("Remove_everywhere_");
 
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
@@ -539,12 +539,12 @@ lang("_Behaviour_already_exists_body"),
       }
 
       if (activeDayCount === 7-disabledCount) {
-        buttonLabel = "Remove everywhere!"
+        buttonLabel = lang("Remove_everywhere_")
       }
 
       if (activeDayCount === 0) {
         buttonColor = colors.green.hex;
-        buttonLabel = 'Never mind...'
+        buttonLabel = lang("Never_mind___")
       }
     }
 
@@ -583,8 +583,8 @@ lang("_Behaviour_already_exists_body"),
                         for (let j = 1; j < this.state.conflictDays[day].rules.length; j++) {
                           ruleList += "\n" + this.state.conflictDays[day].rules[j].label;
                         }
-                        Alert.alert("This will replace the following behaviours on " + DAY_LABEL_MAP[day] + ":", ruleList,
-                          [{ text: "Cancel" }, {text: "OK", onPress: () => { this.setState({ activeDays: fullData }); }}]
+                        Alert.alert(lang("This_will_replace_the_fol", DAY_LABEL_MAP[day]), ruleList,
+                          [{ text: lang("Cancel") }, {text: lang("OK"), onPress: () => { this.setState({ activeDays: fullData }); }}]
                         );
                         return;
                       }

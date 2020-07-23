@@ -64,10 +64,10 @@ export function SmartBehaviourRule(props: {
 
           if (activeDayCount === 0) {
             Alert.alert(
-lang("_Are_you_sure___Since_thi_header"),
-lang("_Are_you_sure___Since_thi_body"),
-[{text:lang("_Are_you_sure___Since_thi_left")}, {
-text:lang("_Are_you_sure___Since_thi_right"), onPress: () => {
+              lang("_Are_you_sure___Since_thi_header"),
+              lang("_Are_you_sure___Since_thi_body"),
+              [{text:lang("_Are_you_sure___Since_thi_left")}, {
+              text:lang("_Are_you_sure___Since_thi_right"), onPress: () => {
                 if (props.rule.idOnCrownstone !== null) {
                   core.store.dispatch({type:"MARK_STONE_RULE_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
                 }
@@ -159,10 +159,10 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
   let subLabel = null;
   let subLabelStyle : TextStyle = {};
   if (props.rule.syncedToCrownstone === false && showEditIcons) {
-    subLabel = "( Not on Crownstone yet... )";
+    subLabel = lang("__Not_on_Crownstone_yet__");
   }
   if (props.rule.deleted && showEditIcons) {
-    subLabel = "( Not removed from Crownstone yet... )";
+    subLabel = lang("__Not_removed_from_Crowns");
   }
 
   // if (!showEditIcons && overrideActive) {
@@ -171,7 +171,7 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
   // }
 
   if (indoorLocalizationDisabled && !showEditIcons && ai.isUsingPresence()) {
-    subLabel = "Indoor localization disabled for this phone (in app settings).";
+    subLabel = lang("Indoor_localization_disab");
     subLabelStyle = { color: colors.orange.hex, fontWeight:'bold'};
   }
 

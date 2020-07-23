@@ -104,12 +104,12 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
-    let header = "Power usage";
+    let header = lang("Power_usage_");
     if (this.data.length > 0) {
-      header = "Power usage: " + Math.round(this.data[this.data.length-1].y) + " W"
+      header += Math.round(this.data[this.data.length-1].y) + " W"
     }
     else {
-      header = "Power usage: " + stone.state.currentUsage + " W"
+      header += stone.state.currentUsage + " W"
     }
 
     return (

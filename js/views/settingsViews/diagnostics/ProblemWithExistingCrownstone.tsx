@@ -853,17 +853,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
   _getSwitchCraftExplanation(state) {
     if (Permissions.inSphere(this.state.problemStoneSummary.sphereId).editCrownstone) {
-      if (state.user.betaAccess) {
-        return lang("You_can_disable_Switchcra");
-      }
-      else {
-        if (state.user.developer) {
-          return  lang("The_option_for_Switchcraf_dev");
-        }
-        else {
-          return  lang("The_option_for_Switchcraf");
-        }
-      }
+      return  lang("The_option_for_Switchcraf");
     }
     else {
       return lang("You_can_ask_an_Admin_to_d");

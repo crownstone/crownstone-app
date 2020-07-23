@@ -130,7 +130,7 @@ export class SphereUser extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-                <ScrollView>
+        <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
               picture={user.picture}

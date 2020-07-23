@@ -1,3 +1,9 @@
+import { Languages } from "../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalNotifications", key)(a,b,c,d,e);
+}
+
 import {AppState, Platform, Vibration} from 'react-native'
 import {LOG, LOGi} from "../logging/Log";
 import {Util} from "../util/Util";
@@ -75,7 +81,7 @@ export const LocalNotifications = {
 
               data: data,
 
-              title: "New Message Found",
+              title: lang("New_Message_Found"),
               message: messageData.content, // (required)
               // ticker (optional) text which can be used for text to speech
               // color: "blue", // (optional) Color of the text. Default: system default
@@ -93,7 +99,7 @@ export const LocalNotifications = {
               data: data,
               userInfo: data,
 
-              title: "New Message Found\n", // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+              title: lang("New_Message_Found_n"), // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
               message: messageData.content, // (required)
               playSound: true, // (optional) default: true
             });
@@ -102,7 +108,7 @@ export const LocalNotifications = {
         }
         else {
           if (!alreadyNotified) {
-            Toast.showWithGravity('  Message found!  ', Toast.SHORT, Toast.CENTER);
+            Toast.showWithGravity(lang("__Message_found___"), Toast.SHORT, Toast.CENTER);
             LOG.info("LocalNotifications: on the front, just vibe.");
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(200, false);
