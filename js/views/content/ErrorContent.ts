@@ -9,13 +9,28 @@ export const ErrorContent = {
     if (phase === 1) {
       // PHASE 1 This is only when detected. The user has to find the Crownstone to actually disable it.
       if (errors.temperatureDimmer) {// adapt
-        return lang("Oh_no__The_Crownstone_tri");
+        if (dimmingAllowed) {
+          return lang("Oh_no__The_Crownstone_tri");
+        }
+        else {
+          return lang("Oh_no__The_Crownstone_tri_noDimming");
+        }
       }
       else if (errors.dimmerOnFailure) {// adapt
-        return lang("Oh_no__I_have_detected_a_");
+        if (dimmingAllowed) {
+          return lang("Oh_no__I_have_detected_a_");
+        }
+        else {
+          return lang("Oh_no__I_have_detected_a__noDimming");
+        }
       }
       else if (errors.dimmerOffFailure) {// adapt
-        return lang("Oh_no__I_have_detected_a_p");
+        if (dimmingAllowed) {
+          return lang("Oh_no__I_have_detected_a_p");
+        }
+        else {
+          return lang("Oh_no__I_have_detected_a_p_noDimming");
+        }
       }
       else if (errors.temperatureChip) {
         return lang("Oh_no__The_Crownstone_got");
@@ -33,13 +48,28 @@ export const ErrorContent = {
     else {
       // PHASE 2. this allows the user to reset it.
       if (errors.temperatureDimmer) { // adapt
-        return lang("This_Crownstone_became_to");
+        if (dimmingAllowed) {
+          return lang("This_Crownstone_became_to");
+        }
+        else {
+          return lang("This_Crownstone_became_to_noDimming");
+        }
       }
       else if (errors.dimmerOnFailure) {// adapt
-        return lang("I_detected_a_problem_with");
+        if (dimmingAllowed) {
+          return lang("I_detected_a_problem_with");
+        }
+        else {
+          return lang("I_detected_a_problem_with_noDimming");
+        }
       }
       else if (errors.dimmerOffFailure) { // adapt
-        return lang("I_detected_a_problem_with_");
+        if (dimmingAllowed) {
+          return lang("I_detected_a_problem_with_");
+        }
+        else {
+          return lang("I_detected_a_problem_with__noDimming");
+        }
       }
       else if (errors.temperatureChip) {
         return lang("The_Crownstone_got_way_to");
@@ -58,13 +88,28 @@ export const ErrorContent = {
 
   getHeader: function(errors, dimmingAllowed) {
     if (errors.temperatureDimmer) {// adapt
-      return lang("This_Crownstone_became_too");
+      if (dimmingAllowed) {
+        return lang("This_Crownstone_became_too");
+      }
+      else {
+        return lang("This_Crownstone_became_too_noDimming");
+      }
     }
     else if (errors.dimmerOnFailure) {// adapt
-      return lang("I_detected_a_problem_with_t");
+      if (dimmingAllowed) {
+        return lang("I_detected_a_problem_with_t");
+      }
+      else {
+        return lang("I_detected_a_problem_with_t_noDimming");
+      }
     }
     else if (errors.dimmerOffFailure) {// adapt
-      return lang("I_detected_a_problem_with_th");
+      if (dimmingAllowed) {
+        return lang("I_detected_a_problem_with_th");
+      }
+      else {
+        return lang("I_detected_a_problem_with_th_noDimming");
+      }
     }
     else if (errors.temperatureChip) {
       return lang("The_Crownstone_got_way_too");
@@ -85,10 +130,10 @@ export const ErrorContent = {
       return lang("You_can_reset_this_error_", getAT(),getCompany(),getRock());
     }
     else if (errors.dimmerOnFailure) {// adapt
-      return lang("I_turned_on_the_relay_to_", getAT(),getCompany(),getRock());
+      return lang("I_turned_on_the_relay_to_", getAT(), getCompany(), getRock());
     }
     else if (errors.dimmerOffFailure) {// adapt
-      return lang("I_turned_on_the_relay_to_p", getAT(),getCompany(),getRock());
+      return lang("I_turned_on_the_relay_to_p", getAT(), getCompany(), getRock());
     }
     else if (errors.temperatureChip) {
       return lang("If_you_reset_the_error__y");
@@ -105,27 +150,27 @@ export const ErrorContent = {
   },
 
   getButtonLabel: function(errors, dimmingAllowed) {
-      if (errors.temperatureDimmer) {
-        return lang("Ill_keep_an_eye_on_it_");
-      }
-      else if (errors.dimmerOnFailure) {
-        return lang("Understood_");
-      }
-      else if (errors.dimmerOffFailure) {
-        return lang("Understood_");
-      }
-      else if (errors.temperatureChip) {
-        return lang("Ill_keep_an_eye_on_it_");
-      }
-      else if (errors.overCurrentDimmer) {
-        return lang("I_wont_do_it_again_");
-      }
-      else if (errors.overCurrent) {
-        return lang("Ill_keep_an_eye_on_it_");
-      }
-      else {
-        return lang("Restart_Crownstone_");
-      }
+    if (errors.temperatureDimmer) {
+      return lang("Ill_keep_an_eye_on_it_");
+    }
+    else if (errors.dimmerOnFailure) {
+      return lang("Understood_");
+    }
+    else if (errors.dimmerOffFailure) {
+      return lang("Understood_");
+    }
+    else if (errors.temperatureChip) {
+      return lang("Ill_keep_an_eye_on_it_");
+    }
+    else if (errors.overCurrentDimmer) {
+      return lang("I_wont_do_it_again_");
+    }
+    else if (errors.overCurrent) {
+      return lang("Ill_keep_an_eye_on_it_");
+    }
+    else {
+      return lang("Restart_Crownstone_");
+    }
   }
   
 };

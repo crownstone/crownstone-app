@@ -238,11 +238,11 @@ class StoneDataSyncerClass {
           }
         });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setSoftOnSpeed', softOnSpeed: ability.softOnSpeed}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setSoftOnSpeed', softOnSpeed: Number(ability.softOnSpeed)}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
           let actions = [];
-          actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { softOnSpeed: ability.softOnSpeed}});
+          actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { softOnSpeed: Number(ability.softOnSpeed)}});
           actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
           core.store.batchDispatch(actions);
         })
