@@ -2901,6 +2901,74 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.fail { rejectCallback(callback, it.message) }
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun getMinSchedulerFreeSpace(callback: Callback) {
+		Log.i(TAG, "getMinSchedulerFreeSpace")
+		bluenet.debugData.getSchedulerMinFree()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getLastResetReason(callback: Callback) {
+		Log.i(TAG, "getLastResetReason")
+		bluenet.debugData.getResetReason()
+				.success {
+					val retVal = Arguments.createMap()
+					retVal.putDouble("raw", it.toDouble())
+					retVal.putBoolean("resetPin",       isBitSet(it, 0))
+					retVal.putBoolean("watchdog",       isBitSet(it, 1))
+					retVal.putBoolean("softReset",      isBitSet(it, 2))
+					retVal.putBoolean("lockup",         isBitSet(it, 3))
+					retVal.putBoolean("gpio",           isBitSet(it, 16))
+					retVal.putBoolean("lpComp",         isBitSet(it, 17))
+					retVal.putBoolean("debugInterface", isBitSet(it, 18))
+					retVal.putBoolean("nfc",            isBitSet(it, 19))
+					resolveCallback(callback, retVal)
+				}
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getGPREGRET(callback: Callback) {
+		Log.i(TAG, "getGPREGRET")
+		bluenet.debugData.getGpregret()
+				.success {
+					val retVal = Arguments.createArray()
+					for (packet in it) {
+						val packetMap = Arguments.createMap()
+						packetMap.putDouble("raw", packet.value.toDouble())
+						if (packet.index == 0U.toUint8()) {
+							packetMap.putInt("counter", (packet.value and 0x1FU).toInt())
+							packetMap.putBoolean("brownout", isBitSet(packet.value, 5))
+							packetMap.putBoolean("dfuMode", isBitSet(packet.value, 5))
+							packetMap.putBoolean("storageRecovered", isBitSet(packet.value, 5))
+						}
+						retVal.pushMap(packetMap)
+					}
+					resolveCallback(callback, retVal)
+				}
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getAdcChannelSwaps(callback: Callback) {
+		Log.i(TAG, "getAdcChannelSwaps")
+		bluenet.debugData.getAdcChannelSwaps()
+				.success {
+					val retVal = Arguments.createMap()
+					retVal.putDouble("swapCount", it.count.toDouble())
+					retVal.putDouble("timestamp", it.lastTimestamp.toDouble())
+					resolveCallback(callback, retVal) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+
+
 //endregion
 
 

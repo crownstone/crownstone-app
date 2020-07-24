@@ -145,7 +145,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 //        missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 87
+        versionCode 89
         versionName"4.1.1"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
@@ -249,6 +249,7 @@ dependencies {
     implementation project(':@react-native-community_blur')
 //    implementation project(':react-native-camera')
     implementation project(':react-native-maps')
+    implementation project(':react-native-localize')
 //    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
 //        force = true;
 //    }
