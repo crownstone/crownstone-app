@@ -893,7 +893,6 @@ export default {
     Location_permission_missi:              function() { return "Location permission missing." },
     Starting_Location_Service:              function() { return "Starting Location Services ..." },
     Crownstone_cannot_react_t:              function() { return "Crownstone cannot react to your presence while the app is in the background with this permission." },
-    Crownstone_cannot_react_to:             function() { return "Crownstone cannot react to your presence while the app is in the background with this permission." },
     Everything_is_great_:                   function() { return "Everything is great!" },
     Without_location_services:              function() { return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function." },
     This_should_not_take_long:              function() { return "This should not take long!" },

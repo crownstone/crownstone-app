@@ -490,7 +490,7 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
-                  label: lang("Dimmed___",Math.round(this.exampleBehaviours.action.dimming4.getDimPercentage())),
+                  label: lang("Dimmed____",Math.round(this.exampleBehaviours.action.dimming4.getDimPercentage())),
                   subLabel: "(tap to change)",
                   isSelected: () => {
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "3", this.exampleBehaviours.action.dimming4);
