@@ -43,10 +43,11 @@ export function SliderBar(props) {
 
   let content = (
     <View style={{width:screenWidth, minHeight: navBarHeight, backgroundColor: colors.white.hex, padding:15}}>
-      <View style={{width:screenWidth-30, height: navBarHeight-30, flexDirection:'row',  alignItems: 'center'}}>
+      <View style={{width:screenWidth-30, height: navBarHeight-30, flexDirection:'row',  alignItems: 'center', justifyContent:'center',}}>
         { props.largeIcon  !== undefined ? <View style={[styles.centered, {width: iconWidth, paddingRight: iconPadding}]}>{props.largeIcon}</View> : undefined}
         { props.mediumIcon !== undefined ? <View style={[styles.centered, {width: iconWidth, paddingRight: iconPadding}]}>{props.mediumIcon}</View> : undefined}
         { props.icon       !== undefined ? <View style={[styles.centered, {width: iconWidth, paddingRight: iconPadding}]}>{props.icon}</View> : undefined}
+        { props.centerAlignLabel ? <View style={{flex:1}} /> : undefined }
         { props.label ?
           <View style={{height: navBarHeight-30, justifyContent:'center'}}>
             <Text numberOfLines={1} style={[{fontSize: 16}, props.labelStyle, props.style]}>{props.label}</Text>

@@ -60,7 +60,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
               }
             }
           }
-          let softOnSpeedData = {softOnSpeed: softOnSpeed}
+          let softOnSpeedData = {softOnSpeed: Number(softOnSpeed)}
 
           if (ability_in_cloud.syncedToCrownstone) {
             actionType = "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD"
@@ -91,7 +91,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
               }
             }
           }
-          let rssiOffsetData = {rssiOffsetTarget: rssiOffset}
+          let rssiOffsetData = {rssiOffsetTarget: Number(rssiOffset)}
           if (ability_in_cloud.syncedToCrownstone) {
             actionType = "UPDATE_ABILITY_TAP_TO_TOGGLE_AS_SYNCED_FROM_CLOUD";
             rssiOffsetData["rssiOffset"] = rssiOffset;

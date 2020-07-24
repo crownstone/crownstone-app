@@ -27,6 +27,7 @@ import { NavigationBar } from "../../../components/editComponents/NavigationBar"
 import { SliderBar } from "../../../components/editComponents/SliderBar";
 import { DataUtil } from "../../../../util/DataUtil";
 import { SwitchBar } from "../../../components/editComponents/SwitchBar";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -40,7 +41,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
     super(props);
     let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
     this.state = {
-      softOnSpeed: stone.abilities.dimming.softOnSpeed
+      softOnSpeed: Number(stone.abilities.dimming.softOnSpeed)
     }
   }
 
@@ -88,37 +89,46 @@ export class Ability_DimmerSettings extends Component<any, any> {
 
   _getSoftOn() {
     let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+
     if (stone) {
+      if (xUtil.versions.canIUse(stone.config.firmwareVersion, '5.1.0') === false) {
+        return (
+          <View style={{backgroundColor: colors.white.hex, height:80, ...styles.centered}}>
+            <Text style={{fontSize: 16, textAlign:'center'}}>{lang("Update_Crownstone_to_use_")}</Text>
+          </View>
+        );
+      }
       return (
         <React.Fragment>
-        <SwitchBar
-          largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
-          label={lang("Use_smoothing")}
-          value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
-          callback={(value) => {
-            let numericValue = 8;
-            if (!value) {
-              numericValue = 100;
-            }
-            core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: numericValue }})
-            this.setState({softOnSpeed: numericValue})
-          }}
-        />
-          { stone.abilities.dimming.softOnSpeed !== 0 && stone.abilities.dimming.softOnSpeed !== 100 && (
-            <SliderBar
-              label={ lang("Should_I_fade_slowly_or_q") }
-              callback={(value) => {
-                core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: value }});
-                this.setState({softOnSpeed: value})
-              }}
-              min={1}
-              max={20}
-              value={this.state.softOnSpeed}
-              explanation={this._getExplanation(this.state.softOnSpeed)}
-            />
-          )}
+          <SwitchBar
+            largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
+            label={lang("Use_smoothing")}
+            value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
+            callback={(value) => {
+              let numericValue = 8;
+              if (!value) {
+                numericValue = 100;
+              }
+              core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: numericValue }})
+              this.setState({softOnSpeed: numericValue})
+            }}
+          />
+            { Number(stone.abilities.dimming.softOnSpeed) !== 0 && Number(stone.abilities.dimming.softOnSpeed) !== 100 && (
+              <SliderBar
+                centerAlignLabel={true}
+                label={ lang("Should_I_fade_slowly_or_q") }
+                callback={(value) => {
+                  core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: value }});
+                  this.setState({softOnSpeed: value})
+                }}
+                min={1}
+                max={20}
+                value={this.state.softOnSpeed}
+                explanation={this._getExplanation(this.state.softOnSpeed)}
+              />
+            )}
         </React.Fragment>
-      )
+      );
     }
     return <View/>
   }

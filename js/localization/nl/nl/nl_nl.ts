@@ -15,6 +15,7 @@ export default {
       Slowly___:                             false,
       Use_smoothing:                         false,
       Should_I_fade_slowly_or_q:             false,
+      Update_Crownstone_to_use_:             false,
     },
     Dimming_compatibility:                  function() { return "Dim compatibiliteit"; },
     Disable_dimming:                        function() { return "Dimmen uitzetten"; },
@@ -31,6 +32,7 @@ export default {
     Use_smoothing:                          function() { return "Geleidelijk dimmen"; },
     Should_I_fade_slowly_or_q:              function() { return "Hoe snel moet ik naar de nieuwe stand?"; },
     __filename: "../../js/views/deviceViews/abilities/settings/Ability_DimmerSettings.tsx",
+    Update_Crownstone_to_use_:              function() { return "Update de Crownstone om\ngeleidelijk dimmen aan te kunnen zetten!" },
   },
   Ability_SwitchcraftInformation:{
     __stringSameAsBaseLanguage: {

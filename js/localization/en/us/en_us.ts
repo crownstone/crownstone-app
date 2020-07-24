@@ -15,6 +15,7 @@ export default {
     Slowly___:                              function() { return "Slowly..." },
     Use_smoothing:                          function() { return "Use smoothing" },
     Should_I_fade_slowly_or_q:              function() { return "Should I fade slowly or quickly?" },
+    Update_Crownstone_to_use_:              function() { return "Update Crownstone to use Smoothing!" },
   },
   Ability_SwitchcraftInformation:{
     __filename: "../js/views/deviceViews/elements/SwitchcraftInformation.tsx",

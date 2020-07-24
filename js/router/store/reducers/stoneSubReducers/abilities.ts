@@ -4,7 +4,7 @@ import { getTime, refreshDefaults, update } from "../reducerUtil";
 let dimmingAbilityFormat = {
   enabled: false,
   enabledTarget: false,
-  softOnSpeed: 10,
+  softOnSpeed: 8,
   syncedToCrownstone: true,
   updatedAt: 0
 };
