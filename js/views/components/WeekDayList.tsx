@@ -41,7 +41,7 @@ export class WeekDayList extends Component<any, any> {
               this.props.onChange(newData, day);
             },
             selected: this.props.data[day],
-            label: DAY_SHORT_LABEL_MAP[day],
+            label: DAY_SHORT_LABEL_MAP(day),
           }));
       }
       else {
@@ -54,7 +54,7 @@ export class WeekDayList extends Component<any, any> {
               this.props.onChange(newData, day);
             }}
             selected={this.props.data[day]}
-            label={DAY_SHORT_LABEL_MAP[day]}
+            label={DAY_SHORT_LABEL_MAP(day)}
           />
         )
       }
@@ -103,7 +103,7 @@ export class WeekDayListLarge extends Component<any, any> {
                 this.props.onChange(newData, day);
               },
               selected: this.props.data[day],
-              label: DAY_SHORT_LABEL_MAP[day],
+              label: DAY_SHORT_LABEL_MAP(day),
               disabled: this.props.disabledDays[day],
             })
             }
@@ -119,7 +119,7 @@ export class WeekDayListLarge extends Component<any, any> {
               this.props.onChange(newData, day);
             }}
             selected={this.props.data[day]}
-            label={DAY_SHORT_LABEL_MAP[day]}
+            label={DAY_SHORT_LABEL_MAP(day)}
             disabled={this.props.disabledDays[day]}
           />
         );

@@ -490,7 +490,7 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
-                  label: lang("Dimmed__",Math.round(this.exampleBehaviours.action.dimming4.getDimPercentage())),
+                  label: lang("Dimmed___",Math.round(this.exampleBehaviours.action.dimming4.getDimPercentage())),
                   subLabel: "(tap to change)",
                   isSelected: () => {
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "3", this.exampleBehaviours.action.dimming4);
@@ -587,8 +587,8 @@ export class RuleEditor extends LiveComponent<
                   onSelect: () => {this.rule.setActionState(100); this.forceUpdate(); }
                 },
                 {
-                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimPercentage() : 50)),
-                  subLabel: "(tap to change)",
+                  label: lang("Dimmed____", Math.round(this.rule.willDim() ? this.rule.getDimPercentage() : 50)),
+                  subLabel: lang("_tap_to_change_"),
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
                   onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }
                 },
@@ -601,7 +601,7 @@ export class RuleEditor extends LiveComponent<
             <BehaviourOptionList
               header={ lang("Who_shall_I_look_for_")}
               closeCallback={() => { this.toggleDetails(null); }}
-              closeLabel={"That's it!"}
+              closeLabel={lang("Thats_it_")}
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
@@ -646,7 +646,7 @@ export class RuleEditor extends LiveComponent<
                   onSelect: () => {
                     if (AicoreUtil.canBehaviourUseIndoorLocalization(
                       this.props.sphereId,
-                      "You can use in the house with less than " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + ".") === false) {
+                      lang("You_can_use_in_the_house_w", AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION)) === false) {
                       return false;
                     }
 
@@ -659,14 +659,14 @@ export class RuleEditor extends LiveComponent<
                 },
                 {
                   label: lang("Select_room_s____"),
-                  subLabel: "(tap to select)",
+                  subLabel: lang("_tap_to_select_"),
                   isSelected: () => {
                     return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "3", this.exampleBehaviours.location.custom);
                   },
                   onSelect: () => {
                     if (AicoreUtil.canBehaviourUseIndoorLocalization(
                       this.props.sphereId,
-                      "You can use in the house with less than " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + ".") === false) {
+                      lang("You_can_use_in_the_house_", AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION)) === false) {
                       return false;
                     }
 
@@ -717,7 +717,7 @@ export class RuleEditor extends LiveComponent<
                 },
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
-                  subLabel: "(tap to customize)",
+                  subLabel: lang("_tap_to_customize_"),
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
                   },
@@ -729,7 +729,7 @@ export class RuleEditor extends LiveComponent<
                 },
                 {
                   label: lang("Other___"),
-                  subLabel: "(tap to create)",
+                  subLabel: lang("_tap_to_create_"),
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "5", this.exampleBehaviours.time.custom);
                   },

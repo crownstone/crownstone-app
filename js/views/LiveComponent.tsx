@@ -17,7 +17,6 @@ export class LiveComponent<a, b> extends Component<a, b> {
     super(props);
 
     let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
-      console.log("FORCE_RERENDER", props.componentId)
       Navigation.mergeOptions(props.componentId,{passProps:{}})
       this.forceUpdate();
     });

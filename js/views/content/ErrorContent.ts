@@ -8,13 +8,13 @@ export const ErrorContent = {
   getTextDescription: function(phase, errors, dimmingAllowed) {
     if (phase === 1) {
       // PHASE 1 This is only when detected. The user has to find the Crownstone to actually disable it.
-      if (errors.temperatureDimmer) {
+      if (errors.temperatureDimmer) {// adapt
         return lang("Oh_no__The_Crownstone_tri");
       }
-      else if (errors.dimmerOnFailure) {
+      else if (errors.dimmerOnFailure) {// adapt
         return lang("Oh_no__I_have_detected_a_");
       }
-      else if (errors.dimmerOffFailure) {
+      else if (errors.dimmerOffFailure) {// adapt
         return lang("Oh_no__I_have_detected_a_p");
       }
       else if (errors.temperatureChip) {
@@ -32,13 +32,13 @@ export const ErrorContent = {
     }
     else {
       // PHASE 2. this allows the user to reset it.
-      if (errors.temperatureDimmer) {
+      if (errors.temperatureDimmer) { // adapt
         return lang("This_Crownstone_became_to");
       }
-      else if (errors.dimmerOnFailure) {
+      else if (errors.dimmerOnFailure) {// adapt
         return lang("I_detected_a_problem_with");
       }
-      else if (errors.dimmerOffFailure) {
+      else if (errors.dimmerOffFailure) { // adapt
         return lang("I_detected_a_problem_with_");
       }
       else if (errors.temperatureChip) {
@@ -57,13 +57,13 @@ export const ErrorContent = {
   },
 
   getHeader: function(errors, dimmingAllowed) {
-    if (errors.temperatureDimmer) {
+    if (errors.temperatureDimmer) {// adapt
       return lang("This_Crownstone_became_too");
     }
-    else if (errors.dimmerOnFailure) {
+    else if (errors.dimmerOnFailure) {// adapt
       return lang("I_detected_a_problem_with_t");
     }
-    else if (errors.dimmerOffFailure) {
+    else if (errors.dimmerOffFailure) {// adapt
       return lang("I_detected_a_problem_with_th");
     }
     else if (errors.temperatureChip) {
@@ -81,13 +81,13 @@ export const ErrorContent = {
   },
 
   getSubheader: function(errors, dimmingAllowed) {
-    if (errors.temperatureDimmer) {
+    if (errors.temperatureDimmer) {// adapt
       return lang("You_can_reset_this_error_", getAT(),getCompany(),getRock());
     }
-    else if (errors.dimmerOnFailure) {
+    else if (errors.dimmerOnFailure) {// adapt
       return lang("I_turned_on_the_relay_to_", getAT(),getCompany(),getRock());
     }
-    else if (errors.dimmerOffFailure) {
+    else if (errors.dimmerOffFailure) {// adapt
       return lang("I_turned_on_the_relay_to_p", getAT(),getCompany(),getRock());
     }
     else if (errors.temperatureChip) {

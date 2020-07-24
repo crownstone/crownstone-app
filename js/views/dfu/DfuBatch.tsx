@@ -125,7 +125,7 @@ export class DfuBatch extends LiveComponent<any, any> {
 
   _doRetries(cloudIssue = false) {
     let indexToRetry = null;
-    let maxRetries = 1;
+    let maxRetries = 2;
     if (Platform.OS === 'android') {
       maxRetries = 3;
     }

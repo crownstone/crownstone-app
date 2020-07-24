@@ -508,7 +508,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       headerNumberOfLines = 2;
       header = lang("When_shall_I_use_the_modi");
       body = lang("You_can_quickly_apply_you");
-      changeText = this._allActiveDaysAreSelected() && lang("Only_change__", DAYS_LABEL_MAP[this.props.selectedDay])  || lang("Change_everywhere_");
+      changeText = this._allActiveDaysAreSelected() && lang("Only_change__", DAYS_LABEL_MAP(this.props.selectedDay))  || lang("Change_everywhere_");
     }
     else if (this.props.ruleId && this.props.deleteRule) {
       headerNumberOfLines = 2;
@@ -518,7 +518,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       buttonColor = colors.csOrange.hex;
       buttonLabel = lang("Remove_behaviour_")
 
-      changeText = this._allActiveDaysAreSelected() && lang("Remove_only__", DAYS_LABEL_MAP[this.props.selectedDay]) || lang("Remove_everywhere_");
+      changeText = this._allActiveDaysAreSelected() && lang("Remove_only__", DAYS_LABEL_MAP(this.props.selectedDay)) || lang("Remove_everywhere_");
 
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
@@ -583,7 +583,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
                         for (let j = 1; j < this.state.conflictDays[day].rules.length; j++) {
                           ruleList += "\n" + this.state.conflictDays[day].rules[j].label;
                         }
-                        Alert.alert(lang("This_will_replace_the_fol", DAY_LABEL_MAP[day]), ruleList,
+                        Alert.alert(lang("This_will_replace_the_fol", DAY_LABEL_MAP(day)), ruleList,
                           [{ text: lang("Cancel") }, {text: lang("OK"), onPress: () => { this.setState({ activeDays: fullData }); }}]
                         );
                         return;

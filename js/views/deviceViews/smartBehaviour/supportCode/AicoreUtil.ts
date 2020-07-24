@@ -108,11 +108,21 @@ export const AicoreUtil = {
       let noOffset = (tr.from as aicoreTimeDataSun).offsetMinutes === 0 && (tr.to as aicoreTimeDataSun).offsetMinutes === 0;
       if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNSET) && noOffset) {
         // "while the sun is up"
-        timeStr = lang("while_the_sun_is_up");
+        if (AicoreUtil.isTwilight(rule)) {
+          timeStr = lang("while_the_sun_is_up_twilight");
+        }
+        else {
+          timeStr = lang("while_the_sun_is_up");
+        }
       }
       else if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNRISE) && noOffset) {
         // "while its dark outside"
-        timeStr = lang("while_its_dark_outside");
+        if (AicoreUtil.isTwilight(rule)) {
+          timeStr = lang("while_its_dark_outside_twilight");
+        }
+        else {
+          timeStr = lang("while_its_dark_outside");
+        }
       }
       else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK || forceBetween) {
         // this makes "between X and Y"
@@ -141,6 +151,10 @@ export const AicoreUtil = {
     }
 
     return timeStr;
+  },
+
+  isTwilight(rule : behaviour | twilight) {
+    return rule.action.type === "DIM_WHEN_TURNED_ON";
   },
 
 

@@ -23,31 +23,60 @@ export let WEEK_DAY_INDICES = ['Mon','Tue','Wed','Thu','Fri']; // these are keys
 export let WEEKEND_DAY_INDICES = ['Sat','Sun']; // these are keys
 
 
-export let DAY_LABEL_MAP = {
-  Mon: Languages.get("__UNIVERSAL", 'DAY_Monday')(),
-  Tue: Languages.get("__UNIVERSAL", 'DAY_Tuesday')(),
-  Wed: Languages.get("__UNIVERSAL", 'DAY_Wednesday')(),
-  Thu: Languages.get("__UNIVERSAL", 'DAY_Thursday')(),
-  Fri: Languages.get("__UNIVERSAL", 'DAY_Friday')(),
-  Sat: Languages.get("__UNIVERSAL", 'DAY_Saturday')(),
-  Sun: Languages.get("__UNIVERSAL", 'DAY_Sunday')(),
+export let DAY_LABEL_MAP = function(key) {
+  switch (key) {
+    case "Mon":
+      return Languages.get("__UNIVERSAL", 'DAY_Monday')();
+    case "Tue":
+      return Languages.get("__UNIVERSAL", 'DAY_Tuesday')();
+    case "Wed":
+      return Languages.get("__UNIVERSAL", 'DAY_Wednesday')();
+    case "Thu":
+      return Languages.get("__UNIVERSAL", 'DAY_Thursday')();
+    case "Fri":
+      return Languages.get("__UNIVERSAL", 'DAY_Friday')();
+    case "Sat":
+      return Languages.get("__UNIVERSAL", 'DAY_Saturday')();
+    case "Sun":
+      return Languages.get("__UNIVERSAL", 'DAY_Sunday')();
+  }
 };
-export let DAYS_LABEL_MAP = {
-  Mon: Languages.get("__UNIVERSAL", 'DAY_Mondays')(),
-  Tue: Languages.get("__UNIVERSAL", 'DAY_Tuesdays')(),
-  Wed: Languages.get("__UNIVERSAL", 'DAY_Wednesdays')(),
-  Thu: Languages.get("__UNIVERSAL", 'DAY_Thursdays')(),
-  Fri: Languages.get("__UNIVERSAL", 'DAY_Fridays')(),
-  Sat: Languages.get("__UNIVERSAL", 'DAY_Saturdays')(),
-  Sun: Languages.get("__UNIVERSAL", 'DAY_Sundays')(),
+
+export let DAYS_LABEL_MAP = function(key) {
+  switch (key) {
+    case "Mon":
+      return Languages.get("__UNIVERSAL", 'DAY_Mondays')();
+    case "Tue":
+      return Languages.get("__UNIVERSAL", 'DAY_Tuesdays')();
+    case "Wed":
+      return Languages.get("__UNIVERSAL", 'DAY_Wednesdays')();
+    case "Thu":
+      return Languages.get("__UNIVERSAL", 'DAY_Thursdays')();
+    case "Fri":
+      return Languages.get("__UNIVERSAL", 'DAY_Fridays')();
+    case "Sat":
+      return Languages.get("__UNIVERSAL", 'DAY_Saturdays')();
+    case "Sun":
+      return Languages.get("__UNIVERSAL", 'DAY_Sundays')();
+  }
 };
-export let DAY_SHORT_LABEL_MAP = {
-  Mon: Languages.get("__UNIVERSAL", 'DAY_Mon')(),
-  Tue: Languages.get("__UNIVERSAL", 'DAY_Tue')(),
-  Wed: Languages.get("__UNIVERSAL", 'DAY_Wed')(),
-  Thu: Languages.get("__UNIVERSAL", 'DAY_Thu')(),
-  Fri: Languages.get("__UNIVERSAL", 'DAY_Fri')(),
-  Sat: Languages.get("__UNIVERSAL", 'DAY_Sat')(),
-  Sun: Languages.get("__UNIVERSAL", 'DAY_Sun')(),
+
+export let DAY_SHORT_LABEL_MAP = function(key) {
+  switch (key) {
+    case "Mon":
+      return Languages.get("__UNIVERSAL", 'DAY_Mon')();
+    case "Tue":
+      return Languages.get("__UNIVERSAL", 'DAY_Tue')();
+    case "Wed":
+      return Languages.get("__UNIVERSAL", 'DAY_Wed')();
+    case "Thu":
+      return Languages.get("__UNIVERSAL", 'DAY_Thu')();
+    case "Fri":
+      return Languages.get("__UNIVERSAL", 'DAY_Fri')();
+    case "Sat":
+      return Languages.get("__UNIVERSAL", 'DAY_Sat')();
+    case "Sun":
+      return Languages.get("__UNIVERSAL", 'DAY_Sun')();
+  }
 };
 

@@ -173,7 +173,7 @@ function TimePart(props : {
               </FadeIn>
               <FadeIn index={index++}>
                 <View style={{ marginLeft: 25 }}>
-                  <TextButtonDark label={"That's a good time!"} basic={true} callback={() => {
+                  <TextButtonDark label={lang("Thats_a_good_time_")} basic={true} callback={() => {
                     setFinished(true);
                     props.setFinished(true);
                   }}/>

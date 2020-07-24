@@ -50,15 +50,16 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
 
 
     return {
-      intention:      { label: intentionStr,       data: null },
-      action:         { label: actionStr,          data: this.rule.action },
-      presencePrefix: { label: presencePrefix,     data: null },
-      presence:       { label: presenceStr,        data: this.rule.presence },
-      locationPrefix: { label: locationPrefix,     data: null },
-      location:       { label: locationStr,        data: this.rule.presence },
-      time:           { label: timeStr,            data: this.rule.time },
-      optionPrefix:   { label: endConditionPrefix, data: null },
-      option:         { label: endConditionStr,    data: this.rule.endCondition }
+      intention:       { label: intentionStr,       data: null },
+      action:          { label: actionStr,          data: this.rule.action },
+      presencePrefix:  { label: presencePrefix,     data: null },
+      presence:        { label: presenceStr,        data: this.rule.presence },
+      locationPrefix:  { label: locationPrefix,     data: null },
+      location:        { label: locationStr,        data: this.rule.presence },
+      locationPostfix: { label: locationPostfix,    data: null },
+      time:            { label: timeStr,            data: this.rule.time },
+      optionPrefix:    { label: endConditionPrefix, data: null },
+      option:          { label: endConditionStr,    data: this.rule.endCondition }
     }
   }
 
@@ -69,15 +70,16 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let sentence = "";
 
     sentence += chunks.intention.label;
-    sentence += chunks.action.label         ? " " + chunks.action.label         : "";
-    sentence += chunks.presencePrefix.label ? " " + chunks.presencePrefix.label : "";
-    sentence += chunks.presence.label       ? " " + chunks.presence.label       : "";
-    sentence += chunks.locationPrefix.label ? " " + chunks.locationPrefix.label : "";
-    sentence += chunks.location.label       ? " " + chunks.location.label       : "";
-    sentence += chunks.time.label           ? " " + chunks.time.label           : "";
+    sentence += chunks.action.label          ? " " + chunks.action.label          : "";
+    sentence += chunks.presencePrefix.label  ? " " + chunks.presencePrefix.label  : "";
+    sentence += chunks.presence.label        ? " " + chunks.presence.label        : "";
+    sentence += chunks.locationPrefix.label  ? " " + chunks.locationPrefix.label  : "";
+    sentence += chunks.location.label        ? " " + chunks.location.label        : "";
+    sentence += chunks.locationPostfix.label ? " " + chunks.locationPostfix.label : "";
+    sentence += chunks.time.label            ? " " + chunks.time.label            : "";
     sentence += ".";
-    sentence += chunks.optionPrefix.label ? " " + chunks.optionPrefix.label : "";
-    sentence += chunks.option.label ? " " + chunks.option.label + "." : "";
+    sentence += chunks.optionPrefix.label    ? " " + chunks.optionPrefix.label : "";
+    sentence += chunks.option.label          ? " " + chunks.option.label + "." : "";
 
     return sentence;
   }
@@ -102,6 +104,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     if (chunks.presence.label)        { addToResult(" "); addToResult(chunks.presence,      SELECTABLE_TYPE.PRESENCE); } else {  addToResult(chunks.presence,SELECTABLE_TYPE.PRESENCE, true);  }
     if (chunks.locationPrefix.label)  { addToResult(" "); addToResult(chunks.locationPrefix);                          }
     if (chunks.location.label)        { addToResult(" "); addToResult(chunks.location,      SELECTABLE_TYPE.LOCATION); } else {  addToResult(chunks.location,SELECTABLE_TYPE.LOCATION, true);  }
+    if (chunks.locationPostfix.label) { addToResult(" "); addToResult(chunks.locationPostfix);                         }
     if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time, SELECTABLE_TYPE.TIME, true);      }
     addToResult(".");
 

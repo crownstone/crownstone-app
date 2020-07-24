@@ -21,7 +21,6 @@ class LanguageManager {
     this.usingBaseLanguage = true;
     this.textSource = localization_en_us;
     this.getFromDisk()
-
     let locales = RNLocalize.getLocales();
     if (locales.length > 0) {
       for (let i = 0; i < locales.length; i++) {
@@ -36,7 +35,6 @@ class LanguageManager {
         }
       }
     }
-    console.log("DEFAULT", this.defaultLanguage)
   }
 
 
@@ -109,7 +107,6 @@ class LanguageManager {
     AsyncStorage.getItem("LANGUAGE_KEY")
       .then((result) => {
         if (result) {
-          console.log("GOT FROM DISK:", result)
           this.persistedLocale = result;
           this.setLocale(result);
         }
