@@ -44,16 +44,21 @@ export class StatusCommunication extends LiveComponent<any, any> {
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (
-        (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])
-         ) {
-        let amountOfVisibleCrownstones = this._getAmountOfCrownstones();
-        if (this.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
-          this.amountOfVisibleCrownstones = amountOfVisibleCrownstones;
-          this.forceUpdate();
-        }
+      if ((change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])) {
+        this._checkIfRedrawIsRequired();
       }
     });
+
+    // verify that something has not happened between rendering and starting the listener.
+    this._checkIfRedrawIsRequired();
+  }
+
+  _checkIfRedrawIsRequired() {
+    let amountOfVisibleCrownstones = this._getAmountOfCrownstones();
+    if (this.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
+      this.amountOfVisibleCrownstones = amountOfVisibleCrownstones;
+      this.forceUpdate();
+    }
   }
 
   _getAmountOfCrownstones() {
@@ -106,7 +111,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
       flexDirection:'column',
     };
 
-
+    console.log("RENDER WITH", this.amountOfVisibleCrownstones)
     if (this.props.viewingRemotely === true) {
       return (
         <View style={generalStyle} pointerEvents={'none'}>

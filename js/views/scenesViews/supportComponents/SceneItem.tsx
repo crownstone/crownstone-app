@@ -51,7 +51,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
         onPress={() => {
           if (editMode === false) {
             let switchData = scene.data;
-            executeScene(switchData, sphereId);
+            executeScene(switchData, sphereId, sceneId);
 
             setActivated(true);
             setTimeout(() => { setActivated(false); }, 2000);
@@ -184,9 +184,32 @@ export const getScenePictureSource = function(scene) {
   }
 }
 
-export const executeScene = function(switchData, sphereId) {
-  let action = false;
+export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
+  let deletedStones = false;
+  let correctedList = {};
   Object.keys(switchData).forEach((stoneCID) => {
+    let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
+    if (!stoneData) {
+      deletedStones = true;
+    }
+    else {
+      correctedList[stoneCID] = switchData[stoneCID];
+    }
+  })
+
+  if (deletedStones && sceneId) {
+    core.store.dispatch({type:"SCENE_UPDATE", sphereId, sceneId, data: { data: correctedList }})
+  }
+
+  return correctedList;
+}
+
+export const executeScene = function(switchData, sphereId: string, sceneId: string = null) {
+  let action = false;
+
+  let correctedList = verifySceneIntegrity(switchData, sphereId, sceneId);
+
+  Object.keys(correctedList).forEach((stoneCID) => {
     action = true;
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
     BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}, {autoExecute: false}).catch()

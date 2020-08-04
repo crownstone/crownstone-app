@@ -15,7 +15,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { ScrollView } from "react-native";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { xUtil } from "../../util/StandAloneUtil";
-import { executeScene, getScenePictureSource } from "./supportComponents/SceneItem";
+import { executeScene, getScenePictureSource, verifySceneIntegrity } from "./supportComponents/SceneItem";
 import { DataUtil } from "../../util/DataUtil";
 import { StoneSwitchStateRow } from "./SceneAdd";
 import { IconButton } from "../components/IconButton";
@@ -49,7 +49,10 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
 
     let scene = core.store.getState()?.spheres[props.sphereId]?.scenes[props.sceneId] || null;
     if (scene) {
-      sceneData = {...sceneData, ...scene};
+      // verify that the crownstones used in this scene have not been deleted.
+      let data = verifySceneIntegrity(scene.data, props.sphereId, props.sceneId);
+
+      sceneData = {...sceneData, ...scene, data: data};
       let pictureURI = getScenePictureSource(scene);
       this.originalPicture = scene.picture;
       if (pictureURI) {
@@ -153,15 +156,19 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       }
     });
 
-    items.push({type:"explanation", label: lang("CHOOSE_DESIRED_STATES")})
+
 
     let state = core.store.getState();
-    let stoneIds = Object.keys(state.spheres[this.props.sphereId].stones);
+    let stoneIdsInScene = Object.keys(state.spheres[this.props.sphereId].stones);
 
     let stoneList = [];
     let sortData = {};
 
-    stoneIds.forEach((stoneId) => {
+    if (stoneIdsInScene.length > 0) {
+      items.push({ type: "explanation", label: lang("CHOOSE_DESIRED_STATES") })
+    }
+
+    stoneIdsInScene.forEach((stoneId) => {
       let stone = state.spheres[this.props.sphereId].stones[stoneId];
       let stoneCID = stone.config.crownstoneId;
       if (this.state.data[stoneCID] === undefined) { return; }
@@ -199,16 +206,20 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       items.push(item.component);
     })
 
-    items.push({type:"spacer"})
-    items.push({
-      type:'button',
-      label: lang("Test_the_Scene_"),
-      style: { color: colors.green.hex, fontWeight:'bold' },
-      icon: <IconButton name='ios-play' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-      callback: () => {
-        executeScene(this.state.data, this.props.sphereId);
-      }
-    });
+
+    if (stoneIdsInScene.length > 0) {
+      items.push({type:"spacer"})
+      items.push({
+        type:'button',
+        label: lang("Test_the_Scene_"),
+        style: { color: colors.green.hex, fontWeight:'bold' },
+        icon: <IconButton name='ios-play' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+        callback: () => {
+          executeScene(this.state.data, this.props.sphereId, this.props.sceneId);
+        }
+      });
+    }
+
 
     items.push({type:"spacer"})
     items.push({type:"spacer"})
