@@ -254,8 +254,8 @@ export class SphereOverview extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background image={core.background.lightBlur}>
-              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main")} height={availableScreenHeight} />
+            <Background hideNotifications={true} image={core.background.lightBlur}>
+              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )
         }

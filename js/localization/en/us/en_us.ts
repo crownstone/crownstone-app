@@ -1503,7 +1503,7 @@ export default {
     This_room_already_exists_:              function() { return "This room already exists." },
     Please_pick_a_unique_name:              function() { return "Please pick a unique name for this room." },
     Lets_pick_an_icon_:                     function() { return "Let's pick an icon!" },
-    You_can_give_your_room_an:              function() { return "You can give your room and optionally a background picture!" },
+    You_can_give_your_room_an:              function() { return "You can give your room an icon and optionally a background picture!" },
     You_can_always_change_thi:              function() { return "You can always change this later in the room's settings." },
     Create_room:                            function() { return "Create room" },
   },

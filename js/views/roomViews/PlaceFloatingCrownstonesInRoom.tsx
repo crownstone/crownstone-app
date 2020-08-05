@@ -14,7 +14,7 @@ import {
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
-import { screenHeight, tabBarHeight, topBarHeight, } from '../styles'
+import { screenHeight, screenWidth, tabBarHeight, topBarHeight } from "../styles";
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
@@ -35,13 +35,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-
-    let initialState = { pendingRequests: {}, scrollViewHeight: null };
     this.unsubscribeSetupEvents = [];
-
-    initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100);
-
-    this.state = initialState;
   }
 
   componentDidMount() {
@@ -114,8 +108,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
 
   render() {
-    const store = core.store;
-    const state = store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) {
       return <SphereDeleted/>
@@ -129,7 +122,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
     let viewHeight = screenHeight - tabBarHeight - topBarHeight - 100;
 
     return (
-      <Background image={core.background.light}>
+      <Background image={core.background.light} hideNotifications={true}>
         <RoomBanner
           noCrownstones={amountOfStonesInRoom === 0}
           amountOfStonesInRoom={amountOfStonesInRoom}
@@ -144,19 +137,16 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
           sphereId={this.props.sphereId}
           locationId={null}
         />
-        <Animated.View style={{ height: this.state.scrollViewHeight }}>
-          <ScrollView style={{ position: 'relative', top: -1 }}>
-            <View
-              style={{ height: Math.max(stoneArray.length * 81 + 0.5 * viewHeight, viewHeight) } /* make sure we fill the screen */}>
-              <SeparatedItemList
-                items={stoneArray}
-                ids={ids}
-                separatorIndent={false}
-                renderer={this._renderer.bind(this)}
-              />
-            </View>
-          </ScrollView>
-        </Animated.View>
+        <ScrollView>
+          <View style={{width:screenWidth}}>
+            <SeparatedItemList
+              items={stoneArray}
+              ids={ids}
+              separatorIndent={false}
+              renderer={this._renderer.bind(this)}
+            />
+          </View>
+        </ScrollView>
       </Background>
     );
   }
