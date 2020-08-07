@@ -104,15 +104,21 @@ carthage bootstrap --platform iOS --no-use-binaries
 
 #### Running
 
-- Start the react server:
+- Start the react server in a seperate terminal:
 
         react-native start
 
-- Reverse the port:
+- Reverse the port (only needs to be done once after plugging in the phone):
 
         adb reverse tcp:8081 tcp:8081
 
 - Press the play button in android studio
+
+#### Issues
+
+Running yarn (or anything else) may confuse android studio. If gradle fails, try closing android studio, run `clean.sh`, and import the project again.
+
+
 
 
 ## Commands
@@ -129,7 +135,7 @@ Run react-native
 react-native run-ios
 ```
 
-or:
+or (untested):
 ```
 react-native run-android
 ```
