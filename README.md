@@ -89,22 +89,30 @@ carthage bootstrap --platform iOS --no-use-binaries
 
 ### Android
 
-1. Get the nodejs modules:
-
-        yarn
-
-2. Clone the bluenet lib for android to another dir, and copy the `bluenet` module to the `android` dir of the app:
+- Clone the bluenet lib for android to another dir, and copy the `bluenet` module to the `android` dir of the app:
 
         cd ..
         git clone https://github.com/crownstone/bluenet-android-lib.git
         cp -r bluenet-android-lib/bluenet CrownstoneApp/android
         cd CrownstoneApp
 
-2. Import the project in Android Studio
+- Import the project in Android Studio
 
         File > New > Import Project ...
 
     Choose the android dir.
+
+#### Running
+
+- Start the react server:
+
+        react-native start
+
+- Reverse the port:
+
+        adb reverse tcp:8081 tcp:8081
+
+- Press the play button in android studio
 
 
 ## Commands
