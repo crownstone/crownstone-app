@@ -459,6 +459,19 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       }
     });
   }
+
+  _getSoftFuseBuffers(items, stone) {
+    items.push({
+      label: "Get SoftFuse buffers",
+      icon: <IconButton name={"md-stats"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLighter.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.getBuffers(stone, "softFuse")
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'softFuse'});
+        core.eventBus.emit("showLoading", "Get softFuse buffer...");
+      }
+    });
+  }
   
   
   _getItems() {
@@ -497,6 +510,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       this._getMissedSwitchcraftBuffers(items, stone);
       this._getFilteredBuffers(items, stone);
       this._getUnfilteredBuffers(items, stone);
+      this._getSoftFuseBuffers(items, stone);
     }
     else {
       items.push({

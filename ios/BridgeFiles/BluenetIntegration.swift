@@ -1021,6 +1021,9 @@ open class BluenetJS: RCTEventEmitter {
       else if type == "unfilteredBuffer" {
         typeEnum = PowerSampleType.unfilteredBuffer
       }
+      else if type == "softFuse" {
+        typeEnum = PowerSampleType.softFuse
+      }
       else {
         callback([["error" : true, "data": "Invalid type provided" ]])
         return

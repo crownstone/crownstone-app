@@ -30,7 +30,7 @@ import { Button } from "../components/Button";
 
 const triggerId = "ScanningForDfu";
 
-const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -75 : -81;
+const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -75 : -80;
 const DFU_BATCH_LAST_SEEN_TIME = 10000; // 10 seconds
 
 const AVAILABILITY_STATES = {

@@ -87,7 +87,7 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'trackedDeviceHeartbeat', trackingNumber: number, locationUID: () => number | number, deviceToken: number, ttlMinutes: number }
 
 
-type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer"
+type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer" | "softFuse"
 interface commandSummary {
   stone     : any,
   stoneId   : string,
