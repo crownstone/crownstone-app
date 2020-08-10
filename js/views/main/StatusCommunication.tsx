@@ -111,7 +111,6 @@ export class StatusCommunication extends LiveComponent<any, any> {
       flexDirection:'column',
     };
 
-    console.log("RENDER WITH", this.amountOfVisibleCrownstones)
     if (this.props.viewingRemotely === true) {
       return (
         <View style={generalStyle} pointerEvents={'none'}>

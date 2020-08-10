@@ -86,7 +86,6 @@ export class ForceDirectedView extends Component<{
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
-  viewHeightOffset : number = 0;
   frameHeight : number = availableScreenHeight;
 
   boundingBoxData : any = {};
@@ -115,7 +114,6 @@ export class ForceDirectedView extends Component<{
     this._drawToken = props.drawToken;
 
     this.frameHeight = this.props.height || availableScreenHeight;
-    this.viewHeightOffset = this.props.heightOffset || 0;
     if (Platform.OS === 'android') {
       this.viewWidth =  8 * screenWidth;
       this.viewHeight = 8 * this.frameHeight;
@@ -125,7 +123,7 @@ export class ForceDirectedView extends Component<{
   }
 
   _convertToScreenSpace(x,y) {
-    let convertedY = y - (this.props.height - this.frameHeight) - this.viewHeightOffset;
+    let convertedY = y - (this.props.height - this.frameHeight) - (this.props.heightOffset || 0);
 
     // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;
@@ -196,9 +194,6 @@ export class ForceDirectedView extends Component<{
 
   shouldComponentUpdate(nextProps, nextState) {
     // update the offset if it was changed
-    if(nextProps.heightOffset !== this.viewHeightOffset) {
-      this.viewHeightOffset = nextProps.heightOffset || 0;
-    }
     if(nextProps.height !== this.frameHeight) {
       this.frameHeight = nextProps.height || availableScreenHeight;
     }

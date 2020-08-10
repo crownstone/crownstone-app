@@ -8,7 +8,7 @@ import { DataUtil } from "../util/DataUtil";
 
 const TRIGGER_ID = "HeartbeatHandler";
 
-class HeartbeatHandler {
+class HeartbeatHandlerClass {
   initialized = false;
   canUseDynamicBackgroundBroadcasts = null;
   lastTimeTokenWasBumped = 0;
@@ -77,6 +77,7 @@ class HeartbeatHandler {
 
     }
   }
-
-
 }
+
+
+export const HeartbeatHandler = new HeartbeatHandlerClass();

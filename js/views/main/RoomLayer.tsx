@@ -113,6 +113,7 @@ export class RoomLayer extends LiveComponent<any, any> {
   render() {
     let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
     let offset = 2;
+
     if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
       offset += 64;
     }
