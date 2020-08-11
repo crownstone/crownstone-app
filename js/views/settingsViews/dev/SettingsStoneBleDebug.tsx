@@ -467,7 +467,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       type: 'navigation',
       callback: () => {
         this.getBuffers(stone, "softFuse")
-        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'softFuse'});
+        this.setState({debugInformationText: null, debugData1: null, debugData2: null, debugTimestamp: null, debugDataHash: null, typeOfData: 'softFuseBuffer'});
         core.eventBus.emit("showLoading", "Get softFuse buffer...");
       }
     });
@@ -610,7 +610,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
               this.visibleBuffer = null;
               Alert.alert("Noted.")
             }}>
-              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>Incorrect</Text>
+              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>{this.state.typeOfData === 'triggeredSwitchcraft' ? 'Incorrect' : 'False Negative'}</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity style={{backgroundColor:colors.green.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.4, padding:5}} onPress={() => {
@@ -622,13 +622,22 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
               this.visibleBuffer = null;
               Alert.alert("Noted.")
             }}>
-              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>Correct</Text>
+              <Text style={{color:colors.white.hex, fontWeight:'bold'}}>{this.state.typeOfData === 'triggeredSwitchcraft' ? 'Correct' : 'True Negative'}</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
       });
     }
-    else if ((this.state.typeOfData === 'filteredBuffer' || this.state.typeOfData === 'unfilteredBuffer') && this.visibleBuffer !== null) {
+    else if ((this.state.typeOfData === 'filteredBuffer' || this.state.typeOfData === 'unfilteredBuffer' || this.state.typeOfData === "softFuseBuffer") && this.visibleBuffer !== null) {
+      let filename = ''
+      switch (this.state.typeOfData) {
+        case 'filteredBuffer':
+          filename = 'power-samples-filteredData.log'; break;
+        case "unfilteredBuffer":
+          filename = 'power-samples-unfilteredData.log'; break;
+        case 'softFuseBuffer':
+          filename = 'power-samples-softFuseData.log'; break;
+      }
       items.push({
         __item:
           <View style={{
@@ -639,7 +648,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           }}>
             <View style={{flex:1}} />
             <TouchableOpacity style={{backgroundColor:colors.blue.hex, borderRadius: 10, ...styles.centered, width: screenWidth*0.8, padding:5}} onPress={() => {
-              let dataPath = FileUtil.getPath(this.state.typeOfData === 'filteredData' ? 'power-samples-filteredData.log' : 'power-samples-unfilteredData.log');
+              let dataPath = FileUtil.getPath(filename);
               if (this.visibleBuffer) {
                 RNFS.appendFile(dataPath, "stoneUID:" + stone.config.uid + ":" + JSON.stringify(this.visibleBuffer) + "\n", 'utf8').catch((err) => {})
               }

@@ -258,5 +258,7 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
         return "ERR_PROTOCOL_UNSUPPORTED"
       case .ERR_NO_ACCESS:
         return "ERR_NO_ACCESS"
+  case .WRONG_PARAMETER:
+        return "WRONG_PARAMETER"
     }
 }
