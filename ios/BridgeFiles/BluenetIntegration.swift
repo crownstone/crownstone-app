@@ -918,7 +918,7 @@ open class BluenetJS: RCTEventEmitter {
                     trackingNumber: trackingNumber.uint16Value,
                     locationId: locationUid.uint8Value,
                     deviceToken: deviceToken.uint32Value,
-                    ttlMinutes: ttlMinutes.uint16Value
+                    ttlMinutes: ttlMinutes.uint8Value
     ))
   }
     

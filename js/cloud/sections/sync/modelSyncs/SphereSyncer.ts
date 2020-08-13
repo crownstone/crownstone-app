@@ -215,7 +215,7 @@ export class SphereSyncer extends SyncingBase {
     if (!hasSyncedDown) {
       if (localSphere.config.cloudId) {
         this.actions.push({ type: 'REMOVE_SPHERE', sphereId: localSphereId });
-        this.propagateRemoval(localSphere)
+        this.propagateRemoval(localSphereId)
       }
       else {
         // We will never create a sphere on the app FIRST
@@ -229,17 +229,22 @@ export class SphereSyncer extends SyncingBase {
   /** We delete all the child picture files **/
   propagateRemoval(localSphereId) {
     let spheres = core.store.getState().spheres;
+    let sphereIds = Object.keys(spheres);
 
     let localSphere = spheres[localSphereId];
-    let locations = localSphere.locations;
-    let scenes = localSphere.scenes;
-    let sphereUsers = localSphere.users;
 
-    locations.forEach((locationId) => {
+    let locations = localSphere.locations;
+    let locationIds = Object.keys(locations);
+    let scenes = localSphere.scenes;
+    let sceneIds = Object.keys(scenes);
+    let sphereUsers = localSphere.users;
+    let sphereUsersIds = Object.keys(sphereUsers);
+
+    locationIds.forEach((locationId) => {
       let location = locations[locationId];
       if (location.picture) { FileUtil.safeDeleteFile(location.picture); }
     });
-    scenes.forEach((sceneId) => {
+    sceneIds.forEach((sceneId) => {
       let scene = scenes[sceneId];
       if (scene.picture && scene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) { FileUtil.safeDeleteFile(scene.picture); }
     });
@@ -248,7 +253,7 @@ export class SphereSyncer extends SyncingBase {
     // since the images are filenames with the user Id, we could have some shared user images between spheres.
     // this check makes sure we delete only the userimages that are not shared across spheres.
     let sharedUserMap = {};
-    Object.keys(spheres).forEach((sphereId) => {
+    sphereIds.forEach((sphereId) => {
       if (sphereId !== localSphereId) {
         let users = spheres[sphereId].users;
         Object.keys(users).forEach((userId) => {
@@ -256,7 +261,9 @@ export class SphereSyncer extends SyncingBase {
         })
       }
     })
-    sphereUsers.forEach((sphereUserId) => {
+
+
+    sphereUsersIds.forEach((sphereUserId) => {
       if (sharedUserMap[sphereUserId] === undefined) {
         let sphereUser = sphereUsers[sphereUserId];
         if (sphereUser.picture && sphereUser.id !== this.userId) {
