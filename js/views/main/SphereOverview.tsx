@@ -124,8 +124,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
 
-
-
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.state);
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))

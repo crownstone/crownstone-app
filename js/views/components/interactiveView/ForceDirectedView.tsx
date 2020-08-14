@@ -135,8 +135,8 @@ export class ForceDirectedView extends Component<{
     let offsetY = (this.viewHeight - this.frameHeight)*0.5;
 
     // we correct for the current pan offset
-    let x2 = x - this._currentPan.x;
-    let y2 = convertedY - this._currentPan.y;
+    let x2 = x - this._panOffset.x;
+    let y2 = convertedY - this._panOffset.y;
 
     // we calculate the distance from the center
     let dx2 = x2 - cx;
@@ -167,7 +167,6 @@ export class ForceDirectedView extends Component<{
       let node = this.nodes[nodeIds[i]];
       if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
-
 
         // null is a special ID since it implies a floating crownstone. This null is not a string, but actual null.
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
@@ -631,8 +630,6 @@ export class ForceDirectedView extends Component<{
           this._recenter(false);
           this.recenterOnStable = false;
         }
-
-
       })
     };
 
