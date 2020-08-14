@@ -3555,7 +3555,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.setContentIntent(pendingIntent)
 				.setOngoing(true)
 				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setVisibility(Notification.VISIBILITY_PUBLIC)
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				// TODO: add action to close the app + service
 				// TODO: add action to pause the app?
 //				.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
