@@ -4498,6 +4498,7 @@ export default {
       Send_invitation_:                      false,
       Invite:                                false,
       Send_email_to___:                      false,
+      Inviting_User___:                      false,
     },
     _Please_provide_an_email__header:       function() { return "Geef alsjeblieft een e-mail adres op"; },
     _Please_provide_an_email__body:         function() { return ""; },
@@ -4526,6 +4527,7 @@ export default {
     Invite:                                 function() { return "Nodig uit"; },
     Send_email_to___:                       function() { return "Verstuur een e-mail naar..."; },
     __filename: "../js/views/main/editSubviews/SphereUserInvite.tsx",
+    Inviting_User___:                       function() { return "Uitnodiging versturen..." },
   },
   SphereUserOverview:{
     __stringSameAsBaseLanguage: {

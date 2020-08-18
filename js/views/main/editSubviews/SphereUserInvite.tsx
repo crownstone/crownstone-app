@@ -60,9 +60,9 @@ export class SphereUserInvite extends LiveComponent<any, any> {
     if (spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
       // generate permission items
       let dropDownItems = [];
-      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label: lang("Admin")}); }
-      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label: lang("Member")}); }
-      dropDownItems.push({label: lang("Guest")});
+      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label: lang("Admin"),  value:"Admin"}); }
+      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label: lang("Member"), value:"Member"}); }
+      dropDownItems.push({label: lang("Guest"), value:"Guest"});
 
       items.push({
         type:'dropdown',
@@ -129,7 +129,8 @@ export class SphereUserInvite extends LiveComponent<any, any> {
     }
 
     // We only get here if the user does not exists in the sphere yet.
-    core.eventBus.emit('showLoading', 'Inviting User...');
+    core.eventBus.emit('showLoading', lang("Inviting_User___"));
+
     CLOUD.forSphere(this.props.sphereId).inviteUser(this.state.email.toLowerCase(), this.state.permission)
       .then(() => {
         core.eventBus.emit('hideLoading');
@@ -151,7 +152,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
         Alert.alert(
           lang("_Could_not_send_invite____header"),
           lang("_Could_not_send_invite____body"),
-          [{text:lang("_Could_not_send_invite____left")}])
+          [{text:lang("_Could_not_send_invite____left"), onPress:() => { core.eventBus.emit('hideLoading'); }}])
       })
   }
 

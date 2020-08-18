@@ -2344,6 +2344,7 @@ export default {
     Send_invitation_:                       function() { return "Send invitation!" },
     Invite:                                 function() { return "Invite" },
     Send_email_to___:                       function() { return "Send email to..." },
+    Inviting_User___:                       function() { return "Inviting User..." },
   },
   SphereUserOverview:{
     __filename: "../js/views/main/editSubviews/SphereUserOverview.tsx",
