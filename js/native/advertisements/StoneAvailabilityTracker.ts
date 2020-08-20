@@ -102,7 +102,12 @@ class StoneAvailabilityTrackerClass {
 
         // these have expired. Delete them.
         disabledSpheres[logData.sphereId] = true;
-        delete this.sphereLog[logData.sphereId][stoneId];
+        if (this.sphereLog[logData.sphereId]) {
+          delete this.sphereLog[logData.sphereId][stoneId];
+        }
+        else {
+          delete this.sphereLog[logData.sphereId];
+        }
         delete this.log[stoneId];
       }
     }

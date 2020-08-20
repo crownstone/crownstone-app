@@ -21,8 +21,6 @@ let defaultSettings = {
     meshAccessAddress: null,
 
     aiName: null,
-    aiSex: null,
-    exitDelay: 600,
 
     latitude: null,
     longitude: null,
@@ -76,8 +74,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.name        = update(action.data.name,        newState.name);
         newState.uid         = update(action.data.uid,         newState.uid);
         newState.aiName      = update(action.data.aiName,      newState.aiName);
-        newState.aiSex       = update(action.data.aiSex,       newState.aiSex);
-        newState.exitDelay   = update(action.data.exitDelay,   newState.exitDelay);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
         newState.adminKey    = update(action.data.adminKey,    newState.adminKey);
         newState.memberKey   = update(action.data.memberKey,   newState.memberKey);
