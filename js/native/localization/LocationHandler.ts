@@ -139,7 +139,7 @@ class LocationHandlerClass {
     }
 
     // set the presence
-    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
+    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true, lastPresentTime: new Date().valueOf()}});
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
     core.eventBus.emit('enterSphere', enteringSphereId);

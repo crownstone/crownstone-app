@@ -37,6 +37,7 @@ let defaultSettings = {
     }
   },
   state: {
+    lastPresentTime: 0,
     reachable: false,
     present: false,
     smartHomeEnabled: true,
