@@ -448,28 +448,26 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
         marginTop:15,
         marginBottom: dimmerReady ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
       }}>
-        <View style={{flex:1}} />
+        <View style={{width:0.05*screenWidth}} />
         <DeviceMenuIcon label={ lang("Abilities")} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
           NavigationUtil.launchModal("DeviceAbilities", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
-        <View style={{flex:1}} />
         <DeviceMenuIcon label={ lang("Behaviour")} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex} callback={() => {
           NavigationUtil.launchModal("DeviceSmartBehaviour", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
-        <View style={{flex:1}} />
         <DeviceMenuIcon label={ lang("Power_usage")} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
           NavigationUtil.launchModal("DevicePowerUsage", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
-        <View style={{flex:1}} />
+        <View style={{width:0.05*screenWidth}} />
       </View>
     );
   }
