@@ -47,6 +47,9 @@ export class DfuBatch extends LiveComponent<any, any> {
     };
   }
 
+  componentDidAppear()    { KeepAwake.activate();   }
+  componentDidDisappear() { KeepAwake.deactivate(); }
+
   componentDidMount(): void {
     BackButtonHandler.override(CLASSNAME, () => { Alert.alert(
       lang("_This_process_cannot_be_i_header"),
@@ -195,7 +198,6 @@ export class DfuBatch extends LiveComponent<any, any> {
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
-        <KeepAwake />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
           <View style={{...styles.centered, flex:1, height: 110}}>
