@@ -1103,6 +1103,7 @@ export default {
       _This_process_cannot_be_i_header:      false,
       _This_process_cannot_be_i_body:        false,
       _This_process_cannot_be_i_left:        false,
+      Cancelling_after_this_Cro:             false,
     },
     Updating_:                              function() { return "Updaten"; },
     Updating_your_Crownstones_:             function() { return "Crownstones aan het updaten!"; },
@@ -1112,6 +1113,7 @@ export default {
     _This_process_cannot_be_i_body:         function() { return "Wacht alsjeblieft tot de update-cyclus is voltooid."; },
     _This_process_cannot_be_i_left:         function() { return "Oké"; },
     __filename: "../../js/views/dfu/DfuBatch.tsx",
+    Cancelling_after_this_Cro:              function() { return "Stoppen na deze Crownstone..." },
   },
   DfuDeviceEntry:{
     __stringSameAsBaseLanguage: {
@@ -4016,7 +4018,7 @@ export default {
     Add_more_Crownstones_:                  function() { return "Voeg meer Crownstones toe!"; },
     Take_me_to__:                           function() { return "Breng me naar " + arguments[0] + "!"; },
     New_Crownstone:                         function() { return "Nieuwe Crownstone"; },
-    Aborting___Abort:                       function() { return "Aan het onderbreken..."; },
+    Aborting___Abort:                       function() { return arguments[0] ? "Aan het onderbreken..." : "Annuleren"; },
     Restoring_Crownstone:                   function() { return "Crownstone aan het herstellen"; },
     Im_almost_done_:                        function() { return "Bijna klaar!"; },
     My_New_Crownstone:                      function() { return "Mijn nieuwe Crownstone"; },

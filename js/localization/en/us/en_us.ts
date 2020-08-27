@@ -574,6 +574,7 @@ export default {
     _This_process_cannot_be_i_header:       function() { return "This process cannot be interrupted." },
     _This_process_cannot_be_i_body:         function() { return "Please wait until the update cycle is completed." },
     _This_process_cannot_be_i_left:         function() { return "OK" },
+    Cancelling_after_this_Cro:              function() { return "Cancelling after this Crownstone..." },
   },
   DfuDeviceEntry:{
     __filename: "../js/views/components/deviceEntries/DfuDeviceEntry.tsx",

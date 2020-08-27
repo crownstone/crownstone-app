@@ -227,7 +227,7 @@ export class DfuBatch extends LiveComponent<any, any> {
           ...styles.centered
         }}>
           <View style={{width: 250, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
-            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{'Cancelling after this Crownstone...'}</Text>
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{lang("Cancelling_after_this_Cro")}</Text>
             <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
           </View>
         </View>

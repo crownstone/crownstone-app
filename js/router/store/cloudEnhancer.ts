@@ -13,6 +13,9 @@ import { BATCH } from "./reducers/BatchReducer";
 import { transferBehaviours } from "../../cloud/transferData/transferBehaviours";
 import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
 import { transferScenes } from "../../cloud/transferData/transferScenes";
+import { StoneAbilitySyncer } from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
+import { getGlobalIdMap } from "../../cloud/sections/sync/modelSyncs/SyncingBase";
+import { StoneSyncer } from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -153,6 +156,42 @@ function handleAction(action, returnValue, newState, oldState) {
       handleSphereStateOnDevice(action, newState);
       break;
 
+    case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
+    case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
+    case "MARK_ABILITY_DIMMER_AS_SYNCED":
+      handleAbilityUpdate(action, newState);
+      break;
+
+  }
+}
+
+
+function handleAbilityUpdate(action, state) {
+  let sphere = state.spheres[action.sphereId];
+  if (!sphere) { return; }
+  let stone = sphere.stones[action.stoneId];
+  if (stone && stone.config.cloudId) {
+    let actions = [];
+    let abilitySyncer = new StoneAbilitySyncer(
+      actions,
+      [],
+      action.stoneId,
+      stone.config.cloudId,
+      action.sphereId,
+      sphere.config.cloudId,
+      getGlobalIdMap(),
+      getGlobalIdMap()
+    );
+    CLOUD.forStone(action.stoneId).getStoneAbilities()
+      .then((abilities) => {
+        return abilitySyncer.sync(stone.abilities, abilities)
+      })
+      .then((r) => {
+        if (actions.length > 0) {
+          core.store.batchDispatch(actions);
+        }
+      })
+      .catch((err) => {})
   }
 }
 
