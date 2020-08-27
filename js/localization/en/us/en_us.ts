@@ -749,6 +749,15 @@ export default {
     Crownstone_Hardware_Error:              function() { return "Crownstone Hardware Error" },
     __Yours__:                              function() { return "~ Yours, " + arguments[0] },
   },
+  GoogleAssistantOverview:{
+    Google_Assistant:                       function() { return "Google Assistant" },
+    Ok_Google__turn_me_on_:                 function() { return "Ok Google, turn me on!" },
+    Crownstone_is_now_availab:              function() { return "Crownstone is now available as a Google Assistant Action!" },
+    You_can_now_go_to_your_Go:              function() { return "You can now go to your Google Assistant App, navigate to Devices, Add... and link a smart home device!" },
+    After_linking_you_can_con:              function() { return "After linking you can control all your Crownstons via Google Home and Google Assistant!" },
+    When_you_tell_Google_to_s:              function() { return "When you tell Google to switch on a Crownstone, Google will push a command to your phone, and have that switch the Crownstone." },
+    Enjoy_using_your_Google_A:              function() { return "Enjoy using your Google Assistant!" },
+  },
   GraphAxis:{
     __filename: "../js/views/components/graph/GraphComponents/GraphAxis.tsx",
     _W_:                                    function() { return "(W)" },

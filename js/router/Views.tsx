@@ -119,7 +119,7 @@ import { SceneEdit } from "../views/scenesViews/SceneEdit";
 import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownstones";
 import { SettingsLocalizationMonitor } from "../views/settingsViews/dev/SettingsLocalizationMonitor";
 import { DimLevelOverlay } from "../views/overlays/DimLevelOverlay";
-import { GoogleAssistantOverview } from "../views/thirdParty/google/AlexaOverview";
+import { GoogleAssistantOverview } from "../views/thirdParty/google/GoogleAssistantOverview";
 
 
 export const Views = {

@@ -19,25 +19,25 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class GoogleAssistantOverview extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: 'Google Assistant'});
+    return TopBarUtil.getOptions({title: lang("Google_Assistant")});
   }
 
 
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-                <ScrollView >
+        <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
-            <Text style={styles.title}>{ "Ok Google, turn me on!" }</Text>
+            <Text style={styles.title}>{ lang("Ok_Google__turn_me_on_") }</Text>
             <View style={{height:20}} />
             <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_horizontal.png')} sourceWidth={1695} sourceHeight={695} targetWidth={0.8*screenWidth} style={695} />
             <View style={{height:20}} />
-            <Text style={styles.header}>{ "Crownstone is now available as a Google Assistant Action!" }</Text>
-            <Text style={styles.explanation}>{ "You can now go to your Google Assistant App, navigate to Devices, Add... and link a smart home device!" }</Text>
-            <Text style={styles.explanation}>{ "After linking you can control all your Crownstons via Google Home and Google Assistant!" }</Text>
-            <Text style={styles.explanation}>{ "When you tell Google to switch on a Crownstone, Google will push a command to your phone, and have that switch the Crownstone." }</Text>
-            <Text style={styles.explanation}>{ "Enjoy using your Google Assistant!" }</Text>
+            <Text style={styles.header}>{ lang("Crownstone_is_now_availab") }</Text>
+            <Text style={styles.explanation}>{ lang("You_can_now_go_to_your_Go") }</Text>
+            <Text style={styles.explanation}>{ lang("After_linking_you_can_con") }</Text>
+            <Text style={styles.explanation}>{ lang("When_you_tell_Google_to_s") }</Text>
+            <Text style={styles.explanation}>{ lang("Enjoy_using_your_Google_A") }</Text>
             <View style={{height:100}} />
           </View>
         </ScrollView>
