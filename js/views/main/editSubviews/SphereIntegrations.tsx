@@ -60,6 +60,14 @@ export class SphereIntegrations extends LiveComponent<any, any> {
        NavigationUtil.navigate( "AlexaOverview",{sphereId: this.props.sphereId});
       }
     });
+    items.push({
+      label: "Google Assistant",
+      type: 'navigation',
+      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_vertical_crop.png')} targetWidth={60} targetHeight={60} sourceWidth={842} sourceHeight={794}/>,
+      callback: () => {
+        NavigationUtil.navigate( "GoogleAssistantOverview",{sphereId: this.props.sphereId});
+      }
+    });
 
     items.push({label: lang("Coming_Soon_"),  type:'largeExplanation'});
 
