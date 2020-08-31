@@ -245,7 +245,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Current thread
 //		Looper.prepare()
 //		Looper.loop()
-		looper = Looper.myLooper()
+		looper = Looper.myLooper()!!
 		bluenet = Bluenet(looper)
 		handler = Handler(looper)
 		behaviourSyncer = BehaviourSyncerFromCrownstone(bluenet)
