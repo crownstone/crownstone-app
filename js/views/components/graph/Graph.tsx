@@ -39,6 +39,8 @@ export class Graph extends LiveComponent<{
   showPoints?:boolean,
   lineColor?:string,
   hideUI? : boolean,
+  rangeStartsAtZero? : boolean,
+  minimumRange? : number,
 }, any> {
   data : any[] = [];
   options : any;
@@ -165,10 +167,19 @@ export class Graph extends LiveComponent<{
 
       if (this.data.length > 0) {
         // GraphingEngine.transformXToFit(this.data, this.options);
-        [this.minY, this.maxY] = GraphingEngine.transformYToFit(this.data, this.options, 1e9, -1e9);
+        // precalc the datastep spacing
+        let minY = 1e9;
+        let maxY = -1e9;
+        if (this.props.rangeStartsAtZero) {
+          minY = 0;
+        }
+
+        if (this.props.minimumRange) {
+          maxY = this.props.minimumRange;
+        }
+        [this.minY, this.maxY] = GraphingEngine.transformYToFit(this.data, this.options, minY, maxY);
       }
 
-      // precalc the datastep spacing
       let dataStep = new DataStep(this.minY, this.maxY, this.options.height- this.options.padding - this.options.paddingBottom, 25);
       this.dataStepLines = dataStep.getLines();
 

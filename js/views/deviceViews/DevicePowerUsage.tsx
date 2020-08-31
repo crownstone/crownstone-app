@@ -118,7 +118,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={deviceStyles.header}>{header}</Text>
             <View style={{height:30}} />
-            <Graph width={screenWidth*0.95} height={availableScreenHeight/2} data={this.data} dataHash={this.hash}/>
+            <Graph width={screenWidth*0.95} height={availableScreenHeight/2} data={this.data} dataHash={this.hash} minimumRange={40} rangeStartsAtZero={true}/>
             <View style={{height:30}} />
             <Text style={[deviceStyles.explanation, {fontWeight:'bold'}]}>{ lang("Real_time_power_usage") }</Text>
             <Text style={deviceStyles.explanation}>{ lang("Stand_near_the_Crownstone") }</Text>

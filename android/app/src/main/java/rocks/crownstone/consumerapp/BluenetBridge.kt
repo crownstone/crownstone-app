@@ -50,7 +50,7 @@ import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.*
 import rocks.crownstone.bluenet.util.Util.isBitSet
-import rocks.crownstone.localization.*
+import rocks.crownstone.localization.library.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.round
@@ -59,7 +59,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
 	private lateinit var bluenet: Bluenet
-	private val localization = FingerprintLocalization.getInstance()
+	private val localization = FingerprintLocalization
 	private lateinit var initPromise: Promise<Unit, Exception>
 	private lateinit var looper: Looper
 	private lateinit var handler: Handler
@@ -85,10 +85,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
 	private var isLocalizationTrainingPaused = false
 	private var lastLocationId: String? = null
-	private var currentSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
+	private var lastSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
 
-	private var nearestStoneSub: SubscriptionId? = null
-	private var nearestSetupSub: SubscriptionId? = null
+	private var nearestStoneSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
+	private var nearestSetupSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
 	private var sendUnverifiedAdvertisements = false
 
 	private var lastLocation: Location? = null // Store last known GPS location.
@@ -954,50 +954,55 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //region           Localization
 //##################################################################################################
 
-	private val localizationCallback = LocalizationCallback { locationId: String? ->
-		onLocationUpdate(locationId)
+
+	private val localizationCallback: LocalizationCallback = object : LocalizationCallback {
+		override fun onLocationUpdate(sphereId: String?, locationId: String?) {
+			this@BluenetBridge.onLocationUpdate(sphereId, locationId)
+		}
 	}
 
 	@Synchronized
-	private fun onLocationUpdate(locationId: String?) {
-		Log.d(TAG, "locationUpdate locationId=$locationId")
+	private fun onLocationUpdate(sphereId: String?, locationId: String?) {
+		//TODO: incorporate sphereID
+		Log.d(TAG, "locationUpdate sphereId=$sphereId locationId=$locationId")
 		if (locationId == null) {
 			if (lastLocationId != null) {
-				Log.d(TAG, "Send exit $currentSphereId $lastLocationId")
+				Log.d(TAG, "Send exit $lastSphereId $lastLocationId")
 				val mapExit = Arguments.createMap()
-				mapExit.putString("region", currentSphereId)
+				mapExit.putString("region", lastSphereId)
 				mapExit.putString("location", lastLocationId)
 				sendEvent("exitLocation", mapExit)
 			}
 		}
 		else if (lastLocationId == null) {
-			Log.i(TAG, "Send enter $currentSphereId $locationId")
+			Log.i(TAG, "Send enter $sphereId $locationId")
 			val mapEnter = Arguments.createMap()
-			mapEnter.putString("region", currentSphereId)
+			mapEnter.putString("region", sphereId)
 			mapEnter.putString("location", locationId)
 			sendEvent("enterLocation", mapEnter)
 		}
 		else if (locationId != lastLocationId) {
-			Log.i(TAG, "Send exit $currentSphereId $lastLocationId")
+			Log.i(TAG, "Send exit $lastSphereId $lastLocationId")
 			val mapExit = Arguments.createMap()
-			mapExit.putString("region", currentSphereId)
+			mapExit.putString("region", lastSphereId)
 			mapExit.putString("location", lastLocationId)
 			sendEvent("exitLocation", mapExit)
 
-			Log.i(TAG, "Send enter $currentSphereId $locationId")
+			Log.i(TAG, "Send enter $sphereId $locationId")
 			val mapEnter = Arguments.createMap()
-			mapEnter.putString("region", currentSphereId)
+			mapEnter.putString("region", sphereId)
 			mapEnter.putString("location", locationId)
 			sendEvent("enterLocation", mapEnter)
 		}
 		if (locationId != null) {
-			Log.d(TAG, "Send current $currentSphereId $locationId")
+			Log.d(TAG, "Send current $sphereId $locationId")
 			val mapCurrent = Arguments.createMap()
-			mapCurrent.putString("region", currentSphereId)
+			mapCurrent.putString("region", sphereId)
 			mapCurrent.putString("location", locationId)
 			sendEvent("currentLocation", mapCurrent)
 		}
 		lastLocationId = locationId
+		lastSphereId = sphereId ?: ""
 	}
 
 	@ReactMethod
@@ -1006,6 +1011,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
 		localization.startLocalization(localizationCallback)
+		localization.subscribe(LocalizationEvent.CLASSIFIERRESULT) { onClassifierResult(it as Map<String, Any?>) }
+		localization.subscribe(LocalizationEvent.CLASSIFIERPROBABILITIES) { onClassifierProbabilities(it as Map<String, Map<String, Number>>) }
+	}
+
+	@Synchronized
+	private fun onClassifierResult(result: Map<String, Any?>) {
+		val location = result["highestPredictionLabel"] as rocks.crownstone.localization.library.Location
+		val predictionValue = result["highestPrediction"] as Double
+		val mapClassifierResult = Arguments.createMap().apply {
+			putString("highestPredictionLabel", location.roomId) //TODO: also pass sphereID?
+			putDouble("highestPrediction", predictionValue)
+		}
+		sendEvent("classifierResult", mapClassifierResult)
+	}
+
+	@Synchronized
+	private fun onClassifierProbabilities(probabilityReport: Map<String, Map<String, Number>>) {
+		val mapClassifierProbabilites = Arguments.createMap()
+
+		for ((locationId, data) in probabilityReport) {
+			val mapData = Arguments.createMap().apply {
+				putInt("sampleSize", data["sampleSize"] as Int)
+				putDouble("probability", data["probability"] as Double)
+			}
+			mapClassifierProbabilites.putMap(locationId, mapData)
+		}
+		sendEvent("classifierProbabilities", mapClassifierProbabilites)
 	}
 
 	@ReactMethod
@@ -1077,7 +1109,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		try {
 			val samples = FingerprintSamplesMap(fixedSamlesStr)
 			if (!samples.isEmpty()) {
-				fingerprint.setSamples(samples)
+				fingerprint.samples = samples
 				localization.importFingerprint(sphereId, locationId, fingerprint)
 			}
 			else {
@@ -3072,7 +3104,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		for (region in eventData.list) {
 			if (region.key == uuid) {
 				val referenceId = region.value
-				currentSphereId = referenceId
+				lastSphereId = referenceId
 				Log.i(TAG, "enterSphere uuid=$uuid refId=$referenceId")
 				sendEvent("enterSphere", referenceId)
 			}
@@ -3085,7 +3117,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		for (region in eventData.list) {
 			if (region.key == uuid) {
 				val referenceId = region.value
-//				currentSphereId = ""
+				lastSphereId = ""
 				Log.i(TAG, "exitSphere uuid=$uuid refId=$referenceId")
 				sendEvent("exitSphere", referenceId)
 			}
@@ -3523,7 +3555,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.setContentIntent(pendingIntent)
 				.setOngoing(true)
 				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setVisibility(Notification.VISIBILITY_PUBLIC)
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				// TODO: add action to close the app + service
 				// TODO: add action to pause the app?
 //				.addAction(android.R.drawable.ic_menu_close_clear_cancel, )

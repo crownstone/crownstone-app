@@ -47,6 +47,9 @@ export class DfuBatch extends LiveComponent<any, any> {
     };
   }
 
+  componentDidAppear()    { KeepAwake.activate();   }
+  componentDidDisappear() { KeepAwake.deactivate(); }
+
   componentDidMount(): void {
     BackButtonHandler.override(CLASSNAME, () => { Alert.alert(
       lang("_This_process_cannot_be_i_header"),
@@ -195,7 +198,6 @@ export class DfuBatch extends LiveComponent<any, any> {
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
-        <KeepAwake />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
           <View style={{...styles.centered, flex:1, height: 110}}>
@@ -227,7 +229,7 @@ export class DfuBatch extends LiveComponent<any, any> {
           ...styles.centered
         }}>
           <View style={{width: 250, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
-            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{'Cancelling after this Crownstone...'}</Text>
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{lang("Cancelling_after_this_Cro")}</Text>
             <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
           </View>
         </View>

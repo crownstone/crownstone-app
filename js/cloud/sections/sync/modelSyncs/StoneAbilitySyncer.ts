@@ -23,6 +23,7 @@ const ABILITY_PROPERTY_TYPE = {
 
 export class StoneAbilitySyncer extends SyncingStoneItemBase {
 
+
   sync(localAbilities, abilities_in_cloud) {
     let localAbilityTypes = Object.keys(localAbilities);
 

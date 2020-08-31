@@ -72,12 +72,26 @@ class ActiveSphereManagerClass {
       let sphereA = state.spheres[sphereIdA];
       let sphereB = state.spheres[sphereIdB];
 
+      if      (sphereA.state.present === true && sphereB.state.present !== true) {
+        // prefer sphere A over sphere B, move A to position [0]
+        return -1;
+      }
+      else if (sphereA.state.present !== true && sphereB.state.present === true) {
+        // prefer sphere B over sphere A, move A to position [0]
+        return 1;
+      }
+
+      if (sphereA.state.lastPresentTime && sphereB.state.lastPresentTime) {
+        // if we have both times logged, the newest sphere goes to position [0]
+        return sphereB.state.lastPresentTime - sphereA.state.lastPresentTime;
+      }
+
       let accessA = getSphereAccessLevel(sphereA);
       let accessB = getSphereAccessLevel(sphereB);
 
       if (accessA != accessB) {
         // lowest access level goes to position 0;
-        return accessA - accessB
+        return accessA - accessB;
       }
       else {
         let amountOfCrownstonesA = Object.keys(sphereA.stones).length;
