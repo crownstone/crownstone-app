@@ -120,6 +120,7 @@ import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownsto
 import { SettingsLocalizationMonitor } from "../views/settingsViews/dev/SettingsLocalizationMonitor";
 import { DimLevelOverlay } from "../views/overlays/DimLevelOverlay";
 import { GoogleAssistantOverview } from "../views/thirdParty/google/GoogleAssistantOverview";
+import { PermissionIntroduction } from "../views/startupViews/PermissionIntroduction";
 
 
 export const Views = {
@@ -133,6 +134,8 @@ export const Views = {
   DfuScanning:                       DfuScanning,
   DfuBatch:                          DfuBatch,
   DfuFinished:                       DfuFinished,
+
+  PermissionIntroduction:            PermissionIntroduction,
 
   AddItemsToSphere:                  AddItemsToSphere,
   AddSphereTutorial:                 AddSphereTutorial,

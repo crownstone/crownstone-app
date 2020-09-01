@@ -577,7 +577,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     switch (FocusManager.crownstoneMode ) {
       case "setup":
         explanationColor = colors.white.hex;
-        backgroundImage = require('../../../images/backgrounds/blueBackground2.png');
+        backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
         backgroundImage = core.background.light;
@@ -586,12 +586,12 @@ export class DEV_FirmwareTest extends LiveComponent<{
         backgroundImage = core.background.menu;
         break;
       case "dfu":
-        backgroundImage = require('../../../images/backgrounds/upgradeBackground.png');
+        backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');
         break;
     }
 
     if (FocusManager.crownstoneState.error) {
-      backgroundImage = require('../../../images/backgrounds/somethingWrong.png');
+      backgroundImage = require('../../../images/backgrounds/somethingWrong.jpg');
       explanationColor = colors.white.rgba(0.5);
     }
 

@@ -60,7 +60,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       buy: {
         textColor: colors.white.hex,
         subHeader: lang("Tap_the_button_below_to_g"),
-        backgroundImage: require('../../images/backgrounds/builtinDarkBackground.png'),
+        backgroundImage: require('../../images/backgrounds/builtinDarkBackground.jpg'),
         optionsBottom: true,
         options: [
           {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}); }},
@@ -68,28 +68,28 @@ export class AddCrownstone extends LiveComponent<any, any> {
       },
       installingGuidestone: {
         subHeader: lang("Insert_the_guidestone_int"),
-        backgroundImage: require('../../images/backgrounds/guidestoneBackground.png'),
+        backgroundImage: require('../../images/backgrounds/guidestoneBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingUSB: {
         subHeader: lang("Insert_the_Crownstone_USB"),
-        backgroundImage: require('../../images/backgrounds/usbBackground.png'),
+        backgroundImage: require('../../images/backgrounds/usbBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingPlug: {
         subHeader:lang("Insert_the_plug_into_a_po"),
-        backgroundImage: require('../../images/backgrounds/plugBackground.png'),
+        backgroundImage: require('../../images/backgrounds/plugBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinZero_step1: {
         subHeader: lang("Is_the_Built_in_Zero_alre"),
-        backgroundImage: require('../../images/backgrounds/builtinZeroBackground.png'),
+        backgroundImage: require('../../images/backgrounds/builtinZeroBackground.jpg'),
         options: [
           {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
           {label: lang("Yes__at_a_ceiling_light_"), nextCard: "installingBuiltin_endLight"},
@@ -98,7 +98,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       },
       installingBuiltinOne_step1: {
         subHeader: lang("Is_your_Built_in_One_alre"),
-        backgroundImage: require('../../images/backgrounds/builtinOneBackground.png'),
+        backgroundImage: require('../../images/backgrounds/builtinOneBackground.jpg'),
         options: [
           {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
           {label: lang("Yes__at_a_ceiling_light_"), nextCard: "installingBuiltin_endLight"},
@@ -108,7 +108,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       installingBuiltin_step2: {
         header: lang("Installation"),
         subHeader: lang("Do_you_wish_to_use_this_C"),
-        backgroundImage: require('../../images/backgrounds/installationBackground.png'),
+        backgroundImage: require('../../images/backgrounds/installationBackground.jpg'),
         options: [
           {label: lang("Behind_a_socket_"),      image: {source: require('../../images/addCrownstone/socket.png')},        nextCard: "installingBuiltin_instructions_socket"},
           {label: lang("With_a_ceiling_light_"), image: {source: require('../../images/addCrownstone/ceilingLights.png')}, nextCard: "installingBuiltin_instructions_light"},
@@ -117,7 +117,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       installingBuiltin_instructions_socket: {
         header: lang("Installing_behind_a_socke"),
         subHeader: lang("Please_follow_the_instruc"),
-        backgroundImage: require('../../images/backgrounds/socketBackground.png'),
+        backgroundImage: require('../../images/backgrounds/socketBackground.jpg'),
         options: [
           {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endSocket"},
         ]
@@ -125,7 +125,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       installingBuiltin_instructions_light: {
         header: lang("Installing_in_a_ceiling_l"),
         subHeader: lang("Please_follow_the_instruct"),
-        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
+        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.jpg'),
         options: [
           {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endLight"},
         ]
@@ -133,7 +133,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       installingBuiltin_endSocket: {
         header: lang("Lets_get_close_"),
         subHeader: lang("Hold_your_phone_close_to_"),
-        backgroundImage: require('../../images/backgrounds/socketBackground.png'),
+        backgroundImage: require('../../images/backgrounds/socketBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
@@ -141,7 +141,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       installingBuiltin_endLight: {
         header: lang("Lets_get_close_"),
         subHeader: lang("Hold_your_phone_near_the_"),
-        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
+        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]

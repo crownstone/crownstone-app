@@ -14,7 +14,7 @@ class ActiveSphereManagerClass {
   userIsLoggedIn = false;
 
   onScreen() {
-    if (new Date().valueOf() - this.timeSwitchedToBackground > 5*60*1000) {
+    if (new Date().valueOf() - this.timeSwitchedToBackground > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
       this.updateActiveSphere();
     }
     this.timeSwitchedToForeground = new Date().valueOf();
@@ -67,11 +67,9 @@ class ActiveSphereManagerClass {
     else if (activeSphere.state.present === true) { // do not change active spheres if the sphere we're currently in is active.
       return;
     }
-
     let sphereIds = Object.keys(state.spheres).sort((sphereIdA,sphereIdB) => {
       let sphereA = state.spheres[sphereIdA];
       let sphereB = state.spheres[sphereIdB];
-
       if      (sphereA.state.present === true && sphereB.state.present !== true) {
         // prefer sphere A over sphere B, move A to position [0]
         return -1;

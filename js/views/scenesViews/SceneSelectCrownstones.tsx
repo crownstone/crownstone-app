@@ -43,7 +43,7 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
         header: lang("Whos_participating_"),
         subHeader: lang("Select_the_Crownstones_wh"),
         optionsAlwaysOnTop: true,
-        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
+        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.jpg"),
         textColor: colors.white.hex,
         explanation: lang("Crownstones_that_are_not_"),
         component:
@@ -66,7 +66,7 @@ lang("_Select_at_least_one______body"),
   }
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.png');
+    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.jpg');
     let textColor = colors.white.hex;
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>

@@ -146,12 +146,13 @@ class BackgroundProcessHandlerClass {
           core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         }
 
-        LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
-        LocationHandler.initializeTracking();
+        LOG.info("Sync: Initialize tracking during Login.");
+        LocationHandler.initializeTracking()
 
         LOG.info("Sync: Requesting notification permissions during Login.");
         NotificationHandler.request();
 
+        LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
       });
 
       // wait for store to be prepared in order to continue.
