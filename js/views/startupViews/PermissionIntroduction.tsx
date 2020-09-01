@@ -60,14 +60,13 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
       },
       notifications: {
         header: "Can we ask you something?",
-        backgroundImage: require("../../images/backgrounds/kitten.jpg"),
-        subHeader: "We use notifications to quickly let you know if there are changes in your house.",
-        explanation: "If someone sends you a message, we can deliver it instantly!",
+        backgroundImage: require("../../images/backgrounds/assistants.jpg"),
+        subHeader: "We use notifications switch your Crownstones from the cloud, like for your voice assistants!",
+        explanation: "We also use them to quickly update your app!",
         optionsBottom: true,
         options: [
           {
-            label: "Okay",
-            nextCard: 'finished',
+            label: "Sounds fair",
             onSelect: (result) => {
               LOG.info("Sync: Requesting notification permissions during Login.");
               NotificationHandler.request();
@@ -75,10 +74,12 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
                 return 'ai'
               }
               if (this.props.followThrough) {
-                return this.props.followThrough();
+                this.props.followThrough();
+                return false;
               }
               core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn());
+              return false;
             }
           },
         ]
