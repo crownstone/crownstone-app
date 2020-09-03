@@ -38,6 +38,7 @@ export class PreferenceSyncer extends SyncingBase {
     return this.download()
       .then((preferences_in_cloud) => {
         let preferenceMap = this.mapPreferences(state);
+        console.log("PREFERENCES MAP", preferenceMap)
         this.checkInferredPreferences(preferenceMap, preferences_in_cloud, []);
 
         return Promise.all(this.transferPromises);

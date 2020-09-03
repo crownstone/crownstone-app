@@ -426,7 +426,7 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
   let circleBackgroundColor = switchState > 0 ? colors.green.hex : colors.csBlueDark.hex;
   let name = stone.config.name;
   if (stone.abilities.dimming.enabledTarget) {
-    name += " (" + Math.round(100*switchState) + "%)"
+    name += " (" + Math.round(switchState) + "%)"
   }
 
   let content = (
@@ -450,14 +450,14 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
         <Slider
           style={{ width: screenWidth-70, height: 60}}
           minimumValue={0}
-          maximumValue={1}
-          step={0.01}
+          maximumValue={100}
+          step={1}
           value={switchState}
           minimumTrackTintColor={colors.gray.hex}
           maximumTrackTintColor={colors.gray.hex}
           onValueChange={(value) => {
-            if (value < 0.05) { value = 0 };
-            if (value >= 0.05 && value < 0.1) { value = 0.1 };
+            if (value < 5) { value = 0 };
+            if (value >= 5 && value < 10) { value = 10 };
             setStateCallback(value); setSwitchState(value); }}
         />
       </View>
@@ -468,8 +468,8 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
       <View style={{...containerStyle, flexDirection:'row'}}>
         { content }
         <View style={{width:60, alignItems:'flex-end', overflow:"hidden"}}>
-          <Switch value={switchState === 1} onValueChange={() => {
-            let newValue = switchState === 1 ? 0 : 1;
+          <Switch value={switchState === 100} onValueChange={() => {
+            let newValue = switchState === 100 ? 0 : 100;
             setStateCallback(newValue)
             setSwitchState(newValue)
           }}/>

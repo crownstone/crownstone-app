@@ -296,9 +296,9 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
-          step: 0.025,
+          step: 1,
           min: 0,
-          max: 1,
+          max: 100,
           callback: (value) => {
             this.bleAction(BluenetPromiseWrapper.setSwitchState, [value], 'switchState')
             FocusManager.crownstoneState.switchStateValue = value;
@@ -313,8 +313,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
           callback: (value) => {
-            this.bleAction(BluenetPromiseWrapper.setSwitchState, [value ? 1 : 0], 'switchState')
-            FocusManager.crownstoneState.switchStateValue = value ? 1 : 0;
+            this.bleAction(BluenetPromiseWrapper.setSwitchState, [value ? 100 : 0], 'switchState')
+            FocusManager.crownstoneState.switchStateValue = value ? 100 : 0;
             this.forceUpdate();
           }
         });
@@ -325,9 +325,9 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
-          step: 0.025,
+          step: 1,
           min: 0,
-          max: 1,
+          max: 100,
           callback: (value) => {
             this.bleAction(BluenetPromiseWrapper.broadcastSwitch, [FocusManager.crownstoneState.referenceId, FocusManager.crownstoneState.stoneId, value, true], 'switchState', () => {}, false, true)
             FocusManager.crownstoneState.switchStateValue = value;
@@ -365,9 +365,9 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.dimmerState === null,
           value: FocusManager.crownstoneState.dimmerState,
-          step: 0.01,
+          step: 1,
           min: 0,
-          max: 0.99,
+          max: 100,
           callback: (value) => {
             this.bleAction(BluenetPromiseWrapper.switchDimmer, [value], 'dimmerState');
             FocusManager.crownstoneState.dimmerState = value;
@@ -378,11 +378,11 @@ export class DEV_FirmwareTest extends LiveComponent<{
         items.push({
           label: "Set Dimmer",
           type: 'numericSet',
-          digits:2,
+          digits:0,
           disabled: FocusManager.crownstoneState.dimmerState === null,
           value: FocusManager.crownstoneState.dimmerState,
           setCallback: (value) => {
-            let num = Math.max(0, Math.min(1, Number(value)));
+            let num = Math.max(0, Math.min(100, Number(value)));
             this.bleAction(BluenetPromiseWrapper.switchDimmer, [num], 'dimmerState', () => {
               FocusManager.crownstoneState.dimmerState = num;
               core.eventBus.emit("hideNumericOverlaySuccess");

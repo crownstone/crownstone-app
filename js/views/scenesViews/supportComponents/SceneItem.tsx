@@ -19,6 +19,7 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
+import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
 
 export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   const [editMode, setEditMode] = useState(stateEditMode);
@@ -187,6 +188,20 @@ export const getScenePictureSource = function(scene) {
 export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
   let deletedStones = false;
   let correctedList = {};
+
+  // migrate to new format of crownstone switch values. We have changed this from 0..1 to 0..100
+  // we place this here as an additional backup of the migration that is done on start.
+  if (sceneId) {
+    let {migrationRequired, action, switchData: newSwitchData} = migrateScene(sphereId, sceneId);
+    if (migrationRequired) {
+      core.store.dispatch(action);
+      switchData = newSwitchData;
+    }
+  }
+  else {
+    switchData = migrateSceneSwitchData(switchData);
+  }
+
   Object.keys(switchData).forEach((stoneCID) => {
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
     if (!stoneData) {
@@ -206,7 +221,6 @@ export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
 
 export const executeScene = function(switchData, sphereId: string, sceneId: string = null) {
   let action = false;
-
   let correctedList = verifySceneIntegrity(switchData, sphereId, sceneId);
 
   Object.keys(correctedList).forEach((stoneCID) => {

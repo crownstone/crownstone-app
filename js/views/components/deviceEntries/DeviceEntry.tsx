@@ -81,10 +81,7 @@ export class DeviceEntry extends Component<any, any> {
 
 
   _pressedDevice(stone) {
-    let newState = (stone.state.state > 0 ? 0 : 1);
-    if (stone.config.dimmingEnabled === true) {
-      newState = (stone.state.state > 0 ? 0 : 0.99);
-    }
+    let newState = (stone.state.state > 0 ? 0 : 100);
 
     this.setState({pendingCommand:true});
 

@@ -289,7 +289,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
           <TouchableOpacity style={{...innerStyle,
             borderBottomRightRadius: 25, borderTopRightRadius: 25,
             backgroundColor: this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
-          }} onPress={() => { this._switch(stone,1); }}>
+          }} onPress={() => { this._switch(stone,100); }}>
             <Text style={textStyle}>{ lang("ON") }</Text>
           </TouchableOpacity>
         </View>
@@ -419,9 +419,9 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
                   type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
                   sphereId: this.props.sphereId,
                   stoneId: this.props.stoneId,
-                  data: {state: 0.01*expectedState}
+                  data: {state: expectedState}
                 });
-                core.eventBus.emit("DeviceOverviewSetSwitchState", 0.01*expectedState);
+                core.eventBus.emit("DeviceOverviewSetSwitchState", expectedState);
                 this._planStoreAction();
               });
           }

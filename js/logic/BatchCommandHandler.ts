@@ -71,7 +71,7 @@ class BatchCommandHandlerClass {
     let commandSummary : commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
     let state = core.store.getState();
 
-    if (BroadcastCommandManager.canBroadcast(commandSummary) || state.development.broadcasting_enabled) {
+    if (BroadcastCommandManager.canBroadcast(commandSummary)) {
       return BroadcastCommandManager.broadcast(commandSummary)
         .catch((err) => {
           if (err && err.fatal == false && err.message !== BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE.message) {
@@ -196,7 +196,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
                 break;
               case 'turnOn':
-                let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, state: 1};
+                let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, state: 100};
                 actionPromise = BluenetPromiseWrapper.turnOnMesh([stoneSwitchPacket])
                 break;
               case 'multiSwitch':
@@ -204,7 +204,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket])
                 break;
               case 'toggle':
-                actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
+                actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 100);
                 break;
               case 'setTapToToggle':
                 actionPromise = BluenetPromiseWrapper.setTapToToggle(command.value);

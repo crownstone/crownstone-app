@@ -117,12 +117,12 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       let newState = Math.max(LOWER_BOUND, Math.min(UPPER_BOUND, gestureState.x0 + gestureState.dx));
       let percentage = (newState-LOWER_BOUND) / RANGE;
       // round this to a 0-100 int
-      percentage = Math.round(percentage*100) / 100;
-      if (percentage < 0.05) {
+      percentage = Math.round(percentage*100);
+      if (percentage < 5) {
         percentage = 0;
       }
-      else if (percentage < 0.1 && percentage >= 0.05) {
-        percentage = 0.1;
+      else if (percentage < 10 && percentage >= 5) {
+        percentage = 10;
       }
 
       this._updatePercentage(percentage, true);
@@ -157,10 +157,10 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
 
   _updatePercentage(percentage, isManualAction) {
     this.percentage = percentage;
-    let newPosition = percentage * RANGE + LOWER_BOUND;
+    let newPosition = percentage * 0.01 * RANGE + LOWER_BOUND;
 
     if (this.state.dimmingSyncedToCrownstone === false) {
-      if (percentage < 0.5) {
+      if (percentage < 50) {
         newPosition = LOWER_BOUND;
       }
       else {
@@ -168,10 +168,10 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       }
     }
     else {
-      if (percentage >= 0.05 && percentage < 0.1) {
+      if (percentage >= 5 && percentage < 10) {
         newPosition = (0.1 + CORRECTION)*RANGE;
       }
-      else if (percentage < 0.05) {
+      else if (percentage < 5) {
         newPosition = LOWER_BOUND;
       }
     }

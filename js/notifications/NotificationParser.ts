@@ -39,6 +39,8 @@ class NotificationParserClass {
   _handleRemoteNotifications(notificationData) {
     let state = core.store.getState();
     switch(notificationData.command) {
+      case 'multiSwitch':
+        this._handleMultiswitch(notificationData, state); break;
       case 'setSwitchStateRemotely':
         this._handleSetSwitchStateRemotely(notificationData, state); break;
       case 'newMessage':
@@ -105,6 +107,10 @@ class NotificationParserClass {
       return;
     }
 
+    if (notificationData.event) {
+      return this._handleMultiswitch(notificationData, state);
+    }
+
     let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
     let localStoneId  = MapProvider.cloud2localMap.stones[notificationData.stoneId];
     if (!localSphereId || !localStoneId) { return; }
@@ -112,8 +118,12 @@ class NotificationParserClass {
 
     if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
       LOG.notifications("NotificationParser: switching based on notification", notificationData);
-      let switchState = Math.min(1, Math.max(0, notificationData.switchState || 0))
-      if (switchState === 1) {
+      // remap existing 0..1 range from cloud to 0..100
+      if (notificationData.switchState > 0 && notificationData.switchState < 1) {
+        notificationData.switchState = 100*notificationData.switchState;
+      }
+      let switchState = Math.min(100, notificationData.switchState);
+      if (switchState === 100) {
         StoneUtil.turnOnBCH(
           localSphereId,
           localStoneId,
@@ -137,6 +147,51 @@ class NotificationParserClass {
         );
       }
 
+      BatchCommandHandler.executePriority();
+    }
+  }
+
+  _handleMultiswitch(notificationData, state) {
+    let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
+    if (!switchEventData) { return; };
+
+    let sphereId = switchEventData.sphere?.id;
+    if (!sphereId) { return; };
+
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return; }
+
+    let switchDataArr = switchEventData.switchData;
+    if (!switchDataArr || !Array.isArray(switchDataArr)) { return; };
+
+
+    let actionToPerform = false;
+    switchDataArr.forEach((switchData) => {
+      let stoneId = MapProvider.cloud2localMap.stones[switchData.id] || switchData.id;
+      let stone = sphere.stones[stoneId];
+      if (!stone) { return; }
+
+      let switchState = switchData.switchState;
+      switch (switchData.type) {
+        case "PERCENTAGE":
+          if (switchData.switchState === undefined || switchData.switchState === null) { return };
+          switchState = switchData.switchState;
+          break;
+        case "TURN_OFF":
+          switchState = 0;
+          break;
+        case "TURN_ON":
+          actionToPerform = true;
+          BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName:"turnOn"}, {autoExecute: false}).catch()
+          return;
+        default:
+          return;
+      }
+      actionToPerform = true;
+      BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName:"multiSwitch", state: switchState}, {autoExecute: false}).catch()
+    });
+
+    if (actionToPerform) {
       BatchCommandHandler.executePriority();
     }
   }

@@ -1,5 +1,6 @@
 import { upTo3_0 } from "./steps/upToV3_0";
 import { clean_upTo4_0 } from "./steps/upToV4_0";
+import { upTo4_3 } from "./steps/upToV4_3";
 // import { DataUtil } from "../../util/DataUtil";
 // import { core } from "../../core";
 // import { AicoreTwilight } from "../../views/deviceViews/smartBehaviour/supportCode/AicoreTwilight";
@@ -10,6 +11,7 @@ export function migrate() {
   let actions = [];
 
   upTo3_0();
+  upTo4_3();
 }
 
 export function migrateBeforeInitialization() : Promise<void> {
