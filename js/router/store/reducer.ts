@@ -20,14 +20,13 @@ export default (state : any = {}, action : any = {}) => {
   }
 
   return {
-    app:         appReducer(state.app, action),
-    devices:     devicesReducer(state.devices, action),
-    development: developmentReducer(state.development, action),
-    events:      eventReducer(state.events, action),
+    app:           appReducer(state.app, action),
+    devices:       devicesReducer(state.devices, action),
+    development:   developmentReducer(state.development, action),
+    events:        eventReducer(state.events, action),
     installations: installationReducer(state.installations, action),
-    // preferences: preferencesReducer(state.preferences, action),
-    spheres:     spheresReducer(state.spheres, action),
-    user:        userReducer(state.user, action),
-    devApp:      devAppReducer(state.devApp, action),
+    spheres:       spheresReducer(state.spheres, action),
+    user:          userReducer(state.user, action),
+    devApp:        devAppReducer(state.devApp, action),
   }
 };

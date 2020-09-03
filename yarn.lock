@@ -1617,6 +1617,13 @@
     jest-diff "^25.2.1"
     pretty-format "^25.2.1"
 
+"@types/node-hue-api@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@types/node-hue-api/-/node-hue-api-2.3.1.tgz#26598538968adee3b18485c54aec2193545a30ac"
+  integrity sha512-V7/OjZBXhU5l4MnHATKABdi5uCukib9Ym34yBW0UwawuedXfpfVtZUy8ajZNRrsQUHhcz/844M3UK4KCJhLZ1A==
+  dependencies:
+    "@types/node" "*"
+
 "@types/node@*":
   version "14.0.27"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.27.tgz#a151873af5a5e851b51b3b065c9e63390a9e0eb1"
@@ -2040,6 +2047,13 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.9.1.tgz#7e33d8f7d449b3f673cd72deb9abdc552dbe528e"
   integrity sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
 
+axios@^0.19.0:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
+
 babel-jest@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-24.9.0.tgz#3fc327cb8467b89d14d7bc70e315104a783ccd54"
@@ -2241,6 +2255,11 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
+
+bottleneck@^2.19.5:
+  version "2.19.5"
+  resolved "https://registry.yarnpkg.com/bottleneck/-/bottleneck-2.19.5.tgz#5df0b90f59fd47656ebe63c78a98419205cadd91"
+  integrity sha512-VHiNCbI1lKdl44tGrhNfU3lup0Tj/ZBMJB5/2ZbNXRCPuRCO7ed2mgcK4r17y+KB2EfuYuRaVlwNbAeaWGSpbw==
 
 bplist-creator@0.0.8:
   version "0.0.8"
@@ -2837,6 +2856,13 @@ debug@4, debug@^4.1.0, debug@^4.1.1:
   integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
   dependencies:
     ms "^2.1.1"
+
+debug@=3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
+  dependencies:
+    ms "2.0.0"
 
 decamelize@^1.1.1, decamelize@^1.2.0:
   version "1.2.0"
@@ -3531,6 +3557,13 @@ find-up@^4.0.0, find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
+follow-redirects@1.5.10:
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
+  dependencies:
+    debug "=3.1.0"
+
 for-each@~0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
@@ -3634,6 +3667,11 @@ get-package-type@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/get-package-type/-/get-package-type-0.1.0.tgz#8de2d803cff44df3bc6c456e6668b36c3926e11a"
   integrity sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==
+
+get-ssl-certificate@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/get-ssl-certificate/-/get-ssl-certificate-2.3.3.tgz#c8a43da1c77969b2a1dabe8f8356a7d60cf0c4b5"
+  integrity sha512-aKYXS1S5+2IYw4W5+lKC/M+lvaNYPe0PhnQ144NWARcBg35H3ZvyVZ6y0LNGtiAxggFBHeO7LaVGO4bgHK4g1Q==
 
 get-stream@^3.0.0:
   version "3.0.0"
@@ -5891,6 +5929,15 @@ node-fetch@^2.0.0-alpha.8, node-fetch@^2.2.0, node-fetch@^2.5.0, node-fetch@^2.6
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
+
+node-hue-api@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/node-hue-api/-/node-hue-api-4.0.9.tgz#ed11cf4ee94bcdb0c339775e98213b5047d08314"
+  integrity sha512-xsMUGKDSeMtYsKHSKNCn5XFq4eEArbEaFRAAccGBIlQ+ysrVKjlg1So44wY32gMgYfm3S6sJQOw2jLyPxu3Dkw==
+  dependencies:
+    axios "^0.19.0"
+    bottleneck "^2.19.5"
+    get-ssl-certificate "^2.3.3"
 
 node-int64@^0.4.0:
   version "0.4.0"
