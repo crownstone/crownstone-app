@@ -11,6 +11,8 @@ import sphereKeyReducer from "../sphereKeys";
 
 let defaultBridgeSettings = {
   name: 'Philips Hue Bridge',
+  type: null,
+  hueId: null,
   hueName: 'Philips Hue Bridge',
   cloudId: null,
   reachable: false,
@@ -55,6 +57,8 @@ let hueBridgeReducer = (state = defaultBridgeSettings, action : any = {}) => {
 
 let defaultLightSettings = {
   name: null,
+  type: null,
+  hueId: null,
   hueName: null,
   hasWhiteTemperature: false,
   hasRGB: false,
@@ -62,6 +66,7 @@ let defaultLightSettings = {
   reachable: false,
   colorMode: false,
   colorTemperature: 0,
+  locationId: null,
   hue: 0,
   saturation: 0,
   brightness: 0,

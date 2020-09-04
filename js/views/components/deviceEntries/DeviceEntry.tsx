@@ -11,12 +11,12 @@ import {
   Switch,
   TouchableOpacity,
   Text,
-  View, ViewStyle
+  View, ViewStyle, PanResponder
 } from "react-native";
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
-import { styles, colors}        from '../../styles'
+import { styles, colors, screenWidth } from "../../styles";
 import { AlternatingContent }                 from '../animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
@@ -30,9 +30,17 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../../../util/DataUtil";
+import Slider from "@react-native-community/slider";
+import LinearGradient from 'react-native-linear-gradient';
+import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
+import { DeviceEntryFullSwitch } from "./submodules/DeviceEntryFullSwitch";
 
+const PADDING_LEFT = 15;
+const PADDING_RIGHT = 15;
 
 export class DeviceEntry extends Component<any, any> {
+
+  _panResponder;
   baseHeight : number;
   unsubscribe = [];
   animating = false;
@@ -43,14 +51,12 @@ export class DeviceEntry extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.baseHeight = props.height || 80;
-
     this.state = {
-      height:          this.baseHeight,
       pendingCommand:  false,
       backgroundColor: new Animated.Value(0),
       statusText:      null,
-      showViaMesh:     false
+      showViaMesh:     false,
+      percentage:      0
     };
   }
 
@@ -164,80 +170,24 @@ export class DeviceEntry extends Component<any, any> {
     NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
-  _getIcon(stone, state) {
-    let customStyle = undefined;
-    let color = (
-      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === true ?
-          colors.gray.hex :
-          (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
-    );
-
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
-      if (stone.errors.hasError === true) {
-        return (
-          <View style={[{
-            width:60,
-            height:60,
-            borderRadius:30,
-            backgroundColor: colors.csOrange.hex,
-            borderWidth: 0,
-          }, styles.centered]}>
-            <AlternatingContent
-              style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
-              fadeDuration={500}
-              switchDuration={2000}
-              contentArray={[
-                <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
-                <Icon name={stone.config.icon} size={35} color={'#fff'} />,
-              ]}
-            />
-        </View>
-        );
-      }
-      else if (stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)) {
-        return (
-          <View style={[{
-            width:60,
-            height:60,
-            borderRadius:30,
-            backgroundColor: colors.white.hex,
-            borderWidth: 2,
-            borderColor: color,
-            justifyContent:'center', alignItems:'center'
-          }, styles.centered]}>
-            <AlternatingContent
-              style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
-              fadeDuration={500}
-              switchDuration={2000}
-              contentArray={[
-                <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
-                <Icon name={stone.config.icon} size={35} color={color} />,
-              ]} />
-          </View>
-        );
-      }
-    }
-    else {
-      customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
-    }
-
-    return (
-      <AnimatedCircle size={60} color={color} style={customStyle}>
-        <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
-      </AnimatedCircle>
-    );
-  }
-
-
   _getExplanationText(state) {
     let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
 
-    if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
-      return (
-        <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
-          <Text style={explanationStyle}>{ lang("Tap_me_for_more_") }</Text>
-        </SlideFadeInView>
-      );
+    if (this.props.hideExplanation !== true) {
+      if (state.app.hasSeenDeviceSettings === false) {
+        return (
+          <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
+            <Text style={explanationStyle}>{ lang("Tap_me_for_more_") }</Text>
+          </SlideFadeInView>
+        );
+      }
+      else if (state.app.hasSeenSwitchOverview !== true && this.props.amountOfDimmableCrownstonesInLocation > 1) {
+        return (
+          <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
+            <Text style={explanationStyle}>{ 'Press and hold the icon!' }</Text>
+          </SlideFadeInView>
+        );
+      }
     }
   }
 
@@ -257,11 +207,20 @@ export class DeviceEntry extends Component<any, any> {
       WrapperElement = View
     }
 
+    let height = this.props.height || 80;
+
+    if (this.props.switchView) {
+      return (
+        <Animated.View style={[styles.listView,{flexDirection: 'column', height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
+          <DeviceEntryFullSwitch sphereId={this.props.sphereId} stoneId={this.props.stoneId} height={height} toggleScrollView={this.props.toggleScrollView}/>
+        </Animated.View>
+      )
+    }
     return (
-      <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
+      <Animated.View style={[styles.listView,{flexDirection: 'column', height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <WrapperElement style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
-            {this._getIcon(stone, state)}
+          <WrapperElement style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }} onLongPress={() => { this.props.setSwitchView(true) }}>
+            <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
           </WrapperElement>
           <WrapperElement style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             <View style={{flexDirection: 'column'}}>
@@ -288,3 +247,16 @@ export class DeviceEntry extends Component<any, any> {
     );
   }
 }
+
+// <Animated.View style={{height:dimmerHeight + dimmerPadding, width: screenWidth, alignItems:'center', justifyContent:'center'}}>
+//   <Slider
+//     style={{ width: screenWidth*0.85, height: dimmerHeight }}
+//     minimumValue={0}
+//     maximumValue={100}
+//     step={1}
+//     value={this.state.percentage}
+//     minimumTrackTintColor={colors.white.rgba(0)}
+//     maximumTrackTintColor={colors.green.rgba(0.5)}
+//     onValueChange={(value) => { console.log(value); this.setState({percentage: value})}}
+//   />
+// </Animated.View>

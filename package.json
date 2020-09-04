@@ -30,6 +30,7 @@
     "react-native-image-picker": "^2.3.1",
     "react-native-image-resizer": "^1.2.0",
     "react-native-keep-awake": "4.0.0",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-localize": "^1.4.0",
     "react-native-maps": "0.26.1",
     "react-native-navigation": "6.0.1",

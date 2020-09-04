@@ -121,6 +121,8 @@ import { SettingsLocalizationMonitor } from "../views/settingsViews/dev/Settings
 import { DimLevelOverlay } from "../views/overlays/DimLevelOverlay";
 import { GoogleAssistantOverview } from "../views/thirdParty/google/GoogleAssistantOverview";
 import { PermissionIntroduction } from "../views/startupViews/PermissionIntroduction";
+import { HueOverview } from "../views/thirdParty/hue/HueOverview";
+import { HueAdd } from "../views/thirdParty/hue/HueAdd";
 
 
 export const Views = {
@@ -212,6 +214,8 @@ export const Views = {
   ToonAdd:                           ToonAdd,
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,
+  HueOverview:                       HueOverview,
+  HueAdd:                            HueAdd,
 
   ScenesOverview:                    ScenesOverview,
   SceneAdd:                          SceneAdd,

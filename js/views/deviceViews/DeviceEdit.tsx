@@ -60,6 +60,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
     this.state = {
       stoneName: stone.config.name,
+      description: stone.config.description,
       stoneIcon: stone.config.icon,
       locationId: stone.config.locationId,
 
@@ -113,6 +114,15 @@ export class DeviceEdit extends LiveComponent<any, any> {
       value: this.state.stoneName,
       callback: (newText) => {
         this.setState({stoneName: newText})
+      }
+    });
+    items.push({
+      label: lang("Description"),
+      type: 'textEdit',
+      placeholder:lang("Optional"),
+      value: this.state.description,
+      callback: (newText) => {
+        this.setState({description: newText})
       }
     });
 
@@ -319,6 +329,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     let actions = [];
     if (
       stone.config.name           !== this.state.stoneName      ||
+      stone.config.description    !== this.state.description    ||
       stone.config.icon           !== this.state.stoneIcon      ||
       stone.config.locationId     !== this.state.locationId
     ) {
@@ -327,9 +338,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
         data: {
-          name: this.state.stoneName,
-          icon: this.state.stoneIcon,
-          locationId: this.state.locationId,
+          name:        this.state.stoneName,
+          description: this.state.description,
+          icon:        this.state.stoneIcon,
+          locationId:  this.state.locationId,
         }});
     }
 

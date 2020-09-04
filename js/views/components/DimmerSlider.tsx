@@ -47,14 +47,13 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
   constructor(props) {
     super(props)
 
-
     let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     if (!stone || !stone.config) { return; }
 
     let switchState = stone.state.state;
 
-    this.x = new Animated.Value(switchState*RANGE + LOWER_BOUND);
+    this.x = new Animated.Value(0.01*switchState*RANGE + LOWER_BOUND);
     this.percentage = switchState;
     this.lastRecordedValue = switchState;
 

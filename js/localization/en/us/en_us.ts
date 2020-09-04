@@ -378,6 +378,8 @@ export default {
     Cancel:                                 function() { return "Cancel" },
     __tap_to_change_:                       function() { return " (tap to change)" },
     Not_in_a_room:                          function() { return "Not in a room" },
+    Description:                            function() { return "Description" },
+    Optional:                               function() { return "Optional" },
   },
   DeviceEntry:{
     __filename: "../js/views/components/deviceEntries/DeviceEntry.tsx",

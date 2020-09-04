@@ -155,37 +155,9 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
 
     if (this.storeSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);
-      this.safeStoreUpdate()
+      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }
   }
-
-  /**
-   * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
-   */
-  safeStoreUpdate() {
-    const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) { return; }
-
-    const stone = sphere.stones[this.props.stoneId];
-    if (!stone) { return; }
-
-    if (stone.state.state !== this.storedSwitchState) {
-      let data = {state: stone.state.state};
-      if (stone.state.state === 0) {
-        data['currentUsage'] = 0;
-      }
-      core.store.dispatch({
-        type: 'UPDATE_STONE_SWITCH_STATE',
-        sphereId: this.props.sphereId,
-        stoneId: this.props.stoneId,
-        data: data
-      });
-
-      this.storedSwitchState = stone.state.state;
-    }
-  }
-
 
 
   _switch(stone, state) {
@@ -214,7 +186,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
     clearTimeout(this.storeSwitchStateTimeout);
     this.storeSwitchStateTimeout = setTimeout(() => {
       this.storeSwitchState = false;
-      this.safeStoreUpdate()
+      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }, 3000);
   }
 
@@ -555,6 +527,34 @@ function getTopBarProps(props) {
 }
 
 
+/**
+ * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
+ */
+export function safeStoreUpdate(sphereId, stoneId, storedSwitchState) {
+  const state = core.store.getState();
+  const sphere = state.spheres[sphereId];
+  if (!sphere) { return storedSwitchState; }
+
+  const stone = sphere.stones[stoneId];
+  if (!stone) { return storedSwitchState; }
+
+  if (stone.state.state !== storedSwitchState) {
+    let data = {state: stone.state.state};
+    if (stone.state.state === 0) {
+      data['currentUsage'] = 0;
+    }
+    core.store.dispatch({
+      type: 'UPDATE_STONE_SWITCH_STATE',
+      sphereId: sphereId,
+      stoneId: stoneId,
+      data: data
+    });
+
+    return stone.state.state;
+  }
+
+  return storedSwitchState;
+}
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 
