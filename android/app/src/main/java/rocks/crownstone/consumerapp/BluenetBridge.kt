@@ -1326,8 +1326,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun bootloaderToNormalMode(address: String, callback: Callback) {
+	fun bootloaderToNormalMode(address: String?, callback: Callback) {
 		Log.i(TAG, "bootloaderToNormalMode $address")
+		if (address == null) { return }
 		// Connect, reset to normal mode, disconnect.
 		// Also disconnect when reset fails!
 		bluenet.connect(address)
