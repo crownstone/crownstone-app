@@ -245,7 +245,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Current thread
 //		Looper.prepare()
 //		Looper.loop()
-		looper = Looper.myLooper()
+		looper = Looper.myLooper()!!
 		bluenet = Bluenet(looper)
 		handler = Handler(looper)
 		behaviourSyncer = BehaviourSyncerFromCrownstone(bluenet)
@@ -1326,8 +1326,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun bootloaderToNormalMode(address: String, callback: Callback) {
+	fun bootloaderToNormalMode(address: String?, callback: Callback) {
 		Log.i(TAG, "bootloaderToNormalMode $address")
+		if (address == null) { return }
 		// Connect, reset to normal mode, disconnect.
 		// Also disconnect when reset fails!
 		bluenet.connect(address)
@@ -2906,6 +2907,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			"missedSwitchcraft" -> PowerSamplesType.SWITCHCRAFT_NON_TRIGGERED
 			"filteredBuffer" -> PowerSamplesType.NOW_FILTERED
 			"unfilteredBuffer" -> PowerSamplesType.NOW_UNFILTERED
+			"softFuse" -> PowerSamplesType.SOFT_FUSE
 			else -> PowerSamplesType.UNKNOWN
 		}
 
