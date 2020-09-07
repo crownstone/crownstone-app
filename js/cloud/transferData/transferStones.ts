@@ -17,6 +17,7 @@ let fieldMap : fieldMap = [
   {local: 'macAddress',         cloud: 'address'},
   {local: 'name',               cloud: 'name'},
   {local: 'type',               cloud: 'type'},
+  {local: 'description',        cloud: 'description'},
   {local: 'updatedAt',          cloud: 'updatedAt'},
 
   // this is custom inserted.

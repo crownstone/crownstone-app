@@ -183,7 +183,7 @@ export class SceneAdd extends LiveComponent<any, any> {
       sphereSelection: {
         header: lang("For_which_Sphere_"),
         subHeader: lang("Select_the_sphere_where_y"),
-        backgroundImage: require("../../images/backgrounds/sphereBackgroundDark.png"),
+        backgroundImage: require("../../images/backgrounds/sphereBackgroundDark.jpg"),
         textColor: colors.white.hex,
         component:
           <View style={{flex:1, ...styles.centered}}>
@@ -199,7 +199,7 @@ export class SceneAdd extends LiveComponent<any, any> {
       stoneSelection: {
         header: lang("Whos_participating_"),
         subHeader: lang("Select_the_Crownstones_wh"),
-        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
+        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.jpg"),
         textColor: colors.white.hex,
         optionsHiddenIfNotOnTop: true,
         optionsAlwaysOnTop: Object.keys(this.sceneData.data).length > 0,
@@ -235,7 +235,7 @@ lang("_Select_at_least_one______body"),
       picture: {
         header: lang("And_finally___"),
         subHeader: lang("Lets_pick_an_image__Somet"),
-        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
+        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.jpg"),
         textColor: colors.white.hex,
         editableItem: (state, setState) => {
           return (
@@ -299,7 +299,7 @@ lang("_Select_at_least_one______body"),
   }
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.png');
+    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.jpg');
     let textColor = colors.white.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
@@ -426,7 +426,7 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
   let circleBackgroundColor = switchState > 0 ? colors.green.hex : colors.csBlueDark.hex;
   let name = stone.config.name;
   if (stone.abilities.dimming.enabledTarget) {
-    name += " (" + Math.round(100*switchState) + "%)"
+    name += " (" + Math.round(switchState) + "%)"
   }
 
   let content = (
@@ -450,14 +450,14 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
         <Slider
           style={{ width: screenWidth-70, height: 60}}
           minimumValue={0}
-          maximumValue={1}
-          step={0.01}
+          maximumValue={100}
+          step={1}
           value={switchState}
           minimumTrackTintColor={colors.gray.hex}
           maximumTrackTintColor={colors.gray.hex}
           onValueChange={(value) => {
-            if (value < 0.05) { value = 0 };
-            if (value >= 0.05 && value < 0.1) { value = 0.1 };
+            if (value < 5) { value = 0 };
+            if (value >= 5 && value < 10) { value = 10 };
             setStateCallback(value); setSwitchState(value); }}
         />
       </View>
@@ -468,8 +468,8 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
       <View style={{...containerStyle, flexDirection:'row'}}>
         { content }
         <View style={{width:60, alignItems:'flex-end', overflow:"hidden"}}>
-          <Switch value={switchState === 1} onValueChange={() => {
-            let newValue = switchState === 1 ? 0 : 1;
+          <Switch value={switchState === 100} onValueChange={() => {
+            let newValue = switchState === 100 ? 0 : 100;
             setStateCallback(newValue)
             setSwitchState(newValue)
           }}/>

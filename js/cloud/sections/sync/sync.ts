@@ -28,7 +28,7 @@ export const sync = {
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
 
-  sync: function (background = true) {
+  sync: function (background = true, skipPermissions = false) {
     if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
@@ -149,7 +149,7 @@ export const sync = {
           core.store.batchDispatch(actions);
         }
 
-        if (core.store.getState().app.notificationToken === null) {
+        if (core.store.getState().app.notificationToken === null && skipPermissions !== false) {
           LOG.info("Sync: Requesting notification permissions during updating of the device.");
           NotificationHandler.request();
         }

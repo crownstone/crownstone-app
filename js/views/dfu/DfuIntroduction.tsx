@@ -92,7 +92,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/upgradeBackgroundSoft.png');
+    let backgroundImage = require('../../images/backgrounds/upgradeBackgroundSoft.jpg');
     let textColor = colors.black.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

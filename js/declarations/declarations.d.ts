@@ -146,6 +146,7 @@ interface base_core {
 }
 
 
+type onSelectResult = boolean | void | string | Promise
 interface interviewOption {
   label: string,
   subLabel?: string,
@@ -156,7 +157,7 @@ interface interviewOption {
   response?: string,
   dynamicResponse?: (value: {textfieldState: string, customElementState: any}) => string | string,
   textAlign?: string,
-  onSelect?: (value: interviewReturnData) => boolean | void | string,
+  onSelect?: (value: interviewReturnData) => onSelectResult,
   editable?: boolean,
   theme?: "default" | "create"
 }

@@ -105,7 +105,7 @@ export class SetupHelper {
             LOG.info("setup progress: DeviceKeyReceveived in cloud");
             core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5/20 });
             if (this._setupOverrideData !== null) {
-              return this.setupCrownstoneWithOverrideData();
+              return this.setupCrownstoneWithOverrideData(sphereId);
             }
             return this.setupCrownstone(sphereId, meshDeviceKey);
           })
@@ -350,8 +350,8 @@ export class SetupHelper {
     return this._setupCrownstone(data, sphereId);
   }
 
-  setupCrownstoneWithOverrideData() {
-    return this._setupCrownstone(this._setupOverrideData, this._setupOverrideData.sphereId)
+  setupCrownstoneWithOverrideData(sphereId) {
+    return this._setupCrownstone(this._setupOverrideData, sphereId)
   }
 
 

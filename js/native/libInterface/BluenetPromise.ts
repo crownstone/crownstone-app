@@ -107,7 +107,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setupCrownstone:                (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
   requestLocation:                ()           => { return BluenetPromise('requestLocation');             },
-  recover:                        (handle)     => { return BluenetPromise('recover', handle);             }, // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
+  recover:                        (handle)     => { return BluenetPromise('recover', handle);             },                                // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
   finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:            ()           => { return BluenetPromise('commandFactoryReset');         },
 
@@ -121,7 +121,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   getHardwareVersion:             () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:                  () => { return BluenetPromise('setupPutInDFU'); },
-  toggleSwitchState:              (stateForOn: number) => { return BluenetPromise('toggleSwitchState', stateForOn); }, // stateForOn is a number between 0 and 1. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
+  toggleSwitchState:              (stateForOn: number) => { return BluenetPromise('toggleSwitchState', stateForOn); }, // stateForOn is a number between 0 and 100. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
   bootloaderToNormalMode:         ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
 
   //new

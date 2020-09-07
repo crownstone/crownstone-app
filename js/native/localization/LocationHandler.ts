@@ -347,7 +347,7 @@ class LocationHandlerClass {
    */
   trackSpheres() {
     LOG.info("LocationHandler: Track Spheres called.");
-    BluenetPromiseWrapper.isReady()
+    return BluenetPromiseWrapper.isReady()
       .then(() => {
         Bluenet.requestLocationPermission();
         return BluenetPromiseWrapper.clearTrackedBeacons();
@@ -369,8 +369,10 @@ class LocationHandlerClass {
   }
 
   initializeTracking() {
-    this.trackSpheres();
-    this.reloadFingerprintTracking();
+    return this.trackSpheres()
+      .then(() => {
+        this.reloadFingerprintTracking();
+      })
   }
 
 

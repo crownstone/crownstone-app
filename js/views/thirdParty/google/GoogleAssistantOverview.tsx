@@ -31,7 +31,7 @@ export class GoogleAssistantOverview extends Component<any, any> {
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Ok_Google__turn_me_on_") }</Text>
             <View style={{height:20}} />
-            <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_horizontal.png')} sourceWidth={1695} sourceHeight={695} targetWidth={0.8*screenWidth} style={695} />
+            <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_horizontal.png')} sourceWidth={1695} sourceHeight={695} targetWidth={0.8*screenWidth} />
             <View style={{height:20}} />
             <Text style={styles.header}>{ lang("Crownstone_is_now_availab") }</Text>
             <Text style={styles.explanation}>{ lang("You_can_now_go_to_your_Go") }</Text>

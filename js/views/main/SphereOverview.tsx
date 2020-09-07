@@ -228,11 +228,12 @@ export class SphereOverview extends LiveComponent<any, any> {
     let activeSphereId = state.app.activeSphere;
     let background = core.background.main;
 
+    console.log("RENDERING_OVERVIEW", activeSphereId);
     LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={require("../../images/backgrounds/sphereBackground.png")}>
+          <AnimatedBackground image={require("../../images/backgrounds/sphereBackground.jpg")}>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );
@@ -246,7 +247,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       background = core.background.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        background = require("../../images/backgrounds/sphereBackground.png");
+        background = require("../../images/backgrounds/sphereBackground.jpg");
       }
       else {
         // handle the case where there are no rooms added:
@@ -268,7 +269,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          background = require('../../images/backgrounds/blueprintBackgroundGray.png')
+          background = require('../../images/backgrounds/blueprintBackgroundGray.jpg')
         }
       }
 

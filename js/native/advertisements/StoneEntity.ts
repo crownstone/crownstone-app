@@ -417,7 +417,7 @@ export class StoneEntity {
           let condition : condition = this.ignoreConditions[i];
 
           if (condition.type === conditionMap.SWITCH_STATE) {
-            let switchState = Math.min(1,advertisement.serviceData[condition.type] / 100);
+            let switchState = Math.min(100,advertisement.serviceData[condition.type]);
             if (switchState !== condition.expectedValue) {
               result = false;
               break;
@@ -594,7 +594,7 @@ export class StoneEntity {
     let powerFactor = serviceData.powerFactor;
     let currentTime = new Date().valueOf();
 
-    let switchState = Math.min(1,serviceData.switchState / 100);
+    let switchState = Math.min(100,serviceData.switchState);
 
     // small aesthetic fix: force no measurement when its supposed to be off.
     if (switchState === 0 && measuredUsage !== 0) {

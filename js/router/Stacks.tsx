@@ -44,19 +44,14 @@ export const Stacks = {
     }
   },
 
+
+  permissions: function(props = {}): StackData {
+    return {
+      component: { name: "PermissionIntroduction", passProps: props },
+    }
+  },
+
   loggedIn: function() : StackData {
-    // return {
-    //   stack: {
-    //     children: [
-    //       { component: {
-    //           name: "Ability_DimmerSettings", passProps:
-    //             {
-    //               stoneId: "eccd7d40-ba7a-e3aa-6c36-e221baee8519", sphereId: "f13f7c32-7a81-6822-f711-d872afe6624b"
-    //             },
-    //         }}
-    //     ],
-    //   },
-    // }
     return {
       bottomTabs: {
         id: 'bottomTabs',

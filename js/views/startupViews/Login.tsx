@@ -393,7 +393,7 @@ lang("arguments___arguments___O_body",content),
         LOG.info("Login: step 3");
         this.progress += parts;
         core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
-        return CLOUD.sync(store, false);
+        return CLOUD.sync(false, false);
       })
       .then(() => {
         LOG.info("Login: step 4");
@@ -420,9 +420,9 @@ lang("arguments___arguments___O_body",content),
         if (DEBUG_MODE_ENABLED) {
           let stringifiedError = '' + JSON.stringify(err);
           Alert.alert(
-lang("_DEBUG__err__arguments____header"),
-lang("_DEBUG__err__arguments____body",stringifiedError),
-[{text:lang("_DEBUG__err__arguments____left")}]);
+            lang("_DEBUG__err__arguments____header"),
+            lang("_DEBUG__err__arguments____body",stringifiedError),
+            [{text:lang("_DEBUG__err__arguments____left")}]);
         }
 
         throw err;
@@ -462,30 +462,28 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           state = store.getState();
           core.eventBus.emit('hideProgress');
 
+          let goToPermissions = () => {
+            NavigationUtil.setRoot(Stacks.permissions());
+          };
           if (state.user.isNew !== false) {
             let sphereIds = Object.keys(state.spheres);
-            let goToSphereOverview = () => {
-              core.eventBus.emit("userLoggedInFinished");
-              NavigationUtil.setRoot(Stacks.loggedIn());
-            };
 
             // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
             if (sphereIds.length === 1) {
               if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiSex) {
-                NavigationUtil.setRoot(Stacks.aiStart({sphereId: sphereIds[0], fromLogin: true}));
+                NavigationUtil.setRoot(Stacks.permissions({sphereId: sphereIds[0], showAi: true}));
               }
               else {
-                goToSphereOverview();
+                goToPermissions();
               }
               return;
             }
             else {
-              goToSphereOverview();
+              goToPermissions();
             }
           }
           else {
-            core.eventBus.emit("userLoggedInFinished");
-            NavigationUtil.setRoot(Stacks.loggedIn());
+            goToPermissions();
           }
         }, 100);
       })

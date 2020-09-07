@@ -367,19 +367,26 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
   let options = [];
   props.options.forEach((option, index) => {
     let cb = () => {
-      let resume = true;
       if (option.onSelect) {
-        let resumeAllowed = option.onSelect(props.value);
-        if (resumeAllowed === false) {
-          resume = false;
+        let resumeAllowed : onSelectResult  = option.onSelect(props.value);
+        if (typeof resumeAllowed === 'object' && resumeAllowed['then'] !== undefined) {
+          return resumeAllowed.then((result) => {
+            if (typeof result === 'string') {
+              props.nextCard(resumeAllowed, props.value, index, option);
+            }
+            else if (result !== false) {
+              props.nextCard(option.nextCard, props.value, index, option);
+            }
+          })
+        }
+        else if (resumeAllowed === true || resumeAllowed === undefined) {
+          props.nextCard(option.nextCard, props.value, index, option);
         }
         else if (typeof resumeAllowed === 'string') {
           props.nextCard(resumeAllowed, props.value, index, option);
-          return;
         }
       }
-
-      if (resume) {
+      else {
         props.nextCard(option.nextCard, props.value, index, option);
       }
     };

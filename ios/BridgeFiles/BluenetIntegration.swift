@@ -232,11 +232,11 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func toggleSwitchState(_ stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("toggleSwitchState", callback, GLOBAL_BLUENET.bluenet.control.toggleSwitchState(stateForOn: stateForOn.floatValue))
+    wrapForBluenet("toggleSwitchState", callback, GLOBAL_BLUENET.bluenet.control.toggleSwitchState(stateForOn: stateForOn.uint8Value))
   }
   
   @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("setSwitchState", callback, GLOBAL_BLUENET.bluenet.control.setSwitchState(state.floatValue))
+    wrapForBluenet("setSwitchState", callback, GLOBAL_BLUENET.bluenet.control.setSwitchState(state.uint8Value))
   }
   
   @objc func getSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
@@ -570,7 +570,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func broadcastSwitch(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, autoExecute: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let autoExec : Bool = autoExecute.boolValue
-    wrapForBluenet("broadcastSwitch", callback, GLOBAL_BLUENET.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.floatValue, autoExecute: autoExec))
+    wrapForBluenet("broadcastSwitch", callback, GLOBAL_BLUENET.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.uint8Value, autoExecute: autoExec))
   }
   
   @objc func broadcastExecute() -> Void {
@@ -1071,7 +1071,7 @@ open class BluenetJS: RCTEventEmitter {
   
   
    @objc func switchDimmer(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control.switchPWM(state.floatValue))
+     wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control.switchPWM(state.uint8Value))
    }
      
    @objc func getResetCounter(_ callback: @escaping RCTResponseSenderBlock) {

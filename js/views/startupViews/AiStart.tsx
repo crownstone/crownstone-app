@@ -47,41 +47,8 @@ export class AiStart extends Component<any, any> {
       NavigationUtil.setRoot(Stacks.loggedIn());
     }
 
-    let possibleNames = [
-      'Amy',
-      'Anne',
-      'Bob',
-      'Clive',
-      'Crowny',
-      'Daisy',
-      'Dobby',
-      'Dotty',
-      'Grey',
-      'Glados',
-      'Evy',
-      'Eve',
-      'HAL',
-      'James',
-      'Marvin',
-      'Nikki',
-      'Pulli',
-      'Robby',
-      'Sam',
-      'Sam',
-      'Sky',
-      'Suzy',
-      'Rosii',
-      'Sonny',
-      'Stanley',
-      'Tron',
-      'Wally',
-      'Watson',
-    ];
-
-    let defaultIndex = Math.floor(Math.random() * possibleNames.length);
-
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
-    let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex];
+    let name = state.spheres[sphereId].config.aiName || randomAiName();
     this.state = {aiName: name};
   }
 
@@ -163,7 +130,42 @@ export class AiStart extends Component<any, any> {
     }
   }
 }
+export function randomAiName() {
+  let possibleNames = [
+    'Amy',
+    'Anne',
+    'Bob',
+    'Clive',
+    'Crowny',
+    'Daisy',
+    'Dobby',
+    'Dotty',
+    'Grey',
+    'Glados',
+    'Evy',
+    'Eve',
+    'HAL',
+    'James',
+    'Marvin',
+    'Nikki',
+    'Pulli',
+    'Robby',
+    'Sam',
+    'Sam',
+    'Sky',
+    'Suzy',
+    'Rosii',
+    'Sonny',
+    'Stanley',
+    'Tron',
+    'Wally',
+    'Watson',
+  ];
 
+  let defaultIndex = Math.floor(Math.random() * possibleNames.length);
+  return possibleNames[defaultIndex];
+
+}
 
 let aiStyle = StyleSheet.create({
   text: {

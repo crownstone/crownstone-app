@@ -139,15 +139,4 @@ export const stones = {
     }
   },
 
-
-  sendStoneDiagnosticInfo: function(data, background = true) {
-    return cloudApiBase._setupRequest(
-      'POST',
-      '/Stones/{id}/diagnostics',
-      { background: background, data: data },
-      'body'
-    );
-  }
-
-
 };

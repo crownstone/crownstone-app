@@ -11,6 +11,7 @@ import { STONE_TYPES }     from "../../../Enums";
 let defaultSettings = {
   config: {
     name: 'Crownstone Plug',
+    description: '',
     icon: 'c2-pluginFilled',
     crownstoneId: undefined,
     type: STONE_TYPES.plug,
@@ -145,6 +146,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
         newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);
+        newState.description       = update(action.data.description,       newState.description);
         newState.type              = update(action.data.type,              newState.type);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;

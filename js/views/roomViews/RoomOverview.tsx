@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {  Alert, Image, ScrollView, View } from "react-native";
+import { Alert, Image, ScrollView, View, Text, TouchableOpacity } from "react-native";
 
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
@@ -37,10 +37,11 @@ import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
+import { SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 
 
 
-export class RoomOverview extends LiveComponent<any, any> {
+export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean }> {
   static options(props) {
     getTopBarProps(core.store.getState(), props, true);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
@@ -54,11 +55,11 @@ export class RoomOverview extends LiveComponent<any, any> {
   pictureTaken : any = null;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
+  amountOfDimmableCrownstonesInLocation: number;
 
   constructor(props) {
     super(props);
 
-    let initialState = {pendingRequests:{}};
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
@@ -73,7 +74,10 @@ export class RoomOverview extends LiveComponent<any, any> {
       this.viewingRemotely = sphere.state.present === false;
     }
 
-    this.state = initialState;
+    this.state = {
+      switchView: false,
+      scrollEnabled: false
+    };
 
     this.viewingRemotelyInitial = this.viewingRemotely;
 
@@ -204,12 +208,16 @@ lang("_Indoor_localization_is_c_body"),
         <View key={stoneId + '_entry'}>
           <DeviceEntry
             stoneId={stoneId}
+            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+            switchView={this.state.switchView}
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
             viewingRemotely={this.viewingRemotely}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
             dfuMode={item.dfuMode === true}
+            setSwitchView={(value) => { this.setState({switchView: value })}}
+            toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
           />
         </View>
       );
@@ -264,6 +272,10 @@ lang("_Indoor_localization_is_c_body"),
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
       let handle = stoneData[stoneId].config.handle;
+      if (stoneData[stoneId].abilities.dimming.enabledTarget) {
+        this.amountOfDimmableCrownstonesInLocation += 1;
+      }
+
       if (shownHandles[handle] === undefined) {
         tempStoneDataArray.push({stone: stoneData[stoneId], id: stoneId});
       }
@@ -287,6 +299,23 @@ lang("_Indoor_localization_is_c_body"),
   }
 
 
+  _getListButton() {
+    return (
+      <SlideSideFadeInView visible={this.state.switchView} width={screenWidth} style={{position:'absolute', top:0, left:0, height:120}}>
+        <TouchableOpacity
+          style={{width:screenWidth, height:120, alignItems:'flex-start', justifyContent:'center', padding:15}}
+          onPress={() => { this.setState({switchView:false})}}
+        >
+          <View style={{height: 56, borderRadius:28, flexDirection:'row', backgroundColor: colors.black.rgba(0.4), alignItems:'center',paddingLeft:20, paddingRight:10}}>
+            <Icon name={'ios-list'} size={40} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
+            <Text style={[styles.boldExplanation,{color: colors.white.hex}]}>List view</Text>
+          </View>
+        </TouchableOpacity>
+      </SlideSideFadeInView>
+    );
+  }
+
+
   render() {
     const store = core.store;
     const state = store.getState();
@@ -297,6 +326,7 @@ lang("_Indoor_localization_is_c_body"),
       return <RoomDeleted/>
     }
 
+    this.amountOfDimmableCrownstonesInLocation = 0;
     let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
@@ -310,10 +340,13 @@ lang("_Indoor_localization_is_c_body"),
 
     return (
       <Background image={core.background.lightBlur}>
-        { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
-        <LocationFlavourImage location={location} />
+        <View>
+          { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
+          <LocationFlavourImage location={location} />
+          { this._getListButton() }
+        </View>
         <View style={{height:2, width:screenWidth, backgroundColor: colors.blue.hex}} />
-        <ScrollView>
+        <ScrollView scrollEnabled={this.state.scrollEnabled}>
           <View style={{width:screenWidth}}>
             <RoomExplanation
               state={state}
@@ -359,7 +392,7 @@ lang("_Indoor_localization_is_c_body"),
 }
 
 export function LocationFlavourImage(props : {location: any, height?: number}) {
-  let location = props.location
+  let location = props.location;
   let usedHeight = props.height || 120;
   if (location.config.picture) {
     return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
@@ -367,7 +400,7 @@ export function LocationFlavourImage(props : {location: any, height?: number}) {
   else {
     return (
       <View style={{width:screenWidth, height: usedHeight, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
-        <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
+        <Image source={require("../../images/backgrounds/RoomBannerBackground.jpg")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
         <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
         <Icon size={usedHeight*0.75} color={colors.white.rgba(0.75)} name={location.config.icon} />
       </View>
