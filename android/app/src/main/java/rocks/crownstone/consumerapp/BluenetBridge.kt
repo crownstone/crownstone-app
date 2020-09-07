@@ -2907,6 +2907,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			"missedSwitchcraft" -> PowerSamplesType.SWITCHCRAFT_NON_TRIGGERED
 			"filteredBuffer" -> PowerSamplesType.NOW_FILTERED
 			"unfilteredBuffer" -> PowerSamplesType.NOW_UNFILTERED
+			"softFuse" -> PowerSamplesType.SOFT_FUSE
 			else -> PowerSamplesType.UNKNOWN
 		}
 
