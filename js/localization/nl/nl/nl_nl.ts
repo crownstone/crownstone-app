@@ -2037,9 +2037,9 @@ export default {
     Messages:                               function() { return "Berichten"; },
     _in_:                                   function() { return " in " + arguments[0] + ""; },
     You_can_leave_messages_in:              function() { return "Je kan berichten achterlaten in een kamer of een sfeer. Je huisgenoten krijgen deze berichtjes als ze de ruimte binnenkomen of verlaten!"; },
-    Tap_the_envelope_icon_to_:              function() { return "Klik op het envelopje om een nieuw berichtje te sturen!"; },
-    Add_some_Crownstones_to_u:              function() { return "Voeg Crownstones toe om berichtjes te kunnen sturen."; },
-    Add_a_Sphere_to_use_messa:              function() { return "Voeg een sfeer toe om berichtjes te kunnen sturen."; },
+    Tap_the_envelope_icon_to_:              function() { return "Klik op het envelopje hier boven om een nieuw bericht te sturen!"; },
+    Add_some_Crownstones_to_u:              function() { return "Voeg Crownstones toe om berichten te kunnen sturen."; },
+    Add_a_Sphere_to_use_messa:              function() { return "Voeg een sfeer toe om berichten te kunnen sturen."; },
     __filename: "../js/views/messaging/MessageInbox.tsx",
   },
   NoStones:{

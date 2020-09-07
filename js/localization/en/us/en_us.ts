@@ -385,6 +385,7 @@ export default {
     __filename: "../js/views/components/deviceEntries/DeviceEntry.tsx",
     Tap_me_for_more_:                       function() { return "Tap me for more!" },
     Sent_via_mesh_:                         function() { return "Sent via mesh!" },
+    Tap_icon_to_quickly_dim_y:              function() { return "Tap icon to quickly dim your lights!" },
   },
   DeviceEntrySubText:{
     __filename: "../js/views/components/deviceEntries/DeviceEntrySubText.tsx",
@@ -1606,6 +1607,9 @@ export default {
     _Indoor_localization_is_c_header:       function() { return "Indoor localization is currently disabeld" },
     _Indoor_localization_is_c_body:         function() { return "Take a look at the app settings if you'd like to change this." },
     _Indoor_localization_is_c_left:         function() { return "OK" },
+    No_Crownstones_in_reach__:              function() { return "No Crownstones in reach..." },
+    Tap_Crownstone_icon_to_go:              function() { return "Tap Crownstone icon to go back to normal view." },
+    No_dimmable_Crownstones_i:              function() { return "No dimmable Crownstones in room..." },
   },
   RoomTraining:{
     __filename: "../js/views/roomViews/RoomTraining.tsx",

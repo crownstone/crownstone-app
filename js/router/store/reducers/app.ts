@@ -9,7 +9,7 @@ let defaultState = {
 
   hasSeenDeviceSettings: false,
   hasZoomedOutForSphereOverview: false,
-  hasSeenSwitchOverview: false,
+  hasSeenSwitchView: false,
 
   // langauge: null,
 
@@ -27,16 +27,16 @@ export default (state = defaultState, action : any = {}) => {
     case 'SET_NOTIFICATION_TOKEN':
       if (action.data) {
         newState = {...state};
-        newState.notificationToken      = update(action.data.notificationToken, newState.notificationToken);
-        newState.updatedAt              = getTime(action.data.updatedAt);
+        newState.notificationToken   = update(action.data.notificationToken, newState.notificationToken);
+        newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
     case 'SET_ACTIVE_SPHERE':
       if (action.data) {
         newState = {...state};
-        newState.activeSphere           = update(action.data.activeSphere, newState.activeSphere);
-        newState.updatedAt              = getTime(action.data.updatedAt);
+        newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
+        newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -58,13 +58,13 @@ export default (state = defaultState, action : any = {}) => {
         newState = {...state};
         newState.indoorLocalizationEnabled    = update(action.data.indoorLocalizationEnabled,    newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled           = update(action.data.tapToToggleEnabled,           newState.tapToToggleEnabled);
-        newState.hasSeenSwitchOverview        = update(action.data.hasSeenSwitchOverview,        newState.hasSeenSwitchOverview);
+        newState.hasSeenSwitchView            = update(action.data.hasSeenSwitchView,            newState.hasSeenSwitchView);
         newState.migratedDataToVersion        = update(action.data.migratedDataToVersion,        newState.migratedDataToVersion);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);
 
-        newState.updatedAt                 = getTime(action.data.updatedAt);
+        newState.updatedAt                   = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

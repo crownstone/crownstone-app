@@ -37,7 +37,7 @@ import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { SlideSideFadeInView } from "../components/animated/SlideFadeInView";
+import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 
 
 
@@ -56,6 +56,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
   amountOfDimmableCrownstonesInLocation: number;
+  amountOfActiveCrownstonesInLocation: number;
 
   constructor(props) {
     super(props);
@@ -76,7 +77,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
     this.state = {
       switchView: false,
-      scrollEnabled: false
+      scrollEnabled: true
     };
 
     this.viewingRemotelyInitial = this.viewingRemotely;
@@ -275,6 +276,9 @@ lang("_Indoor_localization_is_c_body"),
       if (stoneData[stoneId].abilities.dimming.enabledTarget) {
         this.amountOfDimmableCrownstonesInLocation += 1;
       }
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        this.amountOfActiveCrownstonesInLocation += 1;
+      }
 
       if (shownHandles[handle] === undefined) {
         tempStoneDataArray.push({stone: stoneData[stoneId], id: stoneId});
@@ -299,21 +303,21 @@ lang("_Indoor_localization_is_c_body"),
   }
 
 
-  _getListButton() {
-    return (
-      <SlideSideFadeInView visible={this.state.switchView} width={screenWidth} style={{position:'absolute', top:0, left:0, height:120}}>
-        <TouchableOpacity
-          style={{width:screenWidth, height:120, alignItems:'flex-start', justifyContent:'center', padding:15}}
-          onPress={() => { this.setState({switchView:false})}}
-        >
-          <View style={{height: 56, borderRadius:28, flexDirection:'row', backgroundColor: colors.black.rgba(0.4), alignItems:'center',paddingLeft:20, paddingRight:10}}>
-            <Icon name={'ios-list'} size={40} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
-            <Text style={[styles.boldExplanation,{color: colors.white.hex}]}>List view</Text>
-          </View>
-        </TouchableOpacity>
-      </SlideSideFadeInView>
-    );
-  }
+  // _getListButton() {
+  //   return (
+  //     <SlideSideFadeInView visible={this.state.switchView} width={screenWidth} style={{position:'absolute', top:0, left:0, height:120}}>
+  //       <TouchableOpacity
+  //         style={{width:screenWidth, height:120, alignItems:'flex-start', justifyContent:'center', padding:15}}
+  //         onPress={() => { this.setState({switchView:false})}}
+  //       >
+  //         <View style={{height: 56, borderRadius:28, flexDirection:'row', backgroundColor: colors.black.rgba(0.4), alignItems:'center',paddingLeft:20, paddingRight:10}}>
+  //           <Icon name={'ios-list'} size={40} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
+  //           <Text style={[styles.boldExplanation,{color: colors.white.hex}]}>List view</Text>
+  //         </View>
+  //       </TouchableOpacity>
+  //     </SlideSideFadeInView>
+  //   );
+  // }
 
 
   render() {
@@ -327,6 +331,7 @@ lang("_Indoor_localization_is_c_body"),
     }
 
     this.amountOfDimmableCrownstonesInLocation = 0;
+    this.amountOfActiveCrownstonesInLocation = 0;
     let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
@@ -338,12 +343,15 @@ lang("_Indoor_localization_is_c_body"),
     this._setNearestStoneInRoom(ids);
     this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
 
+    let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
+    if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
+      explanation = lang("No_Crownstones_in_reach__")
+    }
     return (
       <Background image={core.background.lightBlur}>
         <View>
           { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
           <LocationFlavourImage location={location} />
-          { this._getListButton() }
         </View>
         <View style={{height:2, width:screenWidth, backgroundColor: colors.blue.hex}} />
         <ScrollView scrollEnabled={this.state.scrollEnabled}>
@@ -360,9 +368,22 @@ lang("_Indoor_localization_is_c_body"),
               separatorIndent={false}
               renderer={this._renderer.bind(this)}
             />
-            <View style={{height:60}} />
+            <View style={{height:80}} />
           </View>
         </ScrollView>
+        <SlideFadeInView visible={this.state.switchView}
+                         style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
+                         height={80}
+                         pointerEvents={'none'}
+        >
+          <View style={{
+            backgroundColor:colors.black.rgba(0.25),
+            borderRadius:30,
+            padding:10,
+            alignItems:'center', justifyContent:'center'}}>
+            <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
+          </View>
+        </SlideFadeInView>
       </Background>
     );
   }

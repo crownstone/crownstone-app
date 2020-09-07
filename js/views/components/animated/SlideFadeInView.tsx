@@ -4,7 +4,7 @@ import {
   
 } from 'react-native';
 
-export class SlideFadeInView extends Component<{visible, height, delay?, duration?, style?}, any> {
+export class SlideFadeInView extends Component<{visible, height, delay?, duration?, style?, pointerEvents?}, any> {
   visible : boolean;
   height  : number;
 
@@ -51,7 +51,7 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
 
   render() {
     return (
-      <Animated.View style={[this.props.style,{overflow:'hidden', opacity:this.state.viewOpacity, height: this.state.viewHeight}]}>
+      <Animated.View style={[this.props.style,{overflow:'hidden', opacity:this.state.viewOpacity, height: this.state.viewHeight}]} pointerEvents={this.props.pointerEvents}>
         {this.props.children}
       </Animated.View>
     );

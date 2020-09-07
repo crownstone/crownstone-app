@@ -11,7 +11,7 @@ import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 
 
 export function DeviceEntryIcon({stone, stoneId, state, overrideStoneState}) {
-  let customStyle = {borderWidth:2, borderColor: colors.white.rgba(0.7)};
+  let customStyle = {};
 
   let size = 60;
 

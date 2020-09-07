@@ -115,11 +115,10 @@ class NotificationParserClass {
     let localStoneId  = MapProvider.cloud2localMap.stones[notificationData.stoneId];
     if (!localSphereId || !localStoneId) { return; }
 
-
     if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
       LOG.notifications("NotificationParser: switching based on notification", notificationData);
       // remap existing 0..1 range from cloud to 0..100
-      if (notificationData.switchState > 0 && notificationData.switchState < 1) {
+      if (notificationData.switchState > 0 && notificationData.switchState <= 1) {
         notificationData.switchState = 100*notificationData.switchState;
       }
       let switchState = Math.min(100, notificationData.switchState);

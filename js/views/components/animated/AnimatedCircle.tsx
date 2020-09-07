@@ -6,7 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated} from 'react-native';
+  Animated, View
+} from "react-native";
 
 import {styles} from '../../styles'
 
@@ -53,7 +54,7 @@ export class AnimatedCircle extends Component<any, any> {
       outputRange: [this.color1,  this.color2]
     });
     let size = this.props.size;
-    return (
+    let content = (
       <Animated.View style={[{
         width:size,
         height:size,
@@ -62,8 +63,18 @@ export class AnimatedCircle extends Component<any, any> {
         borderWidth: this.props.borderWidth,
         borderColor: this.props.borderColor
       }, styles.centered, this.props.style]}>
-    {this.props.children}
-    </Animated.View>
-  )
+        {this.props.children}
+      </Animated.View>
+    );
+
+    if (this.props.borderSize) {
+      let outerSize = size+2*this.props.borderSize;
+      return (
+        <View style={{width: outerSize, height: outerSize, borderRadius: 0.5*outerSize, backgroundColor: this.props.borderColor, alignItems:"center", justifyContent:"center"}}>
+          { content }
+        </View>
+      )
+    }
+    return content;
   }
 }
