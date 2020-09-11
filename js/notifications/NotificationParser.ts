@@ -154,8 +154,9 @@ class NotificationParserClass {
     let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
     if (!switchEventData) { return; };
 
-    let sphereId = switchEventData.sphere?.id;
-    if (!sphereId) { return; };
+    let cloudSphereId = switchEventData.sphere?.id;
+    if (!cloudSphereId) { return; };
+    let sphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId
 
     let sphere = state.spheres[sphereId];
     if (!sphere) { return; }
