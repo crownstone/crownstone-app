@@ -84,6 +84,14 @@ export class DeviceEntry extends Component<any, any> {
     this.unsubscribe.push(core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
       if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
+        let change = data.change;
+        let state = core.store.getState();
+        let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+        if (!stone || !stone.config) { return; }
+        if (stone.state.state !== this.props.percentage) {
+          this.setState({percentage: stone.state.state})
+          return;
+        }
         this.forceUpdate();
         return
       }
@@ -100,6 +108,19 @@ export class DeviceEntry extends Component<any, any> {
     clearTimeout(this.revertToNormalViewTimeout);
   }
 
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if ( this.props.switchView !== prevProps.switchView ) {
+      let state = core.store.getState();
+      if (state.app.hasSeenSwitchView === false) {
+        let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+        let useSwitchView = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
+        if (useSwitchView && state.app.hasSeenSwitchView === false) {
+          core.store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { hasSeenSwitchView: true } });
+        }
+      }
+    }
+  }
 
   _pressedDevice(stone) {
     let newSwitchState = (stone.state.state > 0 ? 0 : 100);
@@ -245,10 +266,6 @@ export class DeviceEntry extends Component<any, any> {
     let height = this.props.height || 80;
     let sliderWidth = screenWidth - 20 - 60 - 30;
     let explanationText = this._getExplanationText(state, useSwitchView);
-
-    if (useSwitchView && state.app.hasSeenSwitchView === false) {
-      core.store.dispatch({type:'UPDATE_APP_SETTINGS', data: {hasSeenSwitchView: true}});
-    }
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>

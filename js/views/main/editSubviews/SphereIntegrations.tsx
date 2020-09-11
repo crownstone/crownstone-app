@@ -30,18 +30,18 @@ export class SphereIntegrations extends LiveComponent<any, any> {
 
     items.push({label: lang("Here_you_can_integrate_wi"),  type:'largeExplanation'});
 
-    items.push({label: "Smart Lighting",  type:'largeExplanation'});
-    items.push({
-      label: lang("Philips_Hue"),
-      type: 'navigation',
-      largeIcon:
-        <View style={{width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
-          <ScaledImage source={require("../../../images/thirdParty/logo/philipsHue.png")} targetWidth={55} targetHeight={55} sourceWidth={600} sourceHeight={600} />
-        </View>,
-      callback: () => {
-        NavigationUtil.navigate("HueOverview", { sphereId: this.props.sphereId });
-      }
-    });
+    // items.push({label: "Smart Lighting",  type:'largeExplanation'});
+    // items.push({
+    //   label: lang("Philips_Hue"),
+    //   type: 'navigation',
+    //   largeIcon:
+    //     <View style={{width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
+    //       <ScaledImage source={require("../../../images/thirdParty/logo/philipsHue.png")} targetWidth={55} targetHeight={55} sourceWidth={600} sourceHeight={600} />
+    //     </View>,
+    //   callback: () => {
+    //     NavigationUtil.navigate("HueOverview", { sphereId: this.props.sphereId });
+    //   }
+    // });
 
     items.push({label: lang("Thermostats_"),  type:'largeExplanation'});
     items.push({

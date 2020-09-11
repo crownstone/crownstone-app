@@ -98,8 +98,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
             this.cachedCommand.immediate,
           );
         }, 400);
-
-        // Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       }
       return;
     }
