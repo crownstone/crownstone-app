@@ -385,7 +385,7 @@ export class ForceDirectedView extends Component<{
               this._pressedNodeData === this._lastTapLocation ||
               this._pressedNodeData && (this._lastTapLocation === this._pressedNodeData.nodeId)
             ) &&
-            new Date().valueOf() - this._lastTap < 300
+            Date.now() - this._lastTap < 300
           ) {
             this._recenter();
           }
@@ -394,7 +394,7 @@ export class ForceDirectedView extends Component<{
           }
 
           this._lastTapLocation = this._pressedNodeData && this._pressedNodeData.nodeId || false;
-          this._lastTap = new Date().valueOf();
+          this._lastTap = Date.now();
         }
 
         this.state.opacity.setValue(1);

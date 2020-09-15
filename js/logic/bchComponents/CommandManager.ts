@@ -30,7 +30,7 @@ export class CommandManager {
           commandUuid: shortUuid,
           attempts: attempts,
           options:  options,
-          timestamp: new Date().valueOf(),
+          timestamp: Date.now(),
           cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
           promise:  { resolve: resolve, reject: reject, pending: false }
         };

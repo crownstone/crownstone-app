@@ -89,7 +89,7 @@ class SetupStateHandlerClass {
         // If we detect a normal validated advertisement from a Crownstone that we ALSO see as a setup Crownstone, we assume it is spoofed.
         // It then has to not be validated for at least 30 seconds before we give it a chance as a setup Crownstone.
         if (this._spoofedCrownstonePossibility[handle] !== undefined) {
-          if (new Date().valueOf() - this._spoofedCrownstonePossibility[handle] < 30000) {
+          if (Date.now() - this._spoofedCrownstonePossibility[handle] < 30000) {
             return;
           }
           else {
@@ -145,12 +145,12 @@ class SetupStateHandlerClass {
           // this is not currently in setup.
           if (this._currentSetupState.handle !== handle) {
             this._cleanup(handle);
-            this._spoofedCrownstonePossibility[handle] = new Date().valueOf();
+            this._spoofedCrownstonePossibility[handle] = Date.now();
           }
         }
 
         if (this._spoofedCrownstonePossibility[handle]) {
-          this._spoofedCrownstonePossibility[handle] = new Date().valueOf();
+          this._spoofedCrownstonePossibility[handle] = Date.now();
         }
       })
 

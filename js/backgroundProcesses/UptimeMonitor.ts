@@ -42,7 +42,7 @@ function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
   let allowedLogFiles = {};
 
   for (let i = 0; i < amountOfDaysStored; i++) {
-    let timestamp = new Date().valueOf() - i*86400000;
+    let timestamp = Date.now() - i*86400000;
     allowedLogFiles[getLoggingFilename(timestamp, UPTIME_LOG_PREFIX)] = true;
   }
 
@@ -78,11 +78,11 @@ function writeUpTime() {
   let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
-  let filename = getLoggingFilename(new Date().valueOf(), UPTIME_LOG_PREFIX);
+  let filename = getLoggingFilename(Date.now(), UPTIME_LOG_PREFIX);
   let filePath = logPath + '/' + filename;
 
   // create string
-  let str = new Date().valueOf() + "\n";
+  let str = Date.now() + "\n";
 
   // write the file
   RNFS.appendFile(filePath, str, 'utf8').catch((err) => {})

@@ -76,7 +76,7 @@ class SchedulerClass {
         overwritableActions:   {},
         overwritableCallbacks: {},
         options:    {},
-        lastTriggerTime: performImmediatelyAfterSet ? 0 : new Date().valueOf(),
+        lastTriggerTime: performImmediatelyAfterSet ? 0 : Date.now(),
         pauseTime: null
       };
     }
@@ -130,7 +130,7 @@ class SchedulerClass {
   pauseTrigger(triggerId) {
     if (this.triggers[triggerId]) {
       this.triggers[triggerId].active = false;
-      this.triggers[triggerId].pauseTime = new Date().valueOf();
+      this.triggers[triggerId].pauseTime = Date.now();
     }
   }
 
@@ -139,7 +139,7 @@ class SchedulerClass {
       this.triggers[triggerId].active = true;
       if (this.triggers[triggerId].pauseTime !== null) {
         // we account for paused time so that the remainder when it was paused is the same remainder as it is when we resume.
-        this.triggers[triggerId].lastTriggerTime += new Date().valueOf() - this.triggers[triggerId].pauseTime;
+        this.triggers[triggerId].lastTriggerTime += Date.now() - this.triggers[triggerId].pauseTime;
         this.triggers[triggerId].pauseTime = null;
       }
     }
@@ -181,7 +181,7 @@ class SchedulerClass {
 
         // we don't want to trigger a callback right away, if we do, make sure fireAfterLoad = true
         if (fireAfterLoad === false) {
-          this.triggers[triggerId].lastTriggerTime = new Date().valueOf();
+          this.triggers[triggerId].lastTriggerTime = Date.now();
         }
       }
       else {
@@ -207,7 +207,7 @@ class SchedulerClass {
 
         // we don't want to trigger a callback right away, if we do, make sure fireAfterLoad = true
         if (fireAfterLoad === false) {
-          this.triggers[triggerId].lastTriggerTime = new Date().valueOf();
+          this.triggers[triggerId].lastTriggerTime = Date.now();
         }
       }
       else {
@@ -290,7 +290,7 @@ class SchedulerClass {
       timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
     }
 
-    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds, timeoutId: timeoutId};
+    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: Date.now() + afterMilliseconds, timeoutId: timeoutId};
 
     return () => {
       if (this.singleFireTriggers[uuid]) {
@@ -307,7 +307,7 @@ class SchedulerClass {
   tick() {
     this.clearSchedule();
 
-    let now = new Date().valueOf();
+    let now = Date.now();
 
     LOG.scheduler("Tick", now);
 
@@ -399,14 +399,14 @@ class SchedulerClass {
 
 
   _postpone(trigger) {
-    trigger.lastTriggerTime = new Date().valueOf();
+    trigger.lastTriggerTime = Date.now();
   }
 
 
   flush(trigger, state) {
     this._flushActions(trigger,state);
     this._flushCallbacks(trigger);
-    trigger.lastTriggerTime = new Date().valueOf();
+    trigger.lastTriggerTime = Date.now();
   }
 
   _flushCallbacks(trigger) {

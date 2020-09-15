@@ -103,7 +103,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         }
       }
 
-      let now = new Date().valueOf();
+      let now = Date.now();
       let dt = now - this.timeArray[this.timeArray.length - 1]
       if (dt > 2 * 60 * 1000) {
         stringPart += " --- " + getString((this.timeArray[this.timeArray.length - 1]));

@@ -94,7 +94,7 @@ class LocationHandlerClass {
     // get the time last seen of the crownstones in this sphere
     let timeLastSeen  = SphereUtil.getTimeLastSeenInSphere(state, enteringSphereId);
     let sphereTimeout = 5*60*1000; // 5 minutes.
-    let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
+    let timeSinceLastCrownstoneWasSeen = Date.now() - timeLastSeen;
     let sphereHasTimedOut = timeSinceLastCrownstoneWasSeen > sphereTimeout;
 
     // make sure we only do the following once per sphere
@@ -139,7 +139,7 @@ class LocationHandlerClass {
     }
 
     // set the presence
-    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true, lastPresentTime: new Date().valueOf()}});
+    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true, lastPresentTime: Date.now()}});
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
     core.eventBus.emit('enterSphere', enteringSphereId);
@@ -266,7 +266,7 @@ class LocationHandlerClass {
     let state = core.store.getState();
 
     let sphereIds = Object.keys(state.spheres);
-    let now = new Date().valueOf();
+    let now = Date.now();
     sphereIds.forEach((sphereId) => {
       let sphereTimeout = 1000*(state.spheres[sphereId].config.exitDelay);
       if (SphereUtil.getTimeLastSeenInSphere(state, sphereId) > (now - sphereTimeout)) {

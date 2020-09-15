@@ -262,7 +262,7 @@ lang("_Max_amount_of_rooms_reac_body"),
             locationId: localId,
             data: {
               picture: picture,
-              pictureTaken: new Date().valueOf(),
+              pictureTaken: Date.now(),
               pictureId: null
             }});
         })

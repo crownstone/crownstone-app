@@ -49,7 +49,7 @@ class TrackingNumberManagerClass {
 
   // checkToCycle() {
   //   // do not do this too often.
-  //   if (new Date().valueOf() - this.lastTimeTokenWasCycled < 16*60*1000) { // 16 hours
+  //   if (Date.now() - this.lastTimeTokenWasCycled < 16*60*1000) { // 16 hours
   //     return;
   //   }
   //   let sphereIdInLocationState = BroadcastStateManager.getSphereInLocationState();
@@ -81,7 +81,7 @@ class TrackingNumberManagerClass {
   updateMyDeviceTrackingRegistrationInActiveSphere() {
     LOGi.info("TrackingNumberManager: Update my device tracking registration for active sphere.");
     // do not do this too often.
-    if (new Date().valueOf() - this.lastTimeTokenWasBumped < 1800000) {
+    if (Date.now() - this.lastTimeTokenWasBumped < 1800000) {
       return;
     }
     if (BroadcastStateManager.getSphereInLocationState() !== null) {
@@ -148,7 +148,7 @@ class TrackingNumberManagerClass {
   //         // No error! store the new registered token!
   //         let state = core.store.getState();
   //         core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: suggestedNewRandom}})
-  //         this.lastTimeTokenWasCycled = new Date().valueOf();
+  //         this.lastTimeTokenWasCycled = Date.now();
   //         LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken!")
   //         this.currentlyCyclingToken = false;
   //       })
@@ -175,7 +175,7 @@ class TrackingNumberManagerClass {
   // }
 
   _broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom=null) {
-    this.lastTimeTokenWasBumped = new Date().valueOf();
+    this.lastTimeTokenWasBumped = Date.now();
     let preferences = DataUtil.getDevicePreferences(sphereId);
     BluenetPromiseWrapper.broadcastUpdateTrackedDevice(
       sphereId,
@@ -226,7 +226,7 @@ class TrackingNumberManagerClass {
             return Promise.all(promises);
           })
           .then(() => {
-            this.lastTimeTokenWasBumped = new Date().valueOf();
+            this.lastTimeTokenWasBumped = Date.now();
           })
           .catch((err) => {
             console.log("SOMETHING WENT WRONG", err)

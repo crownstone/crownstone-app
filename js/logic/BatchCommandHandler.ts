@@ -383,7 +383,7 @@ class BatchCommandHandlerClass {
   _searchAndHandleCommands(options? : batchCommandEntryOptions) {
     return new Promise((resolve, reject) => {
       // we record the time here to enable failing of failed commands by the attemptHandler that were loaded before this time.
-      let executionTimestamp = new Date().valueOf();
+      let executionTimestamp = Date.now();
 
       let executingPromiseId = this.activePromiseId;
 
@@ -507,7 +507,7 @@ class BatchCommandHandlerClass {
             let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId];
             let lastTime = stone.lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
-            if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
+            if (Date.now() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
               // this will never halt the chain since it's optional.
               return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
                 .then(() => {
@@ -518,7 +518,7 @@ class BatchCommandHandlerClass {
                 });
             }
             else {
-              LOGd.bch("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime, ' ms.');
+              LOGd.bch("BatchCommandHandler: Decided not to set the time because delta time:", Date.now() - lastTime, ' ms.');
             }
           }
           else {

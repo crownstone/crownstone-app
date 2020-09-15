@@ -114,7 +114,7 @@ class Logger {
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
       let prefix = '';
-      let now = new Date().valueOf();
+      let now = Date.now();
       if (LOG_TIMESTAMPS) {
         prefix += now + ' - '
       }

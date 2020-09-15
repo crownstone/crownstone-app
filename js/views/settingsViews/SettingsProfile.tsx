@@ -57,7 +57,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
   }
 
   _countSecret() {
-    let now = new Date().valueOf();
+    let now = Date.now();
     if (now - this.lastCountTime > 1000) {
       this.count = 1
     }

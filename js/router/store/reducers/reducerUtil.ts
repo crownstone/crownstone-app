@@ -18,7 +18,7 @@ export let getTime = function (remoteTime?) {
   if (remoteTime) {
     return remoteTime;
   }
-  return new Date().valueOf();
+  return Date.now();
 };
 
 export function refreshDefaults(state, defaultObject) {

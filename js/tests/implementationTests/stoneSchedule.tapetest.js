@@ -4,7 +4,7 @@ test('dawn', function (t) {
   let time = new Date('2017-01-01 18:30:23');
 
   let currentDayOfWeek = new Date().getDay(); // 0 .. 6 with sunday = 0
-  let now = new Date().valueOf();
+  let now = Date.now();
 
   let hoursSet = new Date(time).getHours();
   let minutesSet = new Date(time).getMinutes();

@@ -17,7 +17,7 @@ function moveKeysInDatabase() {
       actions.push({type:'ADD_SPHERE_KEY', sphereId: sphereId, keyId: xUtil.getUUID(), data: {
           key:       key,
           keyType:   type,
-          createdAt: new Date().valueOf(),
+          createdAt: Date.now(),
           ttl:       0
         }})
     }

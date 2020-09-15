@@ -46,7 +46,7 @@ export const LocalNotifications = {
         // search local messages in this sphere to see if this user has recently composed a message with this content.
         if (messageData.ownerId === userId) {
           let sphereMessageIds = Object.keys(sphere.messages);
-          let now = new Date().valueOf();
+          let now = Date.now();
           for (let i = 0; i < sphereMessageIds.length; i++) {
             let message = sphere.messages[sphereMessageIds[i]];
 

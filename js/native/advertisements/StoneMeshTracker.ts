@@ -64,7 +64,7 @@ export class StoneMeshTracker {
     // cleanup previous listener
     this._clearMeshListeners();
 
-    let now = new Date().valueOf();
+    let now = Date.now();
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {

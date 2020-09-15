@@ -199,7 +199,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
     this.transferPromises.push(
       CLOUD.forLocation(cloudId).downloadLocationPicture(toPath)
         .then((picturePath) => {
-          this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:{ picture: picturePath, pictureId: imageId, pictureTaken: new Date().valueOf() }});
+          this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:{ picture: picturePath, pictureId: imageId, pictureTaken: Date.now() }});
         }).catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
     );
   }

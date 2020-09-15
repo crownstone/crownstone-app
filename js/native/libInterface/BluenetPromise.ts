@@ -17,7 +17,7 @@ export const BluenetPromise : any = function(functionName) {
         category: 'ble',
         data: {
           functionCalled: functionName,
-          t: new Date().valueOf(),
+          t: Date.now(),
           state: 'started',
         }
       });
@@ -29,7 +29,7 @@ export const BluenetPromise : any = function(functionName) {
             category: 'ble',
             data: {
               functionCalled: functionName,
-              t: new Date().valueOf(),
+              t: Date.now(),
               state: 'failed',
               err: result.data
             }
@@ -42,7 +42,7 @@ export const BluenetPromise : any = function(functionName) {
             category: 'ble',
             data: {
               functionCalled: functionName,
-              t: new Date().valueOf(),
+              t: Date.now(),
               state: 'success',
             }
           });

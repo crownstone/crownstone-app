@@ -165,14 +165,14 @@ class BroadcastCommandManagerClass {
       this.itemsWaitingForExecute[itemId] = true;
     }
     else {
-      this.timeLastBroadcast = new Date().valueOf();
+      this.timeLastBroadcast = Date.now();
     }
 
     return {itemId, autoExecute};
   }
 
   shouldWaitForBroadcast() {
-    return new Date().valueOf() - this.timeLastBroadcast < BROADCAST_THROTTLE_TIME;
+    return Date.now() - this.timeLastBroadcast < BROADCAST_THROTTLE_TIME;
   }
 
   handleThrottling(commandSummary : commandSummary) : Promise<bchReturnType> | false {

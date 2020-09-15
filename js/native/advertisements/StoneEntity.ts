@@ -471,7 +471,7 @@ export class StoneEntity {
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         data: { locked: advertisement.serviceData.switchLocked },
-        updatedAt: new Date().valueOf(),
+        updatedAt: Date.now(),
       });
     }
   }
@@ -592,7 +592,7 @@ export class StoneEntity {
     let serviceData = advertisement.serviceData;
     let measuredUsage = Math.floor(serviceData.powerUsageReal);
     let powerFactor = serviceData.powerFactor;
-    let currentTime = new Date().valueOf();
+    let currentTime = Date.now();
 
     let switchState = Math.min(100,serviceData.switchState);
 
@@ -652,7 +652,7 @@ export class StoneEntity {
    * @private
    */
   _updateStoneLastSeen(stone) {
-    let now = new Date().valueOf();
+    let now = Date.now();
     // only update if the difference is more than 3 seconds.
     if (now - stone.reachability.lastSeen > 3000) {
       this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN, {
@@ -660,7 +660,7 @@ export class StoneEntity {
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         data: {
-          lastSeen: new Date().valueOf(),
+          lastSeen: Date.now(),
         },
         __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });

@@ -47,7 +47,7 @@ export class Graph extends LiveComponent<{
   interval : any;
   times = [];
 
-  range = {start: new Date().valueOf(), end: new Date().valueOf()};
+  range = {start: Date.now(), end: Date.now()};
   maxY = 0;
   minY = 0;
 
@@ -143,7 +143,7 @@ export class Graph extends LiveComponent<{
       this.range.end = max;
     }
     else {
-      let now = new Date().valueOf();
+      let now = Date.now();
       this.range.start = new Date(now - RANGE).valueOf();
       this.range.end = new Date(now + OVERSHOOT).valueOf();
     }
@@ -155,7 +155,7 @@ export class Graph extends LiveComponent<{
     this.data = [];
     if (this.props.data) {
       for (let i = 0; i < this.props.data.length; i++) {
-        if (this.props.data[i].x > new Date().valueOf() - 1.25 * RANGE || this.props.live === false) {
+        if (this.props.data[i].x > Date.now() - 1.25 * RANGE || this.props.live === false) {
           this.data.push({
             x:  this.props.data[i].x,
             tx: this.props.data[i].x,

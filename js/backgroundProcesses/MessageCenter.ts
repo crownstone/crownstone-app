@@ -127,7 +127,7 @@ class MessageCenterClass {
       messageId: dbMessageId,
       data: {
         userId: state.user.userId,
-        at: new Date().valueOf(),
+        at: Date.now(),
       }
     });
 
@@ -180,7 +180,7 @@ class MessageCenterClass {
         messageId: localMessageId,
         data: {
           userId: state.user.userId,
-          at: new Date().valueOf(),
+          at: Date.now(),
         }
       });
     }

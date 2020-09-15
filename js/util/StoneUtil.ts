@@ -103,7 +103,7 @@ export const StoneUtil = {
 
 
   crownstoneTimeToTimestamp: function(csTimestamp) : number {
-    let now = new Date().valueOf();
+    let now = Date.now();
     if ((now / csTimestamp) < 10) {
       csTimestamp = csTimestamp / 1000;
     }
@@ -121,7 +121,7 @@ export const StoneUtil = {
   },
 
   nowToCrownstoneTime: function() : number {
-    return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
+    return StoneUtil.timestampToCrownstoneTime(Date.now())
   },
 
   getStoneObject: function(sphereId, stoneId) {

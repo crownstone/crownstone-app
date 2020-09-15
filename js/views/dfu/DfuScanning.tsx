@@ -156,13 +156,13 @@ export class DfuScanning extends LiveComponent<any, any> {
       }
       let factor = 0.2;
       this.scannedStones[stoneId].rssi = factor*rssi + (1-factor) * this.scannedStones[stoneId].rssi;
-      this.scannedStones[stoneId].updatedAt = new Date().valueOf();
+      this.scannedStones[stoneId].updatedAt = Date.now();
     }
   }
 
 
   _shouldStoneBeVisibleBasedOnLastSeen(stoneId) {
-    return this.scannedStones[stoneId] && (new Date().valueOf() - this.scannedStones[stoneId].updatedAt < 10000) || false;
+    return this.scannedStones[stoneId] && (Date.now() - this.scannedStones[stoneId].updatedAt < 10000) || false;
   }
 
 

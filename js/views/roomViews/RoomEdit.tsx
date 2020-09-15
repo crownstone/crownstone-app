@@ -282,7 +282,7 @@ export class RoomEdit extends LiveComponent<any, any> {
             locationId: this.props.locationId,
             data: {
               picture: picture,
-              pictureTaken: new Date().valueOf(),
+              pictureTaken: Date.now(),
               pictureId: null
             }});
         })

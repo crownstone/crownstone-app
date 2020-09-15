@@ -108,7 +108,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
   _process() {
     let content = [];
     let gaps = [];
-    let now = new Date().valueOf();
+    let now = Date.now();
 
     if (this.locationData.length > 0) {
       this.locationData.sort((a,b) => { return a.t - b.t });

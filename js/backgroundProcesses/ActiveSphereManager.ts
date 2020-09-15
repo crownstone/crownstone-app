@@ -14,24 +14,24 @@ class ActiveSphereManagerClass {
   userIsLoggedIn = false;
 
   onScreen() {
-    if (new Date().valueOf() - this.timeSwitchedToBackground > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
+    if (Date.now() - this.timeSwitchedToBackground > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
       this.updateActiveSphere();
     }
-    this.timeSwitchedToForeground = new Date().valueOf();
+    this.timeSwitchedToForeground = Date.now();
   }
 
   toBackground() {
-    this.timeSwitchedToBackground = new Date().valueOf();
+    this.timeSwitchedToBackground = Date.now();
   }
 
   setActiveSphere(sphereId: string) {
     core.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere: sphereId }});
-    this.timeActiveSphereSet = new Date().valueOf();
+    this.timeActiveSphereSet = Date.now();
   }
 
   clearActiveSphere() {
     core.store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
-    this.timeActiveSphereSet = new Date().valueOf();
+    this.timeActiveSphereSet = Date.now();
   }
 
   updateActiveSphere() {
@@ -45,9 +45,9 @@ class ActiveSphereManagerClass {
       // we came from the background.
       if (this.timeSwitchedToForeground < this.timeSwitchedToBackground) {
         // we have been away from the foreground for more than 5 minutes
-        if (new Date().valueOf() - this.timeSwitchedToBackground > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
+        if (Date.now() - this.timeSwitchedToBackground > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
           // we have not set the active sphere in the last 5 minutes
-          if (new Date().valueOf() - this.timeActiveSphereSet > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
+          if (Date.now() - this.timeActiveSphereSet > ACTIVE_SPHERE_EXPIRATION_THRESHOLD) {
             this._updateActiveSphere();
           }
         }

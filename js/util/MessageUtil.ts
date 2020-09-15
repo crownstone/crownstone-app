@@ -39,7 +39,7 @@ export const MessageUtil = {
           type:'APPEND_MESSAGE',
           sphereId: sphereId,
           messageId: messageId,
-          data: { sent: true, sentAt: new Date().valueOf() }
+          data: { sent: true, sentAt: Date.now() }
         });
       })
       .catch((err) => {

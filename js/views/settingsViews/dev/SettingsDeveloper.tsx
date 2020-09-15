@@ -76,7 +76,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   }
 
   _countSecret() {
-    let now = new Date().valueOf();
+    let now = Date.now();
     if (now - this.lastCountTime > 1000) {
       this.count = 1
     }
@@ -171,7 +171,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
               let storagePath = FileUtil.getPath();
               let options = {};
               if (shareDataType === EMAIL_DATA_TYPE.logs) {
-                let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
+                let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
                 options = {urls:[
                     "file://" + storagePath + "/" + filename,
                   ]}

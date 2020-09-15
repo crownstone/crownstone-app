@@ -50,7 +50,7 @@ export class LockedStateUI extends Component<any, any> {
         if (Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
           if (this.state.unlockingInProgress === false) {
             this.controlling = true;
-            this._startTime = new Date().valueOf();
+            this._startTime = Date.now();
             this._updateLoop();
             core.eventBus.emit("UIGestureControl", false);
           }
@@ -101,7 +101,7 @@ export class LockedStateUI extends Component<any, any> {
   _updateLoop() {
     let level = 0;
     if (this.controlling) {
-      level = Math.min(1,(new Date().valueOf() - this._startTime)/this.loadingAmountRequired);
+      level = Math.min(1,(Date.now() - this._startTime)/this.loadingAmountRequired);
 
       if (level === 1) {
         this.controlling = false;

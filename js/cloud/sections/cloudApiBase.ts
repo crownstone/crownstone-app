@@ -106,7 +106,7 @@ export const cloudApiBase = {
     if (options.background !== true) {
       // make sure we do not show this popup when too much time has passed.
       // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
-      if (new Date().valueOf()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
+      if (Date.now()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
         this._networkErrorHandler(error);
       }
 
@@ -160,7 +160,7 @@ export const cloudApiBase = {
 
   _finalizeRequest: function(promise, options, endpoint?, promiseBody?) {
     return new Promise((resolve, reject) => {
-      let startTime = new Date().valueOf();
+      let startTime = Date.now();
       promise
         .then((reply) => {
           if (reply.status === 200 || reply.status === 204)

@@ -40,24 +40,24 @@ class SphereStateManagerClass {
       this.unsubscribeEvents.push(core.eventBus.on(sphereId + "_smartHomeState", (incomingSmartHomeState) => {
         // We set the state to BEHAVIOUR OFF, we then notice that it is not off somewhere.
         // What do we do??
-        if (this.smartHomeDesiredStates[sphereId] && this.smartHomeDesiredStates[sphereId].state !== incomingSmartHomeState && new Date().valueOf() - this.smartHomeDesiredStates[sphereId].timeSet > AFTER_INTENT_TIMEOUT) {
+        if (this.smartHomeDesiredStates[sphereId] && this.smartHomeDesiredStates[sphereId].state !== incomingSmartHomeState && Date.now() - this.smartHomeDesiredStates[sphereId].timeSet > AFTER_INTENT_TIMEOUT) {
 
         }
 
-        if (smartHomeEnabled !== incomingSmartHomeState && new Date().valueOf() - this.smartHomeChangedTime > AFTER_CHANGE_TIMEMOUT) {
+        if (smartHomeEnabled !== incomingSmartHomeState && Date.now() - this.smartHomeChangedTime > AFTER_CHANGE_TIMEMOUT) {
           core.store.dispatch({
             type: "SET_SPHERE_SMART_HOME_STATE",
             sphereId: sphereId,
             data: { smartHomeEnabled: incomingSmartHomeState }
           })
-          this.smartHomeChangedTime = new Date().valueOf();
+          this.smartHomeChangedTime = Date.now();
         }
       }))
     }
   }
 
   userSetSmartHomeState(sphereId, newState) {
-    this.smartHomeChangedTime = new Date().valueOf();
+    this.smartHomeChangedTime = Date.now();
     this.smartHomeDesiredStates[sphereId] = { state: newState, timeSet: this.smartHomeChangedTime };
 
     core.store.dispatch({

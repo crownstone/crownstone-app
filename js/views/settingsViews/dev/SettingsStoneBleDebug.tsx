@@ -64,7 +64,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       debugData1UI: 0,
       debugData2: null,
       debugData2UI: 0,
-      debugTimestamp: new Date().valueOf(),
+      debugTimestamp: Date.now(),
       debugDataHash: null,
       annotation: '',
       devOptionsVisible: false,
@@ -81,7 +81,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   _parseIBeacon(data : ibeaconPackage[]) {
     if (this._major === null && this._minor === null) {
-      this.setState({ibeaconPayload: xUtil.stringify(data, 2), ibeaconTimestamp: new Date().valueOf()});
+      this.setState({ibeaconPayload: xUtil.stringify(data, 2), ibeaconTimestamp: Date.now()});
       return
     }
 
@@ -90,7 +90,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       if (this._major && ibeacon.major !== this._major)                    { return; }
       if (this._minor && ibeacon.minor !== this._minor)                    { return; }
 
-      this.setState({ibeaconPayload: xUtil.stringify(ibeacon, 2), ibeaconTimestamp: new Date().valueOf()});
+      this.setState({ibeaconPayload: xUtil.stringify(ibeacon, 2), ibeaconTimestamp: Date.now()});
     })
   }
 
@@ -103,14 +103,14 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     if (data.serviceData.crownstoneId === this._crownstoneId || !this._crownstoneId) {
       newData['advertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
       newData["advertisementPayload"] = xUtil.stringify(data, 2);
-      newData["advertisementTimestamp"] = new Date().valueOf();
+      newData["advertisementTimestamp"] = Date.now();
       changes = true;
     }
 
     if (data.handle === this._handle || !this._handle) {
       newData['directAdvertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
       newData["directAdvertisementPayload"] = xUtil.stringify(data, 2);
-      newData["directAdvertisementTimestamp"] = new Date().valueOf();
+      newData["directAdvertisementTimestamp"] = Date.now();
       changes = true;
     }
 
@@ -690,7 +690,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     items.push({label: "Latest iBeacon data:", type: 'largeExplanation', style:{paddingTop:0}});
     items.push({__item:
       <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
-        <Text style={{padding:15, color: new Date().valueOf() - this.state.ibeaconTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.ibeaconPayload || "No Data"}</Text>
+        <Text style={{padding:15, color: Date.now() - this.state.ibeaconTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.ibeaconPayload || "No Data"}</Text>
       </View>
     });
     items.push({label: this.state.ibeaconTimestamp ? "Time received: " + new Date(this.state.ibeaconTimestamp) : "No data yet", type: 'explanation', below: true});
@@ -700,7 +700,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     items.push({label: "Latest Direct Advertisement data:", type: 'largeExplanation'});
     items.push({__item:
         <View style={{backgroundColor: this.state.directAdvertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
-          <Text style={{padding:15, color: new Date().valueOf() - this.state.directAdvertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.directAdvertisementPayload || "No Data"}</Text>
+          <Text style={{padding:15, color: Date.now() - this.state.directAdvertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.directAdvertisementPayload || "No Data"}</Text>
         </View>
     });
     items.push({label: this.state.directAdvertisementTimestamp ? "Time received: " + new Date(this.state.directAdvertisementTimestamp) : "No data yet", type: 'explanation', below: true});
@@ -709,7 +709,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     items.push({label: "Latest Applied Advertisement data:", type: 'largeExplanation'});
     items.push({__item:
         <View style={{backgroundColor: this.state.advertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
-          <Text style={{padding:15, color: new Date().valueOf() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.advertisementPayload || "No Data"}</Text>
+          <Text style={{padding:15, color: Date.now() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>{this.state.advertisementPayload || "No Data"}</Text>
         </View>
     });
     items.push({label: this.state.advertisementTimestamp ? "Time received: " + new Date(this.state.advertisementTimestamp) : "No data yet", type: 'explanation', below: true});

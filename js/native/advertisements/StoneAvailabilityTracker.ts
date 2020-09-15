@@ -75,7 +75,7 @@ class StoneAvailabilityTrackerClass {
     let rssiChangeSphereIds = {};
 
     let disabledSpheres = {};
-    let now = new Date().valueOf();
+    let now = Date.now();
 
     for (let i = 0; i < logStoneIds.length; i++) {
       let stoneId = logStoneIds[i];
@@ -187,7 +187,7 @@ class StoneAvailabilityTrackerClass {
       this.sphereLog[data.sphereId][data.stoneId] = {t: null, rssi: null, handle: null };
     }
 
-    let now = new Date().valueOf();
+    let now = Date.now();
     this.sphereLog[data.sphereId][data.stoneId].t = now;
     this.log[data.stoneId].t = now;
 
@@ -218,7 +218,7 @@ class StoneAvailabilityTrackerClass {
     let nearestRssi = -1000;
     let nearestId = null;
 
-    let timeThreshold = new Date().valueOf() - 1000 * inTheLastNSeconds;
+    let timeThreshold = Date.now() - 1000 * inTheLastNSeconds;
     for (let i = 0; i < ids.length; i++) {
       let item = this.log[ids[i]];
       if (item && item.handle && item.t >= timeThreshold && item.rssi > nearestRssi && (rssiThreshold === null || item.rssi > rssiThreshold)) {
@@ -236,7 +236,7 @@ class StoneAvailabilityTrackerClass {
     let nearestIds = [];
     let contenders = [];
 
-    let timeThreshold = new Date().valueOf() - 1000 * inTheLastNSeconds;
+    let timeThreshold = Date.now() - 1000 * inTheLastNSeconds;
     for (let i = 0; i < stoneIds.length; i++) {
       let item = this.log[stoneIds[i]];
       if (item) {
@@ -255,7 +255,7 @@ class StoneAvailabilityTrackerClass {
 
   getAvgRssi(stoneId) {
     if (this.log[stoneId]) {
-      if (new Date().valueOf() - this.log[stoneId].t < RSSI_TIMEOUT) {
+      if (Date.now() - this.log[stoneId].t < RSSI_TIMEOUT) {
         return this.log[stoneId].rssi || -1000;
       }
     }
@@ -264,7 +264,7 @@ class StoneAvailabilityTrackerClass {
 
   getRssi(stoneId) {
     if (this.log[stoneId]) {
-      if (new Date().valueOf() - this.log[stoneId].t < RSSI_TIMEOUT) {
+      if (Date.now() - this.log[stoneId].t < RSSI_TIMEOUT) {
         return this.log[stoneId].lastNotifiedRssi || -1000;
       }
     }
@@ -273,7 +273,7 @@ class StoneAvailabilityTrackerClass {
 
   isDisabled(stoneId) {
     if (this.log[stoneId]) {
-      if (new Date().valueOf() - this.log[stoneId].t < DISABLE_TIMEOUT) {
+      if (Date.now() - this.log[stoneId].t < DISABLE_TIMEOUT) {
         return false;
       }
     }

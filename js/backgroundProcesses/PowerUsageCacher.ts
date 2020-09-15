@@ -42,7 +42,7 @@ class PowerUsageCacherClass {
   processData(adv : crownstoneAdvertisement) {
     if (!adv.referenceId) { return };
 
-    let now = new Date().valueOf();
+    let now = Date.now();
 
     if (this.data[adv.referenceId]               === undefined) { this.data[adv.referenceId] = {};               }
     if (this.uniqueElements[adv.referenceId]     === undefined) { this.uniqueElements[adv.referenceId] = {};     }

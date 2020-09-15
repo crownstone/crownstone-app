@@ -59,7 +59,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
 
     this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
       if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false) {
-        let now = new Date().valueOf();
+        let now = Date.now();
         // throttling
         if (data.serviceData.uniqueElement === this.uniqueElement) {
           return;
@@ -86,7 +86,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
   }
 
   // __loadInitialDebugData() {
-  //   let now = new Date().valueOf();
+  //   let now = Date.now();
   //   for (let i = 50; i > 0; i--) {
   //     this.data.push({ x: now-i*1000, y: Math.max(0, Math.random() * 100) })
   //   }

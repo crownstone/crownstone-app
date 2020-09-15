@@ -15,7 +15,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     powerUsageReal            : Math.random()*300,
     powerUsageApparent        : Math.random()*300,
     accumulatedEnergy         : 0,
-    timestamp                 : new Date().valueOf()/1000,
+    timestamp                 : Date.now()/1000,
 
     // bitmask flags,
     dimmerReady               : true,

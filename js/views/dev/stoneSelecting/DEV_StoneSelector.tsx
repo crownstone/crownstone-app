@@ -223,7 +223,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     })
 
     if (newStone) {
-      let now = new Date().valueOf();
+      let now = Date.now();
 
       let minRedrawTime = 1000;
 
@@ -412,7 +412,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
   }
 
   render() {
-    this.lastRedraw = new Date().valueOf();
+    this.lastRedraw = Date.now();
 
     return (
       <Background image={core.background.light} hideNotifications={true}>
