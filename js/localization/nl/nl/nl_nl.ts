@@ -985,7 +985,7 @@ export default {
     },
     Create_my_Behaviour:                    function() { return "Maak een gedragsregel aan"; },
     Tap_the_underlined_parts_t:             function() { return "Klik op de onderstreepte teksten om ze aan te passen!"; },
-    Edit_Behaviour:                         function() { return "" + arguments[0] + ""; },
+    Edit_Behaviour:                         function() { return arguments[0] || "Gedrag Aanpassen" },
     Customize_my_Behaviour_:                function() { return "Pas mijn gedrag aan!"; },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor.tsx",
   },
