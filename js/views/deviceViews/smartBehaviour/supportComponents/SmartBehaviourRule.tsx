@@ -183,7 +183,7 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
     </View>
   )
 
-  if (props.editMode) {
+  if (props.editMode && showEditIcons) {
     return (
       <TouchableOpacity style={{flex:1}} onPress={editCallback}>
         {content}
