@@ -29,18 +29,7 @@ export class SettingsApp extends LiveComponent<any, any> {
   }
 
   unsubscribe : any;
-  initialKeepAliveState = false;
   triggerTapToToggleCalibration = false;
-
-  constructor(props) {
-    super(props);
-
-  }
-
-  _getKeepAliveState() {
-    let state = core.store.getState();
-    return state.app.indoorLocalizationEnabled && state.app.keepAlivesEnabled;
-  }
 
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
@@ -49,8 +38,6 @@ export class SettingsApp extends LiveComponent<any, any> {
         this.forceUpdate();
       }
     });
-
-    this.initialKeepAliveState = this._getKeepAliveState();
   }
 
   componentWillUnmount() {
@@ -109,7 +96,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       buttons: false,
       mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
                               buttonStyle={{ backgroundColor: colors.green.hex }}/>,
-      value: state.user.language || "en_us",
+      value: state.user.language || Languages.defaultLanguage,
       dropdownHeight: 130,
       items: dropDownItems,
       callback: (value) => {
