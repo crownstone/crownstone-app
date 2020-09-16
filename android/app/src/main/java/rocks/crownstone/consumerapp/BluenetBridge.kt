@@ -51,6 +51,11 @@ import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.*
 import rocks.crownstone.bluenet.util.Util.isBitSet
 import rocks.crownstone.localization.library.*
+import rocks.crownstone.localization.library.structs.Fingerprint
+import rocks.crownstone.localization.library.structs.FingerprintSamplesMap
+import rocks.crownstone.localization.library.structs.PredictionProbabilityLocation
+import rocks.crownstone.localization.library.structs.PredictionResult
+import rocks.crownstone.localization.library.util.LocalizationEvent
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.round
@@ -59,8 +64,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
 	private lateinit var bluenet: Bluenet
-	private val localization = FingerprintLocalization
-	private lateinit var initPromise: Promise<Unit, Exception>
+	private var bluenetInstantiated = false // Whether the bluenet object has been created.
+	private lateinit var initBluenetPromise: Promise<Unit, Exception> // Success when bluenet is initialized.
+	private val localization = FingerprintLocalization()
 	private lateinit var looper: Looper
 	private lateinit var handler: Handler
 
@@ -154,10 +160,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onBridgeHostResume() {
 		Log.i(TAG, "onHostResume")
 		appForeGround = true
-		if (::bluenet.isInitialized) {
+		initBluenetPromise.success {
 			bluenet.filterForCrownstones(true)
-			sendLocationStatus()
-			sendBleStatus()
+//			sendLocationStatus()
+//			sendBleStatus()
 		}
 	}
 
@@ -165,7 +171,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onBridgeHostPause() {
 		Log.i(TAG, "onHostPause")
 		appForeGround = false
-		if (::bluenet.isInitialized) {
+		initBluenetPromise.success {
 			bluenet.filterForCrownstones(false)
 		}
 	}
@@ -218,27 +224,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 	}
 
+	fun initBluenet() {
+		if (bluenetInstantiated) {
+			return
+		}
+		bluenetInstantiated = true
 
-
-//##################################################################################################
-//region           Generic
-//##################################################################################################
-
-	@ReactMethod
-	@Synchronized
-	fun rerouteEvents() {
-		// Start sending events to RN.
-		// Can be called before user is logged in.
-		// Called before isReady().
-		// Subscribe this class as listener for:
-		// - Scanned devices
-		// - Events
-		// - Location
-		// - Beacon
-		// - etc.
-		Log.i(TAG, "rerouteEvents")
-
-		startKovenant() // Start thread(s)
+		// Start promise thread(s)
+		startKovenant()
 
 //		handler = Handler()
 
@@ -259,10 +252,30 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		reactContext.addLifecycleEventListener(lifecycleEventListener)
 
-		initPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
-		initPromise.success {
-			// TODO: this might be called again when app opens.
-			Log.i(TAG, "initPromise success")
+		initBluenetPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
+		initLogger()
+		initBluenetPromise
+				.success {
+					// TODO: this might be called again when app opens.
+					Log.i(TAG, "initPromise success")
+				}
+				.fail {
+					Log.e(TAG, "initPromise failed: ${it.message}")
+				}
+		subscribeBluenetEvents()
+	}
+
+	fun initLogger() {
+		initBluenetPromise.success {
+			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
+			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
+			bluenet.setLogLevel(logLevel)
+			bluenet.setFileLogLevel(logLevelFile)
+		}
+	}
+
+	fun subscribeBluenetEvents() {
+		initBluenetPromise.success {
 			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
 			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
 			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
@@ -277,31 +290,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
 			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
 			bluenet.subscribe(BluenetEvent.SCAN_FAILURE,  { data: Any? -> onScanFailure(data as ScanStartFailure) })
-			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
-			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
-			bluenet.setLogLevel(logLevel)
-			bluenet.setFileLogLevel(logLevelFile)
 		}
-		initPromise
-				.success {
-//					val activity = reactContext.currentActivity
-//					if (activity != null) {
-//						bluenet.makeScannerReady(activity)
-//								.success {
-//
-//								}
-//								.fail {
-//									// Should never fail..
-//									Log.e(TAG, "makeScannerReady failed: ${it.message}")
-//								}
-//					}
-//					else {
-//						bluenet.tryMakeScannerReady(activity)
-//					}
-				}
-				.fail {
-					Log.e(TAG, "initPromise failed: ${it.message}")
-				}
+	}
+
+
+
+//##################################################################################################
+//region           Generic
+//##################################################################################################
+
+	@ReactMethod
+	@Synchronized
+	fun rerouteEvents() {
+		// Start sending events to RN.
+		// Can be called before user is logged in.
+		// Called before isReady().
+		// Subscribe this class as listener for:
+		// - Scanned devices
+		// - Events
+		// - Location
+		// - Beacon
+		// - etc.
+		Log.i(TAG, "rerouteEvents")
+		initBluenet()
 	}
 
 	@ReactMethod
@@ -340,7 +351,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun isPeripheralReady(callback: Callback) {
 		Log.i(TAG, "isPeripheralReady")
-		// Resolve when ready to advertise.
+		// Resolve when ready to broadcast.
 		resolveCallback(callback)
 	}
 
@@ -348,22 +359,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun viewsInitialized() {
 		Log.i(TAG, "viewsInitialized")
-		// All views have been initialized
-		// This means the missing bluetooth functions can now be shown.
-
-		// Try to make the scanner ready.
-		initPromise.success {
-			val activity = reactContext.currentActivity
-			bluenet.tryMakeScannerReady(activity)
-		}
-
-		if (::bluenet.isInitialized) {
-			sendLocationStatus()
-			sendBleStatus()
-		}
-		else {
-			Log.w(TAG, "Bluenet is not initialized yet.")
-		}
+		// All views have been initialized.
+		// But it might be at the login screen, so currently we wait for requestLocationPermission().
 	}
 
 	@ReactMethod
@@ -550,10 +547,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
 		// Should also ask for location services to be turned on.
+		// Always called when app starts.
 		// TODO: check if you can't continue the tutorial before giving or denying permission.
+		if (reactContext.currentActivity == null) {
+			Log.w(TAG, "No activity.")
+		}
 		val activity = reactContext.currentActivity ?: return
-//		bluenet.requestLocationPermission(activity)
-		bluenet.tryMakeScannerReady(activity)
+
+		initBluenetPromise.success {
+//			bluenet.requestLocationPermission(activity)
+			bluenet.tryMakeScannerReady(activity)
+			sendLocationStatus()
+			sendBleStatus()
+		}
 	}
 
 	private class CsLocationListener(val callback: Callback, val lastLocation: Location?): LocationListener {
@@ -1011,31 +1017,31 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
 		localization.startLocalization(localizationCallback)
-		localization.subscribe(LocalizationEvent.CLASSIFIERRESULT) { onClassifierResult(it as Map<String, Any?>) }
-		localization.subscribe(LocalizationEvent.CLASSIFIERPROBABILITIES) { onClassifierProbabilities(it as Map<String, Map<String, Number>>) }
+		localization.subscribe(LocalizationEvent.CLASSIFIER_RESULT) { onClassifierResult(it as PredictionResult) }
+		localization.subscribe(LocalizationEvent.CLASSIFIER_PREDICTION) { onClassifierPrediction(it as PredictionProbabilityLocation?) }
 	}
 
 	@Synchronized
-	private fun onClassifierResult(result: Map<String, Any?>) {
-		val location = result["highestPredictionLabel"] as rocks.crownstone.localization.library.Location
-		val predictionValue = result["highestPrediction"] as Double
-		val mapClassifierResult = Arguments.createMap().apply {
-			putString("highestPredictionLabel", location.roomId) //TODO: also pass sphereID?
-			putDouble("highestPrediction", predictionValue)
+	private fun onClassifierPrediction(prediction: PredictionProbabilityLocation?) {
+		if (prediction == null) {
+			return
 		}
-		sendEvent("classifierResult", mapClassifierResult)
+		val mapClassifierPrediction = Arguments.createMap().apply {
+			putString("highestPredictionLabel", prediction.location.roomId)
+			putDouble("highestPrediction", prediction.probability)
+		}
+		sendEvent("classifierResult", mapClassifierPrediction)
 	}
 
 	@Synchronized
-	private fun onClassifierProbabilities(probabilityReport: Map<String, Map<String, Number>>) {
+	private fun onClassifierResult(result: PredictionResult) {
 		val mapClassifierProbabilites = Arguments.createMap()
-
-		for ((locationId, data) in probabilityReport) {
+		for (prediction in result.allPredictions) {
 			val mapData = Arguments.createMap().apply {
-				putInt("sampleSize", data["sampleSize"] as Int)
-				putDouble("probability", data["probability"] as Double)
+				putInt("sampleSize", prediction.sampleSize)
+				putDouble("probability", prediction.probability)
 			}
-			mapClassifierProbabilites.putMap(locationId, mapData)
+			mapClassifierProbabilites.putMap(prediction.location.roomId, mapData)
 		}
 		sendEvent("classifierProbabilities", mapClassifierProbabilites)
 	}
