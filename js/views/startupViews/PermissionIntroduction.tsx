@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import { Languages } from "../../Languages";
 import { Interview } from "../components/Interview";
-import { Alert, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import {
   availableModalHeight,
   colors,
@@ -51,9 +51,18 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         options: [
           {
             label: "I understand",
-            nextCard: 'notifications',
             onSelect: (result) => {
-              return LocationHandler.initializeTracking().then(() => { return true; })
+              return LocationHandler.initializeTracking().then(() => {
+                if (Platform.OS === 'android') {
+                  if (this.props.showAi) {
+                    return 'ai'
+                  }
+                  core.eventBus.emit("userLoggedInFinished");
+                  NavigationUtil.setRoot(Stacks.loggedIn());
+                  return false;
+                }
+                return 'notifications';
+              })
             }
           },
         ]
@@ -72,10 +81,6 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
               NotificationHandler.request();
               if (this.props.showAi) {
                 return 'ai'
-              }
-              if (this.props.followThrough) {
-                this.props.followThrough();
-                return false;
               }
               core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn());
@@ -107,9 +112,6 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
                   [{text:lang("Sure!")}]
                 );
                 return false;
-              }
-              if (this.props.followThrough) {
-                return this.props.followThrough();
               }
               core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn())
