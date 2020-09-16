@@ -53,7 +53,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
             label: "I understand",
             nextCard: 'notifications',
             onSelect: (result) => {
-              return LocationHandler.initializeTracking()
+              return LocationHandler.initializeTracking().then(() => { return true; })
             }
           },
         ]

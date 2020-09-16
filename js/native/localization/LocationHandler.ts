@@ -46,6 +46,8 @@ class LocationHandlerClass {
     core.eventBus.on("reloadTracking", () => {
       this.reloadFingerprintTracking();
     })
+
+
   }
 
   init() {
@@ -347,11 +349,8 @@ class LocationHandlerClass {
    */
   trackSpheres() {
     LOG.info("LocationHandler: Track Spheres called.");
-    return BluenetPromiseWrapper.isReady()
-      .then(() => {
-        Bluenet.requestLocationPermission();
-        return BluenetPromiseWrapper.clearTrackedBeacons();
-      })
+    Bluenet.requestLocationPermission();
+    return BluenetPromiseWrapper.clearTrackedBeacons()
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
         const state = core.store.getState();
