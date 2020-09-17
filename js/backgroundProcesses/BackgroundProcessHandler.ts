@@ -51,6 +51,7 @@ import { ActiveSphereManager } from "./ActiveSphereManager";
 import { LocalizationMonitor } from "./LocalizationMonitor";
 import { Languages } from "../Languages";
 import { HeartbeatHandler } from "./HeartbeatHandler";
+import { OverlayManager } from "./OverlayManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -110,6 +111,8 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
+        OverlayManager.initStateOverlays()
+
         ActiveSphereManager.userIsLoggedIn = true;
 
         this.userLoggedIn = true;
