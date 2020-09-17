@@ -488,7 +488,9 @@ export class StoneEntity {
   handleAbilities(stone, advertisement : crownstoneAdvertisement) {
     let actions = [];
 
-    if (stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAllowed && stone.abilities.dimming.syncedToCrownstone) {
+    if (stone.abilities.dimming.syncedToCrownstone &&
+        (stone.abilities.dimming.enabled !== stone.abilities.dimming.enabledTarget ||
+          stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAllowed)) {
       actions.push({ type: "UPDATE_ABILITY_DIMMER", sphereId : this.sphereId, stoneId: this.stoneId, data: {
         enabled:       advertisement.serviceData.dimmingAllowed,
         enabledTarget: advertisement.serviceData.dimmingAllowed,
@@ -496,7 +498,9 @@ export class StoneEntity {
       actions.push({ type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
     }
 
-    if (stone.abilities.switchcraft.enabled !== advertisement.serviceData.switchCraftEnabled && stone.abilities.switchcraft.syncedToCrownstone) {
+    if (stone.abilities.switchcraft.syncedToCrownstone &&
+        (stone.abilities.switchcraft.enabled !== stone.abilities.switchcraft.enabledTarget ||
+         stone.abilities.switchcraft.enabled !== advertisement.serviceData.switchCraftEnabled)) {
       actions.push({ type: "UPDATE_ABILITY_SWITCHCRAFT", sphereId : this.sphereId, stoneId: this.stoneId, data: {
           enabled:       advertisement.serviceData.switchCraftEnabled,
           enabledTarget: advertisement.serviceData.switchCraftEnabled,
@@ -504,7 +508,9 @@ export class StoneEntity {
       actions.push({ type: "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
     }
 
-    if (stone.abilities.tapToToggle.enabled !== advertisement.serviceData.tapToToggleEnabled && stone.abilities.tapToToggle.syncedToCrownstone) {
+    if (stone.abilities.tapToToggle.syncedToCrownstone &&
+      (stone.abilities.tapToToggle.enabled !== stone.abilities.tapToToggle.enabledTarget ||
+        stone.abilities.tapToToggle.enabled !== advertisement.serviceData.tapToToggleEnabled)) {
       actions.push({ type: "UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId : this.sphereId, stoneId: this.stoneId, data: {
           enabled:       advertisement.serviceData.tapToToggleEnabled,
           enabledTarget: advertisement.serviceData.tapToToggleEnabled,
