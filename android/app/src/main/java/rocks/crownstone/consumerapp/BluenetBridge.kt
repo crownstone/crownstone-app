@@ -162,8 +162,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		appForeGround = true
 		initBluenetPromise.success {
 			bluenet.filterForCrownstones(true)
-//			sendLocationStatus()
-//			sendBleStatus()
+			// When the GUI is killed, but the app is still running,
+			// the GUI needs to get the location and BLE status when the GUI is opened again.
+			// Although we might be in login screen, this is unlikely.
+			sendLocationStatus()
+			sendBleStatus()
 		}
 	}
 
