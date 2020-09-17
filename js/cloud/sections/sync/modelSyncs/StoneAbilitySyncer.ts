@@ -67,6 +67,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
             actionType = "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD"
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+            enabled: ability_in_cloud.syncedToCrownstone ? ability_in_cloud.enabled : undefined,
             enabledTarget: ability_in_cloud.enabled,
             updatedAt: ability_in_cloud.updatedAt,
             ...softOnSpeedData
@@ -78,6 +79,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
             actionType = "UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD"
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+            enabled: ability_in_cloud.syncedToCrownstone ? ability_in_cloud.enabled : undefined,
             enabledTarget: ability_in_cloud.enabled,
             updatedAt: ability_in_cloud.updatedAt
           }});
@@ -98,6 +100,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
             rssiOffsetData["rssiOffset"] = rssiOffset;
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+            enabled: ability_in_cloud.syncedToCrownstone ? ability_in_cloud.enabled : undefined,
             enabledTarget: ability_in_cloud.enabled,
             updatedAt: ability_in_cloud.updatedAt,
             ...rssiOffsetData
