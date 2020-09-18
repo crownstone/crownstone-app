@@ -161,12 +161,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onHostResume")
 		appForeGround = true
 		initBluenetPromise.success {
-			bluenet.filterForCrownstones(true)
-			// When the GUI is killed, but the app is still running,
-			// the GUI needs to get the location and BLE status when the GUI is opened again.
-			// Although we might be in login screen, this is unlikely.
-			sendLocationStatus()
-			sendBleStatus()
+			handler.post {
+				bluenet.filterForCrownstones(true)
+				// When the GUI is killed, but the app is still running,
+				// the GUI needs to get the location and BLE status when the GUI is opened again.
+				// Although we might be in login screen, this is unlikely.
+				sendLocationStatus()
+				sendBleStatus()
+			}
 		}
 	}
 
@@ -175,7 +177,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onHostPause")
 		appForeGround = false
 		initBluenetPromise.success {
-			bluenet.filterForCrownstones(false)
+			handler.post {
+				bluenet.filterForCrownstones(false)
+			}
 		}
 	}
 
@@ -270,29 +274,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	fun initLogger() {
 		initBluenetPromise.success {
-			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
-			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
-			bluenet.setLogLevel(logLevel)
-			bluenet.setFileLogLevel(logLevelFile)
+			handler.post {
+				val logLevel = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
+				val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
+				bluenet.setLogLevel(logLevel)
+				bluenet.setFileLogLevel(logLevelFile)
+			}
 		}
 	}
 
 	fun subscribeBluenetEvents() {
 		initBluenetPromise.success {
-			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
-			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.SCAN_RESULT, { data: Any? -> onScan(data as ScannedDevice) })
-			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, { data: Any? -> onRegionEnter(data as IbeaconRegionEventData) })
-			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, { data: Any? -> onRegionExit(data as IbeaconRegionEventData) })
-			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, { data: Any? -> onIbeaconScan(data as ScannedIbeaconList) })
-//			bluenet.subscribe(BluenetEvent.NEAREST_STONE, { data: Any? -> onNearestStone() })
-//			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
-			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
-			bluenet.subscribe(BluenetEvent.SCAN_FAILURE,  { data: Any? -> onScanFailure(data as ScanStartFailure) })
+			handler.post {
+				bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
+				bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
+				bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
+				bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
+				bluenet.subscribe(BluenetEvent.BLE_TURNED_ON, { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
+				bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF, { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
+				bluenet.subscribe(BluenetEvent.SCAN_RESULT, { data: Any? -> onScan(data as ScannedDevice) })
+				bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, { data: Any? -> onRegionEnter(data as IbeaconRegionEventData) })
+				bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, { data: Any? -> onRegionExit(data as IbeaconRegionEventData) })
+				bluenet.subscribe(BluenetEvent.IBEACON_SCAN, { data: Any? -> onIbeaconScan(data as ScannedIbeaconList) })
+//				bluenet.subscribe(BluenetEvent.NEAREST_STONE, { data: Any? -> onNearestStone() })
+//				bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
+				bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
+				bluenet.subscribe(BluenetEvent.SCAN_FAILURE, { data: Any? -> onScanFailure(data as ScanStartFailure) })
+			}
 		}
 	}
 
@@ -558,10 +566,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val activity = reactContext.currentActivity ?: return
 
 		initBluenetPromise.success {
-//			bluenet.requestLocationPermission(activity)
-			bluenet.tryMakeScannerReady(activity)
-			sendLocationStatus()
-			sendBleStatus()
+			handler.post {
+//				bluenet.requestLocationPermission(activity)
+				bluenet.tryMakeScannerReady(activity)
+				sendLocationStatus()
+				sendBleStatus()
+			}
 		}
 	}
 
