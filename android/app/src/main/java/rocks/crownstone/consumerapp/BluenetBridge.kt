@@ -2228,12 +2228,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 			if (!behaviourActionMap.hasKey("data")) { throw Exception("No action data") }
 			val switchValDouble = behaviourActionMap.getDouble("data")
-//			val switchVal = convertSwitchVal(switchValDouble)
-			// Changed to 0-100
-			var switchValInt = switchValDouble.toInt()
-			if (switchValInt > 100) { switchValInt = 100 }
-			else if (switchValInt < 0) { switchValInt = 0 }
-			val switchVal = switchValInt.toUint8()
+			val switchVal = convertSwitchVal(switchValDouble)
 
 			val timeMap = behaviourData.getMap("time") ?: throw Exception("No time")
 			val time = parseBehaviourTime(timeMap, dayStartOffset)
@@ -2340,9 +2335,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			true -> map.putString("type", "DIM_WHEN_TURNED_ON")
 			false -> map.putString("type", "BE_ON")
 		}
-//		map.putDouble("data", convertSwitchVal(switchVal))
-		// Changed to 0-100
-		map.putDouble("data", switchVal.toDouble())
+		map.putDouble("data", convertSwitchVal(switchVal))
 		return map
 	}
 
@@ -3390,11 +3383,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	 */
 	private fun convertSwitchVal(switchVal: Double): Uint8 {
 		var switchValInt = 0
-		if (switchVal >= 1.0) {
+		if (switchVal >= 100.0) {
 			switchValInt = 100
 		}
 		else if (switchVal > 0) {
-			switchValInt = Math.round(switchVal * 100).toInt()
+			switchValInt = Math.round(switchVal).toInt()
 		}
 		return Conversion.toUint8(switchValInt)
 	}
@@ -3403,7 +3396,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	 * Convert switch value (0-100) to 0.0 .. 100.0 value.
 	 */
 	private fun convertSwitchVal(switchVal: Uint8): Double {
-		return switchVal.toDouble() / 100
+		return switchVal.toDouble()
 	}
 
 	/**
