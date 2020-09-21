@@ -57,9 +57,10 @@ const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 
 class BackgroundProcessHandlerClass {
-  started : boolean = false;
-  userLoggedIn : boolean = false;
-  storePrepared : boolean = false;
+  started               : boolean = false;
+  userLoggedIn          : boolean = false;
+  userLoggedInReady     : boolean = false;
+  storePrepared         : boolean = false;
   connectionPopupActive : boolean = false;
 
   cancelPauseTrackingCallback = null;
@@ -115,7 +116,7 @@ class BackgroundProcessHandlerClass {
 
         ActiveSphereManager.userIsLoggedIn = true;
 
-        this.userLoggedIn = true;
+        this.userLoggedInReady = true;
 
         // pass the store to the singletons
         LOG.info("BackgroundProcessHandler: Starting singletons.");
@@ -391,7 +392,6 @@ class BackgroundProcessHandlerClass {
     core.store = StoreManager.getStore();
     base_core.store = StoreManager.getStore();
     let state = core.store.getState();
-
     // if we have an accessToken, we proceed with logging in automatically
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.

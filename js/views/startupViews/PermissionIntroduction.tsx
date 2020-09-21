@@ -27,6 +27,7 @@ import { NotificationHandler } from "../../backgroundProcesses/NotificationHandl
 import { randomAiName } from "./AiStart";
 import { ScaledImage } from "../components/ScaledImage";
 import { Icon } from "../components/Icon";
+import { Util } from "../../util/Util";
 
 
 export class PermissionIntroduction extends LiveComponent<any, any> {
@@ -40,26 +41,41 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
   componentWillUnmount(): void {
   }
 
+  _checkAI() {
+    let state = core.store.getState();
+    let showAI = false;
+    if (state.user.isNew !== false) {
+      let sphereIds = Object.keys(state.spheres);
+      // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
+      if (sphereIds.length === 1) {
+        if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiName) {
+          showAI = true;
+        }
+      }
+    }
+
+    if (showAI) {
+      return 'ai'
+    }
+    core.eventBus.emit("userLoggedInFinished");
+    NavigationUtil.setRoot(Stacks.loggedIn());
+    return false;
+  }
 
   getCards() : interviewCards {
     return {
       start: {
-        header: "Let's talk Data!",
-        subHeader: "Crownstone collects location data to enable indoor localization even when the app is closed or not in use.",
-        explanation: "Localization can turn on your lights when you enter the room, even if your phone is in your pocket!\n\nWe use Crownstone's Bluetooth signals to determine where in the house you are.",
+        header: lang("Lets_talk_Data_"),
+        subHeader: lang("Crownstone_collects_locat"),
+        explanation: lang("Localization_can_turn_on_"),
         optionsBottom: true,
         options: [
           {
-            label: "I understand",
+            label: lang("I_understand"),
             onSelect: (result) => {
               return LocationHandler.initializeTracking().then(() => {
                 if (Platform.OS === 'android') {
-                  if (this.props.showAi) {
-                    return 'ai'
-                  }
-                  core.eventBus.emit("userLoggedInFinished");
-                  NavigationUtil.setRoot(Stacks.loggedIn());
-                  return false;
+                  return this._checkAI();
                 }
                 return 'notifications';
               })
@@ -68,31 +84,26 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         ]
       },
       notifications: {
-        header: "Can we ask you something?",
+        header: lang("Can_we_ask_you_something_"),
         backgroundImage: require("../../images/backgrounds/assistants.jpg"),
-        subHeader: "We use notifications switch your Crownstones from the cloud, like for your voice assistants!",
-        explanation: "We also use them to quickly update your app!",
+        subHeader: lang("We_use_notifications_switc"),
+        explanation: lang("We_also_use_them_to_quick"),
         optionsBottom: true,
         options: [
           {
-            label: "Sounds fair",
+            label: lang("Sounds_fair"),
             onSelect: (result) => {
               LOG.info("Sync: Requesting notification permissions during Login.");
               NotificationHandler.request();
-              if (this.props.showAi) {
-                return 'ai'
-              }
-              core.eventBus.emit("userLoggedInFinished");
-              NavigationUtil.setRoot(Stacks.loggedIn());
-              return false;
+              return this._checkAI();
             }
           },
         ]
       },
       ai: {
-        header: "Let me introduce myself!",
+        header: lang("Let_me_introduce_myself_"),
         backgroundImage: require("../../images/backgrounds/lightBackground2_blur.jpg"),
-        subHeader: "I'm your new smart home!\n\nWhat would you like to call me?",
+        subHeader: lang("Im_your_new_smart_home__n"),
         component: <View style={{...styles.centered, flex:1}}>
             <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
           </View>,
@@ -101,18 +112,23 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "Nice to meet you!",
+            label: lang("Nice_to_meet_you_"),
             nextCard: 'allSet',
             onSelect: (result) => {
               let name = result.textfieldState.trim();
               if (name.length === 0) {
                 Alert.alert(
-                  lang("I'd really like a name..."),
-                  lang("Could you give me one?"),
-                  [{text:lang("Sure!")}]
+                  lang(lang("Id_really_like_a_name___")),
+                  lang(lang("Could_you_give_me_one_")),
+                  [{text:lang(lang("Sure_"))}]
                 );
                 return false;
               }
+              let state = core.store.getState();
+              let sphereIds = Object.keys(state.spheres);
+              core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+              core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereIds[0], data: {aiName: this.state.aiName}});
+
               core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn())
             }

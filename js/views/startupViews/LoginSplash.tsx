@@ -31,7 +31,14 @@ let versionStyle : TextStyle = {
 };
 
 export class LoginSplash extends Component<any, any> {
+  componentDidAppear() {
+    console.log("LoginSplash Appeared")
+  }
+
+  componentDidDisappear() { console.log("LoginSplash Disappeared") }
+
   render() {
+    console.log("LoginSplash render")
     let factor = 0.25;
 
     return (

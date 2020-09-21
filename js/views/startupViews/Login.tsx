@@ -39,6 +39,7 @@ import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
 import { base_core } from "../../base_core";
 import * as Sentry from "@sentry/react-native";
+import { BackgroundProcessHandler } from "../../backgroundProcesses/BackgroundProcessHandler";
 
 export class Login extends Component<any, any> {
   progress : number;
@@ -52,6 +53,12 @@ export class Login extends Component<any, any> {
     this.state = {email: base_core.sessionMemory.loginEmail || '', password:'', passwordSecureDisplay: true};
     this.progress = 0;
   }
+
+  componentDidAppear() {
+    console.log("Login Appeared")
+  }
+
+  componentDidDisappear() { console.log("Login Disappeared") }
 
   resetPopup() {
     if (emailChecker(this.state.email) === false) {
@@ -444,6 +451,7 @@ lang("arguments___arguments___O_body",content),
 
         // finalize the login due to successful download of data. Enables persistence.
         StoreManager.finalizeLogIn(userId).catch(() => {});
+        BackgroundProcessHandler.userLoggedIn = true;
 
         let state = store.getState();
         if (state.user.isNew !== false) {
@@ -462,29 +470,7 @@ lang("arguments___arguments___O_body",content),
           state = store.getState();
           core.eventBus.emit('hideProgress');
 
-          let goToPermissions = () => {
-            NavigationUtil.setRoot(Stacks.permissions());
-          };
-          if (state.user.isNew !== false) {
-            let sphereIds = Object.keys(state.spheres);
-
-            // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
-            if (sphereIds.length === 1) {
-              if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiSex) {
-                NavigationUtil.setRoot(Stacks.permissions({sphereId: sphereIds[0], showAi: true}));
-              }
-              else {
-                goToPermissions();
-              }
-              return;
-            }
-            else {
-              goToPermissions();
-            }
-          }
-          else {
-            goToPermissions();
-          }
+          NavigationUtil.setRoot(Stacks.permissions());
         }, 100);
       })
       .catch((err) => {

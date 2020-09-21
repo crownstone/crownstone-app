@@ -1,6 +1,7 @@
 import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
 import * as Sentry from "@sentry/react-native";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
+import { core } from "../core";
 
 const BASE_TAB_NAME = "BASE_TAB";
 
@@ -496,6 +497,7 @@ export let topBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
+  core.eventBus.emit("VIEW_DID_APPEAR", componentId);
   if (topBarComponentNames.indexOf(componentName) === -1) {
     LOGi.nav("VIEW DID APPEAR", componentId, componentName);
     if (tabBarComponentNames.indexOf(componentName) !== -1) {
@@ -507,6 +509,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
+  core.eventBus.emit("VIEW_DID_DISAPPEAR", componentId);
   LOGi.nav("VIEW DID DISAPPEAR", componentId, componentName)
 });
 
@@ -562,24 +565,28 @@ export const NavigationUtil = {
   },
 
   setRoot(rootStack : StackData) {
-    addSentryLog("rootStack", "stack");
-    // reset the NavState
-    NavState.setRoot();
+    // we add a timeout to ensure that there are no raceconditions when
+    setTimeout(() => {
+      addSentryLog("rootStack", "stack");
 
-    LOGi.nav("----------------------_____SET ROOT", rootStack);
-    // check if we have a tabBar setup.
-    tabBarComponentNames = [];
-    loadNamesFromStack(rootStack);
-    if (tabBarComponentNames.length === 0) {
-      NavState.setBaseTab();
-    }
-    else {
-      NavState.prepareTabs(tabBarComponentNames);
-    }
+      // reset the NavState
+      NavState.setRoot();
 
-    LOGi.nav("This is the tabBarComponentNames", tabBarComponentNames);
+      LOGi.nav("----------------------_____SET ROOT", rootStack);
+      // check if we have a tabBar setup.
+      tabBarComponentNames = [];
+      loadNamesFromStack(rootStack);
+      if (tabBarComponentNames.length === 0) {
+        NavState.setBaseTab();
+      }
+      else {
+        NavState.prepareTabs(tabBarComponentNames);
+      }
 
-    Navigation.setRoot({ root: rootStack });
+      LOGi.nav("This is the tabBarComponentNames", tabBarComponentNames);
+
+      Navigation.setRoot({ root: rootStack });
+    }, 25);
   },
 
 

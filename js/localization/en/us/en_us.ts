@@ -384,7 +384,6 @@ export default {
   DeviceEntry:{
     __filename: "../js/views/components/deviceEntries/DeviceEntry.tsx",
     Tap_me_for_more_:                       function() { return "Tap me for more!" },
-    Sent_via_mesh_:                         function() { return "Sent via mesh!" },
     Tap_icon_to_quickly_dim_y:              function() { return "Tap icon to quickly dim your lights!" },
   },
   DeviceEntrySubText:{
@@ -1146,6 +1145,22 @@ export default {
   OverlayUtil:{
     __filename: "../../js/views/overlays/OverlayUtil.tsx",
     Select_Room:                            function() { return "Select Room" },
+  },
+  PermissionIntroduction:{
+    Lets_talk_Data_:                        function() { return "Let's talk Data!" },
+    Crownstone_collects_locat:              function() { return "Crownstone collects location data to enable indoor localization even when the app is closed or not in use." },
+    Localization_can_turn_on_:              function() { return "Localization can turn on your lights when you enter the room, even if your phone is in your pocket!\n\nWe use Crownstone's Bluetooth signals to determine where in the house you are." },
+    I_understand:                           function() { return "I understand" },
+    Can_we_ask_you_something_:              function() { return "Can we ask you something?" },
+    We_use_notifications_switc:             function() { return "We use notifications switch your Crownstones from the cloud, like for your voice assistants!" },
+    We_also_use_them_to_quick:              function() { return "We also use them to quickly update your app!" },
+    Sounds_fair:                            function() { return "Sounds fair" },
+    Let_me_introduce_myself_:               function() { return "Let me introduce myself!" },
+    Im_your_new_smart_home__n:              function() { return "I'm your new smart home!\n\nWhat would you like to call me?" },
+    Nice_to_meet_you_:                      function() { return "Nice to meet you!" },
+    Id_really_like_a_name___:               function() { return "I'd really like a name..." },
+    Could_you_give_me_one_:                 function() { return "Could you give me one?" },
+    Sure_:                                  function() { return "Sure!" },
   },
   PictureCircle:{
     __filename: "../js/views/components/PictureCircle.tsx",
@@ -2254,15 +2269,11 @@ export default {
   },
   SphereIntegrations:{
     __filename: "../js/views/main/editSubviews/SphereIntegrations.tsx",
-    _Working_on_it___Support__header:       function() { return "Working on it!" },
-    _Working_on_it___Support__body:         function() { return "Support for Philips Hue will be added in a future update." },
-    _Working_on_it___Support__left:         function() { return "OK" },
     Here_you_can_integrate_wi:              function() { return "Here you can integrate with different services. We\'re hard at work to add more!" },
     Thermostats_:                           function() { return "Thermostats:" },
     Smart_assistants:                       function() { return "Smart assistants:" },
     Toon:                                   function() { return "Toon" },
     Amazon_Alexa:                           function() { return "Amazon Alexa" },
-    Coming_Soon_:                           function() { return "Coming soon:" },
     Philips_Hue:                            function() { return "Philips Hue" },
     Integrations:                           function() { return "Integrations" },
   },

@@ -104,6 +104,7 @@ class StoreManagerClass {
   finalizeLogIn(userId) {
     // write to database that we are logged in.
     return AsyncStorage.setItem(LOGGED_IN_USER_ID_STORAGE_KEY, userId)
+      .then((result) => { console.log("Stored logged in state", userId) })
       .catch((err) => {
         LOGe.store("StoreManager: finalize login failed. ", err);
       })

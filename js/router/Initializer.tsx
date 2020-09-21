@@ -21,7 +21,9 @@ export class Initializer extends Component<any, any> {
 
     // initialize the views to tell android lib we are starting the UI.
     Bluenet.viewsInitialized();
+  }
 
+  componentDidMount() {
     let startUp = () => {
       if (Platform.OS === "android") {
         SplashScreen.hide();
@@ -37,8 +39,12 @@ export class Initializer extends Component<any, any> {
         core.eventBus.emit("userLoggedInFinished");
       }
 
-      if (BackgroundProcessHandler.userLoggedIn) {
+
+      if (BackgroundProcessHandler.userLoggedInReady) {
         NavigationUtil.setRoot(Stacks.loggedIn());
+      }
+      else if (BackgroundProcessHandler.userLoggedIn) {
+        NavigationUtil.setRoot(Stacks.permissions());
       }
       else {
         NavigationUtil.setRoot(Stacks.newUser());
