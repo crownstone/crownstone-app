@@ -294,7 +294,7 @@ class BackgroundProcessHandlerClass {
 
 
   _applyAppStateOnCaching(appState) {
-    if (appState === "active" && this.userLoggedIn) {
+    if (appState === "active" && this.userLoggedInReady) {
       PowerUsageCacher.start();
     }
     else if (appState === 'background') {
@@ -305,7 +305,7 @@ class BackgroundProcessHandlerClass {
 
   _applyAppStateOnScanning(appState) {
     // in the foreground: start scanning!
-    if (appState === "active" && this.userLoggedIn) {
+    if (appState === "active" && this.userLoggedInReady) {
       BatterySavingUtil.startNormalUsage();
 
       // clear all mesh network ids in all spheres on opening the app.
@@ -353,7 +353,7 @@ class BackgroundProcessHandlerClass {
   }
 
   _applyAppStateOnActiveSphere(appState) {
-    if (appState === "active" && this.userLoggedIn) {
+    if (appState === "active" && this.userLoggedInReady) {
       ActiveSphereManager.onScreen()
     }
     else if (appState === 'background') {
@@ -369,7 +369,7 @@ class BackgroundProcessHandlerClass {
   startBluetoothListener() {
     // Ensure we start scanning when the bluetooth module is powered on.
     core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
-      if (this.userLoggedIn && status === 'poweredOn') {
+      if (this.userLoggedInReady && status === 'poweredOn') {
         BatterySavingUtil.startNormalUsage();
       }
     });
@@ -425,7 +425,7 @@ class BackgroundProcessHandlerClass {
             AppUtil.logOut(core.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         });
-      this.userLoggedIn = true;
+      this.userLoggedInReady = true;
 
       migrate();
 

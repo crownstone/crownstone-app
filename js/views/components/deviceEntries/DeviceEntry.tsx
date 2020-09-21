@@ -11,7 +11,7 @@ import {
   Switch,
   TouchableOpacity,
   Text,
-  View, ViewStyle, PanResponder
+  View, ViewStyle, PanResponder, Platform
 } from "react-native";
 
 import { Icon } from '../Icon';
@@ -318,11 +318,11 @@ export class DeviceEntry extends Component<any, any> {
                       this.props.toggleScrollView(true);
                     }}
                     minimumTrackTintColor={colors.green.rgba(0.75)}
-                    maximumTrackTintColor={colors.black.rgba(0.05)}
+                    maximumTrackTintColor={Platform.OS === 'android' ? colors.black.rgba(0.25) : colors.black.rgba(0.05) }
                     onValueChange={(value) => { this._switch(stone, value); this.setState({percentage: value})}}
                   />
-                  <View style={{position:'absolute', top:-10, left:0,  height:60, width: Math.max(0,(sliderWidth-30)* 0.01*  this.state.percentage) }} />
-                  <View style={{position:'absolute', top:-10, right:0, height:60, width: Math.max(0,(sliderWidth-30)*(1-0.01*this.state.percentage))}} />
+                  <View style={{position:'absolute', top:-10, left:0,  height:60, width: Math.max(0,(sliderWidth-30)* 0.01*  this.state.percentage) , backgroundColor:"transparent"}} />
+                  <View style={{position:'absolute', top:-10, right:0, height:60, width: Math.max(0,(sliderWidth-30)*(1-0.01*this.state.percentage)), backgroundColor:"transparent"}} />
                 </View>
               </SlideFadeInView>
             </View>
