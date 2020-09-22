@@ -17,6 +17,8 @@ class BroadcastStateManagerClass {
 
   _locationUidInLocationState = 0;
 
+  _presentLocationInSphere = {};
+
   init() {
     // set event listener on:
     // - the tap to toggle change
@@ -55,11 +57,13 @@ class BroadcastStateManagerClass {
       }));
 
       this._listeners.push(core.eventBus.on("exitSphere", (exitSphereId) => {
+        delete this._presentLocationInSphere[exitSphereId]
         LOGi.info("BroadcastStateManager: processing exit sphere");
         this._handleExitSphere(exitSphereId);
       }));
 
       this._listeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {// data = {region: sphereId, location: locationId}
+        this._presentLocationInSphere[data.region] = data.location;
         LOGi.info("BroadcastStateManager: processing enter room in sphere", data.region, " location", data.location);
         this._handleEnter(data.region, data.location);
         TrackingNumberManager.updateMyDeviceTrackingRegistration(data.region);
@@ -96,13 +100,15 @@ class BroadcastStateManagerClass {
     // if there are 0 active spheres, we dont care what the user does. Stop broadcasting.
     if (amountOfPresentSpheres === 0) {
       if (activeSphereData.sphereId !== null) {
-        return this._updateLocationState(activeSphereData.sphereId);
+        let locationId = this._presentLocationInSphere[activeSphereData.sphereId] || null;
+        return this._updateLocationState(activeSphereData.sphereId, locationId);
       }
       return this._stopAdvertising();
     }
     else if (amountOfPresentSpheres === 1) {
       if (presentSphere.sphereId) {
-        this._updateLocationState(presentSphere.sphereId);
+        let locationId = this._presentLocationInSphere[presentSphere.sphereId] || null;
+        this._updateLocationState(presentSphere.sphereId, locationId);
       }
     }
     else {
@@ -111,7 +117,8 @@ class BroadcastStateManagerClass {
       }
       else {
         // the sphere we navigated to is present, and there are more than 1 present spheres:
-        this._updateLocationState(activeSphereData.sphereId);
+        let locationId = this._presentLocationInSphere[activeSphereData.sphereId] || null;
+        this._updateLocationState(activeSphereData.sphereId, locationId);
       }
     }
   }
