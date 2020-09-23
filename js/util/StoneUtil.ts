@@ -17,6 +17,7 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { BEHAVIOUR_TYPES } from "../router/store/reducers/stoneSubReducers/rules";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { xUtil } from "./StandAloneUtil";
+import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 
 export const StoneUtil = {
   switchBCH: function (
@@ -69,7 +70,8 @@ export const StoneUtil = {
     attempts : number = 1,
     label : string = 'from StoneUtil'
   ) {
-    let data = {state: 1};
+    let expectedState = AicoreUtil.getActiveTurnOnPercentage(sphereId, stone)
+    let data = {state: expectedState};
 
     BatchCommandHandler.loadPriority(
       stone,

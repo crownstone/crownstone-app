@@ -171,7 +171,7 @@ export class SetupHelper {
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
                 stoneId: localId,
-                data: { state: canSwitch ? 1 : 0, currentUsage: 0 },
+                data: { state: canSwitch ? 100 : 0, currentUsage: 0 },
               });
 
               if (this.storeCrownstone === true) {

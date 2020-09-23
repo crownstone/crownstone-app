@@ -162,7 +162,7 @@ export class DeviceEntry extends Component<any, any> {
     let action = null;
     if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
       if (stone.errors.hasError) {
-        content = <Switch value={stone.state.state === 1} disabled={true} />;
+        content = <Switch value={stone.state.state > 0} disabled={true} />;
         action = () => { this._basePressed(); }
       }
       else if (stone.config.locked) {
