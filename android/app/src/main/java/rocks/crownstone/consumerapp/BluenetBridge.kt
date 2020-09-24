@@ -563,7 +563,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (reactContext.currentActivity == null) {
 			Log.w(TAG, "No activity.")
 		}
-		val activity = reactContext.currentActivity ?: return
+//		val activity = reactContext.currentActivity ?: return
+		val activity = reactContext.currentActivity
 
 		initBluenetPromise.success {
 			handler.post {
