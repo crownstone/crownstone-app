@@ -78,9 +78,6 @@ export class DfuScanning extends LiveComponent<any, any> {
     }
   }
 
-  componentDidAppear()    { KeepAwake.activate();   }
-  componentDidDisappear() { KeepAwake.deactivate(); }
-
   componentDidMount() {
     this.startScanning();
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -266,7 +263,6 @@ export class DfuScanning extends LiveComponent<any, any> {
 
 
 
-
   render() {
     this.stateMap    = {};
     this.stoneIdsToUpdate = [];
@@ -274,7 +270,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
-        <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { this.startScanning(); }} onBlur={ () => { this.stopScanning(); }} />
+        <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <ScanningForDFUCrownstonesBanner height={110} componentId={this.props.componentId} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>

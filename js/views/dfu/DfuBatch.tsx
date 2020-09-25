@@ -24,6 +24,7 @@ import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrowns
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { LiveComponent } from "../LiveComponent";
+import { ViewStateWatcher } from "../components/ViewStateWatcher";
 
 const CLASSNAME = "DFU_BATCH";
 export class DfuBatch extends LiveComponent<any, any> {
@@ -47,8 +48,6 @@ export class DfuBatch extends LiveComponent<any, any> {
     };
   }
 
-  componentDidAppear()    { KeepAwake.activate();   }
-  componentDidDisappear() { KeepAwake.deactivate(); }
 
   componentDidMount(): void {
     BackButtonHandler.override(CLASSNAME, () => { Alert.alert(
@@ -198,6 +197,7 @@ export class DfuBatch extends LiveComponent<any, any> {
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
+        <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
           <View style={{...styles.centered, flex:1, height: 110}}>

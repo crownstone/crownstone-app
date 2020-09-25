@@ -32,7 +32,7 @@ class BluenetManager {
         self.listOfCrownstones = SortedCrownstoneCollection()
         self.unsubscribeArray = [voidCallback]()
 
-        bluenet.setDevicePreferences(rssiOffset: 0, tapToToggle: false, ignoreForBehaviour: true, useBackgroundBroadcasts: false, useBaseBroadcasts: false)
+        bluenet.setDevicePreferences(rssiOffset: 0, tapToToggle: false, ignoreForBehaviour: true, useBackgroundBroadcasts: false, useBaseBroadcasts: false, useTimeBasedNonce: false)
     }
     
     public func subscribeEvents() {

@@ -132,7 +132,7 @@ RCT_EXTERN_METHOD(broadcastExecute)
 
 // set states for broadcast
 RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileId:(nonnull NSNumber *)profileId deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)
-RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle ignoreForBehaviour:(nonnull NSNumber *)ignoreForBehaviour randomDeviceToken:(nonnull NSNumber *)randomDeviceToken)
+RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle ignoreForBehaviour:(nonnull NSNumber *)ignoreForBehaviour randomDeviceToken:(nonnull NSNumber *)randomDeviceToken useTimeBasedNonce:(nonnull NSNumber *)useTimeBasedNonce)
 
 RCT_EXTERN_METHOD(canUseDynamicBackgroundBroadcasts:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(registerTrackedDevice:

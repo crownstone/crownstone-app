@@ -707,14 +707,15 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.watchStateManager.loadState("locationState", ["sphereUID":sphereUID, "locationId":locationId, "profileIndex": profileId, "deviceToken": deviceToken, "referenceId": referenceId])
   }
   
-  @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber, ignoreForBehaviour: NSNumber, randomDeviceToken: NSNumber) {
-    LOGGER.info("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour) \(randomDeviceToken)")
+  @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber, ignoreForBehaviour: NSNumber, randomDeviceToken: NSNumber, useTimeBasedNonce: NSNumber) {
+    LOGGER.info("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour) \(randomDeviceToken) \(useTimeBasedNonce)")
     GLOBAL_BLUENET.bluenet.setDevicePreferences(
       rssiOffset: rssiOffset.int8Value,
       tapToToggle: tapToToggle.boolValue,
       ignoreForBehaviour: ignoreForBehaviour.boolValue,
       useBackgroundBroadcasts: true,
       useBaseBroadcasts: true,
+      useTimeBasedNonce: useTimeBasedNonce.boolValue,
       trackingNumber: randomDeviceToken.uint32Value
     );
   }

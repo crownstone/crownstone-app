@@ -11,7 +11,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
   ___shouldForceUpdate = false;
   ___hasOverriddenUnmount = false;
   ___navListener = null;
-
+  ___eventListeners = [];
 
   constructor(props) {
     super(props);
@@ -30,6 +30,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
         unmounter.call(this)
       }
     }
+
 
     // this.render = () => {
     //   // @ts-ignore
@@ -80,6 +81,10 @@ export class LiveComponent<a, b> extends Component<a, b> {
   ___cleanup() {
     if (this.___navListener) {
       this.___navListener.remove();
+    }
+
+    if (this.___eventListeners.length > 0) {
+      this.___eventListeners.forEach((unsubscribe) => { unsubscribe() })
     }
 
     if (this.___subscribedToAppState) {

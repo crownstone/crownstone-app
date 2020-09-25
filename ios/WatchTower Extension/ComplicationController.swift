@@ -146,6 +146,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         case .graphicRectangular:
             print("graphicRectangular")
             template = nil
+        case .graphicExtraLarge:
+            template = nil
         }
         
         print("loading tamplate into the handler", template)

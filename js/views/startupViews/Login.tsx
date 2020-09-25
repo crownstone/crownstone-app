@@ -54,11 +54,6 @@ export class Login extends Component<any, any> {
     this.progress = 0;
   }
 
-  componentDidAppear() {
-    console.log("Login Appeared")
-  }
-
-  componentDidDisappear() { console.log("Login Disappeared") }
 
   resetPopup() {
     if (emailChecker(this.state.email) === false) {
