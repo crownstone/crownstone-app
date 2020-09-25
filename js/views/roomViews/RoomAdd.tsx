@@ -34,7 +34,7 @@ export class RoomAdd extends LiveComponent<any, any> {
       <Background fullScreen={true} image={core.background.lightBlur} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: colors.black.hex}}
-          left={Platform.OS === 'android' ? null : "Back"}
+          left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._roomAddCoreReference.canGoBack() === false) {
             if (this.props.isModal !== false) {
               NavigationUtil.dismissModal();

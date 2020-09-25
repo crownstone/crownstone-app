@@ -278,7 +278,7 @@ class BroadcastStateManagerClass {
 
   _reloadDevicePreferences() {
     let preferences = DataUtil.getDevicePreferences();
-    LOGi.info("Bluenet.setDevicePreferences", preferences.rssiOffset, preferences.tapToToggleEnabled, preferences.ignoreForBehaviour, preferences.randomDeviceToken, preferences.activeRandomDeviceToken, AppState.currentState);
+    LOGi.info("Bluenet.setDevicePreferences", preferences.rssiOffset, preferences.tapToToggleEnabled, preferences.ignoreForBehaviour, preferences.randomDeviceToken, preferences.activeRandomDeviceToken, preferences.useTimeBasedNonce, AppState.currentState);
 
 
     // if the active token is not the same as the random token and we have the possibility to change it (app is active (on screen))
@@ -292,7 +292,8 @@ class BroadcastStateManagerClass {
       preferences.rssiOffset,
       preferences.tapToToggleEnabled,
       preferences.ignoreForBehaviour,
-      preferences.randomDeviceToken
+      preferences.randomDeviceToken,
+      preferences.useTimeBasedNonce
     );
   }
 

@@ -25,6 +25,7 @@ let defaultState = {
   firmwareEarlyAccessLevel: 0,
 
   show_sync_button_in_behaviour: false,
+  use_time_based_nonce: false,
 
   devAppVisible: false,
 
@@ -65,6 +66,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_nav =            update(action.data.log_nav,            newState.log_nav);
         newState.preview =            update(action.data.preview,            newState.preview);
         newState.show_sync_button_in_behaviour = update(action.data.show_sync_button_in_behaviour, newState.show_sync_button_in_behaviour);
+        newState.use_time_based_nonce =          update(action.data.use_time_based_nonce, newState.use_time_based_nonce);
         newState.nativeExtendedLogging =         update(action.data.nativeExtendedLogging,         newState.nativeExtendedLogging);
         newState.show_rssi_values_in_mesh =      update(action.data.show_rssi_values_in_mesh,      newState.show_rssi_values_in_mesh);
         newState.firmwareEarlyAccessLevel =      update(action.data.firmwareEarlyAccessLevel,      newState.firmwareEarlyAccessLevel);

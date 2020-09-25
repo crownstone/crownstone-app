@@ -487,6 +487,17 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           data: {show_sync_button_in_behaviour: newValue}
         });
       }});
+    items.push({
+      label: "Use time-based nonce",
+      value: dev.use_time_based_nonce,
+      icon: <IconButton name={"md-clock"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.darkGreen.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {use_time_based_nonce: newValue}
+        });
+      }});
 
 
     items.push({label: "FIRMWARE EARLY ACCESS", type: 'explanation'});

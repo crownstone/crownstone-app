@@ -517,7 +517,8 @@ export const DataUtil = {
       ignoreForBehaviour,
       randomDeviceToken,
       activeRandomDeviceToken,
-      randomDeviceTokenValidated
+      randomDeviceTokenValidated,
+      useTimeBasedNonce: state.development.use_time_based_nonce
     }
   }
 };

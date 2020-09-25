@@ -271,6 +271,14 @@ export class DeviceEntry extends Component<any, any> {
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
+              stone.config.firmwareVersion &&
+              (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
+            ) {
+              NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
+              return;
+            }
+
             clearTimeout(this.revertToNormalViewTimeout);
             if (this.props.switchView === false && this.props.amountOfDimmableCrownstonesInLocation === 0) {
               this.revertToNormalViewTimeout = setTimeout(() => { this.props.setSwitchView(false); }, 3000);
