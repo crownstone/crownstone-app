@@ -107,7 +107,7 @@ class NotificationParserClass {
       return;
     }
 
-    if (notificationData.event) {
+    if (notificationData.event && typeof notificationData.event === 'object' && Object.keys(notificationData.event).length > 0) {
       return this._handleMultiswitch(notificationData, state);
     }
 
