@@ -111,7 +111,7 @@ lang("_Something_went_wrong_____Y_body"),
         Alert.alert(
 lang("_Something_went_wrong_____Yo_header"),
 lang("_Something_went_wrong_____Yo_body"),
-[{text:lang("_Something_went_wrong_____Yo_left")}]);
+[{text:lang("_Something_went_wrong_____Y_left")}]);
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })

@@ -264,9 +264,9 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                       callback: (fromStoneId, selectedRuleIds) => {
                         let stoneName = DataUtil.getStoneName(this.props.sphereId, fromStoneId);
                         Alert.alert(
-                          "Shall I copy the behaviour from " + stoneName + "?",
+                          lang("Shall_I_copy_the_behaviou", stoneName),
                           undefined,
-                          [{text:"Cancel"}, {text:"OK", onPress:() => {
+                          [{text:lang("Cancel")}, {text:lang("OK"), onPress:() => {
                               StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
                                 .then((success) => {
                                   if (success) {
