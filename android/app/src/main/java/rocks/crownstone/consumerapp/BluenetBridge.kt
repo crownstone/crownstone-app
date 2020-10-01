@@ -1318,7 +1318,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Maybe refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		// Not sure if this is helpful, as it would've gone wrong already on connect (when session nonce is read in normal mode)
 		bluenet.setup.setup(crownstoneId, sphereId, keySet, meshKeySet, meshAccessAddress, ibeaconData)
-				.success { resolveCallback(callback) }
+				.success {
+					Log.i(TAG, "setup success")
+					resolveCallback(callback)
+				}
 				.fail {
 					sendEvent("setupProgress", 0) // TODO: is this required?
 					rejectCallback(callback, it.message)
