@@ -325,7 +325,7 @@ export class SetupCrownstone extends LiveComponent<{
       ),
       options: [
         {
-          label: lang("Aborting___Abort",this.abort,true),
+          label: lang("Aborting___Abort",this.abort),
           onSelect: (result) => { this.abort = true; this.forceUpdate(); },
           dangerous: true,
         }
