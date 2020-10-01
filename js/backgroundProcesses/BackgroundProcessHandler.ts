@@ -66,8 +66,6 @@ class BackgroundProcessHandlerClass {
   cancelPauseTrackingCallback = null;
   trackingPaused = false;
 
-  constructor() { }
-
   start() {
     if (!this.started) {
 

@@ -1,5 +1,4 @@
-import { LiveComponent }          from "../LiveComponent";
-
+import { LiveComponent } from "../LiveComponent";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("PermissionIntroduction", key)(a,b,c,d,e);
@@ -33,6 +32,7 @@ import { Util } from "../../util/Util";
 export class PermissionIntroduction extends LiveComponent<any, any> {
 
   _interview : Interview;
+  randomAiName : string = randomAiName();
 
   constructor(props) {
     super(props);
@@ -108,29 +108,21 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
             <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
           </View>,
         hasTextInputField: true,
-        placeholder: randomAiName(),
+        placeholder: this.randomAiName,
         optionsBottom: true,
         options: [
           {
             label: lang("Nice_to_meet_you_"),
-            nextCard: 'allSet',
             onSelect: (result) => {
-              let name = result.textfieldState.trim();
-              if (name.length === 0) {
-                Alert.alert(
-                  lang(lang("Id_really_like_a_name___")),
-                  lang(lang("Could_you_give_me_one_")),
-                  [{text:lang(lang("Sure_"))}]
-                );
-                return false;
-              }
+              let name = result.textfieldState.trim() || this.randomAiName;
               let state = core.store.getState();
               let sphereIds = Object.keys(state.spheres);
               core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
-              core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereIds[0], data: {aiName: this.state.aiName}});
+              core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereIds[0], data: {aiName: name}});
 
               core.eventBus.emit("userLoggedInFinished");
-              NavigationUtil.setRoot(Stacks.loggedIn())
+              NavigationUtil.setRoot(Stacks.loggedIn());
+              return false;
             }
           },
         ]
