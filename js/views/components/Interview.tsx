@@ -372,7 +372,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
         if (typeof resumeAllowed === 'object' && resumeAllowed['then'] !== undefined) {
           return resumeAllowed.then((result) => {
             if (typeof result === 'string') {
-              props.nextCard(resumeAllowed, props.value, index, option);
+              props.nextCard(result, props.value, index, option);
             }
             else if (result !== false) {
               props.nextCard(option.nextCard, props.value, index, option);
