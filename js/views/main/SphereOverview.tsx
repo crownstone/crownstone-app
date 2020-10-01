@@ -40,6 +40,7 @@ import { RoomAddCore } from "../roomViews/RoomAddCore";
 import { Background } from "../components/Background";
 import { SmartHomeStateButton } from "./buttons/SmartHomeStateButton";
 import { ActiveSphereManager } from "../../backgroundProcesses/ActiveSphereManager";
+import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 
 
 const ZOOM_LEVELS = {
@@ -184,6 +185,14 @@ export class SphereOverview extends LiveComponent<any, any> {
     };
 
     let setRearrangeRooms = (value) => {
+      if (value === true) {
+        BackButtonHandler.override("RoomRearrangement", () => {
+          core.eventBus.emit("reset_positions" + this.viewId);
+        })
+      }
+      else {
+        BackButtonHandler.clearOverride("RoomRearrangement")
+      }
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
 
     };

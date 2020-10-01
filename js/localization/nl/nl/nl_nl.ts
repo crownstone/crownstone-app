@@ -2859,7 +2859,7 @@ export default {
     _I_want_to_be_secure______left:         function() { return "Oké"; },
     Thats_me_:                              function() { return "Aangenaam!"; },
     You_bet_I_do_Not_just_yet:              function() { return "Zeker weten!"; },
-    Im_ready_:                              function() { return "Ik ben klaar!"; },
+    Im_ready_:                              function() { return "Dat is alles!"; },
     Ill_validate_my_account_a:              function() { return "Ga ik doen!"; },
     Welcome_:                               function() { return "Welkom!"; },
     What_should_I_call_you_:                function() { return "Leuk dat je erbij komt! Hoe zal ik je aanspreken?"; },
