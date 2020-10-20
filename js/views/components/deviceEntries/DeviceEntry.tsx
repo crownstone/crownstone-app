@@ -37,7 +37,25 @@ import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
 
-export class DeviceEntry extends Component<any, any> {
+export class DeviceEntry extends Component<{
+  sphereId: string,
+  stoneId: string,
+
+  viewingRemotely: boolean,
+
+  allowSwitchView?: boolean,
+  switchView?: boolean,
+  setSwitchView?: (state: boolean) => void,
+
+  allowDeviceOverview?: boolean,
+  amountOfDimmableCrownstonesInLocation?: number,
+  hideExplanation?: boolean,
+  height?: number,
+  nearestInRoom?: boolean,
+  nearestInSphere?: boolean,
+  statusText?: string,
+  toggleScrollView?: (state: boolean) => void
+}, any> {
 
   _panResponder;
   baseHeight : number;
@@ -88,7 +106,7 @@ export class DeviceEntry extends Component<any, any> {
         let state = core.store.getState();
         let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
         if (!stone || !stone.config) { return; }
-        if (stone.state.state !== this.props.percentage) {
+        if (stone.state.state !== this.state.percentage) {
           this.setState({percentage: stone.state.state})
           return;
         }
@@ -257,8 +275,12 @@ export class DeviceEntry extends Component<any, any> {
     });
 
     let WrapperElement : any = TouchableOpacity;
-    if (this.props.touchable === false) {
+    let IconWrapperElement : any = TouchableOpacity;
+    if (this.props.allowDeviceOverview === false) {
       WrapperElement = View
+    }
+    if (this.props.allowSwitchView === false) {
+      IconWrapperElement = WrapperElement
     }
 
     let useSwitchView = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
@@ -270,7 +292,11 @@ export class DeviceEntry extends Component<any, any> {
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+          <IconWrapperElement style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+            if (this.props.allowSwitchView === false) {
+              return this._basePressed();
+            }
+
             if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
               stone.config.firmwareVersion &&
               (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
@@ -286,7 +312,7 @@ export class DeviceEntry extends Component<any, any> {
             this.props.setSwitchView(!this.props.switchView);
           }}>
             <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
-          </TouchableOpacity>
+          </IconWrapperElement>
           <WrapperElement
             activeOpacity={ useSwitchView ? 1 : 0.2 }
             style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
