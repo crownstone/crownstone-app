@@ -202,6 +202,7 @@ export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
     switchData = migrateSceneSwitchData(switchData);
   }
 
+
   Object.keys(switchData).forEach((stoneCID) => {
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
     if (!stoneData) {
@@ -215,7 +216,6 @@ export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
   if (deletedStones && sceneId) {
     core.store.dispatch({type:"SCENE_UPDATE", sphereId, sceneId, data: { data: correctedList }})
   }
-
   return correctedList;
 }
 
@@ -226,7 +226,7 @@ export const executeScene = function(switchData, sphereId: string, sceneId: stri
   Object.keys(correctedList).forEach((stoneCID) => {
     action = true;
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}, {autoExecute: false}).catch()
+    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: correctedList[stoneCID]}, {autoExecute: false}).catch()
   })
   if (action) {
     BatchCommandHandler.executePriority();

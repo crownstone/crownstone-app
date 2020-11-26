@@ -49,7 +49,8 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       __item: <DeviceEntry
         stoneId={stoneId}
         sphereId={sphereId}
-        touchable={false}
+        allowSwitchView={false}
+        allowDeviceOverview={false}
         viewingRemotely={false}
         hideExplanation={true}
       />

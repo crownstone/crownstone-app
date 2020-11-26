@@ -208,17 +208,16 @@ lang("_Indoor_localization_is_c_body"),
       return (
         <View key={stoneId + '_entry'}>
           <DeviceEntry
-            stoneId={stoneId}
-            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
-            switchView={this.state.switchView}
-            locationId={this.props.locationId}
             sphereId={this.props.sphereId}
+            stoneId={stoneId}
+
             viewingRemotely={this.viewingRemotely}
+            setSwitchView={(value) => { this.setState({switchView: value })}}
+            switchView={this.state.switchView}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
-            dfuMode={item.dfuMode === true}
-            setSwitchView={(value) => { this.setState({switchView: value })}}
             toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
+            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
           />
         </View>
       );

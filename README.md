@@ -24,8 +24,6 @@ The Crownstone iOS and Android apps have the following functionality:
 | Integration with thermostat radiator valves     | To be done               | To be done                |
 | Multi-user setup (don't leave user in the dark) | To be done               | To be done                |
 
-The roadmap of the software development can be found at [Trello](https://trello.com/b/6rUcIt62/crownstone-transparent-product-roadmap).
-
 The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
 
 The application makes use of separate libraries (so-called bluenet libraries) that are native to the platform. 
