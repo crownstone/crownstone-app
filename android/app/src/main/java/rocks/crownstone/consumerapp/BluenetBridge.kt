@@ -50,6 +50,7 @@ import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.*
 import rocks.crownstone.bluenet.util.Util.isBitSet
+import rocks.crownstone.consumerapp.hubdata.HubDataReplyPacket
 import rocks.crownstone.localization.library.*
 import rocks.crownstone.localization.library.structs.Fingerprint
 import rocks.crownstone.localization.library.structs.FingerprintSamplesMap
@@ -2648,6 +2649,66 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.fail { rejectCallback(callback, it.message) }
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun setUartKey(uartKeyString: String, callback: Callback) {
+		Log.i(TAG, "setUartKey $uartKeyString")
+		val uartKey = Conversion.getKeyFromString(uartKeyString)
+		if (uartKey == null) {
+			rejectCallback(callback, Errors.SizeWrong().toString())
+			return
+		}
+		bluenet.config.setUartKey(uartKey)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+//endregion
+
+//##################################################################################################
+//region           Hub
+//##################################################################################################
+
+	@ReactMethod
+	@Synchronized
+	fun transferHubTokenAndCloudId(hubToken: String, cloudId: String, callback: Callback) {
+		val hubDataHandler = HubData(bluenet)
+		hubDataHandler.sendTokenAndCloudId(hubToken, cloudId)
+				.success { resolveCallback(callback, getHubDataReply(it)) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	private fun getHubDataReply(replyPacket: HubDataReplyPacket): WritableMap {
+		// Return data should be in the form:
+		// {
+		//   protocolVersion: number,
+		//   type:            string, // success | error
+		//   errorType:       number, // can be null
+		//   message:         string // default empty string ""
+		// }
+		val map = Arguments.createMap()
+		map.putInt("protocolVersion", replyPacket.protocol.toInt())
+		val type: String = when (replyPacket.type) {
+			HubDataReplyPacket.HubDataReplyType.SUCCESS -> "success"
+			HubDataReplyPacket.HubDataReplyType.ERROR -> "error"
+			else -> "error"
+		}
+		map.putString("type", type)
+
+		val errorType = replyPacket.errorCode?.toInt()
+		if (errorType == null) {
+			map.putNull("errorType")
+		}
+		else {
+			map.putInt("errorType", errorType)
+		}
+
+		val message = replyPacket.payload.string
+		map.putString("message", message)
+
+		return map
+	}
+
 //endregion
 
 //##################################################################################################
@@ -3306,6 +3367,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putBoolean("alternativeState", serviceData.type == ServiceDataType.ALT_STATE)
 		serviceDataMap.putBoolean("hasError", serviceData.flagError)
 		serviceDataMap.putBoolean("setupMode", device.operationMode == OperationMode.SETUP)
+		serviceDataMap.putBoolean("hubMode", serviceData.type == ServiceDataType.HUB_STATE)
 		serviceDataMap.putInt("crownstoneId", serviceData.crownstoneId.toInt())
 		serviceDataMap.putDouble("switchState", convertSwitchState(serviceData.switchState))
 //		serviceDataMap.putInt("flagsBitmask", 0) // Not required
@@ -3315,6 +3377,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
 		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble()) // TODO: should be long?
 		serviceDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash.toInt())
+
+		val hubDataArray = Arguments.createArray()
+		for (b in serviceData.hubData) {
+			hubDataArray.pushInt(b.toInt())
+		}
+		serviceDataMap.putArray("hubData", hubDataArray)
+
+		serviceDataMap.putBoolean("uartAlive",                            serviceData.hubFlagUartAlive)
+		serviceDataMap.putBoolean("uartAliveEncrypted",                   serviceData.hubFlagUartAliveEncrypted)
+		serviceDataMap.putBoolean("uartEncryptionRequiredByCrownstone",   serviceData.hubFlagUartEncryptionRequiredByStone)
+		serviceDataMap.putBoolean("uartEncryptionRequiredByHub",          serviceData.hubFlagUartEncryptionRequiredByHub)
+		serviceDataMap.putBoolean("hubIsSetup",                           serviceData.hubFlagHasBeenSetup)
+		serviceDataMap.putBoolean("hubHasInternet",                       serviceData.hubFlagHasInternet)
+		serviceDataMap.putBoolean("hubHasError",                          serviceData.hubFlagHasError)
 
 		if (serviceData.version == ServiceDataVersion.V1 || serviceData.version == ServiceDataVersion.UNKNOWN) {
 			serviceDataMap.putDouble("timestamp", -1.0)
