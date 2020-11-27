@@ -231,6 +231,7 @@ interface crownstoneServiceData {
   alternativeState          : boolean,
   hasError                  : boolean,
   setupMode                 : boolean,
+  hubMode                   : boolean,
   crownstoneId              : number, // [0 .. 255]
   switchState               : number, // [0 .. 228]
   flagsBitmask?             : number, // bitmask (optional)
@@ -252,6 +253,16 @@ interface crownstoneServiceData {
 
   behaviourEnabled          : boolean,
   behaviourMasterHash       : number,
+
+  hubData                   : number[],
+
+  uartAlive                 : boolean,
+  uartAliveEncrypted        : boolean,
+  uartEncryptionRequiredByCrownstone : boolean,
+  uartEncryptionRequiredByHub        : boolean,
+  hubIsSetup                : boolean,
+  hubHasInternet            : boolean,
+  hubHasError               : boolean,
 
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
