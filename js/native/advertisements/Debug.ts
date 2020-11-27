@@ -5,6 +5,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     behaviourOverridden: false, tapToToggleEnabled: false,
     stateOfExternalCrownstone : false,
     hasError                  : false,
+    hubMode                   : false,
     alternativeState          : false,
     setupMode                 : false,
     crownstoneId              : stone.config.crownstoneId,
@@ -23,6 +24,15 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     switchLocked              : false,
     timeSet                   : true,
     switchCraftEnabled        : false,
+
+    hubData                   : [],
+    uartAlive                 : false,
+    uartAliveEncrypted        : false,
+    uartEncryptionRequiredByCrownstone : false,
+    uartEncryptionRequiredByHub        : false,
+    hubHasBeenSetup           : false,
+    hubHasInternet            : false,
+    hubHasError               : false,
 
     deviceType                : 'plug',
     rssiOfExternalCrownstone  : -50,

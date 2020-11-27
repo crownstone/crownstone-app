@@ -87,6 +87,24 @@ export const xUtil = {
     return hours + ':' + minutes + ':' + seconds
   },
 
+
+  getHubHexToken : () : string => {
+    let str = '';
+    for (let i = 0; i < 64; i++) {
+      str += xUtil.getRandomByte();
+    }
+    return str;
+  },
+
+  getRandomByte: () : string => {
+    let byteValue = Math.floor(Math.random()*255);
+    let str = byteValue.toString(16);
+    if (byteValue < 16) {
+      return '0'+str;
+    }
+    return str
+  },
+
   getToken : () : string => {
     return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
   },

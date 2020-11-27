@@ -81,7 +81,6 @@ RCT_EXTERN_METHOD(enableExtendedLogging:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
 RCT_EXTERN_METHOD(quitApp)
 RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(setBackgroundScanning:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(viewsInitialized)
@@ -199,6 +198,10 @@ RCT_EXTERN_METHOD(setTimeViaBroadcast:(nonnull NSNumber *)time
               )
 RCT_EXTERN_METHOD(setSunTimes: (nonnull NSNumber *)sunriseSecondsSinceMidnight  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight  referenceId:(NSString *)referenceId)
 RCT_EXTERN_METHOD(setSunTimesViaConnection: (nonnull NSNumber *)sunriseSecondsSinceMidnight  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight callback:(RCTResponseSenderBlock)callback)
+
+// HUB
+RCT_EXTERN_METHOD(setUartKey: (NSString *)uartKey callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(transferHubTokenAndCloudId: (NSString *)hubToken cloudId:(NSString *)cloudId callback:(RCTResponseSenderBlock)callback)
 
 
 // dev

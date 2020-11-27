@@ -3,7 +3,8 @@ export let STONE_TYPES = {
   builtin:       "BUILTIN",
   builtinOne:    "BUILTIN_ONE",
   guidestone:    "GUIDESTONE",
-  crownstoneUSB: "CROWNSTONE_USB"
+  crownstoneUSB: "CROWNSTONE_USB",
+  hub:           "CROWNSTONE_HUB",
 };
 
 export const BCH_ERROR_CODES = {

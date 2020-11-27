@@ -61,7 +61,7 @@ export class PreferenceSyncer extends SyncingBase {
       toonIds.forEach((toonId) => {
         let property = 'toon_enabled_agreementId.' + toons[toonId].toonAgreementId;
         preferenceMap[property] = {value: toons[toonId].enabled};
-      })
+      });
     });
 
     return preferenceMap;

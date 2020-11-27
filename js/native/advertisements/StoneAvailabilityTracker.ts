@@ -349,6 +349,8 @@ class StoneAvailabilityTrackerClass {
     let uuid = xUtil.getShortUUID()
     this.triggers[sphereId]["*"][ownerId][uuid] = { rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount };
   }
+
+
   /**
    * Will execute Action when a stone with the provided ID is seen. ID CAN be a wildcard ("*")
    * @param sphereId

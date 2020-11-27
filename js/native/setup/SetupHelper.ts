@@ -54,7 +54,7 @@ export class SetupHelper {
    * @param silent            // if silent is true, this means no popups will be sent or triggered.
    * @returns {Promise<T>}
    */
-  claim(sphereId, silent : boolean = false) : Promise<string> {
+  claim(sphereId, silent : boolean = false) : Promise<{id: string, familiarCrownstone: boolean}> {
     // things to be filled out during setup process
     this.macAddress = undefined;
     this.cloudResponse = undefined;

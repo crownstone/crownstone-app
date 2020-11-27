@@ -4,6 +4,7 @@ import { getTime, refreshDefaults, update } from "../reducerUtil";
 let dimmingAbilityFormat = {
   enabled: false,
   enabledTarget: false,
+  cloudId: null,
   softOnSpeed: 8,
   syncedToCrownstone: true,
   updatedAt: 0
@@ -11,12 +12,14 @@ let dimmingAbilityFormat = {
 let switchcraftAbilityFormat = {
   enabled: false,
   enabledTarget: false,
+  cloudId: null,
   syncedToCrownstone: true,
   updatedAt: 0
 };
 let tapToToggleAbilityFormat = {
   enabled: false,
   enabledTarget: false,
+  cloudId: null,
   rssiOffset: 0,
   rssiOffsetTarget: 0,
   syncedToCrownstone: true,
@@ -31,6 +34,7 @@ let dimmingReducer = (state = dimmingAbilityFormat, action) => {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
         newState.softOnSpeed        = update(action.data.softOnSpeed,   newState.softOnSpeed);
         newState.syncedToCrownstone = true;
         newState.updatedAt          = getTime(action.data.updatedAt);
@@ -42,6 +46,7 @@ let dimmingReducer = (state = dimmingAbilityFormat, action) => {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
         newState.softOnSpeed        = update(action.data.softOnSpeed,   newState.softOnSpeed);
         newState.syncedToCrownstone = false;
         newState.updatedAt          = getTime(action.data.updatedAt);
@@ -69,8 +74,9 @@ let switchcraftReducer = (state = switchcraftAbilityFormat, action) => {
     case 'UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD':
       if (action.data) {
         let newState = {...state};
-        newState.enabled            = update(action.data.enabled,     newState.enabled);
+        newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
         newState.syncedToCrownstone = true;
         newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
@@ -79,8 +85,9 @@ let switchcraftReducer = (state = switchcraftAbilityFormat, action) => {
     case 'UPDATE_ABILITY_SWITCHCRAFT':
       if (action.data) {
         let newState = {...state};
-        newState.enabled            = update(action.data.enabled,     newState.enabled);
+        newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
         newState.syncedToCrownstone = false;
         newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
@@ -109,6 +116,7 @@ let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,           newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget,     newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.rssiOffset         = update(action.data.rssiOffset,        newState.rssiOffset);
         newState.rssiOffsetTarget   = update(action.data.rssiOffsetTarget,  newState.rssiOffsetTarget);
         newState.syncedToCrownstone = true;
@@ -121,6 +129,7 @@ let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
         let newState = {...state};
         newState.enabled            = update(action.data.enabled,           newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget,     newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.rssiOffset         = update(action.data.rssiOffset,        newState.rssiOffset);
         newState.rssiOffsetTarget   = update(action.data.rssiOffsetTarget,  newState.rssiOffsetTarget);
         newState.syncedToCrownstone = false;

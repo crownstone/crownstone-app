@@ -18,7 +18,7 @@ class SetupStateHandlerClass {
   _uuid : string;
   _setupModeTimeouts : any;
   _stonesInSetupStateAdvertisements : any;
-  _stonesInSetupStateTypes : any;
+  _stonesInSetupStateTypes: any;
   _currentSetupState : any;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
@@ -130,6 +130,10 @@ class SetupStateHandlerClass {
             core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
           }
         }
+        // this is here in case the device type changes. The hub might change a dongle to hub on the fly.
+        if (this._stonesInSetupStateTypes[handle]?.rawType !== setupAdvertisement.serviceData.deviceType) {
+          this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
+        }
 
         if (emitDiscovery) {
           core.eventBus.emit("setupStonesDetected");
@@ -188,11 +192,12 @@ class SetupStateHandlerClass {
 
   _getTypeData(advertisement : crownstoneAdvertisement) {
     let payload = {};
-    if (     advertisement.serviceData.deviceType == 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,        }; }
-    else if (advertisement.serviceData.deviceType == 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,     }; }
-    else if (advertisement.serviceData.deviceType == 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,  }; }
-    else if (advertisement.serviceData.deviceType == 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,  }; }
-    else if (advertisement.serviceData.deviceType == 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB}; }
+    if (     advertisement.serviceData.deviceType === 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,          rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,       rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,    rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,    rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB, rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'hub')           { payload = {name: 'Hub',                    icon: 'c1-router',       type:STONE_TYPES.hub,           rawType: advertisement.serviceData.deviceType }; }
     else {
       LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
       return undefined;
@@ -203,7 +208,7 @@ class SetupStateHandlerClass {
     return payload;
   }
   
-  setupStone(handle, sphereId) {
+  setupStone(handle, sphereId) : Promise<{id: string, familiarCrownstone: boolean}> {
     if (this._stonesInSetupStateAdvertisements[handle] !== undefined) {
       return this._setupStone(
         handle,
@@ -220,12 +225,13 @@ class SetupStateHandlerClass {
     }
   }
 
+
   setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
     let stoneConfig = core.store.getState().spheres[sphereId].stones[stoneId].config;
     return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
   }
 
-  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) {
+  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) : Promise<{id: string, familiarCrownstone: boolean}> {
     let helper = new SetupHelper(
       handle,
       name,

@@ -22,6 +22,7 @@ import { user }              from './sections/user'
 import { toon }              from './sections/thirdParty/toon'
 import { xUtil }             from "../util/StandAloneUtil";
 import { MapProvider }       from "../backgroundProcesses/MapProvider";
+import { hubs }              from "./sections/hub";
 
 function combineSections() {
   let result : any = {};
@@ -32,6 +33,7 @@ function combineSections() {
   xUtil.mixin(result, devices,           result);
   xUtil.mixin(result, firmware,          result);
   xUtil.mixin(result, fingerprints,      result);
+  xUtil.mixin(result, hubs,              result);
   xUtil.mixin(result, installations,     result);
   xUtil.mixin(result, locations,         result);
   xUtil.mixin(result, messages,          result);
@@ -69,3 +71,4 @@ CLOUD.forSortedList =      function(localSortedListId): any { TokenStore.sortedL
 CLOUD.forLocation =        function(localLocationId)  : any { TokenStore.locationId   = MapProvider.local2cloudMap.locations[localLocationId]     || localLocationId;   return CLOUD; };
 CLOUD.forMessage =         function(localMessageId)   : any { TokenStore.messageId    = MapProvider.local2cloudMap.messages[localMessageId]       || localMessageId;    return CLOUD; };
 CLOUD.forToon =            function(localToonId)      : any { TokenStore.toonId       = MapProvider.local2cloudMap.toons[localToonId]             || localToonId;       return CLOUD; };
+CLOUD.forHub =             function(localHubId)       : any { TokenStore.hubId        = MapProvider.local2cloudMap.hubs[localHubId]               || localHubId;       return CLOUD; };

@@ -41,6 +41,7 @@ class TokenStoreClass {
   sortedListId;
   stoneId;
   toonId;
+  hubId;
   userId;
 }
 
@@ -227,6 +228,10 @@ function _getId(url, obj) : string {
   let installationLocation = url.indexOf('AppInstallation');
   if (installationLocation !== -1 && installationLocation < 3)
     return obj.installationId;
+
+  let hubLocation = url.indexOf('Hub');
+  if (hubLocation !== -1 && hubLocation < 3)
+    return obj.hubId;
 
   let messagesLocation = url.indexOf('Messages');
   if (messagesLocation !== -1 && messagesLocation < 3)

@@ -174,9 +174,6 @@ class BatchCommandHandlerClass {
                 let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
                 actionPromise = BluenetPromiseWrapper.meshSetTime(timeToSet);
                 break;
-              case 'getTime':
-                actionPromise = BluenetPromiseWrapper.getTime();
-                break;
               case 'commandFactoryReset':
                 actionPromise = BluenetPromiseWrapper.commandFactoryReset();
                 break;

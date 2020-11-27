@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
-  View
+  View, Text
 } from 'react-native';
 
 import {styles, colors, screenWidth} from '../styles'
@@ -143,6 +143,7 @@ export class IconSelection extends Component<any, any> {
           onPress={ () => {this.props.callback(icons[iconIndex])} }
         >
           <Icon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
+          {/*<Text>{icons[iconIndex]}</Text>*/}
         </TouchableOpacity>
       );
     }

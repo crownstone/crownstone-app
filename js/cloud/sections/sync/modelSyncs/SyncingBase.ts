@@ -156,6 +156,7 @@ export function getGlobalIdMap() : globalIdMap {
     sortedLists: {},
     spheres:     {},
     schedules:   {},
+    hubs:        {},
     toons:       {},
     users:       {},
   }

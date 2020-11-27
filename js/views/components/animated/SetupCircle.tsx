@@ -20,6 +20,7 @@ export class SetupCircle extends Component<any, any> {
   outerDiameter;
   iconSize;
   textSize;
+  multiplier;
   unsubscribeSetupEvents = [];
   constructor(props) {
     super(props);
@@ -29,6 +30,7 @@ export class SetupCircle extends Component<any, any> {
     };
 
     // calculate the size of the circle based on the screen size
+    this.multiplier = this.props.multiplier || 1;
     this.borderWidth = props.radius / 10;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
     this.outerDiameter = 2 * props.radius;
@@ -41,10 +43,10 @@ export class SetupCircle extends Component<any, any> {
       this.setState({setupProgress: 0});
     }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupInProgress", (data) => {
-      this.setState({setupProgress: data.progress});
+      this.setState({setupProgress: this.multiplier * data.progress});
     }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete", (handle) => {
-      this.setState({setupProgress: 1});
+      this.setState({setupProgress: this.multiplier * 1 }); // the * 1 is ofcourse redundant, but it shows the range of the setup process is 0..1
     }));
   }
 

@@ -26,10 +26,15 @@ import { ScanningForSetupCrownstonesBanner } from "../components/animated/Scanni
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
+import { STONE_TYPES } from "../../Enums";
 
-export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
+export class ScanningForSetupCrownstones extends LiveComponent<{
+  sphereId: string,
+  componentId: string,
+  hub: boolean
+}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Add_Crownstones"), closeModal: true});
+    return TopBarUtil.getOptions({title:  props.hub ? lang("Add_a_hub") : lang("Add_Crownstones"), closeModal: true});
   }
 
   nothingYetTimeout;
@@ -50,6 +55,8 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
       extendedNoScans: false,
       showNearUnverified: false,
       showVerifiedUnowned: false,
+      hubVisible: false,
+      showHubsRegardless: false,
     };
   }
 
@@ -154,7 +161,12 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
             handle={item.handle}
             item={item}
             callback={() => {
-              NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupStone: item});
+              if (item.type === STONE_TYPES.hub) {
+                NavigationUtil.navigate( "SetupHub", {sphereId: this.props.sphereId, setupItem: item});
+              }
+              else {
+                NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupItem: item});
+              }
             }}
           />
         </FadeIn>
@@ -172,6 +184,14 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
       let setupIds = Object.keys(setupStones);
 
       setupIds.forEach((setupId) => {
+        if (setupStones[setupId].type !== STONE_TYPES.hub &&  this.props.hub) { return; }
+        if (setupStones[setupId].type === STONE_TYPES.hub && !this.props.hub && this.state.showHubsRegardless === false) {
+          if (this.state.hubVisible === false) {
+            this.setState({hubVisible: true})
+          }
+          return;
+        }
+
         shownHandles[setupStones[setupId].handle] = true;
         ids.push(setupId);
         setupStones[setupId].setupMode = true;
@@ -186,10 +206,12 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
   render() {
     const { stoneArray, ids } = this._getStoneList();
 
+
     let showNearUnverified = ids.length === 0 && this.state.showVerifiedUnowned === false && this.state.showNearUnverified;
-    let showNothingYet = ids.length === 0 && this.state.showVerifiedUnowned === false && this.state.showNearUnverified === false && this.state.showNoScans === false && this.state.showNothingYet;
+    let showNothingYet     = ids.length === 0 && this.state.showVerifiedUnowned === false && this.state.showNearUnverified === false && this.state.showNoScans === false && this.state.showNothingYet;
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+    let informationStyle = {...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle};
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true} >
         <KeepAwake />
@@ -203,8 +225,9 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{ lang("Searching_for_more_Crownst",stoneArray.length > 0) }</Text>
-            <View style={{flex:1}} />
+            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{
+              this.props.hub ? lang("Searching_for_a_hub___") : lang("Searching_for_more_Crownst",stoneArray.length > 0) }</Text>
+            <View style={{width:10}} />
             <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} />
             <View style={{flex:1}} />
           </View>
@@ -218,13 +241,13 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
             separatorIndent={false}
             renderer={this._renderer.bind(this)}
           />
-          <SlideFadeInView duration={300} height={80} visible={showNothingYet} style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
+          <SlideFadeInView duration={300} height={80} visible={showNothingYet} style={informationStyle}>
             <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("Nothing_yet__but_Im_still_") }</Text>
           </SlideFadeInView>
-          <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === false} style={{...styles.centered, width:screenWidth, height:90, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
+          <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === false} style={{...informationStyle, height:90}}>
             <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("I_cant_find_any_BLE_device") }</Text>
           </SlideFadeInView>
-          <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === true} style={{...styles.centered, width:screenWidth, height:90, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
+          <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === true} style={{...informationStyle, height:90}}>
             <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("I_still_cant_find_any_BLE_") }</Text>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={120} visible={showNearUnverified} style={{...styles.centered, width:screenWidth, height:120, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
@@ -232,7 +255,12 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
               <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("Youre_really_close_to_a_Cr") }</Text>
             </TouchableOpacity>
           </SlideFadeInView>
-          <SlideFadeInView duration={300} height={80} visible={ids.length === 0 && this.state.showVerifiedUnowned === true} style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
+          <SlideFadeInView duration={300} height={80} visible={this.state.hubVisible && !this.state.showHubsRegardless} style={informationStyle}>
+            <TouchableOpacity style={informationStyle} onPress={() => { this.setState({showHubsRegardless:true}); }}>
+              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center', paddingHorizontal: 20}}>{ lang("I_see_a_hub_in_setup_mode") }</Text>
+            </TouchableOpacity>
+          </SlideFadeInView>
+          <SlideFadeInView duration={300} height={80} visible={ids.length === 0 && this.state.showVerifiedUnowned === true} style={informationStyle}>
             <TouchableOpacity
               style={{...styles.centered, width:screenWidth, height:120, padding:10}}
               onPress={() => { NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupStone: {handle: this.nearUnknownCrownstoneHandle}, unownedVerified: true}); }}

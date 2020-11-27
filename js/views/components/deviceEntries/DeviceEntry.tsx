@@ -289,6 +289,7 @@ export class DeviceEntry extends Component<{
     let sliderWidth = screenWidth - 20 - 60 - 30;
     let explanationText = this._getExplanationText(state, useSwitchView);
 
+
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>

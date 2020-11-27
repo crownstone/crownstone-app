@@ -45,7 +45,9 @@ export class PermissionBase {
   canCreateScenes            = false; // a or m
   canCreateData              = false; // a or m
   canCreateSpheres           = false; // a or m
-  canCreateSortedLists      = false; // a or m
+  canCreateSortedLists       = false; // a or m
+
+  canDisableBehaviour        = false; // a or m
 
   canUploadDiagnostics       = false; // a or m
   canUploadStones            = false; // a or m
@@ -188,6 +190,7 @@ export class PermissionClass extends PermissionBase {
 
         // spheres
         this.canEditSphere           = true; // admin and member
+        this.canDisableBehaviour     = true; // admin and member
 
         this.canChangeBehaviours     = true // a or m
         this.canChangeScenes         = true // a or m

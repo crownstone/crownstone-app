@@ -194,7 +194,6 @@ export class SphereOverview extends LiveComponent<any, any> {
         BackButtonHandler.clearOverride("RoomRearrangement")
       }
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
-
     };
 
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere && activeSphereId) {
@@ -292,7 +291,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
           <SmartHomeStateButton
             sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false}
+            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false && Permissions.inSphere(activeSphereId).canDisableBehaviour }
           />
         </AnimatedBackground>
       );

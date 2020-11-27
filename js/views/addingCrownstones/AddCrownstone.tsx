@@ -52,6 +52,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
           {label: lang("Plug"),                       image: {source: require('../../images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: lang("A_Plug_it_is_")},
           {label: lang("Built_in_One"),               image: {source: require('../../images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: lang("Lets_add_a_Built_in_One_")},
           {label: lang("Built_in_Zero"),              image: {source: require('../../images/addCrownstone/builtin-v1.png')}, nextCard: 'installingBuiltinZero_step1', response: lang("Lets_add_a_Built_in_Zero_")},
+          {label: lang("Hub"),                        image: {source: require('../../images/addCrownstone/hub.png')},        nextCard: 'installingHub_step1' },
           {label: lang("Guidestone"),                 image: {source: require('../../images/addCrownstone/guidestone.png')}, nextCard: 'installingGuidestone',        response: lang("Lets_add_a_Guidestone_")},
           {label: lang("Crownstone_USB"),             image: {source: require('../../images/addCrownstone/crownstone_usb.png')}, nextCard: 'installingUSB',           response: lang("Lets_add_a_Crownstone_USB")},
           {label: lang("I_dont_have_nCrownstones_y"), image: {source: require('../../images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: lang("Lets_buy_Crownstones_")},
@@ -78,6 +79,30 @@ export class AddCrownstone extends LiveComponent<any, any> {
         backgroundImage: require('../../images/backgrounds/usbBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+        ]
+      },
+      installingHub_step1: {
+        header: "Let's add a hub!",
+        subHeader: "Insert the usb dongle into one of the usb ports.",
+        backgroundImage: require('../../images/backgrounds/hubBackground.jpg'),
+        options: [
+          {label: lang("Next"), textAlign:'right', nextCard:'installingHub_step2'},
+        ]
+      },
+      installingHub_step2: {
+        header: "Power it up!",
+        subHeader: "Connect the power supply to the mains and the hub and wait for 1 minute for it to start up.",
+        backgroundImage: require('../../images/backgrounds/hubBackground_power.jpg'),
+        options: [
+          {label: lang("Next"), textAlign:'right', nextCard:'installingHub_step3' },
+        ]
+      },
+      installingHub_step3: {
+        header: "Join the web!",
+        subHeader: "Finally, connect a internet cable to the hub and press next.",
+        backgroundImage: require('../../images/backgrounds/hubBackground_internet.jpg'),
+        options: [
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId, hub: true }) }},
         ]
       },
       installingPlug: {

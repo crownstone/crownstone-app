@@ -16,7 +16,15 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
-import { ActivityIndicator, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  TextStyle,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from "react-native";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
 import { DeviceMenuIcon } from "./DeviceMenuIcon";
@@ -34,6 +42,7 @@ import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
+import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
 
 
 export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
@@ -321,6 +330,8 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
         label = "Guidestone"; break;
       case STONE_TYPES.crownstoneUSB:
         label = "Crownstone USB"; break;
+      case STONE_TYPES.hub:
+        label = "Crownstone Hub"; break;
       default:
         label = stone.config.type;
     }
@@ -463,7 +474,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
     }
 
     let stoneCanSwitch = true;
-    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB) {
+    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB || stone.config.type === STONE_TYPES.hub) {
       stoneCanSwitch = false;
     }
 

@@ -3,8 +3,10 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SetupCrownstone", key)(a,b,c,d,e);
+  return Languages.get("SetupHub", key)(a,b,c,d,e);
 }
+
+
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated, Platform,
@@ -25,33 +27,35 @@ import KeepAwake from 'react-native-keep-awake';
 import { BlePromiseManager } from "../../logic/BlePromiseManager";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { delay } from "../../util/Util";
+import { delay, Util } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";
-import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
+import { getRandomHubIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { TopbarImitation } from "../components/TopbarImitation";
+import { NativeBus } from "../../native/libInterface/NativeBus";
+import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
 
-export class SetupCrownstone extends LiveComponent<{
-  restoration: boolean,
+export class SetupHub extends LiveComponent<{
   sphereId: string,
   setupItem: any,
   componentId: any,
+  restoration: boolean,
   unownedVerified: boolean
 }, any> {
   static options(props) {
-    let title = props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
+    let title = "Setup the hub";
     return TopBarUtil.getOptions({title: title});
   }
 
   _interview: any;
   randomIcon: string;
   storeEvents = [];
-  abort = false;
+  abort : boolean = false;
   newCrownstoneState : any;
   constructor(props) {
     super(props);
 
-    this.randomIcon = getRandomDeviceIcon();
+    this.randomIcon = getRandomHubIcon();
 
     this.newCrownstoneState = {
       name:           null,
@@ -73,10 +77,6 @@ export class SetupCrownstone extends LiveComponent<{
         this.forceUpdate();
       }
     }));
-
-    if (this.props.restoration) {
-      this._startSetup();
-    }
   }
 
   componentWillUnmount() {
@@ -85,112 +85,111 @@ export class SetupCrownstone extends LiveComponent<{
 
 
   _disableBackButton() {
-    let title = this.props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
+    let title =  "Pairing with hub";
     TopBarUtil.updateOptions(this.props.componentId, {title: title, disableBack: true})
   }
 
 
-  _startSetup() {
+  /**
+   * This is the setup
+   */
+  async startSetupPhase() {
     this._disableBackButton();
     this.abort = false;
 
-    const performSetup = () => {
-      SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
+    let checkTimeout;
+    // we want to know if the hub is already setup before we start the process
+    let unsubscriber = NativeBus.on(NativeBus.topics.setupAdvertisement, (data : crownstoneAdvertisement) => {
+      if (data.serviceData.deviceType === 'hub') {
+        unsubscriber();
+        clearTimeout(checkTimeout);
+        this._setup(data.serviceData.hubHasBeenSetup);
+      }
+     })
+    new Promise((resolve, reject) => {
+      checkTimeout = setTimeout(() => {
+        unsubscriber()
+        reject("NOT_FOUND")
+      }, 10000);
+    })
+
+  }
+
+  async _setup(hubIsAlreadySetup) {
+    try {
+      let newStoneData = await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
-        .then((newStoneData : any) => {
-          this.newCrownstoneState.newStoneId    = newStoneData.id;
-          this.newCrownstoneState.setupFinished = true;
 
-          let wrapUp = () => {
-            if (this.newCrownstoneState.configFinished) {
-              this._wrapUp();
-            }
-          };
+      let hubHelper = new SetupHubHelper();
+      console.log("hubIsAlreadySetup", hubIsAlreadySetup)
+      if (hubIsAlreadySetup === false) {
+        await hubHelper.setup(this.props.sphereId, newStoneData.id);
+      }
+      else {
+        await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
+      }
 
-          if (newStoneData.familiarCrownstone === true) {
-            let state = core.store.getState();
-            let sphere = state.spheres[this.props.sphereId];
-            if (!sphere) { return wrapUp(); }
-            let stone = sphere.stones[newStoneData.id];
-            if (!stone) { return wrapUp(); }
-            let location = sphere.locations[stone.config.locationId];
+      this.newCrownstoneState.newStoneId    = newStoneData.id;
+      this.newCrownstoneState.setupFinished = true;
 
-            this.newCrownstoneState.name = stone.config.name;
-            this.newCrownstoneState.icon = stone.config.icon;
-            this.newCrownstoneState.configFinished = true;
-            this.newCrownstoneState.location = {id:null, name: null, icon:null};
-            this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
-            this.newCrownstoneState.location.name = location ? location.config.name    : null;
-            this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
-
-            if (this.props.restoration) {
-              return wrapUp();
-            }
-
-            // this check is here because the user MIGHT go back somehow, destroying the view
-            if (this._interview) {
-              this._interview.setLockedCard("iKnowThisOne");
-            }
-            return;
-          }
-          else {
-            wrapUp();
-          }
-        })
-        .catch((err) => {
-          if (this.abort === true) {
-            return this._interview.setLockedCard("aborted");
-          }
-
-          if (err.code) {
-            if (err.code === 1) {
-              this._interview.setLockedCard("problemBle");
-            }
-            else if (err.code === "network_error") {
-              this._interview.setLockedCard("problemCloud");
-            }
-            else {
-              this._interview.setLockedCard("problemBle");
-            }
-          }
-          this._interview.setLockedCard("problemBle");
-        })
-    };
-
-
-    if (this.props.unownedVerified) {
-      let resetPromise = () => {
-        return new Promise((resolve, reject) => {
-          BluenetPromiseWrapper.connect(this.props.setupItem.handle, this.props.sphereId)
-            .then(() => { return BluenetPromiseWrapper.commandFactoryReset() })
-            .then(() => { return BluenetPromiseWrapper.disconnectCommand() })
-            .then(() => { return BluenetPromiseWrapper.phoneDisconnect() })
-            .then(() => { resolve() })
-            .catch((err) => { reject(err) })
-        })
+      let wrapUp = () => {
+        if (this.newCrownstoneState.configFinished) {
+          this._wrapUp();
+        }
       };
-      BlePromiseManager.registerPriority(resetPromise, {from: 'Setup: resetting stone ' + this.props.setupItem.handle})
-        .then(() => {
-          return delay(2000);
-        })
-        .then(() => {
-          return BlePromiseManager.registerPriority(() => { return BleUtil.detectSetupCrownstone(this.props.setupItem.handle); }, {from: 'Setup: searching for stone ' + this.props.setupItem.handle})
-        })
-        .then(() => {
-          return performSetup();
-        })
-        .catch((err) => {
-          this._interview.setLockedCard("problem");
-        })
-    }
-    else {
-      performSetup();
-    }
 
+      if (newStoneData.familiarCrownstone === true) {
+        let state = core.store.getState();
+        let sphere = state.spheres[this.props.sphereId];
+        if (!sphere) { return wrapUp(); }
+        let stone = sphere.stones[newStoneData.id];
+        if (!stone) { return wrapUp(); }
+        let location = sphere.locations[stone.config.locationId];
 
+        this.newCrownstoneState.name = stone.config.name;
+        this.newCrownstoneState.icon = stone.config.icon;
+        this.newCrownstoneState.configFinished = true;
+        this.newCrownstoneState.location = {id:null, name: null, icon:null};
+        this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
+        this.newCrownstoneState.location.name = location ? location.config.name    : null;
+        this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
+
+        if (this.props.restoration) {
+          return wrapUp();
+        }
+
+        // this check is here because the user MIGHT go back somehow, destroying the view
+        if (this._interview) {
+          this._interview.setLockedCard("iKnowThisOne");
+        }
+        return;
+      }
+      else {
+        wrapUp();
+      }
+    }
+    catch (err) {
+      console.log("Oh fuck", err)
+      if (this.abort) {
+        return this._interview.setLockedCard("aborted");
+      }
+
+      if (err.code) {
+        if (err.code === 1) {
+          this._interview.setLockedCard("problemBle");
+        }
+        else if (err.code === "network_error") {
+          this._interview.setLockedCard("problemCloud");
+        }
+        else {
+          this._interview.setLockedCard("problemBle");
+        }
+      }
+      this._interview.setLockedCard("problemBle");
+    }
   }
 
   _wrapUp() {
@@ -205,11 +204,6 @@ export class SetupCrownstone extends LiveComponent<{
       }
     });
 
-    // navigate the interview to the finished state.
-    if (this.props.restoration) {
-      return NavigationUtil.dismissModal()
-    }
-
     if (this.abort) {
       this._interview.setLockedCard("successWhileAborting")
     }
@@ -221,7 +215,7 @@ export class SetupCrownstone extends LiveComponent<{
   getCards() : interviewCards {
     let state = core.store.getState();
 
-    let namePlaceholder = lang("My_New_Crownstone");
+    let namePlaceholder = "Crownstone Hub";
 
     let sphereId = this.props.sphereId;
 
@@ -268,24 +262,19 @@ export class SetupCrownstone extends LiveComponent<{
         onSelect: (result) => {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
-          if (this.props.restoration) {
-            this._startSetup();
-            this.newCrownstoneState.configFinished = true;
-            return this._interview.resetStackToCard("start");
-          }
-          else if (!this.newCrownstoneState.name) {
+          if (!this.newCrownstoneState.name) {
             return this._interview.resetStackToCard("start");
           }
           else if (!this.newCrownstoneState.icon) {
-            this._startSetup();
+            this.startSetupPhase();
             return this._interview.resetStackToCard("icon");
           }
           else if (!this.newCrownstoneState.location.id) {
-            this._startSetup();
+            this.startSetupPhase();
             return this._interview.resetStackToCard("rooms");
           }
           else {
-            this._startSetup();
+            this.startSetupPhase();
             this.newCrownstoneState.configFinished = true;
             return this._interview.resetStackToCard("waitToFinish");
           }
@@ -405,19 +394,11 @@ export class SetupCrownstone extends LiveComponent<{
       }
     }
 
-    if (this.props.restoration) {
-      return {
-        start: restorationCard,
-        ...problemCards
-      }
-    }
-
-
 
     return {
       start: {
-        header:lang("Lets_get_started_"),
-        subHeader: lang("What_shall_I_call_this_Cr"),
+        header: "Let's add this hub!",
+        subHeader: "Would you like to give it a nice name?",
         hasTextInputField: true,
         placeholder: namePlaceholder,
         options: [
@@ -427,6 +408,7 @@ export class SetupCrownstone extends LiveComponent<{
             nextCard: 'icon',
             dynamicResponse: (value) => { if (value.textfieldState === '') { return lang("Default_name_it_is_");} else { return lang("Thats_a_good_name_")}},
             onSelect: (result) => {
+              console.log("ON SELETOR")
               let name = result.textfieldState;
               if (name == "") {
                 this.newCrownstoneState.name = namePlaceholder;
@@ -435,7 +417,7 @@ export class SetupCrownstone extends LiveComponent<{
                 this.newCrownstoneState.name = name;
               }
 
-              this._startSetup();
+              this.startSetupPhase();
               return true
             }}
         ]
@@ -477,7 +459,7 @@ export class SetupCrownstone extends LiveComponent<{
         ]
       },
       rooms: {
-        header: lang("Lets_pick_a_room_"),
+        header:    lang("Lets_pick_a_room_"),
         subHeader: lang("In_which_room_did_you_put", xUtil.capitalize(this.newCrownstoneState.name)),
         optionsBottom: true,
         options: roomOptions
@@ -489,7 +471,7 @@ export class SetupCrownstone extends LiveComponent<{
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View style={{width:0.6*screenWidth, height:0.6*screenWidth}}>
-              <SetupCircle radius={0.3*screenWidth} />
+              <SetupCircle radius={0.3*screenWidth} multiplier={0.5} />
             </View>
           </View>
         ),
@@ -514,7 +496,7 @@ export class SetupCrownstone extends LiveComponent<{
         options: successOptions
       },
       successWhileAborting: {
-        header:lang("Setup_complete_"),
+        header:    lang("Setup_complete_"),
         subHeader: lang("This_Crownstone_was_added"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
@@ -527,8 +509,8 @@ export class SetupCrownstone extends LiveComponent<{
         options: successOptions
       },
       iKnowThisOne: {
-        header:lang("I_know_this_one_"),
-        subHeader: lang("This_Crownstone_was_alrea", this.newCrownstoneState.name,this.newCrownstoneState.location.name),
+        header:    lang("I_know_this_one_"),
+        subHeader: lang("This_Crownstone_was_alrea", this.newCrownstoneState.name, this.newCrownstoneState.location.name),
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.jpg'),
         optionsBottom: true,
         options: successOptions

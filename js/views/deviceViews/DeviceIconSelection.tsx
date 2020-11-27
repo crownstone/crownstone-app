@@ -488,6 +488,16 @@ export const getRandomDeviceIcon = function() {
   let set = listOfIcons[keys[index]];
   return set[Math.floor(Math.random()*set.length)]
 }
+export const getRandomHubIcon = function() {
+  let keys = [
+    'c1-router',
+    'c2-crownstone',
+    'c1-hdd2',
+    'c1-house',
+  ];
+  let index = Math.floor(Math.random()*keys.length);
+  return keys[index];
+}
 
 export class DeviceIconSelection extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any, closeModal:boolean}, any> {
   static options(props) {

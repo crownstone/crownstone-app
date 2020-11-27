@@ -123,6 +123,7 @@ import { GoogleAssistantOverview } from "../views/thirdParty/google/GoogleAssist
 import { PermissionIntroduction } from "../views/startupViews/PermissionIntroduction";
 import { HueOverview } from "../views/thirdParty/hue/HueOverview";
 import { HueAdd } from "../views/thirdParty/hue/HueAdd";
+import { SetupHub } from "../views/addingCrownstones/SetupHub";
 
 
 export const Views = {
@@ -130,6 +131,7 @@ export const Views = {
 
   AddCrownstone:                     AddCrownstone,
   SetupCrownstone:                   SetupCrownstone,
+  SetupHub:                          SetupHub,
   ScanningForSetupCrownstones:       ScanningForSetupCrownstones,
 
   DfuIntroduction:                   DfuIntroduction,

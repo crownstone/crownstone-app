@@ -445,7 +445,7 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: Called enableExtendedLogging")
     if (enableLogging.boolValue == true) {
       BluenetLib.LOG.setFileLevel(.VERBOSE)
-      BluenetLib.LOG.setPrintLevel(.INFO)
+      BluenetLib.LOG.setPrintLevel(.DEBUG)
       
       LOGGER.setFileLevel(.VERBOSE)
       LOGGER.setPrintLevel(.VERBOSE)
@@ -605,11 +605,6 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("setTime", callback, GLOBAL_BLUENET.bluenet.control.setTime(time))
   }
   
-  @objc func getTime(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getTime", callback, GLOBAL_BLUENET.bluenet.state.getTime())
-  }
-
-
   @objc func batterySaving(_ state: NSNumber) -> Void {
     let batterySavingState : Bool = state.boolValue
     LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
@@ -1041,6 +1036,41 @@ open class BluenetJS: RCTEventEmitter {
          }
       }
    }
+  
+  @objc func setUartKey(_ uartKey: String, callback: @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("setUartKey", callback, GLOBAL_BLUENET.bluenet.config.setUartKey(uartKey))
+  }
+  
+  
+  @objc func transferHubTokenAndCloudId(_ hubToken: String, cloudId: String, callback: @escaping RCTResponseSenderBlock) {
+    let payload = HubPacketGenerator.tokenSphereIdPacket(hubToken: hubToken, cloudId: cloudId)
+    LOGGER.info("BluenetBridge: Called transferHubTokenAndCloudId")
+    GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: payload)
+      .done{ value in
+        let hubResult = HubParser(value)
+        if (hubResult.valid) {
+          callback([["error" : false, "data": [
+            "protocolVersion": hubResult.protocolVersion,
+            "type":            hubResult.typeString,
+            "errorType":       hubResult.errorType,
+            "message":         hubResult.message
+          ]]])
+        }
+        else {
+          callback([["error" : true, "data": "INVALID_REPLY"]])
+        }
+        
+        
+      }
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN transferHubTokenAndCloudId \(err)"]])
+        }
+    }
+  }
   
 
   @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {

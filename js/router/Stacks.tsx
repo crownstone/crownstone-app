@@ -52,6 +52,22 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
+    // return {
+    //   stack: {
+    //     children: [
+    //       // { component: {name: "SettingsApp"} },
+    //       // { component: {name: "SetupHub"} },
+    //       { component: {name: "SetupHub", passProps: {sphereId: "8d5898f4-4cca-6e73-6e1c-cec769435282", setupHubItem: { handle:"abc",}}} },
+    //     ],
+    //     options: {
+    //       bottomTab: {
+    //         text: Languages.get("Tabs","Overview")(),
+    //         icon: require('../images/icons/house.png'),
+    //       }
+    //     }
+    //   }
+    // }
+
     return {
       bottomTabs: {
         id: 'bottomTabs',

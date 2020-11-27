@@ -116,6 +116,8 @@
 		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
 		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
 		FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF2D2B1248A9093003973F6 /* Zip.framework */; };
+		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
+		FAF4F83A256D20A600320825 /* hubData.md in Resources */ = {isa = PBXBuildFile; fileRef = FAF4F839256D20A600320825 /* hubData.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -598,6 +600,8 @@
 		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FAF2D2B1248A9093003973F6 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
+		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
+		FAF4F839256D20A600320825 /* hubData.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = hubData.md; path = "../../../XCode/bluenet-ios-lib/doc/hubData.md"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -710,6 +714,7 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
+				FAF4F802256D1FC900320825 /* HubProtocol */,
 				FA0177D91FC46563001C8FD6 /* BridgeObjCFiles */,
 				FA0177D21FC46338001C8FD6 /* BridgeFiles */,
 				FA0177D01FC4631A001C8FD6 /* Util */,
@@ -1017,6 +1022,15 @@
 				C1BE5133CF45403FBE811FFB /* ReactNativeNavigationTests.xctest */,
 			);
 			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		FAF4F802256D1FC900320825 /* HubProtocol */ = {
+			isa = PBXGroup;
+			children = (
+				FAF4F839256D20A600320825 /* hubData.md */,
+				FAF4F833256D1FDA00320825 /* HubPackets.swift */,
+			);
+			path = HubProtocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1506,6 +1520,7 @@
 				FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */,
 				FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */,
 				FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */,
+				FAF4F83A256D20A600320825 /* hubData.md in Resources */,
 				FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */,
 				FA3F741123F6F2EE009045A7 /* Roboto-Italic.ttf in Resources */,
 				FA3F741623F6F2EE009045A7 /* Roboto-Light.ttf in Resources */,
@@ -1715,6 +1730,7 @@
 				FA59A6A5224CE5D300D58C9F /* AppDelegate.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,
 				FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */,
+				FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */,
 				FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */,
 				FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */,
 			);

@@ -73,7 +73,6 @@ export class CommandManager {
             case 'commandFactoryReset':
             case 'sendNoOp':
             case 'sendMeshNoOp':
-            case 'getTime':
             case 'meshSetTime':
             case 'setTime':
             case 'setSunTimes':

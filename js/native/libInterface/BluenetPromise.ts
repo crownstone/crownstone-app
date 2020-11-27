@@ -225,16 +225,19 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
                                    ttlMinutes:number) => { return BluenetPromise('broadcastUpdateTrackedDevice', referenceId, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
 
 
-  getCrownstoneUptime:        () => { return BluenetPromise('getCrownstoneUptime'); },
+  getCrownstoneUptime:         () => { return BluenetPromise('getCrownstoneUptime'); },
 
-  getMinSchedulerFreeSpace:   () => { return BluenetPromise('getMinSchedulerFreeSpace'); },
-  getLastResetReason:         () => { return BluenetPromise('getLastResetReason'); },
-  getGPREGRET:                () => { return BluenetPromise('getGPREGRET'); },
-  getAdcChannelSwaps:         () => { return BluenetPromise('getAdcChannelSwaps'); },
+  getMinSchedulerFreeSpace:    () => { return BluenetPromise('getMinSchedulerFreeSpace'); },
+  getLastResetReason:          () => { return BluenetPromise('getLastResetReason'); },
+  getGPREGRET:                 () => { return BluenetPromise('getGPREGRET'); },
+  getAdcChannelSwaps:          () => { return BluenetPromise('getAdcChannelSwaps'); },
 
-  getAdcRestarts:             () => { return BluenetPromise('getAdcRestarts'); },
-  getSwitchHistory:           () => { return BluenetPromise('getSwitchHistory'); },
-  getPowerSamples:            (type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); }
+  getAdcRestarts:              () => { return BluenetPromise('getAdcRestarts'); },
+  getSwitchHistory:            () => { return BluenetPromise('getSwitchHistory'); },
+  getPowerSamples:             (type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); },
+
+  setUartKey:                  (uartKey: string)                   => { return BluenetPromise('setUartKey', uartKey); },
+  transferHubTokenAndCloudId:  (hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', hubToken, cloudId); },
 
 };
 

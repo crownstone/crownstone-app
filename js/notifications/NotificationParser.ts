@@ -171,11 +171,11 @@ class NotificationParserClass {
       let stone = sphere.stones[stoneId];
       if (!stone) { return; }
 
-      let switchState = switchData.switchState;
+      let switchState = switchData.percentage;
       switch (switchData.type) {
         case "PERCENTAGE":
-          if (switchData.switchState === undefined || switchData.switchState === null) { return };
-          switchState = switchData.switchState;
+          if (switchData.percentage === undefined || switchData.percentage === null) { return };
+          switchState = switchData.percentage;
           break;
         case "TURN_OFF":
           switchState = 0;

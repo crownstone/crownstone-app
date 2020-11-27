@@ -74,7 +74,6 @@ const BluenetAPI = {
 
 
   getSwitchState:           () => { console.log("BluenetBridgeCall:  getSwitchState:   "); },
-  getTime:                  () => { console.log("BluenetBridgeCall:  getTime:          "); },
   putInDFU:                 () => { console.log("BluenetBridgeCall:  putInDFU:         "); },
   performDFU:               () => { console.log("BluenetBridgeCall:  repair:       "); },
   restartCrownstone:        () => { console.log("BluenetBridgeCall:  restartCrownstone:"); },
@@ -151,6 +150,10 @@ const BluenetAPI = {
   getBehaviourMasterHash: () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
   setTimeViaBroadcast:    () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
   broadcastExecute:       () => { console.log("BluenetBridgeCall: broadcastExecute"); },
+
+
+  transferHubTokenAndCloudId:   () => { console.log("BluenetBridgeCall: transferHubTokenAndCloudId"); },
+  setUartKey:                   () => { console.log("BluenetBridgeCall: setUartKey"); },
 
 };
 

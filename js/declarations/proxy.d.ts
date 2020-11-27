@@ -260,7 +260,7 @@ interface crownstoneServiceData {
   uartAliveEncrypted        : boolean,
   uartEncryptionRequiredByCrownstone : boolean,
   uartEncryptionRequiredByHub        : boolean,
-  hubIsSetup                : boolean,
+  hubHasBeenSetup           : boolean,
   hubHasInternet            : boolean,
   hubHasError               : boolean,
 

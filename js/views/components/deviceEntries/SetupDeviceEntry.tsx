@@ -20,6 +20,7 @@ import { core } from "../../../core";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
+import { STONE_TYPES } from "../../../Enums";
 
 
 export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?}, any> {
@@ -130,6 +131,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
 
 
   render() {
+    let canSwitch = !(this.props.item.type === STONE_TYPES.guidestone || this.props.item.type === STONE_TYPES.crownstoneUSB || this.props.item.type === STONE_TYPES.hub);
     return (
       <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1, overflow:'hidden'}}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1, overflow:'hidden'}}>
@@ -145,7 +147,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
               <Text style={{fontSize: 13}}>{ lang("Toggling____You_should_he") }</Text>
             </SlideFadeInView>
           </TouchableOpacity>
-          { this._getControl() }
+          { canSwitch && this._getControl() }
         </View>
       </View>
     );
