@@ -1,3 +1,4 @@
+
 interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons()                                               : Promise< void >,
   commandFactoryReset()                                               : Promise< void >,
@@ -146,6 +147,9 @@ interface BluenetPromiseWrapperProtocol {
 
   getSwitchHistory()                           : Promise<SwitchHistory[]>,
   getPowerSamples(type : PowersampleDataType)  : Promise<PowerSamples[]>,
+
+  setUartKey(uartKey: string)                                     : Promise<void>,
+  transferHubTokenAndCloudId(hubToken: string, cloudId: string)   : Promise<HubDataReply>,
 }
 
 interface GPREGRET {
@@ -218,7 +222,7 @@ interface behaviourDebug {
   presenceProfile_8   : boolean[]
 }
 
-type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne'
+type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne' | 'hub'
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)
@@ -227,6 +231,7 @@ interface crownstoneServiceData {
   alternativeState          : boolean,
   hasError                  : boolean,
   setupMode                 : boolean,
+  hubMode                   : boolean,
   crownstoneId              : number, // [0 .. 255]
   switchState               : number, // [0 .. 228]
   flagsBitmask?             : number, // bitmask (optional)
@@ -248,6 +253,16 @@ interface crownstoneServiceData {
 
   behaviourEnabled          : boolean,
   behaviourMasterHash       : number,
+
+  hubData                   : number[],
+
+  uartAlive                 : boolean,
+  uartAliveEncrypted        : boolean,
+  uartEncryptionRequiredByCrownstone : boolean,
+  uartEncryptionRequiredByHub        : boolean,
+  hubIsSetup                : boolean,
+  hubHasInternet            : boolean,
+  hubHasError               : boolean,
 
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
