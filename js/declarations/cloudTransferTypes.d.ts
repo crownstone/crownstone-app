@@ -92,22 +92,11 @@ interface globalIdMap {
   schedules: keyMap,
   devices: keyMap,
   toons: keyMap,
+  hubs: keyMap,
   preferences: keyMap,
 }
 
 
 interface globalSphereMap {
-  [key: string]: {
-    users: keyMap,
-    locations: keyMap,
-    behaviours: keyMap,
-    scenes: keyMap,
-    stones: keyMap,
-    sortedLists: keyMap,
-    messages: keyMap,
-    spheres: keyMap,
-    schedules: keyMap,
-    toons: keyMap,
-    preferences: keyMap,
-  }
+  [key: string]: globalIdMap
 }

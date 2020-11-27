@@ -61,7 +61,6 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'commandFactoryReset' } |
   { commandName : 'sendNoOp' } |
   { commandName : 'sendMeshNoOp' } |
-  { commandName : 'getTime' } |
   { commandName : 'meshSetTime', time:  number } |
   { commandName : 'setTime',     time?: number } |
   { commandName : 'setSunTimes', sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number } |

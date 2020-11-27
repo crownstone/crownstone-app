@@ -223,4 +223,9 @@ interface GraphData {
 type sphereId = string
 type stoneId  = string
 
-
+interface HubDataReply {
+  protocolVersion: number,
+  type:            string, // success | error
+  errorType:       number // can be null
+  message:         string // default empty string ""
+}

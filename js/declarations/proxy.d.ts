@@ -1,3 +1,4 @@
+
 interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons()                                               : Promise< void >,
   commandFactoryReset()                                               : Promise< void >,
@@ -146,6 +147,9 @@ interface BluenetPromiseWrapperProtocol {
 
   getSwitchHistory()                           : Promise<SwitchHistory[]>,
   getPowerSamples(type : PowersampleDataType)  : Promise<PowerSamples[]>,
+
+  setUartKey(uartKey: string)                                     : Promise<void>,
+  transferHubTokenAndCloudId(hubToken: string, cloudId: string)   : Promise<HubDataReply>,
 }
 
 interface GPREGRET {
@@ -218,7 +222,7 @@ interface behaviourDebug {
   presenceProfile_8   : boolean[]
 }
 
-type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne'
+type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne' | 'hub'
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)
