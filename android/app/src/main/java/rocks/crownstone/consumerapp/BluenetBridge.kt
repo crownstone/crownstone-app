@@ -3375,7 +3375,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putDouble("powerFactor", serviceData.powerFactor)
 		serviceDataMap.putDouble("powerUsageReal", serviceData.powerUsageReal)
 		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
-		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble()) // TODO: should be long?
+		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble())
 		serviceDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash.toInt())
 
 		val hubDataArray = Arguments.createArray()
@@ -3388,7 +3388,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putBoolean("uartAliveEncrypted",                   serviceData.hubFlagUartAliveEncrypted)
 		serviceDataMap.putBoolean("uartEncryptionRequiredByCrownstone",   serviceData.hubFlagUartEncryptionRequiredByStone)
 		serviceDataMap.putBoolean("uartEncryptionRequiredByHub",          serviceData.hubFlagUartEncryptionRequiredByHub)
-		serviceDataMap.putBoolean("hubIsSetup",                           serviceData.hubFlagHasBeenSetup)
+		serviceDataMap.putBoolean("hubHasBeenSetup",                      serviceData.hubFlagHasBeenSetup)
 		serviceDataMap.putBoolean("hubHasInternet",                       serviceData.hubFlagHasInternet)
 		serviceDataMap.putBoolean("hubHasError",                          serviceData.hubFlagHasError)
 
@@ -3417,6 +3417,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			DeviceType.CROWNSTONE_DONGLE -> "crownstoneUSB"
 			DeviceType.GUIDESTONE -> "guidestone"
 			DeviceType.CROWNSTONE_BUILTIN_ONE -> "builtinOne"
+			DeviceType.CROWNSTONE_HUB -> "hub"
 			else -> "undefined"
 		}
 		if (deviceTypeString == "undefined") {
