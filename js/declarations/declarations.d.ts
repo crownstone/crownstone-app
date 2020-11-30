@@ -227,5 +227,6 @@ interface HubDataReply {
   protocolVersion: number,
   type:            string, // success | error
   errorType:       number // can be null
+  dataType:        number // can be null
   message:         string // default empty string ""
 }

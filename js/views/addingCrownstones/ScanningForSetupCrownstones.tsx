@@ -206,7 +206,6 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
   render() {
     const { stoneArray, ids } = this._getStoneList();
 
-
     let showNearUnverified = ids.length === 0 && this.state.showVerifiedUnowned === false && this.state.showNearUnverified;
     let showNothingYet     = ids.length === 0 && this.state.showVerifiedUnowned === false && this.state.showNearUnverified === false && this.state.showNoScans === false && this.state.showNothingYet;
 

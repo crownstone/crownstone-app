@@ -1072,6 +1072,38 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
+  @objc func requestCloudId(_ callback: @escaping RCTResponseSenderBlock) {
+    let payload = HubPacketGenerator.requestDataPacket(type: HubRequestDataType.cloudId)
+    LOGGER.info("BluenetBridge: Called requestCloudId")
+    GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: payload)
+      .done{ value in
+        let hubResult = HubParser(value)
+        if (hubResult.valid) {
+          callback([["error" : false, "data": [
+            "protocolVersion": hubResult.protocolVersion,
+            "type":            hubResult.typeString,
+            "dataType":        hubResult.dataType,
+            "message":         hubResult.message
+          ]]])
+        }
+        else {
+          callback([["error" : true, "data": "INVALID_REPLY"]])
+        }
+        
+        
+      }
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN requestCloudId \(err)"]])
+        }
+    }
+  }
+  
+
+  
 
   @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {
       wrapForBluenet("getMinSchedulerFreeSpace", callback, GLOBAL_BLUENET.bluenet.debug.getMinSchedulerFreeSpace())

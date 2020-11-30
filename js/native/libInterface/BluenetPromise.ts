@@ -238,6 +238,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   setUartKey:                  (uartKey: string)                   => { return BluenetPromise('setUartKey', uartKey); },
   transferHubTokenAndCloudId:  (hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', hubToken, cloudId); },
+  requestCloudId:              () => { return BluenetPromise('requestCloudId'); },
 
 };
 

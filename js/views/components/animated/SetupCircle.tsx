@@ -30,7 +30,7 @@ export class SetupCircle extends Component<any, any> {
     };
 
     // calculate the size of the circle based on the screen size
-    this.multiplier = this.props.multiplier || 1;
+    this.multiplier = this.props.multiplier ?? 1;
     this.borderWidth = props.radius / 10;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
     this.outerDiameter = 2 * props.radius;

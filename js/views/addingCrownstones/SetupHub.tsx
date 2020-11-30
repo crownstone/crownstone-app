@@ -124,14 +124,13 @@ export class SetupHub extends LiveComponent<{
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
 
       let hubHelper = new SetupHubHelper();
-      console.log("hubIsAlreadySetup", hubIsAlreadySetup)
+      console.log("hubIsAlreadySetup", hubIsAlreadySetup, newStoneData)
       if (hubIsAlreadySetup === false) {
         await hubHelper.setup(this.props.sphereId, newStoneData.id);
       }
       else {
         await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
       }
-
       this.newCrownstoneState.newStoneId    = newStoneData.id;
       this.newCrownstoneState.setupFinished = true;
 
@@ -172,7 +171,6 @@ export class SetupHub extends LiveComponent<{
       }
     }
     catch (err) {
-      console.log("Oh fuck", err)
       if (this.abort) {
         return this._interview.setLockedCard("aborted");
       }

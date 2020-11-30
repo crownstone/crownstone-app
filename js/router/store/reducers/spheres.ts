@@ -177,7 +177,7 @@ let combinedSphereReducer = combineReducers({
   locations:   locationsReducer,
   stones:      stonesReducer,
   scenes:      scenesReducer,
-  hub:         hubReducer,
+  hubs:        hubReducer,
   messages:    messageReducer,
   state:       sphereStateReducer,
   thirdParty:  thirdPartyReducer,

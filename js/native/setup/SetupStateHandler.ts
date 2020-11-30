@@ -133,6 +133,7 @@ class SetupStateHandlerClass {
         // this is here in case the device type changes. The hub might change a dongle to hub on the fly.
         if (this._stonesInSetupStateTypes[handle]?.rawType !== setupAdvertisement.serviceData.deviceType) {
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
+          core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
         if (emitDiscovery) {

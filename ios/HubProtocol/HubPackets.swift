@@ -11,12 +11,21 @@ import BluenetLib
 
 let PROTOCOL_VERSION : UInt8 = 0
 
-public enum HubDataTypes : UInt16 {
+public enum HubDataType : UInt16 {
     case setup = 0
+    case command = 1
+    case factoryReset = 2
+    case requestData = 10
 }
-public enum HubDataReplyTypes : UInt16 {
-    case success = 0
-    case error   = 4000
+
+public enum HubRequestDataType : UInt16 {
+    case cloudId = 0
+}
+
+public enum HubDataReplyType : UInt16 {
+    case success   = 0
+    case dataReply = 10
+    case error     = 4000
 }
 
 
@@ -28,13 +37,23 @@ public class HubPacketGenerator {
         let cloudIdBytes = Conversion.string_to_uint8_array(cloudId)
         
         payload.append(PROTOCOL_VERSION)
-        payload += Conversion.uint16_to_uint8_array(NSNumber(value: HubDataTypes.setup.rawValue).uint16Value)
+        payload += Conversion.uint16_to_uint8_array(NSNumber(value: HubDataType.setup.rawValue).uint16Value)
         payload += Conversion.uint16_to_uint8_array(NSNumber(value: hubTokenBytes.count).uint16Value)
         payload += hubTokenBytes
         payload += Conversion.uint16_to_uint8_array(NSNumber(value: cloudIdBytes.count).uint16Value)
         payload += cloudIdBytes
         
-        print("SENDING, tokenSphereIdPacket",payload)
+        return payload
+    }
+    
+    
+    static func requestDataPacket(type: HubRequestDataType) -> [UInt8] {
+        var payload : [UInt8] = []
+
+        payload.append(PROTOCOL_VERSION)
+        payload += Conversion.uint16_to_uint8_array(NSNumber(value: HubDataType.requestData.rawValue).uint16Value)
+        payload += Conversion.uint16_to_uint8_array(NSNumber(value: type.rawValue).uint16Value)
+    
         return payload
     }
 }
@@ -47,6 +66,8 @@ public class HubParser {
     var typeString : String = "unknown"
     
     var errorType: UInt16?
+    var dataType: UInt16?
+    
     var messageLength: UInt16!
     var message: String = ""
     
@@ -57,13 +78,11 @@ public class HubParser {
     }
         
     func load(_ data: [UInt8]) {
-        print("Load Data into HubParser", data)
-        
         let stepper = DataStepper(data)
         do {
             protocolVersion = try stepper.getUInt8()
             type = try stepper.getUInt16()
-            let enumValue = HubDataReplyTypes.init(rawValue: type)
+            let enumValue = HubDataReplyType.init(rawValue: type)
             if (enumValue == nil) {
                 valid = false
                 return
@@ -71,13 +90,21 @@ public class HubParser {
             
             self.typeString = String(describing: enumValue!)
             
-            if (type == HubDataReplyTypes.error.rawValue) {
+            switch type {
+            case HubDataReplyType.error.rawValue:
                 errorType = try stepper.getUInt16()
+            case HubDataReplyType.dataReply.rawValue:
+                dataType = try stepper.getUInt16()
+            default:
+                // do nothing
+                break
             }
             
-            messageLength = try stepper.getUInt16()
-            if (messageLength > 0) {
-                message = Conversion.uint8_array_to_string(try stepper.getBytes(messageLength))
+            message = Conversion.uint8_array_to_string(try stepper.getRemainingBytes())
+            
+            if (type == HubDataReplyType.dataReply.rawValue) {
+                // you can do additional formatting here.
+                // currently the cloudId is also a string.
             }
         }
         catch {

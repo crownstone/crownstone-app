@@ -96,6 +96,22 @@ export const DataUtil = {
     return stone || null;
   },
 
+  getHubWithCloudId(sphereId, hubCloudId: string) : {id: string, data: any} {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let hubs = sphere.hubs;
+    if (!hubs) return null;
+    let hubIds = Object.keys(hubs);
+    for (let i = 0; i < hubIds.length; i++) {
+      let hub = sphere.hubs[hubIds[i]];
+      if (hub.config.cloudId === hubCloudId) {
+        return {id: hubIds[i], data: hub};
+      }
+    }
+    return null;
+  },
+
 
   getRule(sphereId, stoneId, ruleId) {
     let state = core.store.getState();

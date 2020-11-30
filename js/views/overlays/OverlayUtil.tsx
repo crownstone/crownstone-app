@@ -18,8 +18,12 @@ export const OverlayUtil = {
       getItems: () => {
         const state = core.store.getState();
         const sphere = state.spheres[sphereId];
+        let locationIds = Object.keys(sphere.locations);
+        locationIds.sort((a,b) => {
+          return sphere.locations[a].config.name > sphere.locations[b].config.name ? 1 : -1;
+        })
         let items = [];
-        Object.keys(sphere.locations).forEach((locationId) => {
+        locationIds.forEach((locationId) => {
           let location = sphere.locations[locationId];
           items.push({
             id: locationId,

@@ -202,7 +202,7 @@ RCT_EXTERN_METHOD(setSunTimesViaConnection: (nonnull NSNumber *)sunriseSecondsSi
 // HUB
 RCT_EXTERN_METHOD(setUartKey: (NSString *)uartKey callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(transferHubTokenAndCloudId: (NSString *)hubToken cloudId:(NSString *)cloudId callback:(RCTResponseSenderBlock)callback)
-
+RCT_EXTERN_METHOD(requestCloudId: (RCTResponseSenderBlock)callback)
 
 // dev
 RCT_EXTERN_METHOD(switchRelay: (nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
