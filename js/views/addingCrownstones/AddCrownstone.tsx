@@ -99,7 +99,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
       },
       installingHub_step3: {
         header: "Join the web!",
-        subHeader: "Finally, connect a internet cable to the hub and press next.",
+        subHeader: "Finally, connect an internet cable to the hub and press next.",
         backgroundImage: require('../../images/backgrounds/hubBackground_internet.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId, hub: true }) }},
