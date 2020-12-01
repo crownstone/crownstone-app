@@ -124,7 +124,6 @@ export class SetupHub extends LiveComponent<{
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
 
       let hubHelper = new SetupHubHelper();
-      console.log("hubIsAlreadySetup", hubIsAlreadySetup, newStoneData)
       if (hubIsAlreadySetup === false) {
         await hubHelper.setup(this.props.sphereId, newStoneData.id);
       }

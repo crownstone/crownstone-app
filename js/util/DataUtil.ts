@@ -96,7 +96,7 @@ export const DataUtil = {
     return stone || null;
   },
 
-  getHubWithCloudId(sphereId, hubCloudId: string) : {id: string, data: any} {
+  getHubByCloudId(sphereId, hubCloudId: string) : {id: string, data: HubData} | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
@@ -110,6 +110,33 @@ export const DataUtil = {
       }
     }
     return null;
+  },
+
+  getHubByStoneId(sphereId, stoneId: string) : {id: string, data: HubData} | null {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let hubs = sphere.hubs;
+    if (!hubs) return null;
+    let hubIds = Object.keys(hubs);
+    for (let i = 0; i < hubIds.length; i++) {
+      let hub = sphere.hubs[hubIds[i]];
+      if (hub.config.linkedStoneId === stoneId) {
+        return {id: hubIds[i], data: hub};
+      }
+    }
+    return null;
+  },
+
+
+  getHubById(sphereId, hubId: string) : HubData | null {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let hubs = sphere.hubs;
+    if (!hubs) return null;
+    let hubIds = Object.keys(hubs);
+    return hubs[hubId] || null;
   },
 
 

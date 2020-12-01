@@ -38,6 +38,8 @@ import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
+import { STONE_TYPES } from "../../Enums";
+import { HubEntry } from "../components/deviceEntries/HubEntry";
 
 
 
@@ -203,6 +205,23 @@ lang("_Indoor_localization_is_c_body"),
           </View>
         </View>
       )
+    }
+    else if (item.stone.config.type === STONE_TYPES.hub) {
+      return (
+        <View key={stoneId + '_entry'}>
+          <HubEntry
+            sphereId={this.props.sphereId}
+            stoneId={stoneId}
+            viewingRemotely={this.viewingRemotely}
+            setSwitchView={(value) => { this.setState({switchView: value })}}
+            switchView={this.state.switchView}
+            nearestInSphere={stoneId === this.nearestStoneIdInSphere}
+            nearestInRoom={stoneId === this.nearestStoneIdInRoom}
+            toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
+            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+          />
+        </View>
+      );
     }
     else {
       return (

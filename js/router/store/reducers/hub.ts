@@ -4,18 +4,22 @@ import stonesReducer       from './stones'
 import { STONE_TYPES }     from "../../../Enums";
 
 
-let defaultSettings = {
+
+let defaultSettings : HubData = {
   config: {
     cloudId:   null,
     ipAddress: null,
     linkedStoneId: null,
-    initialized: false,
     updatedAt: 1,
   },
   state: {
-    hubSetupPerformed: false,
-    uartEnabled:       false,
-    sseEnabled:        false,
+    uartAlive                          : false,
+    uartAliveEncrypted                 : false,
+    uartEncryptionRequiredByCrownstone : false,
+    uartEncryptionRequiredByHub        : false,
+    hubHasBeenSetup                    : false,
+    hubHasInternet                     : false,
+    hubHasError                        : false,
   },
   reachability: {
     reachable: false,
@@ -45,7 +49,6 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.cloudId           = update(action.data.cloudId,       newState.cloudId);
-        newState.initialized       = update(action.data.initialized,   newState.initialized);
         newState.ipAddress         = update(action.data.ipAddress,     newState.ipAddress);
         newState.linkedStoneId     = update(action.data.linkedStoneId, newState.linkedStoneId);
         newState.updatedAt         = getTime(action.data.updatedAt);
@@ -64,9 +67,13 @@ const hubStateReducer = (state = defaultSettings.state, action : any = {}) => {
     case 'UPDATE_HUB_STATE':
       if (action.data) {
         let newState = {...state};
-        newState.hubSetupPerformed = update(action.data.hubSetupPerformed, newState.hubSetupPerformed);
-        newState.uartEnabled       = update(action.data.uartEnabled,       newState.uartEnabled);
-        newState.sseEnabled        = update(action.data.sseEnabled,        newState.sseEnabled);
+        newState.uartAlive                          = update(action.data.uartAlive,                          newState.uartAlive);
+        newState.uartAliveEncrypted                 = update(action.data.uartAliveEncrypted,                 newState.uartAliveEncrypted);
+        newState.uartEncryptionRequiredByCrownstone = update(action.data.uartEncryptionRequiredByCrownstone, newState.uartEncryptionRequiredByCrownstone);
+        newState.uartEncryptionRequiredByHub        = update(action.data.uartEncryptionRequiredByHub,        newState.uartEncryptionRequiredByHub);
+        newState.hubHasBeenSetup                    = update(action.data.hubHasBeenSetup,                    newState.hubHasBeenSetup);
+        newState.hubHasInternet                     = update(action.data.hubHasInternet,                     newState.hubHasInternet);
+        newState.hubHasError                        = update(action.data.hubHasError,                        newState.hubHasError);
         return newState;
       }
       return state;

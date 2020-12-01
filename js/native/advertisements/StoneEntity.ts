@@ -9,6 +9,7 @@ import { StoneStoreManager } from "./StoneStoreManager";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
@@ -36,6 +37,8 @@ export class StoneEntity {
   store;
   storeManager : StoneStoreManager;
   meshTracker : StoneMeshTracker;
+
+  hubId;
 
   lastKnownTimestamp = 0;
   lastKnownUniqueElement;
@@ -323,7 +326,6 @@ export class StoneEntity {
   handleDirectAdvertisement(stone, advertisement : crownstoneAdvertisement) {
     this._updateStoneLastSeen(stone);
 
-
     // update the state entity
     this._handleAdvertisementContent(stone, advertisement);
 
@@ -387,20 +389,54 @@ export class StoneEntity {
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
       LOGd.advertisements('StoneEntity: IGNORE: DFU reset is required for this Crownstone.');
-      return;
+      return
     }
 
-    this.handleConfig(stone, advertisement);
+    if (advertisement.serviceData.deviceType === "hub") {
+      this.handleHubData(stone, advertisement);
+    }
+    else {
+      this.handleConfig(stone, advertisement);
+      this.handleAbilities(stone, advertisement);
+      this.handleErrors(stone, advertisement);
+    }
 
-    this.handleAbilities(stone, advertisement);
-
-    this.handleErrors(stone, advertisement);
 
     if (!advertisement.serviceData.errorMode) {
       this.handleState(stone, advertisement);
     }
   }
 
+
+  handleHubData(stone, advertisement: crownstoneAdvertisement) {
+    let hubItem = null;
+    if (this.hubId) {
+      hubItem = DataUtil.getHubById(this.sphereId, this.hubId);
+    }
+    if (!hubItem) {
+      let hub = DataUtil.getHubByStoneId(this.sphereId, this.stoneId);
+      if (hub) {
+        this.hubId = hub.id;
+        hubItem = hub.data;
+      }
+    }
+
+    if (!hubItem) { return; }
+
+    let updatedState : any = {};
+
+    if (hubItem.state.uartAlive                          !== advertisement.serviceData.uartAlive                         ) { updatedState.uartAlive                          = advertisement.serviceData.uartAlive                         ; }
+    if (hubItem.state.uartAliveEncrypted                 !== advertisement.serviceData.uartAliveEncrypted                ) { updatedState.uartAliveEncrypted                 = advertisement.serviceData.uartAliveEncrypted                ; }
+    if (hubItem.state.uartEncryptionRequiredByCrownstone !== advertisement.serviceData.uartEncryptionRequiredByCrownstone) { updatedState.uartEncryptionRequiredByCrownstone = advertisement.serviceData.uartEncryptionRequiredByCrownstone; }
+    if (hubItem.state.uartEncryptionRequiredByHub        !== advertisement.serviceData.uartEncryptionRequiredByHub       ) { updatedState.uartEncryptionRequiredByHub        = advertisement.serviceData.uartEncryptionRequiredByHub       ; }
+    if (hubItem.state.hubHasBeenSetup                    !== advertisement.serviceData.hubHasBeenSetup                   ) { updatedState.hubHasBeenSetup                    = advertisement.serviceData.hubHasBeenSetup                   ; }
+    if (hubItem.state.hubHasInternet                     !== advertisement.serviceData.hubHasInternet                    ) { updatedState.hubHasInternet                     = advertisement.serviceData.hubHasInternet                    ; }
+    if (hubItem.state.hubHasError                        !== advertisement.serviceData.hubHasError                       ) { updatedState.hubHasError                        = advertisement.serviceData.hubHasError                       ; }
+
+    if (Object.keys(updatedState).length > 0) {
+      core.store.dispatch({type:"UPDATE_HUB_STATE", sphereId: this.sphereId, hubId: this.hubId, data: updatedState });
+    }
+  }
 
   /**
    * This function will check if the ignore conditions are validated and the dataflow can be resumed.

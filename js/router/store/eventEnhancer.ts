@@ -29,7 +29,7 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, messageIds:{} , scheduleIds:{}, toonIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, messageIds:{} , scheduleIds:{}, toonIds:{}, hubIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         if (action.__noEvents !== true) {
@@ -63,6 +63,7 @@ function checkAction(action, affectedIds) {
   if (action.stoneId)        { affectedIds.stoneIds[action.stoneId]             = true; }
   if (action.messageId)      { affectedIds.messageIds[action.messageId]         = true; }
   if (action.toonId)         { affectedIds.toonIds[action.toonId]               = true; }
+  if (action.hubId)          { affectedIds.hubIds[action.hubId]                 = true; }
 
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
@@ -323,6 +324,14 @@ function checkAction(action, affectedIds) {
       eventStatus['deviceTrackingTokenTried'] = affectedIds; break;
     case "SET_ACTIVE_RANDOM_DEVICE_TOKEN":
       break;
+
+    case "ADD_HUB":
+    case "UPDATE_HUB_CONFIG":
+    case "UPDATE_HUB_STATE":
+    case "LINK_HUB_TO_STONE":
+    case "REMOVE_ALL_HUBS":
+    case "REMOVE_HUB":
+      eventStatus['hubUpdated'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

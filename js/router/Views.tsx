@@ -124,6 +124,7 @@ import { PermissionIntroduction } from "../views/startupViews/PermissionIntroduc
 import { HueOverview } from "../views/thirdParty/hue/HueOverview";
 import { HueAdd } from "../views/thirdParty/hue/HueAdd";
 import { SetupHub } from "../views/addingCrownstones/SetupHub";
+import { HubOverview } from "../views/hubViews/HubOverview";
 
 
 export const Views = {
@@ -148,6 +149,7 @@ export const Views = {
   GoogleAssistantOverview:           GoogleAssistantOverview,
   // CameraRollView:                    CameraRollView,
   // PictureView:                       PictureView,
+  HubOverview:                       HubOverview,
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,

@@ -104,29 +104,7 @@ export class SetupHubHelper {
       core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 38 / 20 });
 
       if (!createHubOnline) {
-        LOG.info("check if the hub is already in our database...");
-        let existingHub = DataUtil.getHubWithCloudId(sphereId, hubCloudId);
-        LOG.info(existingHub);
-        let type = "ADD_HUB";
-        if (existingHub) {
-          type = "UPDATE_HUB";
-          hubId = existingHub.id;
-        }
-        try {
-          LOG.info("check if we have access to that hub in the cloud...");
-          let hubData = await CLOUD.getHub(hubCloudId);
-          core.store.dispatch({
-            type, sphereId, hubId,
-            data: { cloudId: hubCloudId, linkedStoneId: stoneId }
-          });
-        }
-        catch (e) {
-          LOG.info("Nope. we dont have it.",e);
-          core.store.dispatch({
-            type, sphereId, hubId,
-            data: { cloudId: null, linkedStoneId: stoneId }
-          });
-        }
+        let hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
 
       core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 40 / 20 });
@@ -136,5 +114,78 @@ export class SetupHubHelper {
     // we load the setup into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(setupHubPromise, {from: 'Setup: claiming hub'});
   }
+
+
+  /**
+   * this method will ask the hub for it's cloud id. It will then do the following:
+   * _setLocalHub
+   * @param sphereId
+   * @param stoneId
+   */
+  async createLocalHubInstance(sphereId, stoneId: string) : Promise<string> {
+    // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
+    if (!stone.config.handle) { throw {code: 2, message:"No handle."};     }
+
+    let uartKey = null;
+    let hubToken = null;
+    let hubCloudId = null;
+    let hubId = xUtil.getUUID();
+    let setupHubPromise = async () => {
+      // we now have everything we need to create a hub.
+      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+
+      LOG.info("hubSetupProgress: Requesting cloud Id...");
+      let requestedId = await BluenetPromiseWrapper.requestCloudId();
+      hubCloudId = requestedId.message;
+      await BluenetPromiseWrapper.disconnectCommand();
+
+      let hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
+
+      return hubId;
+    }
+
+    // we load the setup into the promise manager with priority so we are not interrupted
+    return BlePromiseManager.registerPriority(setupHubPromise, {from: 'Setup: claiming hub'});
+  }
+
+
+  /**
+   * 1 - Check if we have a hub with this ID in our local database.
+   * 2 - if 1 fails, Check if we have access to this cloud id in the cloud.
+   * 3 - if 1 and 2 fail, Create a entry in our local database to apply the hub data to. else create local entry with the corresponding cloud data.
+   * @param sphereId
+   * @param stoneId
+   * @param hubCloudId
+   */
+  async _setLocalHub(sphereId, stoneId, hubCloudId) {
+    let hubId = xUtil.getUUID();
+    LOG.info("Check if the hub is already in our database...");
+    let existingHub = DataUtil.getHubByCloudId(sphereId, hubCloudId);
+    LOG.info(existingHub);
+    let type = "ADD_HUB";
+    if (existingHub) {
+      type = "UPDATE_HUB_CONFIG";
+      hubId = existingHub.id;
+    }
+    try {
+      LOG.info("Check if we have access to that hub in the cloud...");
+      let hubData = await CLOUD.getHub(hubCloudId);
+      core.store.dispatch({
+        type, sphereId, hubId,
+        data: { cloudId: hubCloudId, linkedStoneId: stoneId }
+      });
+    }
+    catch (e) {
+      LOG.info("Nope. we dont have it.",e);
+      core.store.dispatch({
+        type, sphereId, hubId,
+        data: { cloudId: null, linkedStoneId: stoneId }
+      });
+    }
+    return hubId;
+  }
+
 
 }

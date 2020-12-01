@@ -1,0 +1,412 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("HubOverview", key)(a,b,c,d,e);
+}
+import * as React from 'react';
+
+import { Background } from '../components/Background'
+import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
+import { SphereDeleted }        from "../static/SphereDeleted";
+import { StoneDeleted }         from "../static/StoneDeleted";
+import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
+import { StoneUtil } from "../../util/StoneUtil";
+import { INTENTS } from "../../native/libInterface/Constants";
+import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import {
+  ActivityIndicator,
+  Text,
+  TextStyle,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from "react-native";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { Icon } from "../components/Icon";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { xUtil } from "../../util/StandAloneUtil";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { DimmerSlider, DIMMING_INDICATOR_SIZE, DIMMING_INDICATOR_SPACING } from "../components/DimmerSlider";
+import { AnimatedCircle } from "../components/animated/AnimatedCircle";
+import { LockedStateUI } from "../components/LockedStateUI";
+import { STONE_TYPES } from "../../Enums";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { Navigation } from "react-native-navigation";
+import { Util } from "../../util/Util";
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
+import { AlternatingContent } from "../components/animated/AlternatingContent";
+import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { DataUtil } from "../../util/DataUtil";
+import { Button } from "../components/Button";
+
+
+export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
+  static options(props) {
+    getTopBarProps(props);
+    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+  }
+
+  unsubscribeStoreEvents;
+
+
+  constructor(props) {
+    super(props);
+
+    const state = core.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) {
+      return;
+    }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) {
+      return;
+    }
+
+    if (stone.config.firmwareVersionSeenInOverview === null) {
+      core.store.dispatch({
+        type: "UPDATE_STONE_LOCAL_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
+      });
+    }
+
+    this.state = {fixing: false}
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'deviceEdit')    {
+      NavigationUtil.launchModal( "DeviceEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+    }
+  }
+
+  componentDidMount() {
+    let state = core.store.getState();
+
+    if (state.app.hasSeenDeviceSettings === false) {
+      core.store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { hasSeenDeviceSettings: true } })
+    }
+
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      let state = core.store.getState();
+      if (
+        (state.spheres[this.props.sphereId] === undefined) ||
+        (change.removeSphere         && change.removeSphere.sphereIds[this.props.sphereId]) ||
+        (change.removeStone          && change.removeStone.stoneIds[this.props.stoneId])
+      ) {
+        return this.forceUpdate();
+      }
+
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
+
+      if (
+        !change.removeStone &&
+        (
+          change.hubUpdated ||
+          change.changeAppSettings ||
+          change.stoneLocationUpdated    && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
+          change.changeStoneAvailability && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig       && change.updateStoneConfig.stoneIds[this.props.stoneId]
+        )
+      ) {
+        if (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
+          this._updateNavBar();
+        }
+        this.forceUpdate();
+        return
+      }
+    });
+  }
+
+  _updateNavBar() {
+    getTopBarProps(this.props);
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+    // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
+    // If there is no connection being kept open, this command will not do anything.
+
+    const state = core.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (sphere) {
+      const stone = sphere.stones[this.props.stoneId];
+      if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
+        core.store.dispatch({
+          type: "UPDATE_STONE_LOCAL_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
+        });
+      }
+    }
+  }
+
+
+  _getDebugIcon(stone) {
+    let wrapperStyle : ViewStyle = {
+      width: 35,
+      height: 35,
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      alignItems: 'center',
+      justifyContent: "center"
+    };
+    return (
+      <TouchableOpacity
+        onPress={() => { NavigationUtil.navigate( "SettingsStoneBleDebug",{sphereId: this.props.sphereId, stoneId: this.props.stoneId}) }}
+        style={wrapperStyle}>
+        <Icon name={"ios-bug"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
+      </TouchableOpacity>
+    );
+  }
+
+
+
+  _getStoneIcon(stone, updateAvailable) {
+    let iconColor = colors.white.rgba(1);
+    let size = 0.25*availableScreenHeight;
+    let stateColor = colors.green.hex;
+
+    if (updateAvailable) {
+      return (
+        <TouchableOpacity
+          style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}
+          onPress={() => {
+            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
+          }}
+        >
+          <AlternatingContent
+            style={{width:screenWidth, height:size, justifyContent:'center', alignItems:'center'}}
+            fadeDuration={500}
+            switchDuration={2000}
+            contentArray={[
+              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={"c1-update-arrow"} />,
+              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />,
+            ]}
+          />
+        </TouchableOpacity>
+      );
+    }
+
+
+    return (
+      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
+        <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
+      </View>
+    )
+  }
+
+
+
+  getStateEntries(hub) {
+    let entries = [];
+    let index = 5000;
+    let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
+
+    if (this.state.fixing) {
+      return <View key={"Fixing"} style={{...styles.centered, flex:1, padding:15}}>
+        <Text style={textStyle}>{"Fixing issue..."}</Text>
+        <View style={{flex:0.25}}/>
+        <ActivityIndicator size={'large'} />
+        <View style={{flex:1}}/>
+      </View>
+    }
+
+    // this means the hub itself has no reference in the app to work off from. We should fix this.
+    if (!hub) {
+      return (
+        <View key={"HubReferenceFix"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub reference in the app is missing. Press the button below to fix this!"}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Fix now. "}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={() => {
+              this.setState({fixing: true});
+              let helper = new SetupHubHelper();
+              helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
+                .then((result) => {
+                  this.setState({fixing:false})
+                })
+                .catch((e) => {
+                  this.setState({fixing:false})
+                })
+            }}
+          />
+        </View>
+      );
+    }
+
+    // this means the dongle is set up, but the hub itself is not setup.
+    if (hub.data.state.hubHasBeenSetup === false) {
+      // TODO: have the user possibly select a hub in the database to bind to this entity.
+      return (
+        <View key={"HubSetupFix"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub itself is not initialized yet.. Press the button below to fix this!"}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Initialize hub!"}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={() => {
+              this.setState({fixing: true});
+              let helper = new SetupHubHelper();
+              helper.setup(this.props.sphereId, this.props.stoneId)
+                .then((result) => {
+                  this.setState({fixing:false});
+                })
+                .catch((e) => {
+                  this.setState({fixing:false});
+                })
+            }}
+          />
+        </View>
+      );
+    }
+
+    if (hub.data.state.uartAlive === false) {
+      return (
+        <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub can't talk to the dongle. Check if it is connected and working!"}</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
+    if (hub.data.state.uartAlive === true && hub.data.state.uartAliveEncrypted === false) {
+      return (
+        <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub and the dongle do not agree on the encryption key. Factory reset the hub via the REST interface."}</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
+
+
+    if (!hub) { entries.push(<Text key={index++} style={textStyle}>{"The hub reference in the app is missing."}</Text>); }
+    if (hub && hub.data.state.uartAlive                          ) { entries.push(<Text key={index++} style={textStyle}>{"Uart is alive."}</Text>); }
+    if (hub && hub.data.state.uartAliveEncrypted                 ) { entries.push(<Text key={index++} style={textStyle}>{"Uart is encrypted."}</Text>); }
+    if (hub && hub.data.state.uartEncryptionRequiredByCrownstone ) { entries.push(<Text key={index++} style={textStyle}>{"Uart required by Dongle."}</Text>); }
+    if (hub && hub.data.state.uartEncryptionRequiredByHub        ) { entries.push(<Text key={index++} style={textStyle}>{"Uart required by Hub."}</Text>); }
+    if (hub && hub.data.state.hubHasBeenSetup                    ) { entries.push(<Text key={index++} style={textStyle}>{"Hub is setup."}</Text>); }
+    if (hub && hub.data.state.hubHasInternet                     ) { entries.push(<Text key={index++} style={textStyle}>{"Hub has internet."}</Text>); }
+    if (hub && hub.data.state.hubHasError                        ) { entries.push(<Text key={index++} style={textStyle}>{"Hub has an error..."}</Text>); }
+    return entries;
+  }
+
+  render() {
+    const state = core.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) {
+      return <SphereDeleted/>
+    }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) {
+      return <StoneDeleted/>
+    }
+
+    // core.store.dispatch({type:"REMOVE_ALL_HUBS", sphereId: this.props.sphereId})
+
+    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+
+    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+
+    let hubProblem = false;
+
+    let problemEntries = this.getStateEntries(hub);
+
+    return (
+      <Background image={core.background.lightBlur}>
+        <View style={{flex:0.5}} />
+
+        {/*{ <View style={{padding:30}}><Text style={deviceStyles.header}>{ "Hub state overview:" }</Text></View> }*/}
+
+        { this._getStoneIcon(stone, updateAvailable) }
+        <View style={{width:screenWidth, padding:30, ...styles.centered}}>
+          <Text style={deviceStyles.subHeader}>{"Hub information:"}</Text>
+        </View>
+
+        {problemEntries}
+
+
+        { state.user.developer ? this._getDebugIcon(stone) : undefined }
+      </Background>
+    )
+  }
+}
+
+export function DeviceIcon({ size, color, iconColor, icon}) {
+  let borderWidth = size*0.04;
+  let innerSize = size-1.5*borderWidth;
+  return (
+    <AnimatedCircle size={size} color={color} style={{alignItems:'center', justifyContent:'center'}}>
+      <AnimatedCircle size={innerSize} color={color} style={{borderRadius:0.5*innerSize, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
+        <Icon size={innerSize*0.63} name={icon} color={iconColor} />
+      </AnimatedCircle>
+    </AnimatedCircle>
+  );
+}
+
+function getTopBarProps(props) {
+  const state = core.store.getState();
+  const stone = state.spheres[props.sphereId].stones[props.stoneId];
+  let spherePermissions = Permissions.inSphere(props.sphereId);
+
+  NAVBAR_PARAMS_CACHE = {
+    title: stone.config.name,
+  }
+
+  if (spherePermissions.editCrownstone) {
+    NAVBAR_PARAMS_CACHE["nav"] = {
+      id: 'deviceEdit',
+      text:  lang("Edit"),
+    }
+  }
+
+  return NAVBAR_PARAMS_CACHE;
+}
+
+
+/**
+ * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
+ */
+export function safeStoreUpdate(sphereId, stoneId, storedSwitchState) {
+  const state = core.store.getState();
+  const sphere = state.spheres[sphereId];
+  if (!sphere) { return storedSwitchState; }
+
+  const stone = sphere.stones[stoneId];
+  if (!stone) { return storedSwitchState; }
+
+  if (stone.state.state !== storedSwitchState) {
+    let data = {state: stone.state.state};
+    if (stone.state.state === 0) {
+      data['currentUsage'] = 0;
+    }
+    core.store.dispatch({
+      type: 'UPDATE_STONE_SWITCH_STATE',
+      sphereId: sphereId,
+      stoneId: stoneId,
+      data: data
+    });
+
+    return stone.state.state;
+  }
+
+  return storedSwitchState;
+}
+
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
+
