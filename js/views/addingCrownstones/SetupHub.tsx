@@ -77,6 +77,10 @@ export class SetupHub extends LiveComponent<{
         this.forceUpdate();
       }
     }));
+
+    if (this.props.restoration) {
+      this.startSetupPhase();
+    }
   }
 
   componentWillUnmount() {
@@ -94,18 +98,22 @@ export class SetupHub extends LiveComponent<{
    * This is the setup
    */
   async startSetupPhase() {
+    console.log("HERE")
     this._disableBackButton();
     this.abort = false;
 
+    console.log("HERE2")
     let checkTimeout;
     // we want to know if the hub is already setup before we start the process
     let unsubscriber = NativeBus.on(NativeBus.topics.setupAdvertisement, (data : crownstoneAdvertisement) => {
+      console.log("HERE3")
       if (data.serviceData.deviceType === 'hub') {
         unsubscriber();
         clearTimeout(checkTimeout);
         this._setup(data.serviceData.hubHasBeenSetup);
       }
-     })
+    })
+    console.log("HERE4")
     new Promise((resolve, reject) => {
       checkTimeout = setTimeout(() => {
         unsubscriber()
@@ -116,7 +124,9 @@ export class SetupHub extends LiveComponent<{
   }
 
   async _setup(hubIsAlreadySetup) {
+    console.log("START")
     try {
+      console.log("INIT", this.props.setupItem, this.props.sphereId)
       let newStoneData = await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
@@ -170,6 +180,7 @@ export class SetupHub extends LiveComponent<{
       }
     }
     catch (err) {
+      console.log("ER",err)
       if (this.abort) {
         return this._interview.setLockedCard("aborted");
       }
@@ -200,6 +211,11 @@ export class SetupHub extends LiveComponent<{
         locationId: this.newCrownstoneState.location.id
       }
     });
+
+    // navigate the interview to the finished state.
+    if (this.props.restoration) {
+      return NavigationUtil.dismissModal()
+    }
 
     if (this.abort) {
       this._interview.setLockedCard("successWhileAborting")
@@ -299,13 +315,13 @@ export class SetupHub extends LiveComponent<{
     ];
 
     let restorationCard = {
-      header: lang("Restoring_Crownstone___"),
+      header: "Restoring Hub...",
       subHeader: lang("This_should_only_take_a_m"),
       backgroundImage: require('../../images/backgrounds/fadedLightBackground.jpg'),
       component: (
         <View style={{...styles.centered, flex:1}}>
           <View style={{width:0.6*screenWidth, height:0.6*screenWidth}}>
-            <SetupCircle radius={0.3*screenWidth} />
+            <SetupCircle radius={0.3*screenWidth} multiplier={0.5}/>
           </View>
         </View>
       ),
@@ -388,6 +404,13 @@ export class SetupHub extends LiveComponent<{
             onSelect: (result) => { NavigationUtil.dismissModal(); }
           },
         ]
+      }
+    }
+
+    if (this.props.restoration) {
+      return {
+        start: restorationCard,
+        ...problemCards
       }
     }
 

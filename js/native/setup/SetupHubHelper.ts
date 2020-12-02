@@ -66,7 +66,7 @@ export class SetupHubHelper {
         // generate token
         hubToken = xUtil.getHubHexToken()
         // Create hub in cloud
-        let hubData = await CLOUD.forSphere(sphereId).createHub({ token: hubToken, name: stone.config.name });
+        let hubData = await CLOUD.forSphere(sphereId).createHub({ token: hubToken, name: stone.config.name, linkedStoneId: stone.config.cloudId });
         core.store.dispatch({
           type: "ADD_HUB",
           sphereId,
@@ -107,7 +107,10 @@ export class SetupHubHelper {
         let hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
 
+      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 39 / 20 });
+      await Scheduler.delay(2000, 'wait for hub to initialize')
       core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 40 / 20 });
+      await Scheduler.delay(500, 'wait for hub to initialize')
       return hubCloudId;
     }
 

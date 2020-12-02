@@ -33,6 +33,7 @@ import { DataUtil } from "../../../util/DataUtil";
 import Slider from "@react-native-community/slider";
 import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
+import Timeout = NodeJS.Timeout;
 
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
@@ -71,6 +72,8 @@ export class HubEntry extends Component<{
   storeSwitchState = false;
   storeSwitchStateTimeout = null;
 
+  showStateIconTimeout : Timeout;
+
   revertToNormalViewTimeout = null;
 
   constructor(props) {
@@ -80,6 +83,7 @@ export class HubEntry extends Component<{
     this.state = {
       backgroundColor: new Animated.Value(0),
       statusText:      null,
+      showStateIcon:   false,
     };
   }
 
@@ -105,9 +109,12 @@ export class HubEntry extends Component<{
         return
       }
     }));
+
+    this.showStateIconTimeout = setTimeout(() => { this.setState({showStateIcon:true})}, 2000);
   }
 
   componentWillUnmount() { // cleanup
+    clearTimeout(this.showStateIconTimeout);
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
   }
 
@@ -175,17 +182,17 @@ export class HubEntry extends Component<{
     let explanationText = this._getExplanationText(state, useSwitchView);
 
     let hubProblem = false;
-
     if (!hub) { hubProblem = true; }
     else {
-      hub.data.state.uartAlive                          = hubProblem || !hub.data.state.uartAlive;
-      // hub.data.state.uartAliveEncrypted                 = hubProblem || hub.data.state.uartAliveEncrypted;
-      // hub.data.state.uartEncryptionRequiredByCrownstone = hubProblem || hub.data.state.uartEncryptionRequiredByCrownstone;
-      // hub.data.state.uartEncryptionRequiredByHub        = hubProblem || hub.data.state.uartEncryptionRequiredByHub;
-      hub.data.state.hubHasBeenSetup                    = hubProblem || !hub.data.state.hubHasBeenSetup;
-      hub.data.state.hubHasInternet                     = hubProblem || !hub.data.state.hubHasInternet;
-      hub.data.state.hubHasError                        = hubProblem || hub.data.state.hubHasError;
+      hubProblem = hubProblem || !hub.data.state.uartAlive;
+      hubProblem = hubProblem || !hub.data.state.uartAliveEncrypted;
+      // hubProblem = hubProblem || hub.data.state.uartEncryptionRequiredByCrownstone;
+      // hubProblem = hubProblem || hub.data.state.uartEncryptionRequiredByHub;
+      hubProblem = hubProblem || !hub.data.state.hubHasBeenSetup;
+      hubProblem = hubProblem || !hub.data.state.hubHasInternet;
+      hubProblem = hubProblem || hub.data.state.hubHasError;
     }
+
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
@@ -238,6 +245,7 @@ export class HubEntry extends Component<{
             onPress={() => { if (useSwitchView === false) { this._basePressed(); }}}
           >
             {
+              hubProblem && !this.state.showStateIcon ? <ActivityIndicator size={"small"} /> :
               hubProblem ?
               <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
                 :

@@ -249,6 +249,15 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
+    if (hub.data.state.uartAlive === false) {
+      return (
+        <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub can't talk to the dongle. Check if it is connected and working!"}</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
+
     // this means the dongle is set up, but the hub itself is not setup.
     if (hub.data.state.hubHasBeenSetup === false) {
       // TODO: have the user possibly select a hub in the database to bind to this entity.
@@ -277,14 +286,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
-    if (hub.data.state.uartAlive === false) {
-      return (
-        <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub can't talk to the dongle. Check if it is connected and working!"}</Text>
-          <View style={{flex:1}}/>
-        </View>
-      );
-    }
+
     if (hub.data.state.uartAlive === true && hub.data.state.uartAliveEncrypted === false) {
       return (
         <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>

@@ -193,13 +193,24 @@ lang("_Indoor_localization_is_c_body"),
               item={item}
               restore={true}
               callback={() => {
-                NavigationUtil.launchModal(
-                  "SetupCrownstone",
-                  {
-                    sphereId: this.props.sphereId,
-                    setupStone: item,
-                    restoration: true
-                });
+                if (item.type === STONE_TYPES.hub) {
+                  NavigationUtil.launchModal(
+                    "SetupHub",
+                    {
+                      sphereId: this.props.sphereId,
+                      setupItem: item,
+                      restoration: true
+                    });
+                }
+                else {
+                  NavigationUtil.launchModal(
+                    "SetupCrownstone",
+                    {
+                      sphereId: this.props.sphereId,
+                      setupItem: item,
+                      restoration: true
+                  });
+                }
               }}
             />
           </View>
@@ -278,7 +289,7 @@ lang("_Indoor_localization_is_c_body"),
               ids.push(stoneId);
               stoneArray.push({
                 setupMode: true,
-                handle: handle,
+                ...setupStones[setupId],
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon
               });
@@ -389,10 +400,11 @@ lang("_Indoor_localization_is_c_body"),
             <View style={{height:80}} />
           </View>
         </ScrollView>
-        <SlideFadeInView visible={this.state.switchView}
-                         style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
-                         height={80}
-                         pointerEvents={'none'}
+        <SlideFadeInView
+          visible={this.state.switchView}
+          style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
+          height={80}
+          pointerEvents={'none'}
         >
           <View style={{
             backgroundColor:colors.black.rgba(0.25),
