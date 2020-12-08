@@ -34,6 +34,8 @@ import { Scheduler } from "../../logic/Scheduler";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { Login } from "../startupViews/Login";
+import { LOG, LOGe } from "../../logging/Log";
 
 export class SetupHub extends LiveComponent<{
   sphereId: string,
@@ -64,6 +66,7 @@ export class SetupHub extends LiveComponent<{
       configFinished: false,
       setupFinished:  false,
       newStoneId:     null,
+      newHubId:       null,
     };
   }
 
@@ -98,22 +101,18 @@ export class SetupHub extends LiveComponent<{
    * This is the setup
    */
   async startSetupPhase() {
-    console.log("HERE")
     this._disableBackButton();
     this.abort = false;
 
-    console.log("HERE2")
     let checkTimeout;
     // we want to know if the hub is already setup before we start the process
     let unsubscriber = NativeBus.on(NativeBus.topics.setupAdvertisement, (data : crownstoneAdvertisement) => {
-      console.log("HERE3")
       if (data.serviceData.deviceType === 'hub') {
         unsubscriber();
         clearTimeout(checkTimeout);
         this._setup(data.serviceData.hubHasBeenSetup);
       }
     })
-    console.log("HERE4")
     new Promise((resolve, reject) => {
       checkTimeout = setTimeout(() => {
         unsubscriber()
@@ -124,9 +123,7 @@ export class SetupHub extends LiveComponent<{
   }
 
   async _setup(hubIsAlreadySetup) {
-    console.log("START")
     try {
-      console.log("INIT", this.props.setupItem, this.props.sphereId)
       let newStoneData = await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
@@ -134,12 +131,14 @@ export class SetupHub extends LiveComponent<{
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
 
       let hubHelper = new SetupHubHelper();
+      let hubData;
       if (hubIsAlreadySetup === false) {
-        await hubHelper.setup(this.props.sphereId, newStoneData.id);
+        hubData = await hubHelper.setup(this.props.sphereId, newStoneData.id);
       }
       else {
-        await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
+        hubData = await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
       }
+      this.newCrownstoneState.newHubId      = hubData.hubId;
       this.newCrownstoneState.newStoneId    = newStoneData.id;
       this.newCrownstoneState.setupFinished = true;
 
@@ -180,7 +179,7 @@ export class SetupHub extends LiveComponent<{
       }
     }
     catch (err) {
-      console.log("ER",err)
+      LOGe.info("Something went wrong with the hub setup", err);
       if (this.abort) {
         return this._interview.setLockedCard("aborted");
       }
@@ -201,7 +200,8 @@ export class SetupHub extends LiveComponent<{
   }
 
   _wrapUp() {
-    core.store.dispatch({
+    let actions = [];
+    actions.push({
       type: "UPDATE_STONE_CONFIG",
       sphereId: this.props.sphereId,
       stoneId: this.newCrownstoneState.newStoneId,
@@ -211,6 +211,17 @@ export class SetupHub extends LiveComponent<{
         locationId: this.newCrownstoneState.location.id
       }
     });
+    actions.push({
+      type: "UPDATE_HUB_CONFIG",
+      sphereId: this.props.sphereId,
+      hubId: this.newCrownstoneState.newHubId,
+      data: {
+        name: this.newCrownstoneState.name,
+        linkedStoneId: this.newCrownstoneState.newStoneId,
+        locationId: this.newCrownstoneState.location.id
+      }
+    });
+    core.store.batchDispatch(actions);
 
     // navigate the interview to the finished state.
     if (this.props.restoration) {

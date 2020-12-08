@@ -8,7 +8,7 @@ import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
 import abilityReducer      from './stoneSubReducers/abilities'
 import { STONE_TYPES }     from "../../../Enums";
 
-let defaultSettings = {
+let defaultSettings : StoneData = {
   config: {
     name: 'Crownstone Plug',
     description: '',

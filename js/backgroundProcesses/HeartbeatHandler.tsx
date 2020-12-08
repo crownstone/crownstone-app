@@ -78,7 +78,7 @@ class HeartbeatHandlerClass {
     }
   }
 }
-// 8, 0, 13541750, 3,
+
 
 
 export const HeartbeatHandler = new HeartbeatHandlerClass();

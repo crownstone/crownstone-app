@@ -17,6 +17,19 @@ export const DataUtil = {
    * @param state
    * @param callback
    */
+  callOnAllSpheres: function(callback: (sphereId: string, sphere: SphereData) => void) {
+    let state = core.store.getState()
+    let sphereIds = Object.keys(state.spheres);
+    for (let i = 0; i < sphereIds.length; i++) {
+      callback(sphereIds[i], state.spheres[sphereIds[i]])
+    }
+  },
+
+  /**
+   * Call a callback on all stones in all spheres
+   * @param state
+   * @param callback
+   */
   callOnAllStones: function(state: any, callback: (sphereId: string, stoneId: string, stone: any) => void) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {

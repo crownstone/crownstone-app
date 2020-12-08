@@ -15,6 +15,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 import { DataUtil } from "../../util/DataUtil";
 import { NativeBus } from "../libInterface/NativeBus";
+import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 
 
 const networkError = 'network_error';
@@ -26,15 +27,15 @@ export class SetupHubHelper {
    * @param name // this name is shared with the stone object that we linked to it.
    * @returns {Promise<T>}
    */
-  setup(sphereId, stoneId: string) : Promise<string> {
+  setup(sphereId, stoneId: string) : Promise<{ hubId: string, cloudId: string }> {
     return this._setup(sphereId, stoneId, true);
   }
 
-  setUartKey(sphereId, stoneId: string) : Promise<string> {
+  setUartKey(sphereId, stoneId: string) : Promise<{ hubId: string, cloudId: string }> {
     return this._setup(sphereId, stoneId, false);
   }
 
-  async _setup(sphereId, stoneId: string, createHubOnline: boolean) : Promise<string> {
+  async _setup(sphereId, stoneId: string, createHubOnline: boolean) : Promise<{ hubId: string, cloudId: string }> {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     let stone = DataUtil.getStone(sphereId, stoneId);
     if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
@@ -111,7 +112,8 @@ export class SetupHubHelper {
       await Scheduler.delay(2000, 'wait for hub to initialize')
       core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 40 / 20 });
       await Scheduler.delay(500, 'wait for hub to initialize')
-      return hubCloudId;
+
+      return { hubId: hubId, cloudId: hubCloudId };
     }
 
     // we load the setup into the promise manager with priority so we are not interrupted
@@ -177,7 +179,7 @@ export class SetupHubHelper {
       let hubData = await CLOUD.getHub(hubCloudId);
       core.store.dispatch({
         type, sphereId, hubId,
-        data: { cloudId: hubCloudId, linkedStoneId: stoneId }
+        data: type === "ADD_HUB" ? HubSyncer.mapCloudToLocal(hubData) : {cloudId: hubCloudId, linkedStoneId: stoneId }
       });
     }
     catch (e) {

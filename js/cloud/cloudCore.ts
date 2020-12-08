@@ -98,14 +98,14 @@ export function request(
       let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
           stopRequest = true;
           if (finishedRequest !== true)
-            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed')
+            reject('Network request to ' + url + ' failed')
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
       fetch(url, requestConfig as any)
         .catch((connectionError) => {
           if (stopRequest === false) {
-            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');
+            reject('Network request to ' + url + ' failed');
           }
         })
         .then((response) => {

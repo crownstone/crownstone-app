@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 
-let defaultSettings = {
+let defaultSettings : LocationData = {
   config: {
     name:'Untitled Room',
     icon: undefined,

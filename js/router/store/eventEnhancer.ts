@@ -325,13 +325,14 @@ function checkAction(action, affectedIds) {
     case "SET_ACTIVE_RANDOM_DEVICE_TOKEN":
       break;
 
-    case "ADD_HUB":
     case "UPDATE_HUB_CONFIG":
     case "UPDATE_HUB_STATE":
+      eventStatus['hubUpdated'] = affectedIds; break;
+    case "ADD_HUB":
     case "LINK_HUB_TO_STONE":
     case "REMOVE_ALL_HUBS":
     case "REMOVE_HUB":
-      eventStatus['hubUpdated'] = affectedIds; break;
+      eventStatus['changeHubs'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

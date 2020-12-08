@@ -134,7 +134,7 @@ export const cloudApiBase = {
    * @private
    */
   _setupRequest: function(reqType : string, endpoint : string, options : requestOptions = {}, type : requestType = 'query') {
-    let promiseBody = {endPoint: endpoint, data: options.data, type:type, options: options};
+    let promiseBody = {endPoint: endpoint, data: options.data, type:type, options: options };
     let promise;
     switch (reqType) {
       case 'POST':

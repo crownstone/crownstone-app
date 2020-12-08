@@ -97,7 +97,7 @@ export class SphereSyncer extends SyncingBase {
   syncChildren(store, localId, localSphere, sphere_from_cloud) {
     this.globalSphereMap[localId] = getGlobalIdMap();
 
-    this.syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud);
+    // this.syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud);
 
     let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);

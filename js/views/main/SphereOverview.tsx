@@ -236,7 +236,6 @@ export class SphereOverview extends LiveComponent<any, any> {
     let activeSphereId = state.app.activeSphere;
     let background = core.background.main;
 
-    console.log("RENDERING_OVERVIEW", activeSphereId);
     LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {

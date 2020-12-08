@@ -21,6 +21,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { DataUtil } from "../../util/DataUtil";
 
 
 let iconSize = 100;
@@ -30,6 +31,12 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
     return TopBarUtil.getOptions({title: lang("Add_to_your_Sphere"), closeModal:true});
   }
 
+
+  // componentDidMount() {
+  //   DataUtil.callOnAllSpheres((sphereId) => {
+  //     core.store.dispatch({type:"REMOVE_ALL_HUBS", sphereId})
+  //   })
+  // }
 
   render() {
     let hightlightAddCrownstoneButton = false;

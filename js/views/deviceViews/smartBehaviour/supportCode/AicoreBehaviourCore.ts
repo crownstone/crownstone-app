@@ -9,7 +9,7 @@ export class AicoreBehaviourCore {
   rule : behaviour | twilight;
 
   /**
-   * This sets the action value. 1 means fully on, 0..1 is dimming.
+   * This sets the action value. 100 means fully on, 0..100 is dimming.
    * Value must be higher than 0.
    * @param value
    */

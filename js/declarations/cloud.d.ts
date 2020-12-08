@@ -4,3 +4,4 @@ interface HeaderObject {
   'Cache-control'?: string
   'Authorization'?:  string,
 }
+

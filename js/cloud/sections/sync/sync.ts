@@ -15,6 +15,7 @@ import * as Sentry from "@sentry/react-native";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { core } from "../../../core";
 import { CloudPoller } from "../../../logic/CloudPoller";
+import { syncNext } from "../newSync/SyncNext";
 
 
 
@@ -123,6 +124,9 @@ export const sync = {
         LOG.info("Sync: START Preferences sync.");
         let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
         return preferenceSyncer.sync(state);
+      })
+      .then(() => {
+        return syncNext(['hubs'], actions, globalCloudIdMap);
       })
       // FINISHED SYNCING
       .then(() => {

@@ -10,14 +10,12 @@ import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import sphereKeyReducer from "./sphereKeys";
 
-let defaultSettings = {
+
+let defaultSettings : SphereData = {
   config: {
     name: undefined,
     iBeaconUUID: undefined, // ibeacon uuid
     uid: null,
-    adminKey: null,
-    memberKey: null,
-    guestKey: null,
     cloudId: null,
     meshAccessAddress: null,
 
@@ -27,15 +25,6 @@ let defaultSettings = {
     longitude: null,
 
     updatedAt: 1,
-    lastSeen: 1,
-  },
-  layout: {
-    floatingLocation: {
-      x: null,
-      y: null,
-      setOnThisDevice: false,
-      updatedAt: 0,
-    }
   },
   state: {
     lastPresentTime: 0,
@@ -46,7 +35,15 @@ let defaultSettings = {
   },
   keys: {
     // these will be filled with an x number of keys used for encryption.
-  }
+  },
+  users:       {},
+  locations:   {},
+  stones:      {},
+  scenes:      {},
+  hubs:        {},
+  messages:    {},
+  thirdParty:  {},
+  sortedLists: {},
 };
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
@@ -77,9 +74,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.uid         = update(action.data.uid,         newState.uid);
         newState.aiName      = update(action.data.aiName,      newState.aiName);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
-        newState.adminKey    = update(action.data.adminKey,    newState.adminKey);
-        newState.memberKey   = update(action.data.memberKey,   newState.memberKey);
-        newState.guestKey    = update(action.data.guestKey,    newState.guestKey);
         newState.cloudId     = update(action.data.cloudId,     newState.cloudId);
 
         newState.latitude    = update(action.data.latitude, newState.latitude);
@@ -146,33 +140,10 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
   }
 };
 
-let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, action : any = {}) => {
-  switch (action.type) {
-    case 'SET_FLOATING_LAYOUT_LOCATION':
-      if (action.data) {
-        let newState = {...state};
-        newState.x = update(action.data.x, newState.x);
-        newState.y = update(action.data.y, newState.y);
-        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
-        newState.updatedAt = getTime(action.data.timestamp || action.updatedAt);
-        return newState;
-      }
-      return state;
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.layout.floatingLocation);
-    default:
-      return state;
-  }
-};
-
-let layoutReducer = combineReducers({
-  floatingLocation: floatingLocationReducer,
-});
 
 
 let combinedSphereReducer = combineReducers({
   config:      sphereConfigReducer,
-  layout:      layoutReducer,
   users:       sphereUserReducer,
   locations:   locationsReducer,
   stones:      stonesReducer,

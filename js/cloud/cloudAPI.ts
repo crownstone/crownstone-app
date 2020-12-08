@@ -23,6 +23,7 @@ import { toon }              from './sections/thirdParty/toon'
 import { xUtil }             from "../util/StandAloneUtil";
 import { MapProvider }       from "../backgroundProcesses/MapProvider";
 import { hubs }              from "./sections/hub";
+import { syncNext }          from "./sections/syncNext";
 
 function combineSections() {
   let result : any = {};
@@ -44,6 +45,7 @@ function combineSections() {
   xUtil.mixin(result, stonesAbilities,   result);
   xUtil.mixin(result, stonesBehaviours,  result);
   xUtil.mixin(result, sync,              result);
+  xUtil.mixin(result, syncNext,          result);
   xUtil.mixin(result, syncEvents,        result);
   xUtil.mixin(result, syncUsersInSphere, result);
   xUtil.mixin(result, user,              result);

@@ -7,9 +7,13 @@ import { STONE_TYPES }     from "../../../Enums";
 
 let defaultSettings : HubData = {
   config: {
+    name: 'Crownstone Hub',
     cloudId:   null,
     ipAddress: null,
     linkedStoneId: null,
+    locationId: null,
+    httpPort: 80,
+    httpsPort: 443,
     updatedAt: 1,
   },
   state: {
@@ -48,10 +52,14 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_HUB_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.cloudId           = update(action.data.cloudId,       newState.cloudId);
-        newState.ipAddress         = update(action.data.ipAddress,     newState.ipAddress);
-        newState.linkedStoneId     = update(action.data.linkedStoneId, newState.linkedStoneId);
-        newState.updatedAt         = getTime(action.data.updatedAt);
+        newState.name          = update(action.data.name,          newState.name);
+        newState.cloudId       = update(action.data.cloudId,       newState.cloudId);
+        newState.ipAddress     = update(action.data.ipAddress,     newState.ipAddress);
+        newState.linkedStoneId = update(action.data.linkedStoneId, newState.linkedStoneId);
+        newState.locationId    = update(action.data.locationId,    newState.locationId);
+        newState.httpPort      = update(action.data.httpPort,      newState.httpPort);
+        newState.httpsPort     = update(action.data.httpsPort,     newState.httpsPort);
+        newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

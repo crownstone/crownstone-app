@@ -110,6 +110,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
         !change.removeStone &&
         (
           change.hubUpdated ||
+          change.changeHubs ||
           change.changeAppSettings ||
           change.stoneLocationUpdated    && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
           change.changeStoneAvailability && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
@@ -208,7 +209,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
 
 
-  getStateEntries(hub) {
+  getStateEntries(stone, hub) {
     let entries = [];
     let index = 5000;
     let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
@@ -237,7 +238,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
               this.setState({fixing: true});
               let helper = new SetupHubHelper();
               helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
-                .then((result) => {
+                .then((hubId) => {
+                  core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
                   this.setState({fixing:false})
                 })
                 .catch((e) => {
@@ -274,7 +276,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
               this.setState({fixing: true});
               let helper = new SetupHubHelper();
               helper.setup(this.props.sphereId, this.props.stoneId)
-                .then((result) => {
+                .then((hubId) => {
+                  core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
                   this.setState({fixing:false});
                 })
                 .catch((e) => {
@@ -327,7 +330,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     let hubProblem = false;
 
-    let problemEntries = this.getStateEntries(hub);
+    let problemEntries = this.getStateEntries(stone, hub);
 
     return (
       <Background image={core.background.lightBlur}>

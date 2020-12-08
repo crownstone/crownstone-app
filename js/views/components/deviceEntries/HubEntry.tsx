@@ -216,7 +216,7 @@ export class HubEntry extends Component<{
             }
             this.props.setSwitchView(!this.props.switchView);
           }}>
-            <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
+            <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={1} />
           </IconWrapperElement>
           <WrapperElement
             activeOpacity={ useSwitchView ? 1 : 0.2 }

@@ -50,30 +50,30 @@ interface SystemEvent {
 interface MultiSwitchCrownstoneEvent {
   type:        "command",
   subType:     "multiSwitch"
-  sphere:      SphereData,
-  switchData:  CrownstoneSwitchCommand[],
+  sphere:      sseSphereData,
+  switchData:  sseCrownstoneSwitchCommand[],
 }
 
 interface PresenceSphereEvent {
   type:     "presence",
   subType:  "enterSphere" | "exitSphere"
-  user:     UserData,
-  sphere:   SphereData
+  user:     sseUserData,
+  sphere:   sseSphereData
 }
 
 interface PresenceLocationEvent {
   type:     "presence",
   subType:  "enterLocation" | "exitLocation"
-  user:     UserData,
-  sphere:   SphereData,
-  location: LocationData,
+  user:     sseUserData,
+  sphere:   sseSphereData,
+  location: sseLocationData,
 }
 
 interface DataChangeEvent {
   type:        "dataChange",
   subType:     "users"   | "spheres" | "stones" | "locations",
   operation:   "create"  | "delete"  | "update"
-  sphere:      SphereData,
+  sphere:      sseSphereData,
   changedItem: NameIdSet,
 }
 
@@ -81,55 +81,55 @@ interface SphereTokensUpdatedEvent {
   type:        "sphereTokensChanged",
   subType:     "sphereAuthorizationTokens",
   operation:   "update"
-  sphere:      SphereData,
+  sphere:      sseSphereData,
 }
 
 interface AbilityChangeEvent {
   type:        "abilityChange",
   subType:     "dimming"   | "switchcraft" | "tapToToggle",
-  sphere:      SphereData,
-  stone:       CrownstoneData,
-  ability:     AbilityData
+  sphere:      sseSphereData,
+  stone:       sseCrownstoneData,
+  ability:     sseAbilityData
 }
 
 interface InvitationChangeEvent {
   type:        "invitationChange",
   operation:   "invited" | "invitationRevoked"
-  sphere:      SphereData,
+  sphere:      sseSphereData,
   email:       string,
 }
 interface SwitchStateUpdateEvent {
   type:        'switchStateUpdate',
   subType:     'stone',
-  sphere:       SphereData,
-  crownstone:   CrownstoneSwitchState,
+  sphere:       sseSphereData,
+  crownstone:   sseCrownstoneSwitchState,
 }
 
 interface NameIdSet {
   id:   string,
   name: string
 }
-interface SphereData     extends NameIdSet {
+interface sseSphereData     extends NameIdSet {
   uid: number
 }
-interface UserData       extends NameIdSet {}
-interface LocationData   extends NameIdSet {}
-interface CrownstoneData extends NameIdSet {
+interface sseUserData       extends NameIdSet {}
+interface sseLocationData   extends NameIdSet {}
+interface sseCrownstoneData extends NameIdSet {
   macAddress: string,
   uid: number,
 }
-interface CrownstoneSwitchState extends CrownstoneData {
+interface sseCrownstoneSwitchState extends sseCrownstoneData {
   percentage: number, // 0 .. 100
 }
 
-interface CrownstoneSwitchCommand extends CrownstoneData {
+interface sseCrownstoneSwitchCommand extends sseCrownstoneData {
   type: "TURN_ON" | "TURN_OFF" | "PERCENTAGE"
   percentage?: number, // 0 .. 100
 }
 
 
 
-interface AbilityData {
+interface sseAbilityData {
   type: string,
   enabled: boolean,
   syncedToCrownstone: boolean,

@@ -1,6 +1,18 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
+
+type aicoreSetAction    = aicoreSwitchAction  //| aicoreColorSwitchAction
+type aicoreChangeAction = aicoreTwilightAction//| aicoreColorTwilightAction
+
+type aicoreSwitchAction        = { type:"BE_ON",              data: number } // 0..100
+type aicoreTwilightAction      = { type:"DIM_WHEN_TURNED_ON", data: number } // 0..100
+type aicoreColorSwitchAction   = { type:"BE_COLOR", data: colorData }
+type aicoreColorTwilightAction = { type:"SET_COLOR_WHEN_TURNED_ON", data: colorData }
+
+type colorTemperatureData = { type: "COLOR_TEMPERATURE", temperature: number, brightness: number }
+type colorData = { type: "COLOR", hue: number, saturation: number, brightness: number } // hue 0..360 saturation 0..100 brightness 0..100
+
 type aicorePresenceSomebody = { type: "SOMEBODY",            data: aicorePresenceData, delay: number }
 type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceData, delay: number } // delay in seconds
 type aicorePresenceNone     = { type: "IGNORE" }
@@ -52,10 +64,7 @@ type eventCondition = { type: "PRESENCE", data: aicorePresence } |
 
 // TYPE: behaviour
 interface behaviour {
-  action: {
-    type: "BE_ON",
-    data: number, // 0 .. 1
-  },
+  action: aicoreSetAction,
   time: aicoreTime,
   presence: aicorePresence,
   endCondition?: aicoreEndCondition
@@ -63,10 +72,7 @@ interface behaviour {
 
 // TYPE: TWILIGHT
 interface twilight {
-  action:  {
-    type: "DIM_WHEN_TURNED_ON",
-    data: number,
-  },
+  action: aicoreChangeAction,
   time: aicoreTime,
 }
 

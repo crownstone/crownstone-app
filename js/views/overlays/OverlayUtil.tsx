@@ -8,6 +8,7 @@ import { core } from "../../core";
 import { RoomList } from "../components/RoomList";
 import * as React from "react";
 import { colors } from "../styles";
+import { DataUtil } from "../../util/DataUtil";
 
 
 export const OverlayUtil = {
@@ -53,7 +54,11 @@ export const OverlayUtil = {
 
   callRoomSelectionOverlayForStonePlacement: function(sphereId, stoneId) {
     OverlayUtil.callRoomSelectionOverlay(sphereId, (locationId) => {
-      core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: sphereId, stoneId: stoneId, data:{locationId: locationId}})
+      core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: sphereId, stoneId: stoneId, data:{locationId: locationId}});
+      let hub = DataUtil.getHubByStoneId(sphereId, stoneId);
+      if (hub) {
+        core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: sphereId, hubId: hub.id, data:{locationId: locationId}});
+      }
     })
   },
 }
