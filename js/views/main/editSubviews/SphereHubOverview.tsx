@@ -1,10 +1,3 @@
-import { LiveComponent }          from "../../LiveComponent";
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SphereCrownstoneOverview", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   Alert,
@@ -19,11 +12,12 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { HubEntry } from "../../components/deviceEntries/HubEntry";
 import { STONE_TYPES } from "../../../Enums";
 
 
 
-export class SphereCrownstoneOverview extends LiveComponent<any, any> {
+export class SphereHubOverview extends LiveComponent<any, any> {
   static options(props) {
     let state = core.store.getState();
     let sphere = state.spheres[props.sphereId] ;
@@ -35,7 +29,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.changeSpheres || change.updateActiveSphere) {
+      if (change.changeSpheres || change.updateActiveSphere || change.changeHubs) {
         this.forceUpdate();
       }
     });
@@ -45,19 +39,6 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  _pushCrownstoneItem(items, sphereId, stone, stoneId) {
-    items.push({
-      __item: <DeviceEntry
-        stoneId={stoneId}
-        sphereId={sphereId}
-        allowSwitchView={false}
-        allowDeviceOverview={false}
-        viewingRemotely={false}
-        hideExplanation={true}
-      />
-    });
-  }
-  
   _getItems() {
     let items = [];
 
@@ -65,50 +46,69 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
     let state = store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stones = sphere.stones;
+    let hubs = sphere.hubs;
 
-    let stoneIds = Object.keys(stones);
 
-    if (stoneIds.length == 0) {
-      items.push({label: lang("There_are_no_Crownstones_"),  type:'largeExplanation', below:false});
-      return items;
+    let linkedStoneMap = {};
+
+
+    let hubItemsToShow = [];
+    for (let [hubId, hub] of Object.entries<HubData>(hubs)) {
+      let linkedStoneId = hub.config.linkedStoneId;
+      linkedStoneMap[linkedStoneId] = hub;
+      hubItemsToShow.push({type:'hub', id: hubId, data: hub})
     }
 
-    let rooms = state.spheres[this.props.sphereId].locations;
-    let roomIds = Object.keys(rooms);
-    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 });
-
-    let renderStonesInRoom = (roomId) => {
-      let stonesInRoom = Util.data.getStonesInLocation(state, this.props.sphereId, roomId);
-      let stoneIdsInRoom = Object.keys(stonesInRoom);
-      if (stoneIdsInRoom.length > 0) {
-        let label = "CROWNSTONES NOT IN A ROOM";
-        if (roomId !== null) {
-          label =  lang("CROWNSTONES_IN_",rooms[roomId].config.name.toUpperCase());
+    for (let [stoneId, stone] of Object.entries<StoneData>(stones)) {
+      if (stone.config.type === STONE_TYPES.hub) {
+        if (linkedStoneMap[stoneId] === undefined) {
+          hubItemsToShow.push({type:'hubStone', id: stoneId, data: stone})
         }
-
-        items.push({label: label, type:'explanation', below:false});
-        stoneIdsInRoom.sort((a,b) => { return stonesInRoom[a].config.name > stonesInRoom[b].config.name ? 1 : -1 });
-
-        stoneIdsInRoom.forEach((stoneId) => {
-          let stone = stonesInRoom[stoneId];
-          if (stone.config.type !== STONE_TYPES.crownstoneUSB && stone.config.type !== STONE_TYPES.hub) {
-            this._pushCrownstoneItem(items, this.props.sphereId, stone, stoneId);
-          }
-        })
+        else {
+          // this is already shown in the hub list via the hub Id
+        }
       }
-    };
+      else if (stone.config.type === STONE_TYPES.crownstoneUSB) {
+        hubItemsToShow.push({type:'dongle', id: stoneId, data: stone})
+      }
+    }
 
-    roomIds.forEach((roomId) => {
-      renderStonesInRoom(roomId)
-    });
 
-    renderStonesInRoom(null);
+    let hubItems = [];
+    hubItemsToShow.forEach((hubItem) => {
+      switch (hubItem.type) {
+        case "hub":
+          hubItems.push({
+            __item: <HubEntry
+              hubId={hubItem.id}
+              sphereId={this.props.sphereId}
+              allowDeviceOverview={false}
+              viewingRemotely={false}
+              hideExplanation={true}
+            />
+          });
+          break;
+        case "dongle":
+        case "hubStone":
+          hubItems.push({
+            __item: <HubEntry
+              stoneId={hubItem.id}
+              sphereId={this.props.sphereId}
+              allowDeviceOverview={false}
+              viewingRemotely={false}
+              hideExplanation={true}
+            />
+          });
+          break;
+      }
+    })
 
-    items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
+
+    items.push({label: lang("This_is_an_overvi ew_of_al"), type:'explanation', below:true});
 
 
     items.push({
-      label: lang("Add_a_Crownstone"),
+      label: "Add hub",
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.blue.hex, fontWeight: 'bold'},
       type: 'button',

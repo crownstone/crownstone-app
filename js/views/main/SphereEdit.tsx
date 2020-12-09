@@ -124,6 +124,15 @@ export class SphereEdit extends LiveComponent<any, any> {
     });
 
     items.push({
+      label: lang("Hubs"),
+      type: 'navigation',
+      largeIcon: <IconButton name='c1-router' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.darkerPurple.hex}}/>,
+      callback: () => {
+        NavigationUtil.navigate( "SphereHubOverview", {sphereId: this.props.sphereId});
+      }
+    });
+
+    items.push({
       label: lang("Users"),
       type: 'navigation',
       fieldId: 'sphereEdit_users',

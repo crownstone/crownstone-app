@@ -125,6 +125,7 @@ import { HueOverview } from "../views/thirdParty/hue/HueOverview";
 import { HueAdd } from "../views/thirdParty/hue/HueAdd";
 import { SetupHub } from "../views/addingCrownstones/SetupHub";
 import { HubOverview } from "../views/hubViews/HubOverview";
+import { SphereHubOverview } from "../views/main/editSubviews/SphereHubOverview";
 
 
 export const Views = {
@@ -209,6 +210,7 @@ export const Views = {
   SphereEditMap:                     SphereEditMap,
   SphereIntegrations:                SphereIntegrations,
   SphereInvitedUser:                 SphereInvitedUser,
+  SphereHubOverview:                 SphereHubOverview,
   SphereOverview:                    SphereOverview,
   SphereRoomArranger:                SphereRoomArranger,
   SphereRoomOverview:                SphereRoomOverview,

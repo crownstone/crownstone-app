@@ -40,7 +40,8 @@ const PADDING_RIGHT = 15;
 
 export class HubEntry extends Component<{
   sphereId: string,
-  stoneId: string,
+  stoneId?: string,
+  hubId?: string,
 
   viewingRemotely: boolean,
 

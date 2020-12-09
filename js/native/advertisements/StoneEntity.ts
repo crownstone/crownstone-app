@@ -10,6 +10,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { DataUtil } from "../../util/DataUtil";
+import { STONE_TYPES } from "../../Enums";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
@@ -392,6 +393,11 @@ export class StoneEntity {
       return
     }
 
+    // this handles the case where the type of a device changes. Most likely a dongle that is changed into a hub by the hubMode command.
+    if (stone.config.type !== deviceTypeMap[advertisement.serviceData.deviceType]) {
+      core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.sphereId, stoneId: this.stoneId, data: {type: deviceTypeMap[advertisement.serviceData.deviceType]}});
+    }
+
     if (advertisement.serviceData.deviceType === "hub") {
       this.handleHubData(stone, advertisement);
     }
@@ -708,4 +714,15 @@ export class StoneEntity {
       });
     }
   }
+}
+
+
+const deviceTypeMap = {
+  undefined     : 'undefined',
+  plug          : STONE_TYPES.plug,
+  guidestone    : STONE_TYPES.guidestone,
+  builtin       : STONE_TYPES.builtin,
+  crownstoneUSB : STONE_TYPES.crownstoneUSB,
+  builtinOne    : STONE_TYPES.builtinOne,
+  hub           : STONE_TYPES.hub,
 }
