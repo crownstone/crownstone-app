@@ -34,6 +34,7 @@ import Slider from "@react-native-community/slider";
 import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
 import Timeout = NodeJS.Timeout;
+import { IconCircle } from "../IconCircle";
 
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
@@ -134,7 +135,7 @@ export class HubEntry extends Component<{
   }
 
   _basePressed() {
-    NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, hubId: this.props.hubId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getExplanationText(state, useSwitchView) {
@@ -166,32 +167,34 @@ export class HubEntry extends Component<{
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
-    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId)?.data || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
+    let name = stone?.config?.name || hub?.config?.name;
 
     let WrapperElement : any = TouchableOpacity;
     let IconWrapperElement : any = TouchableOpacity;
+    let switchViewActive = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
     if (this.props.allowDeviceOverview === false) {
       WrapperElement = View
     }
     if (this.props.allowSwitchView === false) {
-      IconWrapperElement = WrapperElement
+      IconWrapperElement = WrapperElement;
+      switchViewActive = false;
     }
 
-    let useSwitchView = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
-    let switchViewExplanation = !useSwitchView && this.props.switchView;
+    let switchViewExplanation = !switchViewActive && this.props.switchView;
     let height = this.props.height || 80;
-    let explanationText = this._getExplanationText(state, useSwitchView);
+    let explanationText = this._getExplanationText(state, switchViewActive);
 
     let hubProblem = false;
     if (!hub) { hubProblem = true; }
     else {
-      hubProblem = hubProblem || !hub.data.state.uartAlive;
-      hubProblem = hubProblem || !hub.data.state.uartAliveEncrypted;
-      // hubProblem = hubProblem || hub.data.state.uartEncryptionRequiredByCrownstone;
-      // hubProblem = hubProblem || hub.data.state.uartEncryptionRequiredByHub;
-      hubProblem = hubProblem || !hub.data.state.hubHasBeenSetup;
-      hubProblem = hubProblem || !hub.data.state.hubHasInternet;
-      hubProblem = hubProblem || hub.data.state.hubHasError;
+      hubProblem = hubProblem || !hub.state.uartAlive;
+      hubProblem = hubProblem || !hub.state.uartAliveEncrypted;
+      // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByCrownstone;
+      // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByHub;
+      hubProblem = hubProblem || !hub.state.hubHasBeenSetup;
+      hubProblem = hubProblem || !hub.state.hubHasInternet;
+      hubProblem = hubProblem || hub.state.hubHasError;
     }
 
 
@@ -203,7 +206,7 @@ export class HubEntry extends Component<{
               return this._basePressed();
             }
 
-            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
+            if (stone && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
               stone.config.firmwareVersion &&
               (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
             ) {
@@ -217,23 +220,25 @@ export class HubEntry extends Component<{
             }
             this.props.setSwitchView(!this.props.switchView);
           }}>
-            <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={1} />
+            {stone ?
+              <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={1} /> :
+              <IconCircle icon={'c1-router'} size={60} backgroundColor={colors.green.hex} color={'#ffffff'} />
+            }
           </IconWrapperElement>
           <WrapperElement
-            activeOpacity={ useSwitchView ? 1 : 0.2 }
+            activeOpacity={ switchViewActive ? 1 : 0.2 }
             style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
-            onPress={() => { if (useSwitchView === false) { this._basePressed(); }}}
+            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
           >
             <View style={{justifyContent:'center'}}>
               <View style={{paddingLeft:20}}>
-                <Text style={{fontSize: 17}}>{stone.config.name}</Text>
+                <Text style={{fontSize: 17}}>{name}</Text>
                 <DeviceEntrySubText
                   statusTextOverride={this.props.statusText}
                   statusText={this.state.statusText}
-                  deviceType={STONE_TYPES.hub}
+                  deviceType={stone?.config?.type ?? STONE_TYPES.hub}
                   rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
                   disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
-                  currentUsage={stone.state.currentUsage}
                   nearestInSphere={this.props.nearestInSphere}
                   nearestInRoom={this.props.nearestInRoom}
                 />
@@ -243,7 +248,7 @@ export class HubEntry extends Component<{
           </WrapperElement>
           <WrapperElement
             style={{height: this.baseHeight, width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'}}
-            onPress={() => { if (useSwitchView === false) { this._basePressed(); }}}
+            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
           >
             {
               hubProblem && !this.state.showStateIcon ? <ActivityIndicator size={"small"} /> :

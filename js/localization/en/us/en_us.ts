@@ -2222,6 +2222,17 @@ export default {
     CROWNSTONES_IN_:                        function() { return "CROWNSTONES IN " + arguments[0] },
     Crownstones_in_:                        function() { return "Crownstones in " + arguments[0] },
   },
+  SphereHubOverview:{
+    __filename: "../js/views/main/editSubviews/SphereHubOverview.tsx",
+    _Ask_your_Sphere_Admin__A_header:       function() { return "Ask your Sphere Admin" },
+    _Ask_your_Sphere_Admin__A_body:         function() { return "Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin." },
+    _Ask_your_Sphere_Admin__A_left:         function() { return "OK" },
+    There_are_no_Crownstones_:              function() { return "There are no Crownstones in this Sphere yet!" },
+    This_is_an_overview_of_al:              function() { return "This is an overview of all your Crownstones. To access the settings of these Crownstones, go to their rooms and tap on them there." },
+    Add_a_Crownstone:                       function() { return "Add a Crownstone" },
+    CROWNSTONES_IN_:                        function() { return "CROWNSTONES IN " + arguments[0] },
+    Crownstones_in_:                        function() { return "Crownstones in " + arguments[0] },
+  },
   SphereDeleted:{
     __filename: "../js/views/static/SphereDeleted.tsx",
     Sphere_Deleted_:                        function() { return "Sphere Deleted." },

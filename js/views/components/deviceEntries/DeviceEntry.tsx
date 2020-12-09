@@ -276,18 +276,19 @@ export class DeviceEntry extends Component<{
 
     let WrapperElement : any = TouchableOpacity;
     let IconWrapperElement : any = TouchableOpacity;
+    let switchViewActive = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
     if (this.props.allowDeviceOverview === false) {
       WrapperElement = View
     }
     if (this.props.allowSwitchView === false) {
       IconWrapperElement = WrapperElement
+      switchViewActive = false;
     }
 
-    let useSwitchView = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
-    let switchViewExplanation = !useSwitchView && this.props.switchView;
+    let switchViewExplanation = !switchViewActive && this.props.switchView;
     let height = this.props.height || 80;
     let sliderWidth = screenWidth - 20 - 60 - 30;
-    let explanationText = this._getExplanationText(state, useSwitchView);
+    let explanationText = this._getExplanationText(state, switchViewActive);
 
 
     return (
@@ -315,14 +316,14 @@ export class DeviceEntry extends Component<{
             <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
           </IconWrapperElement>
           <WrapperElement
-            activeOpacity={ useSwitchView ? 1 : 0.2 }
+            activeOpacity={ switchViewActive ? 1 : 0.2 }
             style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
-            onPress={() => { if (useSwitchView === false) { this._basePressed(); }}}
+            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
           >
             <View style={{justifyContent:'center'}}>
               <View style={{paddingLeft:20, paddingTop:10}}>
                 <Text style={{fontSize: 17}}>{stone.config.name}</Text>
-                <SlideFadeInView visible={!useSwitchView} height={25 + (explanationText ? 15 : 0)}>
+                <SlideFadeInView visible={!switchViewActive} height={25 + (explanationText ? 15 : 0)}>
                   <DeviceEntrySubText
                     statusTextOverride={this.props.statusText}
                     statusText={this.state.statusText}
@@ -336,7 +337,7 @@ export class DeviceEntry extends Component<{
                   { explanationText }
                 </SlideFadeInView>
               </View>
-              <SlideFadeInView visible={useSwitchView} height={50}>
+              <SlideFadeInView visible={switchViewActive} height={50}>
                 <View style={{paddingLeft: 20}}>
                   <Slider
                     style={{ width: sliderWidth, height: 40 }}
@@ -363,7 +364,7 @@ export class DeviceEntry extends Component<{
             </View>
           </WrapperElement>
           {useControl === true && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ?
-            <SlideSideFadeInView visible={!useSwitchView} width={75} style={{justifyContent: 'center' }}>
+            <SlideSideFadeInView visible={!switchViewActive} width={75} style={{justifyContent: 'center' }}>
               {this._getControl(stone)}
             </SlideSideFadeInView>
             : <View style={{ width: 15 }}/>

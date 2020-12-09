@@ -177,6 +177,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     let iconColor = colors.white.rgba(1);
     let size = 0.25*availableScreenHeight;
     let stateColor = colors.green.hex;
+    let icon = stone?.config?.icon || 'c1-router';
 
     if (updateAvailable) {
       return (
@@ -192,7 +193,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
             switchDuration={2000}
             contentArray={[
               <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={"c1-update-arrow"} />,
-              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />,
+              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={icon} />,
             ]}
           />
         </TouchableOpacity>
@@ -202,7 +203,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return (
       <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
-        <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
+        <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={icon} />
       </View>
     )
   }
@@ -318,15 +319,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       return <SphereDeleted/>
     }
     const stone = sphere.stones[this.props.stoneId];
-    if (!stone) {
-      return <StoneDeleted/>
-    }
+    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId) || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
 
-    // core.store.dispatch({type:"REMOVE_ALL_HUBS", sphereId: this.props.sphereId})
-
-    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
-
-    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+    let updateAvailable = stone && stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     let hubProblem = false;
 
@@ -366,11 +361,12 @@ export function DeviceIcon({ size, color, iconColor, icon}) {
 
 function getTopBarProps(props) {
   const state = core.store.getState();
+  const hub = state.spheres[props.sphereId].hubs[props.hubId];
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
   NAVBAR_PARAMS_CACHE = {
-    title: stone.config.name,
+    title: stone?.config?.name ?? hub?.config?.name,
   }
 
   if (spherePermissions.editCrownstone) {

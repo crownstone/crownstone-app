@@ -1,3 +1,8 @@
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereHubOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   Alert,
@@ -14,6 +19,8 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { HubEntry } from "../../components/deviceEntries/HubEntry";
 import { STONE_TYPES } from "../../../Enums";
+import { LiveComponent } from "../../LiveComponent";
+import { Get } from "../../../util/GetUtil";
 
 
 
@@ -21,7 +28,7 @@ export class SphereHubOverview extends LiveComponent<any, any> {
   static options(props) {
     let state = core.store.getState();
     let sphere = state.spheres[props.sphereId] ;
-    return TopBarUtil.getOptions({title: lang("Crownstones_in_",sphere.config.name)});
+    return TopBarUtil.getOptions({title: "Hubs in " + sphere.config.name});
   }
 
   unsubscribe : any;
@@ -74,27 +81,41 @@ export class SphereHubOverview extends LiveComponent<any, any> {
     }
 
 
-    let hubItems = [];
     hubItemsToShow.forEach((hubItem) => {
+      let location = Get.location(this.props.sphereId, hubItem?.data?.config?.locationId);
+      let locationString = location ? 'In ' + location.config.name : 'Not in room.'
       switch (hubItem.type) {
         case "hub":
-          hubItems.push({
+          items.push({
             __item: <HubEntry
               hubId={hubItem.id}
               sphereId={this.props.sphereId}
-              allowDeviceOverview={false}
+              statusText={locationString}
+              allowSwitchView={false}
               viewingRemotely={false}
               hideExplanation={true}
             />
           });
           break;
         case "dongle":
+          items.push({
+            __item: <DeviceEntry
+              stoneId={hubItem.id}
+              sphereId={this.props.sphereId}
+              statusText={locationString}
+              allowSwitchView={false}
+              viewingRemotely={false}
+              hideExplanation={true}
+            />
+          });
+          break;
         case "hubStone":
-          hubItems.push({
+          items.push({
             __item: <HubEntry
               stoneId={hubItem.id}
               sphereId={this.props.sphereId}
-              allowDeviceOverview={false}
+              statusText={locationString}
+              allowSwitchView={false}
               viewingRemotely={false}
               hideExplanation={true}
             />
