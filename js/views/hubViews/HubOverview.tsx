@@ -58,23 +58,16 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   constructor(props) {
     super(props);
 
-    const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) {
-      return;
-    }
-    const stone = sphere.stones[this.props.stoneId];
-    if (!stone) {
-      return;
-    }
-
-    if (stone.config.firmwareVersionSeenInOverview === null) {
-      core.store.dispatch({
-        type: "UPDATE_STONE_LOCAL_CONFIG",
-        sphereId: this.props.sphereId,
-        stoneId: this.props.stoneId,
-        data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
-      });
+    const stone = Get.stone(this.props.sphereId, this.props.stoneId);
+    if (stone) {
+      if (stone.config.firmwareVersionSeenInOverview === null) {
+        core.store.dispatch({
+          type: "UPDATE_STONE_LOCAL_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
+        });
+      }
     }
 
     this.state = {fixing: false}
@@ -110,7 +103,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       if (
         !change.removeStone &&
         (
-          change.hubUpdated ||
+          change.updateHubConfig ||
           change.changeHubs ||
           change.changeAppSettings ||
           change.stoneLocationUpdated    && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
@@ -225,34 +218,17 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       </View>
     }
 
-    let sphere = Get.sphere(this.props.sphereId);
-    DataUtil.callOnStonesInSphere(this.props.sphereId, (stoneId: string, stone: StoneData) => {
-
-    })
+    // let sphere = Get.sphere(this.props.sphereId);
+    // DataUtil.callOnStonesInSphere(this.props.sphereId, (stoneId: string, stone: StoneData) => {
+    //
+    // })
 
     if (!stone) {
       return (
         <View key={"StoneMissingFix"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"This hub has no Crownstone Dongle linked to it. Either setup a new CrownstoneUSB to the hub, or link this hub to a Crownstone dongle that has no hub connected to it."}</Text>
+          <Text style={textStyle}>{"This hub has no Crownstone Dongle linked to it. " +
+          "You can resolve this by setting up the CrownstoneUSB dongle in this hub or removing this hub from the Sphere.\n\nIf the usb dongle is already setup, find it in the app and press the fix now button over there."}</Text>
           <View style={{flex:1}}/>
-          <Button
-            backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Fix now. "}
-            icon={"ios-build"}
-            iconSize={14}
-            callback={() => {
-              this.setState({fixing: true});
-              let helper = new SetupHubHelper();
-              helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
-                .then((hubId) => {
-                  core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
-                  this.setState({fixing:false})
-                })
-                .catch((e) => {
-                  this.setState({fixing:false})
-                })
-            }}
-          />
         </View>
       );
     }

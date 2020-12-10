@@ -57,8 +57,14 @@ export const OverlayUtil = {
       core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: sphereId, stoneId: stoneId, data:{locationId: locationId}});
       let hub = DataUtil.getHubByStoneId(sphereId, stoneId);
       if (hub) {
-        core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: sphereId, hubId: hub.id, data:{locationId: locationId}});
+        core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hub.id, data: {locationId: locationId}});
       }
+    })
+  },
+
+  callRoomSelectionOverlayForHubPlacement: function(sphereId, hubId) {
+    OverlayUtil.callRoomSelectionOverlay(sphereId, (locationId) => {
+      core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hubId, data: {locationId: locationId}});
     })
   },
 }

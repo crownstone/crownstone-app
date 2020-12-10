@@ -134,8 +134,8 @@ export class HubEntry extends Component<{
     }
   }
 
-  _basePressed() {
-    NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, hubId: this.props.hubId, viewingRemotely: this.props.viewingRemotely})
+  _basePressed(stone, hub) {
+    NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: hub?.config?.linkedStoneId || this.props.stoneId, hubId: this.props.hubId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getExplanationText(state, useSwitchView) {
@@ -203,7 +203,7 @@ export class HubEntry extends Component<{
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <IconWrapperElement style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
             if (this.props.allowSwitchView === false) {
-              return this._basePressed();
+              return this._basePressed(stone, hub);
             }
 
             if (stone && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
@@ -228,7 +228,7 @@ export class HubEntry extends Component<{
           <WrapperElement
             activeOpacity={ switchViewActive ? 1 : 0.2 }
             style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
-            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
+            onPress={() => { if (switchViewActive === false) { this._basePressed(stone, hub); }}}
           >
             <View style={{justifyContent:'center'}}>
               <View style={{paddingLeft:20}}>
@@ -248,7 +248,7 @@ export class HubEntry extends Component<{
           </WrapperElement>
           <WrapperElement
             style={{height: this.baseHeight, width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'}}
-            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
+            onPress={() => { if (switchViewActive === false) { this._basePressed(stone, hub); }}}
           >
             {
               hubProblem && !this.state.showStateIcon ? <ActivityIndicator size={"small"} /> :

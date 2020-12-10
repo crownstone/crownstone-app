@@ -231,6 +231,18 @@ export const DataUtil = {
     return filteredStones;
   },
 
+  getHubsInLocation: function(state : any, sphereId : string, locationId?) : object {
+    let filteredHubs = {};
+    if (sphereId !== undefined) {
+      for (let [hubId, hub] of Object.entries<HubData>(state.spheres[sphereId].hubs)) {
+        if (hub.config.locationId === locationId || locationId === undefined) {
+          filteredHubs[hubId] = hub;
+        }
+      }
+    }
+    return filteredHubs;
+  },
+
 
   getStonesInLocationArray: function(state : any, sphereId : string, locationId?) : any[] {
     let filteredStones = [];

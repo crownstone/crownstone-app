@@ -325,9 +325,11 @@ function checkAction(action, affectedIds) {
     case "SET_ACTIVE_RANDOM_DEVICE_TOKEN":
       break;
 
+    case "UPDATE_HUB_LOCATION":
+      eventStatus['hubLocationUpdated'] = affectedIds; break;
     case "UPDATE_HUB_CONFIG":
     case "UPDATE_HUB_STATE":
-      eventStatus['hubUpdated'] = affectedIds; break;
+      eventStatus['updateHubConfig'] = affectedIds; break;
     case "ADD_HUB":
     case "LINK_HUB_TO_STONE":
     case "REMOVE_ALL_HUBS":

@@ -99,8 +99,10 @@ export class SphereOverview extends LiveComponent<any, any> {
 
       if (
         change.changeAppSettings     ||
+        change.changeAppSettings     ||
         change.changeSphereState     ||
         change.changeSphereConfig    ||
+        change.hubLocationUpdated    ||
         change.stoneLocationUpdated  ||
         change.updateStoneCoreConfig ||
         change.updateSphereUser      ||
@@ -268,8 +270,9 @@ export class SphereOverview extends LiveComponent<any, any> {
 
         // retrofit: place all stones in a room.
         let floatingStones = DataUtil.getStonesInLocation(state, activeSphereId, null);
+        let floatingHubs   = DataUtil.getHubsInLocation(state, activeSphereId, null);
         if (
-          Object.keys(floatingStones).length > 0 &&
+          (Object.keys(floatingHubs).length > 0 || Object.keys(floatingStones).length > 0) &&
           Permissions.inSphere(activeSphereId).moveCrownstone
         ) {
           return <PlaceFloatingCrownstonesInRoom sphereId={activeSphereId} />;

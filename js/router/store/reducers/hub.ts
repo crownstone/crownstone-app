@@ -6,15 +6,16 @@ import { STONE_TYPES }     from "../../../Enums";
 
 
 let defaultSettings : HubData = {
+  id: undefined,
   config: {
-    name: 'Crownstone Hub',
-    cloudId:   null,
-    ipAddress: null,
+    name:          'Crownstone Hub',
+    cloudId:       null,
+    ipAddress:     null,
     linkedStoneId: null,
-    locationId: null,
-    httpPort: 80,
-    httpsPort: 443,
-    updatedAt: 1,
+    locationId:    null,
+    httpPort:      80,
+    httpsPort:     443,
+    updatedAt:     1,
   },
   state: {
     uartAlive                          : false,
@@ -45,6 +46,14 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.linkedStoneId     = update(action.data.linkedStoneId, newState.linkedStoneId);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_HUB_LOCATION':
+      if (action.data) {
+        let newState = {...state};
+        newState.locationId      = update(action.data.locationId, newState.locationId);
+        newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

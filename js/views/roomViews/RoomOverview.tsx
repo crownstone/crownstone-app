@@ -166,13 +166,13 @@ lang("_Indoor_localization_is_c_body"),
     NAVBAR_PARAMS_CACHE = null;
   }
 
-  _renderer(item, index, stoneId) {
-    if (item.dfuMode === true) {
+  _renderer(item, index, id) {
+    if (item.type === 'dfuStone') {
       return (
-        <View key={stoneId + '_dfu_entry'}>
+        <View key={id + '_dfu_entry'}>
         <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <DfuDeviceEntry
-            key={stoneId + '_dfu_element'}
+            key={id + '_dfu_element'}
             sphereId={this.props.sphereId}
             handle={item.advertisement && item.advertisement.handle}
             name={item.data && item.data.name}
@@ -182,12 +182,12 @@ lang("_Indoor_localization_is_c_body"),
       </View>
       )
     }
-    else if (item.setupMode === true) {
+    else if (item.type === 'setupStone') {
       return (
-        <View key={stoneId + '_setup_entry'}>
+        <View key={id + '_setup_entry'}>
           <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <SetupDeviceEntry
-              key={stoneId + '_setup_element'}
+              key={id + '_setup_element'}
               sphereId={this.props.sphereId}
               handle={item.handle}
               item={item}
@@ -217,35 +217,49 @@ lang("_Indoor_localization_is_c_body"),
         </View>
       )
     }
-    else if (item.stone.config.type === STONE_TYPES.hub) {
+    else if (item.type === 'stone' && item.data.config.type === STONE_TYPES.hub) {
       return (
-        <View key={stoneId + '_entry'}>
+        <View key={id + '_entry'}>
           <HubEntry
             sphereId={this.props.sphereId}
-            stoneId={stoneId}
+            stoneId={id}
             viewingRemotely={this.viewingRemotely}
             setSwitchView={(value) => { this.setState({switchView: value })}}
             switchView={this.state.switchView}
-            nearestInSphere={stoneId === this.nearestStoneIdInSphere}
-            nearestInRoom={stoneId === this.nearestStoneIdInRoom}
+            nearestInSphere={id === this.nearestStoneIdInSphere}
+            nearestInRoom={id === this.nearestStoneIdInRoom}
             toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
             amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
           />
         </View>
       );
     }
-    else {
+    else if (item.type === 'stone') {
       return (
-        <View key={stoneId + '_entry'}>
+        <View key={id + '_entry'}>
           <DeviceEntry
             sphereId={this.props.sphereId}
-            stoneId={stoneId}
-
+            stoneId={id}
             viewingRemotely={this.viewingRemotely}
             setSwitchView={(value) => { this.setState({switchView: value })}}
             switchView={this.state.switchView}
-            nearestInSphere={stoneId === this.nearestStoneIdInSphere}
-            nearestInRoom={stoneId === this.nearestStoneIdInRoom}
+            nearestInSphere={id === this.nearestStoneIdInSphere}
+            nearestInRoom={id === this.nearestStoneIdInRoom}
+            toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
+            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+          />
+        </View>
+      );
+    }
+    else if (item.type === 'hub') {
+      return (
+        <View key={id + '_entry'}>
+          <HubEntry
+            sphereId={this.props.sphereId}
+            hubId={id}
+            viewingRemotely={this.viewingRemotely}
+            setSwitchView={(value) => { this.setState({switchView: value })}}
+            switchView={this.state.switchView}
             toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
             amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
           />
@@ -254,10 +268,10 @@ lang("_Indoor_localization_is_c_body"),
     }
   }
 
-  _getStoneList(stoneData) {
+  _getItemList(stones, hubs) {
     let stoneArray = [];
     let ids = [];
-    let stoneIds = Object.keys(stoneData);
+    let stoneIds = Object.keys(stones);
     let shownHandles = {};
     let tempStoneDataArray = [];
 
@@ -269,7 +283,7 @@ lang("_Indoor_localization_is_c_body"),
         if (dfuStones[dfuId].data && dfuStones[dfuId].data.locationId === this.props.locationId) {
           shownHandles[dfuStones[dfuId].advertisement.handle] = true;
           ids.push(dfuId);
-          dfuStones[dfuId].dfuMode = true;
+          dfuStones[dfuId].type = 'dfuStone';
           stoneArray.push(dfuStones[dfuId]);
         }
       });
@@ -279,7 +293,7 @@ lang("_Indoor_localization_is_c_body"),
       let setupIds = Object.keys(setupStones);
       // check if there are any setup stones that match the stones already in the database.
       stoneIds.forEach((stoneId) => {
-        let stoneObj = stoneData[stoneId];
+        let stoneObj = stones[stoneId];
         let handle = stoneObj.config.handle;
         // only try showing the setup stone if it is not already a DFU stone
         if (shownHandles[handle] === undefined) {
@@ -288,7 +302,7 @@ lang("_Indoor_localization_is_c_body"),
               shownHandles[handle] = true;
               ids.push(stoneId);
               stoneArray.push({
-                setupMode: true,
+                type:'setupStone',
                 ...setupStones[setupId],
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon
@@ -299,30 +313,35 @@ lang("_Indoor_localization_is_c_body"),
       })
     }
 
-    stoneIds.forEach((stoneId) => {
+    for (let [stoneId, stone] of Object.entries<StoneData>(stones)) {
       // do not show the same device twice
-      let handle = stoneData[stoneId].config.handle;
-      if (stoneData[stoneId].abilities.dimming.enabledTarget) {
-        this.amountOfDimmableCrownstonesInLocation += 1;
-      }
-      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
-        this.amountOfActiveCrownstonesInLocation += 1;
-      }
-
+      let handle = stone.config.handle;
       if (shownHandles[handle] === undefined) {
-        tempStoneDataArray.push({stone: stoneData[stoneId], id: stoneId});
+        if (stone.abilities.dimming.enabledTarget) {
+          this.amountOfDimmableCrownstonesInLocation += 1;
+        }
+        if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+          this.amountOfActiveCrownstonesInLocation += 1;
+        }
+
+        tempStoneDataArray.push({type:'stone', data: stone, id: stoneId});
       }
-    });
+    }
 
     // sort the order of things by crownstone Id
-    tempStoneDataArray.sort((a,b) => { return a.stone.config.crownstoneId - b.stone.config.crownstoneId });
+    tempStoneDataArray.sort((a,b) => { return a.data.config.crownstoneId - b.data.config.crownstoneId });
+
+    for (let [hubId, hub] of Object.entries<HubData>(hubs)) {
+      // do not show the same device twice
+      tempStoneDataArray.push({type:'hub', data: hub, id: hubId});
+    }
 
     tempStoneDataArray.forEach((tmpStoneData) => {
       ids.push(tmpStoneData.id);
       stoneArray.push(tmpStoneData);
     });
 
-    return { stoneArray, ids };
+    return { itemArray: stoneArray, ids };
   }
 
 
@@ -330,23 +349,6 @@ lang("_Indoor_localization_is_c_body"),
     getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
-
-
-  // _getListButton() {
-  //   return (
-  //     <SlideSideFadeInView visible={this.state.switchView} width={screenWidth} style={{position:'absolute', top:0, left:0, height:120}}>
-  //       <TouchableOpacity
-  //         style={{width:screenWidth, height:120, alignItems:'flex-start', justifyContent:'center', padding:15}}
-  //         onPress={() => { this.setState({switchView:false})}}
-  //       >
-  //         <View style={{height: 56, borderRadius:28, flexDirection:'row', backgroundColor: colors.black.rgba(0.4), alignItems:'center',paddingLeft:20, paddingRight:10}}>
-  //           <Icon name={'ios-list'} size={40} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
-  //           <Text style={[styles.boldExplanation,{color: colors.white.hex}]}>List view</Text>
-  //         </View>
-  //       </TouchableOpacity>
-  //     </SlideSideFadeInView>
-  //   );
-  // }
 
 
   render() {
@@ -362,15 +364,16 @@ lang("_Indoor_localization_is_c_body"),
     this.amountOfDimmableCrownstonesInLocation = 0;
     this.amountOfActiveCrownstonesInLocation = 0;
     let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
+    let hubs   = DataUtil.getHubsInLocation(  state, this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
     if (location.config.picture) {
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
     }
 
-    let {stoneArray, ids} = this._getStoneList(stones);
+    let {itemArray, ids} = this._getItemList(stones, hubs);
     this._setNearestStoneInRoom(ids);
-    this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
+    this._setNearestStoneInSphere(sphere.stones);
 
     let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
     if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
@@ -392,7 +395,7 @@ lang("_Indoor_localization_is_c_body"),
               locationId={  this.props.locationId }
             />
             <SeparatedItemList
-              items={stoneArray}
+              items={itemArray}
               ids={ids}
               separatorIndent={false}
               renderer={this._renderer.bind(this)}

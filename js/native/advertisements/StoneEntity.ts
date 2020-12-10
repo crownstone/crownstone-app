@@ -394,7 +394,7 @@ export class StoneEntity {
     }
 
     // this handles the case where the type of a device changes. Most likely a dongle that is changed into a hub by the hubMode command.
-    if (stone.config.type !== deviceTypeMap[advertisement.serviceData.deviceType]) {
+    if (advertisement.serviceData.stateOfExternalCrownstone == false && stone.config.type !== deviceTypeMap[advertisement.serviceData.deviceType]) {
       core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.sphereId, stoneId: this.stoneId, data: {type: deviceTypeMap[advertisement.serviceData.deviceType]}});
     }
 

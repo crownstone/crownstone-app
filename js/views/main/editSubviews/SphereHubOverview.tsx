@@ -125,7 +125,7 @@ export class SphereHubOverview extends LiveComponent<any, any> {
     })
 
 
-    items.push({label: lang("This_is_an_overvi ew_of_al"), type:'explanation', below:true});
+    items.push({label: "This is an overview of all your Hubs and CrownstoneUSBs.", type:'explanation', below:true});
 
 
     items.push({

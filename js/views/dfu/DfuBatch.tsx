@@ -178,7 +178,7 @@ export class DfuBatch extends LiveComponent<any, any> {
     let stoneArray = [];
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
-    if (!sphere) { return { stoneArray, ids: [] }};
+    if (!sphere) { return { itemArray: stoneArray, ids: [] }};
     let stones = sphere.stones;
 
     this.props.stoneIdsToUpdate.forEach((stoneId) => {
@@ -187,7 +187,7 @@ export class DfuBatch extends LiveComponent<any, any> {
       }
     });
 
-    return { stoneArray, ids: this.props.stoneIdsToUpdate };
+    return { stoneArray: stoneArray, ids: this.props.stoneIdsToUpdate };
   }
 
 
