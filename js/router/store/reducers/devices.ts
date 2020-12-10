@@ -1,6 +1,7 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
+  id: undefined,
   name: null,
   address: null,
   description: null,
@@ -26,6 +27,10 @@ let defaultSettings = {
 
 let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.deviceId;
+      return newState;
     case 'UPDATE_DEVICE_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
@@ -77,6 +82,11 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_DEVICE_CONFIG':
       if (action.data) {
         let newState = {...state};
+
+        if (action.type === 'ADD_DEVICE') {
+          newState.id = action.deviceId;
+        }
+
         newState.name                   = update(action.data.name,            newState.name);
         newState.address                = update(action.data.address,         newState.address);
         newState.cloudId                = update(action.data.cloudId,         newState.cloudId);
@@ -91,6 +101,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.installationId         = update(action.data.installationId,  newState.installationId);
         newState.rssiOffset             = update(action.data.rssiOffset,      newState.rssiOffset);
         newState.updatedAt              = getTime(action.data.updatedAt);
+
         return newState;
       }
       return state;

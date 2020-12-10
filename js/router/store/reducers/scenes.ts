@@ -1,6 +1,7 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings : SceneData = {
+  id:'',
   name: '',
   picture:  null,
   pictureId:  null,
@@ -12,6 +13,10 @@ let defaultSettings : SceneData = {
 
 let sceneReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.sceneId;
+      return newState;
     case 'UPDATE_SCENE_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
@@ -23,6 +28,9 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_SCENE':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_SCENE') {
+          newState.id = action.sceneId;
+        }
         newState.name          = update(action.data.name,          newState.name);
         newState.picture       = update(action.data.picture,       newState.picture);
         newState.pictureId     = update(action.data.pictureId,     newState.pictureId);
@@ -35,7 +43,7 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
       return state;
 
     case 'SPHERE_SCENE_REPAIR_PICTURE':
-      let newState = {...state};
+      newState = {...state};
       newState.picture    = null;
       newState.pictureId  = null;
       newState.pictureSource = null;

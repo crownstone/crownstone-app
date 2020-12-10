@@ -1,5 +1,5 @@
 import { combineReducers }      from 'redux'
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import ruleReducer         from './stoneSubReducers/rules'
 import meshReducer         from './stoneSubReducers/mesh'
 import reachabilityReducer from './stoneSubReducers/reachability'
@@ -9,6 +9,7 @@ import abilityReducer      from './stoneSubReducers/abilities'
 import { STONE_TYPES }     from "../../../Enums";
 
 let defaultSettings : StoneData = {
+  id: undefined,
   config: {
     name: 'Crownstone Plug',
     description: '',
@@ -278,6 +279,7 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
 
 
 let combinedStoneReducer = combineReducers({
+  id:           idReducerGenerator("ADD_STONE", "stoneId"),
   config:       stoneConfigReducer,
   state:        stoneStateReducer,
   abilities:    abilityReducer,

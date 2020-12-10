@@ -7,11 +7,12 @@ import scenesReducer from './scenes'
 import hubReducer from './hub'
 import sortedListsReducer from './sortedLists'
 import thirdPartyReducer from './thirdParty'
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import sphereKeyReducer from "./sphereKeys";
 
 
 let defaultSettings : SphereData = {
+  id: undefined,
   config: {
     name: undefined,
     iBeaconUUID: undefined, // ibeacon uuid
@@ -143,6 +144,7 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
 
 
 let combinedSphereReducer = combineReducers({
+  id:          idReducerGenerator("ADD_SPHERE", 'sphereId'),
   config:      sphereConfigReducer,
   users:       sphereUserReducer,
   locations:   locationsReducer,

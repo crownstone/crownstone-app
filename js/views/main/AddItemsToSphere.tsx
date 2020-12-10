@@ -32,11 +32,6 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
   }
 
 
-  // componentDidMount() {
-  //   DataUtil.callOnAllSpheres((sphereId) => {
-  //     core.store.dispatch({type:"REMOVE_ALL_HUBS", sphereId})
-  //   })
-  // }
 
   render() {
     let hightlightAddCrownstoneButton = false;

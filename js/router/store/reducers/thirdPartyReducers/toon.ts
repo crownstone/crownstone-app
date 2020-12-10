@@ -1,6 +1,7 @@
 import {getTime, refreshDefaults, update} from "../reducerUtil";
 
 let defaultSettings = {
+  id: undefined,
   toonAgreementId: null,
   toonAddress: null,
   cloudId: null,
@@ -16,6 +17,10 @@ let defaultSettings = {
 // toonReducer
 let toonReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.toonId;
+      return newState;
     case "UPDATE_TOON_CLOUD_ID":
       if (action.data) {
         let newState = {...state};
@@ -27,6 +32,10 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_TOON':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_TOON') {
+          newState.id = action.toonId;
+        }
+
         newState.toonAgreementId = update(action.data.toonAgreementId,         newState.toonAgreementId);
         newState.toonAddress     = update(action.data.toonAddress,             newState.toonAddress);
         newState.schedule        = update(action.data.schedule,                newState.schedule);

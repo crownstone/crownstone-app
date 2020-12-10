@@ -1,6 +1,7 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let dataState = {
+  id: undefined,
   key: null,
   keyType: null,
   createdAt: 0,
@@ -9,10 +10,17 @@ let dataState = {
 
 let keyReducer = (state = dataState, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.keyId;
+      return newState;
     case 'ADD_SPHERE_KEY':
     case 'UPDATE_SPHERE_KEY':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_SPHERE_KEY') {
+          newState.id = action.keyId;
+        }
         newState.key       = update( action.data.key,       newState.key);
         newState.keyType   = update( action.data.keyType,   newState.keyType);
         newState.createdAt = update( action.data.createdAt, newState.createdAt);

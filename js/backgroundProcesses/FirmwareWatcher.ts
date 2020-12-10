@@ -32,7 +32,7 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: Random Firmware Check Forced.");
     }
 
-    Util.data.callOnStonesInSphere(state, sphereId, (stoneId, stone) => {
+    Util.data.callOnStonesInSphere(sphereId, (stoneId, stone) => {
       let execute = !stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  || !stone.config.hardwareVersion || stone.config.hardwareVersion === '0'
 
       LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute when in range:", execute);

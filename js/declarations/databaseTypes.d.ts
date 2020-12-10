@@ -1,4 +1,5 @@
 interface SyncEvent {
+  id: string,
   localId: string,
   sphereId: string,
   stoneId: string,
@@ -7,6 +8,7 @@ interface SyncEvent {
 }
 
 interface SortedListData {
+  id: string,
   viewKey: string,
   referenceId: string,
   sortedList: string[],
@@ -15,6 +17,7 @@ interface SortedListData {
 }
 
 interface SceneData {
+  id:            string,
   name:          string,
   picture:       string,
   pictureId:     string,

@@ -1,16 +1,25 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
+  id: undefined,
   deviceToken: null,
   updatedAt: 1
 };
 
 let installationReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.installationId;
+      return newState;
     case 'ADD_INSTALLATION':
     case 'UPDATE_INSTALLATION_CONFIG':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_INSTALLATION') {
+          newState.id = action.installationId;
+        }
+
         newState.deviceToken = update(action.data.deviceToken, newState.deviceToken);
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;

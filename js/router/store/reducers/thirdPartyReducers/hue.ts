@@ -10,6 +10,7 @@ import sortedListsReducer from "../sortedLists";
 import sphereKeyReducer from "../sphereKeys";
 
 let defaultBridgeSettings = {
+  id: undefined,
   name: 'Philips Hue Bridge',
   type: null,
   hueId: null,
@@ -24,6 +25,10 @@ let defaultBridgeSettings = {
 // hueReducer
 let hueBridgeReducer = (state = defaultBridgeSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.hueBridgeId;
+      return newState;
     case "UPDATE_HUE_BRIDGE_CLOUD_ID":
       if (action.data) {
         let newState = {...state};
@@ -34,7 +39,9 @@ let hueBridgeReducer = (state = defaultBridgeSettings, action : any = {}) => {
     case 'UPDATE_HUE_BRIDGE':
       if (action.data) {
         let newState = {...state};
-
+        if (action.type === 'ADD_HUE_BRIDGE') {
+          newState.id = action.hueBridgeId;
+        }
         newState.name       = update(action.data.name,          newState.name);
         newState.hueName    = update(action.data.hueName,       newState.hueName);
         newState.cloudId    = update(action.data.cloudId,       newState.cloudId);
@@ -56,6 +63,7 @@ let hueBridgeReducer = (state = defaultBridgeSettings, action : any = {}) => {
 
 
 let defaultLightSettings = {
+  id: undefined,
   name: null,
   type: null,
   hueId: null,
@@ -77,6 +85,10 @@ let defaultLightSettings = {
 // hue lights Reducer
 let hueLightReducer = (state = defaultLightSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.hueLightId;
+      return newState;
     case "UPDATE_HUE_LIGHT_CLOUD_ID":
       if (action.data) {
         let newState = {...state};
@@ -88,6 +100,10 @@ let hueLightReducer = (state = defaultLightSettings, action : any = {}) => {
     case 'UPDATE_HUE_LIGHT':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_HUE_LIGHT') {
+          newState.id = action.hueLightId;
+        }
+
         newState.name                = update(action.data.name,                newState.name);
         newState.hueName             = update(action.data.hueName,             newState.hueName);
         newState.hasWhiteTemperature = update(action.data.hasWhiteTemperature, newState.hasWhiteTemperature);

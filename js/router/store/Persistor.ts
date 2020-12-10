@@ -31,6 +31,7 @@ interface asyncMultiError {
 
 const FAILED_DB_ERROR = 'FAILED_REPAIR_DB';
 
+
 /**
  *
  */
@@ -915,6 +916,9 @@ function compare(a, b, path, storageKey, options: persistOptions) {
   }
   else if (isObject(a) && isObject(b)) {
     checkObjects(a, b, path, storageKey, options);
+  }
+  else if (a !== b) {
+    options.handlers.difference(a,b,path,storageKey)
   }
 }
 

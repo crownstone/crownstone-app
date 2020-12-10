@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux'
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 
 
 let defaultSettings : LocationData = {
+  id: undefined,
   config: {
     name:'Untitled Room',
     icon: undefined,
@@ -155,6 +156,7 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
 };
 
 let combinedLocationReducer = combineReducers({
+  id:           idReducerGenerator("ADD_LOCATION", "locationId"),
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
   layout:       layoutReducer

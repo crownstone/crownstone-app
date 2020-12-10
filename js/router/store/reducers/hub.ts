@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import stonesReducer       from './stones'
 import { STONE_TYPES }     from "../../../Enums";
 
@@ -111,6 +111,7 @@ const reachabilityReducer = (state = defaultSettings.reachability, action : any 
 };
 
 const hubReducer = combineReducers({
+  id:           idReducerGenerator("ADD_HUB", "hubId"),
   config:       hubConfigReducer,
   state:        hubStateReducer,
   reachability: reachabilityReducer,

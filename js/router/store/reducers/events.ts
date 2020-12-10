@@ -2,6 +2,7 @@ import { update} from './reducerUtil'
 import { combineReducers } from 'redux'
 
 let itemSettings : SyncEvent = {
+  id: undefined,
   localId: null,
   sphereId: null,
   stoneId: null,
@@ -13,13 +14,18 @@ let itemSettings : SyncEvent = {
 let getItemReducer = function(changeType, itemType) {
   return (state = {...itemSettings}, action : any = {}) => {
     switch (action.type) {
-      case 'CLOUD_EVENT_' + changeType + '_' + itemType:
+      case 'INJECT_IDS':
         let newState = {...state};
-        newState.localId          = update(action.localId,       newState.localId);
-        newState.sphereId         = update(action.sphereId,      newState.sphereId);
-        newState.stoneId          = update(action.stoneId,       newState.stoneId);
-        newState.cloudId          = update(action.cloudId,       newState.cloudId);
-        newState.specialType      = update(action.specialType,   newState.specialType);
+        newState.id = action.id;
+        return newState;
+      case 'CLOUD_EVENT_' + changeType + '_' + itemType:
+        newState = {...state};
+        newState.id          = action.id;
+        newState.localId     = update(action.localId,       newState.localId);
+        newState.sphereId    = update(action.sphereId,      newState.sphereId);
+        newState.stoneId     = update(action.stoneId,       newState.stoneId);
+        newState.cloudId     = update(action.cloudId,       newState.cloudId);
+        newState.specialType = update(action.specialType,   newState.specialType);
         return newState;
       default:
         return state;

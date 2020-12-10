@@ -73,3 +73,31 @@ function migrateFields(newState, defaultObject) {
     newState.tapToToggle = newState.touchToToggle;
   }
 }
+
+export function idReducerGenerator(createActionType: string | string[], idField: string) {
+  if (Array.isArray(createActionType)) {
+    return (state: string = '', action: any = {}) => {
+      for (let actionType of createActionType) {
+        if (action.type === actionType) {
+          return action[idField];
+        }
+      }
+      if (action.type === "INJECT_IDS") {
+        return action[idField];
+      }
+      return state;
+    }
+  }
+
+
+  return (state: string = '', action: any = {}) => {
+    switch (action.type) {
+      case 'INJECT_IDS':
+      case createActionType:
+        return action[idField];
+      default:
+        return state;
+    }
+  }
+
+}

@@ -83,6 +83,7 @@ interface behaviourReply {
 
 
 interface behaviourWrapper {
+  id: string,
   type: "BEHAVIOUR" | "TWILIGHT"
   data: string, // behaviour | twilight, // stringified
   activeDays: dayOfWeek,

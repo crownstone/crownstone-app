@@ -1,6 +1,7 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
+  id:'',
   firstName: null,
   lastName: null,
   email: null,
@@ -14,8 +15,12 @@ let defaultSettings = {
 
 let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
-    case 'USER_ENTER_SPHERE':
+    case 'INJECT_IDS':
       let newState = {...state};
+      newState.id = action.userId;
+      return newState;
+    case 'USER_ENTER_SPHERE':
+      newState = {...state};
       newState.present = true;
       return newState;
     case 'USER_EXIT_SPHERE':
@@ -26,6 +31,10 @@ let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_SPHERE_USER':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_SPHERE_USER') {
+          newState.id = action.userId;
+        }
+
         newState.firstName         = update(action.data.firstName,         newState.firstName);
         newState.lastName          = update(action.data.lastName,          newState.lastName);
         newState.picture           = update(action.data.picture,           newState.picture);

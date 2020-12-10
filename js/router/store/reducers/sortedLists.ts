@@ -1,6 +1,7 @@
 import { getTime, refreshDefaults, update } from "./reducerUtil";
 
 let defaultSettings : SortedListData = {
+  id:'',
   viewKey: null,
   referenceId: null,
   sortedList: [],
@@ -10,6 +11,10 @@ let defaultSettings : SortedListData = {
 
 let sortedListReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.id = action.sortedListId;
+      return newState;
     case 'UPDATE_SORTED_LIST_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
@@ -21,6 +26,10 @@ let sortedListReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_SORTED_LIST':
       if (action.data) {
         let newState = {...state};
+        if (action.type === 'ADD_SORTED_LIST') {
+          newState.id = action.sortedListId;
+        }
+
         newState.viewKey     = update(action.data.viewKey,    newState.viewKey);
         newState.referenceId = update(action.data.picture,    newState.referenceId);
         if (newState.sortedList) {

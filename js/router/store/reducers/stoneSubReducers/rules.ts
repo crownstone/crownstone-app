@@ -6,6 +6,7 @@ export const BEHAVIOUR_TYPES = {
 }
 
 let defaultSettings : behaviourWrapper = {
+  id: undefined,
   type: null,
   data: null, // this is the stringified rule
   activeDays: {
@@ -34,10 +35,19 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'INJECT_IDS':
+      let newState = {...state};
+      newState.activeDays = {...state.activeDays};
+      newState.id = action.ruleId;
+      return newState;
     case 'ADD_STONE_RULE':
     case 'UPDATE_STONE_RULE':
       if (action.data) {
-        let newState = {...state};
+        newState = {...state};
+        if (action.type === 'ADD_STONE_RULE') {
+          newState.id = action.ruleId;
+        }
+
         newState.activeDays = {...state.activeDays};
 
         newState.type               = update(action.data.type,            newState.type);
@@ -60,7 +70,7 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
       }
       return state;
     case 'REFRESH_BEHAVIOURS':
-      let newState = {...state};
+      newState = {...state};
       newState.syncedToCrownstone = false;
       return newState;
     case 'MARK_STONE_RULE_FOR_DELETION':

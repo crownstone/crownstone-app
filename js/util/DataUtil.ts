@@ -30,7 +30,8 @@ export const DataUtil = {
    * @param state
    * @param callback
    */
-  callOnAllStones: function(state: any, callback: (sphereId: string, stoneId: string, stone: any) => void) {
+  callOnAllStones: function(callback: (sphereId: string, stoneId: string, stone: StoneData) => void) {
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
       let stones = state.spheres[sphereIds[i]].stones;
@@ -48,7 +49,8 @@ export const DataUtil = {
    * @param sphereId
    * @param callback
    */
-  callOnStonesInSphere: function(state: any, sphereId: string, callback: (stoneId: string, stone: any) => void) {
+  callOnStonesInSphere: function(sphereId: string, callback: (stoneId: string, stone: StoneData) => void) {
+    let state = core.store.getState();
     if (state && state.spheres && state.spheres[sphereId]) {
       let stones = state.spheres[sphereId].stones;
       let stoneIds = Object.keys(stones);

@@ -43,6 +43,7 @@ import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
 import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { DataUtil } from "../../util/DataUtil";
 import { Button } from "../components/Button";
+import { Get } from "../../util/GetUtil";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -224,6 +225,38 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       </View>
     }
 
+    let sphere = Get.sphere(this.props.sphereId);
+    DataUtil.callOnStonesInSphere(this.props.sphereId, (stoneId: string, stone: StoneData) => {
+
+    })
+
+    if (!stone) {
+      return (
+        <View key={"StoneMissingFix"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"This hub has no Crownstone Dongle linked to it. Either setup a new CrownstoneUSB to the hub, or link this hub to a Crownstone dongle that has no hub connected to it."}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Fix now. "}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={() => {
+              this.setState({fixing: true});
+              let helper = new SetupHubHelper();
+              helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
+                .then((hubId) => {
+                  core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
+                  this.setState({fixing:false})
+                })
+                .catch((e) => {
+                  this.setState({fixing:false})
+                })
+            }}
+          />
+        </View>
+      );
+    }
+
     // this means the hub itself has no reference in the app to work off from. We should fix this.
     if (!hub) {
       return (
@@ -322,8 +355,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId) || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
 
     let updateAvailable = stone && stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
-
-    let hubProblem = false;
 
     let problemEntries = this.getStateEntries(stone, hub);
 

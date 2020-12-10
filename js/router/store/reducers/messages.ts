@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import { combineReducers } from 'redux'
 
 /**
@@ -131,6 +131,7 @@ const readReducer = (state = {}, action : any = {}) => {
 
 
 const combinedMessageReducer = combineReducers({
+  id:         idReducerGenerator(["ADD_MESSAGE","ADD_CLOUD_MESSAGE"], 'messageId'),
   config:     configReducer,
   recipients: recipientsReducer,
   received:   receivedReducer,

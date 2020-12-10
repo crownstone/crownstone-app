@@ -49,7 +49,7 @@ class BatterySavingClass {
     let inSphere = inSphereId !== null;
     let notAllHandlesAreKnown = null;
     if (inSphere) {
-      Util.data.callOnStonesInSphere(state, inSphereId, (stoneId, stone) => {
+      Util.data.callOnStonesInSphere(inSphereId, (stoneId, stone) => {
         if (!stone.config.handle) {
           notAllHandlesAreKnown = true;
         }
@@ -102,7 +102,7 @@ class BatterySavingClass {
     let inSphere = inSphereId !== null;
     let allHandlesKnown = true;
     if (inSphere) {
-      Util.data.callOnStonesInSphere(state, inSphereId, (stoneId, stone) => {
+      Util.data.callOnStonesInSphere(inSphereId, (stoneId, stone) => {
         if (!stone.config.handle) {
           allHandlesKnown = false;
         }

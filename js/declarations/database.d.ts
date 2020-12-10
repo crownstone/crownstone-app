@@ -1,6 +1,7 @@
 type timestamp = number;
 
 interface SphereData {
+  id: string,
   config: {
     name: string,
     iBeaconUUID: string, // ibeacon uuid
@@ -34,6 +35,7 @@ interface SphereData {
 }
 
 interface HubData {
+  id: string,
   config: {
     name: string,
     cloudId:   string | null,
@@ -61,6 +63,7 @@ interface HubData {
 
 
 interface StoneData {
+  id: string,
   config: {
     name: string,
     description: string,
@@ -129,6 +132,7 @@ interface StoneData {
 
 
 interface LocationData {
+  id: string,
   config: {
     name:         string,
     icon:         string,
