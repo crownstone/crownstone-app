@@ -38,6 +38,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
+import { DataUtil } from "../../util/DataUtil";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -53,19 +54,17 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
     const store = core.store;
     const state = store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) { return; }
-    const stone = sphere.stones[this.props.stoneId];
-    if (!stone) { return; }
+    const stone = state.spheres?.[this.props.sphereId]?.stones?.[this.props.stoneId];
+    if (stone) {
+      this.state = {
+        stoneName: stone.config.name,
+        description: stone.config.description,
+        stoneIcon: stone.config.icon,
+        locationId: stone.config.locationId,
 
-    this.state = {
-      stoneName: stone.config.name,
-      description: stone.config.description,
-      stoneIcon: stone.config.icon,
-      locationId: stone.config.locationId,
-
-      refreshingStoneVersions: false
-    };
+        refreshingStoneVersions: false
+      };
+    }
 
   }
 
@@ -104,8 +103,9 @@ export class DeviceEdit extends LiveComponent<any, any> {
   constructStoneOptions(stone, state) {
     let items = [];
     let locations = state.spheres[this.props.sphereId].locations;
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.hubId);
 
-    items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
+    items.push({label: hub ? "HUB SETTINGS" : lang("CROWNSTONE"), type: 'explanation', below: false});
 
     items.push({
       label: lang("Name"),
@@ -149,7 +149,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     }
     locationLabel += lang("__tap_to_change_")
 
-    items.push({label: lang("CROWNSTONE_IS_IN_ROOM"), type: 'explanation', below: false});
+    items.push({label: hub ? "HUB IS IN ROOM" : lang("CROWNSTONE_IS_IN_ROOM"), type: 'explanation', below: false});
     items.push({
       label: locationLabel,
       mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
@@ -169,25 +169,37 @@ export class DeviceEdit extends LiveComponent<any, any> {
         mediumIcon: <IconButton name="ios-trash" size={26} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-          core.eventBus.emit('hideLoading');
-          Alert.alert(
-            lang("_Are_you_sure___Removing__header"),
-            lang("_Are_you_sure___Removing__body"),
-            [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-              text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-                if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-                  Alert.alert(lang("Cant_see_this_one_"),
-                    lang("This_Crownstone_has_not_b"),
-                    [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-                      {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
-                  )
-                }
-                else {
-                  core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
-                  this._removeCrownstone(stone).catch((err) => {});
-                }
-              }}]
-          )
+          if (hub) {
+            Alert.alert(
+              "Are you sure you want to delete this hub?",
+              "This cannot be undone!",
+              [{text: "Delete", onPress: async () => {
+                Alert.alert("TODO")
+                // TODO: delete hub via rest/ble.
+                // TODO: rest is not implemented yet.
+            }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
+          }
+          else {
+            core.eventBus.emit('hideLoading');
+            Alert.alert(
+              lang("_Are_you_sure___Removing__header"),
+              lang("_Are_you_sure___Removing__body"),
+              [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+                text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
+                  if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+                    Alert.alert(lang("Cant_see_this_one_"),
+                      lang("This_Crownstone_has_not_b"),
+                      [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+                        {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
+                    )
+                  }
+                  else {
+                    core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
+                    this._removeCrownstone(stone).catch((err) => {});
+                  }
+                }}]
+            )
+          }
         }
       });
       items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
@@ -319,12 +331,9 @@ export class DeviceEdit extends LiveComponent<any, any> {
     const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-
+    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.hubId);
     // collect promises to handle changes in switchcraft and dim state
-    let changePromises    = [];
-    Promise.all(changePromises)
-      .then(() => { core.eventBus.emit("hideLoading"); } )
-      .catch((err) => { core.eventBus.emit("hideLoading"); });
+    core.eventBus.emit("hideLoading");
 
     let actions = [];
     if (
@@ -341,6 +350,17 @@ export class DeviceEdit extends LiveComponent<any, any> {
           name:        this.state.stoneName,
           description: this.state.description,
           icon:        this.state.stoneIcon,
+          locationId:  this.state.locationId,
+        }});
+    }
+
+    if (hub && (stone.config.name !== this.state.stoneName || stone.config.locationId !== this.state.locationId)) {
+      actions.push({
+        type:'UPDATE_HUB_CONFIG',
+        sphereId: this.props.sphereId,
+        hubId: hub.id,
+        data: {
+          name:        this.state.stoneName,
           locationId:  this.state.locationId,
         }});
     }

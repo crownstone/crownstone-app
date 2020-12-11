@@ -151,6 +151,7 @@ interface BluenetPromiseWrapperProtocol {
   setUartKey(uartKey: string)                                     : Promise<void>,
   transferHubTokenAndCloudId(hubToken: string, cloudId: string)   : Promise<HubDataReply>,
   requestCloudId()                                                : Promise<HubDataReply>,
+  factoryResetHub()                                               : Promise<HubDataReply>,
 }
 
 interface GPREGRET {

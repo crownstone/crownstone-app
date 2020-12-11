@@ -1043,66 +1043,30 @@ open class BluenetJS: RCTEventEmitter {
   
   
   @objc func transferHubTokenAndCloudId(_ hubToken: String, cloudId: String, callback: @escaping RCTResponseSenderBlock) {
-    let payload = HubPacketGenerator.tokenSphereIdPacket(hubToken: hubToken, cloudId: cloudId)
-    LOGGER.info("BluenetBridge: Called transferHubTokenAndCloudId")
-    GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: payload)
-      .done{ value in
-        let hubResult = HubParser(value)
-        if (hubResult.valid) {
-          callback([["error" : false, "data": [
-            "protocolVersion": hubResult.protocolVersion,
-            "type":            hubResult.typeString,
-            "errorType":       hubResult.errorType,
-            "message":         hubResult.message
-          ]]])
-        }
-        else {
-          callback([["error" : true, "data": "INVALID_REPLY"]])
-        }
-        
-        
-      }
-      .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN transferHubTokenAndCloudId \(err)"]])
-        }
-    }
+    wrapHubMethodForBluenet(
+      "transferHubTokenAndCloudId",
+      callback,
+      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.tokenSphereIdPacket(hubToken: hubToken, cloudId: cloudId))
+    )
   }
   
   @objc func requestCloudId(_ callback: @escaping RCTResponseSenderBlock) {
-    let payload = HubPacketGenerator.requestDataPacket(type: HubRequestDataType.cloudId)
-    LOGGER.info("BluenetBridge: Called requestCloudId")
-    GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: payload)
-      .done{ value in
-        let hubResult = HubParser(value)
-        if (hubResult.valid) {
-          callback([["error" : false, "data": [
-            "protocolVersion": hubResult.protocolVersion,
-            "type":            hubResult.typeString,
-            "dataType":        hubResult.dataType,
-            "message":         hubResult.message
-          ]]])
-        }
-        else {
-          callback([["error" : true, "data": "INVALID_REPLY"]])
-        }
-        
-        
-      }
-      .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN requestCloudId \(err)"]])
-        }
-    }
+    wrapHubMethodForBluenet(
+      "requestCloudId",
+      callback,
+      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.requestDataPacket(type: HubRequestDataType.cloudId))
+    )
   }
   
-
+  
+  @objc func factoryResetHub(_ callback: @escaping RCTResponseSenderBlock) {
+    wrapHubMethodForBluenet(
+      "factoryResetHub",
+      callback,
+      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetPacket())
+    )
+  }
+  
   
 
   @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {
@@ -1274,4 +1238,32 @@ func wrapBehaviourMethodForBluenet(_ label: String, _ callback: @escaping RCTRes
           callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
         }
     }
+}
+
+
+func wrapHubMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<[UInt8]>) {
+  LOGGER.info("BluenetBridge: Called label")
+  promise
+    .done{ value in
+      let hubResult = HubParser(value)
+      if (hubResult.valid) {
+        callback([["error" : false, "data": [
+          "protocolVersion": hubResult.protocolVersion,
+          "type":            hubResult.typeString,
+          "dataType":        hubResult.dataType,
+          "message":         hubResult.message
+        ]]])
+      }
+      else {
+        callback([["error" : true, "data": "INVALID_REPLY"]])
+      }
+    }
+    .catch{err in
+      if let bleErr = err as? BluenetError {
+        callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+      }
+      else {
+        callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
+      }
+  }
 }

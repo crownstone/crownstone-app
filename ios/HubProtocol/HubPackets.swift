@@ -56,6 +56,18 @@ public class HubPacketGenerator {
     
         return payload
     }
+    
+    
+    
+    static func factoryResetPacket() -> [UInt8] {
+        var payload : [UInt8] = []
+
+        payload.append(PROTOCOL_VERSION)
+        payload += Conversion.uint16_to_uint8_array(NSNumber(value: HubDataType.factoryReset.rawValue).uint16Value)
+        payload += Conversion.uint32_to_uint8_array(0xDEADBEEF)
+    
+        return payload
+    }
 }
 
 

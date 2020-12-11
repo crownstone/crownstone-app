@@ -4,7 +4,7 @@ import { Platform } from "react-native";
 import { CLOUD } from "../cloud/cloudAPI";
 import { LocalNotifications } from "./LocalNotifications";
 import { MessageCenter } from "../backgroundProcesses/MessageCenter";
-import { LOG, LOGe } from "../logging/Log";
+import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
 import { MapProvider } from "../backgroundProcesses/MapProvider";
 import { SphereUserSyncer } from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
@@ -14,6 +14,9 @@ import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { InviteCenter } from "../backgroundProcesses/InviteCenter";
 
 class NotificationParserClass {
+
+  timekeeper = {};
+
 
   handle(notificationData) {
     if (notificationData && notificationData.command) {
@@ -38,6 +41,22 @@ class NotificationParserClass {
 
   _handleRemoteNotifications(notificationData) {
     let state = core.store.getState();
+    let notificationTimestamp = notificationData?.sequenceTime?.timestamp || null;
+    if (notificationTimestamp) {
+      if (Date.now() - notificationTimestamp > 30000) {
+        LOGw.info("This notification is more than 30 seconds old. Ignoring it.", notificationData, Date.now() - notificationTimestamp);
+        return;
+      }
+
+      let cloudTimeBetweenNotifications = notificationTimestamp - this.timekeeper[notificationData.command];
+      if (cloudTimeBetweenNotifications < -500) {
+        LOGw.info("Notifications received out of order. Difference is more than 500ms. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
+        return;
+      }
+
+      this.timekeeper[notificationData.command] = notificationTimestamp;
+    }
+
     switch(notificationData.command) {
       case 'multiSwitch':
         this._handleMultiswitch(notificationData, state); break;

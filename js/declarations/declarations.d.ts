@@ -225,7 +225,7 @@ type stoneId  = string
 
 interface HubDataReply {
   protocolVersion: number,
-  type:            string, // success | error
+  type:            string, // is the string name of the ReplyTypes. As of writing: success | error | dataReply
   errorType:       number // can be null
   dataType:        number // can be null
   message:         string // default empty string ""

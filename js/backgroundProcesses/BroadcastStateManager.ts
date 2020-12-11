@@ -216,8 +216,16 @@ class BroadcastStateManagerClass {
       }
     }
 
-    //   this index is made of 2 bits of deviceUID, 1 bit of wearable true/false and 5 bits of userIndex
-    return (userIndex % 32) + (deviceUID % 4 << 6);
+    // The format of the device token is as follows (bits)
+    //
+    // | 0 | 0 0 | 0 0 0 0 0 |
+    //
+    // first is wearable true: false (MSB)
+    // second is the device index
+    // third is the user index
+    //
+    // This method will force this format.
+    return (userIndex % 32) + ((deviceUID % 4) << 5);
   }
 
   _updateLocationState(sphereId, locationId = null) {

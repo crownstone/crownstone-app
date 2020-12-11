@@ -312,7 +312,7 @@ lang("_Indoor_localization_is_c_body"),
         }
       })
     }
-
+    let shownStones = {};
     for (let [stoneId, stone] of Object.entries<StoneData>(stones)) {
       // do not show the same device twice
       let handle = stone.config.handle;
@@ -324,6 +324,7 @@ lang("_Indoor_localization_is_c_body"),
           this.amountOfActiveCrownstonesInLocation += 1;
         }
 
+        shownStones[stoneId] = true;
         tempStoneDataArray.push({type:'stone', data: stone, id: stoneId});
       }
     }
@@ -331,9 +332,12 @@ lang("_Indoor_localization_is_c_body"),
     // sort the order of things by crownstone Id
     tempStoneDataArray.sort((a,b) => { return a.data.config.crownstoneId - b.data.config.crownstoneId });
 
+
     for (let [hubId, hub] of Object.entries<HubData>(hubs)) {
-      // do not show the same device twice
-      tempStoneDataArray.push({type:'hub', data: hub, id: hubId});
+      if (shownStones[hub.config.linkedStoneId] === undefined) {
+        // do not show the same device twice
+        tempStoneDataArray.push({ type: 'hub', data: hub, id: hubId });
+      }
     }
 
     tempStoneDataArray.forEach((tmpStoneData) => {

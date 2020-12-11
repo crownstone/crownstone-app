@@ -126,6 +126,7 @@ import { HueAdd } from "../views/thirdParty/hue/HueAdd";
 import { SetupHub } from "../views/addingCrownstones/SetupHub";
 import { HubOverview } from "../views/hubViews/HubOverview";
 import { SphereHubOverview } from "../views/main/editSubviews/SphereHubOverview";
+import { HubEdit } from "../views/hubViews/HubEdit";
 
 
 export const Views = {
@@ -151,6 +152,7 @@ export const Views = {
   // CameraRollView:                    CameraRollView,
   // PictureView:                       PictureView,
   HubOverview:                       HubOverview,
+  HubEdit:                           HubEdit,
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,

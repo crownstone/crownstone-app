@@ -74,8 +74,14 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'deviceEdit')    {
-      NavigationUtil.launchModal( "DeviceEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+    if (buttonId === 'deviceEdit') {
+      console.log("HERE", this.props)
+      if (this.props.stoneId) {
+        NavigationUtil.launchModal("DeviceEdit", { sphereId: this.props.sphereId, stoneId: this.props.stoneId });
+      }
+      else if (this.props.hubId) {
+        NavigationUtil.launchModal("HubEdit", { sphereId: this.props.sphereId, hubId: this.props.hubId });
+      }
     }
   }
 
@@ -218,10 +224,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       </View>
     }
 
-    // let sphere = Get.sphere(this.props.sphereId);
-    // DataUtil.callOnStonesInSphere(this.props.sphereId, (stoneId: string, stone: StoneData) => {
-    //
-    // })
 
     if (!stone) {
       return (
@@ -272,7 +274,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     // this means the dongle is set up, but the hub itself is not setup.
     if (hub.data.state.hubHasBeenSetup === false) {
-      // TODO: have the user possibly select a hub in the database to bind to this entity.
       return (
         <View key={"HubSetupFix"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{"The hub itself is not initialized yet.. Press the button below to fix this!"}</Text>
@@ -303,8 +304,26 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hub.data.state.uartAlive === true && hub.data.state.uartAliveEncrypted === false) {
       return (
         <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub and the dongle do not agree on the encryption key. Factory reset the hub via the REST interface."}</Text>
+          <Text style={textStyle}>{"The hub and the dongle do not agree on the encryption key. The hub must be factory reset to resolve this."}</Text>
           <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Factory reset hub. "}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={() => {
+              this.setState({fixing: true});
+              // let helper = new SetupHubHelper();
+              // helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
+              //   .then((hubId) => {
+              //     core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
+              //     this.setState({fixing:false})
+              //   })
+              //   .catch((e) => {
+              //     this.setState({fixing:false})
+              //   })
+            }}
+          />
         </View>
       );
     }
