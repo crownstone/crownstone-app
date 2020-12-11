@@ -50,7 +50,11 @@ import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.*
 import rocks.crownstone.bluenet.util.Util.isBitSet
+import rocks.crownstone.consumerapp.hubdata.DataType
 import rocks.crownstone.consumerapp.hubdata.HubDataReplyPacket
+import rocks.crownstone.consumerapp.hubdata.reply.DataReplyPacket
+import rocks.crownstone.consumerapp.hubdata.reply.ErrorReplyPacket
+import rocks.crownstone.consumerapp.hubdata.reply.SuccessReplyPacket
 import rocks.crownstone.localization.library.*
 import rocks.crownstone.localization.library.structs.Fingerprint
 import rocks.crownstone.localization.library.structs.FingerprintSamplesMap
@@ -2673,37 +2677,79 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun transferHubTokenAndCloudId(hubToken: String, cloudId: String, callback: Callback) {
 		val hubDataHandler = HubData(bluenet)
-		hubDataHandler.sendTokenAndCloudId(hubToken, cloudId)
+		hubDataHandler.setup(hubToken, cloudId)
 				.success { resolveCallback(callback, getHubDataReply(it)) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+
+	@ReactMethod
+	@Synchronized
+	fun requestCloudId(callback: Callback) {
+		val hubDataHandler = HubData(bluenet)
+		hubDataHandler.requestData(DataType.CLOUD_ID)
+				.success { resolveCallback(callback, getHubDataReply(it)) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun factoryResetHub(callback: Callback) {
+		val hubDataHandler = HubData(bluenet)
+		hubDataHandler.factoryReset()
+				.success { resolveCallback(callback, getHubDataReply(it)) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+
 
 	private fun getHubDataReply(replyPacket: HubDataReplyPacket): WritableMap {
 		// Return data should be in the form:
 		// {
 		//   protocolVersion: number,
-		//   type:            string, // success | error
+		//   type:            string, // success | error | dataReply
 		//   errorType:       number, // can be null
+		//   dataType:        number // can be null
 		//   message:         string // default empty string ""
 		// }
 		val map = Arguments.createMap()
+
+		// Set protocolVersion
 		map.putInt("protocolVersion", replyPacket.protocol.toInt())
+
+		// Set type
 		val type: String = when (replyPacket.type) {
 			HubDataReplyPacket.HubDataReplyType.SUCCESS -> "success"
+			HubDataReplyPacket.HubDataReplyType.DATA_REPLY -> "dataReply"
 			HubDataReplyPacket.HubDataReplyType.ERROR -> "error"
 			else -> "error"
 		}
 		map.putString("type", type)
 
-		val errorType = replyPacket.errorCode?.toInt()
-		if (errorType == null) {
-			map.putNull("errorType")
+		val replyPayload = replyPacket.payload
+
+		// Set errorType
+		if (replyPayload is ErrorReplyPacket) {
+			map.putInt("errorType", replyPayload.errorCode.num.toInt())
 		}
 		else {
-			map.putInt("errorType", errorType)
+			map.putNull("errorType")
 		}
 
-		val message = replyPacket.payload.string
+		// Set dataType
+		if (replyPayload is DataReplyPacket) {
+			map.putInt("dataType", replyPayload.type.num.toInt())
+		}
+		else {
+			map.putNull("dataType")
+		}
+
+		// Set message
+		val message: String = when (replyPacket.type) {
+			HubDataReplyPacket.HubDataReplyType.SUCCESS -> (replyPayload as SuccessReplyPacket).payload.string
+			HubDataReplyPacket.HubDataReplyType.DATA_REPLY -> (replyPayload as DataReplyPacket).payload.string
+			HubDataReplyPacket.HubDataReplyType.ERROR -> (replyPayload as ErrorReplyPacket).payload.string
+			else -> ""
+		}
 		map.putString("message", message)
 
 		return map

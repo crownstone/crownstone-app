@@ -4,18 +4,31 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.deferred
 import nl.komponents.kovenant.then
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.packets.EmptyPacket
 import rocks.crownstone.bluenet.packets.HubDataPacket
 import rocks.crownstone.bluenet.structs.Errors
 import rocks.crownstone.bluenet.util.Conversion
+import rocks.crownstone.consumerapp.hubdata.DataType
 import rocks.crownstone.consumerapp.hubdata.HubDataReplyPacket
 import rocks.crownstone.consumerapp.hubdata.HubDataRequestPacket
-import rocks.crownstone.consumerapp.hubdata.request.TokenAndCloudIdPacket
+import rocks.crownstone.consumerapp.hubdata.request.RequestDataPacket
+import rocks.crownstone.consumerapp.hubdata.request.SetupPacket
 
 class HubData(bluenet: Bluenet) {
 	private val bluenet = bluenet
 
-	fun sendTokenAndCloudId(hubToken: String, cloudId: String): Promise<HubDataReplyPacket, Exception> {
-		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.SETUP, TokenAndCloudIdPacket(hubToken, cloudId))
+	fun setup(hubToken: String, cloudId: String): Promise<HubDataReplyPacket, Exception> {
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.SETUP, SetupPacket(hubToken, cloudId))
+		return sendHubDataCommand(reqPacket)
+	}
+
+	fun requestData(type: DataType): Promise<HubDataReplyPacket, Exception> {
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.REQUEST_DATA, RequestDataPacket(type))
+		return sendHubDataCommand(reqPacket)
+	}
+
+	fun factoryReset(): Promise<HubDataReplyPacket, Exception> {
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET, EmptyPacket())
 		return sendHubDataCommand(reqPacket)
 	}
 

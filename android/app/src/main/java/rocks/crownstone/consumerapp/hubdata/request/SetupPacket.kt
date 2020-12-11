@@ -15,7 +15,7 @@ import rocks.crownstone.bluenet.util.toUint16
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class TokenAndCloudIdPacket(token: String, cloudId: String): PacketInterface {
+class SetupPacket(token: String, cloudId: String): PacketInterface {
 	val TAG = this.javaClass.simpleName
 	companion object {
 		const val HEADER_SIZE = 2 + 2
