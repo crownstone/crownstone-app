@@ -27,6 +27,9 @@ class HubDataRequestPacket(type: HubDataRequestType, payload: PacketInterface?):
 
 	enum class HubDataRequestType(val num: Uint16) {
 		SETUP(0U),
+		COMMAND(1U),
+		FACTORY_RESET(2U),
+		REQUEST_DATA(10U),
 		UNKNOWN(0xFFFFU);
 		companion object {
 			private val map = values().associateBy(HubDataRequestType::num)

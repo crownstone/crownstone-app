@@ -7,12 +7,13 @@
 
 package rocks.crownstone.consumerapp.hubdata
 
-import rocks.crownstone.bluenet.packets.ByteArrayPacket
 import rocks.crownstone.bluenet.packets.PacketInterface
-import rocks.crownstone.bluenet.packets.StringPacket
 import rocks.crownstone.bluenet.structs.Uint16
 import rocks.crownstone.bluenet.structs.Uint8
 import rocks.crownstone.bluenet.util.*
+import rocks.crownstone.consumerapp.hubdata.reply.DataReplyPacket
+import rocks.crownstone.consumerapp.hubdata.reply.ErrorReplyPacket
+import rocks.crownstone.consumerapp.hubdata.reply.SuccessReplyPacket
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -23,15 +24,16 @@ class HubDataReplyPacket: PacketInterface {
 		private set
 	var type: HubDataReplyType = HubDataReplyType.UNKNOWN
 		private set
-	var errorCode: Uint16? = null
+	var payload: PacketInterface? = null
 		private set
-//	var payload = ByteArrayPacket()
-//		private set
-	var payload = StringPacket()
-		private set
+
+	companion object {
+		const val HEADER_SIZE = 1 + 2
+	}
 
 	enum class HubDataReplyType(val num: Uint16) {
 		SUCCESS(0U),
+		DATA_REPLY(10U),
 		ERROR(4000U),
 		UNKNOWN(0xFFFFU);
 		companion object {
@@ -51,10 +53,15 @@ class HubDataReplyPacket: PacketInterface {
 			bb.order(ByteOrder.LITTLE_ENDIAN)
 			protocol = bb.getUint8()
 			type = HubDataReplyType.fromNum(bb.getUint16())
-			if (type == HubDataReplyType.ERROR) {
-				errorCode = bb.getUint16()
+			val newPayload: PacketInterface = when (type) {
+				HubDataReplyType.SUCCESS -> SuccessReplyPacket()
+				HubDataReplyType.DATA_REPLY -> DataReplyPacket()
+				HubDataReplyType.ERROR -> ErrorReplyPacket()
+				else -> return false
 			}
-			return payload.fromBuffer(bb)
+			val result = newPayload.fromBuffer(bb)
+			payload = newPayload
+			return result
 		}
 		catch (e: Exception) {
 			return false
@@ -62,14 +69,14 @@ class HubDataReplyPacket: PacketInterface {
 	}
 
 	override fun getPacketSize(): Int {
-		var size = 1 + 2
-		if (errorCode != null) {
-			size += 2
+		val payload = this.payload
+		if (payload == null) {
+			return HEADER_SIZE
 		}
-		return size + payload.getPacketSize()
+		return HEADER_SIZE + payload.getPacketSize()
 	}
 
 	override fun toString(): String {
-		return "HubDataReplyPacket(protocol=$protocol, type=$type, errorCode=$errorCode, payload=$payload)"
+		return "HubDataReplyPacket(protocol=$protocol, type=$type, payload=$payload)"
 	}
 }
