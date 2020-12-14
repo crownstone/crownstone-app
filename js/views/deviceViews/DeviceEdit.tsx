@@ -39,11 +39,12 @@ import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
 import { DataUtil } from "../../util/DataUtil";
+import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Edit_Crownstone"), cancelModal: true, save: true});
+    return TopBarUtil.getOptions({title: "Settings", cancelModal: true, save: true});
   }
 
   deleting : boolean = false;
@@ -103,7 +104,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
   constructStoneOptions(stone, state) {
     let items = [];
     let locations = state.spheres[this.props.sphereId].locations;
-    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.hubId);
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
 
     items.push({label: hub ? "HUB SETTINGS" : lang("CROWNSTONE"), type: 'explanation', below: false});
 
@@ -174,9 +175,16 @@ export class DeviceEdit extends LiveComponent<any, any> {
               "Are you sure you want to delete this hub?",
               "This cannot be undone!",
               [{text: "Delete", onPress: async () => {
-                Alert.alert("TODO")
-                // TODO: delete hub via rest/ble.
-                // TODO: rest is not implemented yet.
+                core.eventBus.emit('showLoading', "Resetting hub...");
+                let helper = new SetupHubHelper();
+                try {
+                  await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
+                  this._removeCrownstoneFromRedux();
+                }
+                catch(e) {
+                  Alert.alert("Something went wrong...",JSON.stringify(e),[{text:"OK..."}]);
+                  core.eventBus.emit('hideLoading');
+                }
             }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
           }
           else {
@@ -202,7 +210,12 @@ export class DeviceEdit extends LiveComponent<any, any> {
           }
         }
       });
-      items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
+      if (hub) {
+        items.push({label: lang("Removing_this_Hub_"),  type:'explanation', below:true});
+      }
+      else {
+        items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
+      }
     }
 
     return items;
@@ -307,12 +320,20 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
 
   _removeCrownstoneFromRedux(factoryReset = false) {
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
     let labelText =  lang("I_have_removed_this_Crown");
-    if (factoryReset === false) {
-      labelText =  lang("I_have_removed_this_Crowns")}
+    if (hub) {
+      labelText =  lang("I_have_removed_this_Hub");
+    }
+    else {
+      if (factoryReset === false) {
+        labelText =  lang("I_have_removed_this_Crowns")
+      }
+    }
 
     core.eventBus.emit('hideLoading');
     Alert.alert(
@@ -322,6 +343,11 @@ export class DeviceEdit extends LiveComponent<any, any> {
           NavigationUtil.dismissModalAndBack();
           SortingManager.removeFromLists(this.props.stoneId);
           core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          if (hub) {
+            SortingManager.removeFromLists(hub.id);
+            core.store.dispatch({type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id});
+          }
+          core.eventBus.emit('hideLoading');
         }}]
     )
   }

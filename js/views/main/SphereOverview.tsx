@@ -106,6 +106,8 @@ export class SphereOverview extends LiveComponent<any, any> {
         change.stoneLocationUpdated  ||
         change.updateStoneCoreConfig ||
         change.updateSphereUser      ||
+        change.changeStones          ||
+        change.changeHubs            ||
         change.updateActiveSphere    ||
         change.updateLocationConfig  ||
         change.changeFingerprint     ||

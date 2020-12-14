@@ -350,6 +350,8 @@ export default {
     Name:                                   function() { return "Name" },
     Remove_from_Sphere:                     function() { return "Remove from Sphere" },
     Removing_this_Crownstone_:              function() { return "Removing this Crownstone from its Sphere will revert it back to factory defaults (and back in setup mode)." },
+    Removing_this_Hub_:                     function() { return "Removing this Hub from its Sphere will revert it back to factory defaults (and back in setup mode)." },
+    I_have_removed_this_Hub:                function() { return "I have removed this Hub from the Cloud, your Sphere and reverted it to factory defaults. You can new freely add it to another Sphere." },
     I_have_removed_this_Crown:              function() { return "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere." },
     I_have_removed_this_Crowns:             function() { return "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode though.. You'll need to factory reset it to put it back into setup mode." },
     Checking_versions____:                  function() { return "Checking versions... " },

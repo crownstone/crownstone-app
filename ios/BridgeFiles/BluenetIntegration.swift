@@ -1242,7 +1242,7 @@ func wrapBehaviourMethodForBluenet(_ label: String, _ callback: @escaping RCTRes
 
 
 func wrapHubMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<[UInt8]>) {
-  LOGGER.info("BluenetBridge: Called label")
+  LOGGER.info("BluenetBridge: Called \(label)")
   promise
     .done{ value in
       let hubResult = HubParser(value)
@@ -1251,6 +1251,7 @@ func wrapHubMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseS
           "protocolVersion": hubResult.protocolVersion,
           "type":            hubResult.typeString,
           "dataType":        hubResult.dataType,
+          "errorType":       hubResult.errorType,
           "message":         hubResult.message
         ]]])
       }

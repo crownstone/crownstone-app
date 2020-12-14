@@ -35,7 +35,8 @@ import { TopbarImitation } from "../components/TopbarImitation";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
 import { Login } from "../startupViews/Login";
-import { LOG, LOGe } from "../../logging/Log";
+import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
+import { HubReplyError } from "../../Enums";
 
 export class SetupHub extends LiveComponent<{
   sphereId: string,
@@ -132,11 +133,21 @@ export class SetupHub extends LiveComponent<{
 
       let hubHelper = new SetupHubHelper();
       let hubData;
+      LOGi.info("Setting up the hub... hubIsAlreadySetup:", hubIsAlreadySetup)
       if (hubIsAlreadySetup === false) {
         hubData = await hubHelper.setup(this.props.sphereId, newStoneData.id);
       }
       else {
-        hubData = await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
+        try {
+          hubData = await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
+        }
+        catch (err) {
+          // in case the hub advertention is lying and the hub is not setup, set it up now.
+          if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+            LOGw.info("Setting up the hub now, the advertisment was lying...");
+            hubData = await hubHelper.setup(this.props.sphereId, newStoneData.id);
+          }
+        }
       }
       this.newCrownstoneState.newHubId      = hubData.hubId;
       this.newCrownstoneState.newStoneId    = newStoneData.id;

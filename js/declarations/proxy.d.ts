@@ -149,6 +149,8 @@ interface BluenetPromiseWrapperProtocol {
   getPowerSamples(type : PowersampleDataType)  : Promise<PowerSamples[]>,
 
   setUartKey(uartKey: string)                                     : Promise<void>,
+
+  // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
   transferHubTokenAndCloudId(hubToken: string, cloudId: string)   : Promise<HubDataReply>,
   requestCloudId()                                                : Promise<HubDataReply>,
   factoryResetHub()                                               : Promise<HubDataReply>,

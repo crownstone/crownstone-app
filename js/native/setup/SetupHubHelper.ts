@@ -29,10 +29,12 @@ export class SetupHubHelper {
    * @returns {Promise<T>}
    */
   setup(sphereId, stoneId: string) : Promise<{ hubId: string, cloudId: string }> {
+    LOGi.info("SetupHubHelper: setup called", sphereId, stoneId);
     return this._setup(sphereId, stoneId, true);
   }
 
   setUartKey(sphereId, stoneId: string) : Promise<{ hubId: string, cloudId: string }> {
+    LOGi.info("SetupHubHelper: setup setUartKey", sphereId, stoneId);
     return this._setup(sphereId, stoneId, false);
   }
 
@@ -97,7 +99,7 @@ export class SetupHubHelper {
         let requestedData = await BluenetPromiseWrapper.requestCloudId();
         console.log("requestCloudId Received key data", requestedData);
         if (requestedData.type === 'error') {
-          throw { code: 3, message:"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) }
+          throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) }
         }
         hubCloudId = requestedData.message;
       }
@@ -148,7 +150,7 @@ export class SetupHubHelper {
       LOG.info("hubSetupProgress: Requesting cloud Id...");
       let requestedData = await BluenetPromiseWrapper.requestCloudId();
       if (requestedData.type === 'error') {
-        throw { code: 3, message:"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) }
+        throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId" }
       }
       hubCloudId = requestedData.message;
       await BluenetPromiseWrapper.disconnectCommand();

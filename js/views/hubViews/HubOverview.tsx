@@ -17,7 +17,7 @@ import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
 import {
-  ActivityIndicator,
+  ActivityIndicator, Alert,
   Text,
   TextStyle,
   TouchableHighlight,
@@ -44,6 +44,9 @@ import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface
 import { DataUtil } from "../../util/DataUtil";
 import { Button } from "../components/Button";
 import { Get } from "../../util/GetUtil";
+import { HubReplyError } from "./HubEnums";
+import { LOGe, LOGi } from "../../logging/Log";
+import { Scheduler } from "../../logic/Scheduler";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -75,7 +78,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'deviceEdit') {
-      console.log("HERE", this.props)
       if (this.props.stoneId) {
         NavigationUtil.launchModal("DeviceEdit", { sphereId: this.props.sphereId, stoneId: this.props.stoneId });
       }
@@ -215,6 +217,25 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     let index = 5000;
     let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
 
+    const createHub = async () => {
+      let helper = new SetupHubHelper();
+      try {
+        LOGi.info("Setting up hub...")
+        let hubId = await helper.setup(this.props.sphereId, this.props.stoneId)
+        core.store.dispatch({
+          type: "UPDATE_HUB_CONFIG",
+          sphereId: this.props.sphereId,
+          hubId: hubId,
+          data: { locationId: stone.config.locationId }
+        });
+      }
+      catch(e) {
+        LOGe.info("Problem settings up new hub", e);
+        Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+      }
+      this.setState({ fixing: false });
+    }
+
     if (this.state.fixing) {
       return <View key={"Fixing"} style={{...styles.centered, flex:1, padding:15}}>
         <Text style={textStyle}>{"Fixing issue..."}</Text>
@@ -254,7 +275,28 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                   core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
                   this.setState({fixing:false})
                 })
-                .catch((e) => {
+                .catch(async (err) => {
+                  if (err === "HUB_REPLY_TIMEOUT") {
+                    Alert.alert("Something went wrong...","The hub connected to this dongle is not responding. Please disconnect the hub's power, wait 5 seconds and plug it back in. After 1 minute, try again.", [{text:"OK"}]);
+                  }
+                  else if (typeof err === 'object') {
+                    if (err.code === 3) {
+                      if (err.errorType === HubReplyError.IN_SETUP_MODE) {
+                        await createHub();
+                        await Scheduler.delay(5000);
+                      }
+                    }
+                    else {
+                      throw err;
+                    }
+                  }
+                  else {
+                    throw err;
+                  }
+                  this.setState({fixing:false})
+                })
+                .catch((err) => {
+                  Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
                   this.setState({fixing:false})
                 })
             }}
@@ -263,10 +305,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
-    if (hub.data.state.uartAlive === false) {
+    if (hub.data.state.uartAlive === false && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub can't talk to the dongle. Check if it is connected and working!"}</Text>
+          <Text style={textStyle}>{"The hub is not responding to the Crownstone USB dongle. Check if it is connected and working!"}</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -283,17 +325,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
             label={ "Initialize hub!"}
             icon={"ios-build"}
             iconSize={14}
-            callback={() => {
-              this.setState({fixing: true});
-              let helper = new SetupHubHelper();
-              helper.setup(this.props.sphereId, this.props.stoneId)
-                .then((hubId) => {
-                  core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
-                  this.setState({fixing:false});
-                })
-                .catch((e) => {
-                  this.setState({fixing:false});
-                })
+            callback={async () => {
+              this.setState({ fixing: true });
+              await createHub();
             }}
           />
         </View>
@@ -436,4 +470,3 @@ export function safeStoreUpdate(sphereId, stoneId, storedSwitchState) {
 }
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;
-
