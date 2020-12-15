@@ -2679,7 +2679,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.setup(hubToken, cloudId)
 				.success { resolveCallback(callback, getHubDataReply(it)) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, getHubDataReplyError(it)) }
 	}
 
 	@ReactMethod
@@ -2688,7 +2688,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.requestData(DataType.CLOUD_ID)
 				.success { resolveCallback(callback, getHubDataReply(it)) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, getHubDataReplyError(it)) }
 	}
 
 	@ReactMethod
@@ -2697,10 +2697,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.factoryReset()
 				.success { resolveCallback(callback, getHubDataReply(it)) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, getHubDataReplyError(it)) }
 	}
-
-
 
 	private fun getHubDataReply(replyPacket: HubDataReplyPacket): WritableMap {
 		// Return data should be in the form:
@@ -2753,6 +2751,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		map.putString("message", message)
 
 		return map
+	}
+
+	private fun getHubDataReplyError(err: Exception): String {
+		if (err is Errors.HubDataReplyTimeout) {
+			return "HUB_REPLY_TIMEOUT"
+		}
+		return err.message ?: ""
 	}
 
 //endregion
