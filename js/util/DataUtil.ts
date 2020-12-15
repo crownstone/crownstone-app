@@ -9,6 +9,7 @@ import { FileUtil } from "./FileUtil";
 
 import * as RNLocalize from "react-native-localize";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/ScenePictureGallery";
+import { Get } from "./GetUtil";
 
 export const DataUtil = {
 
@@ -111,7 +112,7 @@ export const DataUtil = {
     return stone || null;
   },
 
-  getHubByCloudId(sphereId, hubCloudId: string) : {id: string, data: HubData} | null {
+  getHubByCloudId(sphereId, hubCloudId: string) : FoundHubResult | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
@@ -127,7 +128,7 @@ export const DataUtil = {
     return null;
   },
 
-  getHubByStoneId(sphereId, stoneId: string) : {id: string, data: HubData} | null {
+  getHubByStoneId(sphereId, stoneId: string) : FoundHubResult | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
@@ -141,6 +142,23 @@ export const DataUtil = {
       }
     }
     return null;
+  },
+
+  getAllHubsWithStoneId(sphereId, stoneId: string) : FoundHubResult[] {
+    let results = [];
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let hubs = sphere.hubs;
+    if (!hubs) return null;
+    let hubIds = Object.keys(hubs);
+    for (let i = 0; i < hubIds.length; i++) {
+      let hub = sphere.hubs[hubIds[i]];
+      if (hub.config.linkedStoneId === stoneId) {
+        results.push({id: hubIds[i], data: hub});
+      }
+    }
+    return results;
   },
 
 
@@ -235,6 +253,12 @@ export const DataUtil = {
     let filteredHubs = {};
     if (sphereId !== undefined) {
       for (let [hubId, hub] of Object.entries<HubData>(state.spheres[sphereId].hubs)) {
+        if (!hub.config.locationId && hub.config.linkedStoneId) {
+          let pairedStone = Get.stone(sphereId, hub.config.linkedStoneId);
+          if (pairedStone.config.locationId) {
+            core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hubId, data: {locationId: pairedStone.config.locationId}})
+          }
+        }
         if (hub.config.locationId === locationId || locationId === undefined) {
           filteredHubs[hubId] = hub;
         }

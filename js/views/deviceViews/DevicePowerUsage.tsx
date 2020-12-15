@@ -58,7 +58,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     const stone = sphere.stones[this.props.stoneId];
 
     this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
-      if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false) {
+      if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
         let now = Date.now();
         // throttling
         if (data.serviceData.uniqueElement === this.uniqueElement) {

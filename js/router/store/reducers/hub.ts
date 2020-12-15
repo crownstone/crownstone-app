@@ -42,13 +42,6 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'LINK_HUB_TO_STONE':
-      if (action.data) {
-        let newState = {...state};
-        newState.linkedStoneId     = update(action.data.linkedStoneId, newState.linkedStoneId);
-        return newState;
-      }
-      return state;
     case 'UPDATE_HUB_LOCATION':
       if (action.data) {
         let newState = {...state};

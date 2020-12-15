@@ -42,7 +42,7 @@ import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
-import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { HubHelper } from "../../native/setup/HubHelper";
 import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 

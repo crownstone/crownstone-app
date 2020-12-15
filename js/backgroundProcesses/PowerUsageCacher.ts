@@ -26,7 +26,7 @@ class PowerUsageCacherClass {
     if (this.started === false) {
       this.started = true;
       this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
-        if (data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false) {
+        if (data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
           this.processData(data);
         }
       });

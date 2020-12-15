@@ -148,6 +148,7 @@ lang("_Indoor_localization_is_c_body"),
         (change.stoneUsageUpdated       && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
         (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
+        (change.changeHubs)      ||
         (change.changeStones)
       ) {
         this.forceUpdate();

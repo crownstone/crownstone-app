@@ -112,7 +112,7 @@ export class HubEntry extends Component<{
       }
     }));
 
-    this.showStateIconTimeout = setTimeout(() => { this.setState({showStateIcon:true})}, 2000);
+    this.showStateIconTimeout = setTimeout(() => { this.setState({showStateIcon:true})}, 3000);
   }
 
   componentWillUnmount() { // cleanup
@@ -190,7 +190,7 @@ export class HubEntry extends Component<{
     else {
       hubProblem = hubProblem || !hub.state.uartAlive;
       hubProblem = hubProblem || !hub.state.uartAliveEncrypted;
-      // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByCrownstone;
+      hubProblem = hubProblem || !hub.state.uartEncryptionRequiredByCrownstone && hub.state.uartAliveEncrypted;
       // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByHub;
       hubProblem = hubProblem || !hub.state.hubHasBeenSetup;
       hubProblem = hubProblem || !hub.state.hubHasInternet;

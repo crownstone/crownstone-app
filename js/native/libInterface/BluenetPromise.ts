@@ -240,6 +240,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   transferHubTokenAndCloudId:  (hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', hubToken, cloudId); },
   requestCloudId:              () => { return BluenetPromise('requestCloudId'); },
   factoryResetHub:             () => { return BluenetPromise('factoryResetHub'); },
+  factoryResetHubOnly:         () => { return BluenetPromise('factoryResetHubOnly'); },
 };
 
 

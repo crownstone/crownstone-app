@@ -16,6 +16,7 @@ import { transferScenes } from "../../cloud/transferData/transferScenes";
 import { StoneAbilitySyncer } from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
 import { getGlobalIdMap } from "../../cloud/sections/sync/modelSyncs/SyncingBase";
 import { StoneSyncer } from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
+import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -156,12 +157,48 @@ function handleAction(action, returnValue, newState, oldState) {
       handleSphereStateOnDevice(action, newState);
       break;
 
+    case "UPDATE_HUB_CONFIG":
+    case "UPDATE_HUB_LOCATION":
+      handleHubUpdate(action, newState);
+      break;
+
+
+
+
     case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
     case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
     case "MARK_ABILITY_DIMMER_AS_SYNCED":
       handleAbilityUpdate(action, newState);
       break;
 
+  }
+}
+
+function handleHubUpdate(action, state) {
+  let sphere = state.spheres[action.sphereId];
+  if (!sphere) { return; }
+  let hub = sphere.hubs[action.hubId] as HubData;
+  if (hub && hub.config.cloudId) {
+    CLOUD.updateHub(hub.config.cloudId, HubSyncer.mapLocalToCloud(action.sphereId, action.hubId, hub))
+      .then((updatedHub) => {
+        if (
+          hub.config.ipAddress !== updatedHub.localIPAddress ||
+          hub.config.httpPort  !== updatedHub.httpPort       ||
+          hub.config.httpsPort !== updatedHub.httpsPort) {
+            core.store.dispatch({
+              type:"UPDATE_HUB_CONFIG",
+              __purelyLocal: true,
+              sphereId: action.sphereId,
+              hubId: action.hubId,
+              data: {
+                ipAddress: updatedHub.localIPAddress,
+                httpPort:  updatedHub.httpPort,
+                httpsPort: updatedHub.httpsPort,
+                updatedAt: new Date(updatedHub.updatedAt).valueOf()
+              }
+            });
+        }
+      })
   }
 }
 
@@ -236,7 +273,6 @@ function _handleStone(action, state) {
 
   if (stone.config.locationId)  { localDataForCloud.config['cloudLocationId']  = MapProvider.local2cloudMap.locations[stone.config.locationId]   || stone.config.locationId;  }
   else                          { localDataForCloud.config['cloudLocationId'] = null; }
-
 
   transferStones.updateOnCloud({
     localId:       action.stoneId,

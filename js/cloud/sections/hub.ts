@@ -6,7 +6,7 @@ export const hubs = {
     return cloudApiBase._setupRequest('GET', '/Spheres/{id}/hubs', options);
   },
 
-  createHub: function (data, background = true) {
+  createHub: function (data, background = true) : Promise<cloud_Hub> {
     return cloudApiBase._setupRequest(
       'POST',
       '/Spheres/{id}/Hub',
@@ -15,7 +15,7 @@ export const hubs = {
     );
   },
 
-  updateHub: function (hubId, data, background = true) {
+  updateHub: function (hubId, data, background = true) : Promise<cloud_Hub> {
     return cloudApiBase._setupRequest(
       'PUT',
       '/Hubs/' + hubId,
@@ -24,7 +24,7 @@ export const hubs = {
     );
   },
 
-  getHub: function (hubId, background = true) {
+  getHub: function (hubId, background = true) : Promise<cloud_Hub> {
     return cloudApiBase._setupRequest('GET','/Hubs/' + hubId, {background: background});
   },
 

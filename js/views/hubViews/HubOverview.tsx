@@ -39,14 +39,16 @@ import { Navigation } from "react-native-navigation";
 import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
-import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { HubHelper } from "../../native/setup/HubHelper";
 import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { DataUtil } from "../../util/DataUtil";
 import { Button } from "../components/Button";
 import { Get } from "../../util/GetUtil";
 import { HubReplyError } from "./HubEnums";
-import { LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGe, LOGi } from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
+import { CLOUD } from "../../cloud/cloudAPI";
+import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -212,16 +214,26 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
 
 
-  getStateEntries(stone, hub) {
+  getStateEntries(stone: StoneData | null, hub: FoundHubResult | null, hubs: FoundHubResult[]) {
     let entries = [];
     let index = 5000;
     let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
+    let hubState = hub?.data?.state;
+    let helper = new HubHelper();
 
     const createHub = async () => {
-      let helper = new SetupHubHelper();
       try {
         LOGi.info("Setting up hub...")
-        let hubId = await helper.setup(this.props.sphereId, this.props.stoneId)
+        let hubId;
+        try {
+          hubId = await helper.setup(this.props.sphereId, this.props.stoneId)
+        }
+        catch(err) {
+          // if this hub is not in setup mode anymore, attempt to initalize it.
+          if (err?.errorType === HubReplyError.NOT_IN_SETUP_MODE) {
+            hubId = await helper.setUartKey(this.props.sphereId, this.props.stoneId);
+          }
+        }
         core.store.dispatch({
           type: "UPDATE_HUB_CONFIG",
           sphereId: this.props.sphereId,
@@ -229,8 +241,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
           data: { locationId: stone.config.locationId }
         });
       }
-      catch(e) {
-        LOGe.info("Problem settings up new hub", e);
+      catch(err) {
+        LOGe.info("Problem settings up new hub", err);
         Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
       }
       this.setState({ fixing: false });
@@ -269,7 +281,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
             iconSize={14}
             callback={() => {
               this.setState({fixing: true});
-              let helper = new SetupHubHelper();
               helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
                 .then((hubId) => {
                   core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
@@ -305,7 +316,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
-    if (hub.data.state.uartAlive === false && this.props.stoneId) {
+
+
+    if (hubState.uartAlive === false && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{"The hub is not responding to the Crownstone USB dongle. Check if it is connected and working!"}</Text>
@@ -315,7 +328,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     }
 
     // this means the dongle is set up, but the hub itself is not setup.
-    if (hub.data.state.hubHasBeenSetup === false) {
+    if (hubState.hubHasBeenSetup === false) {
       return (
         <View key={"HubSetupFix"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{"The hub itself is not initialized yet.. Press the button below to fix this!"}</Text>
@@ -334,28 +347,33 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
-
-    if (hub.data.state.uartAlive === true && hub.data.state.uartAliveEncrypted === false) {
+    if (hubs.length > 1) {
       return (
-        <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub and the dongle do not agree on the encryption key. The hub must be factory reset to resolve this."}</Text>
+        <View key={"HubMultiple"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"There are multiple hubs bound to this reference... Press the button below to fix this!"}</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Factory reset hub. "}
+            label={ "Fix it!"}
             icon={"ios-build"}
             iconSize={14}
-            callback={() => {
-              this.setState({fixing: true});
-              // let helper = new SetupHubHelper();
-              // helper.createLocalHubInstance(this.props.sphereId, this.props.stoneId)
-              //   .then((hubId) => {
-              //     core.store.dispatch({type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hubId, data: {locationId: stone.config.locationId}});
-              //     this.setState({fixing:false})
-              //   })
-              //   .catch((e) => {
-              //     this.setState({fixing:false})
-              //   })
+            callback={async () => {
+              this.setState({fixing:true});
+              try {
+                let requestCloudId = await helper.getCloudIdFromHub(this.props.sphereId, this.props.stoneId);
+                for (let item of hubs) {
+                  if (requestCloudId && item?.data?.config?.cloudId !== requestCloudId) {
+                    if (item?.data?.config?.cloudId) {
+                      try { await CLOUD.deleteHub(item.data.config.cloudId); } catch (e) { }
+                    }
+                    core.store.dispatch({type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: item.id});
+                  }
+                }
+              }
+              catch(err) {
+                Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+              }
+              this.setState({fixing:false});
             }}
           />
         </View>
@@ -363,14 +381,158 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     }
 
 
-    if (!hub) { entries.push(<Text key={index++} style={textStyle}>{"The hub reference in the app is missing."}</Text>); }
-    if (hub && hub.data.state.uartAlive                          ) { entries.push(<Text key={index++} style={textStyle}>{"Uart is alive."}</Text>); }
-    if (hub && hub.data.state.uartAliveEncrypted                 ) { entries.push(<Text key={index++} style={textStyle}>{"Uart is encrypted."}</Text>); }
-    if (hub && hub.data.state.uartEncryptionRequiredByCrownstone ) { entries.push(<Text key={index++} style={textStyle}>{"Uart required by Dongle."}</Text>); }
-    if (hub && hub.data.state.uartEncryptionRequiredByHub        ) { entries.push(<Text key={index++} style={textStyle}>{"Uart required by Hub."}</Text>); }
-    if (hub && hub.data.state.hubHasBeenSetup                    ) { entries.push(<Text key={index++} style={textStyle}>{"Hub is setup."}</Text>); }
-    if (hub && hub.data.state.hubHasInternet                     ) { entries.push(<Text key={index++} style={textStyle}>{"Hub has internet."}</Text>); }
-    if (hub && hub.data.state.hubHasError                        ) { entries.push(<Text key={index++} style={textStyle}>{"Hub has an error..."}</Text>); }
+
+    if (hubState.uartAlive === true && hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === true && hubState.uartEncryptionRequiredByHub === true) {
+      return (
+        <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"This hub does not belong to your Sphere. The hub must be factory reset and setup again to resolve this. Press the button below to do this."}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Factory reset hub. "}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={async () => {
+              this.setState({fixing: true});
+              try {
+                await helper.factoryResetHubOnly(this.props.sphereId, this.props.stoneId);
+                await helper.setup(this.props.sphereId, this.props.stoneId);
+              }
+              catch(e) {
+                Alert.alert("Something went wrong...","Please try again later!", [{text:'OK'}])
+              }
+              this.setState({fixing:false})
+            }}
+          />
+        </View>
+      );
+    }
+
+
+    if (hubState.uartAlive === true && hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === false && hubState.uartEncryptionRequiredByHub === true) {
+      return (
+        <View key={"HubUartEncryptionDisabled"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"Encryption is not enabled yet. Tap the button below to fix this!"}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Enable encryption. "}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={ async () => {
+              this.setState({fixing: true});
+              try {
+                await helper.setUartKey(this.props.sphereId, this.props.stoneId);
+              }
+              catch(e) {
+                Alert.alert("Something went wrong...","Please try again later!", [{text:'OK'}])
+              }
+              this.setState({fixing:false})
+            }}
+          />
+        </View>
+      );
+    }
+
+
+    if (!hub.data.config.cloudId) {
+      return (
+        <View key={"HubCloudMissing"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"This hub does not exist in the cloud... Press the button below to fix this!"}</Text>
+          <View style={{flex:1}}/>
+          <Button
+            backgroundColor={colors.blue.rgba(0.5)}
+            label={ "Fix it!"}
+            icon={"ios-build"}
+            iconSize={14}
+            callback={async () => {
+              this.setState({fixing:true});
+              try {
+                let requestCloudId = await helper.getCloudIdFromHub(this.props.sphereId, this.props.stoneId);
+                let existingHub = DataUtil.getHubByCloudId(this.props.sphereId, requestCloudId);
+
+                if (existingHub) {
+                  // we actually have the requested hub in our local database. Delete the one without cloudId, and bind the other to this Crownstone.
+                  core.store.batchDispatch([
+                    {type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id},
+                    {type:"UPDATE_HUB_CONFIG", sphereId: this.props.sphereId, hubId: hub.id, data: {linkedStoneId: this.props.stoneId, locationId: stone.config.locationId}},
+                  ]);
+                  return;
+                }
+
+                // we dont have it locally, look in the cloud.
+                try {
+                  let hubCloudData = await CLOUD.getHub(requestCloudId);
+                  // we have it in the cloud, store locally
+                  core.store.batchDispatch([
+                    {type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id},
+                    {type:"ADD_HUB", sphereId: this.props.sphereId, hubId: xUtil.getUUID(), data: HubSyncer.mapCloudToLocal(hubCloudData, this.props.stoneId, stone.config.locationId)},
+                  ]);
+                }
+                catch (err) {
+                  console.log("HERE", err)
+                  if (err?.status === 404) {
+                    // this item does not exist  in the cloud.. Factory reset required.
+                    core.store.dispatch({ type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id });
+                    await helper.factoryResetHubOnly(this.props.sphereId, this.props.stoneId);
+                    await helper.setup(this.props.sphereId, this.props.stoneId);
+                  }
+                  else {
+                    throw err;
+                  }
+                }
+                this.setState({fixing:false});
+              }
+              catch(err) {
+                console.log("ERORR", err)
+                Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+                this.setState({fixing:false});
+              }
+            }}
+          />
+        </View>
+      );
+    }
+
+
+    if (hubState.hubHasInternet === false) {
+      return (
+        <View key={"HubNoInternet"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub is not connected to the internet. Please reconnect the hub to the internet."}</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
+
+    if (hubState.hubHasError) {
+      return (
+        <View key={"Hub Reports Error"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{"The hub is reporting an error..."}</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
+
+    if (hubState.uartAlive && hubState.uartAliveEncrypted) {
+      if (hub.data.config.ipAddress) {
+        return (
+          <View key={"HubIPAddress"} style={{...styles.centered, flex:1, padding:15}}>
+            <Text style={textStyle}>{"Everything is looking good!\n\nThe address of this hub on your local network is:\n"}</Text>
+            <Text style={{...textStyle, fontSize: 20}}>{hub.data.config.ipAddress}</Text>
+            <View style={{flex:1}}/>
+          </View>
+        )
+      }
+      else {
+        return (
+          <View key={"HubOK"} style={{...styles.centered, flex:1, padding:15}}>
+            <Text style={textStyle}>{"Everything is looking good!"}</Text>
+            <View style={{flex:1}}/>
+          </View>
+        )
+      }
+    }
+
     return entries;
   }
 
@@ -381,11 +543,17 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       return <SphereDeleted/>
     }
     const stone = sphere.stones[this.props.stoneId];
-    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId) || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
+    const hubs = DataUtil.getAllHubsWithStoneId(this.props.sphereId, this.props.stoneId);
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+    if (!hub) {
+      let directHub = DataUtil.getHubById(this.props.sphereId, this.props.hubId);
+      if (directHub) {
+        hub = {id:this.props.hubId, data:directHub};
+      }
+    }
 
     let updateAvailable = stone && stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
-    let problemEntries = this.getStateEntries(stone, hub);
 
     return (
       <Background image={core.background.lightBlur}>
@@ -398,7 +566,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
           <Text style={deviceStyles.subHeader}>{"Hub information:"}</Text>
         </View>
 
-        {problemEntries}
+        {this.getStateEntries(stone, hub, hubs)}
 
 
         { state.user.developer ? this._getDebugIcon(stone) : undefined }

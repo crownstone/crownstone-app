@@ -39,7 +39,7 @@ import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
 import { DataUtil } from "../../util/DataUtil";
-import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { HubHelper } from "../../native/setup/HubHelper";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -176,14 +176,14 @@ export class DeviceEdit extends LiveComponent<any, any> {
               "This cannot be undone!",
               [{text: "Delete", onPress: async () => {
                 core.eventBus.emit('showLoading', "Resetting hub...");
-                let helper = new SetupHubHelper();
+                let helper = new HubHelper();
                 try {
                   await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
                   this._removeCrownstoneFromRedux();
                 }
                 catch(e) {
-                  Alert.alert("Something went wrong...",JSON.stringify(e),[{text:"OK..."}]);
                   core.eventBus.emit('hideLoading');
+                  Alert.alert("Something went wrong...",JSON.stringify(e),[{text:"OK..."}]);
                 }
             }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
           }
@@ -357,10 +357,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
     const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.hubId);
+    const hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
     // collect promises to handle changes in switchcraft and dim state
     core.eventBus.emit("hideLoading");
-
+    console.log("_updateCrownstone", hub, this.state.locationId === stone.config.locationId)
     let actions = [];
     if (
       stone.config.name           !== this.state.stoneName      ||

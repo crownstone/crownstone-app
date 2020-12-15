@@ -133,7 +133,7 @@ export const cloudApiBase = {
    * @returns {Promise<any>}
    * @private
    */
-  _setupRequest: function(reqType : string, endpoint : string, options : requestOptions = {}, type : requestType = 'query') {
+  _setupRequest: function(reqType : string, endpoint : string, options : requestOptions = {}, type : requestType = 'query') : Promise<any> {
     let promiseBody = {endPoint: endpoint, data: options.data, type:type, options: options };
     let promise;
     switch (reqType) {

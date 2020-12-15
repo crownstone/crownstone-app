@@ -33,7 +33,7 @@ import { getRandomHubIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { NativeBus } from "../../native/libInterface/NativeBus";
-import { SetupHubHelper } from "../../native/setup/SetupHubHelper";
+import { HubHelper } from "../../native/setup/HubHelper";
 import { Login } from "../startupViews/Login";
 import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { HubReplyError } from "../../Enums";
@@ -131,7 +131,7 @@ export class SetupHub extends LiveComponent<{
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
 
-      let hubHelper = new SetupHubHelper();
+      let hubHelper = new HubHelper();
       let hubData;
       LOGi.info("Setting up the hub... hubIsAlreadySetup:", hubIsAlreadySetup)
       if (hubIsAlreadySetup === false) {

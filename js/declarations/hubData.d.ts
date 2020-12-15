@@ -22,3 +22,7 @@ interface HubReplyCode {
 interface HubRequestDataType {
   CLOUD_ID: 0
 }
+
+interface FoundHubResult {
+  id: string, data: HubData
+}

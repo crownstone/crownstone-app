@@ -331,7 +331,6 @@ function checkAction(action, affectedIds) {
     case "UPDATE_HUB_STATE":
       eventStatus['updateHubConfig'] = affectedIds; break;
     case "ADD_HUB":
-    case "LINK_HUB_TO_STONE":
     case "REMOVE_ALL_HUBS":
     case "REMOVE_HUB":
       eventStatus['changeHubs'] = affectedIds; break;
