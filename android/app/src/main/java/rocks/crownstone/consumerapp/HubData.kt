@@ -35,19 +35,22 @@ class HubData(bluenet: Bluenet) {
 	internal fun sendHubDataCommand(reqPacket: HubDataRequestPacket): Promise<HubDataReplyPacket, Exception> {
 		val deferred = deferred<HubDataReplyPacket, Exception>()
 		bluenet.control.hubData(HubDataPacket(HubDataPacket.EncryptType.NOT_ENCRYPTED, reqPacket))
-				.then {
+				.success {
 					// TODO: maybe control.hubData() should return HubDataReplyPacket ?
 					val replyPacket = HubDataReplyPacket()
 					val array = it.getArray()
 					if (array == null) {
 						deferred.reject(Errors.SizeWrong())
-						return@then
+						return@success
 					}
 					if (!replyPacket.fromArray(array)) {
 						deferred.reject(Errors.Parse("Can't make a hub data reply packet from ${Conversion.bytesToString(array)}"))
-						return@then
+						return@success
 					}
 					deferred.resolve(replyPacket)
+				}
+				.fail {
+					deferred.reject(it)
 				}
 		return deferred.promise
 	}
