@@ -46,7 +46,7 @@ export class SetupHub extends LiveComponent<{
   unownedVerified: boolean
 }, any> {
   static options(props) {
-    let title = "Setup the hub";
+    let title = lang("Setup_the_hub");
     return TopBarUtil.getOptions({title: title});
   }
 
@@ -94,7 +94,7 @@ export class SetupHub extends LiveComponent<{
 
 
   _disableBackButton() {
-    let title =  "Pairing with hub";
+    let title = lang("Pairing_with_hub");
     TopBarUtil.updateOptions(this.props.componentId, {title: title, disableBack: true})
   }
 
@@ -257,7 +257,7 @@ export class SetupHub extends LiveComponent<{
   getCards() : interviewCards {
     let state = core.store.getState();
 
-    let namePlaceholder = "Crownstone Hub";
+    let namePlaceholder = lang("Crownstone_Hub");
 
     let sphereId = this.props.sphereId;
 
@@ -344,7 +344,7 @@ export class SetupHub extends LiveComponent<{
     ];
 
     let restorationCard = {
-      header: "Restoring Hub...",
+      header: lang("Restoring_Hub___"),
       subHeader: lang("This_should_only_take_a_m"),
       backgroundImage: require('../../images/backgrounds/fadedLightBackground.jpg'),
       component: (
@@ -416,7 +416,7 @@ export class SetupHub extends LiveComponent<{
       },
       problemHub: {
         header:lang("Something_went_wrong__"),
-        subHeader: "Go to the room and tap on the hub. Follow the instructions there to resolve the issue.",
+        subHeader: lang("Go_to_the_room_and_tap_on"),
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
         component: (
@@ -466,8 +466,8 @@ export class SetupHub extends LiveComponent<{
 
     return {
       start: {
-        header: "Let's add this hub!",
-        subHeader: "Would you like to give it a nice name?",
+        header: lang("Lets_add_this_hub_"),
+        subHeader: lang("Would_you_like_to_give_it"),
         hasTextInputField: true,
         placeholder: namePlaceholder,
         options: [
@@ -477,7 +477,6 @@ export class SetupHub extends LiveComponent<{
             nextCard: 'icon',
             dynamicResponse: (value) => { if (value.textfieldState === '') { return lang("Default_name_it_is_");} else { return lang("Thats_a_good_name_")}},
             onSelect: (result) => {
-              console.log("ON SELETOR")
               let name = result.textfieldState;
               if (name == "") {
                 this.newCrownstoneState.name = namePlaceholder;

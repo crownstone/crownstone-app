@@ -2250,6 +2250,13 @@ export default {
     This_Crownstone_was_added:              function() { return "This Crownstone was added to your Sphere before I aborted the process. You can remove it from your Sphere in this Crownstone's settings if you'd like." },
     I_know_this_one_:                       function() { return "I know this one!" },
     This_Crownstone_was_alrea:              function() { return "This Crownstone was already in your Sphere. I've restored it to the way it was!\n\n" + "Name: " + arguments[0] + "\n" + "Room: " + (arguments[1] || "Unknown") + "\n\n" + "What would you like to do now?" },
+    Restoring_Hub___:                       function() { return "Restoring Hub..." },
+    Go_to_the_room_and_tap_on:              function() { return "Go to the room and tap on the hub. Follow the instructions there to resolve the issue." },
+    Lets_add_this_hub_:                     function() { return "Let's add this hub!" },
+    Would_you_like_to_give_it:              function() { return "Would you like to give it a nice name?" },
+    Crownstone_Hub:                         function() { return "Crownstone Hub" },
+    Pairing_with_hub:                       function() { return "Pairing with hub" },
+    Setup_the_hub:                          function() { return "Setup the hub" },
   },
   SetupShared:{
     __filename: "../js/views/settingsViews/SetupShared.tsx",
