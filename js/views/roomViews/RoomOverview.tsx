@@ -194,7 +194,7 @@ lang("_Indoor_localization_is_c_body"),
               item={item}
               restore={true}
               callback={() => {
-                if (item.type === STONE_TYPES.hub) {
+                if (item.deviceType === STONE_TYPES.hub) {
                   NavigationUtil.launchModal(
                     "SetupHub",
                     {
@@ -302,9 +302,12 @@ lang("_Indoor_localization_is_c_body"),
             if (setupStones[setupId].handle === handle) {
               shownHandles[handle] = true;
               ids.push(stoneId);
+              // we do not want to overwrite the type, but the type we're using in this view is also required. We rename the incoming type to deviceType.
+              let setupData = {...setupStones[setupId]};
+              setupData.deviceType = setupData.type;
               stoneArray.push({
+                ...setupData,
                 type:'setupStone',
-                ...setupStones[setupId],
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon
               });
@@ -328,6 +331,9 @@ lang("_Indoor_localization_is_c_body"),
         shownStones[stoneId] = true;
         tempStoneDataArray.push({type:'stone', data: stone, id: stoneId});
       }
+      else {
+        shownStones[stoneId] = true;
+      }
     }
 
     // sort the order of things by crownstone Id
@@ -345,6 +351,7 @@ lang("_Indoor_localization_is_c_body"),
       ids.push(tmpStoneData.id);
       stoneArray.push(tmpStoneData);
     });
+
 
     return { itemArray: stoneArray, ids };
   }

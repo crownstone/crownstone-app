@@ -70,7 +70,7 @@ export class HubHelper {
         // generate token
         hubToken = xUtil.getHubHexToken()
         // Create hub in cloud
-        let hubData = await CLOUD.forSphere(sphereId).createHub({ token: hubToken, name: stone.config.name, linkedStoneId: stone.config.cloudId });
+        let hubData = await CLOUD.forSphere(sphereId).createHub({ token: hubToken, name: stone.config.name, linkedStoneId: stone.config.cloudId, locationId: stone.config.locationId });
         core.store.dispatch({
           type: "ADD_HUB",
           sphereId,

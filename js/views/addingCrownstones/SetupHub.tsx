@@ -65,6 +65,7 @@ export class SetupHub extends LiveComponent<{
       icon:           this.randomIcon,
       location:       {id:null, name: null, icon:null},
       configFinished: false,
+      stoneSetupFinished:  false,
       setupFinished:  false,
       newStoneId:     null,
       newHubId:       null,
@@ -114,43 +115,81 @@ export class SetupHub extends LiveComponent<{
         this._setup(data.serviceData.hubHasBeenSetup);
       }
     })
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       checkTimeout = setTimeout(() => {
-        unsubscriber()
-        reject("NOT_FOUND")
+        unsubscriber();
+        if (this.abort) {
+          return this._interview.setLockedCard("aborted");
+        }
+        if (this.newCrownstoneState.stoneSetupFinished === true) {
+          return this._interview.setLockedCard("problemHub");
+        }
+        this._interview.setLockedCard("problemBle");
+        reject("NOT_FOUND");
       }, 10000);
-    })
+    }).catch()
 
   }
 
   async _setup(hubIsAlreadySetup) {
     try {
-      let newStoneData = await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
-        .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
-        .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
-        .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
-        .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
+      let familiar = false;
+      if (this.newCrownstoneState.stoneSetupFinished === false) {
+        let newStoneData = await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
+          .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
+          .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
+          .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
+          .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
 
+        this.newCrownstoneState.newStoneId = newStoneData.id;
+
+        if (newStoneData.familiarCrownstone === true) {
+          familiar = true;
+          let state = core.store.getState();
+          let sphere = state.spheres[this.props.sphereId];
+          let stone = sphere.stones[this.newCrownstoneState.newStoneId];
+          let location = sphere.locations[stone.config.locationId];
+
+          this.newCrownstoneState.name = stone.config.name;
+          this.newCrownstoneState.icon = stone.config.icon;
+          this.newCrownstoneState.configFinished = true;
+          this.newCrownstoneState.location = {id:null, name: null, icon:null};
+          this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
+          this.newCrownstoneState.location.name = location ? location.config.name    : null;
+          this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
+        }
+
+      }
+      this.newCrownstoneState.stoneSetupFinished = true;
+      core.store.dispatch({
+        type: "UPDATE_STONE_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.newCrownstoneState.newStoneId,
+        data: {
+          name: this.newCrownstoneState.name,
+          icon: this.newCrownstoneState.icon,
+          locationId: this.newCrownstoneState.location.id
+        }
+      });
       let hubHelper = new HubHelper();
       let hubData;
       LOGi.info("Setting up the hub... hubIsAlreadySetup:", hubIsAlreadySetup)
       if (hubIsAlreadySetup === false) {
-        hubData = await hubHelper.setup(this.props.sphereId, newStoneData.id);
+        hubData = await hubHelper.setup(this.props.sphereId, this.newCrownstoneState.newStoneId);
       }
       else {
         try {
-          hubData = await hubHelper.setUartKey(this.props.sphereId, newStoneData.id);
+          hubData = await hubHelper.setUartKey(this.props.sphereId, this.newCrownstoneState.newStoneId);
         }
         catch (err) {
           // in case the hub advertention is lying and the hub is not setup, set it up now.
           if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
             LOGw.info("Setting up the hub now, the advertisment was lying...");
-            hubData = await hubHelper.setup(this.props.sphereId, newStoneData.id);
+            hubData = await hubHelper.setup(this.props.sphereId, this.newCrownstoneState.newStoneId);
           }
         }
       }
       this.newCrownstoneState.newHubId      = hubData.hubId;
-      this.newCrownstoneState.newStoneId    = newStoneData.id;
       this.newCrownstoneState.setupFinished = true;
 
       let wrapUp = () => {
@@ -159,22 +198,8 @@ export class SetupHub extends LiveComponent<{
         }
       };
 
-      if (newStoneData.familiarCrownstone === true) {
-        let state = core.store.getState();
-        let sphere = state.spheres[this.props.sphereId];
-        if (!sphere) { return wrapUp(); }
-        let stone = sphere.stones[newStoneData.id];
-        if (!stone) { return wrapUp(); }
-        let location = sphere.locations[stone.config.locationId];
 
-        this.newCrownstoneState.name = stone.config.name;
-        this.newCrownstoneState.icon = stone.config.icon;
-        this.newCrownstoneState.configFinished = true;
-        this.newCrownstoneState.location = {id:null, name: null, icon:null};
-        this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
-        this.newCrownstoneState.location.name = location ? location.config.name    : null;
-        this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
-
+      if (familiar === true) {
         if (this.props.restoration) {
           return wrapUp();
         }
@@ -194,6 +219,11 @@ export class SetupHub extends LiveComponent<{
       if (this.abort) {
         return this._interview.setLockedCard("aborted");
       }
+      if (this.newCrownstoneState.stoneSetupFinished === true) {
+
+        return this._interview.setLockedCard("problemHub");
+      }
+
 
       if (err.code) {
         if (err.code === 1) {
@@ -211,29 +241,6 @@ export class SetupHub extends LiveComponent<{
   }
 
   _wrapUp() {
-    let actions = [];
-    actions.push({
-      type: "UPDATE_STONE_CONFIG",
-      sphereId: this.props.sphereId,
-      stoneId: this.newCrownstoneState.newStoneId,
-      data: {
-        name: this.newCrownstoneState.name,
-        icon: this.newCrownstoneState.icon,
-        locationId: this.newCrownstoneState.location.id
-      }
-    });
-    actions.push({
-      type: "UPDATE_HUB_CONFIG",
-      sphereId: this.props.sphereId,
-      hubId: this.newCrownstoneState.newHubId,
-      data: {
-        name: this.newCrownstoneState.name,
-        linkedStoneId: this.newCrownstoneState.newStoneId,
-        locationId: this.newCrownstoneState.location.id
-      }
-    });
-    core.store.batchDispatch(actions);
-
     // navigate the interview to the finished state.
     if (this.props.restoration) {
       return NavigationUtil.dismissModal()
@@ -404,6 +411,26 @@ export class SetupHub extends LiveComponent<{
           {
             label: lang("Ill_try_again_later___"),
             onSelect: (result) => { NavigationUtil.dismissModal(); }
+          },
+        ]
+      },
+      problemHub: {
+        header:lang("Something_went_wrong__"),
+        subHeader: "Go to the room and tap on the hub. Follow the instructions there to resolve the issue.",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
+            onSelect: (result) => { NavigationUtil.dismissAllModalsAndNavigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }) }
           },
         ]
       },

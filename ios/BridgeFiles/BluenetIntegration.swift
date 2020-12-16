@@ -1067,6 +1067,14 @@ open class BluenetJS: RCTEventEmitter {
     )
   }
   
+  @objc func factoryResetHubOnly(_ callback: @escaping RCTResponseSenderBlock) {
+    wrapHubMethodForBluenet(
+      "factoryResetHub",
+      callback,
+      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetHubOnlyPacket())
+    )
+  }
+  
   
 
   @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {

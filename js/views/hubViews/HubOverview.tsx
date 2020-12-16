@@ -80,7 +80,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'deviceEdit') {
-      if (this.props.stoneId) {
+      let stone = Get.stone(this.props.sphereId, this.props.stoneId);
+      if (this.props.stoneId && stone) {
         NavigationUtil.launchModal("DeviceEdit", { sphereId: this.props.sphereId, stoneId: this.props.stoneId });
       }
       else if (this.props.hubId) {
@@ -240,6 +241,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
           hubId: hubId,
           data: { locationId: stone.config.locationId }
         });
+
+        await this.fixMultipleHubs();
       }
       catch(err) {
         LOGe.info("Problem settings up new hub", err);
@@ -321,7 +324,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.uartAlive === false && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub is not responding to the Crownstone USB dongle. Check if it is connected and working!"}</Text>
+          <Text style={textStyle}>{"The hub is not responding to Bluetooth commands.\n\nIf this takes longer than 3 minutes, please disconnect the hub's power, wait 5 seconds and plug it back in.\n\nAfter 1 minute, try again."}</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -359,20 +362,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
             iconSize={14}
             callback={async () => {
               this.setState({fixing:true});
-              try {
-                let requestCloudId = await helper.getCloudIdFromHub(this.props.sphereId, this.props.stoneId);
-                for (let item of hubs) {
-                  if (requestCloudId && item?.data?.config?.cloudId !== requestCloudId) {
-                    if (item?.data?.config?.cloudId) {
-                      try { await CLOUD.deleteHub(item.data.config.cloudId); } catch (e) { }
-                    }
-                    core.store.dispatch({type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: item.id});
-                  }
-                }
-              }
-              catch(err) {
-                Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
-              }
+              await this.fixMultipleHubs();
               this.setState({fixing:false});
             }}
           />
@@ -535,6 +525,33 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return entries;
   }
+
+
+  async fixMultipleHubs() {
+    const hubs = DataUtil.getAllHubsWithStoneId(this.props.sphereId, this.props.stoneId);
+    let helper = new HubHelper();
+    if (hubs.length > 1) {
+      try {
+        let requestCloudId = await helper.getCloudIdFromHub(this.props.sphereId, this.props.stoneId);
+        let foundMatch = false
+        for (let item of hubs) {
+          if (requestCloudId && item?.data?.config?.cloudId !== requestCloudId || foundMatch) {
+            if (item?.data?.config?.cloudId) {
+              try { await CLOUD.deleteHub(item.data.config.cloudId); } catch (e) { }
+            }
+            core.store.dispatch({type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: item.id});
+          }
+          else {
+            foundMatch = true;
+          }
+        }
+      }
+      catch(err) {
+        Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+      }
+    }
+  }
+
 
   render() {
     const state = core.store.getState();

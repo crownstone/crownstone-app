@@ -25,8 +25,8 @@ export class HubSyncer extends SyncInterface<HubData, cloud_Hub, cloud_Hub_setta
 
   static mapCloudToLocal(cloudHub: cloud_Hub, localStoneId?: string, localLocationId?: string) {
     let result : any = {};
-    localStoneId    = localStoneId ?? MapProvider.cloud2localMap.stones[cloudHub.linkedStoneId] ?? cloudHub.linkedStoneId;
-    localLocationId = localStoneId ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
+    localStoneId    = localStoneId    ?? MapProvider.cloud2localMap.stones[cloudHub.linkedStoneId] ?? cloudHub.linkedStoneId;
+    localLocationId = localLocationId ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
 
     if (localStoneId) {
       result.linkedStoneId = localStoneId;

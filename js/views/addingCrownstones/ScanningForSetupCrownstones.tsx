@@ -262,7 +262,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
           <SlideFadeInView duration={300} height={80} visible={ids.length === 0 && this.state.showVerifiedUnowned === true} style={informationStyle}>
             <TouchableOpacity
               style={{...styles.centered, width:screenWidth, height:120, padding:10}}
-              onPress={() => { NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupStone: {handle: this.nearUnknownCrownstoneHandle}, unownedVerified: true}); }}
+              onPress={() => { NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupItem: {handle: this.nearUnknownCrownstoneHandle}, unownedVerified: true}); }}
             >
               <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("_________________I_see_a_C") }</Text>
             </TouchableOpacity>

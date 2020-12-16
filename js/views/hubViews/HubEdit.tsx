@@ -1,9 +1,9 @@
-import { LiveComponent }          from "../LiveComponent";
+import { LiveComponent } from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceEdit", key)(a,b,c,d,e);
+  return Languages.get("HubEdit", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -39,6 +39,7 @@ import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
 import { Get } from "../../util/GetUtil";
+import { HubHelper } from "../../native/setup/HubHelper";
 
 
 export class HubEdit extends LiveComponent<any, any> {
@@ -91,7 +92,7 @@ export class HubEdit extends LiveComponent<any, any> {
   }
 
 
-  constructStoneOptions(stone, state) {
+  constructHubOptions(hub: HubData, state) {
     let items = [];
     let locations = state.spheres[this.props.sphereId].locations;
 
@@ -126,9 +127,17 @@ export class HubEdit extends LiveComponent<any, any> {
           "Are you sure you want to delete this hub?",
           "This cannot be undone!",
           [{text: "Delete", onPress: async () => {
-              Alert.alert("TODO")
-              // TODO: delete hub via rest/ble.
-              // TODO: REST is not implemented yet.
+              let helper = new HubHelper();
+              try { await CLOUD.deleteHub(hub.config.cloudId) } catch (e) {}
+              Alert.alert(
+                lang("_Success__arguments___OKn_header"),
+                lang("_Success__arguments___OKn_body",lang("I_have_removed_this_Hub")),
+                [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
+                    NavigationUtil.dismissModalAndBack();
+                    SortingManager.removeFromLists(this.props.hubId);
+                    core.store.dispatch({type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: this.props.hubId});
+                    core.eventBus.emit('hideLoading');
+                }}]);
             }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
       }}
       );
@@ -165,7 +174,7 @@ export class HubEdit extends LiveComponent<any, any> {
   render() {
     const state = core.store.getState();
     const hub = Get.hub(this.props.sphereId, this.props.hubId);
-    let options = this.constructStoneOptions(hub, state);
+    let options = this.constructHubOptions(hub, state);
     let backgroundImage = core.background.menu;
 
     return (

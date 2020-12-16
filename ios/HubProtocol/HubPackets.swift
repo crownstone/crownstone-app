@@ -15,6 +15,7 @@ public enum HubDataType : UInt16 {
     case setup = 0
     case command = 1
     case factoryReset = 2
+    case factoryResetHubOnly = 3
     case requestData = 10
 }
 
@@ -68,6 +69,17 @@ public class HubPacketGenerator {
     
         return payload
     }
+    
+    static func factoryResetHubOnlyPacket() -> [UInt8] {
+        var payload : [UInt8] = []
+
+        payload.append(PROTOCOL_VERSION)
+        payload += Conversion.uint16_to_uint8_array(NSNumber(value: HubDataType.factoryResetHubOnly.rawValue).uint16Value)
+        payload += Conversion.uint32_to_uint8_array(0xDEADBEA7)
+    
+        return payload
+    }
+    
 }
 
 

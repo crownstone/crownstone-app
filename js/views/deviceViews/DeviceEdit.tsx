@@ -171,21 +171,37 @@ export class DeviceEdit extends LiveComponent<any, any> {
         type: 'button',
         callback: () => {
           if (hub) {
-            Alert.alert(
-              "Are you sure you want to delete this hub?",
-              "This cannot be undone!",
-              [{text: "Delete", onPress: async () => {
-                core.eventBus.emit('showLoading', "Resetting hub...");
-                let helper = new HubHelper();
-                try {
-                  await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
-                  this._removeCrownstoneFromRedux();
-                }
-                catch(e) {
-                  core.eventBus.emit('hideLoading');
-                  Alert.alert("Something went wrong...",JSON.stringify(e),[{text:"OK..."}]);
-                }
-            }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
+            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+              Alert.alert(lang("Cant_see_this_one_"),
+                lang("This_Crownstone_has_not_b"),
+                [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+                  {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
+              )
+            }
+            else {
+              Alert.alert(
+                "Are you sure you want to delete this hub?",
+                "This cannot be undone!",
+                [{text: "Delete", onPress: async () => {
+                    core.eventBus.emit('showLoading', "Resetting hub...");
+                    let helper = new HubHelper();
+                    try {
+                      await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
+                      this._removeCrownstoneFromRedux();
+                    }
+                    catch(err) {
+                      core.eventBus.emit('hideLoading');
+                      if (err === "HUB_REPLY_TIMEOUT") {
+                        Alert.alert("The hub is not responding.",
+                          "If this hub is broken, you can forcibly remove it from your sphere. Do you want to force it's removal?",
+                          [{ text: lang("Delete_anyway"), onPress: () => {this._removeCrownstone(stone).catch((err) => {});} , style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}]);
+                      }
+                      else {
+                        Alert.alert("Something went wrong...", "Please try again later.", [{ text: "OK..." }]);
+                      }
+                    }
+                  }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
+            }
           }
           else {
             core.eventBus.emit('hideLoading');
@@ -245,6 +261,17 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
   _removeCloudOnly() {
     core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+    if (hub && hub.data.config.cloudId) {
+      CLOUD.deleteHub(hub.data.config.cloudId)
+        .catch((err) => {
+          return new Promise((resolve, reject) => {
+            if (err && err.status === 404) {
+              resolve();
+            }
+          })
+        })
+    }
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
