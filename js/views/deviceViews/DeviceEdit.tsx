@@ -44,7 +44,7 @@ import { HubHelper } from "../../native/setup/HubHelper";
 
 export class DeviceEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Settings", cancelModal: true, save: true});
+    return TopBarUtil.getOptions({title: lang("Settings"), cancelModal: true, save: true});
   }
 
   deleting : boolean = false;
@@ -180,10 +180,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
             }
             else {
               Alert.alert(
-                "Are you sure you want to delete this hub?",
-                "This cannot be undone!",
+                lang("Are_you_sure_you_want_to_"),
+                lang("This_cannot_be_undone_"),
                 [{text: "Delete", onPress: async () => {
-                    core.eventBus.emit('showLoading', "Resetting hub...");
+                    core.eventBus.emit('showLoading', lang("Resetting_hub___"));
                     let helper = new HubHelper();
                     try {
                       await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
@@ -192,12 +192,15 @@ export class DeviceEdit extends LiveComponent<any, any> {
                     catch(err) {
                       core.eventBus.emit('hideLoading');
                       if (err === "HUB_REPLY_TIMEOUT") {
-                        Alert.alert("The hub is not responding.",
-                          "If this hub is broken, you can forcibly remove it from your sphere. Do you want to force it's removal?",
+                        Alert.alert(lang("The_hub_is_not_responding"),
+                          lang("If_this_hub_is_broken__yo"),
                           [{ text: lang("Delete_anyway"), onPress: () => {this._removeCrownstone(stone).catch((err) => {});} , style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}]);
                       }
                       else {
-                        Alert.alert("Something went wrong...", "Please try again later.", [{ text: "OK..." }]);
+                        Alert.alert(
+lang("_Something_went_wrong_____header"),
+lang("_Something_went_wrong_____body"),
+[{text: lang("_Something_went_wrong_____left") }]);
                       }
                     }
                   }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])

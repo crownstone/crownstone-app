@@ -28,7 +28,7 @@ export class SphereHubOverview extends LiveComponent<any, any> {
   static options(props) {
     let state = core.store.getState();
     let sphere = state.spheres[props.sphereId] ;
-    return TopBarUtil.getOptions({title: "Hubs in " + sphere.config.name});
+    return TopBarUtil.getOptions({title: lang("Hubs_in_",sphere.config.name)});
   }
 
   unsubscribe : any;
@@ -125,11 +125,11 @@ export class SphereHubOverview extends LiveComponent<any, any> {
     })
 
 
-    items.push({label: "This is an overview of all your Hubs and CrownstoneUSBs.", type:'explanation', below:true});
+    items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
 
 
     items.push({
-      label: "Add hub",
+      label: lang("Add_hub"),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.blue.hex, fontWeight: 'bold'},
       type: 'button',

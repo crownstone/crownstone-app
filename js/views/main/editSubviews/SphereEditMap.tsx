@@ -23,7 +23,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
   static options(props) {
     return {
       topBar: {
-        title: {text: "Where shall I look?"},
+        title: { text: lang("Where_shall_I_look_")},
       }
     }
   }

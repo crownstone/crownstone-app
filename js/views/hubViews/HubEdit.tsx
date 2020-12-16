@@ -44,7 +44,7 @@ import { HubHelper } from "../../native/setup/HubHelper";
 
 export class HubEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Edit hub", cancelModal: true, save: true});
+    return TopBarUtil.getOptions({title: lang("Edit_hub"), cancelModal: true, save: true});
   }
 
   deleting : boolean = false;
@@ -103,7 +103,7 @@ export class HubEdit extends LiveComponent<any, any> {
     }
     locationLabel += lang("__tap_to_change_")
 
-    items.push({label: "HUB IS IN ROOM:", type: 'explanation', below: false});
+    items.push({label: lang("HUB_IS_IN_ROOM_"), type: 'explanation', below: false});
     items.push({
       label: locationLabel,
       mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
@@ -124,9 +124,9 @@ export class HubEdit extends LiveComponent<any, any> {
         type: 'button',
         callback: async  () => {
           Alert.alert(
-          "Are you sure you want to delete this hub?",
-          "This cannot be undone!",
-          [{text: "Delete", onPress: async () => {
+            lang("Are_you_sure_you_want_to_"),
+            lang("This_cannot_be_undone_"),
+          [{text: lang("Delete"), onPress: async () => {
               let helper = new HubHelper();
               try { await CLOUD.deleteHub(hub.config.cloudId) } catch (e) {}
               Alert.alert(
@@ -141,7 +141,7 @@ export class HubEdit extends LiveComponent<any, any> {
             }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
       }}
       );
-      items.push({label: "Removing this Hub from the Sphere will revert it back to factory defaults (and back in setup mode). You may lose your data if you do this!",  type:'explanation', below:true});
+      items.push({label: lang("Removing_this_Hub_from_th"),  type:'explanation', below:true});
     }
 
     return items;

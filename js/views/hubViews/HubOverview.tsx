@@ -246,14 +246,17 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       }
       catch(err) {
         LOGe.info("Problem settings up new hub", err);
-        Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+        Alert.alert(
+lang("_Something_went_wrong_____header"),
+lang("_Something_went_wrong_____body"),
+[{text:lang("_Something_went_wrong_____left")}]);
       }
       this.setState({ fixing: false });
     }
 
     if (this.state.fixing) {
       return <View key={"Fixing"} style={{...styles.centered, flex:1, padding:15}}>
-        <Text style={textStyle}>{"Fixing issue..."}</Text>
+        <Text style={textStyle}>{ lang("Fixing_issue___") }</Text>
         <View style={{flex:0.25}}/>
         <ActivityIndicator size={'large'} />
         <View style={{flex:1}}/>
@@ -264,8 +267,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (!stone) {
       return (
         <View key={"StoneMissingFix"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"This hub has no Crownstone Dongle linked to it. " +
-          "You can resolve this by setting up the CrownstoneUSB dongle in this hub or removing this hub from the Sphere.\n\nIf the usb dongle is already setup, find it in the app and press the fix now button over there."}</Text>
+          <Text style={textStyle}>{ lang("This_hub_has_no_Crownston") }</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -275,7 +277,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (!hub) {
       return (
         <View key={"HubReferenceFix"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub reference in the app is missing. Press the button below to fix this!"}</Text>
+          <Text style={textStyle}>{ lang("The_hub_reference_in_the_") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -291,7 +293,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                 })
                 .catch(async (err) => {
                   if (err === "HUB_REPLY_TIMEOUT") {
-                    Alert.alert("Something went wrong...","The hub connected to this dongle is not responding. Please disconnect the hub's power, wait 5 seconds and plug it back in. After 1 minute, try again.", [{text:"OK"}]);
+                    Alert.alert(
+lang("_Something_went_wrong______header"),
+lang("_Something_went_wrong______body"),
+[{text:lang("_Something_went_wrong______left")}]);
                   }
                   else if (typeof err === 'object') {
                     if (err.code === 3) {
@@ -310,7 +315,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                   this.setState({fixing:false})
                 })
                 .catch((err) => {
-                  Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+                  Alert.alert(
+lang("_Something_went_wrong_____P_header"),
+lang("_Something_went_wrong_____P_body"),
+[{text:lang("_Something_went_wrong_____P_left")}]);
                   this.setState({fixing:false})
                 })
             }}
@@ -324,7 +332,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.uartAlive === false && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub is not responding to Bluetooth commands.\n\nIf this takes longer than 3 minutes, please disconnect the hub's power, wait 5 seconds and plug it back in.\n\nAfter 1 minute, try again."}</Text>
+          <Text style={textStyle}>{ lang("The_hub_is_not_responding") }</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -334,7 +342,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.hubHasBeenSetup === false) {
       return (
         <View key={"HubSetupFix"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub itself is not initialized yet.. Press the button below to fix this!"}</Text>
+          <Text style={textStyle}>{ lang("The_hub_itself_is_not_ini") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -353,7 +361,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubs.length > 1) {
       return (
         <View key={"HubMultiple"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"There are multiple hubs bound to this reference... Press the button below to fix this!"}</Text>
+          <Text style={textStyle}>{ lang("There_are_multiple_hubs_b") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -375,7 +383,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.uartAlive === true && hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === true && hubState.uartEncryptionRequiredByHub === true) {
       return (
         <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"This hub does not belong to your Sphere. The hub must be factory reset and setup again to resolve this. Press the button below to do this."}</Text>
+          <Text style={textStyle}>{ lang("This_hub_does_not_belong_") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -389,7 +397,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                 await helper.setup(this.props.sphereId, this.props.stoneId);
               }
               catch(e) {
-                Alert.alert("Something went wrong...","Please try again later!", [{text:'OK'}])
+                Alert.alert(
+lang("_Something_went_wrong_____Pl_header"),
+lang("_Something_went_wrong_____Pl_body"),
+[{text:lang("_Something_went_wrong_____Pl_left")}])
               }
               this.setState({fixing:false})
             }}
@@ -402,7 +413,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.uartAlive === true && hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === false && hubState.uartEncryptionRequiredByHub === true) {
       return (
         <View key={"HubUartEncryptionDisabled"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"Encryption is not enabled yet. Tap the button below to fix this!"}</Text>
+          <Text style={textStyle}>{ lang("Encryption_is_not_enabled") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -415,7 +426,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                 await helper.setUartKey(this.props.sphereId, this.props.stoneId);
               }
               catch(e) {
-                Alert.alert("Something went wrong...","Please try again later!", [{text:'OK'}])
+                Alert.alert(
+lang("_Something_went_wrong_____Ple_header"),
+lang("_Something_went_wrong_____Ple_body"),
+[{text:lang("_Something_went_wrong_____Ple_left")}])
               }
               this.setState({fixing:false})
             }}
@@ -428,7 +442,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (!hub.data.config.cloudId) {
       return (
         <View key={"HubCloudMissing"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"This hub does not exist in the cloud... Press the button below to fix this!"}</Text>
+          <Text style={textStyle}>{ lang("This_hub_does_not_exist_i") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
@@ -474,8 +488,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                 this.setState({fixing:false});
               }
               catch(err) {
-                console.log("ERORR", err)
-                Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+                Alert.alert(
+lang("_Something_went_wrong_____Plea_header"),
+lang("_Something_went_wrong_____Plea_body"),
+[{text:lang("_Something_went_wrong_____Plea_left")}]);
                 this.setState({fixing:false});
               }
             }}
@@ -488,7 +504,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.hubHasInternet === false) {
       return (
         <View key={"HubNoInternet"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub is not connected to the internet. Please reconnect the hub to the internet."}</Text>
+          <Text style={textStyle}>{ lang("The_hub_is_not_connected_") }</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -497,7 +513,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     if (hubState.hubHasError) {
       return (
         <View key={"Hub Reports Error"} style={{...styles.centered, flex:1, padding:15}}>
-          <Text style={textStyle}>{"The hub is reporting an error..."}</Text>
+          <Text style={textStyle}>{ lang("The_hub_is_reporting_an_e") }</Text>
           <View style={{flex:1}}/>
         </View>
       );
@@ -507,7 +523,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       if (hub.data.config.ipAddress) {
         return (
           <View key={"HubIPAddress"} style={{...styles.centered, flex:1, padding:15}}>
-            <Text style={textStyle}>{"Everything is looking good!\n\nThe address of this hub on your local network is:\n"}</Text>
+            <Text style={textStyle}>{ lang("Everything_is_looking_goo") }</Text>
             <Text style={{...textStyle, fontSize: 20}}>{hub.data.config.ipAddress}</Text>
             <View style={{flex:1}}/>
           </View>
@@ -516,7 +532,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       else {
         return (
           <View key={"HubOK"} style={{...styles.centered, flex:1, padding:15}}>
-            <Text style={textStyle}>{"Everything is looking good!"}</Text>
+            <Text style={textStyle}>{ lang("Everything_is_looking_good") }</Text>
             <View style={{flex:1}}/>
           </View>
         )
@@ -547,7 +563,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
         }
       }
       catch(err) {
-        Alert.alert("Something went wrong...","Please try again later!", [{text:"OK"}]);
+        Alert.alert(
+lang("_Something_went_wrong_____Pleas_header"),
+lang("_Something_went_wrong_____Pleas_body"),
+[{text:lang("_Something_went_wrong_____Pleas_left")}]);
       }
     }
   }
@@ -576,11 +595,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       <Background image={core.background.lightBlur}>
         <View style={{flex:0.5}} />
 
-        {/*{ <View style={{padding:30}}><Text style={deviceStyles.header}>{ "Hub state overview:" }</Text></View> }*/}
-
         { this._getStoneIcon(stone, updateAvailable) }
         <View style={{width:screenWidth, padding:30, ...styles.centered}}>
-          <Text style={deviceStyles.subHeader}>{"Hub information:"}</Text>
+          <Text style={deviceStyles.subHeader}>{ lang("Hub_information_") }</Text>
         </View>
 
         {this.getStateEntries(stone, hub, hubs)}

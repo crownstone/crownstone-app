@@ -30,7 +30,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
 
     items.push({label: lang("Here_you_can_integrate_wi"),  type:'largeExplanation'});
 
-    // items.push({label: "Smart Lighting",  type:'largeExplanation'});
+    // items.push({label: lang("Smart_Lighting"),  type:'largeExplanation'});
     // items.push({
     //   label: lang("Philips_Hue"),
     //   type: 'navigation',
@@ -74,7 +74,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
       }
     });
     items.push({
-      label: "Google Assistant",
+      label: lang("Google_Assistant"),
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_vertical_crop.png')} targetWidth={60} targetHeight={60} sourceWidth={842} sourceHeight={794}/>,
       callback: () => {
