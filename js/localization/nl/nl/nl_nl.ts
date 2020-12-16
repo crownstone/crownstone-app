@@ -651,7 +651,6 @@ export default {
       crownstone_id__:                       true,
       Pick_a_name:                           false,
       Delete_anyway:                         false,
-      Edit_Crownstone:                       false,
       CROWNSTONE_IS_IN_ROOM:                 false,
       DANGER:                                false,
       unknown:                               false,
@@ -667,6 +666,8 @@ export default {
       Not_in_a_room:                         false,
       Description:                           false,
       Optional:                              false,
+      Removing_this_Hub_:                    false,
+      I_have_removed_this_Hub:               false,
     },
     _Are_you_sure___Removing__header:       function() { return "Weet je het zeker?"; },
     _Are_you_sure___Removing__body:         function() { return "Het verwijderen van een Crownstone uit de sfeer zal de Crownstone herstellen naar de fabrieksinstellingen."; },
@@ -712,7 +713,6 @@ export default {
     crownstone_id__:                        function() { return "crownstone id: " + arguments[0] + ""; },
     Pick_a_name:                            function() { return "Kies een naam"; },
     Delete_anyway:                          function() { return "Verwijder"; },
-    Edit_Crownstone:                        function() { return "Crownstone bewerken"; },
     CROWNSTONE_IS_IN_ROOM:                  function() { return "CROWNSTONE IS IN DE KAMER"; },
     DANGER:                                 function() { return "LET OP"; },
     unknown:                                function() { return "onbekend"; },
@@ -729,6 +729,8 @@ export default {
     Description:                            function() { return "Beschrijving"; },
     Optional:                               function() { return "Optioneel"; },
     __filename: "../js/views/deviceViews/DeviceEdit.tsx",
+    Removing_this_Hub_:                     function() { return "Removing this Hub from its Sphere will revert it back to factory defaults (and back in setup mode)." },
+    I_have_removed_this_Hub:                function() { return "I have removed this Hub from the Cloud, your Sphere and reverted it to factory defaults. You can new freely add it to another Sphere." },
   },
   DeviceEntry:{
     __stringSameAsBaseLanguage: {
@@ -1468,6 +1470,31 @@ export default {
     },
     _W_:                                    function() { return "(W)"; },
     __filename: "../js/views/components/graph/GraphComponents/GraphAxis.tsx",
+  },
+  HubEdit:{
+    __stringSameAsBaseLanguage: {
+      _Success__arguments___OKn_header:      false,
+      _Success__arguments___OKn_body:        false,
+      _Success__arguments___OKn_left:        false,
+      Icon:                                  false,
+      Remove_from_Sphere:                    false,
+      I_have_removed_this_Hub:               false,
+      DANGER:                                false,
+      Cancel:                                false,
+      __tap_to_change_:                      false,
+      Not_in_a_room:                         false,
+    },
+    __filename: "../js/views/hubViews/HubEdit.tsx",
+    _Success__arguments___OKn_header:       function() { return "Success!" },
+    _Success__arguments___OKn_body:         function() { return arguments[0] },
+    _Success__arguments___OKn_left:         function() { return "OK" },
+    Icon:                                   function() { return "Icon" },
+    Remove_from_Sphere:                     function() { return "Remove from Sphere" },
+    I_have_removed_this_Hub:                function() { return "I have removed this Hub from the Cloud, your Sphere and reverted it to factory defaults. You can new freely add it to another Sphere." },
+    DANGER:                                 function() { return "DANGER" },
+    Cancel:                                 function() { return "Cancel" },
+    __tap_to_change_:                       function() { return " (tap to change)" },
+    Not_in_a_room:                          function() { return "Not in a room" },
   },
   IconDevSelector:{
     __stringSameAsBaseLanguage: {
@@ -4422,6 +4449,17 @@ export default {
     Near_:                                  function() { return "in de buurt van " + arguments[0] + ""; },
     We_use_the_location_of_th:              function() { return "We gebruiken de locatie van de sfeer om de tijden van zonsopgang en zonsondergang te berekenen die in het behaviour worden gebruikt. Een zeer ruwe schatting is hiervoor voldoende."; },
     __filename: "../js/views/main/editSubviews/SphereEditSettings.tsx",
+  },
+  SphereHubOverview:{
+    __stringSameAsBaseLanguage: {
+      _Ask_your_Sphere_Admin__A_header:      false,
+      _Ask_your_Sphere_Admin__A_body:        false,
+      _Ask_your_Sphere_Admin__A_left:        false,
+    },
+    __filename: "../js/views/main/editSubviews/SphereHubOverview.tsx",
+    _Ask_your_Sphere_Admin__A_header:       function() { return "Ask your Sphere Admin" },
+    _Ask_your_Sphere_Admin__A_body:         function() { return "Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin." },
+    _Ask_your_Sphere_Admin__A_left:         function() { return "OK" },
   },
   SphereIntegrations:{
     __stringSameAsBaseLanguage: {
