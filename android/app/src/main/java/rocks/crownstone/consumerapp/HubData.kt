@@ -4,10 +4,13 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.deferred
 import nl.komponents.kovenant.then
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.packets.ByteArrayPacket
 import rocks.crownstone.bluenet.packets.EmptyPacket
 import rocks.crownstone.bluenet.packets.HubDataPacket
 import rocks.crownstone.bluenet.structs.Errors
+import rocks.crownstone.bluenet.structs.Uint32
 import rocks.crownstone.bluenet.util.Conversion
+import rocks.crownstone.bluenet.util.toUint32
 import rocks.crownstone.consumerapp.hubdata.DataType
 import rocks.crownstone.consumerapp.hubdata.HubDataReplyPacket
 import rocks.crownstone.consumerapp.hubdata.HubDataRequestPacket
@@ -27,8 +30,23 @@ class HubData(bluenet: Bluenet) {
 		return sendHubDataCommand(reqPacket)
 	}
 
+	/**
+	 * Factory reset both: hub and its crownstone dongle.
+	 */
 	fun factoryReset(): Promise<HubDataReplyPacket, Exception> {
-		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET, EmptyPacket())
+		val value: Uint32 = 0xDEADBEEFU
+		val packet = ByteArrayPacket(Conversion.toByteArray(value))
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET, packet)
+		return sendHubDataCommand(reqPacket)
+	}
+
+	/**
+	 * Factory reset hub only.
+	 */
+	fun factoryResetHubOnly(): Promise<HubDataReplyPacket, Exception> {
+		val value: Uint32 = 0xDEADBEA7U
+		val packet = ByteArrayPacket(Conversion.toByteArray(value))
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET, packet)
 		return sendHubDataCommand(reqPacket)
 	}
 
