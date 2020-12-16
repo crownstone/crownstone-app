@@ -3913,6 +3913,10 @@ export default {
       _Error_during_Factory_Res_left:        false,
       Hold_your_phone_next_to_t:             false,
       Resettings:                            false,
+      Looking_for_Crownstones_n:             false,
+      Attempting_to_reset_Crown:             false,
+      Looking_for_Crownstones_ne:            false,
+      _in_:                                  false,
     },
     _Crownstone_in_Setup_mode_header:       function() { return "Crownstone in Setup modus in de buurt."; },
     _Crownstone_in_Setup_mode_body:         function() { return "We detecteren een Crownstone in de setup modus in de buurt, evenals een Crownstone in de normale modus die zich al in jouw Sfeer bevindt (" + arguments[0] + "). Wil je proberen je eigen Crownstone te resetten naar de fabrieksinstellingen?"; },
@@ -3957,6 +3961,10 @@ export default {
     Hold_your_phone_next_to_t:              function() { return "Houd je telefoon naast de Crownstone."; },
     Resettings:                             function() { return "Resettings"; },
     __filename: "../js/views/settingsViews/SettingsFactoryResetStep2.tsx",
+    Looking_for_Crownstones_n:              function() { return "Zoeken naar Crownstones in de buurt..." },
+    Attempting_to_reset_Crown:              function() { return "Probeer een Crownstone te resetten..." },
+    Looking_for_Crownstones_ne:             function() { return "Zoeken naar Crownstones in de buurt..." },
+    _in_:                                   function() { return arguments[0] + " in de " + arguments[1] },
   },
   SettingsMeshOverview:{
     __stringSameAsBaseLanguage: {
