@@ -2700,6 +2700,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.fail { rejectCallback(callback, getHubDataReplyError(it)) }
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun factoryResetHubOnly(callback: Callback) {
+		val hubDataHandler = HubData(bluenet)
+		hubDataHandler.factoryResetHubOnly()
+				.success { resolveCallback(callback, getHubDataReply(it)) }
+				.fail { rejectCallback(callback, getHubDataReplyError(it)) }
+	}
+
 	private fun getHubDataReply(replyPacket: HubDataReplyPacket): WritableMap {
 		// Return data should be in the form:
 		// {
