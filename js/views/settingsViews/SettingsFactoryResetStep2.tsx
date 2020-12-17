@@ -40,7 +40,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      text:'Looking for Crownstones nearby...',
+      text:lang("Looking_for_Crownstones_n"),
       fade2: new Animated.Value(0),
       fade1: new Animated.Value(1),
     };
@@ -65,7 +65,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
   switchImages() {
     if (this.lookingForCrownstone === true) {
-      this.setState({text:'Attempting to reset Crownstone...',});
+      this.setState({text:lang("Attempting_to_reset_Crown"),});
       Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
       setTimeout(() => {
         Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();
@@ -73,7 +73,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
       this.lookingForCrownstone = false;
     }
     else {
-      this.setState({text:'Looking for Crownstones nearby...'});
+      this.setState({text:lang("Looking_for_Crownstones_ne")});
       Animated.timing(this.state.fade2, {toValue: 0, duration: 200}).start();
       setTimeout(() => {
         Animated.timing(this.state.fade1, {toValue: 1, duration: 200}).start();
@@ -84,8 +84,9 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
   _getDescription(stoneInfo) {
     let description = stoneInfo.name;
-    if (stoneInfo.locationName)
-      description +=  " in " + stoneInfo.locationName;
+    if (stoneInfo.locationName) {
+      description = lang("_in_", stoneInfo, stoneInfo.locationName);
+    }
     return description;
   }
 
