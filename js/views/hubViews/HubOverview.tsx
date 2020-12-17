@@ -45,7 +45,7 @@ import { DataUtil } from "../../util/DataUtil";
 import { Button } from "../components/Button";
 import { Get } from "../../util/GetUtil";
 import { HubReplyError } from "./HubEnums";
-import { LOG, LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
 import { CLOUD } from "../../cloud/cloudAPI";
 import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
@@ -222,38 +222,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     let hubState = hub?.data?.state;
     let helper = new HubHelper();
 
-    const createHub = async () => {
-      try {
-        LOGi.info("Setting up hub...")
-        let hubId;
-        try {
-          hubId = await helper.setup(this.props.sphereId, this.props.stoneId)
-        }
-        catch(err) {
-          // if this hub is not in setup mode anymore, attempt to initalize it.
-          if (err?.errorType === HubReplyError.NOT_IN_SETUP_MODE) {
-            hubId = await helper.setUartKey(this.props.sphereId, this.props.stoneId);
-          }
-        }
-        core.store.dispatch({
-          type: "UPDATE_HUB_CONFIG",
-          sphereId: this.props.sphereId,
-          hubId: hubId,
-          data: { locationId: stone.config.locationId }
-        });
-
-        await this.fixMultipleHubs();
-      }
-      catch(err) {
-        LOGe.info("Problem settings up new hub", err);
-        Alert.alert(
-lang("_Something_went_wrong_____header"),
-lang("_Something_went_wrong_____body"),
-[{text:lang("_Something_went_wrong_____left")}]);
-      }
-      this.setState({ fixing: false });
-    }
-
     if (this.state.fixing) {
       return <View key={"Fixing"} style={{...styles.centered, flex:1, padding:15}}>
         <Text style={textStyle}>{ lang("Fixing_issue___") }</Text>
@@ -281,7 +249,7 @@ lang("_Something_went_wrong_____body"),
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Fix now. "}
+            label={ lang("Fix_now__")}
             icon={"ios-build"}
             iconSize={14}
             callback={() => {
@@ -292,22 +260,10 @@ lang("_Something_went_wrong_____body"),
                   this.setState({fixing:false})
                 })
                 .catch(async (err) => {
-                  if (err === "HUB_REPLY_TIMEOUT") {
-                    Alert.alert(
-lang("_Something_went_wrong______header"),
-lang("_Something_went_wrong______body"),
-[{text:lang("_Something_went_wrong______left")}]);
-                  }
-                  else if (typeof err === 'object') {
-                    if (err.code === 3) {
-                      if (err.errorType === HubReplyError.IN_SETUP_MODE) {
-                        await createHub();
-                        await Scheduler.delay(5000);
-                      }
-                    }
-                    else {
-                      throw err;
-                    }
+                  if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+                    await this.createHub();
+                    await Scheduler.delay(5000);
+                    this.setState({ fixing: false });
                   }
                   else {
                     throw err;
@@ -328,8 +284,8 @@ lang("_Something_went_wrong_____P_body"),
     }
 
 
-
-    if (hubState.uartAlive === false && this.props.stoneId) {
+    // if encryption is not enforced by both parties and the connection is not alive...
+    if (hubState.uartAlive === false && (hubState.uartEncryptionRequiredByHub === false || hubState.uartEncryptionRequiredByCrownstone === false) && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{ lang("The_hub_is_not_responding") }</Text>
@@ -346,12 +302,13 @@ lang("_Something_went_wrong_____P_body"),
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Initialize hub!"}
+            label={ lang("Initialize_hub_")}
             icon={"ios-build"}
             iconSize={14}
             callback={async () => {
               this.setState({ fixing: true });
-              await createHub();
+              await this.createHub();
+              this.setState({ fixing: false });
             }}
           />
         </View>
@@ -365,7 +322,7 @@ lang("_Something_went_wrong_____P_body"),
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Fix it!"}
+            label={ lang("Fix_it_")}
             icon={"ios-build"}
             iconSize={14}
             callback={async () => {
@@ -379,15 +336,14 @@ lang("_Something_went_wrong_____P_body"),
     }
 
 
-
-    if (hubState.uartAlive === true && hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === true && hubState.uartEncryptionRequiredByHub === true) {
+    if (hubState.uartAliveEncrypted === false && hubState.uartEncryptionRequiredByCrownstone === true && hubState.uartEncryptionRequiredByHub === true) {
       return (
         <View key={"HubUartEncryptionFailed"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{ lang("This_hub_does_not_belong_") }</Text>
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Factory reset hub. "}
+            label={ lang("Factory_reset_hub__")}
             icon={"ios-build"}
             iconSize={14}
             callback={async () => {
@@ -397,6 +353,7 @@ lang("_Something_went_wrong_____P_body"),
                 await helper.setup(this.props.sphereId, this.props.stoneId);
               }
               catch(e) {
+                LOGw.info("Failed to reset hub", e)
                 Alert.alert(
 lang("_Something_went_wrong_____Pl_header"),
 lang("_Something_went_wrong_____Pl_body"),
@@ -446,7 +403,7 @@ lang("_Something_went_wrong_____Ple_body"),
           <View style={{flex:1}}/>
           <Button
             backgroundColor={colors.blue.rgba(0.5)}
-            label={ "Fix it!"}
+            label={ lang("Fix_it_")}
             icon={"ios-build"}
             iconSize={14}
             callback={async () => {
@@ -474,7 +431,6 @@ lang("_Something_went_wrong_____Ple_body"),
                   ]);
                 }
                 catch (err) {
-                  console.log("HERE", err)
                   if (err?.status === 404) {
                     // this item does not exist  in the cloud.. Factory reset required.
                     core.store.dispatch({ type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id });
@@ -542,8 +498,44 @@ lang("_Something_went_wrong_____Plea_body"),
     return entries;
   }
 
+  async createHub(source = "ROOT") {
+    let helper = new HubHelper();
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
+    try {
+      LOGi.info("Setting up hub...")
+      let hubId;
+      try {
+        hubId = await helper.setup(this.props.sphereId, this.props.stoneId)
+      }
+      catch(err) {
+        // if this hub is not in setup mode anymore, attempt to initalize it.
+        if (err?.errorType === HubReplyError.NOT_IN_SETUP_MODE) {
+          hubId = await helper.setUartKey(this.props.sphereId, this.props.stoneId);
+        }
+        else {
+          throw err;
+        }
+      }
+      core.store.dispatch({
+        type: "UPDATE_HUB_CONFIG",
+        sphereId: this.props.sphereId,
+        hubId: hubId,
+        data: { locationId: stone.config.locationId }
+      });
 
-  async fixMultipleHubs() {
+      await this.fixMultipleHubs(source);
+      await Scheduler.delay(3000);
+    }
+    catch(err) {
+      LOGe.info("Problem settings up new hub", err);
+      Alert.alert(
+        lang("_Something_went_wrong_____header"),
+        lang("_Something_went_wrong_____body"),
+        [{text:lang("_Something_went_wrong_____left")}]);
+    }
+  }
+
+  async fixMultipleHubs(source = "ROOT") {
     const hubs = DataUtil.getAllHubsWithStoneId(this.props.sphereId, this.props.stoneId);
     let helper = new HubHelper();
     if (hubs.length > 1) {
@@ -563,6 +555,12 @@ lang("_Something_went_wrong_____Plea_body"),
         }
       }
       catch(err) {
+        if (source === "ROOT" && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+          await this.createHub('fixMultipleHubs')
+          return
+        }
+
+
         Alert.alert(
 lang("_Something_went_wrong_____Pleas_header"),
 lang("_Something_went_wrong_____Pleas_body"),
@@ -602,7 +600,7 @@ lang("_Something_went_wrong_____Pleas_body"),
 
         {this.getStateEntries(stone, hub, hubs)}
 
-
+        <View style={{flex:0.25}} />
         { state.user.developer ? this._getDebugIcon(stone) : undefined }
       </Background>
     )

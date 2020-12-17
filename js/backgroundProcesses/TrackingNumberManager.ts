@@ -6,6 +6,7 @@ import { BroadcastStateManager } from "./BroadcastStateManager";
 import { core } from "../core";
 import { Scheduler } from "../logic/Scheduler";
 import { LOGi } from "../logging/Log";
+import { CommunicationWatchdog } from "./CommunicationWatchdog";
 
 const TRIGGER_ID = "TrackingNumberManager";
 
@@ -81,7 +82,7 @@ class TrackingNumberManagerClass {
   updateMyDeviceTrackingRegistrationInActiveSphere() {
     LOGi.info("TrackingNumberManager: Update my device tracking registration for active sphere.");
     // do not do this too often.
-    if (Date.now() - this.lastTimeTokenWasBumped < 1800000) {
+    if (Date.now() - this.lastTimeTokenWasBumped < 1800000) { // 30 minuteus
       return;
     }
     if (BroadcastStateManager.getSphereInLocationState() !== null) {
@@ -191,7 +192,7 @@ class TrackingNumberManagerClass {
   }
 
 
-  _updateMyDeviceTrackingRegistration(sphereId) {
+  async _updateMyDeviceTrackingRegistration(sphereId) {
     LOGi.info("TrackingNumberManager: Executing device tracking registration update for sphere:", sphereId, "Current app state: ", AppState.currentState);
     let preferences = DataUtil.getDevicePreferences(sphereId);
     if (this.currentlyCyclingToken === false) {
@@ -206,31 +207,8 @@ class TrackingNumberManagerClass {
       }
       else {
         // connect to two crownstones to update registration
-        StoneAvailabilityTracker.sendCommandToNearestCrownstones(
-          sphereId,
-          {
-            commandName: 'registerTrackedDevice',
-            trackingNumber: preferences.trackingNumber,
-            locationUID: () => {
-              return BroadcastStateManager.getCurrentLocationUID();
-            },
-            profileId: 0,
-            rssiOffset: preferences.rssiOffset,
-            ignoreForPresence: preferences.ignoreForBehaviour,
-            tapToToggleEnabled: preferences.tapToToggleEnabled,
-            deviceToken: preferences.activeRandomDeviceToken, // we register the active token since this one is ALWAYS the same as the one we broadcast on the background.
-            ttlMinutes: 120
-          },
-          2)
-          .then((promises) => {
-            return Promise.all(promises);
-          })
-          .then(() => {
-            this.lastTimeTokenWasBumped = Date.now();
-          })
-          .catch((err) => {
-            console.log("SOMETHING WENT WRONG", err)
-          })
+        let updateTime = await CommunicationWatchdog.registerTrackedDevice(sphereId);
+        this.lastTimeTokenWasBumped = updateTime || this.lastTimeTokenWasBumped;
       }
     }
     else {

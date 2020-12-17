@@ -5,6 +5,7 @@ import { AppState, Platform } from "react-native";
 import { BroadcastStateManager } from "./BroadcastStateManager";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../util/DataUtil";
+import { CommunicationWatchdog } from "./CommunicationWatchdog";
 
 const TRIGGER_ID = "HeartbeatHandler";
 
@@ -49,33 +50,7 @@ class HeartbeatHandlerClass {
   }
 
   heartbeat() {
-    if (Platform.OS !== 'ios') { return }
-
-    let activeSphereId = BroadcastStateManager.getSphereInLocationState();
-    // this means we're broadcasting in an active sphere.
-    if (activeSphereId !== null) {
-      let preferences = DataUtil.getDevicePreferences(activeSphereId);
-
-      StoneAvailabilityTracker.sendCommandToNearestCrownstones(
-        activeSphereId,
-        {
-          commandName: 'trackedDeviceHeartbeat',
-          trackingNumber: preferences.trackingNumber,
-          locationUID: () => {
-            return BroadcastStateManager.getCurrentLocationUID();
-          },
-          deviceToken: preferences.activeRandomDeviceToken, // we register the active token since this one is ALWAYS the same as the one we broadcast on the background.
-          ttlMinutes: 3
-        },
-        2)
-        .then((promises) => {
-          return Promise.all(promises);
-        })
-        .catch((err) => {
-          console.log("SOMETHING WENT WRONG", err)
-        })
-
-    }
+    CommunicationWatchdog.trackedDeviceHeartbeat();
   }
 }
 

@@ -2,14 +2,14 @@ import { Alert } from 'react-native';
 
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import { LOG, LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
-import { HubReplyCode, KEY_TYPES, STONE_TYPES } from "../../Enums";
+import { HubReplyCode, HubReplyError, KEY_TYPES, STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
@@ -35,7 +35,17 @@ export class HubHelper {
 
   setUartKey(sphereId, stoneId: string) : Promise<{ hubId: string, cloudId: string }> {
     LOGi.info("HubHelper: setup setUartKey", sphereId, stoneId);
-    return this._setup(sphereId, stoneId, false);
+    try {
+      return this._setup(sphereId, stoneId, false);
+    }
+    catch (err) {
+      // in case the hub advertention is lying and the hub is not setup, set it up now.
+      if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+        LOGw.info("Setting up the hub now, the advertisment was lying...");
+        return this._setup(sphereId, stoneId, true);
+      }
+      else { throw err; }
+    }
   }
 
   async _setup(sphereId, stoneId: string, createHubOnline: boolean) : Promise<{ hubId: string, cloudId: string }> {
@@ -157,14 +167,30 @@ export class HubHelper {
       await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
 
       LOG.info("hubSetupProgress: Requesting cloud Id...");
-      let requestedData = await BluenetPromiseWrapper.requestCloudId();
-      if (requestedData.type === 'error') {
-        throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId" }
+      let hubId;
+      try {
+        let requestedData = await BluenetPromiseWrapper.requestCloudId();
+        if (requestedData.type === 'error') {
+          throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId" }
+        }
+        hubCloudId = requestedData.message;
+        hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
-      hubCloudId = requestedData.message;
+      catch (err) {
+        if (err === "HUB_REPLY_TIMEOUT") {
+          hubId = xUtil.getUUID();
+          core.store.dispatch({
+            type:"ADD_HUB", sphereId, hubId,
+            data: { cloudId: null, linkedStoneId: stoneId }
+          });
+        }
+        else {
+          throw err;
+        }
+      }
       await BluenetPromiseWrapper.disconnectCommand();
 
-      let hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
+
 
       return hubId;
     }
@@ -184,21 +210,39 @@ export class HubHelper {
    */
   async _setLocalHub(sphereId, stoneId, hubCloudId) {
     let hubId = xUtil.getUUID();
+    let type = "ADD_HUB";
+
+    if (!hubCloudId) {
+      core.store.dispatch({
+        type, sphereId, hubId,
+        data: { cloudId: null, linkedStoneId: stoneId }
+      });
+      return hubId;
+    }
     LOG.info("Check if the hub is already in our database...");
     let existingHub = DataUtil.getHubByCloudId(sphereId, hubCloudId);
     LOG.info(existingHub);
-    let type = "ADD_HUB";
     if (existingHub) {
       type = "UPDATE_HUB_CONFIG";
       hubId = existingHub.id;
     }
+
     try {
-      LOG.info("Check if we have access to that hub in the cloud...");
-      let hubData = await CLOUD.getHub(hubCloudId);
-      core.store.dispatch({
-        type, sphereId, hubId,
-        data: type === "ADD_HUB" ? HubSyncer.mapCloudToLocal(hubData) : {cloudId: hubCloudId, linkedStoneId: stoneId }
-      });
+        LOG.info("Check if we have access to that hub in the cloud...");
+        let hubData = await CLOUD.getHub(hubCloudId);
+        // it must be in the same sphere in order for this to work.
+        if (hubData.sphereId === (MapProvider.local2cloudMap.spheres[sphereId] || sphereId)) {
+          core.store.dispatch({
+            type, sphereId, hubId,
+            data: type === "ADD_HUB" ? HubSyncer.mapCloudToLocal(hubData) : {
+              cloudId: hubCloudId,
+              linkedStoneId: stoneId
+            }
+          });
+        }
+        else {
+          throw "DIFFERENT_SPHERE";
+        }
     }
     catch (e) {
       LOG.info("Nope. we dont have it.",e);

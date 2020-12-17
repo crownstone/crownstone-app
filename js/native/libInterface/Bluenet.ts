@@ -154,6 +154,9 @@ const BluenetAPI = {
 
   transferHubTokenAndCloudId:   () => { console.log("BluenetBridgeCall: transferHubTokenAndCloudId"); },
   setUartKey:                   () => { console.log("BluenetBridgeCall: setUartKey"); },
+  requestCloudId:               () => { console.log("BluenetBridgeCall: requestCloudId"); },
+  factoryResetHub:              () => { console.log("BluenetBridgeCall: factoryResetHub"); },
+  factoryResetHubOnly:          () => { console.log("BluenetBridgeCall: factoryResetHubOnly"); },
 
 };
 

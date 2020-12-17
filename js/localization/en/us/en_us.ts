@@ -830,6 +830,11 @@ export default {
     _Something_went_wrong_____Pleas_header: function() { return "Something went wrong..." },
     _Something_went_wrong_____Pleas_body:   function() { return "Please try again later!" },
     _Something_went_wrong_____Pleas_left:   function() { return "OK" },
+    Fix_it_:                                function() { return "Fix it!" },
+    Enable_encryption__:                    function() { return "Enable encryption. " },
+    Factory_reset_hub__:                    function() { return "Factory reset hub. " },
+    Initialize_hub_:                        function() { return "Initialize hub!" },
+    Fix_now__:                              function() { return "Fix now. " },
   },
   HueAdd:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/js/views/thirdParty/hue/HueAdd.tsx",

@@ -178,16 +178,7 @@ export class SetupHub extends LiveComponent<{
         hubData = await hubHelper.setup(this.props.sphereId, this.newCrownstoneState.newStoneId);
       }
       else {
-        try {
-          hubData = await hubHelper.setUartKey(this.props.sphereId, this.newCrownstoneState.newStoneId);
-        }
-        catch (err) {
-          // in case the hub advertention is lying and the hub is not setup, set it up now.
-          if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
-            LOGw.info("Setting up the hub now, the advertisment was lying...");
-            hubData = await hubHelper.setup(this.props.sphereId, this.newCrownstoneState.newStoneId);
-          }
-        }
+        hubData = await hubHelper.setUartKey(this.props.sphereId, this.newCrownstoneState.newStoneId);
       }
       this.newCrownstoneState.newHubId      = hubData.hubId;
       this.newCrownstoneState.setupFinished = true;
