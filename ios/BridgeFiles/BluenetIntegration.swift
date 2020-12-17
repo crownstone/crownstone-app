@@ -1069,7 +1069,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func factoryResetHubOnly(_ callback: @escaping RCTResponseSenderBlock) {
     wrapHubMethodForBluenet(
-      "factoryResetHub",
+      "factoryResetHubOnly",
       callback,
       GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetHubOnlyPacket())
     )
