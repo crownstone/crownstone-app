@@ -2676,6 +2676,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun transferHubTokenAndCloudId(hubToken: String, cloudId: String, callback: Callback) {
+		Log.i(TAG, "transferHubTokenAndCloudId hubToken=$hubToken cloudId=$cloudId")
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.setup(hubToken, cloudId)
 				.success { resolveCallback(callback, getHubDataReply(it)) }
@@ -2685,6 +2686,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun requestCloudId(callback: Callback) {
+		Log.i(TAG, "requestCloudId")
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.requestData(DataType.CLOUD_ID)
 				.success { resolveCallback(callback, getHubDataReply(it)) }
@@ -2694,6 +2696,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun factoryResetHub(callback: Callback) {
+		Log.i(TAG, "factoryResetHub")
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.factoryReset()
 				.success { resolveCallback(callback, getHubDataReply(it)) }
@@ -2703,6 +2706,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun factoryResetHubOnly(callback: Callback) {
+		Log.i(TAG, "factoryResetHubOnly")
 		val hubDataHandler = HubData(bluenet)
 		hubDataHandler.factoryResetHubOnly()
 				.success { resolveCallback(callback, getHubDataReply(it)) }

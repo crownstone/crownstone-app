@@ -29,6 +29,7 @@ class HubDataRequestPacket(type: HubDataRequestType, payload: PacketInterface?):
 		SETUP(0U),
 		COMMAND(1U),
 		FACTORY_RESET(2U),
+		FACTORY_RESET_HUB_ONLY(3U),
 		REQUEST_DATA(10U),
 		UNKNOWN(0xFFFFU);
 		companion object {

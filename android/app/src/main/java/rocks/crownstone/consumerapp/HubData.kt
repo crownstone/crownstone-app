@@ -10,6 +10,7 @@ import rocks.crownstone.bluenet.packets.HubDataPacket
 import rocks.crownstone.bluenet.structs.Errors
 import rocks.crownstone.bluenet.structs.Uint32
 import rocks.crownstone.bluenet.util.Conversion
+import rocks.crownstone.bluenet.util.Log
 import rocks.crownstone.bluenet.util.toUint32
 import rocks.crownstone.consumerapp.hubdata.DataType
 import rocks.crownstone.consumerapp.hubdata.HubDataReplyPacket
@@ -18,6 +19,7 @@ import rocks.crownstone.consumerapp.hubdata.request.RequestDataPacket
 import rocks.crownstone.consumerapp.hubdata.request.SetupPacket
 
 class HubData(bluenet: Bluenet) {
+	private val TAG = this.javaClass.simpleName
 	private val bluenet = bluenet
 
 	fun setup(hubToken: String, cloudId: String): Promise<HubDataReplyPacket, Exception> {
@@ -46,7 +48,7 @@ class HubData(bluenet: Bluenet) {
 	fun factoryResetHubOnly(): Promise<HubDataReplyPacket, Exception> {
 		val value: Uint32 = 0xDEADBEA7U
 		val packet = ByteArrayPacket(Conversion.toByteArray(value))
-		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET, packet)
+		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.FACTORY_RESET_HUB_ONLY, packet)
 		return sendHubDataCommand(reqPacket)
 	}
 
@@ -65,6 +67,7 @@ class HubData(bluenet: Bluenet) {
 						deferred.reject(Errors.Parse("Can't make a hub data reply packet from ${Conversion.bytesToString(array)}"))
 						return@success
 					}
+					Log.i(TAG, "Hub reply: $replyPacket")
 					deferred.resolve(replyPacket)
 				}
 				.fail {
