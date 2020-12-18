@@ -206,7 +206,7 @@ export default {
     Hold_your_phone_near_the_:              function() { return "Houd je telefoon dichtbij de lamp met de Crownstone.\n\nZorg dat de stroom weer aan staat en drop op volgende."; },
     Guidestone:                             function() { return "Guidestone"; },
     Crownstone_USB:                         function() { return "Crownstone USB"; },
-    Hub:                                    function() { return "Hub"; },
+    Hub:                                    function() { return "Hub (beta)"; },
     A_Plug_it_is_:                          function() { return "Het wordt een Plug!"; },
     Lets_add_a_Built_in_One_:               function() { return "Built-in One toevoegen!"; },
     Lets_add_a_Built_in_Zero_:              function() { return "Built-in Zero toevoegen!"; },

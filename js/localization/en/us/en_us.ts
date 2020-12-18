@@ -100,7 +100,7 @@ export default {
     Hold_your_phone_close_to_:              function() { return "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!" },
     Hold_your_phone_near_the_:              function() { return "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!" },
     Guidestone:                             function() { return "Guidestone" },
-    Hub:                                    function() { return "Hub" },
+    Hub:                                    function() { return "Hub (beta)" },
     Crownstone_USB:                         function() { return "Crownstone USB" },
     A_Plug_it_is_:                          function() { return "A Plug it is!" },
     Lets_add_a_Built_in_One_:               function() { return "Let's add a Built-in One!" },

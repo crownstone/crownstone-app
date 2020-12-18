@@ -285,7 +285,7 @@ lang("_Something_went_wrong_____P_body"),
 
 
     // if encryption is not enforced by both parties and the connection is not alive...
-    if (hubState.uartAlive === false && (hubState.uartEncryptionRequiredByHub === false || hubState.uartEncryptionRequiredByCrownstone === false) && this.props.stoneId) {
+    if (hubState.uartAlive === false && this.props.stoneId) {
       return (
         <View key={"HubUartFailed"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{ lang("The_hub_is_not_responding") }</Text>
@@ -351,6 +351,8 @@ lang("_Something_went_wrong_____P_body"),
               try {
                 await helper.factoryResetHubOnly(this.props.sphereId, this.props.stoneId);
                 await helper.setup(this.props.sphereId, this.props.stoneId);
+                await this.fixMultipleHubs();
+                await Scheduler.delay(3000);
               }
               catch(e) {
                 LOGw.info("Failed to reset hub", e)
