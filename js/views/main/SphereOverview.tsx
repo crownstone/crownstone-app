@@ -254,7 +254,6 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
-
       background = core.background.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {

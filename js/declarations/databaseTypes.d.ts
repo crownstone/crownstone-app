@@ -26,3 +26,11 @@ interface SceneData {
   data:          { [key: number] : number }, // stoneUID: switchState
   updatedAt:     number
 };
+
+interface EncryptionKeyData {
+  id: string,
+  key: string,
+  keyType: string,
+  createdAt: number,
+  ttl: number
+}

@@ -190,17 +190,18 @@ export class SettingsProfile extends LiveComponent<any, any> {
     core.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
-        core.eventBus.emit('showLoading', 'Email sent!');
-        setTimeout(() => {core.eventBus.emit('hideLoading');},200)
         let defaultAction = () => {
           AppUtil.logOut(core.store);
         };
-        Alert.alert(
+        core.eventBus.emit('showLoading', 'Email sent!');
+        setTimeout(() => {core.eventBus.emit('hideLoading');},200)
+        setTimeout(() => {Alert.alert(
           lang("_Reset_email_has_been_sen_header"),
           lang("_Reset_email_has_been_sen_body"),
           [{text: lang("_Reset_email_has_been_sen_left"), onPress: defaultAction}],
-                    { onDismiss: defaultAction }
-        )
+          { onDismiss: defaultAction }
+        );},800)
+
       })
       .catch((reply) => {
         core.eventBus.emit('hideLoading');

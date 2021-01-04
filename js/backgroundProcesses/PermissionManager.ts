@@ -1,12 +1,13 @@
 import { LOG, LOGd } from "../logging/Log";
 import {PermissionBase, PermissionClass} from "./Permissions";
 import { core } from "../core";
+import { DataUtil } from "../util/DataUtil";
 
 export class PermissionManagerClass {
   _initialized : boolean = false;
   _activeSphereId : string;
 
-  permissionClasses = {};
+  permissionClasses : {[sphereId: string] : PermissionClass } = {};
 
   init() {
     if (this._initialized === false) {
@@ -32,7 +33,13 @@ export class PermissionManagerClass {
   }
 
 
-
+  getLevels(state) {
+    let result = {};
+    for (let sphereId in this.permissionClasses) {
+      result[sphereId] = DataUtil.getUserLevelInSphere(state, sphereId);
+    }
+    return result;
+  }
 
   /**
    * This method will only create permission classes for each available Sphere and set the active Sphere

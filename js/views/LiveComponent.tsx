@@ -13,8 +13,20 @@ export class LiveComponent<a, b> extends Component<a, b> {
   ___navListener = null;
   ___eventListeners = [];
 
+
   constructor(props) {
     super(props);
+
+    let removeNavBarRedrawListener = core.eventBus.on("permissionsHaveBeenUpdated", () => {
+
+      // @ts-ignore
+      if (this._updateNavBar && typeof this._updateNavBar === 'function') {
+        // @ts-ignore
+        this._updateNavBar();
+      }
+
+      super.forceUpdate();
+    })
 
     let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
       Navigation.mergeOptions(props.componentId,{passProps:{}})
@@ -25,7 +37,8 @@ export class LiveComponent<a, b> extends Component<a, b> {
     // let renderer = this.render;
     this.componentWillUnmount = () => {
       this.___cleanup();
-      removeRefreshListener()
+      removeRefreshListener();
+      removeNavBarRedrawListener();
       if (unmounter) {
         unmounter.call(this)
       }

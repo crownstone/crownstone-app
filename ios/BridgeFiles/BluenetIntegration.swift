@@ -112,6 +112,13 @@ open class BluenetJS: RCTEventEmitter {
         self.sendEvent(withName: "setupProgress", body: castData)
       }
     })
+    
+    
+    GLOBAL_BLUENET.bluenetOn("LOCALIZATION_PAUSED_STATE", {data -> Void in
+      if let castData = data as? NSNumber {
+        self.sendEvent(withName: "localizationPausedState", body: castData)
+      }
+    })
 
     // forward the navigation event stream to react native
     GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in

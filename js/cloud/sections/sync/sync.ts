@@ -16,6 +16,8 @@ import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { core } from "../../../core";
 import { CloudPoller } from "../../../logic/CloudPoller";
 import { syncNext } from "../newSync/SyncNext";
+import { Permissions } from "../../../backgroundProcesses/PermissionManager";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 
@@ -68,6 +70,8 @@ export const sync = {
     let reloadOfTrackingRequired = false;
     let globalCloudIdMap = getGlobalIdMap();
     let globalSphereMap = {};
+
+    let initialPermissionLevels = Permissions.getLevels(state)
 
     let actions = [];
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
@@ -165,6 +169,13 @@ export const sync = {
         LOG.info("Sync after: START Executing cloud poll.");
         CloudPoller.poll(true);
         LOG.info("Sync after: DONE Executing cloud poll.");
+
+        // update permissions
+        let syncedState = core.store.getState();
+        let syncedPermissionLevels = Permissions.getLevels(syncedState)
+        if (xUtil.deepCompare(initialPermissionLevels, syncedPermissionLevels) === false) {
+          core.eventBus.emit("permissionsHaveBeenUpdated");
+        }
 
         return reloadTrackingRequired;
       })

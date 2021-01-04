@@ -214,15 +214,17 @@ export class DeviceEntry extends Component<{
     NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
-  _getExplanationText(state, useSwitchView) {
+  _getExplanationText(state, useSwitchView, stone) {
     let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
     let explanation = null;
+
+    let updateAvailable = stone.config.firmwareVersion && (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
 
     if (this.props.hideExplanation !== true) {
       if (state.app.hasSeenDeviceSettings === false) {
         explanation = <Text style={explanationStyle}>{  lang("Tap_me_for_more_") }</Text>;
       }
-      else if (state.app.hasSeenSwitchView !== true && this.props.amountOfDimmableCrownstonesInLocation > 1) {
+      else if (state.app.hasSeenSwitchView !== true && this.props.amountOfDimmableCrownstonesInLocation > 1 && stone.errors.hasError !== true && !updateAvailable) {
         explanation = <Text style={explanationStyle}>{ lang("Tap_icon_to_quickly_dim_y") }</Text>;
       }
     }
@@ -288,7 +290,7 @@ export class DeviceEntry extends Component<{
     let switchViewExplanation = !switchViewActive && this.props.switchView;
     let height = this.props.height || 80;
     let sliderWidth = screenWidth - 20 - 60 - 30;
-    let explanationText = this._getExplanationText(state, switchViewActive);
+    let explanationText = this._getExplanationText(state, switchViewActive, stone);
 
 
     return (

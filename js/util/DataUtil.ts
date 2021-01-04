@@ -456,17 +456,23 @@ export const DataUtil = {
       return null;
     }
     let userId = state.user.userId;
-    if (!(
-      state.spheres &&
-      state.spheres[sphereId] &&
-      state.spheres[sphereId].users &&
-      state.spheres[sphereId].users[userId])) {
-      return null;
+    let sphere = Get.sphere(sphereId);
+    let keys : {[keyId: string]: EncryptionKeyData} = sphere.keys;
+
+    let level = null;
+    for (let [id, keyData] of Object.entries(keys)) {
+      if (keyData.keyType === KEY_TYPES.ADMIN_KEY) {
+        return 'admin'
+      }
+      else if (keyData.keyType === KEY_TYPES.MEMBER_KEY) {
+        level = 'member';
+      }
+      else if (keyData.keyType === KEY_TYPES.BASIC_KEY && !level) {
+        level = 'guest'
+      }
     }
 
-    if (state.spheres[sphereId].users[userId]) {
-      return state.spheres[sphereId].users[userId].accessLevel;
-    }
+    return level;
   },
 
 

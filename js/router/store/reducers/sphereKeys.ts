@@ -1,6 +1,6 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
-let dataState = {
+let dataState : EncryptionKeyData = {
   id: undefined,
   key: null,
   keyType: null,

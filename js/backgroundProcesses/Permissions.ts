@@ -84,7 +84,7 @@ export class PermissionClass extends PermissionBase {
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
-        if (change.setKeys) {
+        if (change.updatedSphereKeys) {
           LOG.info("Permissions: Update permissions in " + this._sphereId + " due to keySet");
           this._update(core.store.getState());
         }
@@ -195,6 +195,7 @@ export class PermissionClass extends PermissionBase {
         this.canChangeBehaviours     = true // a or m
         this.canChangeScenes         = true // a or m
 
+      case 'basic':
       case 'guest':
         // nothing will be added.
     }

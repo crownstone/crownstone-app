@@ -58,6 +58,7 @@ class EventEmitter {
     allEventNames.append("classifierResult")
     allEventNames.append("classifierProbabilities")
     allEventNames.append("callbackUrlInvoked")
+    allEventNames.append("localizationPausedState")
     
     return allEventNames
   }()

@@ -290,6 +290,7 @@ function checkAction(action, affectedIds) {
     case "ADD_SPHERE_KEY":
     case "UPDATE_SPHERE_KEY":
     case "REMOVE_SPHERE_KEY":
+      eventStatus['updatedSphereKeys'] = affectedIds; break;
       break;
     case "ADD_STONE_RULE":
     case "UPDATE_STONE_RULE":
