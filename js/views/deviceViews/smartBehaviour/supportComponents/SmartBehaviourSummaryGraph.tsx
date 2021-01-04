@@ -59,7 +59,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
         <View style={{flex:1}} />
         <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:90}} onPress={() => { core.eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
           <View style={{width:screenWidth*0.8, height:90}}>
-            <DayNightIndicator id={this.id} />
+            <DayNightIndicator id={this.id} sphereId={this.props.sphereId} />
             <View style={{position:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
               <SmartBehaviourSummaryGraphElement dataColor={colors.green}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
               <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
@@ -347,12 +347,11 @@ class DayNightIndicator extends Component<any, any> {
     let width = 0.8 * screenWidth - 25;
 
     let sunTimes = Util.getSunTimes(this.props.sphereId);
-
     let sunriseTime = sunTimes.sunrise;
     let sunsetTime  = sunTimes.sunset;
 
     let sunriseTimeStr = AicoreUtil.getClockTimeStr(new Date(sunriseTime).getHours(), new Date(sunriseTime).getMinutes());
-    let sunsetTimeStr = AicoreUtil.getClockTimeStr(new Date(sunsetTime).getHours(), new Date(sunsetTime).getMinutes());
+    let sunsetTimeStr  = AicoreUtil.getClockTimeStr(new Date(sunsetTime).getHours(),  new Date(sunsetTime).getMinutes());
 
     let dawnLeft = width*(getMinutes(sunriseTimeStr)/(24*60));
     let duskLeft = width*(getMinutes(sunsetTimeStr) /(24*60));

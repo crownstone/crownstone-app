@@ -2,6 +2,7 @@ import { Scheduler } from "../logic/Scheduler";
 import { FileUtil } from "../util/FileUtil";
 import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 import { getLoggingFilename } from "../logging/LogUtil";
+import { NativeBus } from "../native/libInterface/NativeBus";
 
 const RNFS = require('react-native-fs');
 
@@ -15,13 +16,20 @@ class UptimeMonitorClass {
     if (this._initialized === false) {
       Scheduler.setRepeatingTrigger(UPTIME_TRIGGER_ID, {repeatEveryNSeconds:60}, true);
       Scheduler.loadCallback(UPTIME_TRIGGER_ID, () => {this.storeUptime()}, true);
+
+      NativeBus.on(NativeBus.topics.localizationPausedState, (state) => {
+        cleanLogs();
+        let str = Date.now() + `:localizationPausedState:${state}\n`;
+        writeToUpTime(str);
+      })
     }
     this._initialized = true;
   }
 
   storeUptime() {
+    let str = Date.now() + "\n";
     cleanLogs();
-    writeUpTime();
+    writeToUpTime(str);
   }
 
   clear() {
@@ -73,7 +81,7 @@ function clearLogs() {
 
 
 
-function writeUpTime() {
+function writeToUpTime(str) {
   // create a path you want to write to
   let logPath = FileUtil.getPath();
 
@@ -82,8 +90,6 @@ function writeUpTime() {
   let filePath = logPath + '/' + filename;
 
   // create string
-  let str = Date.now() + "\n";
-
   // write the file
   RNFS.appendFile(filePath, str, 'utf8').catch((err) => {})
 }

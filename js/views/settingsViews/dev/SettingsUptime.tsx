@@ -66,7 +66,15 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
               openedFiles.push(filesToOpen[i])
               let split = data.split("\n");
               split.pop()
-              for (let i = 0; i < split.length; i++) { this.timeArray.push(Number(split[i])); }
+              for (let i = 0; i < split.length; i++) {
+                let line = split[i];
+                if (line.length > 20) {
+                  this.timeArray.push(line);
+                }
+                else {
+                  this.timeArray.push(Number(line));
+                }
+              }
               checkToOpen();
             })
             .catch((err) => { openedFiles.push(filesToOpen[i]); checkToOpen();})
@@ -80,7 +88,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
     let gaps = [];
     if (this.timeArray.length > 0) {
       this.timeArray.sort();
-      const getString = function(timestamp) {
+      const getString = function(timestamp : string) {
         let time = new Date(timestamp);
         let month = time.getMonth() + 1
         let day = time.getDate()
@@ -90,9 +98,27 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         return month + "/" + xUtil.pad(day) + " " + xUtil.pad(hour) + ":" + xUtil.pad(minutes);
       }
 
-      let timeStart = this.timeArray[0];
-      let stringPart = getString(this.timeArray[0]);
-      for (let i = 1; i < this.timeArray.length; i++) {
+      let startIndex = 0;
+      for (let i = 0; i < this.timeArray.length; i++) {
+        if (this.timeArray[i].length < 20) {
+          startIndex = i;
+          break;
+        }
+      }
+
+
+      let timeStart = this.timeArray[startIndex];
+      let stringPart = getString(this.timeArray[startIndex]);
+      for (let i = startIndex+1; i < this.timeArray.length; i++) {
+
+        if (this.timeArray[i].length > 20) {
+          let strArray = this.timeArray[i].split(":");
+          if (strArray[1] === "localizationPausedState") {
+            gaps.push(strArray[2] == '1' ? "LOCALIZATION_PAUSED" : "LOCALIZATION_RESUMED");
+          }
+          continue;
+        }
+
         let dt = this.timeArray[i] - this.timeArray[i - 1];
         if (dt > 2 * 60 * 1000) {
           stringPart += " --- " + getString((this.timeArray[i - 1])) + " (" + xUtil.getDurationFormat(this.timeArray[i-1] - timeStart) + ")";

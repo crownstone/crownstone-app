@@ -109,6 +109,7 @@ interface NativeBusTopics {
   classifierResult:                string,
 
   callbackUrlInvoked:              string,
+  localizationPausedState:         string,
 }
 
 interface NativeBus {
