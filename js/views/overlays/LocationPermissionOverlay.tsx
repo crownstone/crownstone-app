@@ -107,6 +107,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getButton() {
     switch (this.state.notificationType) {
       case "foreground":
+        return <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("ManualPermissionRequired") }</Text>
       case "off":
       case "noPermission":
         return (
