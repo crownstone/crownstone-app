@@ -457,6 +457,9 @@ export const DataUtil = {
     }
     let userId = state.user.userId;
     let sphere = Get.sphere(sphereId);
+    if (!sphere) {
+      return null;
+    }
     let keys : {[keyId: string]: EncryptionKeyData} = sphere.keys;
 
     let level = null;
