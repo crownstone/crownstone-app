@@ -286,7 +286,7 @@ export class Register extends LiveComponent<any, any> {
                 return false;
               }
 
-              this.user.email = result.customElementState.email || this.user.email;
+              this.user.email    = result.customElementState.email    || this.user.email;
               this.user.password = result.customElementState.password || this.user.password;
 
               this.focussingIndex = null;

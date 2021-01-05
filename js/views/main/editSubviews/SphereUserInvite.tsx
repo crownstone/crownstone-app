@@ -51,7 +51,9 @@ export class SphereUserInvite extends LiveComponent<any, any> {
       keyboardType: 'email-address',
       value: this.state.email,
       placeholder: lang("Send_email_to___"),
-      validationCallback: (newState) => {this.inputStates.email = newState},
+      validationCallback: (newState) => {
+        this.inputStates.email = newState;
+      },
       alwaysShowState: false,
       callback: (newValue) => { this.setState({email:newValue}); }
     });
@@ -106,7 +108,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
         [{text:lang("_Please_provide_an_email__left")}]);
       return;
     }
-    else if (!this.inputStates.email) {
+    else if (this.inputStates.email !== "valid") {
       Alert.alert(
         lang("_Please_provide_a_valid_e_header"),
         lang("_Please_provide_a_valid_e_body"),
@@ -157,7 +159,6 @@ export class SphereUserInvite extends LiveComponent<any, any> {
   }
 
   render() {
-
     return (
       <Background hasNavBar={false} image={core.background.menu} >
         <ScrollView>
