@@ -42,6 +42,12 @@ export class PictureCircle extends Component<any, any> {
         privateDirectory:true,
         skipBackup: true,
       },
+      permissionDenied: {
+        title: lang("Permission_denied"),
+        text: lang("I_need_permission_to_use_"),
+        reTryTitle: lang("Retry"),
+        okTitle: lang("I_understand"),
+      },
       allowsEditing: true,
       quality: 0.99
     };
@@ -51,9 +57,14 @@ export class PictureCircle extends Component<any, any> {
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
+      }
+      else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      } else {
+        if (response.error === 'Camera permissions not granted') {
+          Alert.alert(lang("Permission_denied"), lang("I_need_permission_to_use_"),[{text:lang("OK")}])
+        }
+      }
+      else {
         this.props.callback(response.uri)
       }
     });

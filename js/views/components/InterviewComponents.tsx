@@ -1,9 +1,9 @@
-import { Text, TextStyle, TouchableOpacity, ViewStyle,View } from "react-native";
+import { Text, TextStyle, TouchableOpacity, ViewStyle, View, Platform } from "react-native";
 import { ScaledImage } from "./ScaledImage";
 import { Icon } from "./Icon";
 import { colors, screenWidth } from "../styles";
 import { FadeIn} from "./animated/FadeInView";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
 import { xUtil } from "../../util/StandAloneUtil";
 import ResponsiveText from "./ResponsiveText";
@@ -238,6 +238,38 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
     return TextButtonWithIcon({label, callback, icon, selected, backgroundColor: colors.white.rgba(0.9), textColor: colors.csBlue.hex, textAlign})
   }
 }
+
+export function InterviewPasswordInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?}) {
+  const inputElement = useRef(null)
+  let [passwordSecureDisplay, setPasswordSecureDisplay] = useState(true);
+  if (props.focussed === true) {
+    inputElement.current.focus()
+  }
+  return (
+    <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
+      <TextEditInput
+        autoCapitalize={"none"}
+        secureTextEntry={Platform.OS === 'android' ? true : passwordSecureDisplay  }
+        visiblePassword={Platform.OS === 'android' ? !passwordSecureDisplay : false }
+        ref={inputElement}
+        focussed={props.focussed}
+        autoFocus={props.autofocus === undefined ? false : props.autofocus}
+        style={{width: 0.8*screenWidth, padding:10}}
+        placeholder={props.placeholder}
+        placeholderTextColor='#888'
+        autoCorrect={false}
+        keyboardType={props.keyboardType || "default"}
+        value={props.value}
+        callback={(newValue) => { props.callback(newValue) }}
+        endCallback={() => { if (props.onBlur) { props.onBlur() }}}
+      />
+      <TouchableOpacity style={{position:'absolute', top:0, right: 0, height:60, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { setPasswordSecureDisplay(!passwordSecureDisplay); }}>
+        <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
+      </TouchableOpacity>
+    </View>
+  )
+}
+
 
 export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?}) {
   const inputElement = useRef(null)

@@ -80,10 +80,16 @@ export class SphereHubOverview extends LiveComponent<any, any> {
       }
     }
 
+    if (hubItemsToShow.length == 0) {
+      items.push({label: lang("There_are_no_hubs_or_dong"),  type:'largeExplanation', below:false});
+      return items;
+    }
+
+    items.push({label: lang("HUBS___CROWNSTONE_USBs_IN"), type:'explanation', below:false});
 
     hubItemsToShow.forEach((hubItem) => {
       let location = Get.location(this.props.sphereId, hubItem?.data?.config?.locationId);
-      let locationString = location ? 'In ' + location.config.name : 'Not in room.'
+      let locationString = location ? lang("In_", location.config.name) : lang("Not_in_room_")
       switch (hubItem.type) {
         case "hub":
           items.push({
@@ -123,10 +129,7 @@ export class SphereHubOverview extends LiveComponent<any, any> {
           break;
       }
     })
-
-
     items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
-
 
     items.push({
       label: lang("Add_hub"),

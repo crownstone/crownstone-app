@@ -25,7 +25,7 @@ import { Interview } from "../components/Interview";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { PictureCircle } from "../components/PictureCircle";
-import { InterviewTextInput } from "../components/InterviewComponents";
+import { InterviewPasswordInput, InterviewTextInput } from "../components/InterviewComponents";
 import { FileUtil } from "../../util/FileUtil";
 import { Icon } from "../components/Icon";
 import { base_core } from "../../base_core";
@@ -222,7 +222,7 @@ export class Register extends LiveComponent<any, any> {
                   }
                 }}
               />
-              <InterviewTextInput
+              <InterviewPasswordInput
                 autofocus={false}
                 autoCapitalize={'none'}
                 placeholder={lang("Password")}

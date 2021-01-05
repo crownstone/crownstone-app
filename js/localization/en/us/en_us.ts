@@ -1249,6 +1249,11 @@ export default {
     Choose_from_Library___:                 function() { return "Choose from Library..." },
     Choose_which_Library___:                function() { return "Choose which Library..." },
     CANCEL:                                 function() { return "CANCEL" },
+    Permission_denied:                      function() { return "Permission denied" },
+    I_need_permission_to_use_:              function() { return "I need permission to use the camera. Please enable the permission and try again." },
+    Retry:                                  function() { return "Retry" },
+    I_understand:                           function() { return "I understand" },
+    OK:                                     function() { return "OK" },
   },
   PictureView:{
     __filename: "../js/views/cameraViews/PictureView.tsx",
@@ -2401,6 +2406,10 @@ export default {
     This_is_an_overview_of_al:              function() { return "This is an overview of all your Hubs and CrownstoneUSBs." },
     Add_hub:                                function() { return "Add hub" },
     Hubs_in_:                               function() { return "Hubs in " + arguments[0] },
+    There_are_no_hubs_or_dong:              function() { return "There are no hubs or dongles to show." },
+    HUBS___CROWNSTONE_USBs_IN:              function() { return "HUBS & CROWNSTONE USBs IN SPHERE" },
+    In_:                                    function() { return "In " + arguments[0] },
+    Not_in_room_:                           function() { return "Not in room." },
   },
   SphereIntegrations:{
     __filename: "../js/views/main/editSubviews/SphereIntegrations.tsx",
