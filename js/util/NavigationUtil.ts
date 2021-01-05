@@ -344,6 +344,11 @@ class NavStateManager {
       delete this.overlayId[componentId];
       delete this.overlayNames[name];
     }
+    else if (this.overlayIncomingNames.indexOf(componentId) !== -1) {
+      LOGi.nav("cancelling the opening of the overlay", componentId);
+      let index = this.overlayIncomingNames.indexOf(componentId);
+      this.overlayIncomingNames.splice(index,1);
+    }
   }
 
   isThisOverlayOpen(targetName) {

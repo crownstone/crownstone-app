@@ -49,6 +49,7 @@ class OverlayManagerClass {
     if (this._initializedStateOverlays === false) {
       // ble status popup
       core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
+        LOGi.info("OverlayManager: Received bleStatus status", status)
         switch (status) {
           case "poweredOff":
           case "unauthorized":
@@ -59,6 +60,7 @@ class OverlayManagerClass {
         }
       });
       core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {
+        LOGi.info("OverlayManager: Received bleBroadcastStatus status", status)
         switch (status) {
           case "restricted":
           case "denied":
