@@ -131,6 +131,10 @@ interface core {
     lightBlurBW            : any,
     detailsDark            : any,
   },
+  state: {
+    bleAvailable: boolean,
+    bleBroadcastAvailable: boolean,
+  },
   store: any,
   eventBus: any,
   nativeBus: NativeBus,

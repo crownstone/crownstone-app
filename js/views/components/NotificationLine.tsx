@@ -84,7 +84,6 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
     if (this.props.hideOrangeLine === true) {
       showOrangeLine = false;
     }
-
     return (
       <View>
         { notifications }

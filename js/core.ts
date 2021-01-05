@@ -17,6 +17,10 @@ export const core : core = {
   },
   eventBus: eventBus,
   nativeBus: NativeBus,
+  state: {
+    bleAvailable: true,
+    bleBroadcastAvailable: true,
+  },
   store: { getState: () => { return {}; } },
 };
 

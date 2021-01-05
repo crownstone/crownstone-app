@@ -20,13 +20,17 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
+import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
+import { Util } from "../../../util/Util";
 
 export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   const [editMode, setEditMode] = useState(stateEditMode);
   // const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
+  const [available, setAvailable] = useState(core.state.bleAvailable && core.state.bleBroadcastAvailable);
 
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
+  useEffect(() => { return Util.bleWatcherEffect(setAvailable); });
   // useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
   let color = colors.white.hex;
@@ -50,6 +54,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
         activeOpacity={editMode ? 0.7 : 0.3}
         style={{flexDirection:'row', height: SceneConstants.sceneHeight, flex:1, alignItems:'center'}}
         onPress={() => {
+          if (!available) { return }
           if (editMode === false) {
             let switchData = scene.data;
             executeScene(switchData, sphereId, sceneId);
@@ -97,11 +102,17 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
           />
           <SlideSideFadeInView visible={!editMode} width={SceneConstants.buttonWidth} style={{height: SceneConstants.sceneHeight}}  duration={300}>
             <View style={{width: SceneConstants.buttonWidth, height:SceneConstants.sceneHeight, ...styles.centered, paddingLeft:20}}>
-              { activated ? <ActivityIndicator size={"large"} /> : <IconCircle
+              {available ? (activated ? <ActivityIndicator size={"large"} /> : <IconCircle
                 icon={'ios-play'}
                 borderColor={colors.white.hex}
                 color={colors.white.hex}
                 backgroundColor={colors.green.rgba(0.7)}
+                size={SceneConstants.playWidth}
+              />) : <IconCircle
+                icon={'ios-bluetooth'}
+                borderColor={colors.white.hex}
+                color={colors.white.hex}
+                backgroundColor={colors.csOrange.rgba(0.7)}
                 size={SceneConstants.playWidth}
               />}
             </View>

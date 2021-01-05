@@ -53,9 +53,11 @@ class OverlayManagerClass {
         switch (status) {
           case "poweredOff":
           case "unauthorized":
+            core.state.bleAvailable = false;
             NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "SCANNER" });
             break;
           default:
+            core.state.bleAvailable = true;
             OnScreenNotifications.removeAllNotificationsFrom("BleStateOverlay");
         }
       });
@@ -64,8 +66,11 @@ class OverlayManagerClass {
         switch (status) {
           case "restricted":
           case "denied":
+            core.state.bleBroadcastAvailable = false;
             NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "BROADCASTER" });
             break;
+          default:
+            core.state.bleBroadcastAvailable = true;
         }
       });
 

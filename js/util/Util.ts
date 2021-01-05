@@ -121,6 +121,30 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  bleWatcherEffect(setState) {
+    let bleStatusCleaner = core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
+      switch (status) {
+        case "poweredOn":
+          setState(true);
+          break;
+        default:
+          setState(false);
+          break;
+      }
+    });
+    let bleCastStatusCleaner = core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {
+      switch (status) {
+        case "authorized":
+          setState(true);
+          break;
+        default:
+          setState(false);
+          break;
+      }
+    });
+    return () => { bleCastStatusCleaner(); bleStatusCleaner(); }
+  },
+
   narrowScreen: function() {
     return screenWidth < 340;
   },
