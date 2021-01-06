@@ -45,6 +45,11 @@ class BroadcastCommandManagerClass {
 
     // double check here, this api should be able to be used
     if (this.canBroadcast(commandSummary)) {
+      let throttling = this.handleThrottling(commandSummary);
+      if (throttling !== false) {
+        return throttling;
+      }
+
       switch (commandSummary.command.commandName) {
         case "multiSwitch":
           return this._broadCastMultiSwitch(commandSummary);
@@ -128,11 +133,6 @@ class BroadcastCommandManagerClass {
   }
 
   _broadCastMultiSwitch(commandSummary) : Promise<bchReturnType> {
-    let throttling = this.handleThrottling(commandSummary);
-    if (throttling !== false) {
-      return throttling;
-    }
-
     let {itemId, autoExecute} = this._handleAutoExecute(commandSummary);
 
     LOGi.broadcast("Switching via broadcast");
