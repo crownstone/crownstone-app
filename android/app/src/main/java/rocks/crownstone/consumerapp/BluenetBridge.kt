@@ -3245,27 +3245,24 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onRegionEnter(eventData: IbeaconRegionEventData) {
 		val uuid = eventData.changedRegion
-		for (region in eventData.list) {
-			if (region.key == uuid) {
-				val referenceId = region.value
-				lastSphereId = referenceId
-				Log.i(TAG, "enterSphere uuid=$uuid refId=$referenceId")
-				sendEvent("enterSphere", referenceId)
-			}
-		}
+		val referenceId = eventData.changedRegionReferenceId
+		lastSphereId = referenceId
+		Log.i(TAG, "enterSphere uuid=$uuid refId=$referenceId")
+		sendEvent("enterSphere", referenceId)
 	}
 
 	@Synchronized
 	private fun onRegionExit(eventData: IbeaconRegionEventData) {
 		val uuid = eventData.changedRegion
-		for (region in eventData.list) {
-			if (region.key == uuid) {
-				val referenceId = region.value
-				lastSphereId = ""
-				Log.i(TAG, "exitSphere uuid=$uuid refId=$referenceId")
-				sendEvent("exitSphere", referenceId)
-			}
+		val referenceId = eventData.changedRegionReferenceId
+		// TODO: this should be in the localization library
+		if (referenceId == lastSphereId) {
+			onLocationUpdate(referenceId, null)
 		}
+
+		lastSphereId = ""
+		Log.i(TAG, "exitSphere uuid=$uuid refId=$referenceId")
+		sendEvent("exitSphere", referenceId)
 	}
 
 	@Synchronized
