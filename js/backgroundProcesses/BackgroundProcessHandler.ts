@@ -305,9 +305,6 @@ class BackgroundProcessHandlerClass {
     if (appState === "active" && this.userLoggedInReady) {
       BatterySavingUtil.startNormalUsage();
 
-      // clear all mesh network ids in all spheres on opening the app.
-      MeshUtil.clearMeshNetworkIds(core.store);
-
       // remove any badges from the app icon on the phone.
       this._clearBadge();
 

@@ -40,23 +40,43 @@ class NotificationParserClass {
   }
 
   _handleRemoteNotifications(notificationData) {
-    let state = core.store.getState();
-    let notificationTimestamp = notificationData?.sequenceTime?.timestamp || null;
-    if (notificationTimestamp) {
-      if (Date.now() - notificationTimestamp > 30000) {
-        LOGw.info("This notification is more than 30 seconds old. Ignoring it.", notificationData, Date.now() - notificationTimestamp);
-        return;
+    // check if we should handle this notification.
+    let sequenceTime = notificationData?.sequenceTime;
+    if (sequenceTime) {
+      if (typeof sequenceTime === 'string') {
+        try {
+          sequenceTime = JSON.parse(sequenceTime);
+        }
+        catch (e) {
+          LOGw.info("Invalid sequence time data", sequenceTime, e);
+          return;
+        }
       }
 
-      let cloudTimeBetweenNotifications = notificationTimestamp - this.timekeeper[notificationData.command];
-      if (cloudTimeBetweenNotifications < -500) {
-        LOGw.info("Notifications received out of order. Difference is more than 500ms. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
-        return;
-      }
+      let notificationTimestamp = notificationData?.sequenceTime?.timestamp || null;
+      let notificationIndex     = notificationData?.sequenceTime?.counter   || null;
+      if (notificationTimestamp && notificationIndex !== null) {
+        if (Date.now() - notificationTimestamp > 30000) {
+          LOGw.info("This notification is more than 30 seconds old. Ignoring it.", notificationData, Date.now() - notificationTimestamp);
+          return;
+        }
 
-      this.timekeeper[notificationData.command] = notificationTimestamp;
+        let cloudTimeBetweenNotifications = notificationTimestamp - this.timekeeper[notificationData.command].timestamp;
+        if (cloudTimeBetweenNotifications < -500) {
+          LOGw.info("Notifications received out of order. Difference is more than 500ms. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
+          return;
+        }
+
+        if (this.timekeeper[notificationData.command].counter === notificationIndex) {
+          LOGw.info("Duplicate notifications received. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
+          return
+        }
+
+        this.timekeeper[notificationData.command] = sequenceTime;
+      }
     }
 
+    let state = core.store.getState();
     switch(notificationData.command) {
       case 'multiSwitch':
         this._handleMultiswitch(notificationData, state); break;

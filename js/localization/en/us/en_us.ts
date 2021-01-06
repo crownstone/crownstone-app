@@ -453,7 +453,7 @@ export default {
     __filename: "../../js/views/deviceViews/DevicePowerUsage.tsx",
     Power_Usage:                            function() { return "Power Usage" },
     Real_time_power_usage:                  function() { return "Real time power usage of this Crownstone!" },
-    Stand_near_the_Crownstone:              function() { return "Stand near the Crownstone to see the measurements flowing in! It will only measure if the app is in the foreground and you have this screen in front of you. "},
+    Stand_near_the_Crownstone:              function() { return "Stand near the Crownstone to see the measurements flowing in! It will only measure if the app is on the screen."},
     Power_usage_:                           function() { return "Power usage: " },
   },
   DeviceSmartBehaviour:{

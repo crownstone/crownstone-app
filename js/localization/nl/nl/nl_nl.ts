@@ -878,7 +878,7 @@ export default {
     },
     Power_Usage:                            function() { return "Energieverbruik"; },
     Real_time_power_usage:                  function() { return "Live energieverbruik van deze Crownstone!"; },
-    Stand_near_the_Crownstone:              function() { return "Ga in de buurt van de Crownstone staan om de metingen te zien binnenstromen! Er worden alleen metingen gedaan als dit scherm zichtbaar is. "; },
+    Stand_near_the_Crownstone:              function() { return "Ga in de buurt van de Crownstone staan om de metingen te zien binnenstromen! Er worden alleen metingen gedaan als de Crownstone app in de voorgrond draait. "; },
     Power_usage_:                           function() { return "Energieverbruik: "; },
     __filename: "../../js/views/deviceViews/DevicePowerUsage.tsx",
   },

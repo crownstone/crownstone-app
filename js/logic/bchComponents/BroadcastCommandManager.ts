@@ -8,6 +8,7 @@ import { Util } from "../../util/Util";
 import { conditionMap } from "../../native/advertisements/StoneEntity";
 import { Scheduler } from "../Scheduler";
 import { Bluenet } from "../../native/libInterface/Bluenet";
+import { BCH_ERROR_CODES } from "../../Enums";
 
 export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:               { message: "CANNOT_BROADCAST",     fatal: false},
@@ -195,12 +196,20 @@ class BroadcastCommandManagerClass {
   _checkforDuplicates(commandSummary : commandSummary) {
     for (let i = this.queue.length-1; i >= 0; i--) {
       // only most recent command of any type will be broadcast
-      if (this.queue[i].type === commandSummary.command.commandName && commandSummary.stoneId === this.queue[i].stoneId) {
-        LOGd.broadcast("Remove item from duplicate queue",i, this.queue[i].type)
-        // fail the pending item
-        this.queue[i].rejecter(BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE);
-        // remove from queue
-        this.queue.pop();
+      let existingType = this.queue[i].type;
+      let incomingType = commandSummary.command.commandName;
+      if (commandSummary.stoneId === this.queue[i].stoneId) {
+        let conflictingCommand = existingType === incomingType ||
+          existingType === 'multiSwitch' && incomingType === 'turnOn' ||
+          existingType === 'turnOn'      && incomingType === 'multiSwitch';
+
+        if (conflictingCommand) {
+          LOGd.broadcast("Remove item from duplicate queue",i, this.queue[i].type)
+          // fail the pending item
+          this.queue[i].rejecter(BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE);
+          // remove from queue
+          this.queue.pop();
+        }
       }
     }
   }

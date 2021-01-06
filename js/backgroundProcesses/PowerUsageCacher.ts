@@ -2,7 +2,7 @@ import { core } from "../core";
 import { NativeBus } from "../native/libInterface/NativeBus";
 
 
-const NUMBER_OF_DATA_ELEMENTS = 20;
+const NUMBER_OF_DATA_ELEMENTS = 60;
 
 class PowerUsageCacherClass {
 
@@ -44,8 +44,8 @@ class PowerUsageCacherClass {
 
     let now = Date.now();
 
-    if (this.data[adv.referenceId]               === undefined) { this.data[adv.referenceId] = {};               }
-    if (this.uniqueElements[adv.referenceId]     === undefined) { this.uniqueElements[adv.referenceId] = {};     }
+    if (this.data[adv.referenceId]           === undefined) { this.data[adv.referenceId] = {};               }
+    if (this.uniqueElements[adv.referenceId] === undefined) { this.uniqueElements[adv.referenceId] = {};     }
 
     // throttling
     if (adv.serviceData.uniqueElement === this.uniqueElements[adv.referenceId][adv.handle]) {
