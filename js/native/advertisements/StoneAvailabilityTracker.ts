@@ -515,7 +515,7 @@ class StoneAvailabilityTrackerClass {
       nearestStoneIds.forEach((stoneId) => {
         // first we immediately schedule the last few closest crownstones for handling by the BCH
         handleStoneId(stoneId);
-        amountSet+=1;
+        amountSet += 1;
       })
 
       // if any were set, execute.

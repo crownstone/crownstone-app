@@ -50,7 +50,6 @@ import { TrackingNumberManager } from "./TrackingNumberManager";
 import { ActiveSphereManager } from "./ActiveSphereManager";
 import { LocalizationMonitor } from "./LocalizationMonitor";
 import { Languages } from "../Languages";
-import { HeartbeatHandler } from "./HeartbeatHandler";
 import { OverlayManager } from "./OverlayManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -455,7 +454,6 @@ class BackgroundProcessHandlerClass {
     DfuStateHandler.init();
     EncryptionManager.init();
     FirmwareWatcher.init();
-    HeartbeatHandler.init();
     LogProcessor.init();
     LocationHandler.init();
     LocalizationMonitor.init();

@@ -259,5 +259,9 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "WRONG_PARAMETER"
     case .HUB_REPLY_TIMEOUT:
       return "HUB_REPLY_TIMEOUT"
+    case .ERR_NOT_FOUND:
+      return "ERR_NOT_FOUND"
+    case .ERR_NO_SPACE:
+      return "ERR_NO_SPACE"
   }
 }

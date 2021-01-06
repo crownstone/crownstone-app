@@ -6,12 +6,15 @@ import { LOGi } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
 import { TrackingNumberManager } from "./TrackingNumberManager";
 import { AppState } from "react-native";
+import { Scheduler } from "../logic/Scheduler";
 
 
 class BroadcastStateManagerClass {
   _initialized : boolean = false;
   _advertising : boolean = false;
   _sphereIdInLocationState : string = null;
+
+  updatePreferencesWhenActive = false;
 
   _listeners = [];
 
@@ -46,7 +49,12 @@ class BroadcastStateManagerClass {
           reloadActiveSphereUpdate = true;
         }
 
-        if (reloadDevicePreferences)  { this._reloadDevicePreferences();  }
+        if (reloadDevicePreferences)  {
+          if (AppState.currentState !== 'active') {
+            this.updatePreferencesWhenActive = true;
+          }
+          this._reloadDevicePreferences();
+        }
         if (reloadActiveSphereUpdate) { this._handleActiveSphereUpdate(); }
       }));
 
@@ -67,6 +75,16 @@ class BroadcastStateManagerClass {
         LOGi.info("BroadcastStateManager: processing enter room in sphere", data.region, " location", data.location);
         this._handleEnter(data.region, data.location);
         TrackingNumberManager.updateMyDeviceTrackingRegistration(data.region);
+      }));
+
+
+      this._listeners.push(core.eventBus.on('AppStateChange', (appState) => {
+        if (appState === 'active') {
+          if (this.updatePreferencesWhenActive) {
+            this.updatePreferencesWhenActive = false;
+            this._reloadDevicePreferences()
+          }
+        }
       }));
 
       Bluenet.initBroadcasting();
