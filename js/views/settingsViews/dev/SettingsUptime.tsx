@@ -14,7 +14,7 @@ import { BackgroundNoNotification } from "../../components/BackgroundNoNotificat
 
 const RNFS = require('react-native-fs');
 
-export class SettingsUptime extends LiveComponent<any, {content: string[], gaps: number[], updating: boolean}> {
+export class SettingsUptime extends LiveComponent<any, {content: string[], gaps: number[], fadedStyle: boolean[], updating: boolean}> {
   static options(props) {
     return TopBarUtil.getOptions({title: "Uptime", clear:true});
   }
@@ -25,7 +25,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
 
     this.extractUptime();
     this.timeArray = [];
-    this.state = { content:[], gaps:[], updating:false }
+    this.state = { content:[], gaps:[], fadedStyle:[], updating:false }
   }
 
   navigationButtonPressed({buttonId}) {
@@ -86,6 +86,8 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
   _process() {
     let content = [];
     let gaps = [];
+    let fadedStyle = [];
+    let inSphere = true;
     if (this.timeArray.length > 0) {
       this.timeArray.sort();
       const getString = function(timestamp : string) {
@@ -116,6 +118,12 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
           if (strArray[1] === "localizationPausedState") {
             gaps.push(strArray[2] == '1' ? "LOCALIZATION_PAUSED" : "LOCALIZATION_RESUMED");
           }
+          else if (strArray[1] === 'enterSphere') {
+            inSphere = true;
+          }
+          else if (strArray[1] === 'exitSphere') {
+            inSphere = false;
+          }
           continue;
         }
 
@@ -124,6 +132,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
           stringPart += " --- " + getString((this.timeArray[i - 1])) + " (" + xUtil.getDurationFormat(this.timeArray[i-1] - timeStart) + ")";
           content.push(stringPart);
           gaps.push(dt);
+          fadedStyle.push(inSphere ? false : true);
           stringPart = getString(this.timeArray[i]);
           timeStart = this.timeArray[i];
         }
@@ -135,6 +144,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         stringPart += " --- " + getString((this.timeArray[this.timeArray.length - 1]));
         content.push(stringPart);
         gaps.push(dt);
+        fadedStyle.push(inSphere ? false : true);
       }
       else {
         stringPart += " --- now"  + " (" + xUtil.getDurationFormat(now - timeStart) + ")";
@@ -142,22 +152,22 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
       content.push(stringPart);
     }
 
-    this.setState({content:content, gaps: gaps, updating: false})
+    this.setState({content:content, gaps: gaps, fadedStyle: fadedStyle, updating: false})
   }
 
   _getContent() {
     let items = []
     let contentStyle : TextStyle = { fontSize: 15, width:screenWidth-60, height:30 }
     let gapStyle     : TextStyle = { fontSize: 15, width:screenWidth-60, height:30, textAlign:'right', fontWeight:'bold', color: colors.red.hex}
-
+    let fadedStyle   : TextStyle = { color: colors.gray.hex }
     if (this.state.content.length > 0) {
-      items.push(<Text key={'content' + 0} style={contentStyle}>{this.state.content[0]}</Text>)
+      items.push(<Text key={'content' + 0} style={this.state.fadedStyle[0] ? [contentStyle, fadedStyle] : contentStyle}>{this.state.content[0]}</Text>)
       if (this.state.content.length === 1) {
         return items;
       }
       for (let i = 1; i < this.state.content.length; i++) {
-        items.push(<Text key={'gap' + i} style={gapStyle}>{xUtil.getDurationFormat(this.state.gaps[i - 1])}</Text>)
-        items.push(<Text key={'content' + i} style={contentStyle}>{this.state.content[i]}</Text>)
+        items.push(<Text key={'gap' + i}     style={this.state.fadedStyle[i] ? [gapStyle, fadedStyle]     : gapStyle}>{xUtil.getDurationFormat(this.state.gaps[i - 1])}</Text>)
+        items.push(<Text key={'content' + i} style={this.state.fadedStyle[i] ? [contentStyle, fadedStyle] : contentStyle}>{this.state.content[i]}</Text>)
       }
 
       items.reverse();

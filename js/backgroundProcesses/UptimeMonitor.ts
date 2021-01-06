@@ -22,6 +22,17 @@ class UptimeMonitorClass {
         let str = Date.now() + `:localizationPausedState:${state}\n`;
         writeToUpTime(str);
       })
+
+      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+        cleanLogs();
+        let str = Date.now() + `:enterSphere:${sphereId}\n`;
+        writeToUpTime(str);
+      })
+      NativeBus.on(NativeBus.topics.exitSphere, (sphereId) => {
+        cleanLogs();
+        let str = Date.now() + `:exitSphere:${sphereId}\n`;
+        writeToUpTime(str);
+      })
     }
     this._initialized = true;
   }
