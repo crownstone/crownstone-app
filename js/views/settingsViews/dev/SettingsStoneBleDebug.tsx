@@ -152,6 +152,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
             let data = returnData.data;
 
+            data.overrideState = data.overrideState == '128' ? "None" : data.overrideState;
+
             data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
             data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
 
