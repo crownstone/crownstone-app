@@ -85,7 +85,7 @@ export class HubHelper {
           type: "ADD_HUB",
           sphereId,
           hubId: hubId,
-          data: { cloudId: hubData.id, linkedStoneId: stoneId }
+          data: { cloudId: hubData.id, linkedStoneId: stoneId, locationId: stone.config.locationId }
         })
         hubCloudId = hubData.id;
       }

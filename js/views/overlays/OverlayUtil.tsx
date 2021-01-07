@@ -9,6 +9,7 @@ import { RoomList } from "../components/RoomList";
 import * as React from "react";
 import { colors } from "../styles";
 import { DataUtil } from "../../util/DataUtil";
+import { Get } from "../../util/GetUtil";
 
 
 export const OverlayUtil = {
@@ -65,6 +66,10 @@ export const OverlayUtil = {
   callRoomSelectionOverlayForHubPlacement: function(sphereId, hubId) {
     OverlayUtil.callRoomSelectionOverlay(sphereId, (locationId) => {
       core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hubId, data: {locationId: locationId}});
+      let hub = Get.hub(sphereId, hubId);
+      if (hub && hub.config.linkedStoneId) {
+        core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: sphereId, stoneId: hub.config.linkedStoneId, data:{locationId: locationId}});
+      }
     })
   },
 }

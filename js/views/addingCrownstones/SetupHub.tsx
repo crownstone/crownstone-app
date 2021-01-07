@@ -37,6 +37,7 @@ import { HubHelper } from "../../native/setup/HubHelper";
 import { Login } from "../startupViews/Login";
 import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { HubReplyError } from "../../Enums";
+import { Get } from "../../util/GetUtil";
 
 export class SetupHub extends LiveComponent<{
   sphereId: string,
@@ -234,6 +235,7 @@ export class SetupHub extends LiveComponent<{
   _wrapUp() {
     // navigate the interview to the finished state.
     if (this.props.restoration) {
+      this._ensureLocationStorage();
       return NavigationUtil.dismissModal()
     }
 
@@ -243,6 +245,32 @@ export class SetupHub extends LiveComponent<{
     else {
       this._interview.setLockedCard("setupMore")
     }
+  }
+
+  _ensureLocationStorage() {
+    let stone = Get.stone(this.props.sphereId, this.newCrownstoneState.newStoneId);
+    let hub = Get.hub(this.props.sphereId, this.newCrownstoneState.newHubId);
+    if (stone && stone.config.locationId !== this.newCrownstoneState.location.id) {
+      core.store.dispatch({
+        type: "UPDATE_STONE_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.newCrownstoneState.newStoneId,
+        data: {
+          locationId: this.newCrownstoneState.location.id
+        }
+      });
+    }
+    if (hub && hub.config.locationId !== this.newCrownstoneState.location.id) {
+      core.store.dispatch({
+        type: "UPDATE_HUB_CONFIG",
+        sphereId: this.props.sphereId,
+        hubId: this.newCrownstoneState.newHubId,
+        data: {
+          locationId: this.newCrownstoneState.location.id
+        }
+      });
+    }
+
   }
 
   getCards() : interviewCards {
@@ -323,12 +351,14 @@ export class SetupHub extends LiveComponent<{
       {
         label: lang("Add_more_Crownstones_"),
         onSelect: (result) => {
+          this._ensureLocationStorage();
           NavigationUtil.back();
         }
       },
       {
         label: lang("Take_me_to__",this.newCrownstoneState.location.name),
         onSelect: (result) => {
+          this._ensureLocationStorage();
           NavigationUtil.dismissAllModalsAndNavigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
         }
       },
