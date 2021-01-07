@@ -52,15 +52,13 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.classifierResult, (data) => {
       this.currentLocation = data.highestPredictionLabel;
+      setTimeout(() => { this.forceUpdate(); }, 50);
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       this._amountOfStones = data.length;
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentLocationKNN, (data) => {
       this.knnLocation = data.location
-    }));
-    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {
-      this.forceUpdate();
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {
       this.appLocation = data.location;

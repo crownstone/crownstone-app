@@ -51,7 +51,7 @@ export class NativeBusClass {
       classifierResult:        "classifierResult",              // data type = {highestPredictionLabel: string, highestPrediction: number } // highestPredictionLabel == locationId with highest probability and highestPrediction is that probability
 
       callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
-      localizationPausedState: "localizationPausedState",            // data type = string (url)
+      localizationPausedState: "localizationPausedState",       // data type = string (url)
     };
 
     this.refMap = {};
