@@ -58,7 +58,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
       this._amountOfStones = data.length;
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentLocationKNN, (data) => {
-      this.knnLocation = data.location
+      this.knnLocation = data.location;
     }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {
       this.appLocation = data.location;
