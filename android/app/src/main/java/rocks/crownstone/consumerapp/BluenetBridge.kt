@@ -991,34 +991,24 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onLocationUpdate(sphereId: String?, locationId: String?) {
 		//TODO: incorporate sphereID
 		Log.d(TAG, "locationUpdate sphereId=$sphereId locationId=$locationId")
-		if (locationId == null) {
+		if (locationId != null && locationId != lastLocationId) {
+
 			if (lastLocationId != null) {
-				Log.d(TAG, "Send exit $lastSphereId $lastLocationId")
+				Log.i(TAG, "Send exit $lastSphereId $lastLocationId")
 				val mapExit = Arguments.createMap()
 				mapExit.putString("region", lastSphereId)
 				mapExit.putString("location", lastLocationId)
 				sendEvent("exitLocation", mapExit)
 			}
-		}
-		else if (lastLocationId == null) {
-			Log.i(TAG, "Send enter $sphereId $locationId")
-			val mapEnter = Arguments.createMap()
-			mapEnter.putString("region", sphereId)
-			mapEnter.putString("location", locationId)
-			sendEvent("enterLocation", mapEnter)
-		}
-		else if (locationId != lastLocationId) {
-			Log.i(TAG, "Send exit $lastSphereId $lastLocationId")
-			val mapExit = Arguments.createMap()
-			mapExit.putString("region", lastSphereId)
-			mapExit.putString("location", lastLocationId)
-			sendEvent("exitLocation", mapExit)
 
 			Log.i(TAG, "Send enter $sphereId $locationId")
 			val mapEnter = Arguments.createMap()
 			mapEnter.putString("region", sphereId)
 			mapEnter.putString("location", locationId)
 			sendEvent("enterLocation", mapEnter)
+
+			lastLocationId = locationId
+			lastSphereId = sphereId ?: ""
 		}
 		if (locationId != null) {
 			Log.d(TAG, "Send current $sphereId $locationId")
@@ -1027,8 +1017,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			mapCurrent.putString("location", locationId)
 			sendEvent("currentLocation", mapCurrent)
 		}
-		lastLocationId = locationId
-		lastSphereId = sphereId ?: ""
 	}
 
 	@ReactMethod
