@@ -1329,7 +1329,7 @@ export default {
     _in_:                                   function() { return " in " + arguments[0] + ""; },
     No:                                     function() { return "Nee"; },
     Yes:                                    function() { return "Ja"; },
-    ____:                                   function() { return "" + arguments[0] + "..."; },
+    ____:                                   function() { return arguments[0] + (arguments[1] ? "." : "...") },
     __filename: "../js/views/settingsViews/diagnostics/DiagnosticUtil.tsx",
   },
   DimLevelOverlay:{
@@ -1896,6 +1896,7 @@ export default {
       Everything_is_great_:                  false,
       Without_location_services:             false,
       This_should_not_take_long:             false,
+      ManualPermissionRequired:              false,
     },
     Request_Permission:                     function() { return "Toestemming vragen"; },
     ManualPermissionRequired:               function() { return "Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon." },
@@ -2932,6 +2933,8 @@ export default {
       I_cant_detect_any_Crownst:             false,
       It_can_sometimes_happen_t:             false,
       Problem_with_missing_Crow:             false,
+      The_nearest_Crownstone_is_:            false,
+      You_can_add_it_to_your_sp:             false,
     },
     Database_is_healthy:                    function() { return "Database ziet er goed uit"; },
     Scanning_is_enabled:                    function() { return "Scannen is ingeschakeld"; },
@@ -2963,6 +2966,8 @@ export default {
     It_can_sometimes_happen_t:              function() { return "Het kan soms gebeuren dat een Crownstone die vroeger in jouw Sfeer zat, weg is.\n\nDat betekent niet dat het 'zoek naar...' aan het doen is in de app. Als dat is wat je zoekt, start dan de diagnostiek opnieuw op en selecteer 'bestaand'."; },
     Problem_with_missing_Crow:              function() { return "Probleem met ontbrekende Crownstone..."; },
     __filename: "../js/views/settingsViews/diagnostics/ProblemWithOtherCrownstone.tsx",
+    The_nearest_Crownstone_is_:             function() { return "De dichtstbijzijnde Crownstone is in setup modus." },
+    You_can_add_it_to_your_sp:              function() { return "Je kan deze aan je Sfeer toevoegen (als je beheerder bent) via de + knop bij het sfeer overzicht." },
   },
   Register:{
     __stringSameAsBaseLanguage: {

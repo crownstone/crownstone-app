@@ -686,7 +686,7 @@ export default {
     _in_:                                   function() { return " in " + arguments[0] },
     No:                                     function() { return "No" },
     Yes:                                    function() { return "Yes" },
-    ____:                                   function() { return arguments[0] + (arguments[1] ? "..." : ".") },
+    ____:                                   function() { return arguments[0] + (arguments[1] ? "." : "...") },
   },
   DimLevelOverlay:{
     Save:                                   function() { return "Save" },
@@ -1533,6 +1533,8 @@ export default {
     I_cant_detect_any_Crownst:              function() { return "I can't detect any Crownstone nearby... You can try to take the power off it for a while and restart the diagnostic." },
     It_can_sometimes_happen_t:              function() { return "It can sometimes happen that a Crownstone that used to be in your Sphere is gone.\n\nThis does not mean it is 'Searching...' in the app. If that is what you're looking for, restart the diagnostics and select 'existing'." },
     Problem_with_missing_Crow:              function() { return "Problem with missing Crownstone..." },
+    The_nearest_Crownstone_is_:             function() { return "The nearest Crownstone is in setup mode." },
+    You_can_add_it_to_your_sp:              function() { return "You can add it to your sphere if you're an admin and press the + icon in the Sphere overview." },
   },
   Register:{
     __filename: "../js/views/startupViews/Register.tsx",

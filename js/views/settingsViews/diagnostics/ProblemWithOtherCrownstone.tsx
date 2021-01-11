@@ -137,6 +137,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
       );
     }
     else {
+      // there is a local crownstone near
       if (this.state.factoryResetSuccess === true) {
         return (
           <DiagSingleButtonToOverview
@@ -183,7 +184,19 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
           let state = core.store.getState();
           let sphereId = Util.data.getPresentSphereId(state);
           let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
-          if (!nearSummary) {
+          if (nearest.setupMode) {
+            return (
+              <DiagSingleButtonGoBack
+                visible={this.state.visible}
+                header={lang("The_nearest_Crownstone_is_")}
+                explanation={ lang("You_can_add_it_to_your_sp")}
+              />
+            );
+          }
+          // else if (nearest.dfuMode) {
+          //
+          // }
+          else if (!nearSummary) {
             if (nearest.verified === true) {
               if (Permissions.inSphere(sphereId).removeCrownstone) {
                 return (
