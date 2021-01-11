@@ -2686,7 +2686,7 @@ export default {
     I_couldnt_hear_any_messag:              function() { return "Ik hoor nu geen berichten van die Crownstone, maar eerst wel.."; },
     Trying_to_switch____:                   function() { return "Proberen om te schakelen" + arguments[0] + "..."; },
     Rerun_the_diagnostic_once:              function() { return "Voer de diagnose opnieuw uit zodra je er klaar voor bent om mij te laten proberen de Crownstone te schakelen."; },
-    Is_that_OK__Its_currently:              function() { return "Is dat oké? Hij is nu Aan en ik wil hem graag Uitzetten."; },
+    Is_that_OK__Its_currently:              function() { return "Is dat oké? Hij is nu " + (arguments[0] ? "aan" : "uit") + " en ik wil hem graag " + (arguments[0] ? 'uit' : 'aan') + " zetten."; },
     A_Crownstone_can_be_locke_noAdm:        function() { return "Een Crownstone kan vergrendeld worden zodat er niet geschakeld kan worden. Je moet een beheerder van jouw Sfeer vragen om hem te voor je ontgrendelen."; },
     This_does_not_mean_your_d:              function() { return "Dit betekent niet dat jouw apparaat kapot is. Klik op de kamer en daarna op de Crownstone. We zullen zo proberen te achterhalen wat voor fout er optreedt."; },
     A_Crownstone_does_not_swi:              function() { return "Een Crownstone gaat niet direct terug naar 'aan het zoeken...' als je buiten bereik komt.\n\nHet kan zo zijn dat de app denkt dat de Crownstone nog binnen bereik is, terwijl je al te ver weg bent.\n\nAls een Crownstone in de buurt is van een andere Crownstone, vormen ze een netwerk (een mesh). Dit maakt het mogelijk om een opdracht aan een Crownstone te versturen via een andere Crownstone."; },

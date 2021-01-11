@@ -1377,7 +1377,7 @@ export default {
     I_couldnt_hear_any_messag:              function() { return "I couldn't hear any messages from that Crownstone, but I could before.." },
     Trying_to_switch____:                   function() { return "Trying to switch " + arguments[0] + "..." },
     Rerun_the_diagnostic_once:              function() { return "Rerun the diagnostic once you're ready to let me try to switch this Crownstone." },
-    Is_that_OK__Its_currently:              function() { return "Is that OK? It's currently " + (arguments[0] ? "on" : "off") + "and I'd like to turn it " + (arguments[0] ? 'off' : 'on') + "."},
+    Is_that_OK__Its_currently:              function() { return "Is that OK? It's currently " + (arguments[0] ? "on" : "off") + " and I'd like to turn it " + (arguments[0] ? 'off' : 'on') + "."},
     A_Crownstone_can_be_locke_noAdm:        function() { return "A Crownstone can be locked to prevent it from switching. You'll need to ask an Admin in your Sphere to unlock it for you." },
     This_does_not_mean_your_d:              function() { return "This does not mean your device is broken. Tap on it's room and tap on the Crownstone. It will guide to to fixing the hardware error." },
     A_Crownstone_does_not_swi:              function() { return "A Crownstone does not switch back to 'Searching...' directly when you're out of range.\n\n" +
