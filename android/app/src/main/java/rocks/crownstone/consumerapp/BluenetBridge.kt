@@ -3244,8 +3244,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val uuid = eventData.changedRegion
 		val referenceId = eventData.changedRegionReferenceId
 		// TODO: this should be in the localization library
-		if (referenceId == lastSphereId) {
-			onLocationUpdate(referenceId, null)
+		if (referenceId == lastSphereId && lastLocationId != null) {
+			Log.i(TAG, "Send exit $lastSphereId $lastLocationId")
+			val mapExit = Arguments.createMap()
+			mapExit.putString("region", lastSphereId)
+			mapExit.putString("location", lastLocationId)
+			sendEvent("exitLocation", mapExit)
+			lastLocationId = null
 		}
 
 		lastSphereId = ""
