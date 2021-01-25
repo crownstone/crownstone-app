@@ -109,12 +109,11 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
-		FAAEF8F92417C3790078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
-		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
 		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
+		FAE0E58D25B741970054D667 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0E58C25B741970054D667 /* BluenetLib.framework */; };
 		FAF2D2B2248A9093003973F6 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF2D2B1248A9093003973F6 /* Zip.framework */; };
 		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
 /* End PBXBuildFile section */
@@ -596,8 +595,8 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
-		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
+		FAE0E58C25B741970054D667 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
 		FAF2D2B1248A9093003973F6 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -625,7 +624,7 @@
 				FA274EEF2410171B00D7C858 /* libReact-CoreModules.a in Frameworks */,
 				FA274EF02410171B00D7C858 /* libReact-cxxreact.a in Frameworks */,
 				FA274EF12410171B00D7C858 /* libReact-jsi.a in Frameworks */,
-				FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */,
+				FAE0E58D25B741970054D667 /* BluenetLib.framework in Frameworks */,
 				FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */,
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
@@ -659,7 +658,6 @@
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
 				FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
-				FAAEF8F92417C3790078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
 				FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */,
@@ -770,8 +768,8 @@
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
 				FAF2D2B1248A9093003973F6 /* Zip.framework */,
 				FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */,
-				FACF2AD52463157000B88E0D /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
+				FAE0E58C25B741970054D667 /* BluenetLib.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
 				FA0DD9B521DE863300824ABF /* CryptoSwift.framework */,
@@ -1122,7 +1120,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = Crownstone;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -1671,7 +1669,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
 			);
 			name = "Run Script";
@@ -1838,7 +1836,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1930,7 +1928,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1996,7 +1994,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/push-notification-ios/ios",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2037,7 +2035,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/push-notification-ios/ios",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2079,6 +2077,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2103,7 +2102,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2132,6 +2131,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2149,7 +2149,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

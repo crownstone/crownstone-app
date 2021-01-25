@@ -96,7 +96,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     let state = core.store.getState();
 
     if (connect) {
-      ConnectionManager.connectWillStart()
+      ConnectionManager.connectWillStart(this.props.handle)
       let proxy = BleUtil.getProxy(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
       promise = proxy.performPriority(action, props, PROXY_OPTIONS)
     }

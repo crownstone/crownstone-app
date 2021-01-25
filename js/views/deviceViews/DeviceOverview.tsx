@@ -46,7 +46,7 @@ import { HubHelper } from "../../native/setup/HubHelper";
 import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 
-export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
+export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
   static options(props) {
     getTopBarProps(props);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);

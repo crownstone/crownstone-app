@@ -169,7 +169,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.loadKeysets(encryptionEnabled: true, keySets: [])
   }
   
-  @objc func setKeySets(_ keySets: [NSDictionary], callback: RCTResponseSenderBlock) {
+  @objc func setKeySets(_ keySets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called setKeySets")
     var sets : [KeySet] = []
     var watchSets = [String: [String: String?]]()
@@ -204,11 +204,11 @@ open class BluenetJS: RCTEventEmitter {
     callback([["error" : false]])
   }
   
-  @objc func isReady(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func isReady(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
     wrapForBluenet("isReady", callback, GLOBAL_BLUENET.bluenet.isReady())
   }
   
-  @objc func isPeripheralReady(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func isPeripheralReady(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called isPeripheralReady")
     GLOBAL_BLUENET.bluenet.isPeripheralReady()
       .done{_ -> Void in
@@ -227,27 +227,33 @@ open class BluenetJS: RCTEventEmitter {
 
 
   @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     wrapForBluenet("connect", callback, GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId))
   }
   
-  @objc func phoneDisconnect(_ callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("phoneDisconnect", callback, GLOBAL_BLUENET.bluenet.disconnect())
+  @objc func phoneDisconnect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("phoneDisconnect", callback, GLOBAL_BLUENET.bluenet.disconnect(handle: handle))
   }
   
-  @objc func disconnectCommand(_ callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("disconnectCommand", callback, GLOBAL_BLUENET.bluenet.control.disconnect())
+  @objc func disconnectCommand(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("disconnectCommand", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).disconnect())
   }
   
-  @objc func toggleSwitchState(_ stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("toggleSwitchState", callback, GLOBAL_BLUENET.bluenet.control.toggleSwitchState(stateForOn: stateForOn.uint8Value))
+  @objc func toggleSwitchState(_ handle: String, stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("toggleSwitchState", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).toggleSwitchState(stateForOn: stateForOn.uint8Value))
   }
   
-  @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("setSwitchState", callback, GLOBAL_BLUENET.bluenet.control.setSwitchState(state.uint8Value))
+  @objc func setSwitchState(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setSwitchState", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).setSwitchState(state.uint8Value))
   }
   
-  @objc func getSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("getSwitchState", callback, GLOBAL_BLUENET.bluenet.state.getSwitchState())
+  @objc func getSwitchState(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getSwitchState", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).getSwitchState())
   }
   
   @objc func startAdvertising() {
@@ -303,7 +309,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.emitBleState()
   }
   
-  @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func requestLocation(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called requestLocation")
     GLOBAL_BLUENET.bluenetLocalization.requestLocation()
       .done{ coordinates in
@@ -374,7 +380,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func finalizeFingerprint(_ sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
+  @objc func finalizeFingerprint(_ sphereId: String, locationId: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called finalizeFingerprint \(sphereId) \(locationId)")
     
     let stringifiedFingerprint = GLOBAL_BLUENET.trainingHelper.finishCollectingTrainingData()
@@ -388,7 +394,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
-  @objc func clearTrackedBeacons(_ callback: RCTResponseSenderBlock) -> Void {
+  @objc func clearTrackedBeacons(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called clearTrackedBeacons")
     GLOBAL_BLUENET.bluenetLocalization.clearTrackedBeacons()
     callback([["error" : false]])
@@ -400,7 +406,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.classifier.resetAllTrainingData()
   }
   
-  @objc func clearFingerprintsPromise(_ callback: RCTResponseSenderBlock) {
+  @objc func clearFingerprintsPromise(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called clearFingerprintsPromise")
     GLOBAL_BLUENET.classifier.resetAllTrainingData()
     callback([["error" : false]])
@@ -411,41 +417,50 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
   }
   
-  @objc func commandFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("commandFactoryReset", callback, GLOBAL_BLUENET.bluenet.control.commandFactoryReset())
+  @objc func commandFactoryReset(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("commandFactoryReset", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).commandFactoryReset())
   }
   
-  @objc func getHardwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getHardwareVersion", callback, GLOBAL_BLUENET.bluenet.device.getHardwareRevision())
+  @objc func getHardwareVersion(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getHardwareVersion", callback, GLOBAL_BLUENET.bluenet.device(handleUUID!).getHardwareRevision())
   }
   
-  @objc func getFirmwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getFirmwareVersion", callback, GLOBAL_BLUENET.bluenet.device.getFirmwareRevision())
+  @objc func getFirmwareVersion(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getFirmwareVersion", callback, GLOBAL_BLUENET.bluenet.device(handleUUID!).getFirmwareRevision())
   }
   
-  @objc func getBootloaderVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getBootloaderVersion", callback, GLOBAL_BLUENET.bluenet.device.getBootloaderRevision())
+  @objc func getBootloaderVersion(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getBootloaderVersion", callback, GLOBAL_BLUENET.bluenet.device(handleUUID!).getBootloaderRevision())
   }
 
   
-  @objc func getMACAddress(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getMACAddress", callback, GLOBAL_BLUENET.bluenet.setup.getMACAddress())
+  @objc func getMACAddress(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getMACAddress", callback, GLOBAL_BLUENET.bluenet.setup(handleUUID!).getMACAddress())
   }
   
-  @objc func clearErrors(_ errors: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("clearErrors", callback, GLOBAL_BLUENET.bluenet.control.clearError(errorDict: errors))
+  @objc func clearErrors(_ handle: String, errors: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("clearErrors", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).clearError(errorDict: errors))
   }
   
-  @objc func restartCrownstone(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("restartCrownstone", callback, GLOBAL_BLUENET.bluenet.control.reset())
+  @objc func restartCrownstone(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("restartCrownstone", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).reset())
   }
   
-  @objc func recover(_ crownstoneHandle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("recover", callback, GLOBAL_BLUENET.bluenet.control.recoverByFactoryReset(crownstoneHandle))
+  @objc func recover(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("recover", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).recoverByFactoryReset())
   }
   
-  @objc func getBehaviourDebugInformation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getBehaviourDebugInformation", callback, GLOBAL_BLUENET.bluenet.debug.getBehaviourDebugInformation())
+  @objc func getBehaviourDebugInformation(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getBehaviourDebugInformation", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getBehaviourDebugInformation())
   }
   
   @objc func enableExtendedLogging(_ enableLogging: NSNumber) -> Void {
@@ -492,7 +507,7 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.clearLogs()
   }
   
-  @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func setupCrownstone(_ handle: String, data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setupCrownstone")
     let crownstoneId       = data["crownstoneId"] as? NSNumber
     let sphereId           = data["sphereId"] as? NSNumber
@@ -509,7 +524,7 @@ open class BluenetJS: RCTEventEmitter {
     let ibeaconMajor       = data["ibeaconMajor"] as? NSNumber
     let ibeaconMinor       = data["ibeaconMinor"] as? NSNumber
     
-   
+    let handleUUID = UUID(uuidString: handle)
     if (
       crownstoneId != nil &&
       sphereId != nil &&
@@ -525,7 +540,7 @@ open class BluenetJS: RCTEventEmitter {
       ibeaconUUID != nil &&
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
-      GLOBAL_BLUENET.bluenet.setup.setup(
+      GLOBAL_BLUENET.bluenet.setup(handleUUID!).setup(
         crownstoneId: (crownstoneId!).uint16Value,
         sphereId: (sphereId!).uint8Value,
         adminKey: adminKey!,
@@ -555,8 +570,9 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-  @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("multiSwitch", callback, GLOBAL_BLUENET.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
+  @objc func multiSwitch(_ handle: String, arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("multiSwitch", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
   
   
@@ -566,8 +582,9 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func turnOnMesh(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh.turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
+  @objc func turnOnMesh(_ handle: String, arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
   
   @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, autoExecute: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -587,29 +604,35 @@ open class BluenetJS: RCTEventEmitter {
   
   // DFU
   
-  @objc func setupPutInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setupPutInDFU", callback, GLOBAL_BLUENET.bluenet.control.putInDFU())
+  @objc func setupPutInDFU(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setupPutInDFU", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).putInDFU())
   }
   
-  @objc func putInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("putInDFU", callback, GLOBAL_BLUENET.bluenet.control.putInDFU())
+  @objc func putInDFU(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("putInDFU", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).putInDFU())
   }
   
   @objc func performDFU(_ handle: String, uri: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     let firmwareURL = URL(fileURLWithPath: uri)
-    wrapForBluenet("performDFU", callback, GLOBAL_BLUENET.bluenet.dfu.startDFU(handle: handle, firmwareURL: firmwareURL))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("performDFU", callback, GLOBAL_BLUENET.bluenet.dfu(handleUUID!).startDFU(firmwareURL: firmwareURL))
   }
   
-  @objc func setupFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setupFactoryReset", callback, GLOBAL_BLUENET.bluenet.setup.factoryReset())
+  @objc func setupFactoryReset(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setupFactoryReset", callback, GLOBAL_BLUENET.bluenet.setup(handleUUID!).factoryReset())
   }
   
   @objc func bootloaderToNormalMode(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("bootloaderToNormalMode", callback, GLOBAL_BLUENET.bluenet.dfu.bootloaderToNormalMode(handle: handle))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("bootloaderToNormalMode", callback, GLOBAL_BLUENET.bluenet.dfu(handleUUID!).bootloaderToNormalMode(handle: handle))
   }
 
-  @objc func setTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setTime", callback, GLOBAL_BLUENET.bluenet.control.setTime(time))
+  @objc func setTime(_ handle: String, time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setTime", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).setTime(time))
   }
   
   @objc func batterySaving(_ state: NSNumber) -> Void {
@@ -635,55 +658,65 @@ open class BluenetJS: RCTEventEmitter {
   }
 
   
-  @objc func allowDimming(_ allow: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func allowDimming(_ handle: String, allow: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let allowBool = allow.boolValue
-    wrapForBluenet("allowDimming", callback, GLOBAL_BLUENET.bluenet.control.allowDimming(allow: allowBool))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("allowDimming", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).allowDimming(allow: allowBool))
   }
   
-  @objc func lockSwitch(_ lock: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func lockSwitch(_ handle: String, lock: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let lockBool = lock.boolValue
-    wrapForBluenet("lockSwitch", callback, GLOBAL_BLUENET.bluenet.control.lockSwitch(lock: lockBool))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("lockSwitch", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).lockSwitch(lock: lockBool))
   }
   
-  @objc func setSwitchCraft(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func setSwitchCraft(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let stateBool = state.boolValue
-    wrapForBluenet("setSwitchCraft", callback, GLOBAL_BLUENET.bluenet.config.setSwitchcraft( enabled: stateBool))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setSwitchCraft", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setSwitchcraft( enabled: stateBool))
   }
   
-  @objc func setTapToToggle(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func setTapToToggle(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let stateBool = state.boolValue
-    wrapForBluenet("setTapToToggle", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggle(enabled: stateBool))
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setTapToToggle", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setTapToToggle(enabled: stateBool))
   }
   
   
-  @objc func getTapToToggleThresholdOffset(callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config.getTapToToggleThresholdOffset())
+  @objc func getTapToToggleThresholdOffset(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getTapToToggleThresholdOffset())
   }
   
   
-  @objc func setTapToToggleThresholdOffset(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggleThresholdOffset(threshold: state.int8Value))
+  @objc func setTapToToggleThresholdOffset(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setTapToToggleThresholdOffset(threshold: state.int8Value))
   }
   
-  @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.setTime(time: time.uint32Value))
-  }
-  
-  
-  @objc func sendNoOp(_  callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("sendNoOp", callback, GLOBAL_BLUENET.bluenet.control.sendNoOp())
-  }
-  
-  @objc func sendMeshNoOp(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-     wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.sendNoOp())
+  @objc func meshSetTime(_ handle: String, time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).setTime(time: time.uint32Value))
   }
   
   
-  @objc func setMeshChannel(_ channel: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func sendNoOp(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("sendNoOp", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).sendNoOp())
+  }
+  
+  @objc func sendMeshNoOp(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).sendNoOp())
+  }
+  
+  
+  @objc func setMeshChannel(_ handle: String, channel: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
     wrapForBluenet("setMeshChannel", callback,
-       GLOBAL_BLUENET.bluenet.config.setMeshChannel(channel) // set channel
+       GLOBAL_BLUENET.bluenet.config(handleUUID!).setMeshChannel(channel) // set channel
         .then{_ in return GLOBAL_BLUENET.bluenet.waitToWrite()} // wait to store
-        .then{_ in return GLOBAL_BLUENET.bluenet.control.reset()} // reset
+        .then{_ in return GLOBAL_BLUENET.bluenet.control(handleUUID!).reset()} // reset
       )
   }
   
@@ -693,7 +726,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func isDevelopmentEnvironment(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func isDevelopmentEnvironment(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called isDevelopmentEnvironment")
     callback([["error" : false, "data": GLOBAL_BLUENET.devEnvironment ]])
   }
@@ -722,7 +755,7 @@ open class BluenetJS: RCTEventEmitter {
     );
   }
   
-  @objc func canUseDynamicBackgroundBroadcasts(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func canUseDynamicBackgroundBroadcasts(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("canUseDynamicBackgroundBroadcasts", callback, BluenetLib.BroadcastProtocol.useDynamicBackground())
   }
   
@@ -732,8 +765,9 @@ open class BluenetJS: RCTEventEmitter {
   }
 
 
-  @objc func setupPulse(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setupPulse", callback, GLOBAL_BLUENET.bluenet.control.pulse())
+  @objc func setupPulse(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setupPulse", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).pulse())
   }
 
   @objc func subscribeToNearest() {
@@ -780,14 +814,15 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.startPeripheral()
   }
   
-  @objc func checkBroadcastAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func checkBroadcastAuthorization(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
     callback([["error" : false, "data": GLOBAL_BLUENET.bluenet.checkBroadcastAuthorization() ]])
   }
   
-  @objc func addBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func addBehaviour(_ handle: String, data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
-      wrapBehaviourMethodForBluenet("addBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.addBehaviour(behaviour: behaviour))
+      wrapBehaviourMethodForBluenet("addBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour(handleUUID!).addBehaviour(behaviour: behaviour))
     }
     catch let error {
       if let bluenetErr = error as? BluenetError {
@@ -799,11 +834,12 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-  @objc func updateBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func updateBehaviour(_ handle: String, data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
       if let index = behaviour.indexOnCrownstone {
-        wrapBehaviourMethodForBluenet("updateBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.replaceBehaviour(index: index, behaviour: behaviour))
+        wrapBehaviourMethodForBluenet("updateBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour(handleUUID!).replaceBehaviour(index: index, behaviour: behaviour))
       }
       else {
         callback([["error" : true, "data": "NO INDEX PROVIDED"]])
@@ -819,9 +855,10 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-  @objc func getBehaviour(_  index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func getBehaviour(_ handle: String, index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
     LOGGER.info("BluenetBridge: Called getBehaviour")
-    GLOBAL_BLUENET.bluenet.behaviour.getBehaviour(index: index.uint8Value)
+    GLOBAL_BLUENET.bluenet.behaviour(handleUUID!).getBehaviour(index: index.uint8Value)
       .done { behaviour -> Void in
         let dictionaryData : NSDictionary = behaviour.getDictionary(dayStartTimeSecondsSinceMidnight: 4*3600)
         callback([["error" : false, "data": dictionaryData]])
@@ -836,13 +873,16 @@ open class BluenetJS: RCTEventEmitter {
       }
   }
   
-  @objc func removeBehaviour(_ index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapBehaviourMethodForBluenet("removeBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.removeBehaviour(index: index.uint8Value))
+  @objc func removeBehaviour(_ handle: String, index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapBehaviourMethodForBluenet("removeBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour(handleUUID!).removeBehaviour(index: index.uint8Value))
   }
     
-  @objc func syncBehaviours(_ behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func syncBehaviours(_ handle: String, behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    
     LOGGER.info("BluenetBridge: Called syncBehaviours")
-    let syncer = BehaviourSyncer(bluenet: GLOBAL_BLUENET.bluenet, behaviourDictionaryArray: behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
+    let syncer = BehaviourSyncer(handle: handleUUID!, bluenet: GLOBAL_BLUENET.bluenet, behaviourDictionaryArray: behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
     syncer.sync()
       .done { behaviourArray -> Void in
         var resultMap = [NSDictionary]()
@@ -881,23 +921,18 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value)
   }
   
-  @objc func setSunTimesViaConnection(_ sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setSunTimes", callback, GLOBAL_BLUENET.bluenet.config.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value))
+  @objc func setSunTimesViaConnection(_ handle: String, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setSunTimes", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value))
   }
   
   
-  @objc func registerTrackedDevice(
-    _ trackingNumber: NSNumber,
-    locationUid: NSNumber,
-    profileId: NSNumber,
-    rssiOffset: NSNumber,
-    ignoreForPresence: NSNumber,
-    tapToToggleEnabled: NSNumber,
-    deviceToken: NSNumber,
-    ttlMinutes: NSNumber,
-    callback: @escaping RCTResponseSenderBlock) {
+  @objc func registerTrackedDevice(_ handle: String, trackingNumber: NSNumber, locationUid: NSNumber, profileId: NSNumber, rssiOffset: NSNumber, ignoreForPresence: NSNumber, tapToToggleEnabled: NSNumber, deviceToken: NSNumber, ttlMinutes: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    
+    let handleUUID = UUID(uuidString: handle)
+    
     wrapForBluenet("registerTrackedDevice", callback,
-      GLOBAL_BLUENET.bluenet.control.registerTrackedDevice(
+      GLOBAL_BLUENET.bluenet.control(handleUUID!).registerTrackedDevice(
         trackingNumber: trackingNumber.uint16Value,
         locationUid:    locationUid.uint8Value,
         profileId:      profileId.uint8Value,
@@ -910,14 +945,12 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func trackedDeviceHeartbeat(
-    _ trackingNumber: NSNumber,
-    locationUid: NSNumber,
-    deviceToken: NSNumber,
-    ttlMinutes: NSNumber,
-    callback: @escaping RCTResponseSenderBlock) {
+  @objc func trackedDeviceHeartbeat(_ handle: String, trackingNumber: NSNumber, locationUid: NSNumber, deviceToken: NSNumber, ttlMinutes: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    
+    let handleUUID = UUID(uuidString: handle)
+    
     wrapForBluenet("trackedDeviceHeartbeat", callback,
-                   GLOBAL_BLUENET.bluenet.control.trackedDeviceHeartbeat(
+                   GLOBAL_BLUENET.bluenet.control(handleUUID!).trackedDeviceHeartbeat(
                     trackingNumber: trackingNumber.uint16Value,
                     locationId: locationUid.uint8Value,
                     deviceToken: deviceToken.uint32Value,
@@ -926,17 +959,7 @@ open class BluenetJS: RCTEventEmitter {
   }
     
     
-  @objc func broadcastUpdateTrackedDevice(
-    _ referenceId: String,
-    trackingNumber: NSNumber,
-    locationUid: NSNumber,
-    profileId: NSNumber,
-    rssiOffset: NSNumber,
-    ignoreForPresence: NSNumber,
-    tapToToggleEnabled: NSNumber,
-    deviceToken: NSNumber,
-    ttlMinutes: NSNumber,
-    callback:  @escaping RCTResponseSenderBlock) {
+  @objc func broadcastUpdateTrackedDevice(_ referenceId: String, trackingNumber: NSNumber, locationUid: NSNumber, profileId: NSNumber, rssiOffset: NSNumber, ignoreForPresence: NSNumber, tapToToggleEnabled: NSNumber, deviceToken: NSNumber, ttlMinutes: NSNumber, callback:  @escaping RCTResponseSenderBlock) {
     wrapForBluenet("broadcastUpdateTrackedDevice", callback,
       GLOBAL_BLUENET.bluenet.broadcast.updateTrackedDevice(
         referenceId:    referenceId,
@@ -953,9 +976,10 @@ open class BluenetJS: RCTEventEmitter {
 
   
   // DEV
-  @objc func switchRelay(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+  @objc func switchRelay(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
      LOGGER.info("BluenetBridge: Called setSwitchState")
-     GLOBAL_BLUENET.bluenet.control.switchRelay(state.uint8Value)
+     GLOBAL_BLUENET.bluenet.control(handleUUID!).switchRelay(state.uint8Value)
        .done{_ in callback([["error" : false]])}
        .catch{err in
          if let bleErr = err as? BluenetError {
@@ -967,9 +991,10 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
    
-  @objc func getCrownstoneUptime(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func getCrownstoneUptime(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
       LOGGER.info("BluenetBridge: Called getCrownstoneUptime")
-      GLOBAL_BLUENET.bluenet.debug.getUptime()
+      GLOBAL_BLUENET.bluenet.debug(handleUUID!).getUptime()
         .done{result in callback([["error" : false, "data": NSNumber(value: result)]])}
         .catch{err in
           if let bleErr = err as? BluenetError {
@@ -981,9 +1006,10 @@ open class BluenetJS: RCTEventEmitter {
       }
     }
   
-  @objc func getAdcRestarts(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func getAdcRestarts(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     LOGGER.info("BluenetBridge: Called getAdcRestarts")
-    GLOBAL_BLUENET.bluenet.debug.getAdcRestarts()
+    GLOBAL_BLUENET.bluenet.debug(handleUUID!).getAdcRestarts()
       .done{result in callback([["error" : false, "data": result ]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -995,9 +1021,10 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-   @objc func getSwitchHistory(_ callback: @escaping RCTResponseSenderBlock) {
+   @objc func getSwitchHistory(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
      LOGGER.info("BluenetBridge: Called getSwitchHistory")
-     GLOBAL_BLUENET.bluenet.debug.getSwitchHistory()
+     GLOBAL_BLUENET.bluenet.debug(handleUUID!).getSwitchHistory()
        .done{switchHistory in callback([["error" : false, "data": switchHistory ]])}
        .catch{err in
          if let bleErr = err as? BluenetError {
@@ -1009,7 +1036,8 @@ open class BluenetJS: RCTEventEmitter {
      }
    }
   
-   @objc func getPowerSamples(_ type: String, callback: @escaping RCTResponseSenderBlock) {
+   @objc func getPowerSamples(_ handle: String, type: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
       LOGGER.info("BluenetBridge: Called getPowerSamples")
       var typeEnum = PowerSampleType.triggeredSwitchcraft
       if type == "triggeredSwitchcraft" {
@@ -1032,7 +1060,7 @@ open class BluenetJS: RCTEventEmitter {
         return
       }
 
-      GLOBAL_BLUENET.bluenet.debug.getPowerSamples(type: typeEnum)
+      GLOBAL_BLUENET.bluenet.debug(handleUUID!).getPowerSamples(type: typeEnum)
        .done{powerSamples in callback([["error" : false, "data": powerSamples ]])}
        .catch{err in
          if let bleErr = err as? BluenetError {
@@ -1044,165 +1072,199 @@ open class BluenetJS: RCTEventEmitter {
       }
    }
   
-  @objc func setUartKey(_ uartKey: String, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("setUartKey", callback, GLOBAL_BLUENET.bluenet.config.setUartKey(uartKey))
+  @objc func setUartKey(_ handle: String, uartKey: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setUartKey", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setUartKey(uartKey))
   }
   
   
-  @objc func transferHubTokenAndCloudId(_ hubToken: String, cloudId: String, callback: @escaping RCTResponseSenderBlock) {
+  @objc func transferHubTokenAndCloudId(_ handle: String, hubToken: String, cloudId: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     wrapHubMethodForBluenet(
       "transferHubTokenAndCloudId",
       callback,
-      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.tokenSphereIdPacket(hubToken: hubToken, cloudId: cloudId))
+      GLOBAL_BLUENET.bluenet.hub(handleUUID!).sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.tokenSphereIdPacket(hubToken: hubToken, cloudId: cloudId))
     )
   }
   
-  @objc func requestCloudId(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func requestCloudId(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     wrapHubMethodForBluenet(
       "requestCloudId",
       callback,
-      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.requestDataPacket(type: HubRequestDataType.cloudId))
+      GLOBAL_BLUENET.bluenet.hub(handleUUID!).sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.requestDataPacket(type: HubRequestDataType.cloudId))
     )
   }
   
   
-  @objc func factoryResetHub(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func factoryResetHub(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     wrapHubMethodForBluenet(
       "factoryResetHub",
       callback,
-      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetPacket())
+      GLOBAL_BLUENET.bluenet.hub(handleUUID!).sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetPacket())
     )
   }
   
-  @objc func factoryResetHubOnly(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func factoryResetHubOnly(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
     wrapHubMethodForBluenet(
       "factoryResetHubOnly",
       callback,
-      GLOBAL_BLUENET.bluenet.hub.sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetHubOnlyPacket())
+      GLOBAL_BLUENET.bluenet.hub(handleUUID!).sendHubData(EncryptionOption.noEncryption.rawValue, payload: HubPacketGenerator.factoryResetHubOnlyPacket())
     )
   }
   
   
 
-  @objc func getMinSchedulerFreeSpace(_ callback: @escaping RCTResponseSenderBlock) {
-      wrapForBluenet("getMinSchedulerFreeSpace", callback, GLOBAL_BLUENET.bluenet.debug.getMinSchedulerFreeSpace())
+  @objc func getMinSchedulerFreeSpace(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getMinSchedulerFreeSpace", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getMinSchedulerFreeSpace())
   }
   
-  @objc func getLastResetReason(_ callback: @escaping RCTResponseSenderBlock) {
-      wrapForBluenet("getLastResetReason", callback, GLOBAL_BLUENET.bluenet.debug.getLastResetReason())
-  }
-  
-  
-  @objc func getGPREGRET(_ callback: @escaping RCTResponseSenderBlock) {
-      wrapForBluenet("getGPREGRET", callback, GLOBAL_BLUENET.bluenet.debug.getGPREGRET())
+  @objc func getLastResetReason(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+      wrapForBluenet("getLastResetReason", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getLastResetReason())
   }
   
   
-  @objc func getAdcChannelSwaps(_ callback: @escaping RCTResponseSenderBlock) {
-      wrapForBluenet("getAdcChannelSwaps", callback, GLOBAL_BLUENET.bluenet.debug.getAdcChannelSwaps())
+  @objc func getGPREGRET(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+      wrapForBluenet("getGPREGRET", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getGPREGRET())
   }
   
   
-  @objc func setSoftOnSpeed(_ speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("setSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config.setSoftOnSpeed(speed))
-  }
-  
-  @objc func getSoftOnSpeed(_ speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("getSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config.getSoftOnSpeed())
+  @objc func getAdcChannelSwaps(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+      wrapForBluenet("getAdcChannelSwaps", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getAdcChannelSwaps())
   }
   
   
-   @objc func switchDimmer(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control.switchPWM(state.uint8Value))
+  @objc func setSoftOnSpeed(_ handle: String, speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("setSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setSoftOnSpeed(speed))
+  }
+  
+  @objc func getSoftOnSpeed(_ handle: String, speed: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+    wrapForBluenet("getSoftOnSpeed", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getSoftOnSpeed())
+  }
+  
+  
+   @objc func switchDimmer(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("switchDimmer", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).switchPWM(state.uint8Value))
    }
      
-   @objc func getResetCounter(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getResetCounter", callback, GLOBAL_BLUENET.bluenet.state.getResetCounter())
+   @objc func getResetCounter(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getResetCounter", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).getResetCounter())
    }
 
    
-   @objc func getSwitchcraftThreshold(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getSwitchcraftThreshold", callback, GLOBAL_BLUENET.bluenet.config.getSwitchcraftThreshold())
+   @objc func getSwitchcraftThreshold(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getSwitchcraftThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getSwitchcraftThreshold())
    }
    
-   @objc func setSwitchcraftThreshold(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setSwitchcraftThreshold", callback, GLOBAL_BLUENET.bluenet.config.setSwitchcraftThreshold(value: value.floatValue))
+   @objc func setSwitchcraftThreshold(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setSwitchcraftThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setSwitchcraftThreshold(value: value.floatValue))
    }
    
-   @objc func getMaxChipTemp(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getMaxChipTemp", callback, GLOBAL_BLUENET.bluenet.config.getMaxChipTemp())
+   @objc func getMaxChipTemp(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getMaxChipTemp", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getMaxChipTemp())
    }
    
-   @objc func setMaxChipTemp(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setMaxChipTemp", callback, GLOBAL_BLUENET.bluenet.config.setMaxChipTemp(value: value.int8Value))
+   @objc func setMaxChipTemp(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setMaxChipTemp", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setMaxChipTemp(value: value.int8Value))
    }
    
-   @objc func getDimmerCurrentThreshold(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getDimmerCurrentThreshold", callback, GLOBAL_BLUENET.bluenet.config.getDimmerCurrentThreshold())
+   @objc func getDimmerCurrentThreshold(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getDimmerCurrentThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getDimmerCurrentThreshold())
    }
    
-   @objc func setDimmerCurrentThreshold(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setDimmerCurrentThreshold", callback, GLOBAL_BLUENET.bluenet.config.setDimmerCurrentThreshold(value: value.uint16Value))
+   @objc func setDimmerCurrentThreshold(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setDimmerCurrentThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setDimmerCurrentThreshold(value: value.uint16Value))
    }
    
-   @objc func getDimmerTempUpThreshold(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getDimmerTempUpThreshold", callback, GLOBAL_BLUENET.bluenet.config.getDimmerTempUpThreshold())
+   @objc func getDimmerTempUpThreshold(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getDimmerTempUpThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getDimmerTempUpThreshold())
    }
    
-   @objc func setDimmerTempUpThreshold(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setDimmerTempUpThreshold", callback, GLOBAL_BLUENET.bluenet.config.setDimmerTempUpThreshold(value: value.floatValue))
+   @objc func setDimmerTempUpThreshold(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setDimmerTempUpThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setDimmerTempUpThreshold(value: value.floatValue))
    }
    
-   @objc func getDimmerTempDownThreshold(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getDimmerTempDownThreshold", callback, GLOBAL_BLUENET.bluenet.config.getDimmerTempDownThreshold())
+   @objc func getDimmerTempDownThreshold(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getDimmerTempDownThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getDimmerTempDownThreshold())
    }
    
-   @objc func setDimmerTempDownThreshold(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setDimmerTempDownThreshold", callback, GLOBAL_BLUENET.bluenet.config.setDimmerTempDownThreshold(value: value.floatValue))
+   @objc func setDimmerTempDownThreshold(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setDimmerTempDownThreshold", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setDimmerTempDownThreshold(value: value.floatValue))
    }
    
-   @objc func getVoltageZero(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getVoltageZero", callback, GLOBAL_BLUENET.bluenet.config.getVoltageZero())
+   @objc func getVoltageZero(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getVoltageZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getVoltageZero())
    }
    
-   @objc func setVoltageZero(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setVoltageZero", callback, GLOBAL_BLUENET.bluenet.config.setVoltageZero(value: value.int32Value))
+   @objc func setVoltageZero(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setVoltageZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setVoltageZero(value: value.int32Value))
    }
    
-   @objc func getCurrentZero(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getCurrentZero", callback, GLOBAL_BLUENET.bluenet.config.getCurrentZero())
+   @objc func getCurrentZero(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getCurrentZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getCurrentZero())
    }
    
-   @objc func setCurrentZero(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setCurrentZero", callback, GLOBAL_BLUENET.bluenet.config.setCurrentZero(value: value.int32Value))
+   @objc func setCurrentZero(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setCurrentZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setCurrentZero(value: value.int32Value))
    }
    
-   @objc func getPowerZero(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getPowerZero", callback, GLOBAL_BLUENET.bluenet.config.getPowerZero())
+   @objc func getPowerZero(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getPowerZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getPowerZero())
    }
    
-   @objc func setPowerZero(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setPowerZero", callback, GLOBAL_BLUENET.bluenet.config.setPowerZero(value: value.int32Value))
+   @objc func setPowerZero(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setPowerZero", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setPowerZero(value: value.int32Value))
    }
    
-   @objc func getVoltageMultiplier(_ callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("getVoltageMultiplier", callback, GLOBAL_BLUENET.bluenet.config.getVoltageMultiplier())
+   @objc func getVoltageMultiplier(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("getVoltageMultiplier", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getVoltageMultiplier())
    }
    
-   @objc func setVoltageMultiplier(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setVoltageMultiplier", callback, GLOBAL_BLUENET.bluenet.config.setVoltageMultiplier(value: value.floatValue))
+   @objc func setVoltageMultiplier(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setVoltageMultiplier", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setVoltageMultiplier(value: value.floatValue))
    }
    
-   @objc func getCurrentMultiplier(_ callback: @escaping RCTResponseSenderBlock) {
-      wrapForBluenet("getCurrentMultiplier", callback, GLOBAL_BLUENET.bluenet.config.getCurrentMultiplier())
+   @objc func getCurrentMultiplier(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+      wrapForBluenet("getCurrentMultiplier", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).getCurrentMultiplier())
    }
    
-   @objc func setCurrentMultiplier(_ value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setCurrentMultiplier", callback, GLOBAL_BLUENET.bluenet.config.setCurrentMultiplier(value: value.floatValue))
+   @objc func setCurrentMultiplier(_ handle: String, value: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setCurrentMultiplier", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setCurrentMultiplier(value: value.floatValue))
    }
    
-   @objc func setUartState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-     wrapForBluenet("setUartState", callback, GLOBAL_BLUENET.bluenet.config.setUartState(state))
+   @objc func setUartState(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    let handleUUID = UUID(uuidString: handle)
+     wrapForBluenet("setUartState", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setUartState(state))
    }
   
 }

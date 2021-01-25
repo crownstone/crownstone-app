@@ -11,7 +11,7 @@ export const syncUsersInSphere = {
    * This method will check if there are any users in rooms in the active sphere. If so, actions will be dispatched to the store.
    * @param sphereId
    */
-  syncUsers: function(cloudSphereId = null) {
+  syncUsers: function(cloudSphereId = null) : Promise<void> {
     return new Promise((resolve, reject) => {
       let state = core.store.getState();
       let localSphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId;

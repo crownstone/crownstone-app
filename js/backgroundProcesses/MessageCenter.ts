@@ -293,7 +293,7 @@ class MessageCenterClass {
   /**
    * This will check for messages in the current location. It is self contained and can be called whenever.
    */
-  checkForMessages() {
+  checkForMessages() : Promise<void> {
     let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 

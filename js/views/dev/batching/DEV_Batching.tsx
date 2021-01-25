@@ -111,7 +111,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
         break;
     }
 
-    ConnectionManager.connectWillStart()
+    ConnectionManager.connectWillStart(selectedStone.handle)
     let proxy = BleUtil.getProxy(selectedStone.handle, selectedStone.sphereId);
     let promise = proxy.performPriority(action, [])
 

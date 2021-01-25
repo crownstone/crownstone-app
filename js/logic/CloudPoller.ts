@@ -6,9 +6,9 @@ import { InviteCenter } from "../backgroundProcesses/InviteCenter";
 
 class CloudPollerClass {
 
-  poll(forSync: boolean = false) {
+  poll(forSync: boolean = false) : Promise<void> {
     if (!NotificationHandler.notificationPermissionGranted || forSync) {
-      return new Promise((resolve, reject) => { resolve(); })
+      return new Promise<void>((resolve, reject) => { resolve(); })
         .then(() => { return forSync ? null : CLOUD.syncUsers(); })
         .then(() => { return                  InviteCenter.checkForInvites(); })
         .then(() => { return                  MessageCenter.checkForMessages(); })

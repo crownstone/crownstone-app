@@ -22,11 +22,10 @@ export class MeshHelper {
     this.connectedStoneId = connectedStoneId;
   }
 
-  performAction(onlyUsedAsMeshRelay : boolean = false) {
+  performAction(connectionInfo: connectionInfo, onlyUsedAsMeshRelay : boolean = false) {
     let actionPromise = null;
 
-    if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(onlyUsedAsMeshRelay); }
-    if (actionPromise === null) { actionPromise = this._handleOtherCommands(onlyUsedAsMeshRelay); }
+    if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(connectionInfo, onlyUsedAsMeshRelay); }
 
     if (actionPromise === null) {
       return actionPromise;
@@ -61,7 +60,7 @@ export class MeshHelper {
   }
 
 
-  _handleMultiSwitchCommands(onlyUsedAsMeshRelay = false) {
+  _handleMultiSwitchCommands(connectionInfo: connectionInfo, onlyUsedAsMeshRelay = false) {
     if (this.meshInstruction.multiSwitch.length > 0) {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
       // get data from set
@@ -91,15 +90,11 @@ export class MeshHelper {
 
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
-      return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
+      return BluenetPromiseWrapper.multiSwitch(connectionInfo.handle, multiSwitchPackets)
     }
     return null;
   }
 
-  _handleOtherCommands(onlyUsedAsMeshRelay = false) {
-    LOGw.mesh("Other commands are not implemented in the mesh yet.");
-    return null
-  }
 
   static _mergeOptions(newOptions, existingOptions) {
     existingOptions.keepConnectionOpen = newOptions.keepConnectionOpen || existingOptions.keepConnectionOpen;

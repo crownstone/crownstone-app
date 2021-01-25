@@ -781,7 +781,7 @@ export class Persistor {
           .catch((err) => { reject(err); });
       }
       else {
-        resolve();
+        resolve([]);
       }
     })
       .then(() => {

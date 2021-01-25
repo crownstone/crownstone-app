@@ -132,7 +132,7 @@ class BatchCommandHandlerClass {
         // pick the first network to handle
         if (meshNetworkIds.length > 0) {
           let helper = new MeshHelper(meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]], connectedStoneInfo.stoneId);
-          promise = helper.performAction(relayOnlyUsed);
+          promise = helper.performAction(connectedStoneInfo, relayOnlyUsed);
 
           // merge the active options with those of the mesh instructions.
           MeshHelper._mergeOptions(helper.activeOptions, activeOptions);
@@ -157,112 +157,113 @@ class BatchCommandHandlerClass {
             actionPromiseName = command.commandName;
             switch (command.commandName) {
               case 'getBootloaderVersion':
-                actionPromise = BluenetPromiseWrapper.getBootloaderVersion();
+                actionPromise = BluenetPromiseWrapper.getBootloaderVersion(connectedStoneInfo.handle);
                 break;
               case 'getFirmwareVersion':
-                actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
+                actionPromise = BluenetPromiseWrapper.getFirmwareVersion(connectedStoneInfo.handle);
                 break;
               case 'getHardwareVersion':
-                actionPromise = BluenetPromiseWrapper.getHardwareVersion();
+                actionPromise = BluenetPromiseWrapper.getHardwareVersion(connectedStoneInfo.handle);
                 break;
               case 'clearErrors':
-                actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
+                actionPromise = BluenetPromiseWrapper.clearErrors(connectedStoneInfo.handle, command.clearErrorJSON);
                 // actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
               case 'meshSetTime':
               case 'setTime':
                 let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
-                actionPromise = BluenetPromiseWrapper.meshSetTime(timeToSet);
+                actionPromise = BluenetPromiseWrapper.meshSetTime(connectedStoneInfo.handle, timeToSet);
                 break;
               case 'commandFactoryReset':
-                actionPromise = BluenetPromiseWrapper.commandFactoryReset();
+                actionPromise = BluenetPromiseWrapper.commandFactoryReset(connectedStoneInfo.handle);
                 break;
               case 'sendNoOp':
-                actionPromise = BluenetPromiseWrapper.sendNoOp();
+                actionPromise = BluenetPromiseWrapper.sendNoOp(connectedStoneInfo.handle);
                 break;
               case 'setupPulse':
-                actionPromise = BluenetPromiseWrapper.setupPulse();
+                actionPromise = BluenetPromiseWrapper.setupPulse(connectedStoneInfo.handle);
                 break;
               case 'sendMeshNoOp':
-                actionPromise = BluenetPromiseWrapper.sendMeshNoOp();
+                actionPromise = BluenetPromiseWrapper.sendMeshNoOp(connectedStoneInfo.handle);
                 break;
               case 'lockSwitch':
-                actionPromise = BluenetPromiseWrapper.lockSwitch(command.value);
+                actionPromise = BluenetPromiseWrapper.lockSwitch(connectedStoneInfo.handle, command.value);
                 break;
               case 'setMeshChannel':
-                actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
+                actionPromise = BluenetPromiseWrapper.setMeshChannel(connectedStoneInfo.handle, command.channel);
                 break;
               case 'turnOn':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, state: 100};
-                actionPromise = BluenetPromiseWrapper.turnOnMesh([stoneSwitchPacket])
+                actionPromise = BluenetPromiseWrapper.turnOnMesh(connectedStoneInfo.handle, [stoneSwitchPacket])
                 break;
               case 'multiSwitch':
                 stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, state: command.state};
-                actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket])
+                actionPromise = BluenetPromiseWrapper.multiSwitch(connectedStoneInfo.handle, [stoneSwitchPacket])
                 break;
               case 'toggle':
-                actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 100);
+                actionPromise = BluenetPromiseWrapper.toggleSwitchState(connectedStoneInfo.handle, command.stateForOn || 100);
                 break;
               case 'setTapToToggle':
-                actionPromise = BluenetPromiseWrapper.setTapToToggle(command.value);
+                actionPromise = BluenetPromiseWrapper.setTapToToggle(connectedStoneInfo.handle, command.value);
                 break;
               case 'setTapToToggleThresholdOffset':
-                actionPromise = BluenetPromiseWrapper.setTapToToggleThresholdOffset(command.rssiOffset);
+                actionPromise = BluenetPromiseWrapper.setTapToToggleThresholdOffset(connectedStoneInfo.handle, command.rssiOffset);
                 break;
               case 'setSwitchCraft':
-                actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
+                actionPromise = BluenetPromiseWrapper.setSwitchCraft(connectedStoneInfo.handle, command.value);
                 break;
               case 'addBehaviour':
-                actionPromise = BluenetPromiseWrapper.addBehaviour(command.behaviour);
+                actionPromise = BluenetPromiseWrapper.addBehaviour(connectedStoneInfo.handle, command.behaviour);
                 break;
               case 'updateBehaviour':
-                actionPromise = BluenetPromiseWrapper.updateBehaviour(command.behaviour);
+                actionPromise = BluenetPromiseWrapper.updateBehaviour(connectedStoneInfo.handle, command.behaviour);
                 break;
               case 'removeBehaviour':
-                actionPromise = BluenetPromiseWrapper.removeBehaviour(Number(command.index));
+                actionPromise = BluenetPromiseWrapper.removeBehaviour(connectedStoneInfo.handle, Number(command.index));
                 break;
               case 'getBehaviour':
-                actionPromise = BluenetPromiseWrapper.getBehaviour(Number(command.index));
+                actionPromise = BluenetPromiseWrapper.getBehaviour(connectedStoneInfo.handle, Number(command.index));
                 break;
               case 'syncBehaviour':
-                actionPromise = BluenetPromiseWrapper.syncBehaviours(command.behaviours);
+                actionPromise = BluenetPromiseWrapper.syncBehaviours(connectedStoneInfo.handle, command.behaviours);
                 break;
               case 'allowDimming':
-                actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
+                actionPromise = BluenetPromiseWrapper.allowDimming(connectedStoneInfo.handle, command.value);
                 break;
               case 'setSoftOnSpeed':
-                actionPromise = BluenetPromiseWrapper.setSoftOnSpeed(command.softOnSpeed);
+                actionPromise = BluenetPromiseWrapper.setSoftOnSpeed(connectedStoneInfo.handle, command.softOnSpeed);
                 break;
               case 'getBehaviourDebugInformation':
-                actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation();
+                actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation(connectedStoneInfo.handle);
                 break;
               case 'getCrownstoneUptime':
-                actionPromise = BluenetPromiseWrapper.getCrownstoneUptime();
+                actionPromise = BluenetPromiseWrapper.getCrownstoneUptime(connectedStoneInfo.handle);
                 break;
               case 'getAdcRestarts':
-                actionPromise = BluenetPromiseWrapper.getAdcRestarts();
+                actionPromise = BluenetPromiseWrapper.getAdcRestarts(connectedStoneInfo.handle);
                 break;
               case 'getSwitchHistory':
-                actionPromise = BluenetPromiseWrapper.getSwitchHistory();
+                actionPromise = BluenetPromiseWrapper.getSwitchHistory(connectedStoneInfo.handle);
                 break;
               case 'getPowerSamples':
-                actionPromise = BluenetPromiseWrapper.getPowerSamples(command.type);
+                actionPromise = BluenetPromiseWrapper.getPowerSamples(connectedStoneInfo.handle, command.type);
                 break;
               case 'getMinSchedulerFreeSpace':
-                actionPromise = BluenetPromiseWrapper.getMinSchedulerFreeSpace();
+                actionPromise = BluenetPromiseWrapper.getMinSchedulerFreeSpace(connectedStoneInfo.handle);
                 break;
               case 'getLastResetReason':
-                actionPromise = BluenetPromiseWrapper.getLastResetReason();
+                actionPromise = BluenetPromiseWrapper.getLastResetReason(connectedStoneInfo.handle);
                 break;
               case 'getGPREGRET':
-                actionPromise = BluenetPromiseWrapper.getGPREGRET();
+                actionPromise = BluenetPromiseWrapper.getGPREGRET(connectedStoneInfo.handle);
                 break;
               case 'getAdcChannelSwaps':
-                actionPromise = BluenetPromiseWrapper.getAdcChannelSwaps();
+                actionPromise = BluenetPromiseWrapper.getAdcChannelSwaps(connectedStoneInfo.handle);
                 break;
               case 'registerTrackedDevice':
                 let locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
                 actionPromise = BluenetPromiseWrapper.registerTrackedDevice(
+                  connectedStoneInfo.handle,
                   command.trackingNumber,
                   locationUID,
                   command.profileId,
@@ -276,6 +277,7 @@ class BatchCommandHandlerClass {
               case 'trackedDeviceHeartbeat':
                 locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
                 actionPromise = BluenetPromiseWrapper.trackedDeviceHeartbeat(
+                  connectedStoneInfo.handle,
                   command.trackingNumber,
                   locationUID,
                   command.deviceToken,
@@ -283,7 +285,7 @@ class BatchCommandHandlerClass {
                 );
                 break;
               case 'setSunTimes':
-                actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
+                actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(connectedStoneInfo.handle, command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
                 break;
               default:
                 LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);
@@ -377,8 +379,8 @@ class BatchCommandHandlerClass {
    * It will connect to the first responder and perform all commands for that Crownstone. It will then move on to the next one.
    * @returns {Promise<T>}
    */
-  _searchAndHandleCommands(options? : batchCommandEntryOptions) {
-    return new Promise((resolve, reject) => {
+  _searchAndHandleCommands(options? : batchCommandEntryOptions){
+    return new Promise<any | void>((resolve, reject) => {
       // we record the time here to enable failing of failed commands by the attemptHandler that were loaded before this time.
       let executionTimestamp = Date.now();
 
@@ -396,7 +398,7 @@ class BatchCommandHandlerClass {
         this.attemptHandler(null, executionTimestamp,'Nothing to scan');
 
         LOGi.bch("BatchCommandHandler: No topics to scan during BatchCommandHandler execution", this.activePromiseId);
-        resolve();
+        resolve(undefined);
 
         // abort the rest of the method.
         return;
@@ -481,7 +483,7 @@ class BatchCommandHandlerClass {
     })
   }
 
-  _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive: boolean, relayOnlyUsed: boolean, executingPromiseId: string) {
+  _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive: boolean, relayOnlyUsed: boolean, executingPromiseId: string): Promise<void>  {
     return new Promise((resolve, reject) => {
       LOGi.bch("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, executingPromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle, crownstoneToHandle.sphereId, highPriorityActive)
@@ -506,7 +508,7 @@ class BatchCommandHandlerClass {
             // if it is more than 5 hours ago, tell this crownstone the time.
             if (Date.now() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
               // this will never halt the chain since it's optional.
-              return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
+              return BluenetPromiseWrapper.setTime(crownstoneToHandle.handle, StoneUtil.nowToCrownstoneTime())
                 .then(() => {
                   core.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })
@@ -523,7 +525,7 @@ class BatchCommandHandlerClass {
           }
         })
         .then(() => {
-          return BluenetPromiseWrapper.disconnectCommand();
+          return BluenetPromiseWrapper.disconnectCommand(crownstoneToHandle.handle);
         })
         .then(() => {
           if (this._commandHandler.commandsAvailable()) {
@@ -536,7 +538,7 @@ class BatchCommandHandlerClass {
         .catch((err) => {
           // In case the disconnect event triggers a bug, we return this promise and reject the error in either case.
           // This will ensure the promise manager will NEVER stall.
-          return BluenetPromiseWrapper.phoneDisconnect()
+          return BluenetPromiseWrapper.phoneDisconnect(crownstoneToHandle.handle)
             .then((disconnectErr) => {
               reject(err);
             })
@@ -548,7 +550,7 @@ class BatchCommandHandlerClass {
     });
   }
 
-  _keepConnectionOpen(options, crownstoneToHandle : connectionInfo, original: boolean) {
+  _keepConnectionOpen(options, crownstoneToHandle : connectionInfo, original: boolean) : Promise<void> {
     return new Promise((resolve, reject) => {
       let scheduleCloseTimeout = (timeout) => {
         this._removeCloseConnectionTimeout = Scheduler.scheduleCallback(() => {

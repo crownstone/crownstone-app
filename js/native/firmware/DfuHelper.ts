@@ -35,32 +35,32 @@ export class DfuHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'DFU: setting in dfu mode: ' + this.handle});
   }
 
-  _putInDFU(stoneIsInSetupMode : boolean) {
+  _putInDFU(stoneIsInSetupMode : boolean) : Promise<void> {
     return new Promise((resolve, reject) => {
       BluenetPromiseWrapper.connect(this.handle, this.sphereId)
         .then(() => {
           LOG.info("DfuHelper: DFU progress: Connected.");
           if (stoneIsInSetupMode) {
-            return BluenetPromiseWrapper.setupPutInDFU();
+            return BluenetPromiseWrapper.setupPutInDFU(this.handle);
           }
           else {
-            return BluenetPromiseWrapper.putInDFU();
+            return BluenetPromiseWrapper.putInDFU(this.handle);
           }
         })
         .then(() => {
           LOG.info("DfuHelper: DFU progress: Placed in DFU mode.");
           if (stoneIsInSetupMode) {
-            return BluenetPromiseWrapper.phoneDisconnect();
+            return BluenetPromiseWrapper.phoneDisconnect(this.handle);
           }
           else {
-            return BluenetPromiseWrapper.disconnectCommand();
+            return BluenetPromiseWrapper.disconnectCommand(this.handle);
           }
         })
         .then(() => { return delay(3000); })
         .then(() => { resolve(); })
         .catch((err) => {
           LOGe.info("DfuHelper: Error during putInDFU.", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
+          BluenetPromiseWrapper.phoneDisconnect(this.handle).catch(() => {});
           reject(err);
         })
     })
@@ -96,7 +96,7 @@ export class DfuHelper {
           .then(() => { unsubscribe(); })
           .catch((err) => {
             unsubscribe();
-            BluenetPromiseWrapper.phoneDisconnect();
+            BluenetPromiseWrapper.phoneDisconnect(this.handle);
             throw err;
           })
       };

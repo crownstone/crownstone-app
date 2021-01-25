@@ -39,7 +39,7 @@ export const transferToons = {
       });
   },
 
-  updateOnCloud: function( data : transferToCloudData ) {
+  updateOnCloud: function( data : transferToCloudData ) : Promise<void> {
     if (!Permissions.inSphere(data.localSphereId).setToonInCloud) { return new Promise((resolve, reject) => { resolve() })}
 
     if (data.cloudId === undefined) {

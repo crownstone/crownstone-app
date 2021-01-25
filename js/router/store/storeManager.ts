@@ -114,7 +114,7 @@ class StoreManagerClass {
   /**
    * When we log out, we first write all we have to the disk.
    */
-  userLogOut() {
+  userLogOut() : Promise<void> {
     return new Promise((resolve, reject) => {
       // will only do something if we are indeed logged in, denoted by the presence of the user key.
       if (this.persistor.initialized) {

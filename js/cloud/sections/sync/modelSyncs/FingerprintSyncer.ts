@@ -152,7 +152,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : locationSummary) {
+  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : locationSummary) : Promise<void> {
     // get the fingerprints ids from the locationIdObject.
     let locationIds = Object.keys(locationIdsWithCloudFingerprints);
 
@@ -266,7 +266,7 @@ export class FingerprintSyncer extends SyncingBase {
    * @param locationIdsRequiringFingerprints
    * @returns {Promise<any>}
    */
-  syncDown(state, deviceId, locationIdsRequiringFingerprints : locationSummary) {
+  syncDown(state, deviceId, locationIdsRequiringFingerprints : locationSummary) : Promise<void> {
     let cloudIds = Object.keys(locationIdsRequiringFingerprints);
     // download fingerprints for rooms that need it from our cloud database.
     let pendingActions =  [];

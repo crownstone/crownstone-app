@@ -72,11 +72,13 @@ export class LockOverlay extends Component<any, any> {
       })
       .catch((err) => {
         core.eventBus.emit("hideLoading");
-        Alert.alert(
-          lang("_Im_sorry____Something_we_header"),
-          lang("_Im_sorry____Something_we_body"),
-          [{text:lang("_Im_sorry____Something_we_left")}]);
-        this.setState({visible: false, sphereId: null}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
+        this.setState({visible: false, sphereId: null}, () => {
+          NavigationUtil.closeOverlay(this.props.componentId);
+          Alert.alert(
+            lang("_Im_sorry____Something_we_header"),
+            lang("_Im_sorry____Something_we_body"),
+            [{text:lang("_Im_sorry____Something_we_left")}]);
+        });
       });
     BatchCommandHandler.executePriority();
   }

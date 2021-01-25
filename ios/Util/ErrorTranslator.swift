@@ -263,5 +263,9 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "ERR_NOT_FOUND"
     case .ERR_NO_SPACE:
       return "ERR_NO_SPACE"
+  case .HUB_REPLY_TIMEOUT:
+      return "HUB_REPLY_TIMEOUT"
+    case .ALREADY_CONNECTING:
+      return "ALREADY_CONNECTING"
   }
 }

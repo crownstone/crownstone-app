@@ -162,12 +162,12 @@ export class SetupCrownstone extends LiveComponent<{
 
 
     if (this.props.unownedVerified) {
-      let resetPromise = () => {
+      let resetPromise = () : Promise<void> => {
         return new Promise((resolve, reject) => {
           BluenetPromiseWrapper.connect(this.props.setupItem.handle, this.props.sphereId)
-            .then(() => { return BluenetPromiseWrapper.commandFactoryReset() })
-            .then(() => { return BluenetPromiseWrapper.disconnectCommand() })
-            .then(() => { return BluenetPromiseWrapper.phoneDisconnect() })
+            .then(() => { return BluenetPromiseWrapper.commandFactoryReset(this.props.setupItem.handle) })
+            .then(() => { return BluenetPromiseWrapper.disconnectCommand(this.props.setupItem.handle) })
+            .then(() => { return BluenetPromiseWrapper.phoneDisconnect(this.props.setupItem.handle) })
             .then(() => { resolve() })
             .catch((err) => { reject(err) })
         })

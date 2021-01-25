@@ -74,17 +74,17 @@ export class SetupHelper {
           .then(() => {
             LOG.info("setup progress: connected");
             core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 2/20 });
-            return BluenetPromiseWrapper.getMACAddress();
+            return BluenetPromiseWrapper.getMACAddress(this.handle);
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
             LOG.info("setup progress: have mac address: ", macAddress);
-            return BluenetPromiseWrapper.getFirmwareVersion();
+            return BluenetPromiseWrapper.getFirmwareVersion(this.handle);
           })
           .then((firmwareVersion) => {
             this.firmwareVersion = firmwareVersion;
             LOG.info("setup progress: have firmware version: ", firmwareVersion);
-            return BluenetPromiseWrapper.getHardwareVersion();
+            return BluenetPromiseWrapper.getHardwareVersion(this.handle);
           })
           .then((hardwareVersion) => {
             this.hardwareVersion = hardwareVersion;
@@ -224,7 +224,7 @@ export class SetupHelper {
 
             LOGe.info("SetupHelper: Error during setup phase:", err);
 
-            promises.push(BluenetPromiseWrapper.phoneDisconnect().catch(() => {}));
+            promises.push(BluenetPromiseWrapper.phoneDisconnect(this.handle).catch(() => {}));
 
             return Promise.all(promises).then(() => { throw err; });
           })
@@ -355,7 +355,7 @@ export class SetupHelper {
   }
 
 
-  _setupCrownstone(setupData, sphereId) {
+  _setupCrownstone(setupData, sphereId) : Promise<void>  {
     let data = {
       crownstoneId:       setupData.crownstoneId,
       sphereId:           setupData.sphereId,
@@ -380,7 +380,7 @@ export class SetupHelper {
     return new Promise((resolve, reject) => {
       BluenetPromiseWrapper.connect(this.handle, sphereId)
         .then(() => {
-          return BluenetPromiseWrapper.setupCrownstone(data);
+          return BluenetPromiseWrapper.setupCrownstone(this.handle, data);
         })
         .then(() => {
           unsubscribe();

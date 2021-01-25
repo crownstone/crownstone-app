@@ -40,7 +40,7 @@ export const getImageFileFromUser = function(email) {
 };
 
 
-export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) : Promise<string> {
+export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) : Promise<string | void> {
   return new Promise((resolve, reject) => {
     if (!pictureURI) { return resolve(); }
 
@@ -76,8 +76,14 @@ export const processStockCustomImage = function(targetName, picture, source) : P
   return new Promise((resolve, reject) => {
       if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
         processImage(picture, targetName + ".jpg")
-          .then((newPicturePath: string) => {
-            resolve({picture: newPicturePath, pictureURI: {uri: xUtil.preparePictureURI(newPicturePath)}, source: source})
+          .then((newPicturePath) => {
+            if (newPicturePath) {
+              resolve({
+                picture: newPicturePath,
+                pictureURI: { uri: xUtil.preparePictureURI(newPicturePath) },
+                source: source
+              })
+            }
           })
       }
       else {
@@ -104,7 +110,7 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
 };
 
 
-export const delay = function(ms, performAfterDelay = null) {
+export const delay = function(ms, performAfterDelay = null) : Promise<void>  {
   return new Promise((resolve, reject) => {
     // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
     Scheduler.scheduleCallback(() => {

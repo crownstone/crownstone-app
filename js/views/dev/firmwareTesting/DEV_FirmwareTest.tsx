@@ -110,7 +110,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     let state = core.store.getState();
 
     if (connect) {
-      ConnectionManager.connectWillStart()
+      ConnectionManager.connectWillStart(this.props.handle)
       let proxy = BleUtil.getProxy(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
       promise = proxy.performPriority(action, props, PROXY_OPTIONS)
     }
@@ -118,7 +118,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       ConnectionManager.disconnect()
       let actionPromise = () => {
         if (immediate) {
-          return new Promise((resolve, reject) => {
+          return new Promise<void>((resolve, reject) => {
             // @ts-ignore
             action.apply(this, props).catch((err) => {});
             setTimeout(() => {

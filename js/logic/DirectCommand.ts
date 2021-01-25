@@ -47,7 +47,7 @@ export class DirectCommand {
             resultData = {data:data};
             if (!options || options && options.keepConnectionOpen !== true) {
               LOG.bch("DirectCommand: completed", action, 'disconnecting', data);
-              return BluenetPromiseWrapper.phoneDisconnect();
+              return BluenetPromiseWrapper.phoneDisconnect(this.handle);
             }
           })
           .catch((err) => {
@@ -82,7 +82,7 @@ export class DirectCommand {
     let retryCount = 0;
     let retryLimit = 1;
     let actionStep = (result) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         let mostUpToDateResult = result;
         if (actionIndex < actions.length) {
           actions[actionIndex](result)
@@ -122,11 +122,11 @@ export class DirectCommand {
           .then(() => {
             return actionStep(undefined);
           })
-          .then(() => { LOG.bch("DirectCommand: performMultipleCommands: completed", actions, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
+          .then(() => { LOG.bch("DirectCommand: performMultipleCommands: completed", actions, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(this.handle); })
           .catch((err) => {
             LOGe.bch("performMultipleCommands: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
-              BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+              BluenetPromiseWrapper.phoneDisconnect(this.handle).then(() => { reject(err) }).catch(() => { reject(err) });
             })
           })
       }

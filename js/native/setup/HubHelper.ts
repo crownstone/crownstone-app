@@ -51,6 +51,7 @@ export class HubHelper {
   async _setup(sphereId, stoneId: string, createHubOnline: boolean) : Promise<{ hubId: string, cloudId: string }> {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     let stone = DataUtil.getStone(sphereId, stoneId);
+    let handle = stone.config.handle;
     if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
     if (!stone.config.handle) { throw {code: 2, message:"No handle."};     }
 
@@ -58,9 +59,9 @@ export class HubHelper {
     let hubToken = null;
     let hubCloudId = null;
     let hubId = xUtil.getUUID();
-    core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 22 / 20 });
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 22 / 20 });
     let setupHubPromise = async () => {
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 24 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 24 / 20 });
       // download UART key from this stone in the cloud
       let keyData = await CLOUD.getKeys(sphereId, stoneId);
       if (keyData.length === 1) {
@@ -75,7 +76,7 @@ export class HubHelper {
 
       if (!uartKey) { throw {code: 10, message:"No Uart Key available."}; }
       // we now have everything we need to create a hub.
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 26 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 26 / 20 });
       if (createHubOnline) {
         // generate token
         hubToken = xUtil.getHubHexToken()
@@ -89,15 +90,15 @@ export class HubHelper {
         })
         hubCloudId = hubData.id;
       }
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 28 / 20 });
-      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 28 / 20 });
+      await BluenetPromiseWrapper.connect(handle, sphereId);
 
       LOG.info("hubSetupProgress: connected");
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 30 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 30 / 20 });
       if (createHubOnline) {
         LOG.info("hubSetupProgress: token and sphereId being prepared...");
-        let tokenResult = await BluenetPromiseWrapper.transferHubTokenAndCloudId(hubToken, hubCloudId);
-        core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 32 / 20 });
+        let tokenResult = await BluenetPromiseWrapper.transferHubTokenAndCloudId(handle, hubToken, hubCloudId);
+        core.eventBus.emit("setupInProgress", { handle: handle, progress: 32 / 20 });
         if (tokenResult.type === 'error') {
           try {
             await CLOUD.deleteHub(hubCloudId);
@@ -115,27 +116,27 @@ export class HubHelper {
 
       if (!createHubOnline) {
         LOG.info("hubSetupProgress: Requesting cloud Id...");
-        let requestedData = await BluenetPromiseWrapper.requestCloudId();
+        let requestedData = await BluenetPromiseWrapper.requestCloudId(handle);
         console.log("requestCloudId Received key data", requestedData);
         if (requestedData.type === 'error') {
           throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) }
         }
         hubCloudId = requestedData.message;
       }
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 34 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 34 / 20 });
 
-      await BluenetPromiseWrapper.setUartKey(uartKey);
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 36 / 20 });
-      await BluenetPromiseWrapper.disconnectCommand();
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 38 / 20 });
+      await BluenetPromiseWrapper.setUartKey(handle, uartKey);
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 36 / 20 });
+      await BluenetPromiseWrapper.disconnectCommand(handle);
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 38 / 20 });
 
       if (!createHubOnline) {
         hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
 
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 39 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 39 / 20 });
       await Scheduler.delay(3000, 'wait for hub to initialize')
-      core.eventBus.emit("setupInProgress", { handle: stone.config.handle, progress: 40 / 20 });
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 40 / 20 });
       await Scheduler.delay(500, 'wait for hub to initialize')
 
       return { hubId: hubId, cloudId: hubCloudId };
@@ -155,6 +156,7 @@ export class HubHelper {
   async createLocalHubInstance(sphereId, stoneId: string) : Promise<string> {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     let stone = DataUtil.getStone(sphereId, stoneId);
+    let handle = stone.config.handle;
     if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
     if (!stone.config.handle) { throw {code: 2, message:"No handle."};     }
 
@@ -164,12 +166,12 @@ export class HubHelper {
     let hubId = xUtil.getUUID();
     let setupHubPromise = async () => {
       // we now have everything we need to create a hub.
-      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+      await BluenetPromiseWrapper.connect(handle, sphereId);
 
       LOG.info("hubSetupProgress: Requesting cloud Id...");
       let hubId;
       try {
-        let requestedData = await BluenetPromiseWrapper.requestCloudId();
+        let requestedData = await BluenetPromiseWrapper.requestCloudId(handle);
         if (requestedData.type === 'error') {
           throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId" }
         }
@@ -188,7 +190,7 @@ export class HubHelper {
           throw err;
         }
       }
-      await BluenetPromiseWrapper.disconnectCommand();
+      await BluenetPromiseWrapper.disconnectCommand(handle);
 
 
 
@@ -257,17 +259,18 @@ export class HubHelper {
 
   async factoryResetHub(sphereId, stoneId) : Promise<void> {
     let stone = Get.stone(sphereId, stoneId);
+    let handle = stone.config.handle;
     let setupHubPromise = async () => {
       LOG.info("hubFactoryResetProgress: connecting");
-      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+      await BluenetPromiseWrapper.connect(handle, sphereId);
 
       LOG.info("hubFactoryResetProgress: connected");
       LOG.info("hubFactoryResetProgress: Factory resetting...");
-      let result = await BluenetPromiseWrapper.factoryResetHub();
+      let result = await BluenetPromiseWrapper.factoryResetHub(handle);
       if (result.type === 'error') {
         throw { code: 3, errorType: result.errorType, message:"Something went wrong while resetting hub" }
       }
-      await BluenetPromiseWrapper.disconnectCommand();
+      await BluenetPromiseWrapper.disconnectCommand(handle);
 
       await Scheduler.delay(2000, 'wait for hub to initialize')
     }
@@ -278,17 +281,18 @@ export class HubHelper {
 
   async factoryResetHubOnly(sphereId, stoneId) : Promise<void> {
     let stone = Get.stone(sphereId, stoneId);
+    let handle = stone.config.handle;
     let setupHubPromise = async () => {
       LOG.info("hubFactoryResetHubONLYProgress: connecting");
-      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+      await BluenetPromiseWrapper.connect(handle, sphereId);
 
       LOG.info("hubFactoryResetHubONLYProgress: connected");
       LOG.info("hubFactoryResetHubONLYProgress: Factory resetting hub only...");
-      let result = await BluenetPromiseWrapper.factoryResetHubOnly();
+      let result = await BluenetPromiseWrapper.factoryResetHubOnly(handle);
       if (result.type === 'error') {
         throw { code: 3, errorType: result.errorType, message:"Something went wrong while resetting hub only." }
       }
-      await BluenetPromiseWrapper.disconnectCommand();
+      await BluenetPromiseWrapper.disconnectCommand(handle);
 
       await Scheduler.delay(2000, 'wait for hub to initialize')
     }
@@ -299,18 +303,19 @@ export class HubHelper {
 
   async getCloudIdFromHub(sphereId, stoneId) : Promise<string> {
     let stone = Get.stone(sphereId, stoneId);
+    let handle = stone.config.handle;
     let setupHubPromise = async () => {
       LOG.info("getCloudIdFromHub: connecting");
-      await BluenetPromiseWrapper.connect(stone.config.handle, sphereId);
+      await BluenetPromiseWrapper.connect(handle, sphereId);
 
       LOG.info("getCloudIdFromHub: connected");
       LOG.info("getCloudIdFromHub: Requesting cloud Id...");
-      let result = await BluenetPromiseWrapper.requestCloudId();
+      let result = await BluenetPromiseWrapper.requestCloudId(handle);
       if (result.type === 'error') {
         throw { code: 3, errorType: result.errorType, message:"Something went wrong while getting CloudId" }
       }
       LOG.info("getCloudIdFromHub: disconnecting");
-      await BluenetPromiseWrapper.disconnectCommand();
+      await BluenetPromiseWrapper.disconnectCommand(handle);
 
       return result.message;
     }
