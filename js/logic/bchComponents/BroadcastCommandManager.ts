@@ -50,7 +50,7 @@ class BroadcastCommandManagerClass {
         return throttling;
       }
 
-      switch (commandSummary.command.commandName) {
+      switch (commandSummary.command.type) {
         case "multiSwitch":
           return this._broadCastMultiSwitch(commandSummary);
         case "turnOn":
@@ -187,7 +187,7 @@ class BroadcastCommandManagerClass {
       this._setPendingCommandCheck();
 
       return new Promise((resolve, reject) => {
-        this.queue.push({type: commandSummary.command.commandName, stoneId: commandSummary.stoneId, command: commandSummary, resolver: resolve, rejecter: reject})
+        this.queue.push({type: commandSummary.command.type, stoneId: commandSummary.stoneId, command: commandSummary, resolver: resolve, rejecter: reject})
       });
     }
     return false;
@@ -197,7 +197,7 @@ class BroadcastCommandManagerClass {
     for (let i = this.queue.length-1; i >= 0; i--) {
       // only most recent command of any type will be broadcast
       let existingType = this.queue[i].type;
-      let incomingType = commandSummary.command.commandName;
+      let incomingType = commandSummary.command.type;
       if (commandSummary.stoneId === this.queue[i].stoneId) {
         let conflictingCommand = existingType === incomingType ||
           existingType === 'multiSwitch' && incomingType === 'turnOn' ||
@@ -236,14 +236,14 @@ class BroadcastCommandManagerClass {
     }
 
     // check if this is a valid command
-    if (!(commandSummary && commandSummary.command && commandSummary.command.commandName)) {
+    if (!(commandSummary && commandSummary.command && commandSummary.command.type)) {
       return false;
     }
 
 
     if ((Platform.OS === 'ios' && AppState.currentState === 'active') || Platform.OS === 'android') {
       // allow broadcast attempt for whitelisted commands
-      if (this.commandsToBroadcast[commandSummary.command.commandName] === true) {
+      if (this.commandsToBroadcast[commandSummary.command.type] === true) {
         return true
       }
     }

@@ -154,8 +154,8 @@ class BatchCommandHandlerClass {
             performedAction = action;
             // merge the active options with those of the mesh instructions.
             MeshHelper._mergeOptions(action.options, activeOptions);
-            actionPromiseName = command.commandName;
-            switch (command.commandName) {
+            actionPromiseName = command.type;
+            switch (command.type) {
               case 'getBootloaderVersion':
                 actionPromise = BluenetPromiseWrapper.getBootloaderVersion(connectedStoneInfo.handle);
                 break;

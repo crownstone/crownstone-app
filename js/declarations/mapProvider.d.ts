@@ -18,13 +18,13 @@ interface LocationMap {
 }
 
 interface StoneSphereHandleMap {
-  [key: string]: {
-    [key: string]: StoneMap
+  [sphereId: string]: {
+    [handle: string]: StoneMap
   }
 }
 
 interface StoneHandleMap {
-  [key: string]: StoneMap
+  [handle: string]: StoneMap
 }
 
 interface StoneSummaryMap {

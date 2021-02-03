@@ -621,7 +621,7 @@ export function getDevAppItems() {
       }
     });
     items.push({
-      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
+      label: "This can brick your Crownstones. Beware! Your locationhandler will be sessionIsKilled. Restart the app to go back to app mode.",
       type: 'explanation',
       below: true
     });

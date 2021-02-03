@@ -237,7 +237,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
           unlockCrownstone={ () => {
-            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false });
+            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { type : 'lockSwitch', value: false });
             BatchCommandHandler.executePriority();
             return promise;
           }}
@@ -392,7 +392,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
               stone,
               this.props.stoneId,
               this.props.sphereId,
-              {commandName:'turnOn'},
+              {type:'turnOn'},
               {},
               2,
               "From DeviceOverview"

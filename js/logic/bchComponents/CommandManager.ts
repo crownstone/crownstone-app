@@ -12,7 +12,7 @@ export class CommandManager {
   commands  : batchCommands = {};
 
   load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) : Promise<bchReturnType> {
-    if (stone.config.locked === true && (command.commandName === "multiSwitch" || command.commandName === "turnOn")) {
+    if (stone.config.locked === true && (command.type === "multiSwitch" || command.type === "turnOn")) {
       return new Promise((resolve, reject) => { reject({code: BCH_ERROR_CODES.STONE_IS_LOCKED, message:"Stone is Locked"}); });
     }
     else {
@@ -50,7 +50,7 @@ export class CommandManager {
     let uuids = Object.keys(this.commands);
 
     let clean = (todo) => {
-      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName, todo);
+      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.type, todo);
       todo.promise.reject({code: BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE, message:"Removed because of duplicate"});
       todo.cleanup();
     };
@@ -59,12 +59,12 @@ export class CommandManager {
       let todo = this.commands[uuids[i]];
 
       if (todo.sphereId === sphereId && todo.stoneId === stoneId) {
-        let conflictingCommand = todo.command.commandName === command.commandName ||
-                                 todo.command.commandName === 'multiSwitch' && command.commandName === 'turnOn' ||
-                                 todo.command.commandName === 'turnOn'      && command.commandName === 'multiSwitch';
+        let conflictingCommand = todo.command.type === command.type ||
+                                 todo.command.type === 'multiSwitch' && command.type === 'turnOn' ||
+                                 todo.command.type === 'turnOn'      && command.type === 'multiSwitch';
         if (conflictingCommand) {
           let duplicate = false;
-          switch(todo.command.commandName) {
+          switch(todo.command.type) {
             case 'multiSwitch':
             case 'turnOn':
             case 'getBootloaderVersion':
@@ -94,7 +94,7 @@ export class CommandManager {
               duplicate = xUtil.deepCompare(todo.command, command);
               break;
             case 'registerTrackedDevice':
-              if (command.commandName === "registerTrackedDevice") {
+              if (command.type === "registerTrackedDevice") {
                 duplicate = todo.command.trackingNumber === command.trackingNumber;
               }
               break;
@@ -106,7 +106,7 @@ export class CommandManager {
             if (todo.promise.pending === false) {
               clean(todo);
             } else {
-              LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+              LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.type);
             }
           }
         }
@@ -116,7 +116,7 @@ export class CommandManager {
 
 
   isMeshEnabledCommand(command : commandInterface) {
-    switch (command.commandName) {
+    switch (command.type) {
       case 'multiSwitch':
         return true;
       default:
@@ -172,7 +172,7 @@ export class CommandManager {
     }
 
     let payload = _getPayloadFromCommand(todo, stoneConfig);
-    switch (command.commandName) {
+    switch (command.type) {
       case 'multiSwitch':
         meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         break;
@@ -422,7 +422,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   let payload;
   let command = batchCommand.command;
 
-  if (command.commandName === 'multiSwitch') {
+  if (command.type === 'multiSwitch') {
     payload = {
       stoneId: batchCommand.stoneId,
       commandUuid: batchCommand.commandUuid,
@@ -432,7 +432,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
       options: batchCommand.options,
       handle: stoneConfig.handle,
       state: command.state,
-      // state: command.commandName === 'turnOn' ? 255 : Math.max(0,Math.min(100,100*command.state)),
+      // state: command.type === 'turnOn' ? 255 : Math.max(0,Math.min(100,100*command.state)),
       cleanup: batchCommand.cleanup,
       promise: batchCommand.promise
     };

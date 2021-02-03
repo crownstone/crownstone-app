@@ -307,7 +307,7 @@ lang("arguments___arguments___O_body",content),
         }
       };
 
-      // read the document dir for files that have been created during the registration process
+      // read the document dir for files that have been created during the _requests process
       RNFS.readDir(FileUtil.getPath())
         .then(handleFiles)
     });
@@ -368,7 +368,7 @@ lang("arguments___arguments___O_body",content),
       }
     });
 
-    // check if we need to upload a picture that has been set aside during the registration process.
+    // check if we need to upload a picture that has been set aside during the _requests process.
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {

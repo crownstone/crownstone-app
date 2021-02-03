@@ -119,6 +119,25 @@ open class BluenetJS: RCTEventEmitter {
         self.sendEvent(withName: "localizationPausedState", body: castData)
       }
     })
+    
+    
+    GLOBAL_BLUENET.bluenetOn("connectedToPeripheral", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "connectedToPeripheral", body: castData)
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("connectedToPeripheralFailed", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "connectedToPeripheralFailed", body: castData)
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("disconnectedFromPeripheral", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "disconnectedFromPeripheral", body: castData)
+      }
+    })
 
     // forward the navigation event stream to react native
     GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
@@ -227,8 +246,17 @@ open class BluenetJS: RCTEventEmitter {
 
 
   @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
-    let handleUUID = UUID(uuidString: handle)
-    wrapForBluenet("connect", callback, GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId))
+    LOGGER.info("BluenetBridge: Called connect to handle \(handle)")
+    GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
+      .done{ crownstoneMode in callback([["error" : false, "data": "\(crownstoneMode)"]]) }
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
+        }
+    }
   }
   
   @objc func phoneDisconnect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {

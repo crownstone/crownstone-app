@@ -133,7 +133,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Debug Info...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
 
@@ -192,7 +192,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Crownstone Uptime...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data = returnData.data;
@@ -217,7 +217,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get ADC Restarts...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : AdcRestart = returnData.data;
@@ -245,7 +245,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get ADC channel swaps...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getAdcChannelSwaps'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getAdcChannelSwaps'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : AdcSwapCount = returnData.data;
@@ -272,7 +272,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get last reset reason...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getLastResetReason'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getLastResetReason'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : ResetReason = returnData.data;
@@ -299,7 +299,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get Min Scheduler Free Space...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getMinSchedulerFreeSpace'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getMinSchedulerFreeSpace'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : number = returnData.data;
@@ -325,7 +325,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get GPREGRET...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getGPREGRET'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getGPREGRET'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : GPREGRET = returnData.data;
@@ -352,7 +352,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get switch history...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
             let data : SwitchHistory[] = returnData.data.reverse();
@@ -723,7 +723,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   getBuffers(stone, type : PowersampleDataType) {
     this.visibleBuffer = null;
-    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getPowerSamples', type: type}, {}, 2, "From StoneDebug")
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getPowerSamples', type: type}, {}, 2, "From StoneDebug")
       .then((returnData) => {
         core.eventBus.emit("hideLoading");
         let data : PowerSamples[] = returnData.data;

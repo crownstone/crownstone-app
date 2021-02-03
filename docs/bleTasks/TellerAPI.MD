@@ -34,7 +34,6 @@ function tellSphere(sphereId, minConnections = 3) : CommandAPI
 
 These can be used like:
 ```
-
 await tell(crownstoneHandle).turnOn()
 
 // or
@@ -68,7 +67,8 @@ getting a connection, respecting the timeout, requesting commands to send to the
 #### SessionManager
 The session manager does bookkeeping of sessions. If multiple Collectors want to have a session with Crownstone 5, the SessionManager will ensure there's only a single session 
 and the BleCommandQueue will ensure that all Crownstones can get their messages sent. The SessionManager also has a managementAPI, where we can kill all sessions when we 
-want to start a DFU process for instance. It will also be able to queue session requests if it is blocked from making new sessions (like with DFU).
+want to start a DFU process for instance. It will also be able to queue session requests if it is blocked from making new sessions (like with DFU). This class will also limit 
+the total number of open Sessions if required.
 
 #### BleCommandQueue
 This collects a queue of commands for a number of Crownstones. Once a Session is connected, it requests something to do from the BleCommandQueue. This queue looks at the

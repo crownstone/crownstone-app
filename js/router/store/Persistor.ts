@@ -774,7 +774,7 @@ export class Persistor {
    */
   _cascadeRemovals(keyRemovals : string[]) : Promise<string[]> {
     return new Promise((resolve, reject) => {
-      // we require a userKey reference, either get it or we already have it.
+      // we require a userKey identifier, either get it or we already have it.
       let userKeys = Object.keys(this.userKeyCache);
       if (userKeys.length === 0) {
         return this._getAndCreateUserKeyCache()

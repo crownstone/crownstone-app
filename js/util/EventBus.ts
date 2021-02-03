@@ -81,6 +81,13 @@ export class EventBusClass {
     }
   }
 
+  once(topic, callback) {
+    let unsubscriber = this.on(topic, (data: any) => {
+      unsubscriber();
+      callback(data);
+    });
+  }
+
 
   clearAllEvents() {
     LOG.info("EventBus: Clearing all event listeners.");

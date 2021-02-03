@@ -317,7 +317,7 @@ lang("_Something_went_wrong_____body"),
       })
       .then(() => {
         core.eventBus.emit('showLoading', lang("Factory_resetting_the_Cro"));
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
           .then(() => {
             this._removeCrownstoneFromRedux(true);
           })
@@ -452,7 +452,7 @@ lang("_Something_went_wrong_____body"),
 
           this.setState({refreshingStoneVersions: true});
           let promises = [];
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware')
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getFirmwareVersion'},{},2, 'from checkFirmware')
             .then((firmwareVersion : {data: string}) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
@@ -470,7 +470,7 @@ lang("_Something_went_wrong_____body"),
                 [{text:lang("_Whoops___I_could_not_get_left")}]);
               throw err;
             }));
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getHardwareVersion'},{},2, 'from checkFirmware')
             .then((hardwareVersion : {data: string}) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
@@ -488,7 +488,7 @@ lang("_Something_went_wrong_____body"),
                 [{text:lang("_Whoops___I_could_not_get__left")}]);
               throw err;
             }))
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBootloaderVersion'},{},2, 'from checkFirmware')
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getBootloaderVersion'},{},2, 'from checkFirmware')
             .then((bootloaderVersion : {data: string}) => {
               let version = bootloaderVersion.data;
               if (version) {

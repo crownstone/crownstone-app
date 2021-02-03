@@ -223,13 +223,13 @@ class NotificationParserClass {
           break;
         case "TURN_ON":
           actionToPerform = true;
-          BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName:"turnOn"}, {autoExecute: false}).catch()
+          BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type:"turnOn"}, {autoExecute: false}).catch()
           return;
         default:
           return;
       }
       actionToPerform = true;
-      BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName:"multiSwitch", state: switchState}, {autoExecute: false}).catch()
+      BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type:"multiSwitch", state: switchState}, {autoExecute: false}).catch()
     });
 
     if (actionToPerform) {

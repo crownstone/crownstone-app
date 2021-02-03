@@ -94,11 +94,11 @@ class TimeKeeperClass {
             if (i > 3) { break; }
 
             StoneAvailabilityTracker.setTrigger(sphereId, stoneIds[i], TRIGGER_ID, () => {
-              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, { commandName: "setTime" })
+              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, { type: "setTime" })
                 .catch((err) => {
                 })
               BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, {
-                commandName: "setSunTimes",
+                type: "setSunTimes",
                 sunriseSecondsSinceMidnight: suntimes.sunrise,
                 sunsetSecondsSinceMidnight: suntimes.sunset
               })

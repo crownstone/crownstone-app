@@ -39,7 +39,7 @@ class FirmwareWatcherClass {
       // random chance to check the firmware again.
       if (execute) {
         StoneAvailabilityTracker.setTrigger(sphereId, stoneId, "FIRMWARE_WATCHER", () => {
-          BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
+          BatchCommandHandler.load(stone, stoneId, sphereId, {type: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
             .then((firmwareVersion : {data: string}) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
@@ -51,7 +51,7 @@ class FirmwareWatcherClass {
               });
             })
             .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
-          BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
+          BatchCommandHandler.load(stone, stoneId, sphereId, {type: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
             .then((hardwareVersion : {data: string}) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",

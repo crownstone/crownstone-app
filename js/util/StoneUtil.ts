@@ -40,7 +40,7 @@ export const StoneUtil = {
       stone,
       stoneId,
       sphereId,
-      {commandName:'multiSwitch', state: newState},
+      {type:'multiSwitch', state: newState},
       options,
       attempts,
       label
@@ -77,7 +77,7 @@ export const StoneUtil = {
       stone,
       stoneId,
       sphereId,
-      {commandName:'turnOn'},
+      {type:'turnOn'},
       options,
       attempts,
       label
@@ -138,7 +138,7 @@ export const StoneUtil = {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from StoneUtil checkFirmware');
+    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type: 'getFirmwareVersion'},{},1, 'from StoneUtil checkFirmware');
     BatchCommandHandler.executePriority();
     return promise;
   },
@@ -147,7 +147,7 @@ export const StoneUtil = {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName: 'getBootloaderVersion'},{},1, 'from StoneUtil checkBootloaderVersion');
+    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type: 'getBootloaderVersion'},{},1, 'from StoneUtil checkBootloaderVersion');
     BatchCommandHandler.executePriority();
     return promise;
   },
@@ -168,7 +168,7 @@ export const StoneUtil = {
       stone,
       stoneId,
       sphereId,
-      {commandName:'clearErrors', clearErrorJSON: clearTheseErrors},
+      {type:'clearErrors', clearErrorJSON: clearTheseErrors},
       {},
       1000,
       'from _getButton in ErrorOverlay'

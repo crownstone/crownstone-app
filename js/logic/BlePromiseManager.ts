@@ -4,7 +4,7 @@ import { PROMISE_MANAGER_FALLBACK_TIMEOUT } from "../ExternalConfig";
 import { core } from "../core";
 
 
-class BlePromiseManagerClass {
+class PromiseManagerClass {
   pendingPromises : any;
   promiseInProgress : any;
   clearPendingPromiseTimeout : any;
@@ -104,4 +104,4 @@ class BlePromiseManagerClass {
   }
 }
 
-export const BlePromiseManager = new BlePromiseManagerClass();
+export const PromiseManager = new PromiseManagerClass();

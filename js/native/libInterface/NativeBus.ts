@@ -52,6 +52,10 @@ export class NativeBusClass {
 
       callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
       localizationPausedState: "localizationPausedState",       // data type = string (url)
+
+      connectedToPeripheral:       "connectedToPeripheral",       // date type = string (handle)
+      connectedToPeripheralFailed: "connectedToPeripheralFailed", // date type = string (handle)
+      disconnectedFromPeripheral:  "disconnectedFromPeripheral",  // date type = string (handle)
     };
 
     this.refMap = {};

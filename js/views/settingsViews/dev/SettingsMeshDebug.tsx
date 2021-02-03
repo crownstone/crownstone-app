@@ -109,7 +109,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
       let stone = stones[stoneId];
       if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
         BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {
-          commandName: 'setMeshChannel',
+          type: 'setMeshChannel',
           channel: channel
         }, {}, 2, 'mesh_channelSet' + stoneId)
           .then(() => {

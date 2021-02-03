@@ -1,8 +1,10 @@
+type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu"
 
 interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons()                                                 : Promise< void >,
   commandFactoryReset(handle: string)                                   : Promise< void >,
-  connect(handle: string, referenceId: string, highPriority?: boolean)  : Promise< void >,
+  connect(handle: string, referenceId: string, highPriority?: boolean)  : Promise< CrownstoneMode >,
+  cancelConnectionRequest(handle: string)                               : Promise< void >,
   disconnectCommand(handle: string)                                     : Promise< void >,
   getMACAddress(handle: string)                                         : Promise< string >,
   getFirmwareVersion(handle: string)                                    : Promise< string >,

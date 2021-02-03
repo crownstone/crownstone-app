@@ -90,6 +90,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
       });
     }
   },
+  cancelConnectionRequest: (handle: string) => { return BluenetPromise('cancelConnectionRequest', handle); },
   // this never rejects
   disconnectCommand: (handle: string) => {
     return BluenetPromise('disconnectCommand')

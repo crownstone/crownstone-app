@@ -61,7 +61,7 @@ export class LockOverlay extends Component<any, any> {
 
   _lockCrownstone(stone) {
     core.eventBus.emit("showLoading", lang("Locking_Crownstone___"));
-    BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { commandName : 'lockSwitch', value: true })
+    BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { type : 'lockSwitch', value: true })
       .then(() => {
         core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {

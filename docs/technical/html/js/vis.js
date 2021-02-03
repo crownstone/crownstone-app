@@ -297,7 +297,7 @@ function copyOrDelete(a, b, prop, allowDeletion) {
   if (doDeletion) {
     delete a[prop];
   } else {
-    a[prop] = b[prop]; // Remember, this is a reference copy!
+    a[prop] = b[prop]; // Remember, this is a identifier copy!
   }
 }
 
@@ -3346,7 +3346,7 @@ exports.resetElements = function (JSONcontainer) {
 };
 
 /**
- * Allocate or generate an SVG element if needed. Store a reference to it in the JSON container and draw it in the svgContainer
+ * Allocate or generate an SVG element if needed. Store a identifier to it in the JSON container and draw it in the svgContainer
  * the JSON container and the SVG container have to be supplied so other svg containers (like the legend) can use this.
  *
  * @param {string} elementType
@@ -3380,7 +3380,7 @@ exports.getSVGElement = function (elementType, JSONcontainer, svgContainer) {
 };
 
 /**
- * Allocate or generate an SVG element if needed. Store a reference to it in the JSON container and draw it in the svgContainer
+ * Allocate or generate an SVG element if needed. Store a identifier to it in the JSON container and draw it in the svgContainer
  * the JSON container and the SVG container have to be supplied so other svg containers (like the legend) can use this.
  *
  * @param {string} elementType
@@ -3626,14 +3626,14 @@ var Validator = function () {
         //       THAT'S A REALLY BAD PLACE TO ALLOW IT!!!!
         // TODO: Examine if needed, remove if possible
 
-        // __any__ is a wildcard. Any value is accepted and will be further analysed by reference.
+        // __any__ is a wildcard. Any value is accepted and will be further analysed by identifier.
         referenceOption = '__any__';
 
         // if the any-subgroup is not a predefined object in the configurator,
         // we do not look deeper into the object.
         is_object = Validator.getType(options[option]) === 'object';
       } else {
-        // Since all options in the reference are objects, we can check whether 
+        // Since all options in the identifier are objects, we can check whether
         // they are supposed to be the object to look for the __type__ field.
         // if this is an object, we check if the correct type has been supplied to account for shorthand options.
       }
@@ -3650,9 +3650,9 @@ var Validator = function () {
      *
      * @param {string}  option           | the option property
      * @param {Object}  options          | The supplied options object
-     * @param {Object}  referenceOptions | The reference options containing all options and their allowed formats
+     * @param {Object}  referenceOptions | The identifier options containing all options and their allowed formats
      * @param {string}  referenceOption  | Usually this is the same as option, except when handling an __any__ tag.
-     * @param {string}  refOptionObj     | This is the type object from the reference options
+     * @param {string}  refOptionObj     | This is the type object from the identifier options
      * @param {Array}   path             | where in the object is the option
      * @static
      */
@@ -14375,7 +14375,7 @@ var Edge = function () {
    * @param {Object} options        values specific to this edge, must contain at least 'from' and 'to'
    * @param {Object} body           shared state from Network instance
    * @param {Object} globalOptions  options from the EdgesHandler instance
-   * @param {Object} defaultOptions default options from the EdgeHandler instance. Value and reference are constant
+   * @param {Object} defaultOptions default options from the EdgeHandler instance. Value and identifier are constant
    */
   function Edge(options, body, globalOptions, defaultOptions) {
     (0, _classCallCheck3['default'])(this, Edge);
@@ -14384,7 +14384,7 @@ var Edge = function () {
       throw new Error("No body provided");
     }
 
-    // Since globalOptions is constant in values as well as reference,
+    // Since globalOptions is constant in values as well as identifier,
     // Following needs to be done only once.
 
     this.options = util.bridgeObject(globalOptions);
@@ -16441,7 +16441,7 @@ var OPTIONKEYS = ['width', 'height', 'filterLabel', 'legendLabel', 'xLabel', 'yL
  */
 var PREFIXEDOPTIONKEYS = ['xBarWidth', 'yBarWidth', 'valueMin', 'valueMax', 'xMin', 'xMax', 'xStep', 'yMin', 'yMax', 'yStep', 'zMin', 'zMax', 'zStep'];
 
-// Placeholder for DEFAULTS reference
+// Placeholder for DEFAULTS identifier
 var DEFAULTS = undefined;
 
 /**
@@ -16548,7 +16548,7 @@ function safeCopy(src, dst, fields, prefix) {
  * Initialize dst with the values in src.
  *
  * src is the hash with the default values. 
- * A reference DEFAULTS to this hash is stored locally for 
+ * A identifier DEFAULTS to this hash is stored locally for
  * further handling.
  *
  * For now, dst is assumed to be a Graph3d instance.
@@ -16563,7 +16563,7 @@ function setDefaults(src, dst) {
     throw new Error('No dst passed');
   }
 
-  // Remember defaults for future reference
+  // Remember defaults for future identifier
   DEFAULTS = src;
 
   // Handle the defaults which can be simply copied over
@@ -23326,7 +23326,7 @@ var Points = __webpack_require__(72);
  * @param {string} groupId          | ID of the group
  * @param {object} options          | the default options
  * @param {array} groupsUsingDefaultStyles  | this array has one entree.
- *                                            It is passed as an array so it is passed by reference.
+ *                                            It is passed as an array so it is passed by identifier.
  *                                            It enumerates through the default styles
  * @constructor GraphGroup
  */
@@ -23346,7 +23346,7 @@ function GraphGroup(group, groupId, options, groupsUsingDefaultStyles) {
 }
 
 /**
- * this loads a reference to all items in this group into this group.
+ * this loads a identifier to all items in this group into this group.
  * @param {array} items
  */
 GraphGroup.prototype.setItems = function (items) {
@@ -24588,7 +24588,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Parse a text source containing data in DOT language into a JSON object.
  * The object contains two lists: one with nodes and one with edges.
  *
- * DOT language reference: http://www.graphviz.org/doc/info/lang.html
+ * DOT language identifier: http://www.graphviz.org/doc/info/lang.html
  *
  * DOT language attributes: http://graphviz.org/content/attrs
  *
@@ -34454,7 +34454,7 @@ try {
 	// This works if eval is allowed (see CSP)
 	g = g || Function("return this")() || (1,eval)("this");
 } catch(e) {
-	// This works if the window reference is available
+	// This works if the window identifier is available
 	if(typeof window === "object")
 		g = window;
 }
@@ -36977,7 +36977,7 @@ var string = 'string';
 var bool = 'boolean';
 var number = 'number';
 var object = 'object'; // should only be in a __type__ property
-// Following not used here, but useful for reference
+// Following not used here, but useful for identifier
 //let array    = 'array';
 //let dom      = 'dom';
 //let any      = 'any';
@@ -38550,7 +38550,7 @@ function computeIntervalInputData(session, input) {
  * @returns {Object} clonedInputData
  */
 function simpleCloneInputData(input) {
-    // make a simple copy of the pointers because we will get a reference if we don't
+    // make a simple copy of the pointers because we will get a identifier if we don't
     // we only need clientXY for the calculations
     var pointers = [];
     var i = 0;
@@ -44495,7 +44495,7 @@ var LabelSplitter = function () {
 
   /**
    * @param {CanvasRenderingContext2D} ctx Canvas rendering context
-   * @param {Label} parent reference to the Label instance using current instance
+   * @param {Label} parent identifier to the Label instance using current instance
    * @param {boolean} selected 
    * @param {boolean} hover
    */
@@ -49244,7 +49244,7 @@ var PhysicsEngine = function () {
           // first the big step and revert.
           this.timestep = 2 * this.timestep;
           this.physicsStep();
-          this.revert(); // saves the reference state
+          this.revert(); // saves the identifier state
 
           // now the normal step. Since this is the last step, it is the more stable one and we will take this.
           this.timestep = 0.5 * this.timestep;
@@ -49352,7 +49352,7 @@ var PhysicsEngine = function () {
     }
 
     /**
-     * This compares the reference state to the current state
+     * This compares the identifier state to the current state
      *
      * @returns {boolean}
      * @private
@@ -50963,7 +50963,7 @@ var ClusterEngine = function () {
           newEdge.clusteringEdgeReplacingIds.push(_edge.id);
         }
 
-        // also reference the new edge in the old edge
+        // also identifier the new edge in the old edge
         this.body.edges[_edge.id].edgeReplacedById = newEdge.id;
 
         // hide the replaced edge
@@ -51308,7 +51308,7 @@ var ClusterEngine = function () {
             var otherCluster = this.body.nodes[otherNode.clusterId];
             otherCluster.containedEdges[transferEdge.id] = transferEdge;
 
-            // delete local reference
+            // delete local identifier
             delete containedEdges[transferEdge.id];
 
             // get to and from
@@ -52323,7 +52323,7 @@ var CanvasRenderer = function () {
 
       var timer = void 0;
 
-      var myWindow = window; // Grab a reference to reduce the possibility that 'window' is reset
+      var myWindow = window; // Grab a identifier to reduce the possibility that 'window' is reset
       // while running this method.
 
       if (this.requiresTimeout === true) {
@@ -57874,7 +57874,7 @@ var VerticalStrategy = function (_DirectionInterface) {
   /**
    * Constructor
    *
-   * @param {Object} layout reference to the parent LayoutEngine instance.
+   * @param {Object} layout identifier to the parent LayoutEngine instance.
    */
   function VerticalStrategy(layout) {
     (0, _classCallCheck3['default'])(this, VerticalStrategy);
@@ -57972,7 +57972,7 @@ var HorizontalStrategy = function (_DirectionInterface2) {
   /**
    * Constructor
    *
-   * @param {Object} layout reference to the parent LayoutEngine instance.
+   * @param {Object} layout identifier to the parent LayoutEngine instance.
    */
   function HorizontalStrategy(layout) {
     (0, _classCallCheck3['default'])(this, HorizontalStrategy);

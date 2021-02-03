@@ -60,6 +60,10 @@ class EventEmitter {
     allEventNames.append("callbackUrlInvoked")
     allEventNames.append("localizationPausedState")
     
+    allEventNames.append("connectedToPeripheral")
+    allEventNames.append("connectedToPeripheralFailed")
+    allEventNames.append("disconnectedFromPeripheral")
+    
     return allEventNames
   }()
   

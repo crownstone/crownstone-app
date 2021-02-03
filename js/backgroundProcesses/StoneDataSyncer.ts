@@ -222,7 +222,7 @@ class StoneDataSyncerClass {
       let ability = stone.abilities.dimming;
       if (ability.syncedToCrownstone) { return; }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'allowDimming', value: ability.enabledTarget}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'allowDimming', value: ability.enabledTarget}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
           let actions = [];
@@ -238,7 +238,7 @@ class StoneDataSyncerClass {
           }
         });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setSoftOnSpeed', softOnSpeed: Number(ability.softOnSpeed)}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setSoftOnSpeed', softOnSpeed: Number(ability.softOnSpeed)}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
           let actions = [];
@@ -269,7 +269,7 @@ class StoneDataSyncerClass {
       let ability = stone.abilities.switchcraft;
       if (ability.syncedToCrownstone) { return; }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'setSwitchCraft', value: ability.enabledTarget}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId, {type:'setSwitchCraft', value: ability.enabledTarget}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
           let actions = [];
@@ -299,7 +299,7 @@ class StoneDataSyncerClass {
       let ability = stone.abilities.tapToToggle;
       if (ability.syncedToCrownstone) { return; }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggle', value: ability.enabledTarget}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setTapToToggle', value: ability.enabledTarget}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle", sphereId, stoneId);
           let actions = [];
@@ -315,7 +315,7 @@ class StoneDataSyncerClass {
           }
         });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffsetTarget}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffsetTarget}, {}, 2)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.rssiOffsetTarget);
           let actions = [];
@@ -342,7 +342,7 @@ class StoneDataSyncerClass {
       LOGi.info("StoneDataSyncer: Syncing deleted rule", sphereId, stoneId, ruleId, sessionId);
       if (rule.idOnCrownstone !== null) {
         LOGi.info("StoneDataSyncer: Syncing deleted rule which is already on Crownstone", sphereId, stoneId, ruleId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "removeBehaviour", index: rule.idOnCrownstone},{ keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "removeBehaviour", index: rule.idOnCrownstone},{ keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
@@ -368,7 +368,7 @@ class StoneDataSyncerClass {
 
       if (rule.idOnCrownstone !== null) {
         LOGi.info("StoneDataSyncer: Updating rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "updateBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully updated rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
@@ -382,7 +382,7 @@ class StoneDataSyncerClass {
       }
       else {
         LOGi.info("StoneDataSyncer: Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "addBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "addBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
             let index = returnData.data.index;
@@ -455,7 +455,7 @@ class StoneDataSyncerClass {
         if (this.masterHashTracker[sphereId][stoneId] !== masterHash || force) {
           // SYNC!
           LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId]);
-          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: ruleData });
+          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "syncBehaviour", behaviours: ruleData });
           BatchCommandHandler.executePriority();
           return commandPromise;
         }

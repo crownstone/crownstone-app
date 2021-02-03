@@ -241,7 +241,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       );
     }
 
-    // this means the hub itself has no reference in the app to work off from. We should fix this.
+    // this means the hub itself has no identifier in the app to work off from. We should fix this.
     if (!hub) {
       return (
         <View key={"HubReferenceFix"} style={{...styles.centered, flex:1, padding:15}}>

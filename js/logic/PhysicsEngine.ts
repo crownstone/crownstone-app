@@ -258,7 +258,7 @@ class PhysicsEngine {
 
         // we assume the adaptive interval is
         if (this.adaptiveCounter % this.adaptiveInterval === 0) { // we leave the timestep stable for "interval" iterations.
-          // first the big step and revert. Revert saves the reference state.
+          // first the big step and revert. Revert saves the identifier state.
           this.timestep = 2 * this.timestep;
           this.calculateForces();
           this.moveNodes();
@@ -415,7 +415,7 @@ class PhysicsEngine {
 
 
   /**
-   * This compares the reference state to the current state
+   * This compares the identifier state to the current state
    */
   _evaluateStepQuality() {
     let dx, dy, dpos;

@@ -237,7 +237,7 @@ export const executeScene = function(switchData, sphereId: string, sceneId: stri
   Object.keys(correctedList).forEach((stoneCID) => {
     action = true;
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: correctedList[stoneCID]}, {autoExecute: false}).catch()
+    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {type:"multiSwitch", state: correctedList[stoneCID]}, {autoExecute: false}).catch()
   })
   if (action) {
     BatchCommandHandler.executePriority();

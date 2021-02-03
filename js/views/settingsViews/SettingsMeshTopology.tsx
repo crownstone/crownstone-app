@@ -145,7 +145,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     };
 
     stoneIds.forEach((stoneId) => {
-      BatchCommandHandler.loadPriority(stones[stoneId], stoneId, sphereId, {commandName: 'sendMeshNoOp'}, {}, 2, 'meshNoOp_meshRefresh' + stoneId )
+      BatchCommandHandler.loadPriority(stones[stoneId], stoneId, sphereId, {type: 'sendMeshNoOp'}, {}, 2, 'meshNoOp_meshRefresh' + stoneId )
         .then(() => { evaluateRefreshProgress() })
         .catch(() => { evaluateRefreshProgress() })
     });
