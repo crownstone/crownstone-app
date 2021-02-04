@@ -4,6 +4,11 @@ This document will describe the architecture of the new TellerAPI that is used t
 
 Here I will outline the ideas behind the API, as well as discuss the components and their relations. 
 
+### Why would you call it constellation?
+Because it needed a name and the previous one, TellerAPI based on the teller methods, didnt sound right.
+A constellation is a set of stars connected by imaginary lines. Almost just like a phone connected to many Crownstones!
+
+
 Let's first introduce the concepts:
 
 ## Design Concepts
@@ -19,7 +24,7 @@ An Public connection is a connection to a Crownstone which any part of the app c
 Any piece of code can just say they want to send something in the mesh, in a sphere, somewhere nearby or to a specific crownstone.
 
 #### Tellers
-Since this it the name of the API, might as well describe what a teller is. The interface you use to send a command to a Crownstone via a public connection is:
+The interface you use to send a command to a Crownstone via a public connection is:
 ```
 function tell(description: string | StoneData) : CommandAPI 
 
@@ -41,13 +46,12 @@ await tell(crownstoneHandle).turnOn()
 await tellSphere(sphereId).trackedDeviceHeartbeat(...)
 ```
 
-I thought that sounded fun, so I named the API after it. I needed one to name this document. If you have a better name, let me know.
-
 A private connection is requested by:
 ```
-async function connectTo(handle) : Promise<CommandAPI>
+async function connectTo(handle, timoutSeconds = 30) : Promise<CommandAPI>
 ```
-This will resolve when the connection is made and provide you with a connection api.
+This will resolve when the connection is made and provide you with a connection api. The timeout can be provided to cancel the attempt
+to connect to the requested Crownstone after x time.
 
 #### CommandAPI
 The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below) to provide connections. This is the class that you'll

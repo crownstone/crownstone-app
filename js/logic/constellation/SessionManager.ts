@@ -12,17 +12,12 @@
  */
 import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandQueue } from "./BleCommandQueue";
-import { Scheduler } from "../Scheduler";
 import { Session } from "./Session";
-import { EventBusClass } from "../../util/EventBus";
 
-
-
-class SessionManagerClass {
+export class SessionManagerClass {
 
   _maxActiveSessions = 1000;
 
-  _eventBus = new EventBusClass();
 
   _sessions: {[handle: string] : Session} = {};
   _activeSessions: {[handle:string] : { initialized: boolean }};
@@ -46,6 +41,14 @@ class SessionManagerClass {
         this._getInteractionModule(handle, privateId, resolve, reject)
       );
     })
+  }
+
+  /**
+   * This will check all registered sessions to see if they're required.
+   * It will query the BleCommandQueue for all outstanding sessions. If the public ones have no commands, they're cancelled.
+   */
+  evaluateSessionNecessity() {
+    // TODO: implement
   }
 
   /**
@@ -96,7 +99,7 @@ class SessionManagerClass {
       let pending = pendingPrivateRequests[0];
       pendingPrivateRequests.shift();
       try {
-        await this.register(handle, pending.commandId, true);
+        await this.request(handle, pending.commandId, true);
       }
       catch (e) {
         pending.reject(e);
@@ -108,7 +111,7 @@ class SessionManagerClass {
     }
 
     if (BleCommandQueue.areThereCommandsFor(handle)) {
-      await this.register(handle, xUtil.getUUID(), false);
+      await this.request(handle, xUtil.getUUID(), false);
     }
   }
 
@@ -122,7 +125,7 @@ class SessionManagerClass {
    * @param privateSession
    * @param timeoutSeconds
    */
-  async register(handle, commandId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
+  async request(handle, commandId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
     // TODO: make sure a private connection is more important than a public one.
     let privateId = privateSession ? commandId : null;
 

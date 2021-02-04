@@ -246,7 +246,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.getSwitchHistory(connectedStoneInfo.handle);
                 break;
               case 'getPowerSamples':
-                actionPromise = BluenetPromiseWrapper.getPowerSamples(connectedStoneInfo.handle, command.type);
+                actionPromise = BluenetPromiseWrapper.getPowerSamples(connectedStoneInfo.handle, command.powersampleDataType);
                 break;
               case 'getMinSchedulerFreeSpace':
                 actionPromise = BluenetPromiseWrapper.getMinSchedulerFreeSpace(connectedStoneInfo.handle);

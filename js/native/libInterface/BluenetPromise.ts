@@ -239,10 +239,10 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getPowerSamples:             (handle: string, type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); },
 
   setUartKey:                  (handle: string, uartKey: string)                   => { return BluenetPromise('setUartKey', uartKey); },
-  transferHubTokenAndCloudId:  (hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', hubToken, cloudId); },
-  requestCloudId:              () => { return BluenetPromise('requestCloudId'); },
-  factoryResetHub:             () => { return BluenetPromise('factoryResetHub'); },
-  factoryResetHubOnly:         () => { return BluenetPromise('factoryResetHubOnly'); },
+  transferHubTokenAndCloudId:  (handle: string, hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', handle, hubToken, cloudId); },
+  requestCloudId:              (handle: string) => { return BluenetPromise('requestCloudId', handle); },
+  factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
+  factoryResetHubOnly:         (handle: string) => { return BluenetPromise('factoryResetHubOnly', handle); },
 };
 
 

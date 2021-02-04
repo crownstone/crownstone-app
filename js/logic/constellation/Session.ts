@@ -5,7 +5,7 @@
  * It will handle keep-open connections via no-ops and it will disconnect when required using a disconnect
  * command and/or direct disconnect.
  */
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
+// import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BleCommandQueue } from "./BleCommandQueue";
@@ -24,12 +24,12 @@ export class Session {
 
   interactionModule: SessionInteractionModule
 
-  constructor(handle: string, privateKey: string | null, interactionModule) {
+  constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
     this.handle = handle;
     this.interactionModule = interactionModule;
-
-    let reference = MapProvider.stoneHandleMap[handle];
-    this.sphereId = reference?.sphereId || null;
+    this.privateId = privateId;
+    // let reference = MapProvider.stoneHandleMap[handle];
+    // this.sphereId = reference?.sphereId || null;
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
     this._respondTo(NativeBus.topics.connectedToPeripheralFailed,() => { this.state = "CONNECTION_FAILED";
@@ -66,6 +66,9 @@ export class Session {
     catch (err) {
       this.state = "CONNECTION_FAILED";
       this.interactionModule.connectionFailed(err);
+      if (this.isPrivate() === false || this.sessionIsKilled) {
+        this.delete();
+      }
       return
     }
     this.state = "CONNECTED";
@@ -75,9 +78,9 @@ export class Session {
   }
 
   async handleCommands() {
-    let task = BleCommandQueue.requestTask(this.handle, this.privateId);
+    let commandsAvailable = BleCommandQueue.areThereCommandsFor(this.handle, this.privateId);
 
-    if (task === null) {
+    if (commandsAvailable === false) {
       // there is no task for us to do. If we're a private connection, we'll wait patiently for a new command
       if (this.isPrivate()) {
         // Tasks here CAN include connections.
@@ -91,7 +94,8 @@ export class Session {
       }
     }
 
-    await task();
+    await BleCommandQueue.performCommand(this.handle, this.privateId);
+
     setImmediate(() => { this.handleCommands(); })
   }
 

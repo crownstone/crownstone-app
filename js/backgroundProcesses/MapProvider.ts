@@ -37,6 +37,8 @@ class MapProviderClass {
   stoneHandleMap  : StoneHandleMap = {};
   stoneSummaryMap : StoneSummaryMap = {};
   stoneCIDMap     : StoneCIDMap = {};
+  meshMap         : MeshIdMap = {};
+  handleMeshMap   : HandleMeshMap = {};
   locationUIDMap  : locationUIDMap = {};
   stoneIBeaconMap : StoneIBeaconMap = {};
   cloud2localMap  : globalIdMap = getGlobalIdMap();
@@ -69,6 +71,12 @@ class MapProviderClass {
         ) {
           this.refreshAll();
         }
+
+        if (
+          change.meshIdUpdated
+        ) {
+          this.refreshMeshMap()
+        }
       });
 
       this.refreshAll();
@@ -86,7 +94,30 @@ class MapProviderClass {
     this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
     this.locationUIDMap       = this.getLocationUIDMap(                  state);
     this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
+    this.refreshMeshMap();
     this._updateCloudIdMap();
+  }
+
+  refreshMeshMap() {
+    this.meshMap = {};
+    let state = core.store.getState();
+    if (!state.spheres) { return; }
+    for (let sphereId of state.spheres) {
+      let sphere= state.spheres[sphereId];
+
+      if (!sphere.stones) { return; }
+      // @ts-ignore
+      for (let [stoneId, stone] of Object.entries(sphere.stones)) {
+        let handle = (stone as StoneData).config.handle;
+        let meshId = (stone as StoneData).config.meshNetworkId;
+
+        this.handleMeshMap[handle] = meshId;
+
+        if (this.meshMap[meshId] === undefined) { this.meshMap[meshId] = {}; }
+
+        this.meshMap[meshId][handle] = this.stoneSummaryMap[stoneId];
+      }
+    }
   }
 
   getLocationUIDMap(state) {

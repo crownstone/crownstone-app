@@ -7,10 +7,10 @@ export class SessionBroker {
 
   handles : string[] = []
 
-  options: CommandOptions;
+  options: commandOptions;
   requestedSessions : [] = []
 
-  constructor(handles: string[], commandOptions: CommandOptions) {
+  constructor(handles: string[], commandOptions: commandOptions) {
     this.handles = handles;
     this.options = commandOptions;
 

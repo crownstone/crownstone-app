@@ -28,13 +28,21 @@ interface StoneHandleMap {
 }
 
 interface StoneSummaryMap {
-  [key: string]: StoneMap
+  [stoneId: string]: StoneMap
 }
 
 interface StoneCIDMap {
-  [key: string]: {
-    [key: string]: StoneMap
+  [sphereId: string]: {
+    [crownstoneId: string]: StoneMap
   }
+}
+interface MeshIdMap {
+  [meshId: string]: {
+    [stoneId: string]: StoneMap
+  }
+}
+interface HandleMeshMap {
+  [stoneHandle : string]: string
 }
 interface locationUIDMap {
   [key: string]: {

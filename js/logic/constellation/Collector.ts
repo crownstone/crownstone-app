@@ -26,7 +26,7 @@ export const Collector = {
 
   },
 
-  // collect(options: CommandOptions) {
+  // collect(options: commandOptions) {
   //   this._requiredSuccesses = options.minConnections || 1;
   //   switch (options.type) {
   //     case "SINGLE":

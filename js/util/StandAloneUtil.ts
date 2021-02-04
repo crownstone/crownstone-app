@@ -1,4 +1,3 @@
-import { Dimensions } from 'react-native'
 import { base_core } from "../base_core";
 
 export const xUtil = {

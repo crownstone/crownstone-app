@@ -1,5 +1,5 @@
 import { BroadcastCommandManager } from "../bchComponents/BroadcastCommandManager";
-import { BleCommandQueue } from "./BleCommandQueue";
+import { BleCommandLoader } from "./BleCommandQueue";
 import { SessionManager } from "./SessionManager";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
@@ -7,12 +7,14 @@ import { Collector } from "./Collector";
 import { core } from "../../core";
 
 
-async function connectTo(handle) : CommandAPI {
-  await SessionManager.requestPrivate(handle);
+async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
+  let privateId = xUtil.getUUID();
+  await SessionManager.request(handle, privateId, true, timeoutSeconds);
   return new CommandAPI({
-    type: "SINGLE",
-    target: [handle],
-    private: true
+    commanderId:    privateId,
+    commandType:    "DIRECT",
+    commandTargets: [handle],
+    private:        true
   });
 }
 
@@ -20,7 +22,7 @@ async function connectTo(handle) : CommandAPI {
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.
  */
-function tell(description: string | StoneData) : CommandAPI {
+function tell(handle: string | StoneData) : CommandAPI {
   return
 }
 
@@ -64,27 +66,34 @@ function tellSphere(sphereId, minConnections = 3) : CommandAPI {
  */
 class CommandAPI {
   commandId : string | null;
-  options   : CommandOptions
+  options   : commandOptions;
 
   _connectionRequested : boolean = false;
   _targetConnectionState : { [handle: string] : ConnectionState } = {};
 
-  constructor(commandOptions: CommandOptions) {
+  constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
-    this.options.commandId = xUtil.getUUID();
-    this.commandId = this.options.commandId;
+    this.options.commanderId ??= xUtil.getUUID();
+    this.commandId = this.options.commanderId;
   }
 
   reconnect() {
 
   }
 
-  _load(command) {
+  /**
+   * If via mesh is enabled, we will trigger a mesh connection request additionally to the direct one.
+   * @param command
+   * @param viaMesh
+   */
+  _load(command, allowMeshRelays: boolean) {
     return new Promise<any>((resolve, reject) => {
-      BleCommandQueue.load(this.options, command, {resolve, reject});
+      BleCommandLoader.generate(this.options, command, allowMeshRelays,{resolve, reject});
+
+
       if (this._connectionRequested === false) {
-        let collector = new Collector();
-        collector.collect(this.options);
+        // let collector = new Collector();
+        // collector.collect(this.options);
 
         this._connectionRequested = true;
       }
@@ -110,7 +119,7 @@ class CommandAPI {
     }
     else {
       // load into the commandQueue
-      return this._load({type:"turnOn"})
+      return this._load({type:"turnOn"}, true);
     }
   }
 

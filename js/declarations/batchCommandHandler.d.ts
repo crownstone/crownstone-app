@@ -81,7 +81,7 @@ type commandInterface = { type : 'toggle', stateForOn : number } |
   { type : 'getGPREGRET' } |
   { type : 'getAdcChannelSwaps' } |
   { type : 'getSwitchHistory' } |
-  { type : 'getPowerSamples', type: PowersampleDataType } |
+  { type : 'getPowerSamples', powersampleDataType: PowersampleDataType } |
   { type : 'registerTrackedDevice',  trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number } |
   { type : 'trackedDeviceHeartbeat', trackingNumber: number, locationUID: () => number | number, deviceToken: number, ttlMinutes: number }
 
