@@ -1,25 +1,6 @@
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-
-interface CommandQueueMap {
-  direct: {[handle: string]        : BleCommand[]}
-  mesh:   {[meshNetworkId: string] : BleCommand[]}
-  sphere: {[sphereId: string]      : BleCommand[]}
-}
-interface PromiseContainer {
-  resolve: (data?: any) => void,
-  reject:  (err:   any) => void
-}
-
-interface BleCommand {
-  id:         string,
-  linkedId:   string,
-  options:    commandOptions,
-  command:    commandInterface,
-  promise:    PromiseContainer,
-  executedBy: string[]
-}
-
-
+import { xUtil } from "../../util/StandAloneUtil";
+import { Get } from "../../util/GetUtil";
 
 
 class BleCommandLoaderClass {
@@ -32,12 +13,46 @@ class BleCommandLoaderClass {
    * @param allowMeshRelays
    * @param promise
    */
-  generate(commandOptions: commandOptions, command: commandInterface, allowMeshRelays: boolean, promise : PromiseContainer) {
+  generate(options: commandOptions, command: commandInterface, allowMeshRelays: boolean, promise : PromiseContainer) {
+    let commandId = xUtil.getUUID();
+    let bleCommand : BleCommand;
+    switch (options.commandType) {
+      case "SPHERE":
+        bleCommand = { id: commandId, linkedId: null, options, command, promise, executedBy: [] };
+        break;
+      case "MESH":
+        bleCommand = { id: commandId, linkedId: null, options, command, promise, executedBy: [] };
+        break;
+      case "MESH_RELAY":
+        bleCommand = { id: commandId, linkedId: null, options, command, promise, executedBy: [] };
+        let handle = options.commandTargets[0];
+        let meshId = MapProvider.handleMeshMap[handle];
+        if (meshId) {
+          let stoneData = MapProvider.stoneHandleMap[handle];
+          if (stoneData) {
+            let sphere = Get.sphere(stoneData.sphereId);
+            if (sphere) {
+              let amountOfStonesInSphere = Object.keys(sphere.stones).length - 1; // the minus 1 is because we already schedule a direct connection to the target crownstone.
+              let relayBleCommand = {
+                id: xUtil.getUUID(),
+                linkedId: commandId,
+                options: {...options, minConnections: Math.min(3, amountOfStonesInSphere), commandTargets:[meshId], endTarget: handle},
+                command,
+                promise,
+                executedBy: []
+              };
+              BleCommandQueue.load(relayBleCommand)
+            }
+          }
 
+        }
+        break;
+      case "DIRECT":
+        bleCommand = { id: commandId, linkedId: null, options, command, promise, executedBy: [] };
+        break;
+    }
 
-
-
-    // BleCommandQueue.load()
+    BleCommandQueue.load(bleCommand);
   }
 
 }
@@ -60,28 +75,32 @@ class BleCommandQueueClass {
 
   queue : CommandQueueMap = { direct: {}, mesh: {}, sphere: {} };
 
+  load(command: BleCommand) {
+    //TODO: check for duplicates
 
-  load(type: CommandType, targetId: string, command: BleCommand) {
-    switch (type) {
-      case "SPHERE":
-        if (this.queue.sphere[targetId] === undefined) { this.queue.sphere[targetId] = []; }
-        this.queue.sphere[targetId].push(command);
-        break;
-      case "MESH_RELAY":
-        let meshId = MapProvider.handleMeshMap[targetId];
-        if (meshId) {
-          if (this.queue.mesh[meshId] === undefined) { this.queue.mesh[meshId] = []; }
+    let targets = command.options.commandTargets;
+    for (let targetId of targets) {
+      switch (command.options.commandType) {
+        case "SPHERE":
+          if (this.queue.sphere[targetId] === undefined) { this.queue.sphere[targetId] = []; }
+          this.queue.sphere[targetId].push(command);
+          break;
+        case "MESH_RELAY":
+          let meshId = MapProvider.handleMeshMap[targetId];
+          if (meshId) {
+            if (this.queue.mesh[meshId] === undefined) { this.queue.mesh[meshId] = []; }
+            this.queue.mesh[targetId].push(command);
+          }
+          break;
+        case "MESH":
+          if (this.queue.mesh[targetId] === undefined) { this.queue.mesh[targetId] = []; }
           this.queue.mesh[targetId].push(command);
-        }
-        break;
-      case "MESH":
-        if (this.queue.mesh[targetId] === undefined) { this.queue.mesh[targetId] = []; }
-        this.queue.mesh[targetId].push(command);
-        break;
-      case "DIRECT":
-        if (this.queue.direct[targetId] === undefined) { this.queue.direct[targetId] = []; }
-        this.queue.direct[targetId].push(command);
-        break;
+          break;
+        case "DIRECT":
+          if (this.queue.direct[targetId] === undefined) { this.queue.direct[targetId] = []; }
+          this.queue.direct[targetId].push(command);
+          break;
+      }
     }
   }
 
@@ -116,11 +135,21 @@ class BleCommandQueueClass {
           }
         }
       }
-      else if (this.queue.mesh[meshId] && this.queue.mesh[meshId]) {
-        return true;
+      else if (this.queue.mesh[meshId]) {
+        let commands = this.queue.mesh[meshId];
+        for (let command of commands) {
+          if (command.executedBy.indexOf(handle) === -1) {
+            return true;
+          }
+        }
       }
       else if (this.queue.sphere[sphereId]) {
-        return true;
+        let commands = this.queue.sphere[meshId];
+        for (let command of commands) {
+          if (command.executedBy.indexOf(handle) === -1) {
+            return true;
+          }
+        }
       }
     }
 
@@ -162,18 +191,29 @@ class BleCommandQueueClass {
         }
       }
       else if (this.queue.mesh[meshId]) {
-        let commands = this.queue.mesh[handle];
+        let commands = this.queue.mesh[meshId];
         for (let command of commands) {
-          // TODO: run command
+          if (command.executedBy.indexOf(handle) === -1) {
+             // TODO: run command
+          }
         }
       }
       else if (this.queue.sphere[sphereId]) {
         let commands = this.queue.sphere[handle];
         for (let command of commands) {
+          if (command.executedBy.indexOf(handle) === -1) {
           // TODO: run command
+          }
         }
       }
     }
+
+    // TODO: After running:
+    //       Move the attemptingBy for this handle to executedBy on success, clear the attemptingBy on failure.
+    //       Check all executedBy and match this against the minConnections requirement
+    //       Clean up the commands that have reached their goals.
+    //       If a command is cleaned, ask the SessionManager to re-evaluate their required sessions.
+    //       The goal is to close sessions that are still pending connections.
   }
 
 
@@ -186,7 +226,7 @@ class BleCommandQueueClass {
     // check direct commands for possible matches
     // check meshes for possible matches
     // check if it's about time for a suntimes/current time update
-    return null
+    return null;
   }
 }
 

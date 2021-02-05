@@ -8,25 +8,70 @@ import { BleCommandQueue } from "./BleCommandQueue";
 
 export const Executor = {
 
+  _aggregateSwitchCommands(getState: (bleCommand: BleCommand) => number, connectedHandle: string, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[] {
+    let stoneSummary  = MapProvider.stoneHandleMap[connectedHandle];
+    let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
+    let stoneId       = bleCommand.options.sphereId;
+    let baseMeshId    = stoneSummary.stoneConfig.meshNetworkId;
+    let sphereId      = stoneSummary.sphereId;
 
-  async aggregateCommands() {
+    let packets = [{ crownstoneId: stoneSummary.cid, state: getState(bleCommand) }];
+    // loop over all commands that are public and in this sphere, get the ones with the TURN_ON command
+    // We only check mesh commands, since anything that is direct and allowed to be relayed via the mesh is loaded there.
+    for (let meshId in queue.mesh) {
+      for (let command of queue.mesh[meshId]) {
+        // as long as we're in the same sphere, we might as well try to add it.
+        if (command.options.sphereId === sphereId) {
+          if (command.command.type === bleCommand.command.type && command.options.endTarget) {
+            let extStoneSummary = MapProvider.stoneHandleMap[command.options.endTarget];
+            let state = getState(command);
+            if (state !== undefined) {
+              packets.push({ crownstoneId: extStoneSummary.cid, state: getState(command) });
 
+              // if this is in the same mesh as the connected Crownstone, allow this to be added to the attempting-by, if it's not already done
+              if (
+                baseMeshId === meshId &&
+                bleCommand.attemptingBy.indexOf(connectedHandle) === -1 &&
+                bleCommand.executedBy.indexOf(connectedHandle)   === -1
+              ) {
+                bleCommand.attemptingBy.push(connectedHandle);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return packets;
   },
+
+  aggregateTurnOnCommands(connectedHandle: string, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[] {
+    return this._aggregateSwitchCommands(() => { return 100}, connectedHandle, bleCommand, queue);
+  },
+
+  aggregateMultiSwitchCommands(connectedHandle, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[]  {
+    return this._aggregateSwitchCommands((bleCommand) => {
+      if (bleCommand.command.type === "multiSwitch") { return bleCommand.command.state; }
+    }, connectedHandle, bleCommand, queue);
+  },
+
+
 
   /**
    * This is called when the system is connected to a Crownstone and ready to perform commands
    * @param handle
    * @param commandOptions
-   * @param command
+   * @param bleCommand
    * @param promiseContainer
    */
-  async runCommand(handle: string, commandOptions: commandOptions, command: commandInterface) : Promise<{ data: any }> {
-    let state         = core.store.getState();
+  async runCommand(handle: string, bleCommand: BleCommand, queue: CommandQueueMap) : Promise<{ data: any }> {
     let stoneSummary  = MapProvider.stoneHandleMap[handle];
     let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
     let stoneId       = stoneSummary.id;
     let actionPromise = null;
 
+    let command = bleCommand.command;
+    
     switch (command.type) {
       case 'getBootloaderVersion':
         actionPromise = BluenetPromiseWrapper.getBootloaderVersion(handle);
@@ -64,12 +109,14 @@ export const Executor = {
         actionPromise = BluenetPromiseWrapper.setMeshChannel(handle, command.channel);
         break;
       case 'turnOn':
-        let stoneSwitchPacket = {crownstoneId: crownstoneId, state: 100};
-        actionPromise = BluenetPromiseWrapper.turnOnMesh(handle, [stoneSwitchPacket])
+        // let stoneSwitchPacket = {crownstoneId: crownstoneId, state: 100};
+        let stoneSwitchPackets = this.aggregateTurnOnCommands(handle, queue);
+        actionPromise = BluenetPromiseWrapper.turnOnMesh(handle, stoneSwitchPackets);
         break;
       case 'multiSwitch':
-        stoneSwitchPacket = {crownstoneId: crownstoneId, state: command.state};
-        actionPromise = BluenetPromiseWrapper.multiSwitch(handle, [stoneSwitchPacket])
+        // stoneSwitchPacket = {crownstoneId: crownstoneId, state: command.state};
+        stoneSwitchPackets = this.aggregateMultiSwitchCommands(handle, queue);
+        actionPromise = BluenetPromiseWrapper.multiSwitch(handle, stoneSwitchPackets);
         break;
       case 'toggle':
         actionPromise = BluenetPromiseWrapper.toggleSwitchState(handle, command.stateForOn || 100);
@@ -159,7 +206,7 @@ export const Executor = {
         actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(handle, command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
         break;
       default:
-        LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", command);
+        LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", bleCommand);
         throw "FAILED_TO_EXECUTE_COMMAND";
     }
 

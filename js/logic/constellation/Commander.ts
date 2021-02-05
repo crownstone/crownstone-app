@@ -9,9 +9,15 @@ import { core } from "../../core";
 
 async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
   let privateId = xUtil.getUUID();
+  let stoneData = MapProvider.stoneHandleMap[handle];
+  let sphereId = null;
+  if (stoneData) {
+    sphereId = stoneData.sphereId;
+  }
   await SessionManager.request(handle, privateId, true, timeoutSeconds);
   return new CommandAPI({
     commanderId:    privateId,
+    sphereId:       sphereId,
     commandType:    "DIRECT",
     commandTargets: [handle],
     private:        true
