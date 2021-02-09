@@ -15,7 +15,7 @@ import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {colors, } from '../styles'
+import { background, colors } from "../styles";
 import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
@@ -186,7 +186,7 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hasNavBar={!this.props.modal}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={!this.props.modal}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

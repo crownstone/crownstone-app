@@ -17,7 +17,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 
 import { emailChecker, getImageFileFromUser, processImage } from "../../util/Util";
 
-import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../styles";
+import { background, colors, screenHeight, screenWidth, styles, topBarHeight } from "../styles";
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -353,7 +353,7 @@ export class Register extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

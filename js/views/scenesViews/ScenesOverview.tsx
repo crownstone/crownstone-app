@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React                 from 'react';
 import { Platform, Text, View, Image, Alert, ScrollView } from "react-native";
-import { screenWidth, colors}     from "../styles";
+import { screenWidth, colors, background } from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../core";
 import { TopBarUtil }             from "../../util/TopBarUtil";
@@ -214,7 +214,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <RoundedBackground image={core.background.lightBlur} style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
+      <RoundedBackground image={background.lightBlur} style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
         {content}
       </RoundedBackground>
     );

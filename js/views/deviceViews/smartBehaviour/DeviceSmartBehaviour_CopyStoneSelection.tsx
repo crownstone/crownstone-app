@@ -10,7 +10,7 @@ import { Background } from "../../components/Background";
 import { Alert, Platform, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import {
-  availableModalHeight,
+  availableModalHeight, background,
   colors,
   deviceStyles,
   screenWidth
@@ -151,7 +151,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
     }
 
     return (
-      <Background image={core.background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
+      <Background image={background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
         <TopbarImitation
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}

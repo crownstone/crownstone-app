@@ -14,7 +14,7 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, deviceStyles, screenWidth} from "../../styles";
+import { background, colors, deviceStyles, screenWidth } from "../../styles";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { ScaledImage } from "../../components/ScaledImage";
@@ -300,7 +300,7 @@ export class ToonAdd extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         { content }
       </Background>
     );

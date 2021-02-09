@@ -13,7 +13,7 @@ import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionMa
 import { core } from "../../../core";
 import Toast from 'react-native-same-toast';
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { colors, styles } from "../../styles";
+import { background, colors, styles } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import React from "react";
@@ -415,7 +415,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let explanationColor = colors.black.rgba(0.9);
 
     switch (FocusManager.crownstoneMode ) {
@@ -424,10 +424,10 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = core.background.light;
+        backgroundImage = background.light;
         break;
       case "unverified":
-        backgroundImage = core.background.menu;
+        backgroundImage = background.menu;
         break;
       case "dfu":
         backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');

@@ -12,7 +12,7 @@ import devAppReducer       from './reducers/devApp'
 export default (state : any = {}, action : any = {}) => {
   // clearing should only happen once we logged out through the store manager. The state of the old user
   // will be persisted.
-  if (action.type === 'USER_LOGGED_OUT_CLEAR_STORE') {
+  if (action.type === 'USER_LOGGED_OUT_CLEAR_STORE' || action.type === 'TESTS_CLEAR_STORE') {
     state = {};
   }
   else if (action.type === 'HYDRATE') {

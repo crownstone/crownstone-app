@@ -20,7 +20,7 @@ export class SessionManagerClass {
 
 
   _sessions: {[handle: string] : Session} = {};
-  _activeSessions: {[handle:string] : { initialized: boolean }};
+  _activeSessions: {[handle:string] : { connected: boolean }};
 
   _registeredSessions: {[handle:string] : { private: boolean, privateId: string | null, counter: number }}
 
@@ -45,10 +45,16 @@ export class SessionManagerClass {
 
   /**
    * This will check all registered sessions to see if they're required.
-   * It will query the BleCommandQueue for all outstanding sessions. If the public ones have no commands, they're cancelled.
+   * It will query the BleCommandQueue for all outstanding sessions. If the shared ones have no commands, they're cancelled.
    */
   evaluateSessionNecessity() {
-    // TODO: implement
+    for (let handle in this._sessions) {
+      if (this._sessions[handle].privateId === null) {
+        if (BleCommandQueue.areThereCommandsFor(handle) === false) {
+          this.cleanSession(handle);
+        }
+      }
+    }
   }
 
   /**
@@ -61,16 +67,17 @@ export class SessionManagerClass {
    */
   _getInteractionModule(handle: string, privateId: string | null, resolve: () => void, reject: (err: any) => void) : SessionInteractionModule {
     return {
-      canActivate:  () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
-      willActivate: () => { this._activeSessions[handle] = { initialized:false }; },
-      cleanup:      ()    => { this.cleanSession(handle); },
-      isConnected:  () => {
-        if (this._activeSessions[handle].initialized === false) {
+      canActivate:    () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
+      willActivate:   () => { this._activeSessions[handle] = { connected:false }; },
+      willDeactivate: () => { delete this._activeSessions[handle]; },
+      cleanup:        ()    => { this.cleanSession(handle); },
+      isConnected:    () => {
+        if (this._activeSessions[handle].connected === false) {
           // resolve the createSession
-          this._activeSessions[handle].initialized = true;
+          this._activeSessions[handle].connected = true;
           resolve();
 
-          // if this is a public connection, fulfill all public queued promises.
+          // if this is a shared connection, fulfill all shared queued promises.
           if (privateId === null && this._pendingSessionRequests[handle]) {
             for (let pendingSession of this._pendingSessionRequests[handle]) {
               pendingSession.resolve();
@@ -80,9 +87,9 @@ export class SessionManagerClass {
         }
       },
       connectionFailed: (err) => {
-        if (this._activeSessions[handle].initialized === false) {
+        if (this._activeSessions[handle].connected === false) {
           // reject the create session
-          this._activeSessions[handle].initialized = true;
+          this._activeSessions[handle].connected = true;
           reject(err);
         }
       }
@@ -126,7 +133,7 @@ export class SessionManagerClass {
    * @param timeoutSeconds
    */
   async request(handle, commandId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
-    // TODO: make sure a private connection is more important than a public one.
+    // TODO: make sure a private connection is more important than a shared one.
     let privateId = privateSession ? commandId : null;
 
     let registration = this._registeredSessions[handle];
@@ -196,7 +203,7 @@ export class SessionManagerClass {
       }
     }
 
-    // public registrations;
+    // shared registrations;
     registration.counter -= 1;
 
     // if we are the last to close our session, we actually close it.

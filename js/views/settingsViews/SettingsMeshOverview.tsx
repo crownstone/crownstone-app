@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { Util } from '../../util/Util'
-import {colors, screenWidth, } from './../styles'
+import { background, colors, screenWidth } from "./../styles";
 import { IconCircle } from "../components/IconCircle";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
@@ -126,7 +126,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
     networkKeys = Object.keys(networks);
 
     return (
-      <BackgroundNoNotification image={core.background.light}>
+      <BackgroundNoNotification image={background.light}>
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',

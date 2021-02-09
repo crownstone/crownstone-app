@@ -5,7 +5,7 @@ import {
   ScrollView} from 'react-native';
 
 import { ListEditableItems }   from '../../components/ListEditableItems'
-import { colors,  }  from '../../styles'
+import { background, colors } from "../../styles";
 import { Util }                from "../../../util/Util";
 import { IconCircle }          from "../../components/IconCircle";
 import { MeshUtil }            from "../../../util/MeshUtil";
@@ -185,7 +185,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

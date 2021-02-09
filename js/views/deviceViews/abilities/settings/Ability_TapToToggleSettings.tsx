@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 
-import { colors, screenHeight, screenWidth, styles } from "../../../styles";
+import { background, colors, screenHeight, screenWidth, styles } from "../../../styles";
 import {Background} from "../../../components/Background";
 import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
@@ -66,7 +66,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
     let stone = core.store.getState().spheres[this.props.sphereId].stones[this.props.stoneId];
     let rssiOffsetTarget = Number(stone.abilities.tapToToggle.rssiOffsetTarget);
     return (
-      <Background hasNavBar={false} image={core.background.lightBlurLighter}>
+      <Background hasNavBar={false} image={background.lightBlurLighter}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />

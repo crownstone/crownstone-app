@@ -20,7 +20,6 @@ import "./TextFontFix";
 import { IconDevSelector } from "../views/development/IconDevSelector";
 import { IconDebug } from "../views/development/IconDebug";
 
-
 let viewsLoaded = false;
 
 export const loadRoutes = function() {
@@ -83,8 +82,6 @@ Navigation.events().registerAppLaunchedListener(() => {
     defaultOptions.topBar["rightButtonColor"] = "#fff";
     defaultOptions.topBar["backButton"]       = { color: "#fff" };
   }
-
-
 
   Navigation.setDefaultOptions(defaultOptions);
 

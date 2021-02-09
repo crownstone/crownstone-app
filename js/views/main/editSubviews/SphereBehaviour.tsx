@@ -14,6 +14,7 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { background } from "../../styles";
 
 export class SphereBehaviour extends LiveComponent<any, any> {
   static options(props) {
@@ -98,7 +99,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
                 <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

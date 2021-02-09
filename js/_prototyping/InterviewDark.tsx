@@ -9,7 +9,7 @@ import {
   Text, TextStyle,
   View} from "react-native";
 import { core } from "../core";
-import { colors, screenWidth } from "../views/styles";
+import { background, colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn} from "../views/components/animated/FadeInView";
 import { TextButtonLightOnDark } from "../views/components/InterviewComponents";
@@ -58,7 +58,7 @@ export class InterviewDark extends Component<any, any> {
     return {
       introduction: {
         question:"When would you like me to be on?",
-        backgroundImage: core.background.light,
+        backgroundImage: background.light,
           answers: [
           {label: lang("When_someone_is_in_the_roo"), nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "ROOM" }},
           {label: lang("When_someone_is_at_home_"),     nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "HOME" }},
@@ -159,7 +159,7 @@ export class InterviewDark extends Component<any, any> {
   render() {
 
     return (
-      <AnimatedBackground hasNavBar={false} image={core.background.detailsDark}>
+      <AnimatedBackground hasNavBar={false} image={background.detailsDark}>
                 {this.state.finished === false ?
           <Carousel
             ref={(c) => {

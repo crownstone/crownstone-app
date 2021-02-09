@@ -13,7 +13,7 @@ import {
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { IconButton }        from '../components/IconButton'
-import { colors }            from './../styles';
+import { background, colors } from "./../styles";
 import { Permissions }       from "../../backgroundProcesses/PermissionManager";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
@@ -194,7 +194,7 @@ export class SphereEdit extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hasNavBar={false} >
+      <BackgroundNoNotification image={background.menu} hasNavBar={false} >
         <ScrollView>
           <RefreshControl
             refreshing={this.state.syncing}

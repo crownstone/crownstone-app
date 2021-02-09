@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 import {Background} from "../../components/Background";
-import { styles } from "../../styles";
+import { background, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
@@ -25,8 +25,8 @@ export class AlexaOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
-                <ScrollView >
+      <Background image={background.menu} hasNavBar={false}>
+        <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Working_with_Alexa") }</Text>

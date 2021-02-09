@@ -13,8 +13,9 @@ import {
 
 
 import {
-  colors,
-  } from '../styles'
+  background,
+  colors
+} from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import { ListEditableItems } from "../components/ListEditableItems";
@@ -323,7 +324,7 @@ lang("_No_recipients____I_cant__body"),
 
   render() {
     return (
-      <BackgroundNoNotification hasNavBar={false} image={core.background.lightBlur} >
+      <BackgroundNoNotification hasNavBar={false} image={background.lightBlur} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

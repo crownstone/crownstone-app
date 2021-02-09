@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import { Util } from '../../util/Util'
-import { availableScreenHeight, colors } from "./../styles";
+import { availableScreenHeight, background, colors } from "./../styles";
 import { MeshElement } from "../components/MeshElement";
 import { ForceDirectedView } from "../components/interactiveView/ForceDirectedView";
 import { Icon } from "../components/Icon";
@@ -177,7 +177,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
 
     if (stoneIds.length === 0) {
       return (
-        <BackgroundNoNotification image={core.background.menu}>
+        <BackgroundNoNotification image={background.menu}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
@@ -249,7 +249,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     height -= offset;
 
     return (
-      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
         <ForceDirectedView
           viewId={this.viewId}
           height={height}

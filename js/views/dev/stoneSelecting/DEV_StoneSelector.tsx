@@ -25,7 +25,7 @@ import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastSta
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Stacks } from "../../../router/Stacks";
 import { SlideInView } from "../../components/animated/SlideInView";
-import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
+import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import React from "react";
 import { StoneSelectorDataContainer } from "./DEV_StoneSelectorData";
 import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionComponents";
@@ -415,7 +415,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     this.lastRedraw = Date.now();
 
     return (
-      <Background image={core.background.light} hideNotifications={true}>
+      <Background image={background.light} hideNotifications={true}>
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>

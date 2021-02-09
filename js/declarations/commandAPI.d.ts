@@ -1,11 +1,11 @@
 type ConnectionState = "INITIALIZING" | "CONNECTING" | "CONNECTION_FAILED" | "CONNECTED" | "DISCONNECTING" | "DISCONNECTED"
 
-type CommandType = "DIRECT" | "MESH" | "SPHERE" | "MESH_RELAY"
+type CommandType = "DIRECT" | "MESH" | "MESH_RELAY"
 interface commandOptions {
   commanderId?:   string,
   sphereId:       string | null,
   commandType?:   CommandType,
-  commandTargets: string[], // this can be a meshId, a handleId or a sphereId, or a set thereof
+  commandTargets: string[],   // this can be a number of meshIds or handles
   endTarget?:     string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
                             // in order to relay the command to a target, the endTarget is a handle of the endTarget of the command.
   private?: boolean,
@@ -14,17 +14,17 @@ interface commandOptions {
 }
 
 interface SessionInteractionModule {
-  canActivate:  () => boolean
-  willActivate: () => void
-  isConnected:  () => void
+  canActivate:    () => boolean
+  willActivate:   () => void
+  willDeactivate: () => void
+  isConnected:    () => void
+  cleanup:        () => void
   connectionFailed: (err:any) => void,
-  cleanup:      () => void
 }
 
 interface CommandQueueMap {
   direct: {[handle: string]        : BleCommand[]}
   mesh:   {[meshNetworkId: string] : BleCommand[]}
-  sphere: {[sphereId: string]      : BleCommand[]}
 }
 interface PromiseContainer {
   resolve: (data?: any) => void,
@@ -33,12 +33,23 @@ interface PromiseContainer {
 
 interface BleCommand {
   id:           string,
-  linkedId:     string,
-  options:      commandOptions,
+  linkedId:     string,           // the linkedId refers to mesh_relay commands which can be cancelled if the direct command has succeeded
   command:      commandInterface,
   promise:      PromiseContainer,
   attemptingBy: string[],
   executedBy:   string[],
+
+  // injected the command options here.
+  commanderId?:   string,
+  sphereId:       string | null,
+  commandType?:   CommandType,
+  commandTarget:  string,   // this can be a meshId, a handleId or a sphereId
+  endTarget?:     string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
+                            // in order to relay the command to a target, the endTarget is a handle of the endTarget of the command.
+  private?: boolean,
+  minConnections?: number
+  startTime: number,
+  timeout?: number // seconds
 }
 
 

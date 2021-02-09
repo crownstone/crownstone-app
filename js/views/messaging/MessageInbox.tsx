@@ -16,11 +16,12 @@ import {
 
 
 import {
-  availableScreenHeight,
+  availableScreenHeight, background,
   colors,
   screenHeight,
   screenWidth,
-  styles} from '../styles'
+  styles
+} from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
@@ -260,7 +261,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <BackgroundNoNotification image={core.background.lightBlur}>
+          <BackgroundNoNotification image={background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
           </BackgroundNoNotification>
@@ -268,7 +269,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       }
       else {
         return (
-          <BackgroundNoNotification image={core.background.lightBlur}>
+          <BackgroundNoNotification image={background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
@@ -279,7 +280,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     }
     else {
       return (
-        <BackgroundNoNotification image={core.background.lightBlur}>
+        <BackgroundNoNotification image={background.lightBlur}>
           <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>

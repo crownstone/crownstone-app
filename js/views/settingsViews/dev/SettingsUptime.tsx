@@ -8,7 +8,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { UPTIME_LOG_PREFIX, UptimeMonitor } from "../../../backgroundProcesses/UptimeMonitor";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
@@ -182,7 +182,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}

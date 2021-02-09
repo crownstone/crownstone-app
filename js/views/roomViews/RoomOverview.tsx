@@ -18,7 +18,7 @@ import {
   styles,
   colors,
   screenHeight,
-  screenWidth,
+  screenWidth, background
 } from "../styles";
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
@@ -392,7 +392,7 @@ lang("_Indoor_localization_is_c_body"),
       explanation = lang("No_Crownstones_in_reach__")
     }
     return (
-      <Background image={core.background.lightBlur}>
+      <Background image={background.lightBlur}>
         <View>
           { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
           <LocationFlavourImage location={location} />

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {IconButton} from "../../components/IconButton";
 import {Background} from "../../components/Background";
-import { colors, screenWidth, styles } from "../../styles";
+import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
@@ -27,7 +27,7 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <BackgroundNoNotification image={core.background.menu} hasNavBar={false}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />

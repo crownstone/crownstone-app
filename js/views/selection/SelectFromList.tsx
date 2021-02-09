@@ -14,8 +14,9 @@ import {
 
 
 import {
-  colors,
-  } from '../styles'
+  background,
+  colors
+} from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import {Icon} from "../components/Icon";
@@ -99,7 +100,7 @@ export class SelectFromList extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.lightBlur}>
+      <Background hasNavBar={false} image={background.lightBlur}>
         <ScrollView style={{flex:1}}>
           <SeparatedItemList
             items={ this.props.items }

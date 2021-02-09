@@ -16,7 +16,7 @@ import {
 
 
 import { setupStyle }            from './SetupShared'
-import {colors, screenWidth, screenHeight, } from './../styles'
+import { colors, screenWidth, screenHeight, background } from "./../styles";
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import {LOG, LOGe} from '../../logging/Log'
@@ -262,7 +262,7 @@ lang("_Error_during_Factory_Res_body"),
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <BackgroundNoNotification hasNavBar={false} image={core.background.light}>
+      <BackgroundNoNotification hasNavBar={false} image={background.light}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />

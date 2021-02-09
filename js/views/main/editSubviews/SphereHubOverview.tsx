@@ -7,7 +7,7 @@ import * as React from 'react';
 import {
   Alert,
   ScrollView} from 'react-native';
-import {colors, } from "../../styles";
+import { background, colors } from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
@@ -157,7 +157,7 @@ export class SphereHubOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

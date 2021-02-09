@@ -18,7 +18,7 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {colors, screenWidth, } from './../styles'
+import { background, colors, screenWidth } from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { FileUtil } from "../../util/FileUtil";
@@ -220,7 +220,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

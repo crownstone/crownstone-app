@@ -9,7 +9,7 @@ import {
   Linking,
   Platform,
 } from "react-native";
-import { colors} from "../styles";
+import { background, colors } from "../styles";
 import { core } from "../../core";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
@@ -176,7 +176,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

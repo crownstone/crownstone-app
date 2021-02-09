@@ -51,5 +51,5 @@ interface locationUIDMap {
 }
 
 interface StoneIBeaconMap {
-  [key: string]: StoneMap
+  [ibeaconString: string]: StoneMap
 }

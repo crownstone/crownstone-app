@@ -15,7 +15,7 @@ import {
   colors,
   screenWidth,
   availableModalHeight,
-  deviceStyles
+  deviceStyles, background
 } from "../styles";
 import { core } from "../../core";
 import { Background } from "../components/Background";
@@ -70,7 +70,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
     let hasSwitchcraft = stone.config.type === STONE_TYPES.builtinOne;
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={background.lightBlur} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>

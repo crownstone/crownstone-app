@@ -7,7 +7,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 
 import { FileUtil } from "../../../util/FileUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 import { Localization_LOG_PREFIX, LocalizationMonitor } from "../../../backgroundProcesses/LocalizationMonitor";
@@ -157,7 +157,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}

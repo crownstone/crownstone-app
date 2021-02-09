@@ -11,7 +11,7 @@ import {  ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
-  availableModalHeight,
+  availableModalHeight, background,
   colors,
   deviceStyles,
   screenHeight,
@@ -113,7 +113,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
     });
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={background.lightBlur} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</ResponsiveText>

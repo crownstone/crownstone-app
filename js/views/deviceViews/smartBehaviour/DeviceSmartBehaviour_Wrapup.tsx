@@ -11,7 +11,7 @@ import {
   View, ScrollView, Alert, TextStyle, TouchableOpacity
 } from "react-native";
 import {
-  availableModalHeight,
+  availableModalHeight, background,
   colors,
   deviceStyles,
   screenWidth, styles
@@ -556,7 +556,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
 
     return (
-      <Background image={core.background.lightBlur} hideNotifications={true} hasNavBar={false}>
+      <Background image={background.lightBlur} hideNotifications={true} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>

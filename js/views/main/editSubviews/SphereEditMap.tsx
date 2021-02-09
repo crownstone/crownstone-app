@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import { LiveComponent }          from "../../LiveComponent";
 
 import * as React from 'react';
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import {Background} from "../../components/Background";
 import { core } from "../../../core";
 import MapView, { Marker } from "react-native-maps";
@@ -124,7 +124,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
 
 
     return (
-      <Background image={core.background.menu} hasNavBar={false} >
+      <Background image={background.menu} hasNavBar={false} >
         <MapView
           ref={(r) => { this.map = r }}
           style={{flex:1}}

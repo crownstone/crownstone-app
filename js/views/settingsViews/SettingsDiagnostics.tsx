@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { availableScreenHeight, colors, deviceStyles, screenWidth } from "../styles";
+import { availableScreenHeight, background, colors, deviceStyles, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -192,7 +192,7 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu}>
+      <BackgroundNoNotification image={background.menu}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: 30 }}>
             <Text style={deviceStyles.header}>{ lang("Diagnostics") }</Text>

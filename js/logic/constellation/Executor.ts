@@ -11,19 +11,19 @@ export const Executor = {
   _aggregateSwitchCommands(getState: (bleCommand: BleCommand) => number, connectedHandle: string, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[] {
     let stoneSummary  = MapProvider.stoneHandleMap[connectedHandle];
     let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
-    let stoneId       = bleCommand.options.sphereId;
+    let stoneId       = bleCommand.sphereId;
     let baseMeshId    = stoneSummary.stoneConfig.meshNetworkId;
     let sphereId      = stoneSummary.sphereId;
 
     let packets = [{ crownstoneId: stoneSummary.cid, state: getState(bleCommand) }];
-    // loop over all commands that are public and in this sphere, get the ones with the TURN_ON command
+    // loop over all commands that are shared and in this sphere, get the ones with the TURN_ON command
     // We only check mesh commands, since anything that is direct and allowed to be relayed via the mesh is loaded there.
     for (let meshId in queue.mesh) {
       for (let command of queue.mesh[meshId]) {
         // as long as we're in the same sphere, we might as well try to add it.
-        if (command.options.sphereId === sphereId) {
-          if (command.command.type === bleCommand.command.type && command.options.endTarget) {
-            let extStoneSummary = MapProvider.stoneHandleMap[command.options.endTarget];
+        if (command.sphereId === sphereId) {
+          if (command.command.type === bleCommand.command.type && command.endTarget) {
+            let extStoneSummary = MapProvider.stoneHandleMap[command.endTarget];
             let state = getState(command);
             if (state !== undefined) {
               packets.push({ crownstoneId: extStoneSummary.cid, state: getState(command) });
@@ -46,13 +46,13 @@ export const Executor = {
   },
 
   aggregateTurnOnCommands(connectedHandle: string, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[] {
-    return this._aggregateSwitchCommands(() => { return 100}, connectedHandle, bleCommand, queue);
+    return this._aggregateSwitchCommands(() => { return 100; }, connectedHandle, bleCommand, queue);
   },
 
   aggregateMultiSwitchCommands(connectedHandle, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[]  {
-    return this._aggregateSwitchCommands((bleCommand) => {
-      if (bleCommand.command.type === "multiSwitch") { return bleCommand.command.state; }
-    }, connectedHandle, bleCommand, queue);
+    return this._aggregateSwitchCommands(
+      (bleCommand) => { if (bleCommand.command.type === "multiSwitch") { return bleCommand.command.state; }}, connectedHandle, bleCommand, queue
+    );
   },
 
 

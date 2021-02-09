@@ -9,7 +9,7 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { BleUtil } from "../../../util/BleUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
+import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, Alert, Animated } from "react-native";
 import { core } from "../../../core";
 import { FileUtil } from "../../../util/FileUtil";
@@ -297,7 +297,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
   render() {
     if (this.state.dfuMode && this.state.dfuStarted === false) {
       return (
-        <Background image={core.background.light} hideNotifications={true} hasNavBar={false}>
+        <Background image={background.light} hideNotifications={true} hasNavBar={false}>
           <ScrollView contentContainerStyle={{flexGrow:1}}>
             <View style={{flexGrow: 1, paddingVertical: 30, width: screenWidth}}>
               <ListEditableItems items={this._getDfuItems()} separatorIndent={true} />
@@ -317,7 +317,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
     }
 
     return (
-      <Background image={core.background.light} hideNotifications={true} hasNavBar={false}>
+      <Background image={background.light} hideNotifications={true} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <View style={{flex:1, maxHeight:15}}/>

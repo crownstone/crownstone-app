@@ -12,7 +12,7 @@ import {
   ScrollView, Text, Vibration,
   View
 } from "react-native";
-import { availableModalHeight, colors, screenWidth, styles } from "../styles";
+import { availableModalHeight, background, colors, screenWidth, styles } from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -196,7 +196,7 @@ export class DfuBatch extends LiveComponent<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
+      <Background hasNavBar={false} image={background.light} hideNotifications={true}>
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />

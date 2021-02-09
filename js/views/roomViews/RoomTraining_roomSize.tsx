@@ -15,7 +15,7 @@ import {
 
 
 import { Background }   from '../components/Background'
-import {colors, screenWidth, screenHeight, } from '../styles'
+import { colors, screenWidth, screenHeight, background } from "../styles";
 import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
 import { core } from "../../core";
@@ -92,7 +92,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
     }
 
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
         <View style={{flexDirection:'column', flex:1, padding:20, paddingTop: 30, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',

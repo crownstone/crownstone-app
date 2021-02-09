@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 
-import { availableModalHeight, colors, screenHeight, styles } from "../styles";
+import { availableModalHeight, background, colors, screenHeight, styles } from "../styles";
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -31,7 +31,7 @@ export class RoomAdd extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background fullScreen={true} image={core.background.lightBlur} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
+      <Background fullScreen={true} image={background.lightBlur} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: colors.black.hex}}
           left={Platform.OS === 'android' ? null : lang("Back")}

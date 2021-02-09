@@ -10,6 +10,11 @@ import { StoneUtil } from "../util/StoneUtil";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
+
+/**
+ * This class is responsible for ensuring that the suntimes and the actual current time is communicated to the
+ * Crownstones that are near us.
+ */
 class TimeKeeperClass {
 
   initialized = false;

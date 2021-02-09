@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 
-import {styles, colors, } from '../styles'
+import { styles, colors, background } from "../styles";
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
@@ -539,7 +539,7 @@ lang("_Something_went_wrong_____body"),
 
     let options = this.constructStoneOptions(stone, state);
 
-    let backgroundImage = core.background.menu;
+    let backgroundImage = background.menu;
 
     return (
       <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>

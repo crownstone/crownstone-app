@@ -9,7 +9,7 @@ import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastSta
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
 import { ScrollView, View, Text, Alert, TouchableOpacity } from "react-native";
-import { availableScreenHeight, colors, NORMAL_ROW_SIZE, screenWidth } from "../../styles";
+import { availableScreenHeight, background, colors, NORMAL_ROW_SIZE, screenWidth } from "../../styles";
 import { ButtonBar } from "../../components/editComponents/ButtonBar";
 import { IconButton } from "../../components/IconButton";
 import { CLOUD } from "../../../cloud/cloudAPI";
@@ -70,7 +70,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
   render() {
     let state = core.store.getState();
     return (
-      <Background image={core.background.light} keyboardAvoid={true} hideNotifications={true}>
+      <Background image={background.light} keyboardAvoid={true} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />

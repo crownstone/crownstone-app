@@ -28,7 +28,7 @@ import { TextEditInput }      from '../components/editComponents/TextEditInput'
 import { Background }         from '../components/Background'
 import { StoreManager }       from '../../router/store/storeManager'
 import loginStyles            from './LoginStyles'
-import {screenWidth, screenHeight, colors, topBarHeight} from '../styles'
+import { screenWidth, screenHeight, colors, topBarHeight, background } from "../styles";
 import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
 import { TopbarImitation }             from "../components/TopbarImitation";
 import { Icon }               from "../components/Icon";
@@ -225,7 +225,7 @@ lang("arguments___arguments___O_body",content),
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={core.background.mainDark} dimStatusBar={true} hideNotifications={true} hideOrangeLine={true} keyboardAvoid={true}>
+      <Background fullScreen={true} image={background.mainDark} dimStatusBar={true} hideNotifications={true} hideOrangeLine={true} keyboardAvoid={true}>
         <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>

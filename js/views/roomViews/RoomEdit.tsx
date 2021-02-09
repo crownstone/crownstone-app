@@ -17,7 +17,7 @@ import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {colors, } from './../styles'
+import { background, colors } from "./../styles";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { FileUtil } from "../../util/FileUtil";
@@ -320,7 +320,7 @@ export class RoomEdit extends LiveComponent<any, any> {
     const state = core.store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].state.present === false;
 
-    let backgroundImage = core.background.menu;
+    let backgroundImage = background.menu;
     return (
       <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
         <ScrollView>

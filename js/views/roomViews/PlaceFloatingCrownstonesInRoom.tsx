@@ -14,7 +14,7 @@ import {
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
-import { screenHeight, screenWidth, tabBarHeight, topBarHeight } from "../styles";
+import { background, screenHeight, screenWidth, tabBarHeight, topBarHeight } from "../styles";
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
@@ -127,7 +127,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
     let viewHeight = screenHeight - tabBarHeight - topBarHeight - 100;
 
     return (
-      <Background image={core.background.light} hideNotifications={true}>
+      <Background image={background.light} hideNotifications={true}>
         <RoomBanner
           noCrownstones={ids.length === 0}
           amountOfStonesInRoom={ids.length}

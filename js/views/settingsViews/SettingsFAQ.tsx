@@ -15,7 +15,7 @@ import {
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, } from "../styles";
+import { background, colors } from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
@@ -239,7 +239,7 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

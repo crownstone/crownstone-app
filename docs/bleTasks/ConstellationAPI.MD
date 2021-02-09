@@ -19,7 +19,7 @@ will give the requestor full command over the connection. This means that no pen
 be sent over this connection untill the private connection is released.
 Private connections auto-terminate in 60 seconds to catch a missing release of the connection.
   
-#### Public connections
+#### Shared connections
 An Public connection is a connection to a Crownstone which any part of the app can use to send commands. This is close to the original batch command handler implementation.
 Any piece of code can just say they want to send something in the mesh, in a sphere, somewhere nearby or to a specific crownstone.
 

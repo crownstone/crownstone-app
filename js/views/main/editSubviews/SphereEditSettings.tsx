@@ -12,7 +12,7 @@ import {
 
 import {IconButton} from "../../components/IconButton";
 import {Util} from "../../../util/Util";
-import {colors, } from "../../styles";
+import { background, colors } from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
@@ -270,7 +270,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false} >
+      <Background image={background.menu} hasNavBar={false} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

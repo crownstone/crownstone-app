@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { Background }  from '../components/Background'
-import {colors, screenWidth} from "../styles";
+import { background, colors, screenWidth } from "../styles";
 
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
@@ -159,7 +159,7 @@ export class IconDevSelector extends LiveComponent<{callback(icon: string) : voi
 
 
     return (
-      <Background fullScreen={true} image={core.background.detailsDark} hideNotifications={true} hideOrangeLine={true} >
+      <Background fullScreen={true} image={background.detailsDark} hideNotifications={true} hideOrangeLine={true} >
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DevIconSelection

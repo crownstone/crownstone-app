@@ -2,8 +2,7 @@ import { mockLogger, silenceCommon } from "./mocks/logger.mock";
 mockLogger({v:0, d:1, i:1, w:1, e:1}, silenceCommon());
 
 import { mockBluenetPromiseWrapper } from "./mocks/bluenetPromiseWrapper.mock";
-import { mockNativeBus } from "./mocks/nativeBus.mock";
-let nativeBus = mockNativeBus()
+
 let lib = mockBluenetPromiseWrapper();
 
 import { Session } from "../js/logic/constellation/Session";

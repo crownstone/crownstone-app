@@ -14,9 +14,10 @@ import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
 import {
-  availableScreenHeight,
+  availableScreenHeight, background,
   colors,
-  overviewStyles} from "../styles";
+  overviewStyles
+} from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
@@ -238,7 +239,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
-    let background = core.background.main;
+    let backgroundOverride = background.main;
 
     LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
@@ -254,16 +255,16 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
-      background = core.background.lightBlur;
+      backgroundOverride = backgroundOverride.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        background = require("../../images/backgrounds/sphereBackground.jpg");
+        backgroundOverride = require("../../images/backgrounds/sphereBackground.jpg");
       }
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={core.background.lightBlur}>
+            <Background hideNotifications={true} image={background.lightBlur}>
               <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )
@@ -280,12 +281,12 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          background = require('../../images/backgrounds/blueprintBackgroundGray.jpg')
+          backgroundOverride = require('../../images/backgrounds/blueprintBackgroundGray.jpg')
         }
       }
 
       return (
-        <AnimatedBackground image={background} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
+        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
           { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
@@ -301,7 +302,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={background}>
+        <AnimatedBackground image={backgroundOverride}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>

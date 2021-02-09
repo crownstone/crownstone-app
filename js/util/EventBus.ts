@@ -1,4 +1,4 @@
-import {LOG, LOGe, LOGi, LOGv} from '../logging/Log'
+import { LOG, LOGd, LOGe, LOGi, LOGv } from "../logging/Log";
 import { xUtil } from "./StandAloneUtil";
 
 
@@ -90,7 +90,7 @@ export class EventBusClass {
 
 
   clearAllEvents() {
-    LOG.info("EventBus: Clearing all event listeners.");
+    LOGd.info("EventBus: Clearing all event listeners.");
     this._topics = {};
     this._topicIds = {};
   }
@@ -100,7 +100,7 @@ export class EventBusClass {
    * This will only be used at clearing the database.
    */
   clearMostEvents() {
-    LOG.info("EventBus: Clearing most event listeners.");
+    LOGd.info("EventBus: Clearing most event listeners.");
     let topics = Object.keys(this._topics);
     for (let i = 0; i < topics.length; i++) {
       if (EXCLUDE_FROM_CLEAR[topics[i]] !== true) {

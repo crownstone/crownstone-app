@@ -121,20 +121,21 @@ interface NativeBus {
   clearAllEvents() : void,
 }
 
+interface background {
+  main                   : any,
+  menu                   : any,
+  mainDarkLogo           : any,
+  mainRemoteNotConnected : any,
+  mainDark               : any,
+  light                  : any,
+  lightBlur              : any,
+  lightBlurLighter       : any,
+  lightBlurBW            : any,
+  detailsDark            : any,
+}
+
 interface core {
-  background: {
-    main                   : any,
-    menu                   : any,
-    mainDarkLogo           : any,
-    mainRemoteNotConnected : any,
-    mainDark               : any,
-    light                  : any,
-    lightBlur              : any,
-    lightBlurLighter       : any,
-    lightBlurBW            : any,
-    detailsDark            : any,
-  },
-  state: {
+  bleState: {
     bleAvailable: boolean,
     bleBroadcastAvailable: boolean,
   },

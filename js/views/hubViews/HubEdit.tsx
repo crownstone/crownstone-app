@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 
-import {styles, colors, } from '../styles'
+import { styles, colors, background } from "../styles";
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
@@ -175,7 +175,7 @@ export class HubEdit extends LiveComponent<any, any> {
     const state = core.store.getState();
     const hub = Get.hub(this.props.sphereId, this.props.hubId);
     let options = this.constructHubOptions(hub, state);
-    let backgroundImage = core.background.menu;
+    let backgroundImage = background.menu;
 
     return (
       <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>

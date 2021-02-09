@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, availableScreenHeight, deviceStyles, availableModalHeight } from "../styles";
+import { screenWidth, availableScreenHeight, deviceStyles, availableModalHeight, background } from "../styles";
 import { Graph } from "../components/graph/Graph";
 import { core } from "../../core";
 import { NativeBus } from "../../native/libInterface/NativeBus";
@@ -113,7 +113,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={background.lightBlur} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={deviceStyles.header}>{header}</Text>

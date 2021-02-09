@@ -12,7 +12,7 @@ import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } fr
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
-  availableModalHeight,
+  availableModalHeight, background,
   colors,
   deviceStyles,
   screenHeight,
@@ -208,7 +208,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     });
 
     return (
-      <Background image={core.background.lightBlurLighter} hasNavBar={false}>
+      <Background image={background.lightBlurLighter} hasNavBar={false}>
         {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
@@ -362,7 +362,7 @@ function NoRulesYet(props) {
   let updateRequired = !xUtil.versions.canIUse(stone.config.firmwareVersion, '4.0.0')
 
   return (
-    <Background image={core.background.lightBlurLighter} hasNavBar={false}>
+    <Background image={background.lightBlurLighter} hasNavBar={false}>
       <ScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>

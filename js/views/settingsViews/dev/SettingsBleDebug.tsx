@@ -5,7 +5,7 @@ import {
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, } from '../../styles'
+import { background, colors } from "../../styles";
 import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
 import { core } from "../../../core";
@@ -100,7 +100,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

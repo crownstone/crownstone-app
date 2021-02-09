@@ -10,7 +10,7 @@ import {
   View} from "react-native";
 import { core } from "../core";
 import { Background } from "../views/components/Background";
-import { colors, screenWidth } from "../views/styles";
+import { background, colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn} from "../views/components/animated/FadeInView";
 import { TextButtonSemitranslucentDark } from "../views/components/InterviewComponents";
@@ -157,7 +157,7 @@ export class InterviewLight extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
                 {this.state.finished === false ?
           <Carousel
             ref={(c) => {

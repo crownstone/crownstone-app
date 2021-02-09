@@ -19,7 +19,7 @@ import { executeScene, getScenePictureSource, verifySceneIntegrity } from "./sup
 import { DataUtil } from "../../util/DataUtil";
 import { StoneSwitchStateRow } from "./SceneAdd";
 import { IconButton } from "../components/IconButton";
-import { colors } from "../styles";
+import { background, colors } from "../styles";
 import { PICTURE_GALLERY_TYPES } from "./ScenePictureGallery";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
@@ -248,7 +248,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
 
 
   render() {
-    let backgroundImage = core.background.menu;
+    let backgroundImage = background.menu;
     return (
       <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
         <ScrollView>

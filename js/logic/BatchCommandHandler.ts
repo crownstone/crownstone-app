@@ -1,5 +1,4 @@
 import { Util }                  from '../util/Util'
-import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOGd, LOGe, LOGi, LOGv, LOGw } from '../logging/Log'
 import { Scheduler }             from './Scheduler'

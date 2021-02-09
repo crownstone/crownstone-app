@@ -30,6 +30,7 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { background } from "../styles";
 
 
 export class RoomTraining extends LiveComponent<any, any> {
@@ -249,7 +250,7 @@ export class RoomTraining extends LiveComponent<any, any> {
     }
 
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
         <KeepAwake />
         {content}
       </Background>

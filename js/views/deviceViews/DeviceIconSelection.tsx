@@ -14,7 +14,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
-import { colors } from "../styles";
+import { background, colors } from "../styles";
 
 
 
@@ -537,7 +537,7 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
     ];
 
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
         <ScrollView>
           <IconSelection
             categories={categories}

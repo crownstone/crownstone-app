@@ -15,7 +15,7 @@ import Toast from 'react-native-same-toast';
 import { BleUtil } from "../../../util/BleUtil";
 import { SetupHelper } from "../../../native/setup/SetupHelper";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
-import { colors, screenWidth, styles } from "../../styles";
+import { background, colors, screenWidth, styles } from "../../styles";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { Alert, Platform, ScrollView, TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
@@ -569,7 +569,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let explanationColor = colors.black.rgba(0.9);
 
     switch (FocusManager.crownstoneMode ) {
@@ -578,10 +578,10 @@ export class DEV_FirmwareTest extends LiveComponent<{
         backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = core.background.light;
+        backgroundImage = background.light;
         break;
       case "unverified":
-        backgroundImage = core.background.menu;
+        backgroundImage = background.menu;
         break;
       case "dfu":
         backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');

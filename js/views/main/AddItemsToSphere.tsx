@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, colors, deviceStyles } from "../styles";
+import { screenWidth, colors, deviceStyles, background } from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
@@ -46,7 +46,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={background.lightBlur} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <IconButton

@@ -11,7 +11,7 @@ import {
   View, TextStyle
 } from "react-native";
 import { Background } from './../components/Background'
-import { colors} from './../styles'
+import { background, colors } from "./../styles";
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";
@@ -28,7 +28,7 @@ export class Splash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={core.background.mainDark} dimStatusBar={true}  hideOrangeLine={true} hideNotifications={true}>
+      <Background fullScreen={true} image={background.mainDark} dimStatusBar={true}  hideOrangeLine={true} hideNotifications={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

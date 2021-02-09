@@ -7,7 +7,7 @@ import {
 import { IconButton } from '../../components/IconButton'
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../core";
 import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
@@ -569,7 +569,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
+      <BackgroundNoNotification image={background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
           title={ "test"}

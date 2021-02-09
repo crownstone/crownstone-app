@@ -15,7 +15,7 @@ import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
-import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import { availableScreenHeight, background, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
 import {
   ActivityIndicator,
   Text,
@@ -482,7 +482,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (
-      <Background image={core.background.lightBlur}>
+      <Background image={background.lightBlur}>
         { stoneCanSwitch && this._getMenuIcons(stone) }
         <View style={{flex:2}} />
 

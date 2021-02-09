@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 import { Background } from './../components/Background'
-import { colors, screenWidth, tabBarMargin } from "./../styles";
+import { background, colors, screenWidth, tabBarMargin } from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
@@ -37,7 +37,7 @@ export class LoginSplash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={core.background.mainDark} dimStatusBar={true}  hideOrangeLine={true} hideNotifications={true}>
+      <Background fullScreen={true} image={background.mainDark} dimStatusBar={true}  hideOrangeLine={true} hideNotifications={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

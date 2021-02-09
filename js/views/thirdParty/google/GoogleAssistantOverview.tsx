@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 import {Background} from "../../components/Background";
-import { screenWidth, styles } from "../../styles";
+import { background, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
@@ -25,7 +25,7 @@ export class GoogleAssistantOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />

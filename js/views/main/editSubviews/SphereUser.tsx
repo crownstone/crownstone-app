@@ -15,7 +15,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {LOGe} from "../../../logging/Log";
 import {Background} from "../../components/Background";
-import {screenWidth} from "../../styles";
+import { background, screenWidth } from "../../styles";
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
@@ -129,7 +129,7 @@ export class SphereUser extends LiveComponent<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture

@@ -170,7 +170,7 @@ class StoneManagerClass {
 
     let stoneId = stoneData.id;
 
-    core.eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi, sphereId: sphereId});
+    core.eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, handle: stoneData.handle, rssi: ibeaconPackage.rssi, sphereId: sphereId});
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[stoneId]) { this.createEntity(sphereId, stoneId); }

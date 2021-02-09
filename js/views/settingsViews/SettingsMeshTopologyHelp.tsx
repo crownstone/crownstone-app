@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 
-import { colors, styles } from "./../styles";
+import { background, colors, styles } from "./../styles";
 import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
@@ -29,7 +29,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
   render() {
     let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
     return (
-      <BackgroundNoNotification hasNavBar={false} image={core.background.menu}>
+      <BackgroundNoNotification hasNavBar={false} image={background.menu}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:10}} />

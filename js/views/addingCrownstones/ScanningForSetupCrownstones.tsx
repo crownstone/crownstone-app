@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   ScrollView, Text, TouchableOpacity,
   View} from "react-native";
-import { colors, screenWidth, styles} from "../styles";
+import { background, colors, screenWidth, styles } from "../styles";
 import { core } from "../../core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
@@ -212,7 +212,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     let informationStyle = {...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle};
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotifications={true} >
+      <Background hasNavBar={false} image={background.light} hideNotifications={true} >
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}

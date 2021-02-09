@@ -6,45 +6,75 @@
  * command and/or direct disconnect.
  */
 // import { MapProvider } from "../../backgroundProcesses/MapProvider";
+
 import { NativeBus } from "../../native/libInterface/NativeBus";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BleCommandQueue } from "./BleCommandQueue";
+import { core } from "../../core";
+import { Platform } from "react-native";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+
+
+const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -85 : -85;
 
 export class Session {
   state    : ConnectionState = "INITIALIZING"
   handle   : string
   sphereId : string
 
+  sessionIsActivated = false;
   sessionIsKilled = false;
 
   privateId : string | null;
   listeners = [];
 
-  crownstoneMode : CrownstoneMode;
+  unsubscribeBootstrapper = null
 
+  crownstoneMode : CrownstoneMode;
   interactionModule: SessionInteractionModule
+
+
 
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
     this.handle = handle;
     this.interactionModule = interactionModule;
-    this.privateId = privateId;
-    // let reference = MapProvider.stoneHandleMap[handle];
-    // this.sphereId = reference?.sphereId || null;
+    this.privateId = privateId || null;
+    let reference = MapProvider.stoneHandleMap[handle];
+    this.sphereId = reference?.sphereId || null;
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
     this._respondTo(NativeBus.topics.connectedToPeripheralFailed,() => { this.state = "CONNECTION_FAILED";
       if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
-    })
+    });
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.state = "DISCONNECTED";
       if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
-    })
+    });
 
+    this.registerBootstrapper();
+
+    if (this.privateId) {
+      this.tryToActivate();
+    }
+  }
+
+  registerBootstrapper() {
+    if (this.unsubscribeBootstrapper) {
+      this.unsubscribeBootstrapper();
+      this.unsubscribeBootstrapper = null;
+    }
+    this.unsubscribeBootstrapper = (core.eventBus.on("iBeaconOfValidCrownstone", (data) => {
+      if (this.sessionIsActivated === false && data.handle.toLowerCase() === this.handle.toLowerCase()) {
+        if (data.rssi >= CONNECTION_THRESHOLD) {
+          this.tryToActivate();
+        }
+      }
+    }));
+  }
+
+  tryToActivate() {
     if (this.interactionModule.canActivate()) {
       this.connect();
     }
-
-    // TODO: have the session scan for ibeacon to ask if it can activate.
-
   }
 
   _respondTo(event : string, callback: () => void) {
@@ -58,12 +88,23 @@ export class Session {
 
 
   async connect() {
+    // remove the listener for ibeacons from this device.
+    this.unsubscribeBootstrapper();
+    this.unsubscribeBootstrapper = null;
+
     this.interactionModule.willActivate();
+    this.sessionIsActivated = true;
     this.state = "CONNECTING";
     try {
       this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId);
     }
     catch (err) {
+      if (err === "CONNECTION_CANCELLED") {
+        this.state = "INITIALIZING";
+        this.registerBootstrapper();
+        return;
+      }
+
       this.state = "CONNECTION_FAILED";
       this.interactionModule.connectionFailed(err);
       if (this.isPrivate() === false || this.sessionIsKilled) {
@@ -123,16 +164,24 @@ export class Session {
     this.state = "DISCONNECTING";
     try {
       await BleCommandQueue.performClosingCommands(this.handle, this.privateId, this.crownstoneMode)
-      await BluenetPromiseWrapper.phoneDisconnect(this.handle);
     }
     catch (e) {
-      try {
-        await BluenetPromiseWrapper.phoneDisconnect(this.handle);
-      }
-      catch (e) {
-        // ignore
-      }
+
     }
+    await BluenetPromiseWrapper.phoneDisconnect(this.handle);
+  }
+
+
+  deactivate() {
+    if (this.isPrivate() || this.isClosing()) { return; }
+    if (this.sessionIsActivated === false)    { return; }
+    if (this.state === "CONNECTED")           { return; }
+    if (this.state === "CONNECTING") {
+      BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+    }
+
+    this.sessionIsActivated = false;
+
   }
 
 

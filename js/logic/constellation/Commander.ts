@@ -6,57 +6,6 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { core } from "../../core";
 
-
-async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
-  let privateId = xUtil.getUUID();
-  let stoneData = MapProvider.stoneHandleMap[handle];
-  let sphereId = null;
-  if (stoneData) {
-    sphereId = stoneData.sphereId;
-  }
-  await SessionManager.request(handle, privateId, true, timeoutSeconds);
-  return new CommandAPI({
-    commanderId:    privateId,
-    sphereId:       sphereId,
-    commandType:    "DIRECT",
-    commandTargets: [handle],
-    private:        true
-  });
-}
-
-/**
- * The tellers are functions which return a chainable command API to a single Crownstone.
- * This will also be able to possibly use a hub to propagate these commands.
- */
-function tell(handle: string | StoneData) : CommandAPI {
-  return
-}
-
-
-/**
- * @param meshId
- * @param minimalConnections
- */
-function tellMesh(meshId, minConnections = 3) : CommandAPI {
-
-}
-
-
-function tellNearby(minConnections = 3) : CommandAPI {
-
-}
-
-
-/**
- * TellSphere will notify all Meshes in the Sphere
- * @param sphereId
- */
-function tellSphere(sphereId, minConnections = 3) : CommandAPI {
-
-
-}
-
-
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
  * to provide connections. This is the class that you'll interact with most of all. You can perform multiple
@@ -70,9 +19,9 @@ function tellSphere(sphereId, minConnections = 3) : CommandAPI {
  * If the privateId is missing, the connection can be used for state updates like localization, which do not really care which Crownstones
  * get the command.
  */
-class CommandAPI {
-  commandId : string | null;
-  options   : commandOptions;
+class CommandAPI_base {
+  id : string | null;
+  options : commandOptions;
 
   _connectionRequested : boolean = false;
   _targetConnectionState : { [handle: string] : ConnectionState } = {};
@@ -80,7 +29,7 @@ class CommandAPI {
   constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
     this.options.commanderId ??= xUtil.getUUID();
-    this.commandId = this.options.commanderId;
+    this.id = this.options.commanderId;
   }
 
   reconnect() {
@@ -94,7 +43,7 @@ class CommandAPI {
    */
   _load(command, allowMeshRelays: boolean) {
     return new Promise<any>((resolve, reject) => {
-      BleCommandLoader.generate(this.options, command, allowMeshRelays,{resolve, reject});
+      BleCommandLoader.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
 
 
       if (this._connectionRequested === false) {
@@ -105,6 +54,38 @@ class CommandAPI {
       }
     })
   }
+}
+
+class CommandMeshAPI extends CommandAPI_base {
+
+  // async setSunTimes(sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number)
+  // async meshSetTime(time:  number)
+  // async setTime(time?: number)
+  // async registerTrackedDevice(
+  //   trackingNumber:     number,
+  //   locationUID:  () => number | number,
+  //   profileId:          number,
+  //   rssiOffset:         number,
+  //   ignoreForPresence:  boolean,
+  //   tapToToggleEnabled: boolean,
+  //   deviceToken:        number,
+  //   ttlMinutes:         number
+  // )
+  // async trackedDeviceHeartbeat(
+  //   trackingNumber:    number,
+  //   locationUID: () => number | number,
+  //   deviceToken:       number,
+  //   ttlMinutes:        number
+  // )
+}
+
+
+/**
+ * this commander is used for the direct commands.
+ * You can also send meshcommands to the Crownstone directly, thats why it inherits the meshAPI
+ */
+class CommandAPI extends CommandMeshAPI {
+
 
   async toggle(stateForOn : number) {
 
@@ -120,13 +101,14 @@ class CommandAPI {
   async turnOn() : Promise<void>  {
     // either broadcast or connect
     let command : commandInterface = {type:"turnOn"}
-    if (BroadcastCommandManager.canBroadcast(command)) {
-      // load in broadcast manager and auto-execute after setImmediate
-    }
-    else {
+    // TODO: add broadcastng to the commanders
+    // if (BroadcastCommandManager.canBroadcast(command)) {
+    //   // load in broadcast manager and auto-execute after setImmediate
+    // }
+    // else {
       // load into the commandQueue
       return this._load({type:"turnOn"}, true);
-    }
+    // }
   }
 
   // async getBootloaderVersion()
@@ -175,25 +157,7 @@ class CommandAPI {
 
 
 
-  // async setSunTimes(sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number)
-  // async meshSetTime(time:  number)
-  // async setTime(time?: number)
-  // async registerTrackedDevice(
-  //   trackingNumber:     number,
-  //   locationUID:  () => number | number,
-  //   profileId:          number,
-  //   rssiOffset:         number,
-  //   ignoreForPresence:  boolean,
-  //   tapToToggleEnabled: boolean,
-  //   deviceToken:        number,
-  //   ttlMinutes:         number
-  // )
-  // async trackedDeviceHeartbeat(
-  //   trackingNumber:    number,
-  //   locationUID: () => number | number,
-  //   deviceToken:       number,
-  //   ttlMinutes:        number
-  // )
+
 }
 
 
@@ -209,7 +173,7 @@ I want to use the commandAPI for ALL interactions with bluetooth. This means the
     - on read/write to the crownstone after disconnect, fail the commandAPI. maybe allow for reconnecting?
     - private connections MUST BE SINGULAR! (ie 1 connection target)
 - connections where anyone throwing up commands can use the connection to deliver their message.
-  - public connections
+  - shared connections
   - get their own commands from the queueManager based on handle, mesh, sphere etc.
   - close the connection if nobody needs it any more.
 

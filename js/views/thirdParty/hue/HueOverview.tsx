@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 import {Background} from "../../components/Background";
-import { colors, screenWidth, styles } from "../../styles";
+import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
@@ -29,7 +29,7 @@ export class HueOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:20, paddingBottom:20}}>
             <Text style={styles.title}>{ lang("Lights_everywhere_") }</Text>

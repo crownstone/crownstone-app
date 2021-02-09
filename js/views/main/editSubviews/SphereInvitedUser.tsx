@@ -17,7 +17,7 @@ import { ProfilePicture } from '../../components/ProfilePicture'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
-import {colors, screenWidth, } from '../../styles'
+import { background, colors, screenWidth } from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -135,7 +135,7 @@ export class SphereInvitedUser extends Component<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
                 <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture

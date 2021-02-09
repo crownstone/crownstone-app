@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 
-import { colors, screenHeight, screenWidth, styles } from "../../../styles";
+import { background, colors, screenHeight, screenWidth, styles } from "../../../styles";
 import {Background} from "../../../components/Background";
 import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
@@ -38,7 +38,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.lightBlurLighter}>
+      <Background hasNavBar={false} image={background.lightBlurLighter}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />

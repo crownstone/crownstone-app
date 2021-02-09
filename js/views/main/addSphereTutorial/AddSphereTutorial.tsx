@@ -10,7 +10,7 @@ import {
   View
 } from "react-native";
 import { Background } from "../../components/Background";
-import { availableModalHeight, colors, screenWidth} from "../../styles";
+import { availableModalHeight, background, colors, screenWidth } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
@@ -41,7 +41,7 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
   render() {
     let components = this._getContent();
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
         <View style={{flex:1, width:screenWidth}}>
         <Carousel
           useScrollView={true}

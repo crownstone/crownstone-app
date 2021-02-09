@@ -10,7 +10,7 @@ import {
   ScrollView, Text,
   View
 } from "react-native";
-import { colors, screenWidth, styles} from "../styles";
+import { background, colors, screenWidth, styles } from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -269,7 +269,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     const { stoneArray, ids } = this._getStoneList();
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
+      <Background hasNavBar={false} image={background.light} hideNotifications={true}>
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <ScanningForDFUCrownstonesBanner height={110} componentId={this.props.componentId} />

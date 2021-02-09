@@ -10,7 +10,7 @@ import {
   ScrollView} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {IconButton} from "../../components/IconButton";
-import {colors, } from "../../styles";
+import { background, colors } from "../../styles";
 
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {Background} from "../../components/Background";
@@ -137,7 +137,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

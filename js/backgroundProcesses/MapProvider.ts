@@ -5,9 +5,9 @@ import {
   getMapOfCrownstonesInAllSpheresByHandle,
   getMapOfCrownstonesInAllSpheresByIBeacon,
   getMapOfCrownstonesInAllSpheresByStoneId
-} from "../util/DataUtil";
-import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
-import {LOG} from "../logging/Log";
+} from "../util/MapUtil";
+import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import { LOG } from "../logging/Log";
 import { core } from "../core";
 
 /**
@@ -101,9 +101,9 @@ class MapProviderClass {
   refreshMeshMap() {
     this.meshMap = {};
     let state = core.store.getState();
-    if (!state.spheres) { return; }
-    for (let sphereId of state.spheres) {
-      let sphere= state.spheres[sphereId];
+    if (Object.keys(state.spheres).length === 0) { return; }
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
 
       if (!sphere.stones) { return; }
       // @ts-ignore

@@ -11,7 +11,7 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { colors, styles } from "../../styles";
+import { background, colors, styles } from "../../styles";
 import {RoomList} from "../../components/RoomList";
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
@@ -131,7 +131,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    let backgroundImage = core.background.menu;
+    let backgroundImage = background.menu;
     return (
       <Background image={backgroundImage} hasNavBar={false} >
         <ScrollView>

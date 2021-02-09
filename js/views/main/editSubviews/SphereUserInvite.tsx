@@ -11,7 +11,7 @@ import {
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 
-import {colors, } from '../../styles';
+import { background, colors } from "../../styles";
 import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
@@ -160,7 +160,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.menu} >
+      <Background hasNavBar={false} image={background.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

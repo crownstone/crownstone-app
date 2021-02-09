@@ -12,7 +12,7 @@ import { LiveComponent } from "../../LiveComponent";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { BackButton, RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
-import { availableScreenHeight, colors, screenWidth } from "../../styles";
+import { availableScreenHeight, background, colors, screenWidth } from "../../styles";
 
 export class DEV_PresenceMocking extends LiveComponent<any, any> {
   static options(props) {
@@ -96,7 +96,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.light} hideNotifications={true}>
+      <Background image={background.light} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />

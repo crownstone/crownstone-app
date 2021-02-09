@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { availableModalHeight, colors, deviceStyles, screenHeight, screenWidth } from "../styles";
+import { availableModalHeight, background, colors, deviceStyles, screenHeight, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {AppUtil} from "../../util/AppUtil";
 import { core } from "../../core";
@@ -28,7 +28,7 @@ export class SettingsRedownloadFromCloud extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} hasNavBar={false}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false}>
         <ScrollView>
           <View style={{flex:1, alignItems:'center', padding: 20, minHeight: availableModalHeight}}>
             <Text style={[deviceStyles.header,{color:colors.menuBackground.hex}]}>{ lang("Replace_local_data_with_C") }</Text>

@@ -157,7 +157,7 @@ lang("_Whoops___We_could_not_re_body"),
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>

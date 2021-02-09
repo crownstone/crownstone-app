@@ -3,7 +3,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { colors } from "../../styles";
+import { background, colors } from "../../styles";
 import { core } from "../../../core";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { ScrollView, Text } from "react-native";
@@ -104,7 +104,7 @@ export class DEV_RawAdvertisements extends LiveComponent<{
   }
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let explanationColor = colors.black.rgba(0.9);
 
     switch (FocusManager.crownstoneMode) {
@@ -113,10 +113,10 @@ export class DEV_RawAdvertisements extends LiveComponent<{
         backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = core.background.light;
+        backgroundImage = background.light;
         break;
       case "unverified":
-        backgroundImage = core.background.menu;
+        backgroundImage = background.menu;
         break;
       case "dfu":
         backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');

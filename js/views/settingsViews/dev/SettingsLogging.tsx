@@ -4,7 +4,7 @@ import { Alert, KeyboardAvoidingView, Linking, Platform, ScrollView } from "reac
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, } from '../../styles'
+import { background, colors } from "../../styles";
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
@@ -172,7 +172,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
           <ScrollView keyboardShouldPersistTaps="always">
             <ListEditableItems items={this._getItems()} separatorIndent={true} />

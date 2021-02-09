@@ -15,7 +15,7 @@ import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
-import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import { availableScreenHeight, background, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
 import {
   ActivityIndicator, Alert,
   Text,
@@ -592,7 +592,7 @@ lang("_Something_went_wrong_____Pleas_body"),
 
 
     return (
-      <Background image={core.background.lightBlur}>
+      <Background image={background.lightBlur}>
         <View style={{flex:0.5}} />
 
         { this._getStoneIcon(stone, updateAvailable) }

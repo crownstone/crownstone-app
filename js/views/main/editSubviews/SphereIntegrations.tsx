@@ -18,6 +18,7 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
+import { background } from "../../styles";
 
 export class SphereIntegrations extends LiveComponent<any, any> {
   static options(props) {
@@ -93,7 +94,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false} >
+      <Background image={background.menu} hasNavBar={false} >
                 <ScrollView>
           <ListEditableItems items={this._getItemsAlternative()} />
         </ScrollView>

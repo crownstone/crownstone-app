@@ -9,7 +9,7 @@ import {
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
+import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import { Util } from "../../../util/Util";
 import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../core";
@@ -767,7 +767,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

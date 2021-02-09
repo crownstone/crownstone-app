@@ -27,7 +27,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   const [editMode, setEditMode] = useState(stateEditMode);
   // const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
-  const [available, setAvailable] = useState(core.state.bleAvailable && core.state.bleBroadcastAvailable);
+  const [available, setAvailable] = useState(core.bleState.bleAvailable && core.bleState.bleBroadcastAvailable);
 
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { return Util.bleWatcherEffect(setAvailable); });

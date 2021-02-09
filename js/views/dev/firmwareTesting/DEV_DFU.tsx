@@ -11,7 +11,7 @@ import { DfuHelper } from "../../../native/firmware/DfuHelper";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { core } from "../../../core";
 import { ActivityIndicator, Alert, View, Text, ScrollView } from "react-native";
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import React from "react";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { ListEditableItems } from "../../components/ListEditableItems";
@@ -172,7 +172,7 @@ export class DEV_DFU extends LiveComponent<{
   }
 
   render() {
-    let backgroundImage = core.background.light;
+    let backgroundImage = background.light;
     let explanationColor = colors.black.rgba(0.9);
 
     switch (FocusManager.crownstoneMode ) {
@@ -181,10 +181,10 @@ export class DEV_DFU extends LiveComponent<{
         backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = core.background.light;
+        backgroundImage = background.light;
         break;
       case "unverified":
-        backgroundImage = core.background.menu;
+        backgroundImage = background.menu;
         break;
       case "dfu":
         backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');

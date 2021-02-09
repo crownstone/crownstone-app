@@ -18,7 +18,7 @@ import {
 
 import { Background } from '../components/Background'
 import {LOGe} from '../../logging/Log'
-import {styles, colors, screenWidth, screenHeight, topBarHeight, } from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, background } from "../styles";
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
@@ -60,7 +60,7 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hasNavBar={false} keyboardAvoid={true} image={core.background.light}>
+      <Background hasNavBar={false} keyboardAvoid={true} image={background.light}>
         <View style={[styles.centered, {flex:1, paddingTop:30, paddingBottom:30}]}>
           <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
           <View style={{flex:1}} />

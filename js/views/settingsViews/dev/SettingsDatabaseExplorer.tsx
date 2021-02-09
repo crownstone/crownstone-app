@@ -8,7 +8,7 @@ import { BackgroundNoNotification } from '../../components/BackgroundNoNotificat
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { core } from "../../../core";
-import { colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TextEditBar } from "../../components/editComponents/TextEditBar";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
@@ -135,7 +135,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={core.background.menu} >
+      <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           {this._getItems(this.dbState, this.expanded, '', 'BASE', 0) }
         </ScrollView>

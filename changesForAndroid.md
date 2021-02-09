@@ -12,3 +12,5 @@ Connect bridge method now returns the Crownstone's operation mode:
 "setup"
 "operation"
 "dfu"
+
+Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED"

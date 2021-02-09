@@ -12,7 +12,7 @@ import {
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
-import {colors, screenWidth} from "../styles";
+import { background, colors, screenWidth } from "../styles";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
@@ -393,7 +393,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
     ];
 
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={background.light}>
         <ScrollView>
           <IconSelection
             categories={categories}
