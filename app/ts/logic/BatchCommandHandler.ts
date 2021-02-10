@@ -170,7 +170,7 @@ class BatchCommandHandlerClass {
                 break;
               case 'meshSetTime':
               case 'setTime':
-                let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
+                let timeToSet = command.time === undefined ? xUtil.nowToCrownstoneTime() : command.time;
                 actionPromise = BluenetPromiseWrapper.meshSetTime(connectedStoneInfo.handle, timeToSet);
                 break;
               case 'commandFactoryReset':
@@ -507,7 +507,7 @@ class BatchCommandHandlerClass {
             // if it is more than 5 hours ago, tell this crownstone the time.
             if (Date.now() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
               // this will never halt the chain since it's optional.
-              return BluenetPromiseWrapper.setTime(crownstoneToHandle.handle, StoneUtil.nowToCrownstoneTime())
+              return BluenetPromiseWrapper.setTime(crownstoneToHandle.handle, xUtil.nowToCrownstoneTime())
                 .then(() => {
                   core.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })

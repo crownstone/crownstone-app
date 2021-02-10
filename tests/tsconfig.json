@@ -3,10 +3,11 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "noImplicitAny": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "rootDirs": ["../app/ts","./"]
   },
   "include": [
-    "../ts/**/*",
+    "../app/ts/**/*",
     "../tests/**/*"
   ]
 }

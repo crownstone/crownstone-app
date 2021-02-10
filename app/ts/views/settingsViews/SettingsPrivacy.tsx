@@ -14,7 +14,7 @@ import {
 import { IconButton } from '../components/IconButton'
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, } from '../styles'
+import { background, colors } from "../styles";
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import { core } from "../../core";

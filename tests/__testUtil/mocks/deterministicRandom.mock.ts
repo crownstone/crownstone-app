@@ -1,4 +1,4 @@
-import { xUtil } from "../../../ts/util/StandAloneUtil";
+import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 
 const originalXUtil = xUtil;
 
@@ -10,7 +10,7 @@ export function resetMockRandom() {
   RANDOM_COUNT = 2000;
 }
 export function mockRandom() {
-  jest.mock("../../../js/util/StandAloneUtil", () => {
+  jest.mock("../../../app/ts/util/StandAloneUtil", () => {
     return { xUtil: {
       ...originalXUtil,
         getHubHexToken : () : string => {

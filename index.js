@@ -15,9 +15,9 @@ YellowBox.ignoreWarnings([
 import { Platform } from 'react-native';
 import * as Sentry from "@sentry/react-native";
 import { config } from './sentrySettings'
-import { USE_SENTRY } from "./ts/ExternalConfig";
-import { loadRoutes } from "./ts/router/Routes";
-import { BackgroundProcessHandler } from "./ts/backgroundProcesses/BackgroundProcessHandler";
+import { USE_SENTRY } from "./app/js/ExternalConfig";
+import { loadRoutes } from "./app/js/router/Routes";
+import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";
 
 if (USE_SENTRY) {
   let sentryConfig = {

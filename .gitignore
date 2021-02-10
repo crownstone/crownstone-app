@@ -74,7 +74,7 @@ Carthage
 !__tests__/**
 !**.tapetest.js
 !babel.config.js
-./js/**
+./app/js/**
 
 sentrySettings.js
 sentry.properties

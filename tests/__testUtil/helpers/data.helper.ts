@@ -1,8 +1,8 @@
-import { core } from "../../../ts/core";
+import { core } from "../../../app/ts/core";
 if (core["resetMocks"] === undefined) { throw "ERROR: mockCore should be performed before the datahelpers are imported."}
 
-import { xUtil } from "../../../ts/util/StandAloneUtil";
-import { Get } from "../../../ts/util/GetUtil";
+import { xUtil } from "../../../app/ts/util/StandAloneUtil";
+import { Get } from "../../../app/ts/util/GetUtil";
 
 
 /**

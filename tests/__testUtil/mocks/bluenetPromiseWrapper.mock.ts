@@ -14,7 +14,7 @@ export function mockBluenetPromiseWrapper() {
     }
   }
 
-  jest.mock("../../../js/native/libInterface/BluenetPromise", () => {
+  jest.mock("../../../app/ts/native/libInterface/BluenetPromise", () => {
     return {
       BluenetPromiseWrapper: mocks
     }

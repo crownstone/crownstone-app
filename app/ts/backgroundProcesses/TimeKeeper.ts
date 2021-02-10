@@ -6,7 +6,7 @@ import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { AppState, Platform } from "react-native";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { StoneUtil } from "../util/StoneUtil";
+import { xUtil } from "../util/StandAloneUtil";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
@@ -74,7 +74,7 @@ class TimeKeeperClass {
 
         if (AppState.currentState === 'active' || Platform.OS === 'android') {
           // broadcast
-          BluenetPromiseWrapper.setTimeViaBroadcast(StoneUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId).catch(() => {});
+          BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId).catch(() => {});
           return;
         }
         else {

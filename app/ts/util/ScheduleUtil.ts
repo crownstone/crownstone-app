@@ -1,5 +1,6 @@
 import {StoneUtil} from "./StoneUtil";
 import {LOGe} from "../logging/Log";
+import { xUtil } from "./StandAloneUtil";
 
 export const ScheduleUtil = {
   getNextTime: function(time, activeDays) {
@@ -21,7 +22,7 @@ export const ScheduleUtil = {
       if (activeDays[daysSorted[i%daysSorted.length]] === true) {
         let timeAtDay = timeToday + (i - currentDayOfWeek) * 24*3600*1000;
         if (timeAtDay > now) {
-          return StoneUtil.timestampToCrownstoneTime(timeAtDay);
+          return xUtil.timestampToCrownstoneTime(timeAtDay);
         }
       }
     }
@@ -67,11 +68,11 @@ export const ScheduleUtil = {
         schedule.switchState     === dbSchedule.switchState
       ) {
         // we don't care about the time particularly, only about the hours:minutes of it. Regardless of the date.
-        let dbHours = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getHours();
-        let dbMinutes = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getMinutes();
+        let dbHours = new Date(xUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getHours();
+        let dbMinutes = new Date(xUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getMinutes();
 
-        let hours = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
-        let minutes = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
+        let hours = new Date(xUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
+        let minutes = new Date(xUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
 
         if (dbHours === hours && dbMinutes === minutes) {
           return dbScheduleIds[i];

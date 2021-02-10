@@ -15,7 +15,7 @@ import {
 } from "react-native";
 
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, } from '../styles'
+import { styles, colors, background } from "../styles";
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";

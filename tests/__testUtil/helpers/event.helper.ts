@@ -1,4 +1,4 @@
-import { core } from "../../../ts/core";
+import { core } from "../../../app/ts/core";
 
 
 let ACTIVE_HANDLE = null;

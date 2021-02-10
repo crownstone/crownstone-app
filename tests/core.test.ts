@@ -1,10 +1,7 @@
-import { resetMocks } from "./mocks/suite.mock";
-
-import { addSphere, addStone } from "./helpers/data.helper";
-import { MapProvider } from "../ts/backgroundProcesses/MapProvider";
-import { core } from "../ts/core";
-
-// import { addSphere, addStone } from "./helpers/data.helper";
+import { resetMocks } from "./__testUtil/mocks/suite.mock";
+import { addSphere, addStone } from "./__testUtil/helpers/data.helper";
+import { core } from "../app/ts/core";
+import { MapProvider } from "../app/ts/backgroundProcesses/MapProvider";
 
 beforeEach(async () => {
   resetMocks()

@@ -222,7 +222,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             let data : AdcRestart = returnData.data;
             LOGe.info("STONE DEBUG INFORMATION: getAdcRestarts", data);
-            let resultString = "\n\nRestarts:" + data.restartCount + "\n\nLast ADC restart: " + xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(data.timestamp))
+            let resultString = "\n\nRestarts:" + data.restartCount + "\n\nLast ADC restart: " + xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(data.timestamp))
 
             this.setState({debugInformationText: resultString});
           })
@@ -250,7 +250,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             let data : AdcSwapCount = returnData.data;
             LOGe.info("STONE DEBUG INFORMATION: getAdcChannelSwaps", data);
-            let resultString = "\n\nSwaps:" + data.swapCount + "\n\nLast ADC swap: " + xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(data.timestamp))
+            let resultString = "\n\nSwaps:" + data.swapCount + "\n\nLast ADC swap: " + xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(data.timestamp))
 
             this.setState({debugInformationText: resultString});
           })
@@ -393,7 +393,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
               return str;
             }
             data.forEach((switchHistory) => {
-              resultString += xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
+              resultString += xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
                 "\n" + switchHistory.switchCommand +
                 " -> " + switchHistory.switchState +
                 " from:" + getSource(switchHistory) + "\n\n";
@@ -548,7 +548,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             backgroundColor: colors.white.hex,
             minHeight: 300
           }}>
-            <Text>{xUtil.getDateTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp))}</Text>
+            <Text>{xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(this.state.debugTimestamp))}</Text>
             <TouchableOpacity onPress={() => { this.setState({debugData1UI: (this.state.debugData1UI+1)%2 })}}>
             <Graph
               width={screenWidth}
@@ -723,7 +723,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   getBuffers(stone, type : PowersampleDataType) {
     this.visibleBuffer = null;
-    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getPowerSamples', type: type}, {}, 2, "From StoneDebug")
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getPowerSamples', powersampleDataType: type}, {}, 2, "From StoneDebug")
       .then((returnData) => {
         core.eventBus.emit("hideLoading");
         let data : PowerSamples[] = returnData.data;

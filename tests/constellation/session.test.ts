@@ -1,6 +1,6 @@
 import { mBluenet, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
-import { Session } from "../../ts/logic/constellation/Session";
+import { Session } from "../../app/ts/logic/constellation/Session";
 import { ibeacon } from "../__testUtil/helpers/event.helper";
 
 
