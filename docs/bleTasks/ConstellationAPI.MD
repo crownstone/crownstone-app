@@ -43,7 +43,7 @@ await tell(crownstoneHandle).turnOn()
 
 // or
 
-await tellSphere(sphereId).trackedDeviceHeartbeat(...)
+await tellSphere(sphereId).trackedDeviceHeartbeat(...) 
 ```
 
 A private connection is requested by:
@@ -54,15 +54,12 @@ This will resolve when the connection is made and provide you with a connection 
 to connect to the requested Crownstone after x time.
 
 #### CommandAPI
-The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below) to provide connections. This is the class that you'll
+The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a SessionBroker (see below) to provide connections. This is the class that you'll
 interact with most of all. You can perform multiple commands on the CommandAPI, which are all asynchronous.
 The command API can choose to send commands via broadcast if possible using the BroadcastCommandManager.
 
 #### Collector
 The collector is a class which collects a number of Crownstone handles from the database to connect to in order for your Teller to deliver it's messages.
-There is one Collector per CommandAPI. Since a collector might start connecting to 10 crownstones, it will keep track of when these succeed. If we only really need 
-to tell 3 crownstones, it will also close the other 7 pending requests. That's what that minConnections means! To summarize, a Collector will decide which Crownstones
-it will request Sessions from via the SessionManager.
 
 #### Sessions
 A session is a connection(attempt) with a Crownstone. It signifies that something it trying to connect, or is connected to a Crownstone. The sessions are responsible for 
@@ -74,12 +71,28 @@ and the BleCommandQueue will ensure that all Crownstones can get their messages 
 want to start a DFU process for instance. It will also be able to queue session requests if it is blocked from making new sessions (like with DFU). This class will also limit 
 the total number of open Sessions if required.
 
+#### SessionBroker
+Once the Collector has collected handles, the SessionBroker will handle the corresponding sessions. There is one SessionBroker per CommandAPI. 
+Since a SessionBroker might start connecting to 10 crownstones, it will keep track of when these succeed. If we only really need to tell 3 crownstones, 
+it will also close the other 7 pending requests. That's what that minConnections means! To summarize, a SessionBroker will decide which Crownstones
+it will request Sessions from via the SessionManager.
+
 #### BleCommandQueue
 This collects a queue of commands for a number of Crownstones. Once a Session is connected, it requests something to do from the BleCommandQueue. This queue looks at the
 handle of the connected session, the meshId of the mesh that crownstone is in and the sphere it is in. It can then flush all commands that can be delivered to this Crownstone.
 It also houses the promises of all the async commandAPI invocations (like ```await tell(crownstoneHandle).turnOn()```).
 
 The BleCommandQueue is the authority on duplicate handling and timing out commands. These timeouts are optional, but default to 60 seconds.
+
+#### BleCommandLoader
+This generates commands from the CommandAPI's instructions and loads these into the BleCommandQueue. This is a stateless util module.
+
+#### BleCommandCleaner
+This util module houses all logic for detecting duplicate commands in the BleCommandQueue. It is invoked on every loaded command in the BleCommandQueue.
+
+#### Executor
+This module will translate the commandInterfaces (which are JSON) to actual bridge calls. It is stateless and will also be provided with the full command queue in order to
+aggregate turnOn and multiSwitch commands.
 
 ## Discussion
 
