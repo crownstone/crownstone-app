@@ -1,3 +1,6 @@
+import { advanceBy, advanceTo, clear } from 'jest-date-mock';
+advanceTo(0); // reset to timestamp = 0
+
 import { mockReactNative } from "./react-native/Platform.mock";
 mockReactNative();
 

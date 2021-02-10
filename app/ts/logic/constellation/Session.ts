@@ -49,16 +49,21 @@ export class Session {
       if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
     });
 
+    this.registerBootstrapper();
 
     if (this.privateId) {
       this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, () => {
-
+        if (this.state === "WAITING_FOR_COMMANDS") {
+          // we do this next tick to ensure all the loading processes are finished.
+          // I don't want it to matter too much when the commandloaded is called compared to when the actual command
+          // is loaded. This solves that issue.
+          setImmediate(() => {this.handleCommands();});
+        }
       }))
       this.tryToActivate();
     }
 
 
-    this.registerBootstrapper();
   }
 
   registerBootstrapper() {
@@ -75,9 +80,9 @@ export class Session {
     });
   }
 
-  tryToActivate() {
+  async tryToActivate() {
     if (this.interactionModule.canActivate()) {
-      this.connect();
+      await this.connect();
     }
   }
 
@@ -104,6 +109,10 @@ export class Session {
     }
     catch (err) {
       if (err === "CONNECTION_CANCELLED") {
+        if (this.sessionIsKilled) {
+          this.delete();
+          return;
+        }
         this.state = "INITIALIZING";
         this.registerBootstrapper();
         return;
@@ -131,6 +140,7 @@ export class Session {
       // there is no task for us to do. If we're a private connection, we'll wait patiently for a new command
       if (this.isPrivate()) {
         // Tasks here CAN include connections.
+        this.state = "WAITING_FOR_COMMANDS"
         // TODO: wait for tasks.
 
         return;
@@ -155,6 +165,10 @@ export class Session {
     setImmediate(() => { this.handleCommands(); })
   }
 
+
+  /**
+   * This will be called when the SessionManager closes this session.
+   */
   async kill() {
     this.sessionIsKilled = true;
     switch (this.state) {
@@ -163,7 +177,8 @@ export class Session {
         return this.delete();
       case "CONNECTING":
         this.interactionModule.connectionFailed("SESSION_KILLED");
-        return await BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+        await BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+        return;
       case "CONNECTION_FAILED":
         return this.delete();
       case "CONNECTED":

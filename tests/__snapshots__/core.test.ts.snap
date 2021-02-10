@@ -79,7 +79,7 @@ Object {
         "meshAccessAddress": null,
         "name": "testSphere",
         "uid": null,
-        "updatedAt": 1612972880309,
+        "updatedAt": 0,
       },
       "hubs": Object {},
       "id": "uuid2000-2001",
@@ -141,10 +141,10 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_9n61",
+            "name": "stone_uuid2005",
             "type": "PLUG",
             "uid": undefined,
-            "updatedAt": 1612972880309,
+            "updatedAt": 0,
           },
           "errors": Object {
             "dimmerOffFailure": false,
@@ -176,7 +176,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "uuid2005-2006": Object {
+        "uuid2006-2007": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -211,7 +211,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": null,
             "firmwareVersionSeenInOverview": null,
-            "handle": "uuid2007",
+            "handle": "uuid2008",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -221,10 +221,10 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_hpvi",
+            "name": "stone_uuid2009",
             "type": "PLUG",
             "uid": undefined,
-            "updatedAt": 1612972880309,
+            "updatedAt": 0,
           },
           "errors": Object {
             "dimmerOffFailure": false,
@@ -235,7 +235,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "uuid2005-2006",
+          "id": "uuid2006-2007",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -256,7 +256,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "uuid2008-2009": Object {
+        "uuid2010-2011": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -291,7 +291,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": null,
             "firmwareVersionSeenInOverview": null,
-            "handle": "uuid2010",
+            "handle": "uuid2012",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -301,10 +301,10 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_4yu0",
+            "name": "stone_uuid2013",
             "type": "PLUG",
             "uid": undefined,
-            "updatedAt": 1612972880310,
+            "updatedAt": 0,
           },
           "errors": Object {
             "dimmerOffFailure": false,
@@ -315,7 +315,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "uuid2008-2009",
+          "id": "uuid2010-2011",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
