@@ -1,7 +1,7 @@
 import { mBluenet, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { Session } from "../../app/ts/logic/constellation/Session";
-import { ibeacon } from "../__testUtil/helpers/event.helper";
+import { evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 
 
 beforeEach(async () => {
@@ -46,8 +46,8 @@ test("Session public connection success. Check disconnection process when discon
   expect(mBluenet.has(handle).called.disconnectCommand()).toBe(true)
   await mBluenet.for(handle).fail.disconnectCommand();
   expect(mBluenet.has(handle).called.phoneDisconnect()).toBe(true)
+  evt_disconnected(handle);
   await mBluenet.for(handle).succeed.phoneDisconnect();
-
   expect(interactionModule.cleanup).toBeCalled();
 })
 
@@ -58,6 +58,7 @@ test("Session public connection success. Check disconnection process when discon
   await mBluenet.for(handle).succeed.connect("operation");
   await TestUtil.nextTick();
   await mBluenet.for(handle).succeed.disconnectCommand();
+  evt_disconnected(handle);
   await mBluenet.for(handle).succeed.phoneDisconnect();
   expect(interactionModule.cleanup).toBeCalled();
 })
@@ -67,11 +68,11 @@ test("Session public scanning start successful.", async () => {
   let session = new Session(handle,null, interactionModule);
   expect(session.state).toBe("INITIALIZING");
   // this should not be close enough
-  ibeacon(-95, handle);
+  evt_ibeacon(-95, handle);
   expect(interactionModule.canActivate).toBeCalledTimes(0);
 
   // this should be close enough;
-  ibeacon(-80, handle)
+  evt_ibeacon(-80, handle)
   expect(interactionModule.canActivate).toBeCalled();
 
   await mBluenet.for(handle).succeed.connect("operation");
@@ -79,13 +80,28 @@ test("Session public scanning start successful.", async () => {
   expect(session.state).toBe("CONNECTED");
 })
 
+test("Session public deactivating.", async () => {
+  let interactionModule = getInteractionModule()
+  let session = new Session(handle,null, interactionModule);
+  evt_ibeacon(-80, handle)
+  expect(interactionModule.canActivate).toBeCalled();
+  expect(interactionModule.willActivate).toBeCalled();
+  session.deactivate();
+  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenet.for(handle).succeed.cancelConnectionRequest();
 
+  expect(interactionModule.isDeactivated).toBeCalled();
+  expect(interactionModule.isConnected).toHaveBeenCalledTimes(0);
 
-function getInteractionModule() {
+  expect(session.state).toBe("INITIALIZING");
+})
+
+function getInteractionModule(canActivateFailCount: number = 0) {
+  let counter = 0;
   return {
-    canActivate:      jest.fn(() => true),
+    canActivate:      jest.fn(() => { counter++; return canActivateFailCount < counter }),
     willActivate:     jest.fn(),
-    willDeactivate:   jest.fn(),
+    isDeactivated:    jest.fn(),
     isConnected:      jest.fn(),
     connectionFailed: jest.fn(),
     cleanup:          jest.fn()

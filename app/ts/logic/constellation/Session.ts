@@ -30,7 +30,7 @@ export class Session {
   unsubscribeBootstrapper = null
 
   crownstoneMode : CrownstoneMode;
-  interactionModule: SessionInteractionModule
+  interactionModule: SessionInteractionModule;
 
 
 
@@ -49,11 +49,16 @@ export class Session {
       if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
     });
 
-    this.registerBootstrapper();
 
     if (this.privateId) {
+      this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, () => {
+
+      }))
       this.tryToActivate();
     }
+
+
+    this.registerBootstrapper();
   }
 
   registerBootstrapper() {
@@ -133,12 +138,18 @@ export class Session {
       else {
         // this means that we're done.
         await this.disconnect();
-        return this.delete();
+        // delete is handled by the disconnect event.
+        return;
       }
     }
 
+    this.state = "PERFORMING_COMMAND";
     await BleCommandQueue.performCommand(this.handle, this.privateId);
+    this.state = "CONNECTED";
 
+    if (this.sessionIsKilled) {
+      return this.disconnect();
+    }
 
     // We do this on the next tick to allow for chaining new commands after this one has been resolved.
     setImmediate(() => { this.handleCommands(); })
@@ -156,6 +167,11 @@ export class Session {
       case "CONNECTION_FAILED":
         return this.delete();
       case "CONNECTED":
+        await this.disconnect();
+        return;
+      case "PERFORMING_COMMAND":
+        return;
+      case "WAITING_FOR_COMMANDS":
         await this.disconnect();
         return;
       case "DISCONNECTING":
@@ -180,6 +196,7 @@ export class Session {
     if (this.state === "CONNECTED")           { return; }
     if (this.state === "CONNECTING") {
       BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+      this.interactionModule.isDeactivated();
     }
 
     this.sessionIsActivated = false;

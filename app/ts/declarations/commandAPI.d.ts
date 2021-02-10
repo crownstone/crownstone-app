@@ -1,4 +1,4 @@
-type ConnectionState = "INITIALIZING" | "CONNECTING" | "CONNECTION_FAILED" | "CONNECTED" | "DISCONNECTING" | "DISCONNECTED"
+type ConnectionState = "INITIALIZING" | "CONNECTING" | "CONNECTION_FAILED" | "CONNECTED" | "DISCONNECTING" | "DISCONNECTED" | "WAITING_FOR_COMMANDS" | "PERFORMING_COMMAND"
 
 type CommandType = "DIRECT" | "MESH" | "MESH_RELAY"
 interface commandOptions {
@@ -16,7 +16,7 @@ interface commandOptions {
 interface SessionInteractionModule {
   canActivate:    () => boolean
   willActivate:   () => void
-  willDeactivate: () => void
+  isDeactivated:  () => void
   isConnected:    () => void
   cleanup:        () => void
   connectionFailed: (err:any) => void,

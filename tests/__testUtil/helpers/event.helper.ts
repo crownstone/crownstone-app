@@ -1,4 +1,5 @@
 import { core } from "../../../app/ts/core";
+import { NativeBus } from "../../../app/ts/native/libInterface/NativeBus";
 
 
 let ACTIVE_HANDLE = null;
@@ -10,11 +11,23 @@ export function eventHelperSetActive(handle, sphereId = null, stoneId = null) {
   ACTIVE_STONE_ID  = stoneId;
 }
 
-export function ibeacon(rssi: number = -80, handle: string = ACTIVE_HANDLE, sphereId: string = ACTIVE_SPHERE_ID, stoneId: string = ACTIVE_STONE_ID) {
+export function evt_ibeacon(rssi: number = -80, handle: string = ACTIVE_HANDLE, sphereId: string = ACTIVE_SPHERE_ID, stoneId: string = ACTIVE_STONE_ID) {
   core.eventBus.emit("iBeaconOfValidCrownstone", {
     stoneId:  sphereId,
     handle:   handle,
     rssi:     rssi,
     sphereId: sphereId
   });
+}
+export function evt_connected(handle: string = ACTIVE_HANDLE) {
+  // @ts-ignore
+  core.nativeBus.emit(NativeBus.topics.connectedToPeripheral, handle);
+}
+export function evt_connectionFailed(handle: string = ACTIVE_HANDLE) {
+  // @ts-ignore
+  core.nativeBus.emit(NativeBus.topics.connectedToPeripheralFailed, handle);
+}
+export function evt_disconnected(handle: string = ACTIVE_HANDLE) {
+  // @ts-ignore
+  core.nativeBus.emit(NativeBus.topics.disconnectedFromPeripheral, handle);
 }
