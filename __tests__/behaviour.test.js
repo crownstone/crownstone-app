@@ -1,13 +1,13 @@
 'use strict';
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
-import { AicoreBehaviour } from "../js/views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
+import { AicoreBehaviour } from "../ts/views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 
 let jest = require('jest');
 
-import { Util } from '../js/util/Util'
-import { AicoreUtil } from '../js/views/deviceViews/smartBehaviour/supportCode/AicoreUtil'
-import { BEHAVIOUR_TYPES } from "../js/router/store/reducers/stoneSubReducers/rules";
+import { Util } from '../ts/util/Util'
+import { AicoreUtil } from '../ts/views/deviceViews/smartBehaviour/supportCode/AicoreUtil'
+import { BEHAVIOUR_TYPES } from "../ts/router/store/reducers/stoneSubReducers/rules";
 
 test('behaviourtest', () => {
 

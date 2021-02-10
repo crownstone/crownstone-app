@@ -1,7 +1,7 @@
-import { eventBus } from "../../../js/util/EventBus";
+import { eventBus } from "../../../../ts/util/EventBus";
 import { createStore } from "redux";
-import { batchActions, enableBatching } from "../../../js/router/store/reducers/BatchReducer";
-import CrownstoneReducer                from '../../../js/router/store/reducer'
+import { batchActions, enableBatching } from "../../../../ts/router/store/reducers/BatchReducer";
+import CrownstoneReducer                from '../../../../ts/router/store/reducer'
 
 import { mockNativeBus } from "../nativeBus.mock";
 let nativeBus = mockNativeBus()
@@ -30,7 +30,7 @@ export function mockCore() {
     }
   }
 
-  jest.mock("../../../js/core", () => {
+  jest.mock("../../../../js/core", () => {
     return { core: mockedCore };
   })
 

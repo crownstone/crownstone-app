@@ -1,8 +1,8 @@
-import { EventBusClass } from "../../js/util/EventBus";
+import { EventBusClass } from "../../../ts/util/EventBus";
 
 export function mockNativeBus() {
   let mockBus = new NativeBusMockClass();
-  jest.mock("../../js/native/libInterface/NativeBus", () => {
+  jest.mock("../../../js/native/libInterface/NativeBus", () => {
     return { NativeBus: mockBus }
   })
   return mockBus;

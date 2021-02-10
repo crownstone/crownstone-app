@@ -6,7 +6,7 @@
     "strictNullChecks": false
   },
   "include": [
-    "../js/**/*",
+    "../ts/**/*",
     "../tests/**/*"
   ]
 }

@@ -2,20 +2,20 @@
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
 
-import { Languages } from "../js/Languages";
+import { Languages } from "../ts/Languages";
 Languages.activeLocale = "nl_nl"
 Languages.persistedLocale = "nl_nl"
 Languages.setLocale("nl_nl")
 Languages.updateLocale = jest.fn()
 
-import { AicoreBehaviour } from "../js/views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
+import { AicoreBehaviour } from "../ts/views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 
 
-import { Util } from '../js/util/Util'
-import { AicoreUtil } from '../js/views/deviceViews/smartBehaviour/supportCode/AicoreUtil'
-import { BEHAVIOUR_TYPES } from "../js/router/store/reducers/stoneSubReducers/rules";
-import { AicoreTwilight } from "../js/views/deviceViews/smartBehaviour/supportCode/AicoreTwilight";
-import { DataUtil } from "../js/util/DataUtil";
+import { Util } from '../ts/util/Util'
+import { AicoreUtil } from '../ts/views/deviceViews/smartBehaviour/supportCode/AicoreUtil'
+import { BEHAVIOUR_TYPES } from "../ts/router/store/reducers/stoneSubReducers/rules";
+import { AicoreTwilight } from "../ts/views/deviceViews/smartBehaviour/supportCode/AicoreTwilight";
+import { DataUtil } from "../ts/util/DataUtil";
 
 AicoreUtil.getLocationNameFromUid = jest.fn(function(sphereId, locationUID) { return "keuken"})
 

@@ -66,8 +66,6 @@ Carthage
 
 # ignore all js files since they are compiled
 *.js
-!js/router/RouterAndroid.js
-!js/router/RouterIOS.js
 !index.js
 !vis.js
 !./App.js
@@ -76,7 +74,7 @@ Carthage
 !__tests__/**
 !**.tapetest.js
 !babel.config.js
-
+./js/**
 
 sentrySettings.js
 sentry.properties

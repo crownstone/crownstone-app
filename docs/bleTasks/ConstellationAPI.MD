@@ -1,10 +1,10 @@
 # Sending BLE commands
 
-This document will describe the architecture of the new TellerAPI that is used to send commands to the Crownstones.
+This document will describe the architecture of the new ConstellationAPI that is used to send commands to the Crownstones.
 
 Here I will outline the ideas behind the API, as well as discuss the components and their relations. 
 
-### Why would you call it constellation?
+### Why would you call it ConstellationAPI?
 Because it needed a name and the previous one, TellerAPI based on the teller methods, didnt sound right.
 A constellation is a set of stars connected by imaginary lines. Almost just like a phone connected to many Crownstones!
 

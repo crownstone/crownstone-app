@@ -114,12 +114,12 @@ jest.mock('@react-native-community/async-storage', () => {
   }
 })
 
-import { Persistor } from '../js/router/store/Persistor';
-import { PersistenceEnhancer } from "../js/router/store/persistenceEnhancer";
-import { NativeEnhancer } from "../js/router/store/nativeEnhancer";
+import { Persistor } from '../ts/router/store/Persistor';
+import { PersistenceEnhancer } from "../ts/router/store/persistenceEnhancer";
+import { NativeEnhancer } from "../ts/router/store/nativeEnhancer";
 import { applyMiddleware, createStore } from "redux";
-import { EventEnhancer } from "../js/router/store/eventEnhancer";
-import CrownstoneReducer from "../js/router/store/reducer";
+import { EventEnhancer } from "../ts/router/store/eventEnhancer";
+import CrownstoneReducer from "../ts/router/store/reducer";
 
 export const BATCH = 'BATCHING_REDUCER.BATCH';
 

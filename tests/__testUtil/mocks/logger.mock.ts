@@ -127,7 +127,7 @@ class MockLogger {
 }
 
 export function mockLogger(enabledMap = {}, silenceMap = {}) {
-  jest.mock("../../js/logging/Log", () => {
+  jest.mock("../../../js/logging/Log", () => {
     return {
       LOGv: new MockLogger('v', enabledMap['v'] === 1, silenceMap),
       LOGd: new MockLogger('d', enabledMap['d'] === 1, silenceMap),

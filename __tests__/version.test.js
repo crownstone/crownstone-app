@@ -3,7 +3,7 @@
 // Note: test renderer must be required after react-native.
 let jest = require('jest');
 
-import { Util } from '../js/util/Util'
+import { Util } from '../ts/util/Util'
 
 test('versionTest', () => {
   expect(Util.versions.canIUse('2.0.0', '2.0.0')).toBe(true);

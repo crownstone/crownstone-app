@@ -42,7 +42,7 @@ test('returning Promise with catch.', () => {
   getFailingPromise().then(() => { expect(true).toBe(true) }).catch(() => { expect(true).toBe(false)});
 });
 
-import { BehaviourUtil } from '../js/util/BehaviourUtil'
+import { BehaviourUtil } from '../ts/util/BehaviourUtil'
 test('check morning/evening times', () => {
   console.log(BehaviourUtil.getEveningTimes())
 });

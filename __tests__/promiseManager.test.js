@@ -22,8 +22,8 @@ jest.mock('../js/ExternalConfig', () => {
   }
 });
 
-import { BlePromiseManager } from '../js/logic/BlePromiseManager'
-import { Scheduler } from '../js/logic/Scheduler'
+import { BlePromiseManager } from '../ts/logic/BlePromiseManager'
+import { Scheduler } from '../ts/logic/Scheduler'
 
 let counter = 0;
 

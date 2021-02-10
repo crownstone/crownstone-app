@@ -1,10 +1,7 @@
-import { core } from "../../core";
-import { MeshHelper } from "../MeshHelper";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
-import { StoneUtil } from "../../util/StoneUtil";
-import { LOGe, LOGi } from "../../logging/Log";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { BleCommandQueue } from "./BleCommandQueue";
+import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { xUtil } from "../../util/StandAloneUtil";
+import { LOGe, LOGi } from "../../logging/Log";
 
 export const Executor = {
 
@@ -87,7 +84,7 @@ export const Executor = {
         break;
       case 'meshSetTime':
       case 'setTime':
-        let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
+        let timeToSet = command.time === undefined ? xUtil.nowToCrownstoneTime() : command.time;
         actionPromise = BluenetPromiseWrapper.meshSetTime(handle, timeToSet);
         break;
       case 'commandFactoryReset':

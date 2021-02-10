@@ -43,9 +43,9 @@ jest.mock('../js/native/libInterface/Bluenet', () => {
   }
 });
 
-import * as mockBluenet from '../js/native/libInterface/Bluenet'
+import * as mockBluenet from '../ts/native/libInterface/Bluenet'
 
-import { BluenetPromise } from '../js/native/libInterface/BluenetPromise'
+import { BluenetPromise } from '../ts/native/libInterface/BluenetPromise'
 
 test('BluenetPromise', () => {
   mockBluenet.__setValue(0);

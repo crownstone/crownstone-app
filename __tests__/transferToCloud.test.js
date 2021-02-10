@@ -23,15 +23,15 @@ jest.mock('../js/cloud/cloudAPI', () => {
   return { CLOUD: x }
 });
 
-import { transferAppliances } from '../js/cloud/transferData/transferAppliances'
-import { transferLocations  } from '../js/cloud/transferData/transferLocations'
-import { transferMessages   } from '../js/cloud/transferData/transferMessages'
-import { transferSchedules  } from '../js/cloud/transferData/transferSchedules'
-import { transferSpheres    } from '../js/cloud/transferData/transferSpheres'
-import { transferStones     } from '../js/cloud/transferData/transferStones'
-import { transferUser       } from '../js/cloud/transferData/transferUser'
+import { transferAppliances } from '../ts/cloud/transferData/transferAppliances'
+import { transferLocations  } from '../ts/cloud/transferData/transferLocations'
+import { transferMessages   } from '../ts/cloud/transferData/transferMessages'
+import { transferSchedules  } from '../ts/cloud/transferData/transferSchedules'
+import { transferSpheres    } from '../ts/cloud/transferData/transferSpheres'
+import { transferStones     } from '../ts/cloud/transferData/transferStones'
+import { transferUser       } from '../ts/cloud/transferData/transferUser'
 
-import { transferUtil } from '../js/cloud/transferData/shared/transferUtil'
+import { transferUtil } from '../ts/cloud/transferData/shared/transferUtil'
 
 test('cloudIdTest', () => {
   let appliancesMap = transferAppliances.fieldMap;

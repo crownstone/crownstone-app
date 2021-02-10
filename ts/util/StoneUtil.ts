@@ -104,28 +104,6 @@ export const StoneUtil = {
   },
 
 
-  crownstoneTimeToTimestamp: function(csTimestamp) : number {
-    let now = Date.now();
-    if ((now / csTimestamp) < 10) {
-      csTimestamp = csTimestamp / 1000;
-    }
-    let jsTimestamp = 1000*csTimestamp;
-    let timezoneOffsetMinutes = new Date(jsTimestamp).getTimezoneOffset();
-
-    return jsTimestamp + timezoneOffsetMinutes*60000;
-  },
-
-  timestampToCrownstoneTime: function(utcTimestamp) : number {
-    // for holland in summer, timezoneOffsetMinutes is -120, winter will be -60
-    let timezoneOffsetMinutes = new Date(utcTimestamp).getTimezoneOffset();
-
-    return (utcTimestamp - timezoneOffsetMinutes*60000)/1000;
-  },
-
-  nowToCrownstoneTime: function() : number {
-    return StoneUtil.timestampToCrownstoneTime(Date.now())
-  },
-
   getStoneObject: function(sphereId, stoneId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];

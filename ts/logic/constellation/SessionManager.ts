@@ -70,7 +70,7 @@ export class SessionManagerClass {
       canActivate:    () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
       willActivate:   () => { this._activeSessions[handle] = { connected:false }; },
       willDeactivate: () => { delete this._activeSessions[handle]; },
-      cleanup:        ()    => { this.cleanSession(handle); },
+      cleanup:        () => { this.cleanSession(handle); },
       isConnected:    () => {
         if (this._activeSessions[handle].connected === false) {
           // resolve the createSession

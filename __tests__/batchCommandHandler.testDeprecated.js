@@ -83,7 +83,7 @@ let meshEmit2 = {
   rssi: -60,
 };
 
-import { eventBus } from '../js/util/EventBus'
+import { eventBus } from '../ts/util/EventBus'
 
 jest.mock('../js/native/libInterface/Bluenet', () => {
   return {
@@ -178,9 +178,9 @@ let checker = (data, reject) => {
   counter += 1;
 };
 
-import * as mockBluenet from '../js/native/libInterface/Bluenet'
-import { EventBusClass } from '../js/util/EventBus'
-import { BatchCommandHandler } from '../js/logic/BatchCommandHandler'
+import * as mockBluenet from '../ts/native/libInterface/Bluenet'
+import { EventBusClass } from '../ts/util/EventBus'
+import { BatchCommandHandler } from '../ts/logic/BatchCommandHandler'
 
 // test('BatchCommandHandler Mesh', () => {
 //   // prep

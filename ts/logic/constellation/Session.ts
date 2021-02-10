@@ -8,14 +8,13 @@
 // import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 import { NativeBus } from "../../native/libInterface/NativeBus";
-import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BleCommandQueue } from "./BleCommandQueue";
 import { core } from "../../core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
-
-const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -85 : -85;
+const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
 
 export class Session {
   state    : ConnectionState = "INITIALIZING"
@@ -62,13 +61,13 @@ export class Session {
       this.unsubscribeBootstrapper();
       this.unsubscribeBootstrapper = null;
     }
-    this.unsubscribeBootstrapper = (core.eventBus.on("iBeaconOfValidCrownstone", (data) => {
+    this.unsubscribeBootstrapper = core.eventBus.on("iBeaconOfValidCrownstone", (data) => {
       if (this.sessionIsActivated === false && data.handle.toLowerCase() === this.handle.toLowerCase()) {
         if (data.rssi >= CONNECTION_THRESHOLD) {
           this.tryToActivate();
         }
       }
-    }));
+    });
   }
 
   tryToActivate() {
@@ -115,6 +114,8 @@ export class Session {
     this.state = "CONNECTED";
     this.interactionModule.isConnected();
 
+    // on the next tick we check for commands.
+    // This is done to allow for chaining commands in after the connect has succeeded.
     setImmediate(() => { this.handleCommands(); })
   }
 
@@ -131,12 +132,15 @@ export class Session {
       }
       else {
         // this means that we're done.
-        return this.disconnect();
+        await this.disconnect();
+        return this.delete();
       }
     }
 
     await BleCommandQueue.performCommand(this.handle, this.privateId);
 
+
+    // We do this on the next tick to allow for chaining new commands after this one has been resolved.
     setImmediate(() => { this.handleCommands(); })
   }
 
@@ -165,9 +169,7 @@ export class Session {
     try {
       await BleCommandQueue.performClosingCommands(this.handle, this.privateId, this.crownstoneMode)
     }
-    catch (e) {
-
-    }
+    catch (e) {}
     await BluenetPromiseWrapper.phoneDisconnect(this.handle);
   }
 
@@ -189,6 +191,5 @@ export class Session {
     this.interactionModule.cleanup();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
   }
-
-
 }
+
