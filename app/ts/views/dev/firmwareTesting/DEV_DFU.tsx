@@ -178,7 +178,7 @@ export class DEV_DFU extends LiveComponent<{
     switch (FocusManager.crownstoneMode ) {
       case "setup":
         explanationColor = colors.white.hex;
-        backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
+        backgroundImage = require('../../../../assets/images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
         backgroundImage = background.light;
@@ -187,7 +187,7 @@ export class DEV_DFU extends LiveComponent<{
         backgroundImage = background.menu;
         break;
       case "dfu":
-        backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');
+        backgroundImage = require('../../../../assets/images/backgrounds/upgradeBackground.jpg');
         break;
     }
 

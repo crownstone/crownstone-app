@@ -70,7 +70,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
-            <ScaledImage source={require('../../../../images/overlayCircles/tapToToggle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
+            <ScaledImage source={require('../../../../../assets/images/overlayCircles/tapToToggle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
             <Text style={styles.boldExplanation}>{ lang("If_you_dont_want_to_open_") }</Text>
             <Text style={styles.explanation}>{ lang("Your_phone_broadcasts_a_s") }</Text>

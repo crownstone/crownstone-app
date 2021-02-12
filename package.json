@@ -1,6 +1,6 @@
 {
   "name": "Crownstone",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "start": "tsc --watch",
@@ -70,7 +70,7 @@
     "react-test-renderer": "16.8.3",
     "readline-sync": "^1.4.9",
     "tape": "~4.10.1",
-    "ts-jest": "^26.5.0",
+    "ts-jest": "^26.5.1",
     "jest-date-mock": "^1.0.8",
     "typescript": "^4.1.3"
   },

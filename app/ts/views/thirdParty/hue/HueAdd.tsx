@@ -35,7 +35,7 @@ export class HueAdd extends Component<any, any> {
             <Text style={styles.title}>{ lang("Pairing_with_Hue") }</Text>
             <View style={{height:10}} />
             <View style={{borderRadius:30, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
-              <ScaledImage source={require('../../../images/thirdParty/hue/hue_bridge.png')} sourceWidth={2000} sourceHeight={2000} targetWidth={0.7*screenWidth} />
+              <ScaledImage source={require('../../../../assets/images/thirdParty/hue/hue_bridge.png')} sourceWidth={2000} sourceHeight={2000} targetWidth={0.7*screenWidth} />
             </View>
             <View style={{height:10}} />
             <Text style={styles.header}>{ lang("In_order_to_be_able_to_co") }</Text>

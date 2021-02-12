@@ -62,7 +62,7 @@ export class AiStart extends Component<any, any> {
     return (
       <Background hasNavBar={false} keyboardAvoid={true} image={background.light}>
         <View style={[styles.centered, {flex:1, paddingTop:30, paddingBottom:30}]}>
-          <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
+          <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
           <View style={{flex:1}} />
           <Text style={aiStyle.largeText}>{ lang("Welcome__",userFirstName) }</Text>
           <Text style={aiStyle.boldText}>{ lang("Im_your_house_") }</Text>

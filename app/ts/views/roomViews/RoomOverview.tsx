@@ -466,7 +466,7 @@ export function LocationFlavourImage(props : {location: any, height?: number}) {
   else {
     return (
       <View style={{width:screenWidth, height: usedHeight, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
-        <Image source={require("../../images/backgrounds/RoomBannerBackground.jpg")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
+        <Image source={require("../../../assets/images/backgrounds/RoomBannerBackground.jpg")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
         <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
         <Icon size={usedHeight*0.75} color={colors.white.rgba(0.75)} name={location.config.icon} />
       </View>

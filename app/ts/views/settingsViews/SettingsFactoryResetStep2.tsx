@@ -270,10 +270,10 @@ lang("_Error_during_Factory_Res_body"),
           <View style={{flex:1}} />
           <View style={{width: screenWidth, height:imageSize*screenHeight}}>
             <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlug.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../../assets/images/lineDrawings/holdingPhoneNextToPlug.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
             <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../../assets/images/lineDrawings/holdingPhoneNextToPlugPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
           </View>
           <View style={{flex:1}} />

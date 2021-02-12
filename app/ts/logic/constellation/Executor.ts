@@ -5,7 +5,12 @@ import { LOGe, LOGi } from "../../logging/Log";
 
 export const Executor = {
 
-  _aggregateSwitchCommands(getState: (bleCommand: BleCommand) => number, connectedHandle: string, bleCommand: BleCommand, queue: CommandQueueMap) : { crownstoneId: number, state: number }[] {
+  _aggregateSwitchCommands(
+    getState: (bleCommand: BleCommand) => number,
+    connectedHandle: string,
+    bleCommand: BleCommand,
+    queue: CommandQueueMap
+  ) : { crownstoneId: number, state: number }[] {
     let stoneSummary  = MapProvider.stoneHandleMap[connectedHandle];
     let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
     let stoneId       = bleCommand.sphereId;
@@ -19,7 +24,7 @@ export const Executor = {
       for (let command of queue.mesh[meshId]) {
         // as long as we're in the same sphere, we might as well try to add it.
         if (command.sphereId === sphereId) {
-          if (command.command.type === bleCommand.command.type && command.endTarget) {
+          if (command.command.type === bleCommand.command.type && command.endTarget && command.endTarget !== connectedHandle) {
             let extStoneSummary = MapProvider.stoneHandleMap[command.endTarget];
             let state = getState(command);
             if (state !== undefined) {
@@ -107,12 +112,12 @@ export const Executor = {
         break;
       case 'turnOn':
         // let stoneSwitchPacket = {crownstoneId: crownstoneId, state: 100};
-        let stoneSwitchPackets = this.aggregateTurnOnCommands(handle, queue);
+        let stoneSwitchPackets = this.aggregateTurnOnCommands(handle, bleCommand, queue);
         actionPromise = BluenetPromiseWrapper.turnOnMesh(handle, stoneSwitchPackets);
         break;
       case 'multiSwitch':
         // stoneSwitchPacket = {crownstoneId: crownstoneId, state: command.state};
-        stoneSwitchPackets = this.aggregateMultiSwitchCommands(handle, queue);
+        stoneSwitchPackets = this.aggregateMultiSwitchCommands(handle, bleCommand, queue);
         actionPromise = BluenetPromiseWrapper.multiSwitch(handle, stoneSwitchPackets);
         break;
       case 'toggle':

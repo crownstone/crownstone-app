@@ -38,17 +38,17 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
             <Text style={styles.header}>{ lang("Sometimes__the_Bluetooth_") }</Text>
             <Text style={styles.explanation}>{ lang("Unfortunately__sometimes_") }</Text>
             <Text style={styles.explanation}>{ lang("Im_sure_youre_all_familia") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosControlCenter.png')} sourceWidth={500} sourceHeight={588} targetWidth={imageWidth} style={imageStyle} />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosControlCenter.png')} sourceWidth={500} sourceHeight={588} targetWidth={imageWidth} style={imageStyle} />
             <Text style={styles.explanation}>{ lang("There_is_a_Bluetooth_icon") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosControlCenterBleOff.png')} sourceWidth={500} sourceHeight={243} targetWidth={imageWidth} style={imageStyle}  />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosControlCenterBleOff.png')} sourceWidth={500} sourceHeight={243} targetWidth={imageWidth} style={imageStyle}  />
             <Text style={styles.explanation}>{ lang("To_reset_Bluetooth_the_ri") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsButton.png')} sourceWidth={500} sourceHeight={139} targetWidth={imageWidth} style={imageStyle}  />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosSettingsButton.png')} sourceWidth={500} sourceHeight={139} targetWidth={imageWidth} style={imageStyle}  />
             <Text style={styles.explanation}>{ lang("In_the_settings_overview_") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsOverview.png')} sourceWidth={500} sourceHeight={677} targetWidth={imageWidth} style={imageStyle}  />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosSettingsOverview.png')} sourceWidth={500} sourceHeight={677} targetWidth={imageWidth} style={imageStyle}  />
             <Text style={styles.explanation}>{ lang("Finally__in_the_Bluetooth") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsBluetooth.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosSettingsBluetooth.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
             <Text style={styles.explanation}>{ lang("The_result_should_be_") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsBluetoothOff.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/ios/iosSettingsBluetoothOff.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
             <Text style={styles.explanation}>{ lang("You_wait_for_a_few_second") }</Text>
             <View style={{height:50}} />
             <Text style={styles.header}>{ lang("Enjoy_using_your_Crownsto") }</Text>

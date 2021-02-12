@@ -25,7 +25,7 @@ export class AddSphereTutorial_multiple extends Component<any, any> {
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <Text style={tutorialStyle.header}>{ lang("Multiple_Spheres") }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <ScaledImage source={require("../../../../images/tutorial/NoMultipleSpheresInHouse.png")} sourceHeight={481} sourceWidth={480} targetHeight={200} />
+          <ScaledImage source={require("../../../../../assets/images/tutorial/NoMultipleSpheresInHouse.png")} sourceHeight={481} sourceWidth={480} targetHeight={200} />
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <Text style={tutorialStyle.text}>{ lang("A_single_house_should_only") }</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />

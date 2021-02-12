@@ -66,7 +66,7 @@ export const Stacks = {
     //           options: {
     //             bottomTab: {
     //               text: Languages.get("Tabs","Overview")(),
-    //               icon: require('../images/icons/house.png'),
+    //               icon: require('..../assets/images/icons/house.png'),
     //             }
     //           }
     //         }
@@ -79,7 +79,7 @@ export const Stacks = {
     //           options: {
     //             bottomTab: {
     //               text: Languages.get("Tabs","Settings")(),
-    //               icon: require('../images/icons/cog.png'),
+    //               icon: require('..../assets/images/icons/cog.png'),
     //             }
     //           }
     //         }
@@ -102,7 +102,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: Languages.get("Tabs","Overview")(),
-                  icon: require('../images/icons/house.png'),
+                  icon: require('..../assets/images/icons/house.png'),
                 }
               }
             }
@@ -115,7 +115,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: Languages.get("Tabs","Scenes")(),
-                  icon: require('../images/icons/scenes.png'),
+                  icon: require('..../assets/images/icons/scenes.png'),
                 }
               }
             }
@@ -128,7 +128,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: Languages.get("Tabs","Messages")(),
-                  icon: require('../images/icons/mail.png'),
+                  icon: require('..../assets/images/icons/mail.png'),
                 }
               }
             }
@@ -141,7 +141,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: Languages.get("Tabs","Settings")(),
-                  icon: require('../images/icons/cog.png'),
+                  icon: require('..../assets/images/icons/cog.png'),
                 }
               }
             }
@@ -176,7 +176,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "Select",
-                  icon: require('../images/icons/searching.png'),
+                  icon: require('..../assets/images/icons/searching.png'),
                 }
               }
             }
@@ -189,7 +189,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "Presence Mocking",
-                  icon: require('../images/icons/monkey.png'),
+                  icon: require('..../assets/images/icons/monkey.png'),
                 }
               }
             }
@@ -202,7 +202,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "User Settings",
-                  icon: require('../images/icons/user.png'),
+                  icon: require('..../assets/images/icons/user.png'),
                 }
               }
             }
@@ -225,7 +225,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "Operations",
-                  icon: require('../images/icons/switches.png'),
+                  icon: require('..../assets/images/icons/switches.png'),
                 }
               }
             }
@@ -238,7 +238,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "Advanced",
-                  icon: require('../images/icons/cog.png'),
+                  icon: require('..../assets/images/icons/cog.png'),
                 }
               }
             }
@@ -251,7 +251,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "Advertisments",
-                  icon: require('../images/icons/mail.png'),
+                  icon: require('..../assets/images/icons/mail.png'),
                 }
               }
             }
@@ -264,7 +264,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "DFU",
-                  icon: require('../images/icons/dfu.png'),
+                  icon: require('..../assets/images/icons/dfu.png'),
                 }
               }
             }
@@ -277,7 +277,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: "User Settings",
-                  icon: require('../images/icons/user.png'),
+                  icon: require('..../assets/images/icons/user.png'),
                 }
               }
             }

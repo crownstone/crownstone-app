@@ -16,7 +16,6 @@ import { core } from "../core";
 import { LOGd } from "../logging/Log";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/ScenePictureGallery";
 import { Platform } from "react-native";
-import { JSON_CITIES } from "../data/cities";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -217,7 +216,7 @@ export const Util = {
 
 
   getNearestCity: function({latitude, longitude}) {
-    const cities = JSON_CITIES;
+    const cities = require('../../data/cities.json');
     let deg2Rad = (deg) => {
       return deg * Math.PI / 180;
     }

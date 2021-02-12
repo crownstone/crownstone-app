@@ -1,10 +1,10 @@
 import { BroadcastCommandManager } from "../bchComponents/BroadcastCommandManager";
-import { BleCommandLoader } from "./BleCommandQueue";
 import { SessionManager } from "./SessionManager";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { core } from "../../core";
+import { BleCommandQueue } from "./BleCommandQueue";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -43,8 +43,7 @@ class CommandAPI_base {
    */
   _load(command, allowMeshRelays: boolean) {
     return new Promise<any>((resolve, reject) => {
-      BleCommandLoader.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
-
+      BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
 
       if (this._connectionRequested === false) {
         // let collector = new Collector();

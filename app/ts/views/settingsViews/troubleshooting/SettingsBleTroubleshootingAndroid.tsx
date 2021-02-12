@@ -38,9 +38,9 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
             <Text style={styles.header}>{ lang("Sometimes__the_Bluetooth_o") }</Text>
             <Text style={styles.explanation}>{ lang("Unfortunately__sometimes_t") }</Text>
             <Text style={styles.explanation}>{ lang("To_reset_Bluetooth__simply") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/android/dragDown.png')} sourceWidth={500} sourceHeight={179} targetWidth={imageWidth} style={imageStyle} />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/android/dragDown.png')} sourceWidth={500} sourceHeight={179} targetWidth={imageWidth} style={imageStyle} />
             <Text style={styles.explanation}>{ lang("Turn_off_Bluetooth_by_clic") }</Text>
-            <ScaledImage source={require('../../../images/bleTroubleshooter/android/toggleBLE.png')} sourceWidth={500} sourceHeight={292} targetWidth={imageWidth} style={imageStyle} />
+            <ScaledImage source={require('../../../../assets/images/bleTroubleshooter/android/toggleBLE.png')} sourceWidth={500} sourceHeight={292} targetWidth={imageWidth} style={imageStyle} />
             <Text style={styles.explanation}>{ lang("Then_turn_Bluetooth_on_aga") }</Text>
             <View style={{height:50}} />
             <Text style={styles.header}>{ lang("Enjoy_using_your_Crownston") }</Text>

@@ -313,7 +313,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
           <View style={{flex:1}} />
           <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Weve_added_this_button_to") }</Text>
             <View style={{flex:1}} />
-            <ScaledImage source={require('../../images/icons/localizationIcon.png')} sourceWidth={100} sourceHeight={91} targetWidth={50} />
+            <ScaledImage source={require('../../../assets/images/icons/localizationIcon.png')} sourceWidth={100} sourceHeight={91} targetWidth={50} />
             <View style={{flex:1}} />
             <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Once_youve_added_all_your") }</Text>
               <View style={{flex:1}} />

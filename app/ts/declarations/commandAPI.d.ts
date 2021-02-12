@@ -1,13 +1,12 @@
 type ConnectionState = "INITIALIZING" | "CONNECTING" | "CONNECTION_FAILED" | "CONNECTED" | "DISCONNECTING" | "DISCONNECTED" | "WAITING_FOR_COMMANDS" | "PERFORMING_COMMAND"
 
-type CommandType = "DIRECT" | "MESH" | "MESH_RELAY"
+type CommandType = "DIRECT" | "MESH"
+
 interface commandOptions {
   commanderId?:   string,
   sphereId:       string | null,
   commandType?:   CommandType,
   commandTargets: string[],   // this can be a number of meshIds or handles
-  endTarget?:     string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
-                            // in order to relay the command to a target, the endTarget is a handle of the endTarget of the command.
   private?: boolean,
   minConnections?: number
   timeout?: number // seconds

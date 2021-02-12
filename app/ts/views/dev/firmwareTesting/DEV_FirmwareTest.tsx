@@ -26,6 +26,7 @@ import { ListEditableItems } from "../../components/ListEditableItems";
 import { Icon } from "../../components/Icon";
 import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
 import { BlePromiseManager } from "../../../logic/BlePromiseManager";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 const BLE_STATE_READY = "ready";
 const BLE_STATE_BUSY = "busy";
@@ -452,7 +453,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
-          this.bleAction(BluenetPromiseWrapper.setTime, [StoneUtil.nowToCrownstoneTime()])
+          this.bleAction(BluenetPromiseWrapper.setTime, [xUtil.nowToCrownstoneTime()])
         }
       });
     }
@@ -575,7 +576,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     switch (FocusManager.crownstoneMode ) {
       case "setup":
         explanationColor = colors.white.hex;
-        backgroundImage = require('../../../images/backgrounds/blueBackground2.jpg');
+        backgroundImage = require('../../../../assets/images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
         backgroundImage = background.light;
@@ -584,12 +585,12 @@ export class DEV_FirmwareTest extends LiveComponent<{
         backgroundImage = background.menu;
         break;
       case "dfu":
-        backgroundImage = require('../../../images/backgrounds/upgradeBackground.jpg');
+        backgroundImage = require('../../../../assets/images/backgrounds/upgradeBackground.jpg');
         break;
     }
 
     if (FocusManager.crownstoneState.error) {
-      backgroundImage = require('../../../images/backgrounds/somethingWrong.jpg');
+      backgroundImage = require('../../../../assets/images/backgrounds/somethingWrong.jpg');
       explanationColor = colors.white.rgba(0.5);
     }
 

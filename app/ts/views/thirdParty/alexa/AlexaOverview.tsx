@@ -31,7 +31,7 @@ export class AlexaOverview extends Component<any, any> {
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Working_with_Alexa") }</Text>
             <View style={{height:20}} />
-            <ScaledImage source={require('../../../images/thirdParty/logo/amazonAlexa.png')} sourceWidth={264} sourceHeight={265} targetWidth={128} style={128} />
+            <ScaledImage source={require('../../../../assets/images/thirdParty/logo/amazonAlexa.png')} sourceWidth={264} sourceHeight={265} targetWidth={128} style={128} />
             <View style={{height:20}} />
             <Text style={styles.header}>{ lang("Crownstone_is_now_availab") }</Text>
             <Text style={styles.explanation}>{ lang("You_can_now_go_to_your_Al") }</Text>

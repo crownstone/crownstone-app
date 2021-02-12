@@ -183,7 +183,7 @@ export class SceneAdd extends LiveComponent<any, any> {
       sphereSelection: {
         header: lang("For_which_Sphere_"),
         subHeader: lang("Select_the_sphere_where_y"),
-        backgroundImage: require("../../images/backgrounds/sphereBackgroundDark.jpg"),
+        backgroundImage: require("../../../assets/images/backgrounds/sphereBackgroundDark.jpg"),
         textColor: colors.white.hex,
         component:
           <View style={{flex:1, ...styles.centered}}>
@@ -199,7 +199,7 @@ export class SceneAdd extends LiveComponent<any, any> {
       stoneSelection: {
         header: lang("Whos_participating_"),
         subHeader: lang("Select_the_Crownstones_wh"),
-        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.jpg"),
+        backgroundImage: require("../../../assets/images/backgrounds/plugBackgroundFade.jpg"),
         textColor: colors.white.hex,
         optionsHiddenIfNotOnTop: true,
         optionsAlwaysOnTop: Object.keys(this.sceneData.data).length > 0,
@@ -235,7 +235,7 @@ lang("_Select_at_least_one______body"),
       picture: {
         header: lang("And_finally___"),
         subHeader: lang("Lets_pick_an_image__Somet"),
-        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.jpg"),
+        backgroundImage: require("../../../assets/images/backgrounds/plugBackgroundFade.jpg"),
         textColor: colors.white.hex,
         editableItem: (state, setState) => {
           return (
@@ -299,7 +299,7 @@ lang("_Select_at_least_one______body"),
   }
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.jpg');
+    let backgroundImage = require('../../../assets/images/backgrounds/plugBackgroundFade.jpg');
     let textColor = colors.white.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

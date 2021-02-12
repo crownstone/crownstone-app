@@ -14,3 +14,8 @@ Connect bridge method now returns the Crownstone's operation mode:
 "dfu"
 
 Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED". This will always succeed.
+
+Move to the HERMES engine
+https://reactnative.dev/docs/hermes
+
+Presumably we'll be moving to RN 0.63.4

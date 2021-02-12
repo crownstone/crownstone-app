@@ -39,7 +39,7 @@ export const InviteCenter = {
                     <Text style={styles.header}>{ lang("Your_invitation_awaits_") }</Text>
                     <View style={{flex:1}} />
                     <View style={{...styles.centered, height:0.2*screenHeight}}>
-                      <ScaledImage source={require("../images/invitationLetter.png")} sourceWidth={400} sourceHeight={400} targetHeight={0.2*screenHeight} />
+                      <ScaledImage source={require("..../assets/images/invitationLetter.png")} sourceWidth={400} sourceHeight={400} targetHeight={0.2*screenHeight} />
                     </View>
                     <View style={{flex:1}} />
                     <Text style={styles.explanation}>{ lang("You_have_been_invited_to_j",sphereData.name) }</Text>

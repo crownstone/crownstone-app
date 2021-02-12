@@ -48,7 +48,7 @@ export const OverlayUtil = {
       themeColor: colors.lightGreen2.hex,
       selection: null,
       separator: false,
-      image: require("../../images/overlayCircles/roomsCircle.png")
+      image: require("../../../assets/images/overlayCircles/roomsCircle.png")
     });
   },
 

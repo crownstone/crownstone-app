@@ -37,7 +37,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
     //   type: 'navigation',
     //   largeIcon:
     //     <View style={{width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
-    //       <ScaledImage source={require("../../../images/thirdParty/logo/philipsHue.png")} targetWidth={55} targetHeight={55} sourceWidth={600} sourceHeight={600} />
+    //       <ScaledImage source={require("../../../../assets/images/thirdParty/logo/philipsHue.png")} targetWidth={55} targetHeight={55} sourceWidth={600} sourceHeight={600} />
     //     </View>,
     //   callback: () => {
     //     NavigationUtil.navigate("HueOverview", { sphereId: this.props.sphereId });
@@ -48,7 +48,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
     items.push({
       label: lang("Toon"),
       type: 'navigation',
-      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
+      largeIcon: <ScaledImage source={require('../../../../assets/images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
       callback: () => {
         let state = core.store.getState();
         let sphere = state.spheres[this.props.sphereId];
@@ -69,7 +69,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
     items.push({
       label: lang("Amazon_Alexa"),
       type: 'navigation',
-      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/amazonAlexa.png')} targetWidth={52} targetHeight={52} sourceWidth={264} sourceHeight={265}/>,
+      largeIcon: <ScaledImage source={require('../../../../assets/images/thirdParty/logo/amazonAlexa.png')} targetWidth={52} targetHeight={52} sourceWidth={264} sourceHeight={265}/>,
       callback: () => {
        NavigationUtil.navigate( "AlexaOverview",{sphereId: this.props.sphereId});
       }
@@ -77,7 +77,7 @@ export class SphereIntegrations extends LiveComponent<any, any> {
     items.push({
       label: lang("Google_Assistant"),
       type: 'navigation',
-      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/googleAssistant_vertical_crop.png')} targetWidth={60} targetHeight={60} sourceWidth={842} sourceHeight={794}/>,
+      largeIcon: <ScaledImage source={require('../../../../assets/images/thirdParty/logo/googleAssistant_vertical_crop.png')} targetWidth={60} targetHeight={60} sourceWidth={842} sourceHeight={794}/>,
       callback: () => {
         NavigationUtil.navigate( "GoogleAssistantOverview",{sphereId: this.props.sphereId});
       }

@@ -42,9 +42,9 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.07*screenHeight}} />
           <View style={{flexDirection:'row'}}>
             <View style={{flex:0.5}} />
-            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
+            <ScaledImage source={require("../../../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
             <View style={{flex:1}} />
-            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
+            <ScaledImage source={require("../../../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
             <View style={{flex:0.5}} />
           </View>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />

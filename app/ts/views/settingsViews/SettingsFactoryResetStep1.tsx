@@ -35,7 +35,7 @@ export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
           <Text style={[setupStyle.information]}>{ lang("Please_take_the_Crownston") }</Text>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/pluggingInPlugRetry.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+            <Image source={require('../../../assets/images/lineDrawings/pluggingInPlugRetry.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>

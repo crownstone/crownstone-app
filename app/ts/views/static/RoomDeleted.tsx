@@ -21,7 +21,7 @@ export class RoomDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/backgrounds/lightBackground2.jpg')}>
+      <Background image={require('../../../assets/images/backgrounds/lightBackground2.jpg')}>
         <View style={{ flex:1, width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
           <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Room_Deleted_") }</Text>

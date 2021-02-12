@@ -604,7 +604,7 @@ export function getDevAppItems() {
       label: "Go to dev app",
       type: 'button',
       style: { color: colors.black.hex, fontWeight: 'bold' },
-      icon: <ScaledImage source={require('../../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
+      icon: <ScaledImage source={require('../../../../assets/images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
       callback: () => {
         OnScreenNotifications.removeAllNotifications();
         BroadcastStateManager.destroy();

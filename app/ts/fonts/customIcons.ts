@@ -346,7 +346,7 @@ export const getRandomC3Name = function() {
   return getRandomName(glyphMapC3);
 };
 
-export const CustomIcon = VectorIcons.createIconSet(glyphMapC1,   'Crownstone', 'Crownstone.ttf');
+export const CustomIcon = VectorIcons.createIconSet(glyphMapC1,   'Crownstone',  'Crownstone.ttf');
 export const CustomIcon2 = VectorIcons.createIconSet(glyphMapC2,  'CustomIcons', 'CustomIcons.ttf');
 export const CustomIcon3 = VectorIcons.createIconSet(glyphMapC3,  'Crownstone2', 'Crownstone2.ttf');
 

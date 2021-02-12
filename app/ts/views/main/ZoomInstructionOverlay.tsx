@@ -38,7 +38,7 @@ export class ZoomInstructionOverlay extends Component<any, any> {
           overflow:'hidden'
         }}>{ lang("You_can_go_to_the_sphere_") }</Text>
         <View style={{flex:1, minHeight:30}} />
-        <Image source={require('../../images/tutorial/zoomForSphereOverview.png')} style={{width:564*size, height:851*size}} />
+        <Image source={require('../../../assets/images/tutorial/zoomForSphereOverview.png')} style={{width:564*size, height:851*size}} />
         <View style={{flex:1, minHeight:30}} />
         <Text style={WNStyles.detail}>{ lang("Youll_have_to_do_this_onc") }</Text>
         <View style={{flex:1, minHeight:30}} />

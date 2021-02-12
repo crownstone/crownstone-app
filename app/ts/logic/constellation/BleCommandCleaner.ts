@@ -57,7 +57,7 @@ export const BleCommandCleaner =  {
 
   removeDuplicatesFromMeshQueue(command: BleCommand, queue: CommandQueueMap) {
     // if command is direct, remove mesh relays in case the endTarget is the same as the handle
-    if (command.commandType === 'DIRECT' || command.commandType === "MESH_RELAY") {
+    if (command.commandType === 'DIRECT') {
       let handle = command.endTarget || command.commandTarget; // in case this is a mesh_relay, the handle is the endTarget.
       let meshIds = Object.keys(queue.mesh);
       for (let meshId of meshIds) {

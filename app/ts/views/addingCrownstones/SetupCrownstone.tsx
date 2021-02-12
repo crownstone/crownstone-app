@@ -315,7 +315,7 @@ export class SetupCrownstone extends LiveComponent<{
     let restorationCard = {
       header: lang("Restoring_Crownstone___"),
       subHeader: lang("This_should_only_take_a_m"),
-      backgroundImage: require('../../images/backgrounds/fadedLightBackground.jpg'),
+      backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackground.jpg'),
       component: (
         <View style={{...styles.centered, flex:1}}>
           <View style={{width:0.6*screenWidth, height:0.6*screenWidth}}>
@@ -337,7 +337,7 @@ export class SetupCrownstone extends LiveComponent<{
         header: lang("Something_went_wrong__"),
         subHeader: lang("Please_verify_that_you_ar"),
         textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -352,7 +352,7 @@ export class SetupCrownstone extends LiveComponent<{
         header: lang("Something_went_wrong__"),
         subHeader: lang("Please_restart_the_Blueto"),
         textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -367,7 +367,7 @@ export class SetupCrownstone extends LiveComponent<{
         header:lang("Something_went_wrong__"),
         subHeader: lang("Please_try_again_later_"),
         textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -387,7 +387,7 @@ export class SetupCrownstone extends LiveComponent<{
         header:lang("Aborted_"),
         subHeader: lang("The_Crownstone_was_not_ad"),
         textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -485,7 +485,7 @@ export class SetupCrownstone extends LiveComponent<{
       waitToFinish: {
         header: lang("Working_on_it_"),
         subHeader: lang("Setting_up_your_new_Crown"),
-        backgroundImage: require('../../images/backgrounds/fadedLightBackground.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackground.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View style={{width:0.6*screenWidth, height:0.6*screenWidth}}>
@@ -504,7 +504,7 @@ export class SetupCrownstone extends LiveComponent<{
       setupMore: {
         header:lang("Thats_it_"),
         subHeader: lang("Would_you_like_to_setup_m"),
-        backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.rgba(0.8)} />
@@ -517,7 +517,7 @@ export class SetupCrownstone extends LiveComponent<{
         header:lang("Setup_complete_"),
         subHeader: lang("This_Crownstone_was_added"),
         textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <Icon name="ios-checkmark-circle" size={0.4*screenWidth} color={colors.white.rgba(0.8)} />
@@ -529,7 +529,7 @@ export class SetupCrownstone extends LiveComponent<{
       iKnowThisOne: {
         header:lang("I_know_this_one_"),
         subHeader: lang("This_Crownstone_was_alrea", this.newCrownstoneState.name,this.newCrownstoneState.location.name),
-        backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         optionsBottom: true,
         options: successOptions
       },
@@ -539,7 +539,7 @@ export class SetupCrownstone extends LiveComponent<{
 
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/fadedLightBackground.jpg');
+    let backgroundImage = require('../../../assets/images/backgrounds/fadedLightBackground.jpg');
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
     }

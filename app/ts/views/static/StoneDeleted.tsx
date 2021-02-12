@@ -22,7 +22,7 @@ export class StoneDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/backgrounds/stoneDetails.jpg')}>
+      <Background image={require('../../../assets/images/backgrounds/stoneDetails.jpg')}>
         <View style={{flex:1, width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
           <Text style={deviceStyles.header}>{ lang("Stone_Deleted_") }</Text>

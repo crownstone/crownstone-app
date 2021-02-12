@@ -111,7 +111,7 @@ text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
       <Background image={background.menu} hasNavBar={false}>
                 <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
+          <ScaledImage source={require('../../../../assets/images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
           <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{ lang("There_are_multiple_Toons_") }</Text>
           <View style={{flex:1}} />

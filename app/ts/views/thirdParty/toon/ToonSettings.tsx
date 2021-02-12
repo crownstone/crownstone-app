@@ -176,7 +176,7 @@ export class ToonSettings extends LiveComponent<any, any> {
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>
               <View style={{flex:1}} />
-              <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
+              <ScaledImage source={require('../../../../assets/images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
               <View style={{flex:1}} />
               <Text style={[textStyle, {fontWeight: 'bold', fontSize: 16}]}>{ lang("Crownstone_and_Toon_are_c") }</Text>
               <View style={{flex:1}} />

@@ -9,7 +9,7 @@ export function mockBluenetPromiseWrapper() {
       let handle = args[0];
       // console.log("Providing promise",method, handle, arguments)
       return new Promise((resolve, reject) => {
-        libStateWrapper.loadTargeted(method,handle,resolve,reject)
+        libStateWrapper.loadTargeted(method, handle, resolve, reject, args)
       })
     }
   }
@@ -25,7 +25,7 @@ export function mockBluenetPromiseWrapper() {
 
 class LibContainer {
 
-  targetedActions : {[commandName: string]: {[handle: string]: {resolve: (data?: any) => void, reject: (err: any) => void}}} = {}
+  targetedActions : {[commandName: string]: {[handle: string]: {resolve: (data?: any) => void, reject: (err: any) => void, args: any[]}}} = {}
 
   reset() {
     for (let [commandName, handleObj] of Object.entries(this.targetedActions)) {
@@ -38,13 +38,13 @@ class LibContainer {
 
 
 
-  loadTargeted(commandName, handle, resolve: (data?: any) => void, reject: (err: any) => void) {
+  loadTargeted(commandName, handle, resolve: (data?: any) => void, reject: (err: any) => void, args: any) {
     if (this.targetedActions[commandName] === undefined) {
       this.targetedActions[commandName] = {};
     }
 
     if (this.targetedActions[commandName][handle] === undefined) {
-      this.targetedActions[commandName][handle] = {resolve, reject}
+      this.targetedActions[commandName][handle] = {resolve, reject, args}
     }
     else {
       throw "ALREADY_IN_TARGETED_ACTIONS"
@@ -53,8 +53,9 @@ class LibContainer {
 
   for(handle: string) : Resolver {
     return {
-      succeed: this._getSuccessMethods(handle),
-      fail: this._getErrorMethods(handle),
+      succeed:    this._getSuccessMethods(handle),
+      fail:       this._getErrorMethods(handle),
+      getArgsFor: this._getArgGetters(handle),
     }
   }
 
@@ -74,6 +75,20 @@ class LibContainer {
     }
     // @ts-ignore
     return res
+  }
+
+  _getArgGetters(handle) : MockedLibArgs {
+    let res = {};
+    for (let method of targetedMethods) {
+      res[method] = (data: any) => {
+        if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
+        if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
+
+        return this.targetedActions[method][handle].args
+      }
+    }
+    // @ts-ignore
+    return res;
   }
 
   _getSuccessMethods(handle) : MockedLib {
@@ -123,7 +138,96 @@ async function skipTurn() {
 interface Resolver {
   succeed: MockedLib,
   fail: MockedLibError,
+  getArgsFor: MockedLibArgs
 }
+
+interface MockedLibArgs {
+  connect                       : () => any[],
+  cancelConnectionRequest       : () => any[],
+  disconnectCommand             : () => any[],
+  phoneDisconnect               : () => any[],
+  getMACAddress                 : () => any[],
+  setupCrownstone               : () => any[],
+  recover                       : () => any[],
+  commandFactoryReset           : () => any[],
+  multiSwitch                   : () => any[],
+  getFirmwareVersion            : () => any[],
+  getBootloaderVersion          : () => any[],
+  setupFactoryReset             : () => any[],
+  putInDFU                      : () => any[],
+  performDFU                    : () => any[],
+  getHardwareVersion            : () => any[],
+  setupPutInDFU                 : () => any[],
+  toggleSwitchState             : () => any[],
+  bootloaderToNormalMode        : () => any[],
+  clearErrors                   : () => any[],
+  restartCrownstone             : () => any[],
+  setTime                       : () => any[],
+  meshSetTime                   : () => any[],
+  getTime                       : () => any[],
+  setSwitchState                : () => any[],
+  getSwitchState                : () => any[],
+  lockSwitch                    : () => any[],
+  allowDimming                  : () => any[],
+  setSwitchCraft                : () => any[],
+  sendNoOp                      : () => any[],
+  sendMeshNoOp                  : () => any[],
+  setMeshChannel                : () => any[],
+  setupPulse                    : () => any[],
+  addBehaviour                  : () => any[],
+  updateBehaviour               : () => any[],
+  removeBehaviour               : () => any[],
+  getBehaviour                  : () => any[],
+  setTapToToggle                : () => any[],
+  setTapToToggleThresholdOffset : () => any[],
+  getTapToToggleThresholdOffset : () => any[],
+  setSoftOnSpeed                : () => any[],
+  getSoftOnSpeed                : () => any[],
+  syncBehaviours                : () => any[],
+  getResetCounter               : () => any[],
+  switchRelay                   : () => any[],
+  switchDimmer                  : () => any[],
+  getSwitchcraftThreshold       : () => any[],
+  setSwitchcraftThreshold       : () => any[],
+  getMaxChipTemp                : () => any[],
+  setMaxChipTemp                : () => any[],
+  getDimmerCurrentThreshold     : () => any[],
+  setDimmerCurrentThreshold     : () => any[],
+  getDimmerTempUpThreshold      : () => any[],
+  setDimmerTempUpThreshold      : () => any[],
+  getDimmerTempDownThreshold    : () => any[],
+  setDimmerTempDownThreshold    : () => any[],
+  getVoltageZero                : () => any[],
+  setVoltageZero                : () => any[],
+  getCurrentZero                : () => any[],
+  setCurrentZero                : () => any[],
+  getPowerZero                  : () => any[],
+  setPowerZero                  : () => any[],
+  getVoltageMultiplier          : () => any[],
+  setVoltageMultiplier          : () => any[],
+  getCurrentMultiplier          : () => any[],
+  setCurrentMultiplier          : () => any[],
+  setUartState                  : () => any[],
+  getBehaviourDebugInformation  : () => any[],
+  turnOnMesh                    : () => any[],
+  setSunTimesViaConnection      : () => any[],
+  trackedDeviceHeartbeat        : () => any[],
+  registerTrackedDevice         : () => any[],
+  getCrownstoneUptime           : () => any[],
+  getMinSchedulerFreeSpace      : () => any[],
+  getLastResetReason            : () => any[],
+  getGPREGRET                   : () => any[],
+  getAdcChannelSwaps            : () => any[],
+  getAdcRestarts                : () => any[],
+  getSwitchHistory              : () => any[],
+  getPowerSamples               : () => any[],
+  setUartKey                    : () => any[],
+  transferHubTokenAndCloudId    : () => any[],
+  requestCloudId                : () => any[],
+  factoryResetHub               : () => any[],
+  factoryResetHubOnly           : () => any[],
+}
+
 
 interface MockedLib {
   connect                       : (data?: any) => Promise<void>,
@@ -211,6 +315,7 @@ interface MockedLib {
   factoryResetHub               : (data?: any) => Promise<void>,
   factoryResetHubOnly           : (data?: any) => Promise<void>,
 }
+
 
 interface MockedLibError {
   connect                       : (err?: any) => Promise<void>,

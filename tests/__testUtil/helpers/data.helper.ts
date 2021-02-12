@@ -3,6 +3,7 @@ if (core["resetMocks"] === undefined) { throw "ERROR: mockCore should be perform
 
 import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 import { Get } from "../../../app/ts/util/GetUtil";
+import { MapProvider } from "../../../app/ts/backgroundProcesses/MapProvider";
 
 
 /**
@@ -19,7 +20,8 @@ let stoneCount = 0;
 export function addSphere(config? : any) {
   let sphereId = xUtil.getUUID();
   if (!config) { config = {}; }
-  core.store.dispatch({type:"ADD_SPHERE", sphereId: sphereId, data:{name: "testSphere", ...config}})
+  core.store.dispatch({type:"ADD_SPHERE", sphereId: sphereId, data:{name: "testSphere", ...config}});
+  MapProvider.refreshAll();
   lastUsedSphereId = sphereId;
   return Get.sphere(sphereId);
 }
@@ -28,7 +30,8 @@ export function addStone(config? : any) {
   let stoneId = xUtil.getUUID();
   stoneCount++;
   if (!config) { config = {}; }
-  core.store.dispatch({type:"ADD_STONE", sphereId: lastUsedSphereId, stoneId: stoneId, data:{handle: xUtil.getShortUUID(), name: getToken('stone'), crownstoneId: stoneCount, ...config}})
+  core.store.dispatch({type:"ADD_STONE", sphereId: lastUsedSphereId, stoneId: stoneId, data:{handle: xUtil.getShortUUID(), name: getToken('stone'), crownstoneId: stoneCount, ...config}});
+  MapProvider.refreshAll();
   lastUsedStoneId = stoneId;
   return Get.stone(lastUsedSphereId, stoneId);
 }

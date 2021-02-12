@@ -84,7 +84,7 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
         closeCallback={() => { this.close(); }}
         backgroundColor={colors.white.rgba(0.2)}
         getDesignElement={(innerSize) => { return (
-          <ScaledImage source={require("../../images/overlayCircles/dimmingCircleGreen.png")} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
+          <ScaledImage source={require("../../../assets/images/overlayCircles/dimmingCircleGreen.png")} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}
         title={ lang("Dim_how_much_") }
         footerComponent={this._getSaveButton()}

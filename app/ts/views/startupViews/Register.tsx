@@ -299,7 +299,7 @@ export class Register extends LiveComponent<any, any> {
         header:lang("Thats_it_"),
         subHeader: lang("We_have_sent_an_email_to__", (this.user.email || "" ).toLowerCase()),
         explanation:lang("If_you_do_not_see_the_ema"),
-        backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.jpg'),
+        backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.hex} />

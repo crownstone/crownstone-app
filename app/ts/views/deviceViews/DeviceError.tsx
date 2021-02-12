@@ -76,7 +76,7 @@ lang("_Stone_unavailable___You__body"),
     let stone = this.props.stone;
 
     return (
-      <Background image={require("../../images/backgrounds/hwError.jpg")}>
+      <Background image={require("../../../assets/images/backgrounds/hwError.jpg")}>
         <View style={{flex:2}} />
 
         { this._getStoneIcon(stone) }

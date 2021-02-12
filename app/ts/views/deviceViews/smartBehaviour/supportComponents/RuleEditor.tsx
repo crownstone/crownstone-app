@@ -379,7 +379,7 @@ export class RuleEditor extends LiveComponent<
       themeColor: colors.green.rgba(0.8),
       allowMultipleSelections: true,
       selection: this.rule.getLocationUids(),
-      image: require("../../../../images/overlayCircles/roomsCircle.png")
+      image: require("../../../../../assets/images/overlayCircles/roomsCircle.png")
     })
   }
 
@@ -399,7 +399,7 @@ export class RuleEditor extends LiveComponent<
         onSelect();
       },
       time: useData ? this.exampleBehaviours.time[exampleOriginField].getTime() : null,
-      image: require("../../../../images/overlayCircles/time.png")
+      image: require("../../../../../assets/images/overlayCircles/time.png")
     })
   }
 

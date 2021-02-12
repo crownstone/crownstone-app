@@ -182,7 +182,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
                   <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth}}>
                     <View style={{flex:1}} />
                     <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
-                    <ScaledImage source={require("../../images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
+                    <ScaledImage source={require("../../../assets/images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
                   </View>
                 </SlideFadeInView>
                 {scenesComponents}

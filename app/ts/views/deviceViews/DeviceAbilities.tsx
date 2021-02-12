@@ -174,7 +174,7 @@ function getData(props, stone, active) {
       propsToPass.information = () => { Linking.openURL(Languages.activeLocale === "nl_nl" ? 'https://crownstone.rocks/nl/compatibility/dimming/' : 'https://crownstone.rocks/compatibility/dimming/').catch(() => {}) };
       if (active) {
         return {
-          image: require('../../images/overlayCircles/dimmingCircleGreen.png'),
+          image: require('../../../assets/images/overlayCircles/dimmingCircleGreen.png'),
           label: lang("Dimming"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_DimmerSettings", propsToPass); },
@@ -183,7 +183,7 @@ function getData(props, stone, active) {
         }
       }
       return {
-        image: require('../../images/overlayCircles/dimmingCircleGreen_bw.png'),
+        image: require('../../../assets/images/overlayCircles/dimmingCircleGreen_bw.png'),
         label: lang("Dimming"),
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
@@ -194,7 +194,7 @@ function getData(props, stone, active) {
       propsToPass.information = () => { NavigationUtil.navigate("Ability_SwitchcraftInformation"); };
       if (active) {
         return {
-          image: require('../../images/overlayCircles/switchcraft.png'),
+          image: require('../../../assets/images/overlayCircles/switchcraft.png'),
           label: lang("Switchcraft"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_SwitchcraftSettings", propsToPass); },
@@ -203,7 +203,7 @@ function getData(props, stone, active) {
         }
       }
       return {
-        image: require('../../images/overlayCircles/switchcraft_bw.png'),
+        image: require('../../../assets/images/overlayCircles/switchcraft_bw.png'),
         label: lang("Switchcraft"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
@@ -234,7 +234,7 @@ function getData(props, stone, active) {
       propsToPass.information = () => { NavigationUtil.navigate("Ability_TapToToggleInformation"); };
       if (active) {
         return {
-          image: require('../../images/overlayCircles/tapToToggle.png'),
+          image: require('../../../assets/images/overlayCircles/tapToToggle.png'),
           label: lang("Tap_to_toggle"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_TapToToggleSettings", propsToPass); },
@@ -243,7 +243,7 @@ function getData(props, stone, active) {
         }
       }
       return {
-        image: require('../../images/overlayCircles/tapToToggle_bw.png'),
+        image: require('../../../assets/images/overlayCircles/tapToToggle_bw.png'),
         label: lang("Tap_to_toggle"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },

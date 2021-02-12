@@ -84,7 +84,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
           <TimeButtonWithImage
             basic={true}
             label={ lang("Looks_good_")}
-            image={require("../../../../images/icons/timeIcon.png")}
+            image={require("../../../../../assets/images/icons/timeIcon.png")}
             callback={() => {
               if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
                 Alert.alert(
@@ -241,7 +241,7 @@ function TimePart(props : {
                   key={"resultButton" + index}
                   index={index}
                   label={ Platform.OS === "android" ? lang("Thats_a_good_time_") : lang("Tap_to_select_time_")}
-                  image={require("../../../../images/icons/clock.png")}
+                  image={require("../../../../../assets/images/icons/clock.png")}
                   callback={() => {
                     setFinished(true);
                     props.setFinished(true);
@@ -268,7 +268,7 @@ function TimePart(props : {
                   key={"resultButton" + index}
                   index={index}
                   label={lang("Tap_to_select_time_")}
-                  image={require("../../../../images/icons/clock.png")}
+                  image={require("../../../../../assets/images/icons/clock.png")}
                   callback={() => {
                     timeReference.getDate((date) => {
                       let hours = date.getHours();
@@ -322,7 +322,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../images/icons/sunrise.png")}
+          image={require("../../../../../assets/images/icons/sunrise.png")}
           callback={props.callback}
         />
       );
@@ -333,7 +333,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../images/icons/sunset.png")}
+          image={require("../../../../../assets/images/icons/sunset.png")}
           callback={props.callback}
         />
       );
@@ -344,7 +344,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../images/icons/clock.png")}
+          image={require("../../../../../assets/images/icons/clock.png")}
           callback={props.callback}
         />
       );
@@ -364,21 +364,21 @@ function TypeSelector(props) {
         basic={true}
         index={i++}
         label={ lang("At_sunrise___")}
-        image={require("../../../../images/icons/sunrise.png")}
+        image={require("../../../../../assets/images/icons/sunrise.png")}
         callback={() => { props.timeObj.setSunrise(); props.callback("SUNRISE") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
         label={ lang("At_sunset___")}
-        image={require("../../../../images/icons/sunset.png")}
+        image={require("../../../../../assets/images/icons/sunset.png")}
         callback={() => { props.timeObj.setSunset(); props.callback("SUNSET") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
         label={ lang("At_a_specific_time___")}
-        image={require("../../../../images/icons/clock.png")}
+        image={require("../../../../../assets/images/icons/clock.png")}
         callback={() => { props.timeObj.setClock(); props.callback("CLOCK") }}
       />
     </View>

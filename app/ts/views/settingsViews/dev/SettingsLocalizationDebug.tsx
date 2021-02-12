@@ -190,7 +190,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     else {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);
       return (
-        <BackgroundNoNotification image={require('../../../images/backgrounds/blueprintBackgroundDesaturated_noLine.jpg')}>
+        <BackgroundNoNotification image={require('../../../../assets/images/backgrounds/blueprintBackgroundDesaturated_noLine.jpg')}>
           <View style={{
             position:'absolute', top:5, left:5, padding:5, borderRadius:5,
             backgroundColor:this._amountOfStones < AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION ? colors.csOrange.hex : 'transparent',

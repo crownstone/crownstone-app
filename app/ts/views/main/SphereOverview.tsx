@@ -245,7 +245,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={require("../../images/backgrounds/sphereBackground.jpg")}>
+          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );
@@ -258,7 +258,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       backgroundOverride = backgroundOverride.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        backgroundOverride = require("../../images/backgrounds/sphereBackground.jpg");
+        backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
       }
       else {
         // handle the case where there are no rooms added:
@@ -281,7 +281,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          backgroundOverride = require('../../images/backgrounds/blueprintBackgroundGray.jpg')
+          backgroundOverride = require('../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')
         }
       }
 
@@ -343,7 +343,7 @@ function getTopBarProps(state, props, viewState) {
         title: sphere.config.name,
         leftIcon: finalizeLocalization.showItem ? {
           id: 'localization',
-          icon: require('../../images/icons/localizationIcon.png'),
+          icon: require('../../../assets/images/icons/localizationIcon.png'),
           iconSize: {width: 100, height:91},
           onPress: finalizeLocalization.action
         } : null,

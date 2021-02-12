@@ -43,7 +43,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         subHeader:lang("Would_you_like_to_retry_"),
         optionsBottom: true,
         textColor: colors.white.hex,
-        backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.jpg'),
+        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed.jpg'),
         options: [
           {label: lang("Not_right_now___"), onSelect: () => { this.close(); }},
           {label: lang("Yes_"),     onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
@@ -102,7 +102,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         subHeader:lang("Please_check_if_youre_con"),
         optionsBottom: true,
         textColor: colors.white.hex,
-        backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.jpg'),
+        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -133,7 +133,7 @@ export class DfuFinished extends LiveComponent<any, any> {
     }
 
     let cards = getCardsCallback();
-    let backgroundImage = cards.start.backgroundImage || require('../../images/backgrounds/upgradeBackgroundSoft.jpg');
+    let backgroundImage = cards.start.backgroundImage || require('../../../assets/images/backgrounds/upgradeBackgroundSoft.jpg');
     let textColor = cards.start.textColor || colors.black.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

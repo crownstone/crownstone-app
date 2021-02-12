@@ -368,9 +368,9 @@ function NoRulesYet(props) {
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>
           <View style={{height: 40}} />
           <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
-            <ScaledImage source={require('../../../images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
-            <ScaledImage source={require('../../../images/overlayCircles/roomsCircle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
-            <ScaledImage source={require('../../../images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+            <ScaledImage source={require('../../../../assets/images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+            <ScaledImage source={require('../../../../assets/images/overlayCircles/roomsCircle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+            <ScaledImage source={require('../../../../assets/images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
           </View>
           <View style={{height: 40}} />
           <Text style={styles.boldExplanation}>{ lang("My_behaviour_is_a_combina") }</Text>

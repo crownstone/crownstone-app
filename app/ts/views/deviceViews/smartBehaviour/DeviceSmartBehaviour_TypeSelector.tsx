@@ -79,19 +79,19 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
           {
             label: lang("Presence_aware"),
             subLabel: '"' + presenceExamples[0].getSentence(this.props.sphereId) + '"',
-            image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, width: 0.15*screenWidth },
+            image: { source: require('../../../../assets/images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, width: 0.15*screenWidth },
             nextCard: 'presence'
           },
           {
             label: lang("Smart_timer"),
             subLabel: '"' + smartTimerExamples[0].getSentence(this.props.sphereId) + '"',
-            image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 398, sourceHeight: 398, width: 0.175*screenWidth },
+            image: { source: require('../../../../assets/images/icons/smartTimer.png'), sourceWidth: 398, sourceHeight: 398, width: 0.175*screenWidth },
             nextCard: 'smartTimer'
           },
           {
             label: lang("Twilight_mode"),
             subLabel: '"' + twilightExamples[0].getSentence(this.props.sphereId) + '"',
-            image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
+            image: { source: require('../../../../assets/images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
             onSelect: () => {
               let state = core.store.getState();
               let sphere = state.spheres[this.props.sphereId];
@@ -107,9 +107,9 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         header: lang("Presence_Aware_Behaviour"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
-        backgroundImage: require('../../../images/backgrounds/presence.jpg'),
+        backgroundImage: require('../../../../assets/images/backgrounds/presence.jpg'),
         subHeader: lang("Pick_an_example_and_change"),
-        image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex  },
+        image: { source: require('../../../../assets/images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex  },
         optionsBottom: true,
         options: this.getOptions(presenceExamples, lang("Presence_Aware"))
       },
@@ -117,9 +117,9 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         header: lang("Smart_Timer"),
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
-        backgroundImage: require('../../../images/backgrounds/smartTimer.jpg'),
+        backgroundImage: require('../../../../assets/images/backgrounds/smartTimer.jpg'),
         subHeader: lang("Pick_an_example_and_chang"),
-        image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
+        image: { source: require('../../../../assets/images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
         options: this.getOptions(smartTimerExamples, lang("Smart_Timer"))
       },
@@ -128,7 +128,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
         subHeader: lang("Twilight_requires_me_to_b"),
-        backgroundImage: require('../../../images/backgrounds/twilight.jpg'),
+        backgroundImage: require('../../../../assets/images/backgrounds/twilight.jpg'),
         optionsBottom: true,
         options: [
           {
@@ -152,8 +152,8 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         headerMaxNumLines: 1,
         textColor: colors.white.hex,
         subHeader: lang("Pick_an_example_and_change_"),
-        backgroundImage: require('../../../images/backgrounds/twilight.jpg'),
-        image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 292, sourceHeight: 399, height: 0.25*screenHeight, tintColor: colors.white.hex },
+        backgroundImage: require('../../../../assets/images/backgrounds/twilight.jpg'),
+        image: { source: require('../../../../assets/images/icons/twilight.png'), sourceWidth: 292, sourceHeight: 399, height: 0.25*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
         options: this.getOptions(twilightExamples, lang("Twilight_Mode"), true)
       },
@@ -198,7 +198,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
 
   render() {
-    let backgroundImage = require('../../../images/backgrounds/behaviourMix.jpg');
+    let backgroundImage = require('../../../../assets/images/backgrounds/behaviourMix.jpg');
     let textColor = colors.white.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

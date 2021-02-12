@@ -140,7 +140,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
-            <ScaledImage source={require('../../../../images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
+            <ScaledImage source={require('../../../../../assets/images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
             <Text style={styles.boldExplanation}>{ lang("Dimming_allows_you_to_set") }</Text>
             <Text style={styles.explanation}>{ lang("It_is_up_to_you_to_determ") }</Text>

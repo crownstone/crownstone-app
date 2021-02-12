@@ -42,7 +42,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
-            <ScaledImage source={require('../../../../images/overlayCircles/switchcraft.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
+            <ScaledImage source={require('../../../../../assets/images/overlayCircles/switchcraft.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
             <Text style={styles.boldExplanation}>{ lang("This_Crownstone_is_config") }</Text>
             <Text style={styles.explanation}>{ lang("Tap_the_installation___in") }</Text>

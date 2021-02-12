@@ -23,7 +23,7 @@ test("Session private connection fail. Should not cleanup.", async () => {
 
   await mBluenet.for(handle).fail.connect("Error");
   expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).toBeCalledTimes(0);
+  expect(interactionModule.cleanup).not.toBeCalled()
   expect(session.state === "CONNECTION_FAILED");
 });
 
@@ -71,7 +71,7 @@ test("Session public scanning start successful.", async () => {
   expect(session.state).toBe("INITIALIZING");
   // this should not be close enough
   evt_ibeacon(-95);
-  expect(interactionModule.canActivate).toBeCalledTimes(0);
+  expect(interactionModule.canActivate).not.toBeCalled()
 
   // this should be close enough;
   evt_ibeacon(-80)
@@ -93,7 +93,7 @@ test("Session public deactivating.", async () => {
   await mBluenet.for(handle).succeed.cancelConnectionRequest();
 
   expect(interactionModule.isDeactivated).toBeCalled();
-  expect(interactionModule.isConnected).toHaveBeenCalledTimes(0);
+  expect(interactionModule.isConnected).not.toBeCalled()
 
   expect(session.state).toBe("INITIALIZING");
 });

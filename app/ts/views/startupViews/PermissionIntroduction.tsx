@@ -85,7 +85,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
       },
       notifications: {
         header: lang("Can_we_ask_you_something_"),
-        backgroundImage: require("../../images/backgrounds/assistants.jpg"),
+        backgroundImage: require("../../../assets/images/backgrounds/assistants.jpg"),
         subHeader: lang("We_use_notifications_switc"),
         explanation: lang("We_also_use_them_to_quick"),
         optionsBottom: true,
@@ -102,10 +102,10 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
       },
       ai: {
         header: lang("Let_me_introduce_myself_"),
-        backgroundImage: require("../../images/backgrounds/lightBackground2_blur.jpg"),
+        backgroundImage: require("../../../assets/images/backgrounds/lightBackground2_blur.jpg"),
         subHeader: lang("Im_your_new_smart_home__n"),
         component: <View style={{...styles.centered, flex:1}}>
-            <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
+            <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
           </View>,
         hasTextInputField: true,
         placeholder: this.randomAiName,
@@ -132,7 +132,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = require("../../images/backgrounds/houseWithView.jpg")
+    let backgroundImage = require("../../../assets/images/backgrounds/houseWithView.jpg")
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

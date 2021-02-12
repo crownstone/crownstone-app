@@ -35,7 +35,7 @@ export class HueOverview extends Component<any, any> {
             <Text style={styles.title}>{ lang("Lights_everywhere_") }</Text>
             <View style={{height:20}} />
             <View style={{borderRadius:30, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
-              <ScaledImage source={require('../../../images/thirdParty/logo/philipsHue.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.5*screenWidth} />
+              <ScaledImage source={require('../../../../assets/images/thirdParty/logo/philipsHue.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.5*screenWidth} />
             </View>
             <View style={{height:20}} />
             <Text style={styles.header}>{ lang("You_can_now_control_your_") }</Text>

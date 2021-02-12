@@ -9,20 +9,30 @@ import { LOG } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 
-export const BleCommandLoader = {
+/**
+ * The command queue will keep a queue of ble commands that should be performed.
+ * It will provide commands to slots when they request them. It will handle duplicates according to "Last command wins".
+ * It will also have all intelligence on how to determine duplicate handling per command type.
+ */
+export class BleCommandQueueClass {
+  executePending: boolean = false;
+
+  queue : CommandQueueMap = { direct: {}, mesh: {}};
+
+  _removeDuplicates(command : BleCommand) {
+    BleCommandCleaner.removeDuplicatesFromDirectQueue(command,this.queue);
+    BleCommandCleaner.removeDuplicatesFromMeshQueue(command,this.queue);
+  }
 
   /**
-   * This function will generate any number of required commands based on the commandOptions and the allowMeshRelays
-   * boolean.
+   * This method will load the appropriate commands into the queue.
    * @param commandOptions
    * @param command
-   * @param allowMeshRelays
+   * @param allowMeshRelay
    * @param promise
    */
-  generateAndLoad(options: commandOptions, command: commandInterface, allowMeshRelays: boolean, promise : PromiseContainer) {
+  generateAndLoad(options: commandOptions, command: commandInterface, allowMeshRelay: boolean,  promise : PromiseContainer) {
     let commandId = xUtil.getUUID();
-    let bleCommand : BleCommand;
-
 
     // we use every field from the options excep the command targets. Each target in this list get an individual command.
     let usedOptions = {...options};
@@ -41,12 +51,14 @@ export const BleCommandLoader = {
         executedBy:   [],
         attemptingBy: []
       }
-      switch (options.commandType) {
-        case "MESH":
-          bleCommand = { ...sharedItems, promise };
-          break;
-        case "MESH_RELAY":
-          bleCommand = { ...sharedItems, promise };
+      if (options.commandType === 'DIRECT') {
+        let bleCommand : BleCommand = { ...sharedItems, promise };
+
+        // load the direct command.
+        this.load(bleCommand);
+
+        // possibly load extra mesh relays
+        if (allowMeshRelay) {
           let handle = options.commandTargets[0];
           let meshId = MapProvider.handleMeshMap[handle];
           if (meshId) {
@@ -54,54 +66,36 @@ export const BleCommandLoader = {
             if (stoneData) {
               let sphere = Get.sphere(stoneData.sphereId);
               if (sphere) {
-                let amountOfStonesInSphere = Object.keys(sphere.stones).length - 1; // the minus 1 is because we already schedule a direct connection to the target crownstone.
-                let relayBleCommand = {
-                  ...sharedItems,
+                let stoneIdsInSphere = Object.keys(sphere.stones);
+                let amountOfStonesInMesh = 0;
+                for (let stoneId of stoneIdsInSphere) {
+                  if (sphere.stones[stoneId].config.meshNetworkId === meshId) {
+                    amountOfStonesInMesh++;
+                  }
+                }
+                amountOfStonesInMesh -= 1; // the minus 1 is because we already schedule a direct connection to the target crownstone.
 
+                let relayBleCommand : BleCommand = {
+                  ...sharedItems,
                   // changes for the mesh relay method.
+                  commandType: "MESH",
                   id: xUtil.getUUID(),
                   linkedId: commandId,
-                  minConnections: Math.min(3, amountOfStonesInSphere),
+                  minConnections: Math.min(options.minConnections, amountOfStonesInMesh),
                   commandTarget: meshId,
                   endTarget: handle,
-                  promise: {resolve: () => {}, reject: (err) => {}} // the promise resolves when the direct message is delivered. The success of the redundant messages is optional.
+                  promise: { resolve: () => {}, reject: (err) => {} } // the promise resolves when the direct message is delivered. The success of the redundant messages is optional.
                 };
-                BleCommandQueue.load(relayBleCommand)
+                this.load(relayBleCommand)
               }
             }
-
           }
-          break;
-        case "DIRECT":
-          bleCommand = { ...sharedItems, promise };
-          break;
+        }
       }
-
-      BleCommandQueue.load(bleCommand);
+      else if (options.commandType === "MESH") {
+        return this.load({ ...sharedItems, promise });
+      }
     }
-  }
-}
-
-
-
-
-
-
-
-
-/**
- * The command queue will keep a queue of ble commands that should be performed.
- * It will provide commands to slots when they request them. It will handle duplicates according to "Last command wins".
- * It will also have all intelligence on how to determine duplicate handling per command type.
- */
-class BleCommandQueueClass {
-  executePending: boolean = false;
-
-  queue : CommandQueueMap = { direct: {}, mesh: {}};
-
-  _removeDuplicates(command : BleCommand) {
-    BleCommandCleaner.removeDuplicatesFromDirectQueue(command,this.queue);
-    BleCommandCleaner.removeDuplicatesFromMeshQueue(command,this.queue);
   }
 
   load(command: BleCommand) {
@@ -109,13 +103,6 @@ class BleCommandQueueClass {
 
     let targetId = command.commandTarget;
     switch (command.commandType) {
-      case "MESH_RELAY":
-        let meshId = MapProvider.handleMeshMap[targetId];
-        if (meshId) {
-          if (this.queue.mesh[meshId] === undefined) { this.queue.mesh[meshId] = []; }
-          this.queue.mesh[targetId].push(command);
-        }
-        break;
       case "MESH":
         if (this.queue.mesh[targetId] === undefined) { this.queue.mesh[targetId] = []; }
         this.queue.mesh[targetId].push(command);
@@ -270,7 +257,7 @@ class BleCommandQueueClass {
         let commands = this.queue.direct[handle];
         for (let command of commands) {
           if (command.private && command.commanderId === privateId) {
-            this._performCommand(handle, command);
+            await this._performCommand(handle, command);
             break;
           }
         }
@@ -282,7 +269,7 @@ class BleCommandQueueClass {
         let commands = this.queue.direct[handle];
         for (let command of commands) {
           if (command.private === false) {
-            this._performCommand(handle, command);
+            await this._performCommand(handle, command);
             break;
           }
         }
@@ -291,7 +278,7 @@ class BleCommandQueueClass {
         let commands = this.queue.mesh[meshId];
         for (let command of commands) {
           if (command.executedBy.indexOf(handle) === -1 && command.attemptingBy.indexOf(handle) === -1) {
-            this._performCommand(handle, command);
+            await this._performCommand(handle, command);
             break;
           }
         }

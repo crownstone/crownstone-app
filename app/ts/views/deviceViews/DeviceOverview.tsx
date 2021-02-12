@@ -445,7 +445,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
             sphereId: this.props.sphereId
           })
         }} />
-        <DeviceMenuIcon label={ lang("Power_usage")} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
+        <DeviceMenuIcon label={ lang("Power_usage")} image={require("../../../assets/images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
           NavigationUtil.launchModal("DevicePowerUsage", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId

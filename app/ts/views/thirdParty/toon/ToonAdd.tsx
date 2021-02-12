@@ -260,7 +260,7 @@ export class ToonAdd extends LiveComponent<any, any> {
       content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
+          <ScaledImage source={require('../../../../assets/images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:0.75}} />
           <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
             <TextEditInput
@@ -284,7 +284,7 @@ export class ToonAdd extends LiveComponent<any, any> {
       content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
+          <ScaledImage source={require('../../../../assets/images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           { this.state.processing ?  <View style={{paddingTop:50, alignItems:'center', justifyContent:'center'}}><ActivityIndicator animating={true} size="large" /></View> : undefined}
           <View style={{flex:1}} />
           { this._getText() }
