@@ -75,6 +75,7 @@ interface BluenetPromiseWrapperProtocol {
 
   syncBehaviours(handle: string, behaviours: behaviourTransfer[])       : Promise<behaviourTransfer[]>,
   getBehaviourMasterHash(behaviours: behaviourTransfer[])               : Promise<number>,
+  getBehaviourMasterHashCRC(behaviours: behaviourTransfer[])            : Promise<number>,
 
   canUseDynamicBackgroundBroadcasts()                                   : Promise<boolean>,
 

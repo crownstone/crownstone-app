@@ -92,8 +92,9 @@ export class Session {
     }));
   }
 
-  isPrivate() : boolean { return this.privateId !== null;        }
-  isClosing() : boolean { return this.state === "DISCONNECTING"; }
+  isPrivate()   : boolean { return this.privateId !== null;        }
+  isClosing()   : boolean { return this.state === "DISCONNECTING"; }
+  isConnected() : boolean { return this.state === "CONNECTED";     }
 
 
   async connect() {

@@ -1,5 +1,5 @@
 import { core } from "../../../app/ts/core";
-if (core["resetMocks"] === undefined) { throw "ERROR: mockCore should be performed before the datahelpers are imported."}
+if (core["reset"] === undefined) { throw "ERROR: mockCore should be performed before the datahelpers are imported."}
 
 import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 import { Get } from "../../../app/ts/util/GetUtil";
@@ -13,6 +13,12 @@ import { MapProvider } from "../../../app/ts/backgroundProcesses/MapProvider";
 function getToken(prefix: string) {
   return prefix + "_" + xUtil.getShortUUID();
 }
+export function resetDataHelper() {
+  lastUsedSphereId = null;
+  lastUsedStoneId = null;
+  stoneCount = 0;
+}
+
 
 let lastUsedSphereId = null;
 let lastUsedStoneId = null;

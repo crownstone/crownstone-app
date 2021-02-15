@@ -21,7 +21,7 @@ export function mockCore() {
     nativeBus: nativeBus,
     state: bleState,
     store: store,
-    resetMocks: () => {
+    reset: () => {
       eventBus.clearAllEvents();
       nativeBus.clearAllEvents();
       store.dispatch({ type: "TESTS_CLEAR_STORE" });

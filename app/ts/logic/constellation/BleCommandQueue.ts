@@ -203,6 +203,7 @@ export class BleCommandQueueClass {
     try {
       let result = await Executor.runCommand(handle, command, this.queue);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
+
       if (attemptingIndex !== -1 && command.executedBy.indexOf(handle) === -1) {
         command.executedBy.push(handle);
         command.attemptingBy.splice(attemptingIndex, 1);

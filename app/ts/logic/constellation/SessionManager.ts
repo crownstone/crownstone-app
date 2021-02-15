@@ -13,6 +13,7 @@
 import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandQueue } from "./BleCommandQueue";
 import { Session } from "./Session";
+import { Scheduler } from "../Scheduler";
 
 export class SessionManagerClass {
 
@@ -20,13 +21,14 @@ export class SessionManagerClass {
 
 
   _sessions: {[handle: string] : Session} = {};
-  _activeSessions: {[handle:string] : { connected: boolean }};
+  _activeSessions: {[handle:string] : { connected: boolean }} = {};
 
-  _registeredSessions: {[handle:string] : { private: boolean, privateId: string | null, counter: number }}
+  _registeredSessions: {[handle:string] : { private: boolean, privateId: string | null, counter: number }} = {};
 
   _pendingPrivateSessionRequests : {[handle: string]: {commandId: string, resolve: () => void, reject: (err: any) => void}[]}
   _pendingSessionRequests        : {[handle: string]: {commandId: string, resolve: () => void, reject: (err: any) => void}[]}
 
+  _timeoutHandlers : {[handle: string] : { clearCallback: () => void }} = {};
 
   /**
    * This will resolve once the session is connected
@@ -72,6 +74,10 @@ export class SessionManagerClass {
       isDeactivated:  () => { delete this._activeSessions[handle]; },
       cleanup:        () => { this.cleanSession(handle); },
       isConnected:    () => {
+        // remove the timeout listener for this session.
+        if (this._timeoutHandlers[handle]) { this._timeoutHandlers[handle].clearCallback(); }
+        delete this._sessions[handle];
+
         if (this._activeSessions[handle].connected === false) {
           // resolve the createSession
           this._activeSessions[handle].connected = true;
@@ -100,6 +106,8 @@ export class SessionManagerClass {
     delete this._activeSessions[handle];
     delete this._registeredSessions[handle];
     delete this._sessions[handle];
+    if (this._timeoutHandlers[handle]) { this._timeoutHandlers[handle].clearCallback(); }
+    delete this._sessions[handle];
 
     let pendingPrivateRequests = this._pendingPrivateSessionRequests[handle];
     if (pendingPrivateRequests && pendingPrivateRequests.length > 0) {
@@ -117,7 +125,7 @@ export class SessionManagerClass {
       return;
     }
 
-    if (BleCommandQueue.areThereCommandsFor(handle)) {
+    if (BleCommandQueue.areThereCommandsFor(handle) || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
       await this.request(handle, xUtil.getUUID(), false);
     }
   }
@@ -126,15 +134,14 @@ export class SessionManagerClass {
   /**
    * The result of this call should be an established connection.
    *
-   *
    * @param handle
-   * @param commandId
+   * @param commanderId
    * @param privateSession
    * @param timeoutSeconds
    */
-  async request(handle, commandId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
+  async request(handle, commanderId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
     // TODO: make sure a private connection is more important than a shared one.
-    let privateId = privateSession ? commandId : null;
+    let privateId = privateSession ? commanderId : null;
 
     let registration = this._registeredSessions[handle];
     let session = this._sessions[handle];
@@ -142,6 +149,7 @@ export class SessionManagerClass {
     // nobody is using this session. The registration is ours!
     if (!registration || registration.counter === 0) {
       this._registeredSessions[handle] = { private: privateSession, privateId: privateId, counter: 1 };
+      this._scheduleTimeoutHandler(handle, commanderId, timeoutSeconds);
       return this._createSession(handle, privateId);
     }
     else if (session === undefined) {
@@ -149,23 +157,38 @@ export class SessionManagerClass {
       throw "SESSION_SHOULD_EXIST_HERE!"
     }
     else if (session.isClosing()) {
-      return this.queue(handle, commandId, privateSession)
+      return this.queue(handle, commanderId, privateSession)
     }
 
     // someone registered a privateSession session on this.
     if (registration.private && registration.counter > 0) {
-      if (commandId !== null && registration.privateId === commandId) {
+      if (commanderId !== null && registration.privateId === commanderId) {
         // Your privateSession session already exists. Feel free to toss your commands in the queue!
         return
       }
       else {
-        return this.queue(handle, commandId, privateSession);
+        return this.queue(handle, commanderId, privateSession);
       }
     }
     else {
       // The Session already exists. Register our interest and feel free to toss your commands in the queue
       registration.counter += 1;
+
+      // Add this to the queue in order to resolve the promises consistently.
+      // If it is already connected, resolve immediately.
+      if (this._sessions[handle].isConnected() === false) {
+        return this.queue(handle, commanderId, privateSession);
+      }
     }
+  }
+
+
+  _scheduleTimeoutHandler(handle : string, commanderId: string, timeoutSeconds: number) {
+    if (this._timeoutHandlers[handle]) {
+      this._timeoutHandlers[handle].clearCallback()
+    }
+
+    this._timeoutHandlers[handle] = { clearCallback: Scheduler.scheduleCallback(() => { this.closeSession(handle, commanderId); })};
   }
 
 
@@ -184,9 +207,9 @@ export class SessionManagerClass {
   /**
    * This method should cancel pending connections, and if the session is private, kill the session
    * @param handle
-   * @param commandId
+   * @param commanderId
    */
-  closeSession(handle, commandId) {
+  closeSession(handle : string, commanderId : string) {
     let registration = this._registeredSessions[handle];
     let session = this._sessions[handle];
 
@@ -195,11 +218,11 @@ export class SessionManagerClass {
     if (!session) { throw 'SESSION_SHOULD_EXIST_HERE' }
 
     if (registration.private) {
-      if (session.privateId === commandId) {
+      if (session.privateId === commanderId) {
         return session.kill();
       }
       else {
-        return this.removeFromQueue(handle, commandId);
+        return this.removeFromQueue(handle, commanderId);
       }
     }
 
@@ -219,7 +242,7 @@ export class SessionManagerClass {
   }
 
   clearAllSessions() {
-
+    // TODO: implement.
   }
 }
 

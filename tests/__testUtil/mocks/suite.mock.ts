@@ -17,8 +17,15 @@ const libStateWrapper = mockBluenetPromiseWrapper();
 const core = mockCore() // core also mocks native bus
 export const mBluenet = libStateWrapper;
 export const mCore = core;
+
+import { mockScheduler } from "./scheduler.mock";
+export const mScheduler = mockScheduler();
+
+import { resetDataHelper } from "../helpers/data.helper";
 export const resetMocks = function() {
-  libStateWrapper.reset()
-  core.resetMocks()
+  libStateWrapper.reset();
+  mScheduler.reset();
+  core.reset();
   resetMockRandom();
+  resetDataHelper();
 }
