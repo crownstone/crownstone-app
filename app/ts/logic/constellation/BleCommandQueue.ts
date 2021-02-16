@@ -288,6 +288,11 @@ export class BleCommandQueueClass {
   }
 
 
+  failCommandsFor(handle, commanderId: string) {
+    // TODO;
+  }
+
+
   async performClosingCommands(handle: string, privateId: string | null, crownstoneMode: CrownstoneMode) : Promise<void> {
     // this should determine if we need to put a set time or anything else before we close the connection.
     // the connection is closed by sending a disconnect command

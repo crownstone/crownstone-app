@@ -43,6 +43,7 @@ class LibContainer {
       this.targetedActions[commandName] = {};
     }
 
+    // console.log("Promise received", commandName, handle, args)
     if (this.targetedActions[commandName][handle] === undefined) {
       this.targetedActions[commandName][handle] = {resolve, reject, args}
     }

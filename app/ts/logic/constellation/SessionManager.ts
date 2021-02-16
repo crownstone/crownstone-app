@@ -19,45 +19,25 @@ export class SessionManagerClass {
 
   _maxActiveSessions = 1000;
 
-
   _sessions: {[handle: string] : Session} = {};
   _activeSessions: {[handle:string] : { connected: boolean }} = {};
 
-  _registeredSessions: {[handle:string] : { private: boolean, privateId: string | null, counter: number }} = {};
+  _pendingPrivateSessionRequests : {[handle: string]: {commanderId: string, resolve: () => void, reject: (err: any) => void}[]} = {};
+  _pendingSessionRequests        : {[handle: string]: {commanderId: string, resolve: () => void, reject: (err: any) => void}[]} = {};
 
-  _pendingPrivateSessionRequests : {[handle: string]: {commandId: string, resolve: () => void, reject: (err: any) => void}[]}
-  _pendingSessionRequests        : {[handle: string]: {commandId: string, resolve: () => void, reject: (err: any) => void}[]}
+  _timeoutHandlers : {[handle: string] : {[commanderId: string]: { clearCallback: () => void }}} = {};
 
-  _timeoutHandlers : {[handle: string] : { clearCallback: () => void }} = {};
 
   /**
    * This will resolve once the session is connected
    * @param handle
    * @param privateId
    */
-  async _createSession(handle: string, privateId: string | null = null) {
-    return new Promise<void>((resolve, reject) => {
-      this._sessions[handle] = new Session(
-        handle,
-        privateId,
-        this._getInteractionModule(handle, privateId, resolve, reject)
-      );
-    })
+  async _createSession(handle: string, commanderId: string, privateSession: boolean) {
+    let privateId = privateSession ? commanderId : null;
+    this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, privateSession));
   }
 
-  /**
-   * This will check all registered sessions to see if they're required.
-   * It will query the BleCommandQueue for all outstanding sessions. If the shared ones have no commands, they're cancelled.
-   */
-  evaluateSessionNecessity() {
-    for (let handle in this._sessions) {
-      if (this._sessions[handle].privateId === null) {
-        if (BleCommandQueue.areThereCommandsFor(handle) === false) {
-          this.cleanSession(handle);
-        }
-      }
-    }
-  }
 
   /**
    * The interaction module is a messaging tool between the session and the sessionManager
@@ -67,68 +47,72 @@ export class SessionManagerClass {
    * @param resolve
    * @param reject
    */
-  _getInteractionModule(handle: string, privateId: string | null, resolve: () => void, reject: (err: any) => void) : SessionInteractionModule {
+  _getInteractionModule(handle: string, commanderId: string, privateSession: boolean) : SessionInteractionModule {
+    let privateId = privateSession ? commanderId : null;
     return {
-      canActivate:    () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
-      willActivate:   () => { this._activeSessions[handle] = { connected:false }; },
-      isDeactivated:  () => { delete this._activeSessions[handle]; },
-      cleanup:        () => { this.cleanSession(handle); },
-      isConnected:    () => {
+      canActivate:     () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
+      willActivate:    () => { this._activeSessions[handle] = { connected:false }; },
+      isDeactivated:   () => { delete this._activeSessions[handle]; },
+      sessionHasEnded: () => { this._endSession(handle); },
+      isConnected:     () => {
         // remove the timeout listener for this session.
-        if (this._timeoutHandlers[handle]) { this._timeoutHandlers[handle].clearCallback(); }
-        delete this._sessions[handle];
-
         if (this._activeSessions[handle].connected === false) {
           // resolve the createSession
           this._activeSessions[handle].connected = true;
-          resolve();
+
+          // the session is now connected. We clear the timeout on the requesting commander to start with.
+          // this will take care of the private session timeout. The shared one will be handled below.
+          if (this._timeoutHandlers[handle] && this._timeoutHandlers[handle][commanderId]) {
+            this._timeoutHandlers[handle][commanderId].clearCallback();
+            delete this._timeoutHandlers[handle][commanderId];
+          }
 
           // if this is a shared connection, fulfill all shared queued promises.
-          if (privateId === null && this._pendingSessionRequests[handle]) {
+          if (privateSession === false && this._pendingSessionRequests[handle]) {
             for (let pendingSession of this._pendingSessionRequests[handle]) {
+              // remove the timeout handler for the shared request.
+              if (this._timeoutHandlers[handle] && this._timeoutHandlers[handle][pendingSession.commanderId]) {
+                this._timeoutHandlers[handle][pendingSession.commanderId].clearCallback();
+                delete this._timeoutHandlers[handle][pendingSession.commanderId];
+              }
               pendingSession.resolve();
             }
-            this._pendingSessionRequests[handle] = [];
+            delete this._pendingSessionRequests[handle];
+          }
+          else if (privateSession === true && this._pendingPrivateSessionRequests[handle]) {
+            // if this is a private connection, resolve the private pending request with the matching privateId
+            for (let i = 0; i < this._pendingPrivateSessionRequests[handle].length; i++) {
+              let pendingSession = this._pendingPrivateSessionRequests[handle][i];
+              if (pendingSession.commanderId === commanderId) {
+                pendingSession.resolve();
+                this._pendingPrivateSessionRequests[handle].splice(i, 1);
+                if (this._pendingPrivateSessionRequests[handle].length === 0) {
+                  delete this._pendingPrivateSessionRequests[handle];
+                }
+                break;
+              }
+            }
           }
         }
-      },
-      connectionFailed: (err) => {
-        if (this._activeSessions[handle].connected === false) {
-          // reject the create session
-          this._activeSessions[handle].connected = true;
-          reject(err);
+      }
+    }
+  }
+
+
+  /**
+   * This will check all registered sessions to see if they're required.
+   * It will query the BleCommandQueue for all outstanding sessions. If the shared ones have no commands, they're cancelled.
+   */
+  evaluateSessionNecessity() {
+    for (let handle in this._sessions) {
+      if (this._sessions[handle].privateId === null) {
+        if (BleCommandQueue.areThereCommandsFor(handle) === false) {
+          this._endSession(handle);
         }
       }
     }
   }
 
-  async cleanSession(handle) {
-    delete this._activeSessions[handle];
-    delete this._registeredSessions[handle];
-    delete this._sessions[handle];
-    if (this._timeoutHandlers[handle]) { this._timeoutHandlers[handle].clearCallback(); }
-    delete this._sessions[handle];
-
-    let pendingPrivateRequests = this._pendingPrivateSessionRequests[handle];
-    if (pendingPrivateRequests && pendingPrivateRequests.length > 0) {
-      let pending = pendingPrivateRequests[0];
-      pendingPrivateRequests.shift();
-      try {
-        await this.request(handle, pending.commandId, true);
-      }
-      catch (e) {
-        pending.reject(e);
-        return;
-      }
-      // this is not in the try catch, since any errors on the resolve should not be handled here.
-      pending.resolve();
-      return;
-    }
-
-    if (BleCommandQueue.areThereCommandsFor(handle) || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
-      await this.request(handle, xUtil.getUUID(), false);
-    }
-  }
 
 
   /**
@@ -136,103 +120,210 @@ export class SessionManagerClass {
    *
    * @param handle
    * @param commanderId
-   * @param privateSession
+   * @param privateSessionRequest
    * @param timeoutSeconds
    */
-  async request(handle, commanderId : string, privateSession: boolean, timeoutSeconds: number = 300) : Promise<void> {
+  async request(handle, commanderId : string, privateSessionRequest: boolean, timeoutSeconds?: number) : Promise<void> {
     // TODO: make sure a private connection is more important than a shared one.
-    let privateId = privateSession ? commanderId : null;
+    if (privateSessionRequest && !timeoutSeconds) {
+      timeoutSeconds = 20;
+    }
+    else if (!timeoutSeconds) {
+      timeoutSeconds = 300;
+    }
 
-    let registration = this._registeredSessions[handle];
+    let privateId = privateSessionRequest ? commanderId : null;
     let session = this._sessions[handle];
 
-    // nobody is using this session. The registration is ours!
-    if (!registration || registration.counter === 0) {
-      this._registeredSessions[handle] = { private: privateSession, privateId: privateId, counter: 1 };
-      this._scheduleTimeoutHandler(handle, commanderId, timeoutSeconds);
-      return this._createSession(handle, privateId);
-    }
-    else if (session === undefined) {
-      // Sanity check for debugging purposes.
-      throw "SESSION_SHOULD_EXIST_HERE!"
-    }
-    else if (session.isClosing()) {
-      return this.queue(handle, commanderId, privateSession)
-    }
+    // each registration should get its own timeout handler.
+    return new Promise<void>((resolve, reject) => {
+      /**
+       IF the session DOES exist, there are 2 cases
+       - the session is connected.
+       - the session is private
+       - queue the new request to be performed after the private session is over
 
-    // someone registered a privateSession session on this.
-    if (registration.private && registration.counter > 0) {
-      if (commanderId !== null && registration.privateId === commanderId) {
-        // Your privateSession session already exists. Feel free to toss your commands in the queue!
-        return
+       - the session is shared
+       - the session is not connected yet.
+       - the session is private
+       - the session is shared
+       */
+
+      // The reject should be able to be executed on a close, AND after a timeout.
+      // This is assuming that the resolve is not done before that.
+
+      // IF the session does NOT exist yet, we can create the session.
+      if (!session) {
+        this._createSession(handle, commanderId, privateSessionRequest);
+        // the request will be added to pending below;
       }
       else {
-        return this.queue(handle, commanderId, privateSession);
+        // If the session is private, you cannot re-request it even with the same commanderId.
+        // It has to be ended first.
+        // TODO: test
+        if (session.isPrivate()) {
+          if (session.privateId === privateId) {
+            // this shouldnt happen, it would be a bug if it did.
+            throw "PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER";
+          }
+          // the request will be added to pending below;
+        }
+        else {
+          // the existing session is a shared session.
+          // If the incoming request is private:
+          //   - queue
+          // If the incoming request is shared too:
+          //   - if the session is connected, resolve
+          //   - if the session is not connected yet, queue
+          if (privateSessionRequest) {
+            // the request will be added to pending below;
+          }
+          else {
+            // Add this to the queue in order to resolve the promises consistently.
+            // If it is already connected, resolve immediately.
+            if (this._sessions[handle].isConnected() === false) {
+              // the request will be added to pending below;
+            }
+            else {
+              return resolve();
+            }
+          }
+        }
       }
-    }
-    else {
-      // The Session already exists. Register our interest and feel free to toss your commands in the queue
-      registration.counter += 1;
-
-      // Add this to the queue in order to resolve the promises consistently.
-      // If it is already connected, resolve immediately.
-      if (this._sessions[handle].isConnected() === false) {
-        return this.queue(handle, commanderId, privateSession);
-      }
-    }
-  }
-
-
-  _scheduleTimeoutHandler(handle : string, commanderId: string, timeoutSeconds: number) {
-    if (this._timeoutHandlers[handle]) {
-      this._timeoutHandlers[handle].clearCallback()
-    }
-
-    this._timeoutHandlers[handle] = { clearCallback: Scheduler.scheduleCallback(() => { this.closeSession(handle, commanderId); })};
-  }
-
-
-  async queue(handle, commandId: string, privateSession: boolean) : Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (privateSession) {
-        addToQueueList(this._pendingPrivateSessionRequests, handle, commandId, resolve, reject);
-      }
-      else {
-        addToQueueList(this._pendingSessionRequests, handle, commandId, resolve, reject);
-      }
+      this._addToPending(handle, commanderId, privateSessionRequest, timeoutSeconds, resolve, reject);
     })
   }
 
 
+  _addToPending(
+    handle:                string,
+    commanderId:           string,
+    privateSessionRequest: boolean,
+    timeoutSeconds:        number,
+    resolve:               () => void,
+    reject:                (err: any) => void
+  ) {
+
+    if (privateSessionRequest) {
+      console.log("SessionManager: Adding request to private pending list.", handle, commanderId);
+      addToPendingList(this._pendingPrivateSessionRequests, handle, commanderId, resolve, reject);
+    }
+    else {
+      console.log("SessionManager: Adding request to shared pending list.", handle, commanderId);
+      addToPendingList(this._pendingSessionRequests, handle, commanderId, resolve, reject);
+    }
+
+    this._scheduleTimeoutHandler(handle, commanderId, privateSessionRequest, timeoutSeconds, reject);
+    // The timeout will be cleared when the corresponding session is connected.
+  }
+
+
+  _scheduleTimeoutHandler(handle : string, commanderId: string, privateSessionRequest: boolean, timeoutSeconds: number, reject: (err: any) => void) {
+    if (this._timeoutHandlers[handle] === undefined) {
+      this._timeoutHandlers[handle] = {};
+    }
+
+    if (this._timeoutHandlers[handle][commanderId] !== undefined) {
+      throw "ALREADY_REQUESTED"
+    }
+
+    this._timeoutHandlers[handle][commanderId] = {
+      clearCallback: Scheduler.scheduleCallback(() => {
+        console.log("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
+        reject("SESSION_REQUEST_TIMEOUT");
+        let session = this._sessions[handle];
+
+        this.removeFromQueue(handle, commanderId);
+        if (privateSessionRequest) {
+          if (session && session.privateId === commanderId) {
+            // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
+            this.closeSession(handle, commanderId);
+          }
+
+          // fail all commands owned by this commanderId
+          BleCommandQueue.failCommandsFor(handle, commanderId);
+        }
+        else {
+          if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
+            // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
+            this.closeSession(handle, commanderId);
+          }
+        }
+      })
+    };
+  }
+
+
   /**
-   * This method should cancel pending connections, and if the session is private, kill the session
+   * This can be used to revoke an outstanding request.
    * @param handle
    * @param commanderId
    */
-  closeSession(handle : string, commanderId : string) {
-    let registration = this._registeredSessions[handle];
+  revokeRequest(handle: string, commanderId: string) {
     let session = this._sessions[handle];
 
-    if (!registration && !session) { return; }
-    if (!registration && session)  { session.kill(); }
-    if (!session) { throw 'SESSION_SHOULD_EXIST_HERE' }
+    // remove the pending request from the private list if it's there.
+    if (this._pendingPrivateSessionRequests[handle] && this._pendingPrivateSessionRequests[handle][commanderId]) {
+      this.removeFromQueue(handle, commanderId);
 
-    if (registration.private) {
-      if (session.privateId === commanderId) {
-        return session.kill();
-      }
-      else {
-        return this.removeFromQueue(handle, commanderId);
+      if (session && session.isPrivate() === true && session.privateId === commanderId) {
+        this.closeSession(handle, commanderId);
       }
     }
 
-    // shared registrations;
-    registration.counter -= 1;
+    // if it was in the public list, reve it from there.
+    if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle][commanderId]) {
+      this.removeFromQueue(handle, commanderId);
 
-    // if we are the last to close our session, we actually close it.
-    if (registration.counter === 0) {
-      session.kill();
-      delete this._registeredSessions[handle]
+      if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
+        this.closeSession(handle, commanderId);
+      }
+    }
+  }
+
+
+  /**
+   * this should close a session in any state and cleans it up.
+   * It should cause the session to trigger an _endSession via the interaction module call sessionHasEnded
+   * @param handle
+   * @param commanderId
+   */
+  async closeSession(handle : string, commanderId : string) {
+    let session = this._sessions[handle];
+    if (session) {
+      await session.kill();
+    }
+  }
+
+  /**
+   * The end of a session means it has disconnected after being connected once, or it has been killed.
+   *
+   * It will trigger a new session if there are open requests.
+   *
+   * Becoming active means it will initiate a connection request to the lib.
+   *
+   * @param handle
+   */
+  async _endSession(handle) {
+    let session = this._sessions[handle];
+
+    delete this._sessions[handle];
+    delete this._activeSessions[handle];
+
+    // the session either had an error, it was killed, or it had nothing to do and as closed (shared session only)
+
+    // if this is a private session, it had to be killed in order to get here. Next one in queue!
+    // check if there are any private requests queued. These get priority.
+    if (this._pendingPrivateSessionRequests[handle] && this._pendingPrivateSessionRequests[handle].length > 0) {
+      let pendingPrivate = this._pendingPrivateSessionRequests[handle][0];
+      this._createSession(handle, pendingPrivate.commanderId, true)
+    }
+    else {
+      // if it was a shared session, it could have been an error or it had nothing to do.
+      if (BleCommandQueue.areThereCommandsFor(handle) === true || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
+        // there are still shared commands, so the session will be retried.
+        await this.request(handle, xUtil.getUUID(), false);
+      }
     }
   }
 
@@ -246,24 +337,24 @@ export class SessionManagerClass {
   }
 }
 
-function addToQueueList(map, handle, commandId, resolve, reject) {
+function addToPendingList(map, handle, commanderId, resolve, reject) {
   if (map[handle] === undefined) {
     map[handle] = [];
   }
   for (let sessionRequest of map[handle]) {
-    if (sessionRequest.commandId === commandId) {
-      throw "ALREADY_QUEUED";
+    if (sessionRequest.commanderId === commanderId) {
+      throw "ALREADY_REQUESTED";
     }
   }
-  map[handle].push({commandId, resolve, reject})
+  map[handle].push({commanderId, resolve, reject})
 }
 
-function removeFromQueueList(map, handle, commandId) {
+function removeFromQueueList(map, handle, commanderId) {
   let arrayInMap = map[handle];
   if (!arrayInMap) { return; }
 
   for (let i = 0; i < arrayInMap.length; i++) {
-    if (arrayInMap[i].commandId === commandId) {
+    if (arrayInMap[i].commanderId === commanderId) {
       arrayInMap[i].reject("REMOVED_FROM_QUEUE");
 
       arrayInMap.splice(i,1);
@@ -271,7 +362,7 @@ function removeFromQueueList(map, handle, commandId) {
     }
   }
 
-  // cleanup
+  // sessionEnded
   if (arrayInMap.length == 0) {
     delete map[handle];
   }

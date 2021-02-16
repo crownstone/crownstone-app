@@ -14,7 +14,7 @@ afterAll(async () => {})
 const handle    = 'TestHandle';
 const privateId = 'PrivateIDX';
 eventHelperSetActive(handle);
-test("Session private connection fail. Should not cleanup.", async () => {
+test("Session private connection fail. Should not sessionHasEnded.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,'test', interactionModule);
   expect(interactionModule.canActivate).toBeCalled();
@@ -22,17 +22,18 @@ test("Session private connection fail. Should not cleanup.", async () => {
   session.connect();
 
   await mBluenet.for(handle).fail.connect("Error");
-  expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).not.toBeCalled()
-  expect(session.state === "CONNECTION_FAILED");
+  expect(interactionModule.isDeactivated).toBeCalled();
+  expect(interactionModule.sessionHasEnded).not.toBeCalled()
+  expect(session.state).toBe("INITIALIZING");
 });
 
-test("Session public connection fail. Should cleanup.", async () => {
+test("Session public connection fail. Should retry.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,null, interactionModule);
   session.connect();
   await mBluenet.for(handle).fail.connect("Error");
-  expect(interactionModule.cleanup).toBeCalled();
+  expect(interactionModule.isDeactivated).toBeCalled();
+  expect(session.state).toBe("INITIALIZING");
 });
 
 test("Session public connection success. Check disconnection process when disconnect command fails.", async () => {
@@ -50,7 +51,7 @@ test("Session public connection success. Check disconnection process when discon
   expect(mBluenet.has(handle).called.phoneDisconnect()).toBe(true)
   evt_disconnected();
   await mBluenet.for(handle).succeed.phoneDisconnect();
-  expect(interactionModule.cleanup).toBeCalled();
+  expect(interactionModule.sessionHasEnded).toBeCalled();
 });
 
 test("Session public connection success. Check disconnection process when disconnect command succeeds.", async () => {
@@ -62,7 +63,7 @@ test("Session public connection success. Check disconnection process when discon
   await mBluenet.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenet.for(handle).succeed.phoneDisconnect();
-  expect(interactionModule.cleanup).toBeCalled();
+  expect(interactionModule.sessionHasEnded).toBeCalled();
 });
 
 test("Session public scanning start successful.", async () => {
@@ -103,8 +104,7 @@ test("Session public kill while initializing.", async () => {
   let session = new Session(handle,null, interactionModule);
   expect(session.state).toBe("INITIALIZING");
   session.kill();
-  expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 test("Session public kill while connecting.", async () => {
@@ -117,8 +117,7 @@ test("Session public kill while connecting.", async () => {
   await mBluenet.for(handle).succeed.cancelConnectionRequest("operation");
   await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
 
-  expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 test("Session public kill while connected.", async () => {
@@ -132,7 +131,7 @@ test("Session public kill while connected.", async () => {
   await mBluenet.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenet.for(handle).succeed.phoneDisconnect();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 // TODO: add commands.
@@ -144,7 +143,7 @@ test("Session public kill while connected.", async () => {
 //   mBluenet.for(handle).succeed.connect("operation");
 //   session.kill();
 //   expect(interactionModule.connectionFailed).toBeCalled();
-//   expect(interactionModule.cleanup).toBeCalled();
+//   expect(interactionModule.sessionHasEnded).toBeCalled();
 // });
 
 test("Session private kill while initializing.", async () => {
@@ -152,8 +151,7 @@ test("Session private kill while initializing.", async () => {
   let session = new Session(handle, privateId, interactionModule);
   expect(session.state).toBe("INITIALIZING");
   session.kill();
-  expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 test("Session private kill while connecting.", async () => {
@@ -166,8 +164,7 @@ test("Session private kill while connecting.", async () => {
   await mBluenet.for(handle).succeed.cancelConnectionRequest("operation");
   await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
 
-  expect(interactionModule.connectionFailed).toBeCalled();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 test("Session private kill while connected.", async () => {
@@ -180,7 +177,7 @@ test("Session private kill while connected.", async () => {
   await mBluenet.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenet.for(handle).succeed.phoneDisconnect();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 // TODO: add commands.
@@ -195,7 +192,7 @@ test("Session private kill while connected.", async () => {
 //   await mBluenet.for(handle).succeed.disconnectCommand();
 //   evt_disconnected();
 //   await mBluenet.for(handle).succeed.phoneDisconnect();
-//   expect(interactionModule.cleanup).toBeCalled();
+//   expect(interactionModule.sessionHasEnded).toBeCalled();
 // });
 
 test("Session private kill while waiting for commands.", async () => {
@@ -212,7 +209,7 @@ test("Session private kill while waiting for commands.", async () => {
   await mBluenet.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenet.for(handle).succeed.phoneDisconnect();
-  expect(interactionModule.cleanup).toHaveBeenCalledTimes(1);
+  expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
 
@@ -224,7 +221,6 @@ function getInteractionModule(canActivateFailCount: number = 0) {
     willActivate:     jest.fn(),
     isDeactivated:    jest.fn(),
     isConnected:      jest.fn(),
-    connectionFailed: jest.fn(),
-    cleanup:          jest.fn()
+    sessionHasEnded:  jest.fn()
   };
 }

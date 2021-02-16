@@ -33,7 +33,6 @@ export class Session {
   interactionModule: SessionInteractionModule;
 
 
-
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
     this.handle = handle;
     this.interactionModule = interactionModule;
@@ -42,14 +41,11 @@ export class Session {
     this.sphereId = reference?.sphereId || null;
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
-    this._respondTo(NativeBus.topics.connectedToPeripheralFailed,() => { this.state = "CONNECTION_FAILED";
-      if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
-    });
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.state = "DISCONNECTED";
-      if (this.isPrivate() === false || this.sessionIsKilled) { this.delete(); }
+      if (this.isPrivate() === false || this.sessionIsKilled) { this.sessionHasEnded(); }
     });
 
-    this.registerBootstrapper();
+    this.initializeBootstrapper();
 
     if (this.privateId) {
       this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, () => {
@@ -59,14 +55,15 @@ export class Session {
           // is loaded. This solves that issue.
           setImmediate(() => {this.handleCommands();});
         }
-      }))
+      }));
       this.tryToActivate();
     }
-
-
   }
 
-  registerBootstrapper() {
+  initializeBootstrapper() {
+    this.state = "INITIALIZING";
+    this.sessionIsActivated = false;
+
     if (this.unsubscribeBootstrapper) {
       this.unsubscribeBootstrapper();
       this.unsubscribeBootstrapper = null;
@@ -111,20 +108,15 @@ export class Session {
     catch (err) {
       if (err === "CONNECTION_CANCELLED") {
         if (this.sessionIsKilled) {
-          this.delete();
+          this.sessionHasEnded();
           return;
         }
-        this.state = "INITIALIZING";
-        this.registerBootstrapper();
-        return;
       }
 
-      this.state = "CONNECTION_FAILED";
-      this.interactionModule.connectionFailed(err);
-      if (this.isPrivate() === false || this.sessionIsKilled) {
-        this.delete();
-      }
-      return
+      // a failed connection will automatically retry untill the session is ended.
+      this.interactionModule.isDeactivated();
+      this.initializeBootstrapper();
+      return;
     }
     this.state = "CONNECTED";
     this.interactionModule.isConnected();
@@ -142,8 +134,6 @@ export class Session {
       if (this.isPrivate()) {
         // Tasks here CAN include connections.
         this.state = "WAITING_FOR_COMMANDS"
-        // TODO: wait for tasks.
-
         return;
       }
       else {
@@ -174,14 +164,10 @@ export class Session {
     this.sessionIsKilled = true;
     switch (this.state) {
       case "INITIALIZING":
-        this.interactionModule.connectionFailed("SESSION_KILLED");
-        return this.delete();
+        return this.sessionHasEnded();
       case "CONNECTING":
-        this.interactionModule.connectionFailed("SESSION_KILLED");
         await BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
         return;
-      case "CONNECTION_FAILED":
-        return this.delete();
       case "CONNECTED":
         await this.disconnect();
         return;
@@ -215,13 +201,12 @@ export class Session {
       this.interactionModule.isDeactivated();
     }
 
-    this.sessionIsActivated = false;
-
+    this.initializeBootstrapper();
   }
 
 
-  delete() {
-    this.interactionModule.cleanup();
+  sessionHasEnded() {
+    this.interactionModule.sessionHasEnded();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
   }
 }
