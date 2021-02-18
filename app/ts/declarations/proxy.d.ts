@@ -52,9 +52,8 @@ interface BluenetPromiseWrapperProtocol {
 
   sendNoOp(handle: string)                                              : Promise< void >,
   sendMeshNoOp(handle: string)                                          : Promise< void >,
-  setMeshChannel(handle: string, channel)                               : Promise< void >,
 
-  getTrackingState()                                                   : Promise< trackingState >,
+  getTrackingState()                                                    : Promise< trackingState >,
   isDevelopmentEnvironment()                                            : Promise< boolean >,
   setupPulse(handle: string)                                            : Promise< void >,
   checkBroadcastAuthorization()                                         : Promise< string >,

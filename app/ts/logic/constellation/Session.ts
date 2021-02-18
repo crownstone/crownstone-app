@@ -5,7 +5,6 @@
  * It will handle keep-open connections via no-ops and it will disconnect when required using a disconnect
  * command and/or direct disconnect.
  */
-// import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";

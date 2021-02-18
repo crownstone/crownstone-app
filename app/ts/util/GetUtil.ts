@@ -3,6 +3,12 @@ import { core } from "../core";
 
 export const Get = {
 
+  activeSphere() : SphereData | null {
+    let state = core.store.getState();
+    let activeSphere = state?.app?.activeSphere || null;
+    if (activeSphere) { return state.spheres[activeSphere] || null; }
+    return null;
+  },
   sphere(sphereId: string) : SphereData | null {
     let state = core.store.getState();
     return state?.spheres?.[sphereId] || null;

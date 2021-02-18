@@ -10,11 +10,8 @@ export class SessionBroker {
   options: commandOptions;
   requestedSessions : [] = []
 
-  constructor(handles: string[], commandOptions: commandOptions) {
-    this.handles = handles;
+  constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
-
-    this.source();
   }
 
 
@@ -23,12 +20,7 @@ export class SessionBroker {
    */
   source() {
     for (let handle of this.handles) {
-      // if (this.options.private) {
-      //   this.requestedSessions.push(SessionManager.requestPrivate(handle, this.options.privateId))
-      // }
-      // else {
-        this.requestedSessions.push(SessionManager.request(handle))
-      // }
+
     }
   }
 

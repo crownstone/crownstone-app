@@ -185,6 +185,13 @@ test("Session manager failing private connection.", async () => {
 
   expect(p1).not.toBeCalled()
   expect(p1Err).toBeCalledWith("SESSION_REQUEST_TIMEOUT");
-});
 
-// TODO: handle the _pendingSessionRequests, it *should* be handled by the areThereCommandsFor method..
+  // this mimics how the kill is done in the lib.
+  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED")
+  await mBluenet.for(handle).succeed.cancelConnectionRequest()
+
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+  expect(sessionManager._activeSessions[handle]).toBeUndefined();
+  expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
+});

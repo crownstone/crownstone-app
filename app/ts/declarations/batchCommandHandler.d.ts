@@ -47,7 +47,7 @@ interface meshTodo {
   multiSwitch:    multiSwitchPayload[]
 }
 
-type commandInterface = { type : 'toggle', stateForOn : number } |
+type commandInterface = { type : 'toggle' } |
   { type : 'multiSwitch', state : number } |
   { type : 'turnOn' } |
   { type : 'getBootloaderVersion' } |
@@ -71,7 +71,6 @@ type commandInterface = { type : 'toggle', stateForOn : number } |
   { type : 'setSoftOnSpeed', softOnSpeed: number } |
   { type : 'setTapToToggle', value: boolean } |
   { type : 'setTapToToggleThresholdOffset', rssiOffset: number } |
-  { type : 'setMeshChannel', channel: number } |
   { type : 'setupPulse'} |
   { type : 'getBehaviourDebugInformation' } |
   { type : 'getCrownstoneUptime' } |

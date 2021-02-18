@@ -188,9 +188,6 @@ class BatchCommandHandlerClass {
               case 'lockSwitch':
                 actionPromise = BluenetPromiseWrapper.lockSwitch(connectedStoneInfo.handle, command.value);
                 break;
-              case 'setMeshChannel':
-                actionPromise = BluenetPromiseWrapper.setMeshChannel(connectedStoneInfo.handle, command.channel);
-                break;
               case 'turnOn':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, state: 100};
                 actionPromise = BluenetPromiseWrapper.turnOnMesh(connectedStoneInfo.handle, [stoneSwitchPacket])
@@ -200,7 +197,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.multiSwitch(connectedStoneInfo.handle, [stoneSwitchPacket])
                 break;
               case 'toggle':
-                actionPromise = BluenetPromiseWrapper.toggleSwitchState(connectedStoneInfo.handle, command.stateForOn || 100);
+                actionPromise = BluenetPromiseWrapper.toggleSwitchState(connectedStoneInfo.handle, 100);
                 break;
               case 'setTapToToggle':
                 actionPromise = BluenetPromiseWrapper.setTapToToggle(connectedStoneInfo.handle, command.value);

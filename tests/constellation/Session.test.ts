@@ -134,17 +134,6 @@ test("Session public kill while connected.", async () => {
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
-// TODO: add commands.
-// test("Session public kill while performing command.", async () => {
-//   let interactionModule = getInteractionModule()
-//   let session = new Session(handle,null, interactionModule);
-//   evt_ibeacon(-80)
-//   expect(interactionModule.willActivate).toBeCalled();
-//   mBluenet.for(handle).succeed.connect("operation");
-//   session.kill();
-//   expect(interactionModule.connectionFailed).toBeCalled();
-//   expect(interactionModule.sessionHasEnded).toBeCalled();
-// });
 
 test("Session private kill while initializing.", async () => {
   let interactionModule = getInteractionModule(1)
@@ -153,6 +142,7 @@ test("Session private kill while initializing.", async () => {
   session.kill();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
+
 
 test("Session private kill while connecting.", async () => {
   let interactionModule = getInteractionModule()
@@ -167,6 +157,7 @@ test("Session private kill while connecting.", async () => {
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
+
 test("Session private kill while connected.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle, privateId, interactionModule);
@@ -180,20 +171,6 @@ test("Session private kill while connected.", async () => {
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
-// TODO: add commands.
-// test("Session private kill while performing command.", async () => {
-//   let interactionModule = getInteractionModule()
-//   let session = new Session(handle, privateId, interactionModule);
-//   evt_ibeacon(-80);
-//   expect(interactionModule.willActivate).toBeCalled();
-//   await mBluenet.for(handle).succeed.connect("operation");
-//   expect(session.state).toBe("CONNECTED");
-//   session.kill();
-//   await mBluenet.for(handle).succeed.disconnectCommand();
-//   evt_disconnected();
-//   await mBluenet.for(handle).succeed.phoneDisconnect();
-//   expect(interactionModule.sessionHasEnded).toBeCalled();
-// });
 
 test("Session private kill while waiting for commands.", async () => {
   let interactionModule = getInteractionModule()

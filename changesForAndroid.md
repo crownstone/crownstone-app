@@ -22,3 +22,5 @@ Presumably we'll be moving to RN 0.63.4
 
 add a getBehaviourMasterHashCRC where we get the CRC hash instead of the fletcher hash.
 This does not mean we will remove the other method.
+
+remove setMeshChannel bridge method. this is from the old mesh.

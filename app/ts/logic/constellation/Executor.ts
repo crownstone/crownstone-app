@@ -73,7 +73,7 @@ export const Executor = {
     let actionPromise = null;
 
     let command = bleCommand.command;
-    
+
     switch (command.type) {
       case 'getBootloaderVersion':
         actionPromise = BluenetPromiseWrapper.getBootloaderVersion(handle);
@@ -107,9 +107,6 @@ export const Executor = {
       case 'lockSwitch':
         actionPromise = BluenetPromiseWrapper.lockSwitch(handle, command.value);
         break;
-      case 'setMeshChannel':
-        actionPromise = BluenetPromiseWrapper.setMeshChannel(handle, command.channel);
-        break;
       case 'turnOn':
         // let stoneSwitchPacket = {crownstoneId: crownstoneId, state: 100};
         let stoneSwitchPackets = this.aggregateTurnOnCommands(handle, bleCommand, queue);
@@ -121,7 +118,7 @@ export const Executor = {
         actionPromise = BluenetPromiseWrapper.multiSwitch(handle, stoneSwitchPackets);
         break;
       case 'toggle':
-        actionPromise = BluenetPromiseWrapper.toggleSwitchState(handle, command.stateForOn || 100);
+        actionPromise = BluenetPromiseWrapper.toggleSwitchState(handle, 100);
         break;
       case 'setTapToToggle':
         actionPromise = BluenetPromiseWrapper.setTapToToggle(handle, command.value);
@@ -217,7 +214,7 @@ export const Executor = {
       // clean up by resolving the promises of the items contained in the mesh messages.
       let data = await actionPromise;
       LOGi.bch("BatchCommandHandler:", command.type, "finalized successfully.");
-      return {data:data}
+      return data;
     }
   },
 

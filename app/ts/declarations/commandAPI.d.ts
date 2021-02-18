@@ -32,7 +32,7 @@ interface PromiseContainer {
 interface BleCommand {
   id:           string,
   linkedId:     string,           // the linkedId refers to mesh_relay commands which can be cancelled if the direct command has succeeded
-  command:      commandInterface,
+  command:      CommandBaseInterface,
   promise:      PromiseContainer,
   attemptingBy: string[],
   executedBy:   string[],
@@ -49,5 +49,3 @@ interface BleCommand {
   startTime: number,
   timeout?: number // seconds
 }
-
-

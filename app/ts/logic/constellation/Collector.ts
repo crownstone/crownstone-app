@@ -4,48 +4,66 @@
  * multiple Crownstones to deliver a message, after a few successful connections, the rest of the slots can be cancelled.
  */
 import { SessionManager } from "./SessionManager";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { Get } from "../../util/GetUtil";
+import { core } from "../../core";
 
 /**
  * The collector is a util class that gathers handles you can request sessions for.
  */
 export const Collector = {
 
-  sendToMesh : function(meshId : string) {
+  collectMesh : function(meshId : string) : string[] {
+    let handles = [];
+    let meshData = MapProvider.meshMap[meshId];
+    let stoneIds = Object.keys(meshData);
+    for (let stoneId of stoneIds) {
+      let stoneData = meshData[stoneId];
+      handles.push({handle: stoneData.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId)});
+    };
+    handles.sort((a,b) => { return a.rssi - b.rssi });
 
+    return handles.map((a) => { return a.handle });
   },
 
-  sendToSphere : function(sphereId : string) {
-
+  collectSphere : function(sphereId : string) : string[] {
+    let sphereStones = this._getSphereStones(sphereId);
+    return sphereStones.map((a) => { return a.handle });
   },
 
-  sendToNearby : function() {
-
+  collectNearby : function(sphereId: string) : string[] {
+    let sphereStones = this._getSphereStones(sphereId);
+    return sphereStones.map((a) => { return a.handle });
   },
 
-  sendToLocation : function() {
+  sendToLocation : function(locationId)  : string[]{
+    let state = core.store.getState();
+    let sphereIds = Object.keys(state.spheres);
+    let locationSphereId = null;
+    for (let sphereId of sphereIds) {
+      if (state.spheres[sphereId].locations[locationId] !== undefined) {
+        locationSphereId = sphereId;
+        break;
+      }
+    }
+    if (locationSphereId === null) { return []; }
 
+    let sphereStones = this._getSphereStones(locationSphereId);
+    let locationStoneMap = sphereStones.filter((data) => { return data.locationId === locationId; })
+    return locationStoneMap.map((a) => { return a.handle });
   },
 
-  // collect(options: commandOptions) {
-  //   this._requiredSuccesses = options.minConnections || 1;
-  //   switch (options.type) {
-  //     case "SINGLE":
-  //       throw "USE_SINGULAR_COLLECTOR"
-  //     case "NEARBY":
-  //       this.requestNear(this._requiredSuccesses);
-  //       break;
-  //     case "LOCALIZATION":
-  //       this.requestNear(this._requiredSuccesses);
-  //       for (let locationId of options.target) {
-  //         this.requestLocation(locationId, this._requiredSuccesses)
-  //       }
-  //       break;
-  //     case "MESH":
-  //       this.requestMesh(options.target[0], this._requiredSuccesses);
-  //       break;
-  //     case "SPHERE":
-  //       this.requestSphere(options.target[0], this._requiredSuccesses);
-  //       break;
-  //   }
-  // }
+  _getSphereStones(sphereId) : {handle: string, rssi: number, locationId: string}[] {
+    let handles = [];
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return [] };
+
+    let stoneIds = Object.keys(sphere.stones);
+    for (let stoneId of stoneIds) {
+      let stone = sphere.stones[stoneId];
+      handles.push({handle: stone.config.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId), locationId: stone.config.locationId});
+    };
+    handles.sort((a,b) => { return a.rssi - b.rssi });
+  }
 }

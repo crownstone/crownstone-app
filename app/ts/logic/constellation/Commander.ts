@@ -41,7 +41,7 @@ class CommandAPI_base {
    * @param command
    * @param viaMesh
    */
-  _load(command, allowMeshRelays: boolean) {
+  async _load(command : commandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     return new Promise<any>((resolve, reject) => {
       BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
 
@@ -78,113 +78,381 @@ class CommandMeshAPI extends CommandAPI_base {
   // )
 }
 
-
 /**
  * this commander is used for the direct commands.
  * You can also send meshcommands to the Crownstone directly, thats why it inherits the meshAPI
  */
-class CommandAPI extends CommandMeshAPI {
+export class CommandAPI extends CommandMeshAPI {
 
 
-  async toggle(stateForOn : number) {
-
-    return this;
+  async toggle(stateForOn : number) : Promise<void> {
+    return this._load({type:"toggle"}, false);
   }
 
-  async multiSwitch(state : number) {
+  async multiSwitch(state : number) : Promise<void>  {
     // either broadcast or connect
+    let command : commandInterface = {type:"multiSwitch", state: state}
+    let alternateCommand = {
+      type: 'multiSwitch'
 
-    return this;
+    }
+    // if (BroadcastCommandManager.canBroadcast(command)) {
+    //   // load in broadcast manager and auto-execute after setImmediate
+    // }
+    // else {
+    return this._load(command, true);
+    // }
   }
 
   async turnOn() : Promise<void>  {
     // either broadcast or connect
-    let command : commandInterface = {type:"turnOn"}
+    let command : commandInterface = {type: "turnOn"}
     // TODO: add broadcastng to the commanders
     // if (BroadcastCommandManager.canBroadcast(command)) {
     //   // load in broadcast manager and auto-execute after setImmediate
     // }
     // else {
       // load into the commandQueue
-      return this._load({type:"turnOn"}, true);
+      return this._load(command, true);
     // }
   }
 
-  // async getBootloaderVersion()
-  // async getFirmwareVersion()
-  // async getHardwareVersion()
-  // async addBehaviour(behaviour: behaviourTransfer)
-  // async updateBehaviour(behaviour: behaviourTransfer)
-  // async removeBehaviour(index: number)
-  // async getBehaviour(index: number)
-  // async syncBehaviour(behaviours: behaviourTransfer[])
-  // async commandFactoryReset()
-  // async sendNoOp()
-  // async sendMeshNoOp()
-  // async getBootloaderVersion()
-  // async getFirmwareVersion()
-  // async getHardwareVersion()
+  async getBootloaderVersion() : Promise<string> {
+    let command : commandInterface = {type:"getBootloaderVersion"};
+    return this._load(command);
+  }
 
-  // async clearErrors(clearErrorJSON: any)
-  // async lockSwitch(value: boolean)
-  // async setSwitchCraft(value: boolean)
-  // async allowDimming(value: boolean)
-  // async setSoftOnSpeed(softOnSpeed: number)
-  // async setTapToToggle(value: boolean)
-  // async setTapToToggleThresholdOffset(rssiOffset: number)
-  // async setMeshChannel(channel: number)
-  // async setupPulse()
-  // async getBehaviourDebugInformation()
-  // async getCrownstoneUptime()
-  // async getAdcRestarts()
-  // async getMinSchedulerFreeSpace()
-  // async getLastResetReason()
-  // async getGPREGRET()
-  // async getAdcChannelSwaps()
-  // async getSwitchHistory()
-  // async getPowerSamples(type: PowersampleDataType)
+  async getFirmwareVersion() : Promise<string> {
+    let command : commandInterface = {type:"getFirmwareVersion"};
+    return this._load(command);
+
+  }
+
+  async getHardwareVersion() : Promise<string> {
+    let command : commandInterface = {type:"getHardwareVersion"};
+    return this._load(command);
+
+  }
+
+  async addBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply> {
+    let command : commandInterface = {type:"addBehaviour", behaviour: behaviour};
+    return this._load(command);
+  }
+
+  async updateBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply> {
+    let command : commandInterface = {type:"updateBehaviour", behaviour: behaviour};
+    return this._load(command);
+  }
+
+  async removeBehaviour(index: number) : Promise<behaviourReply> {
+    let command : commandInterface = {type:"removeBehaviour", index: index};
+    return this._load(command);
+  }
+
+  async getBehaviour(index: number) : Promise<behaviourTransfer> {
+    let command : commandInterface = {type:"getBehaviour", index: index};
+    return this._load(command);
+  }
+
+  async syncBehaviour(behaviours: behaviourTransfer[]) : Promise<behaviourTransfer[]> {
+    let command : commandInterface = {type:"syncBehaviour", behaviours: behaviours};
+    return this._load(command);
+  }
+
+  async commandFactoryReset() : Promise<void> {
+    let command : commandInterface = {type:"commandFactoryReset"};
+    return this._load(command);
+  }
+
+  async sendNoOp() : Promise<void> {
+    let command : commandInterface = {type:"sendNoOp"};
+    return this._load(command);
+  }
+
+  async sendMeshNoOp() : Promise<void> {
+    let command : commandInterface = {type:"sendMeshNoOp"};
+    return this._load(command);
+  }
 
 
-  async end() {
+  async connect() : Promise< CrownstoneMode > {
+    
+  }
+
+  async cancelConnectionRequest() : Promise< void > {
+
+  }
+
+  async disconnectCommand() : Promise< void > {
+
+  }
+
+  async getMACAddress() : Promise< string > {
+
+  }
+
+  async phoneDisconnect() : Promise< void > {
+
+  }
+
+  async toggleSwitchState(stateForOn) : Promise< number > {
+
+  }
+
+  async setupCrownstone(dataObject: setupData) : Promise< void > {
+
+  }
+
+  async recover() : Promise< void > {
 
   }
 
 
-  /**
-   * MARK: these can be sent to multiple crownstones
-   */
+  // DFU
+  async putInDFU() : Promise< void > {
 
+  }
+  async setupPutInDFU() : Promise< void > {
 
+  }
+  async performDFU(uri: string) : Promise< void > {
 
+  }
+  async setupFactoryReset() : Promise< void > {
 
+  }
+  async bootloaderToNormalMode() : Promise< void > {
+
+  }
+
+  // new
+  async clearErrors(clearErrorJSON : clearErrorData) : Promise< void > {
+
+  }
+  async restartCrownstone() : Promise< void > {
+
+  }
+  async setTime(time : number) : Promise< void > {
+
+  }
+  async setTimeViaBroadcast(
+    time : number,
+    sunriseSecondsSinceMidnight: number,
+    sunsetSecondsSinceMidnight: number,
+    referenceId: string,
+  ) : Promise< void >{
+
+  }
+  async meshSetTime(time : number) : Promise< void >{
+
+  }
+  async getTime() : Promise< number > {
+
+  } // timestamp in seconds since epoch
+
+  async getSwitchState() : Promise< number > {
+
+  }
+  async lockSwitch(lock : Boolean) : Promise< void > {
+
+  }
+  async allowDimming(allow: Boolean) : Promise< void > {
+
+  }
+  async setSwitchCraft(state: Boolean) : Promise< void > {
+
+  }
+  async setupPulse() : Promise< void > {
+
+  }
+  async broadcastSwitch(referenceId, stoneId, switchState, autoExecute) : Promise< void > {
+
+  }
+  async broadcastBehaviourSettings(referenceId, enabled:boolean) : Promise< void > {
+
+  }
+  async setTapToToggle(enabled: boolean) : Promise<void> {
+
+  }
+  async setTapToToggleThresholdOffset(rssiThresholdOffset: number) : Promise<void> {
+
+  }
+  async getTapToToggleThresholdOffset() : Promise< number > {
+
+  }
+  async setSoftOnSpeed(speed: number) : Promise< void > {
+
+  }
+  async getSoftOnSpeed() : Promise< number > {
+
+  }
+  async syncBehaviours(behaviours: behaviourTransfer[]) : Promise<behaviourTransfer[]> {
+
+  }
+  async getBehaviourMasterHash(behaviours: behaviourTransfer[]) : Promise<number> {
+
+  }
+  async getBehaviourMasterHashCRC(behaviours: behaviourTransfer[]) : Promise<number> {
+
+  }
+  async switchRelay(state: number) : Promise< void > {
+
+  }
+  async switchDimmer(state: number) : Promise< void > {
+
+  }
+  async getResetCounter() : Promise< number > {
+
+  }
+  async getSwitchcraftThreshold() : Promise< number > {
+
+  }
+  async setSwitchcraftThreshold(value: number) : Promise< void > {
+
+  }
+  async getMaxChipTemp() : Promise< number > {
+
+  }
+  async setMaxChipTemp(value: number) : Promise< void > {
+
+  }
+  async getDimmerCurrentThreshold() : Promise< number > {
+
+  }
+  async setDimmerCurrentThreshold(value: number) : Promise< void > {
+
+  }
+  async getDimmerTempUpThreshold() : Promise< number > {
+
+  }
+  async setDimmerTempUpThreshold(value: number) : Promise< void > {
+
+  }
+  async getDimmerTempDownThreshold() : Promise< number > {
+
+  }
+  async setDimmerTempDownThreshold(value: number) : Promise< void > {
+
+  }
+  async getVoltageZero() : Promise< number > {
+
+  }
+  async setVoltageZero(value: number) : Promise< void > {
+
+  }
+  async getCurrentZero() : Promise< number > {
+
+  }
+  async setCurrentZero(value: number) : Promise< void > {
+
+  }
+  async getPowerZero() : Promise< number > {
+
+  }
+  async setPowerZero(value: number) : Promise< void > {
+
+  }
+  async getVoltageMultiplier() : Promise< number > {
+
+  }
+  async setVoltageMultiplier(value: number) : Promise< void > {
+
+  }
+  async getCurrentMultiplier() : Promise< number > {
+
+  }
+  async setCurrentMultiplier(value: number) : Promise< void > {
+
+  }
+  async setUartState(value: number) : Promise< number > {
+
+  }
+  async getBehaviourDebugInformation() : Promise< behaviourDebug > {
+
+  }
+  async turnOnMesh(arrayOfStoneSwitchPackets: any[]) : Promise< void > {
+
+  }
+  async turnOnBroadcast(referenceId, stoneId, autoExecute) : Promise< void > {
+
+  }
+  async setSunTimesViaConnection(
+    sunriseSecondsSinceMidnight : number,
+    sunsetSecondsSinceMidnight : number) : Promise< void > {
+
+  }
+  async registerTrackedDevice(
+    trackingNumber:number,
+    locationUID:number,
+    profileId:number,
+    rssiOffset:number,
+    ignoreForPresence:boolean,
+    tapToToggleEnabled:boolean,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void > {
+
+  }
+  async trackedDeviceHeartbeat(
+    trackingNumber:number,
+    locationUID:number,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void > {
+
+  }
+  async broadcastUpdateTrackedDevice(
+    referenceId: string,
+    trackingNumber:number,
+    locationUID:number,
+    profileId:number,
+    rssiOffset:number,
+    ignoreForPresence:boolean,
+    tapToToggleEnabled:boolean,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void > {
+
+  }
+  async getCrownstoneUptime() : Promise<number> {
+
+  }
+  async getMinSchedulerFreeSpace() : Promise<number> {
+
+  }
+  async getLastResetReason() : Promise<ResetReason> {
+
+  }
+  async getGPREGRET() : Promise<GPREGRET[]> {
+
+  }
+  async getAdcChannelSwaps() : Promise<AdcSwapCount> {
+
+  }
+  async getAdcRestarts() : Promise<AdcRestart> {
+
+  }
+  async getSwitchHistory() : Promise<SwitchHistory[]> {
+
+  }
+  async getPowerSamples(type : PowersampleDataType) : Promise<PowerSamples[]> {
+
+  }
+  async setUartKey(uartKey: string) : Promise<void> {
+
+  }
+
+  // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
+  async transferHubTokenAndCloudId(hubToken: string, cloudId: string) : Promise<HubDataReply> {
+
+  }
+  async requestCloudId() : Promise<HubDataReply> {
+
+  }
+  async factoryResetHub() : Promise<HubDataReply> {
+
+  }
+  async factoryResetHubOnly() : Promise<HubDataReply> {
+
+  }
+  async end() {
+
+  }
 }
-
-
-
-
-
-/**
-I want to use the commandAPI for ALL interactions with bluetooth. This means the following:
-- direct connection where only your commands are pushed to this Crownstone.
-    - this is a private session
-    - commands can trickle in, do not close the connection automatically. (wait for end())
-    - on failed connection attempt, fail the active commandAPI instance.     maybe allow for reconnecting?
-    - on read/write to the crownstone after disconnect, fail the commandAPI. maybe allow for reconnecting?
-    - private connections MUST BE SINGULAR! (ie 1 connection target)
-- connections where anyone throwing up commands can use the connection to deliver their message.
-  - shared connections
-  - get their own commands from the queueManager based on handle, mesh, sphere etc.
-  - close the connection if nobody needs it any more.
-
- How do we handle commands which include a reset cycle? These would mark sessions as actively ended and removed.
- We could argue that we keep a session active, even though it died.
- The commandAPI and the session state must be linked.. Or should they? If you read/write while youre not connected it will just fail in the lib. Thats great!
-
- Conclusion:
- CommandAPI has no connection state.
- - In the case of a private connection
-
-
-
-
- */
