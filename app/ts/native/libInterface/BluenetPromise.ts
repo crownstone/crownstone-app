@@ -163,6 +163,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   syncBehaviours:                 (handle: string, behaviours: behaviourTransfer[]) => { return BluenetPromise('syncBehaviours', behaviours); },
   getBehaviourMasterHash:         (behaviours: behaviourTransfer[]) => { return BluenetPromise('getBehaviourMasterHash', behaviours); },
+  getBehaviourMasterHashCRC:      (behaviours: behaviourTransfer[]) => { return BluenetPromise('getBehaviourMasterHashCRC', behaviours); },
 
   // dev
   getResetCounter:                (handle: string) => { return BluenetPromise('getResetCounter'); },          // return type: uint16

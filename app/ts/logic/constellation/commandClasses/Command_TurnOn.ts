@@ -7,16 +7,15 @@ export class Command_TurnOn extends CommandBase implements CommandBaseInterface 
 
   state:  number;
 
-  constructor(handle: string, state: number) {
+  constructor(handle: string) {
     super(handle, "turnOn");
-    this.state = state;
   }
 
 
   async execute(options: ExecutionOptions) : Promise<void> {
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
-    let stoneSwitchPackets = Executor.aggregateMultiSwitchCommands(this.handle, options.bleCommand, options.queue);
-    return BluenetPromiseWrapper.multiSwitch(this.handle, stoneSwitchPackets);
+    let stoneSwitchPackets = Executor.aggregateTurnOnCommands(this.handle, options.bleCommand, options.queue);
+    return BluenetPromiseWrapper.turnOnMesh(this.handle, stoneSwitchPackets);
   }
 
 }

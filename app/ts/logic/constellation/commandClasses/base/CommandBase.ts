@@ -1,5 +1,3 @@
-
-
 export class CommandBase {
 
   handle: string;
@@ -10,10 +8,14 @@ export class CommandBase {
     this.type   = type;
   }
 
-  isDuplicate(otherCommand: CommandBase) {
-    if (this.type == otherCommand.type) {
-      return true;
+  isDuplicate(otherCommand: CommandBase) : boolean {
+    if (this.type == otherCommand.type && this.handle === otherCommand.handle) {
+      return this.duplicateCheck(otherCommand);
     }
     return false;
+  }
+
+  duplicateCheck(otherCommand: CommandBase) : boolean {
+    return true;
   }
 }

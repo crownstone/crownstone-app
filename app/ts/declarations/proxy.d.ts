@@ -102,7 +102,7 @@ interface BluenetPromiseWrapperProtocol {
   setVoltageMultiplier(handle: string, value: number)                   : Promise< void >,
   getCurrentMultiplier(handle: string)                                  : Promise< number >,
   setCurrentMultiplier(handle: string, value: number)                   : Promise< void >,
-  setUartState(handle: string, value: number)                           : Promise< number >,
+  setUartState(handle: string, value: 0 | 1 | 3)                        : Promise< number >,
   getBehaviourDebugInformation(handle: string)                          : Promise< behaviourDebug >,
 
   turnOnMesh(handle: string, arrayOfStoneSwitchPackets: any[])          : Promise< void >,

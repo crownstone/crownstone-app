@@ -3,7 +3,7 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 import { Executor } from "../Executor";
 
 
-export class Command_multiSwitch extends CommandBase implements CommandBaseInterface {
+export class Command_MultiSwitch extends CommandBase implements CommandBaseInterface {
 
   state:  number;
 
