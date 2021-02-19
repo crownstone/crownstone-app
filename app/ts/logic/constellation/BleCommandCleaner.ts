@@ -108,54 +108,8 @@ export const BleCommandCleaner =  {
     return true;
   },
 
-  _isDuplicate(newCommand: commandInterface, existingCommand: commandInterface) : boolean {
-    let newType = newCommand.type;
-    let existingType = existingCommand.type;
-    let conflictingCommand = existingType === newType ||
-      existingType === 'multiSwitch' && newType === 'turnOn' ||
-      existingType === 'turnOn'      && newType === 'multiSwitch';
-    let duplicate = false;
-    if (conflictingCommand) {
-      switch(existingType) {
-        case 'multiSwitch':
-        case 'turnOn':
-        case 'getBootloaderVersion':
-        case 'getFirmwareVersion':
-        case 'getHardwareVersion':
-        case 'commandFactoryReset':
-        case 'sendNoOp':
-        case 'sendMeshNoOp':
-        case 'meshSetTime':
-        case 'setTime':
-        case 'setSunTimes':
-        case 'clearErrors':
-        case 'lockSwitch':
-        case 'setSwitchCraft':
-        case 'allowDimming':
-        case 'setTapToToggle':
-        case 'setTapToToggleThresholdOffset':
-        case 'setMeshChannel':
-        case 'setupPulse':
-          duplicate = true;
-          break
-        case 'addBehaviour':
-        case 'updateBehaviour':
-        case 'removeBehaviour':
-        case 'syncBehaviour':
-        case 'getBehaviour':
-          duplicate = xUtil.deepCompare(existingCommand, newCommand);
-          break;
-        case 'registerTrackedDevice':
-          // double check to satisfy type checking by typescript
-          if (newCommand.type === "registerTrackedDevice" && existingCommand.type === "registerTrackedDevice") {
-            duplicate = newCommand.trackingNumber === existingCommand.trackingNumber;
-          }
-          break;
-        default:
-          duplicate = true;
-      }
-    }
-    return duplicate;
+  _isDuplicate(newCommand: CommandInterface, existingCommand: CommandInterface) : boolean {
+    return newCommand.isDuplicate(existingCommand)
   },
 
 

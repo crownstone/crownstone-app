@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetCurrentZero extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getCurrentZero");
+  constructor() {
+    super("getCurrentZero");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getCurrentZero(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getCurrentZero(connectedHandle);
   }
   
 }

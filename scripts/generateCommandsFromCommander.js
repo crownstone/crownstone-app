@@ -31,7 +31,7 @@ let methods = [
   {name:"restartCrownstone",             type:'void'},
   {name:"setTime",                       type:'void'},
   {name:"getTime",                       type:'void'},
-  {name:"getSwitchState",                type:'void'},
+  {name:"getSwitchState",                type:'number'},
   {name:"lockSwitch",                    type:'void'},
   {name:"allowDimming",                  type:'void'},
   {name:"setSwitchCraft",                type:'void'},
@@ -119,13 +119,13 @@ import { Executor } from "../Executor";
 
 export class ${className} extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "${item.name}");
+  constructor() {
+    super("${item.name}");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<${item.type}> {
-    return BluenetPromiseWrapper.${item.name}(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<${item.type}> {
+    return BluenetPromiseWrapper.${item.name}(connectedHandle);
   }
   
 }

@@ -1,21 +1,23 @@
-export class CommandBase {
+export class CommandBase implements CommandBaseInterface {
 
-  handle: string;
   type:   BridgeCommandType;
 
-  constructor(handle: string, type: BridgeCommandType) {
-    this.handle = handle;
-    this.type   = type;
+  constructor(type: BridgeCommandType) {
+    this.type = type;
   }
 
-  isDuplicate(otherCommand: CommandBase) : boolean {
-    if (this.type == otherCommand.type && this.handle === otherCommand.handle) {
+  /**
+   * This is called by the BleCommandCleaner. This takes care of checking if the handles match.
+   * @param otherCommand
+   */
+  isDuplicate(otherCommand: CommandBaseInterface) : boolean {
+    if (this.type == otherCommand.type) {
       return this.duplicateCheck(otherCommand);
     }
     return false;
   }
 
-  duplicateCheck(otherCommand: CommandBase) : boolean {
+  duplicateCheck(otherCommand: CommandBaseInterface) : boolean {
     return true;
   }
 }

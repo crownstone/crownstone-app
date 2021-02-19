@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_GetPowerSamples extends CommandBase implements CommandBaseInterface {
 
   powerSampleType : PowersampleDataType;
-  constructor(handle: string, powerSampleType : PowersampleDataType) {
-    super(handle, "getPowerSamples");
+  constructor(powerSampleType : PowersampleDataType) {
+    super("getPowerSamples");
     this.powerSampleType = powerSampleType;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<PowerSamples[]> {
-    return BluenetPromiseWrapper.getPowerSamples(this.handle, this.powerSampleType);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<PowerSamples[]> {
+    return BluenetPromiseWrapper.getPowerSamples(connectedHandle, this.powerSampleType);
   }
   
 }

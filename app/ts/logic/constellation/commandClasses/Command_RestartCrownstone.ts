@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_RestartCrownstone extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "restartCrownstone");
+  constructor() {
+    super("restartCrownstone");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.restartCrownstone(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.restartCrownstone(connectedHandle);
   }
   
 }

@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetVoltageZero extends CommandBase implements CommandBaseInterface {
 
   value: number;
-  constructor(handle: string, value: number) {
-    super(handle, "setVoltageZero");
+  constructor(value: number) {
+    super("setVoltageZero");
     this.value = value;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setVoltageZero(this.handle, this.value);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setVoltageZero(connectedHandle, this.value);
   }
   
 }

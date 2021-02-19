@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetBehaviourDebugInformation extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getBehaviourDebugInformation");
+  constructor() {
+    super("getBehaviourDebugInformation");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<behaviourDebug> {
-    return BluenetPromiseWrapper.getBehaviourDebugInformation(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<behaviourDebug> {
+    return BluenetPromiseWrapper.getBehaviourDebugInformation(connectedHandle);
   }
   
 }

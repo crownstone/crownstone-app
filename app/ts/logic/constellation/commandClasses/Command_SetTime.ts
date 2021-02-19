@@ -8,15 +8,15 @@ export class Command_SetTime extends CommandBase implements CommandBaseInterface
 
   time: number;
   // timestamp in seconds since epoch
-  constructor(handle: string, time?: number) {
-    super(handle, "setTime");
+  constructor(time?: number) {
+    super("setTime");
     this.time = time;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     let timeToSet = this.time === undefined ? xUtil.nowToCrownstoneTime() : this.time;
-    return BluenetPromiseWrapper.meshSetTime(this.handle, timeToSet);
+    return BluenetPromiseWrapper.meshSetTime(connectedHandle, timeToSet);
   }
 }
 

@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_Connect extends CommandBase implements CommandBaseInterface {
 
   referenceId: string;
-  constructor(handle: string, referenceId: string) {
-    super(handle, "connect");
+  constructor(referenceId: string) {
+    super("connect");
     this.referenceId = referenceId;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<CrownstoneMode> {
-    return BluenetPromiseWrapper.connect(this.handle, this.referenceId, true);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<CrownstoneMode> {
+    return BluenetPromiseWrapper.connect(connectedHandle, this.referenceId, true);
   }
   
 }

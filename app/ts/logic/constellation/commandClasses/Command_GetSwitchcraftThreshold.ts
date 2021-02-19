@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetSwitchcraftThreshold extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getSwitchcraftThreshold");
+  constructor() {
+    super("getSwitchcraftThreshold");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getSwitchcraftThreshold(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getSwitchcraftThreshold(connectedHandle);
   }
   
 }

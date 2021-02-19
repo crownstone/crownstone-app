@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetAdcRestarts extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getAdcRestarts");
+  constructor() {
+    super("getAdcRestarts");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<AdcRestart> {
-    return BluenetPromiseWrapper.getAdcRestarts(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<AdcRestart> {
+    return BluenetPromiseWrapper.getAdcRestarts(connectedHandle);
   }
   
 }

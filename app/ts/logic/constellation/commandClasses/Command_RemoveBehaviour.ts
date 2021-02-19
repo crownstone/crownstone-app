@@ -7,14 +7,14 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class Command_RemoveBehaviour extends CommandBase implements CommandBaseInterface {
 
   index: number;
-  constructor(handle: string, index: number) {
-    super(handle, "removeBehaviour");
+  constructor(index: number) {
+    super("removeBehaviour");
     this.index = index;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<behaviourReply> {
-    return BluenetPromiseWrapper.removeBehaviour(this.handle, this.index);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<behaviourReply> {
+    return BluenetPromiseWrapper.removeBehaviour(connectedHandle, this.index);
   }
 
 

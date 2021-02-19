@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetVoltageMultiplier extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getVoltageMultiplier");
+  constructor() {
+    super("getVoltageMultiplier");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getVoltageMultiplier(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getVoltageMultiplier(connectedHandle);
   }
   
 }

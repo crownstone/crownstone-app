@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetTapToToggle extends CommandBase implements CommandBaseInterface {
 
   enabled: boolean;
-  constructor(handle: string, enabled: boolean) {
-    super(handle, "setTapToToggle");
+  constructor(enabled: boolean) {
+    super("setTapToToggle");
     this.enabled = enabled;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setTapToToggle(this.handle, this.enabled);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setTapToToggle(connectedHandle, this.enabled);
   }
   
 }

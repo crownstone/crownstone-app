@@ -7,14 +7,14 @@ export class Command_PerformDFU extends CommandBase implements CommandBaseInterf
 
 
   uri: string;
-  constructor(handle: string, uri: string) {
-    super(handle, "performDFU");
+  constructor(uri: string) {
+    super("performDFU");
     this.uri = uri;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.performDFU(this.handle, this.uri);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.performDFU(connectedHandle, this.uri);
   }
   
 }

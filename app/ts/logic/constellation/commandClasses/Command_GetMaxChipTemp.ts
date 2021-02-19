@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetMaxChipTemp extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getMaxChipTemp");
+  constructor() {
+    super("getMaxChipTemp");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getMaxChipTemp(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getMaxChipTemp(connectedHandle);
   }
   
 }

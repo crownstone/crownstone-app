@@ -47,42 +47,42 @@ interface meshTodo {
   multiSwitch:    multiSwitchPayload[]
 }
 
-type commandInterface = { type : 'toggle' } |
-  { type : 'multiSwitch', state : number } |
-  { type : 'turnOn' } |
-  { type : 'getBootloaderVersion' } |
-  { type : 'getFirmwareVersion' } |
-  { type : 'getHardwareVersion' } |
-  { type : 'addBehaviour', behaviour: behaviourTransfer } |
-  { type : 'updateBehaviour', behaviour: behaviourTransfer } |
-  { type : 'removeBehaviour', index: number } |
-  { type : 'getBehaviour', index: number } |
-  { type : 'syncBehaviour', behaviours: behaviourTransfer[] } |
-  { type : 'commandFactoryReset' } |
-  { type : 'sendNoOp' } |
-  { type : 'sendMeshNoOp' } |
-  { type : 'meshSetTime', time:  number } |
-  { type : 'setTime',     time?: number } |
-  { type : 'setSunTimes', sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number } |
-  { type : 'clearErrors', clearErrorJSON: any } |
-  { type : 'lockSwitch',     value: boolean } |
-  { type : 'setSwitchCraft', value: boolean } |
-  { type : 'allowDimming',   value: boolean } |
-  { type : 'setSoftOnSpeed', softOnSpeed: number } |
-  { type : 'setTapToToggle', value: boolean } |
-  { type : 'setTapToToggleThresholdOffset', rssiOffset: number } |
-  { type : 'setupPulse'} |
-  { type : 'getBehaviourDebugInformation' } |
-  { type : 'getCrownstoneUptime' } |
-  { type : 'getAdcRestarts' } |
-  { type : 'getMinSchedulerFreeSpace' } |
-  { type : 'getLastResetReason' } |
-  { type : 'getGPREGRET' } |
-  { type : 'getAdcChannelSwaps' } |
-  { type : 'getSwitchHistory' } |
-  { type : 'getPowerSamples', powersampleDataType: PowersampleDataType } |
-  { type : 'registerTrackedDevice',  trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number } |
-  { type : 'trackedDeviceHeartbeat', trackingNumber: number, locationUID: () => number | number, deviceToken: number, ttlMinutes: number }
+// type commandInterface = { type : 'toggle' } |
+//   { type : 'multiSwitch', state : number } |
+//   { type : 'turnOn' } |
+//   { type : 'getBootloaderVersion' } |
+//   { type : 'getFirmwareVersion' } |
+//   { type : 'getHardwareVersion' } |
+//   { type : 'addBehaviour', behaviour: behaviourTransfer } |
+//   { type : 'updateBehaviour', behaviour: behaviourTransfer } |
+//   { type : 'removeBehaviour', index: number } |
+//   { type : 'getBehaviour', index: number } |
+//   { type : 'syncBehaviour', behaviours: behaviourTransfer[] } |
+//   { type : 'commandFactoryReset' } |
+//   { type : 'sendNoOp' } |
+//   { type : 'sendMeshNoOp' } |
+//   { type : 'meshSetTime', time:  number } |
+//   { type : 'setTime',     time?: number } |
+//   { type : 'setSunTimes', sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number } |
+//   { type : 'clearErrors', clearErrorJSON: any } |
+//   { type : 'lockSwitch',     value: boolean } |
+//   { type : 'setSwitchCraft', value: boolean } |
+//   { type : 'allowDimming',   value: boolean } |
+//   { type : 'setSoftOnSpeed', softOnSpeed: number } |
+//   { type : 'setTapToToggle', value: boolean } |
+//   { type : 'setTapToToggleThresholdOffset', rssiOffset: number } |
+//   { type : 'setupPulse'} |
+//   { type : 'getBehaviourDebugInformation' } |
+//   { type : 'getCrownstoneUptime' } |
+//   { type : 'getAdcRestarts' } |
+//   { type : 'getMinSchedulerFreeSpace' } |
+//   { type : 'getLastResetReason' } |
+//   { type : 'getGPREGRET' } |
+//   { type : 'getAdcChannelSwaps' } |
+//   { type : 'getSwitchHistory' } |
+//   { type : 'getPowerSamples', powersampleDataType: PowersampleDataType } |
+//   { type : 'registerTrackedDevice',  trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number } |
+//   { type : 'trackedDeviceHeartbeat', trackingNumber: number, locationUID: () => number | number, deviceToken: number, ttlMinutes: number }
 
 
 type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer" | "softFuse"

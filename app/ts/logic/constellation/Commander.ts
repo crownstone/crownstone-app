@@ -17,7 +17,6 @@ import {
   Command_GetAdcRestarts,
   Command_GetBehaviour,
   Command_GetBehaviourDebugInformation,
-  Command_GetBehaviourMasterHash,
   Command_GetBootloaderVersion,
   Command_GetCrownstoneUptime,
   Command_GetCurrentMultiplier,
@@ -143,13 +142,13 @@ class CommandMeshAPI extends CommandAPI_base {
   async setSunTimesViaConnection(
     sunriseSecondsSinceMidnight : number,
     sunsetSecondsSinceMidnight : number) : Promise< void > {
-    return this._load(new Command_SetSunTimesViaConnection(this.handle, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight));
+    return this._load(new Command_SetSunTimesViaConnection(sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight));
   }
 
 
   async registerTrackedDevice(
     trackingNumber:number,
-    locationUID:number,
+    locationUID:() => number | number,
     profileId:number,
     rssiOffset:number,
     ignoreForPresence:boolean,
@@ -157,22 +156,22 @@ class CommandMeshAPI extends CommandAPI_base {
     deviceToken:number,
     ttlMinutes:number
   ) : Promise< void > {
-    return this._load(new Command_RegisterTrackedDevice(this.handle, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes));
+    return this._load(new Command_RegisterTrackedDevice(trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes));
   }
 
 
   async trackedDeviceHeartbeat(
     trackingNumber:number,
-    locationUID:number,
+    locationUID:() => number | number,
     deviceToken:number,
     ttlMinutes:number) : Promise< void > {
-    return this._load(new Command_TrackedDeviceHeartbeat(this.handle, trackingNumber, locationUID, deviceToken, ttlMinutes));
+    return this._load(new Command_TrackedDeviceHeartbeat(trackingNumber, locationUID, deviceToken, ttlMinutes));
   }
 
 
-  async setTime(time : number) : Promise< void > {
+  async setTime(time?: number) : Promise< void > {
     // timestamp in seconds since epoch
-    return this._load(new Command_SetTime(this.handle, time));
+    return this._load(new Command_SetTime(time));
   }
 }
 
@@ -183,7 +182,7 @@ class CommandMeshAPI extends CommandAPI_base {
 export class CommandAPI extends CommandMeshAPI {
 
   async toggle(stateForOn : number) : Promise<void> {
-    return this._load(new Command_Toggle(this.handle));
+    return this._load(new Command_Toggle());
   }
 
   async multiSwitch(state : number) : Promise<void>  {
@@ -192,7 +191,7 @@ export class CommandAPI extends CommandMeshAPI {
     //   // load in broadcast manager and auto-execute after setImmediate
     // }
     // else {
-    return this._load(new Command_MultiSwitch(this.handle, state), true);
+    return this._load(new Command_MultiSwitch(state), true);
     // }
   }
 
@@ -204,52 +203,52 @@ export class CommandAPI extends CommandMeshAPI {
     // }
     // else {
       // load into the commandQueue
-      return this._load(new Command_TurnOn(this.handle), true);
+      return this._load(new Command_TurnOn(), true);
     // }
   }
 
   async getBootloaderVersion() : Promise<string> {
-    return this._load(new Command_GetBootloaderVersion(this.handle));
+    return this._load(new Command_GetBootloaderVersion());
   }
 
   async getFirmwareVersion() : Promise<string> {
-    return this._load(new Command_GetFirmwareVersion(this.handle));
+    return this._load(new Command_GetFirmwareVersion());
   }
 
   async getHardwareVersion() : Promise<string> {
-    return this._load(new Command_GetHardwareVersion(this.handle));
+    return this._load(new Command_GetHardwareVersion());
   }
 
   async addBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply> {
-    return this._load(new Command_AddBehaviour(this.handle, behaviour));
+    return this._load(new Command_AddBehaviour(behaviour));
   }
 
   async updateBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply> {
-    return this._load(new Command_UpdateBehaviour(this.handle, behaviour));
+    return this._load(new Command_UpdateBehaviour(behaviour));
   }
 
   async removeBehaviour(index: number) : Promise<behaviourReply> {
-    return this._load(new Command_RemoveBehaviour(this.handle, index));
+    return this._load(new Command_RemoveBehaviour(index));
   }
 
   async getBehaviour(index: number) : Promise<behaviourTransfer> {
-    return this._load(new Command_GetBehaviour(this.handle, index));
+    return this._load(new Command_GetBehaviour(index));
   }
 
   async syncBehaviours(behaviours: behaviourTransfer[]) : Promise<behaviourTransfer[]> {
-    return this._load(new Command_SyncBehaviours(this.handle, behaviours));
+    return this._load(new Command_SyncBehaviours(behaviours));
   }
 
   async commandFactoryReset() : Promise<void> {
-    return this._load(new Command_CommandFactoryReset(this.handle));
+    return this._load(new Command_CommandFactoryReset());
   }
 
   async sendNoOp() : Promise<void> {
-    return this._load(new Command_SendNoOp(this.handle));
+    return this._load(new Command_SendNoOp());
   }
 
   async sendMeshNoOp() : Promise<void> {
-    return this._load(new Command_SendMeshNoOp(this.handle));
+    return this._load(new Command_SendMeshNoOp());
   }
 
   async connect() : Promise< CrownstoneMode > {
@@ -265,7 +264,7 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async getMACAddress() : Promise< string > {
-    return this._load(new Command_GetMACAddress(this.handle));
+    return this._load(new Command_GetMACAddress());
   }
 
   async phoneDisconnect() : Promise< void > {
@@ -273,189 +272,189 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async setupCrownstone(dataObject: setupData) : Promise< void > {
-    return this._load(new Command_SetupCrownstone(this.handle, dataObject));
+    return this._load(new Command_SetupCrownstone(dataObject));
   }
 
   async recover() : Promise< void > {
-    return this._load(new Command_Recover(this.handle));
+    return this._load(new Command_Recover());
   }
 
 
   // DFU
   async putInDFU() : Promise< void > {
-    return this._load(new Command_PutInDFU(this.handle));
+    return this._load(new Command_PutInDFU());
   }
   async setupPutInDFU() : Promise< void > {
-    return this._load(new Command_SetupPutInDFU(this.handle));
+    return this._load(new Command_SetupPutInDFU());
   }
   async performDFU(uri: string) : Promise< void > {
-    return this._load(new Command_PerformDFU(this.handle, uri));
+    return this._load(new Command_PerformDFU(uri));
   }
   async setupFactoryReset() : Promise< void > {
-    return this._load(new Command_SetupFactoryReset(this.handle));
+    return this._load(new Command_SetupFactoryReset());
   }
   async bootloaderToNormalMode() : Promise< void > {
-    return this._load(new Command_BootloaderToNormalMode(this.handle));
+    return this._load(new Command_BootloaderToNormalMode());
   }
 
   // new
   async clearErrors(clearErrorJSON : clearErrorData) : Promise< void > {
-    return this._load(new Command_ClearErrors(this.handle, clearErrorJSON));
+    return this._load(new Command_ClearErrors(clearErrorJSON));
   }
   async restartCrownstone() : Promise< void > {
-    return this._load(new Command_RestartCrownstone(this.handle));
+    return this._load(new Command_RestartCrownstone());
   }
   async getTime() : Promise< number > {
-    return this._load(new Command_GetTime(this.handle));
+    return this._load(new Command_GetTime());
   }
 
   async getSwitchState() : Promise< number > {
-    return this._load(new Command_GetSwitchState(this.handle));
+    return this._load(new Command_GetSwitchState());
 
   }
   async lockSwitch(lock : boolean) : Promise< void > {
-    return this._load(new Command_LockSwitch(this.handle, lock));
+    return this._load(new Command_LockSwitch(lock));
   }
   async allowDimming(allow: boolean) : Promise< void > {
-    return this._load(new Command_AllowDimming(this.handle, allow));
+    return this._load(new Command_AllowDimming(allow));
   }
   async setSwitchCraft(state: boolean) : Promise< void > {
-    return this._load(new Command_SetSwitchCraft(this.handle, state));
+    return this._load(new Command_SetSwitchCraft(state));
   }
   async setupPulse() : Promise< void > {
-    return this._load(new Command_SetupPulse(this.handle));
+    return this._load(new Command_SetupPulse());
   }
   async setTapToToggle(enabled: boolean) : Promise<void> {
-    return this._load(new Command_SetTapToToggle(this.handle, enabled));
+    return this._load(new Command_SetTapToToggle(enabled));
   }
   async setTapToToggleThresholdOffset(rssiThresholdOffset: number) : Promise<void> {
-    return this._load(new Command_SetTapToToggleThresholdOffset(this.handle, rssiThresholdOffset));
+    return this._load(new Command_SetTapToToggleThresholdOffset(rssiThresholdOffset));
   }
   async getTapToToggleThresholdOffset() : Promise< number > {
-    return this._load(new Command_GetTapToToggleThresholdOffset(this.handle));
+    return this._load(new Command_GetTapToToggleThresholdOffset());
   }
   async setSoftOnSpeed(speed: number) : Promise< void > {
-    return this._load(new Command_SetSoftOnSpeed(this.handle, speed));
+    return this._load(new Command_SetSoftOnSpeed(speed));
   }
   async getSoftOnSpeed() : Promise< number > {
-    return this._load(new Command_GetSoftOnSpeed(this.handle));
+    return this._load(new Command_GetSoftOnSpeed());
   }
   async switchRelay(state: number) : Promise< void > {
-    return this._load(new Command_SwitchRelay(this.handle, state));
+    return this._load(new Command_SwitchRelay(state));
   }
   async switchDimmer(state: number) : Promise< void > {
-    return this._load(new Command_SwitchDimmer(this.handle, state));
+    return this._load(new Command_SwitchDimmer(state));
   }
   async getResetCounter() : Promise< number > {
-    return this._load(new Command_GetResetCounter(this.handle));
+    return this._load(new Command_GetResetCounter());
   }
   async getSwitchcraftThreshold() : Promise< number > {
-    return this._load(new Command_GetSwitchcraftThreshold(this.handle));
+    return this._load(new Command_GetSwitchcraftThreshold());
   }
   async setSwitchcraftThreshold(value: number) : Promise< void > {
-    return this._load(new Command_SetSwitchcraftThreshold(this.handle));
+    return this._load(new Command_SetSwitchcraftThreshold(value));
   }
   async getMaxChipTemp() : Promise< number > {
-    return this._load(new Command_GetMaxChipTemp(this.handle));
+    return this._load(new Command_GetMaxChipTemp());
   }
   async setMaxChipTemp(value: number) : Promise< void > {
-    return this._load(new Command_SetMaxChipTemp(this.handle, value));
+    return this._load(new Command_SetMaxChipTemp(value));
   }
   async getDimmerCurrentThreshold() : Promise< number > {
-    return this._load(new Command_GetDimmerCurrentThreshold(this.handle));
+    return this._load(new Command_GetDimmerCurrentThreshold());
   }
   async setDimmerCurrentThreshold(value: number) : Promise< void > {
-    return this._load(new Command_SetDimmerCurrentThreshold(this.handle, value));
+    return this._load(new Command_SetDimmerCurrentThreshold(value));
   }
   async getDimmerTempUpThreshold() : Promise< number > {
-    return this._load(new Command_GetDimmerTempUpThreshold(this.handle));
+    return this._load(new Command_GetDimmerTempUpThreshold());
   }
   async setDimmerTempUpThreshold(value: number) : Promise< void > {
-    return this._load(new Command_SetDimmerTempUpThreshold(this.handle, value));
+    return this._load(new Command_SetDimmerTempUpThreshold(value));
   }
   async getDimmerTempDownThreshold() : Promise< number > {
-    return this._load(new Command_GetDimmerTempDownThreshold(this.handle));
+    return this._load(new Command_GetDimmerTempDownThreshold());
   }
   async setDimmerTempDownThreshold(value: number) : Promise< void > {
-    return this._load(new Command_SetDimmerTempDownThreshold(this.handle));
+    return this._load(new Command_SetDimmerTempDownThreshold(value));
   }
   async getVoltageZero() : Promise< number > {
-    return this._load(new Command_GetVoltageZero(this.handle));
+    return this._load(new Command_GetVoltageZero());
   }
   async setVoltageZero(value: number) : Promise< void > {
-    return this._load(new Command_SetVoltageZero(this.handle, value));
+    return this._load(new Command_SetVoltageZero(value));
   }
   async getCurrentZero() : Promise< number > {
-    return this._load(new Command_GetCurrentZero(this.handle));
+    return this._load(new Command_GetCurrentZero());
   }
   async setCurrentZero(value: number) : Promise< void > {
-    return this._load(new Command_SetCurrentZero(this.handle, value));
+    return this._load(new Command_SetCurrentZero(value));
   }
   async getPowerZero() : Promise< number > {
-    return this._load(new Command_GetPowerZero(this.handle));
+    return this._load(new Command_GetPowerZero());
   }
   async setPowerZero(value: number) : Promise< void > {
-    return this._load(new Command_SetPowerZero(this.handle, value));
+    return this._load(new Command_SetPowerZero(value));
   }
   async getVoltageMultiplier() : Promise< number > {
-    return this._load(new Command_GetVoltageMultiplier(this.handle));
+    return this._load(new Command_GetVoltageMultiplier());
   }
   async setVoltageMultiplier(value: number) : Promise< void > {
-    return this._load(new Command_SetVoltageMultiplier(this.handle, value));
+    return this._load(new Command_SetVoltageMultiplier(value));
   }
   async getCurrentMultiplier() : Promise< number > {
-    return this._load(new Command_GetCurrentMultiplier(this.handle));
+    return this._load(new Command_GetCurrentMultiplier());
   }
   async setCurrentMultiplier(value: number) : Promise< void > {
-    return this._load(new Command_SetCurrentMultiplier(this.handle, value));
+    return this._load(new Command_SetCurrentMultiplier(value));
   }
   async setUartState(value: 0 | 1 | 3) : Promise< number > {
-    return this._load(new Command_SetUartState(this.handle, value));
+    return this._load(new Command_SetUartState(value));
   }
   async getBehaviourDebugInformation() : Promise< behaviourDebug > {
-    return this._load(new Command_GetBehaviourDebugInformation(this.handle));
+    return this._load(new Command_GetBehaviourDebugInformation());
   }
 
   async getCrownstoneUptime() : Promise<number> {
-    return this._load(new Command_GetCrownstoneUptime(this.handle));
+    return this._load(new Command_GetCrownstoneUptime());
   }
   async getMinSchedulerFreeSpace() : Promise<number> {
-    return this._load(new Command_GetMinSchedulerFreeSpace(this.handle));
+    return this._load(new Command_GetMinSchedulerFreeSpace());
   }
   async getLastResetReason() : Promise<ResetReason> {
-    return this._load(new Command_GetLastResetReason(this.handle));
+    return this._load(new Command_GetLastResetReason());
   }
   async getGPREGRET() : Promise<GPREGRET[]> {
-    return this._load(new Command_GetGPREGRET(this.handle));
+    return this._load(new Command_GetGPREGRET());
   }
   async getAdcChannelSwaps() : Promise<AdcSwapCount> {
-    return this._load(new Command_GetAdcChannelSwaps(this.handle));
+    return this._load(new Command_GetAdcChannelSwaps());
   }
   async getAdcRestarts() : Promise<AdcRestart> {
-    return this._load(new Command_GetAdcRestarts(this.handle));
+    return this._load(new Command_GetAdcRestarts());
   }
   async getSwitchHistory() : Promise<SwitchHistory[]> {
-    return this._load(new Command_GetSwitchHistory(this.handle));
+    return this._load(new Command_GetSwitchHistory());
   }
   async getPowerSamples(type : PowersampleDataType) : Promise<PowerSamples[]> {
-    return this._load(new Command_GetPowerSamples(this.handle, type));
+    return this._load(new Command_GetPowerSamples(type));
   }
   async setUartKey(uartKey: string) : Promise<void> {
-    return this._load(new Command_SetUartKey(this.handle, uartKey));
+    return this._load(new Command_SetUartKey(uartKey));
   }
 
   // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
   async transferHubTokenAndCloudId(hubToken: string, cloudId: string) : Promise<HubDataReply> {
-    return this._load(new Command_TransferHubTokenAndCloudId(this.handle, hubToken, cloudId));
+    return this._load(new Command_TransferHubTokenAndCloudId(hubToken, cloudId));
   }
   async requestCloudId() : Promise<HubDataReply> {
-    return this._load(new Command_RequestCloudId(this.handle));
+    return this._load(new Command_RequestCloudId());
   }
   async factoryResetHub() : Promise<HubDataReply> {
-    return this._load(new Command_FactoryResetHub(this.handle));
+    return this._load(new Command_FactoryResetHub());
   }
   async factoryResetHubOnly() : Promise<HubDataReply> {
-    return this._load(new Command_FactoryResetHubOnly(this.handle));
+    return this._load(new Command_FactoryResetHubOnly());
   }
   async end() {
 

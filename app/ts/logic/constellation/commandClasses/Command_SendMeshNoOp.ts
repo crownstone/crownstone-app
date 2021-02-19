@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_SendMeshNoOp extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "sendMeshNoOp");
+  constructor() {
+    super("sendMeshNoOp");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.sendMeshNoOp(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.sendMeshNoOp(connectedHandle);
   }
   
 }

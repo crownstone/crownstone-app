@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetDimmerCurrentThreshold extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getDimmerCurrentThreshold");
+  constructor() {
+    super("getDimmerCurrentThreshold");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getDimmerCurrentThreshold(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getDimmerCurrentThreshold(connectedHandle);
   }
   
 }

@@ -6,17 +6,22 @@ import { Executor } from "../Executor";
 export class Command_MultiSwitch extends CommandBase implements CommandBaseInterface {
 
   state:  number;
-
-  constructor(handle: string, state: number) {
-    super(handle, "multiSwitch");
+  constructor(state: number) {
+    super("multiSwitch");
     this.state = state;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
-    let stoneSwitchPackets = Executor.aggregateMultiSwitchCommands(this.handle, options.bleCommand, options.queue);
-    return BluenetPromiseWrapper.multiSwitch(this.handle, stoneSwitchPackets);
+    let stoneSwitchPackets = Executor.aggregateMultiSwitchCommands(connectedHandle, options.bleCommand, options.queue);
+    return BluenetPromiseWrapper.multiSwitch(connectedHandle, stoneSwitchPackets);
   }
 
+  isDuplicate(otherCommand: CommandBaseInterface): boolean {
+    if (this.type === otherCommand.type || otherCommand.type === "turnOn") {
+      return true;
+    }
+    return false;
+  }
 }

@@ -7,13 +7,13 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class Command_SyncBehaviours extends CommandBase implements CommandBaseInterface {
 
   behaviourTransfers : behaviourTransfer[]
-  constructor(handle: string, behaviours: behaviourTransfer[]) {
-    super(handle, "syncBehaviours");
+  constructor(behaviours: behaviourTransfer[]) {
+    super("syncBehaviours");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<behaviourTransfer[]> {
-    return BluenetPromiseWrapper.syncBehaviours(this.handle, this.behaviourTransfers);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<behaviourTransfer[]> {
+    return BluenetPromiseWrapper.syncBehaviours(connectedHandle, this.behaviourTransfers);
   }
 
 

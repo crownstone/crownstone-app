@@ -5,17 +5,22 @@ import { Executor } from "../Executor";
 
 export class Command_TurnOn extends CommandBase implements CommandBaseInterface {
 
-  state:  number;
-
-  constructor(handle: string) {
-    super(handle, "turnOn");
+  constructor() {
+    super("turnOn");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
-    let stoneSwitchPackets = Executor.aggregateTurnOnCommands(this.handle, options.bleCommand, options.queue);
-    return BluenetPromiseWrapper.turnOnMesh(this.handle, stoneSwitchPackets);
+    let stoneSwitchPackets = Executor.aggregateTurnOnCommands(connectedHandle, options.bleCommand, options.queue);
+    return BluenetPromiseWrapper.turnOnMesh(connectedHandle, stoneSwitchPackets);
+  }
+
+  isDuplicate(otherCommand: CommandBaseInterface): boolean {
+    if (this.type === otherCommand.type || otherCommand.type === "multiSwitch") {
+      return true;
+    }
+    return false;
   }
 
 }

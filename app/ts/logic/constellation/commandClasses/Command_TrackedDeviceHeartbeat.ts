@@ -6,16 +6,15 @@ import { Executor } from "../Executor";
 export class Command_TrackedDeviceHeartbeat extends CommandBase implements CommandBaseInterface {
 
   trackingNumber : number;
-  locationUID    : number;
+  locationUID    : () => number | number;
   deviceToken    : number;
   ttlMinutes     : number;
-  constructor(handle         : string,
-              trackingNumber : number,
-              locationUID    : number,
+  constructor(trackingNumber : number,
+              locationUID    : () => number | number,
               deviceToken    : number,
               ttlMinutes     : number,
   ) {
-    super(handle, "trackedDeviceHeartbeat");
+    super("trackedDeviceHeartbeat");
     this.trackingNumber = trackingNumber;
     this.locationUID    = locationUID;
     this.deviceToken    = deviceToken;
@@ -23,11 +22,12 @@ export class Command_TrackedDeviceHeartbeat extends CommandBase implements Comma
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    let locationUID = typeof this.locationUID == "function" ? this.locationUID() : this.locationUID;
     return BluenetPromiseWrapper.trackedDeviceHeartbeat(
-      this.handle,
+      connectedHandle,
       this.trackingNumber,
-      this.locationUID,
+      locationUID,
       this.deviceToken,
       this.ttlMinutes
     )

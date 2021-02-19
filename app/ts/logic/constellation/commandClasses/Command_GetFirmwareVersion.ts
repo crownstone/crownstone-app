@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetFirmwareVersion extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getFirmwareVersion");
+  constructor() {
+    super("getFirmwareVersion");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<string> {
-    return BluenetPromiseWrapper.getFirmwareVersion(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<string> {
+    return BluenetPromiseWrapper.getFirmwareVersion(connectedHandle);
   }
   
 }

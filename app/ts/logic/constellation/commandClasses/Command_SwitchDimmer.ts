@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SwitchDimmer extends CommandBase implements CommandBaseInterface {
 
   state: number;
-  constructor(handle: string, state: number) {
-    super(handle, "switchDimmer");
+  constructor(state: number) {
+    super("switchDimmer");
     this.state = state;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.switchDimmer(this.handle, this.state);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.switchDimmer(connectedHandle, this.state);
   }
   
 }

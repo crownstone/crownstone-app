@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetCurrentMultiplier extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getCurrentMultiplier");
+  constructor() {
+    super("getCurrentMultiplier");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getCurrentMultiplier(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getCurrentMultiplier(connectedHandle);
   }
   
 }

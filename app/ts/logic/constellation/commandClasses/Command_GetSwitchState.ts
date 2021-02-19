@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetSwitchState extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getSwitchState");
+  constructor() {
+    super("getSwitchState");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.getSwitchState(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getSwitchState(connectedHandle);
   }
   
 }

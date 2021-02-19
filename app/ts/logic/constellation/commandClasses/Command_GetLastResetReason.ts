@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetLastResetReason extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getLastResetReason");
+  constructor() {
+    super("getLastResetReason");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<ResetReason> {
-    return BluenetPromiseWrapper.getLastResetReason(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<ResetReason> {
+    return BluenetPromiseWrapper.getLastResetReason(connectedHandle);
   }
   
 }

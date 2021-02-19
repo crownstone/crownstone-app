@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetSoftOnSpeed extends CommandBase implements CommandBaseInterface {
 
   speed: number;
-  constructor(handle: string, speed: number) {
-    super(handle, "setSoftOnSpeed");
+  constructor(speed: number) {
+    super("setSoftOnSpeed");
     this.speed = speed;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setSoftOnSpeed(this.handle, this.speed);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setSoftOnSpeed(connectedHandle, this.speed);
   }
   
 }

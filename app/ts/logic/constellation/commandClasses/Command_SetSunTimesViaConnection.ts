@@ -3,19 +3,19 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 import { Executor } from "../Executor";
 
 
-export class Command_SetSunTimesViaConnection extends CommandBase implements CommandBaseInterface {
+export class Command_SetSunTimesViaConnection extends CommandBase implements CommandInterface {
 
   sunriseSecondsSinceMidnight : number;
   sunsetSecondsSinceMidnight  : number;
-  constructor(handle: string, sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) {
-    super(handle, "setSunTimesViaConnection");
+  constructor(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) {
+    super("setSunTimesViaConnection");
     this.sunriseSecondsSinceMidnight = sunriseSecondsSinceMidnight;
     this.sunsetSecondsSinceMidnight  = sunsetSecondsSinceMidnight;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setSunTimesViaConnection(this.handle, this.sunriseSecondsSinceMidnight, this.sunsetSecondsSinceMidnight);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setSunTimesViaConnection(connectedHandle, this.sunriseSecondsSinceMidnight, this.sunsetSecondsSinceMidnight);
   }
   
 }

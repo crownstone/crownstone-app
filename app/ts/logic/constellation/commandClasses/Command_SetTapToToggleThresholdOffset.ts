@@ -7,14 +7,14 @@ export class Command_SetTapToToggleThresholdOffset extends CommandBase implement
 
 
   rssiThresholdOffset : number;
-  constructor(handle: string, rssiThresholdOffset : number) {
-    super(handle, "setTapToToggleThresholdOffset");
+  constructor(rssiThresholdOffset : number) {
+    super("setTapToToggleThresholdOffset");
     this.rssiThresholdOffset = rssiThresholdOffset;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setTapToToggleThresholdOffset(this.handle, this.rssiThresholdOffset);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setTapToToggleThresholdOffset(connectedHandle, this.rssiThresholdOffset);
   }
   
 }

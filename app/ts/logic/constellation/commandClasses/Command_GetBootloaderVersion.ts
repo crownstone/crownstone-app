@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetBootloaderVersion extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getBootloaderVersion");
+  constructor() {
+    super("getBootloaderVersion");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<string> {
-    return BluenetPromiseWrapper.getBootloaderVersion(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<string> {
+    return BluenetPromiseWrapper.getBootloaderVersion(connectedHandle);
   }
   
 }

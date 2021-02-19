@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetHardwareVersion extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getHardwareVersion");
+  constructor() {
+    super("getHardwareVersion");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<string> {
-    return BluenetPromiseWrapper.getHardwareVersion(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<string> {
+    return BluenetPromiseWrapper.getHardwareVersion(connectedHandle);
   }
   
 }

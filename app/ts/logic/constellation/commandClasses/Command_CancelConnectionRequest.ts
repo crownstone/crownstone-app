@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_CancelConnectionRequest extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "cancelConnectionRequest");
+  constructor() {
+    super("cancelConnectionRequest");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.cancelConnectionRequest(connectedHandle);
   }
   
 }

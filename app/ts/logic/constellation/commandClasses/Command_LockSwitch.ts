@@ -7,14 +7,14 @@ export class Command_LockSwitch extends CommandBase implements CommandBaseInterf
 
 
   lock : boolean
-  constructor(handle: string, lock: boolean) {
-    super(handle, "lockSwitch");
+  constructor(lock: boolean) {
+    super("lockSwitch");
     this.lock = lock;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.lockSwitch(this.handle, this.lock);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.lockSwitch(connectedHandle, this.lock);
   }
   
 }

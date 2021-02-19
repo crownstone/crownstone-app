@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetUartKey extends CommandBase implements CommandBaseInterface {
 
   uartKey: string;
-  constructor(handle: string, uartKey: string) {
-    super(handle, "setUartKey");
+  constructor(uartKey: string) {
+    super("setUartKey");
     this.uartKey = uartKey;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setUartKey(this.handle, this.uartKey);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setUartKey(connectedHandle, this.uartKey);
   }
   
 }

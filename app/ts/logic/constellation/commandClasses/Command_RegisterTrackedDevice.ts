@@ -6,23 +6,22 @@ import { Executor } from "../Executor";
 export class Command_RegisterTrackedDevice extends CommandBase implements CommandBaseInterface {
 
   trackingNumber:number
-  locationUID:number
+  locationUID:() => number | number
   profileId:number
   rssiOffset:number
   ignoreForPresence:boolean
   tapToToggleEnabled:boolean
   deviceToken:number
   ttlMinutes:number
-  constructor(handle: string,
-              trackingNumber:number,
-              locationUID:number,
+  constructor(trackingNumber:number,
+              locationUID:() => number | number,
               profileId:number,
               rssiOffset:number,
               ignoreForPresence:boolean,
               tapToToggleEnabled:boolean,
               deviceToken:number,
               ttlMinutes:number) {
-    super(handle, "registerTrackedDevice");
+    super("registerTrackedDevice");
     this.trackingNumber     = trackingNumber;
     this.locationUID        = locationUID;
     this.profileId          = profileId;
@@ -34,11 +33,12 @@ export class Command_RegisterTrackedDevice extends CommandBase implements Comman
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    let locationUID = typeof this.locationUID == "function" ? this.locationUID() : this.locationUID;
     return BluenetPromiseWrapper.registerTrackedDevice(
-      this.handle,
+      connectedHandle,
       this.trackingNumber,
-      this.locationUID,
+      locationUID,
       this.profileId,
       this.rssiOffset,
       this.ignoreForPresence,
@@ -47,6 +47,10 @@ export class Command_RegisterTrackedDevice extends CommandBase implements Comman
       this.ttlMinutes
     );
   }
-  
+
+  duplicateCheck(otherCommand: CommandBaseInterface): boolean {
+    return this.trackingNumber === (otherCommand as Command_RegisterTrackedDevice).trackingNumber;
+  };
+
 }
 

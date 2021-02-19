@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetSwitchCraft extends CommandBase implements CommandBaseInterface {
 
   state: boolean
-  constructor(handle: string, state: boolean) {
-    super(handle, "setSwitchCraft");
+  constructor(state: boolean) {
+    super("setSwitchCraft");
     this.state = state;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setSwitchCraft(this.handle, this.state);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setSwitchCraft(connectedHandle, this.state);
   }
   
 }

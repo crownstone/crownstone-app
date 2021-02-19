@@ -5,13 +5,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetMACAddress extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getMACAddress");
+  constructor() {
+    super("getMACAddress");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<string> {
-    return BluenetPromiseWrapper.getMACAddress(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<string> {
+    return BluenetPromiseWrapper.getMACAddress(connectedHandle);
   }
   
 }

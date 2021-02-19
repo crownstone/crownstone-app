@@ -7,19 +7,15 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class Command_ClearErrors extends CommandBase implements CommandBaseInterface {
 
   clearErrorData: clearErrorData;
-  constructor(handle: string, clearErrorData: clearErrorData) {
-    super(handle, "clearErrors");
+  constructor(clearErrorData: clearErrorData) {
+    super("clearErrors");
     this.clearErrorData = clearErrorData;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.clearErrors(this.handle, this.clearErrorData);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.clearErrors(connectedHandle, this.clearErrorData);
   }
 
-
-  duplicateCheck(otherCommand: CommandBase): boolean {
-    return xUtil.deepCompare(this.clearErrorData, (otherCommand as Command_ClearErrors).clearErrorData);
-  }
 }
 

@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetMinSchedulerFreeSpace extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getMinSchedulerFreeSpace");
+  constructor() {
+    super("getMinSchedulerFreeSpace");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getMinSchedulerFreeSpace(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getMinSchedulerFreeSpace(connectedHandle);
   }
   
 }

@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_DisconnectCommand extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "disconnectCommand");
+  constructor() {
+    super("disconnectCommand");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.disconnectCommand(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.disconnectCommand(connectedHandle);
   }
   
 }

@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_RequestCloudId extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "requestCloudId");
+  constructor() {
+    super("requestCloudId");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<HubDataReply> {
-    return BluenetPromiseWrapper.requestCloudId(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<HubDataReply> {
+    return BluenetPromiseWrapper.requestCloudId(connectedHandle);
   }
   
 }

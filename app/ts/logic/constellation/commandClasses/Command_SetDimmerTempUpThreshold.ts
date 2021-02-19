@@ -7,14 +7,14 @@ export class Command_SetDimmerTempUpThreshold extends CommandBase implements Com
 
 
   value: number;
-  constructor(handle: string, value: number) {
-    super(handle, "setDimmerTempUpThreshold");
+  constructor(value: number) {
+    super("setDimmerTempUpThreshold");
     this.value = value;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setDimmerTempUpThreshold(this.handle, this.value);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setDimmerTempUpThreshold(connectedHandle, this.value);
   }
   
 }

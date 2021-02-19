@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_BootloaderToNormalMode extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "bootloaderToNormalMode");
+  constructor() {
+    super("bootloaderToNormalMode");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.bootloaderToNormalMode(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.bootloaderToNormalMode(connectedHandle);
   }
   
 }

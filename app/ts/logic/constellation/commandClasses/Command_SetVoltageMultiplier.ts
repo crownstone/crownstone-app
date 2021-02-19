@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetVoltageMultiplier extends CommandBase implements CommandBaseInterface {
 
   value: number;
-  constructor(handle: string, value: number) {
-    super(handle, "setVoltageMultiplier");
+  constructor(value: number) {
+    super("setVoltageMultiplier");
     this.value = value;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setVoltageMultiplier(this.handle, this.value);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setVoltageMultiplier(connectedHandle, this.value);
   }
   
 }

@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SetMaxChipTemp extends CommandBase implements CommandBaseInterface {
 
   value: number;
-  constructor(handle: string, value: number) {
-    super(handle, "setMaxChipTemp");
+  constructor(value: number) {
+    super("setMaxChipTemp");
     this.value = value;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setMaxChipTemp(this.handle, this.value);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setMaxChipTemp(connectedHandle, this.value);
   }
   
 }

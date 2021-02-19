@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetTapToToggleThresholdOffset extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getTapToToggleThresholdOffset");
+  constructor() {
+    super("getTapToToggleThresholdOffset");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getTapToToggleThresholdOffset(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getTapToToggleThresholdOffset(connectedHandle);
   }
   
 }

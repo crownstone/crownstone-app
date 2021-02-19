@@ -12,8 +12,6 @@ type BridgeCommandType = "addBehaviour"                     |
                          "getAdcRestarts"                   |
                          "getBehaviour"                     |
                          "getBehaviourDebugInformation"     |
-                         "getBehaviourMasterHash"           |
-                         "getBehaviourMasterHashCRC"        |
                          "getBootloaderVersion"             |
                          "getCrownstoneUptime"              |
                          "getCurrentMultiplier"             |
@@ -80,4 +78,4 @@ type BridgeCommandType = "addBehaviour"                     |
                          "trackedDeviceHeartbeat"           |
                          "transferHubTokenAndCloudId"       |
                          "turnOn"                           |
-                         "updateBehaviour"
+                         "updateBehaviour"                  |

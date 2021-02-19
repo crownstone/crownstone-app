@@ -31,7 +31,7 @@ export class BleCommandQueueClass {
    * @param allowMeshRelay
    * @param promise
    */
-  generateAndLoad(options: commandOptions, command: commandInterface, allowMeshRelay: boolean,  promise : PromiseContainer) {
+  generateAndLoad(options: commandOptions, command: CommandInterface, allowMeshRelay: boolean,  promise : PromiseContainer) {
     let commandId = xUtil.getUUID();
 
     // we use every field from the options excep the command targets. Each target in this list get an individual command.

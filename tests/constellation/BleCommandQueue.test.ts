@@ -6,6 +6,11 @@ import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
 import { xUtil } from "../../app/ts/util/StandAloneUtil";
 import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
 import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
+import {
+  Command_GetFirmwareVersion,
+  Command_GetHardwareVersion,
+  Command_TurnOn
+} from "../../app/ts/logic/constellation/commandClasses";
 
 let BleCommandQueue = null;
 beforeEach(async () => {
@@ -26,7 +31,7 @@ test("BleCommandQueue shared, direct, generating commands and removing duplicate
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle, stone2.config.handle]);
 
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, false, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), false, promise);
 
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.direct[stone2.config.handle].length).toBe(1);
@@ -37,7 +42,7 @@ test("BleCommandQueue shared, direct, generating commands and removing duplicate
   let id2 = BleCommandQueue.queue.direct[stone2.config.handle][0].id;
 
   // check if duplicates are removed:
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, false, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), false, promise);
 
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.direct[stone2.config.handle].length).toBe(1);
@@ -55,7 +60,7 @@ test("BleCommandQueue shared, direct, meshRelay, one stone", async () => {
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
 
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
 
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId]).toBeUndefined();
@@ -74,7 +79,7 @@ test("BleCommandQueue shared, direct, meshRelay, 5 stones", async () => {
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
 
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId][0].minConnections).toBe(3);
@@ -91,7 +96,7 @@ test("BleCommandQueue shared, direct, meshRelay, 3 stones in mesh, see if the mi
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
 
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId][0].minConnections).toBe(2);
@@ -107,7 +112,7 @@ test("BleCommandQueue shared, direct, check if there are commands available", as
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
 
   expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle)).toBeTruthy();
   expect(BleCommandQueue.areThereCommandsFor(stone2.config.handle)).toBeTruthy();
@@ -123,7 +128,7 @@ test("BleCommandQueue shared, direct, check a command can be performed", async (
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
 
   expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId].length).toBe(1);
@@ -149,7 +154,7 @@ test("BleCommandQueue shared, perform and finish command in mesh", async () => {
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
-  BleCommandQueue.generateAndLoad(options, {type:"turnOn"}, true, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
 
   BleCommandQueue.performCommand(stone2.config.handle);
   expect(mBluenet.has(stone2.config.handle).called.turnOnMesh()).toBeTruthy();
@@ -182,7 +187,7 @@ test("BleCommandQueue private, direct and finish command in mesh", async () => {
   let promise2 = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle], true);
   let id = options.commanderId;
-  BleCommandQueue.generateAndLoad(options, {type:"getFirmwareVersion"}, false, promise);
+  BleCommandQueue.generateAndLoad(options, new Command_GetFirmwareVersion(), false, promise);
 
   expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle)).toBeFalsy()
   expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle, id)).toBeTruthy()
@@ -194,7 +199,7 @@ test("BleCommandQueue private, direct and finish command in mesh", async () => {
   expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle, id)).toBeFalsy();
   expect(promise.resolve).toBeCalled();
 
-  BleCommandQueue.generateAndLoad(options, {type:"getHardwareVersion"}, false, promise2);
+  BleCommandQueue.generateAndLoad(options, new Command_GetHardwareVersion(), false, promise2);
   BleCommandQueue.performCommand(stone1.config.handle, id);
   await mBluenet.for(stone1.config.handle).fail.getHardwareVersion();
   expect(promise2.reject).toBeCalled();

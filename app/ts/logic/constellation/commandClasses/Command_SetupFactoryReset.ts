@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_SetupFactoryReset extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "setupFactoryReset");
+  constructor() {
+    super("setupFactoryReset");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setupFactoryReset(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setupFactoryReset(connectedHandle);
   }
   
 }

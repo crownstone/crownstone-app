@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_SetupPutInDFU extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "setupPutInDFU");
+  constructor() {
+    super("setupPutInDFU");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setupPutInDFU(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setupPutInDFU(connectedHandle);
   }
   
 }

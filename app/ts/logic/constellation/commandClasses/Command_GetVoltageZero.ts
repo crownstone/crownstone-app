@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetVoltageZero extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getVoltageZero");
+  constructor() {
+    super("getVoltageZero");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getVoltageZero(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getVoltageZero(connectedHandle);
   }
   
 }

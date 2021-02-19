@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetAdcChannelSwaps extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getAdcChannelSwaps");
+  constructor() {
+    super("getAdcChannelSwaps");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<AdcSwapCount> {
-    return BluenetPromiseWrapper.getAdcChannelSwaps(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<AdcSwapCount> {
+    return BluenetPromiseWrapper.getAdcChannelSwaps(connectedHandle);
   }
   
 }

@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_SwitchRelay extends CommandBase implements CommandBaseInterface {
 
   state: number;
-  constructor(handle: string, state: number) {
-    super(handle, "switchRelay");
+  constructor(state: number) {
+    super("switchRelay");
     this.state = state;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.switchRelay(this.handle, this.state);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.switchRelay(connectedHandle, this.state);
   }
   
 }

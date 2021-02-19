@@ -7,13 +7,13 @@ import { Executor } from "../Executor";
 
 export class Command_GetCrownstoneUptime extends CommandBase implements CommandBaseInterface {
 
-  constructor(handle: string) {
-    super(handle, "getCrownstoneUptime");
+  constructor() {
+    super("getCrownstoneUptime");
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<number> {
-    return BluenetPromiseWrapper.getCrownstoneUptime(this.handle);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<number> {
+    return BluenetPromiseWrapper.getCrownstoneUptime(connectedHandle);
   }
   
 }

@@ -7,14 +7,14 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class Command_SetupCrownstone extends CommandBase implements CommandBaseInterface {
 
   setupData: setupData;
-  constructor(handle: string, dataObject: setupData) {
-    super(handle, "setupCrownstone");
+  constructor(dataObject: setupData) {
+    super("setupCrownstone");
     this.setupData = dataObject;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<void> {
-    return BluenetPromiseWrapper.setupCrownstone(this.handle, this.setupData);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
+    return BluenetPromiseWrapper.setupCrownstone(connectedHandle, this.setupData);
   }
 
 

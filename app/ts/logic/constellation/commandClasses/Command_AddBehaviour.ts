@@ -7,14 +7,14 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class Command_AddBehaviour extends CommandBase implements CommandBaseInterface {
 
   behaviourTransfer : behaviourTransfer
-  constructor(handle: string, behaviour: behaviourTransfer) {
-    super(handle, "addBehaviour");
+  constructor(behaviour: behaviourTransfer) {
+    super("addBehaviour");
     this.behaviourTransfer = behaviour;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<behaviourReply> {
-    return BluenetPromiseWrapper.addBehaviour(this.handle, this.behaviourTransfer);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<behaviourReply> {
+    return BluenetPromiseWrapper.addBehaviour(connectedHandle, this.behaviourTransfer);
   }
 
 

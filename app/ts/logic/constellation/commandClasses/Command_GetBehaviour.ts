@@ -6,14 +6,14 @@ import { Executor } from "../Executor";
 export class Command_GetBehaviour extends CommandBase implements CommandBaseInterface {
 
   index : number
-  constructor(handle: string, index: number) {
-    super(handle, "getBehaviour");
+  constructor(index: number) {
+    super("getBehaviour");
     this.index = index;
   }
 
 
-  async execute(options: ExecutionOptions) : Promise<behaviourTransfer> {
-    return BluenetPromiseWrapper.getBehaviour(this.handle, this.index);
+  async execute(connectedHandle: string, options: ExecutionOptions) : Promise<behaviourTransfer> {
+    return BluenetPromiseWrapper.getBehaviour(connectedHandle, this.index);
   }
 
 
