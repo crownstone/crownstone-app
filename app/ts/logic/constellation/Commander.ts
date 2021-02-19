@@ -123,7 +123,7 @@ class CommandAPI_base {
    * @param command
    * @param viaMesh
    */
-  async _load(command : CommandBaseInterface, allowMeshRelays: boolean = false) : Promise<any> {
+  async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     return new Promise<any>((resolve, reject) => {
       BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
 
@@ -274,13 +274,9 @@ export class CommandAPI extends CommandMeshAPI {
   async setupCrownstone(dataObject: setupData) : Promise< void > {
     return this._load(new Command_SetupCrownstone(dataObject));
   }
-
   async recover() : Promise< void > {
     return this._load(new Command_Recover());
   }
-
-
-  // DFU
   async putInDFU() : Promise< void > {
     return this._load(new Command_PutInDFU());
   }
@@ -296,8 +292,6 @@ export class CommandAPI extends CommandMeshAPI {
   async bootloaderToNormalMode() : Promise< void > {
     return this._load(new Command_BootloaderToNormalMode());
   }
-
-  // new
   async clearErrors(clearErrorJSON : clearErrorData) : Promise< void > {
     return this._load(new Command_ClearErrors(clearErrorJSON));
   }
@@ -307,10 +301,8 @@ export class CommandAPI extends CommandMeshAPI {
   async getTime() : Promise< number > {
     return this._load(new Command_GetTime());
   }
-
   async getSwitchState() : Promise< number > {
     return this._load(new Command_GetSwitchState());
-
   }
   async lockSwitch(lock : boolean) : Promise< void > {
     return this._load(new Command_LockSwitch(lock));
