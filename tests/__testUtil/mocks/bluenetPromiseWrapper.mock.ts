@@ -7,7 +7,7 @@ export function mockBluenetPromiseWrapper() {
     mocks[method] = function() {
       let args = arguments;
       let handle = args[0];
-      console.log("Providing promise",method, handle, arguments)
+      // console.log("Providing promise",method, handle, arguments)
       return new Promise((resolve, reject) => {
         libStateWrapper.loadTargeted(method, handle, resolve, reject, args)
       })

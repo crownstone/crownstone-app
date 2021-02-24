@@ -35,24 +35,11 @@ test("SessionBroker finish mesh command", async () => {
   StoneAvailabilityTracker.init();
 
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let handle1 = stone1.config.handle;
-  let stone2 = addStone({meshNetworkId: meshId});
-  let handle2 = stone2.config.handle;
-  let stone3 = addStone({meshNetworkId: meshId});
-  let handle3 = stone3.config.handle;
-  let stone4 = addStone({meshNetworkId: meshId});
-  let handle4 = stone4.config.handle;
-  let stone5 = addStone({meshNetworkId: meshId});
-  let handle5 = stone5.config.handle;
-
-  console.log(
-    "1", handle1,
-    "2", handle2,
-    "3", handle3,
-    "4", handle4,
-    "5", handle5,
-    )
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
+  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
 
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
   let api2 = new CommandAPI(getCommandOptions(sphere.id, [handle3]));
@@ -69,8 +56,6 @@ test("SessionBroker finish mesh command", async () => {
   await mBluenet.for(handle3).succeed.connect("operation");
   await mBluenet.for(handle4).succeed.connect("operation");
 
-  console.log("1 BleQueue direct:",BleCommandQueue.queue.direct)
-  console.log("1 BleQueue mesh:",  BleCommandQueue.queue.mesh)
   await TestUtil.nextTick();
 
   await mBluenet.for(handle2).succeed.turnOnMesh();
@@ -78,18 +63,9 @@ test("SessionBroker finish mesh command", async () => {
 
   await TestUtil.nextTick();
 
-  console.log("2 BleQueue direct:",BleCommandQueue.queue.direct);
-  console.log("2 BleQueue mesh:",  BleCommandQueue.queue.mesh);
-
-  await TestUtil.nextTick();
-
   expect(Object.keys(api.broker.pendingSessions).length).toBe(5);
 
   await mBluenet.for(handle4).succeed.turnOnMesh();
-  await TestUtil.nextTick();
-
-  await TestUtil.nextTick();
-  await TestUtil.nextTick();
   await TestUtil.nextTick();
 
   await mBluenet.for(handle3).succeed.turnOnMesh();
@@ -106,16 +82,11 @@ test("SessionBroker direct command finishes mesh commands", async () => {
   StoneAvailabilityTracker.init();
 
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let handle1 = stone1.config.handle;
-  let stone2 = addStone({meshNetworkId: meshId});
-  let handle2 = stone2.config.handle;
-  let stone3 = addStone({meshNetworkId: meshId});
-  let handle3 = stone3.config.handle;
-  let stone4 = addStone({meshNetworkId: meshId});
-  let handle4 = stone4.config.handle;
-  let stone5 = addStone({meshNetworkId: meshId});
-  let handle5 = stone5.config.handle;
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
+  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
 
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
 

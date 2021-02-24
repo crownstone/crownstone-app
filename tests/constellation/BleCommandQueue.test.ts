@@ -26,8 +26,8 @@ const meshId = "meshNetwork";
 
 test("BleCommandQueue shared, direct, generating commands and removing duplicate", async () => {
   let sphere = addSphere();
-  let stone1 = addStone();
-  let stone2 = addStone();
+  let { stone: stone1, handle:handle1 } = addStone();
+  let { stone: stone2, handle:handle2 } = addStone();
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle, stone2.config.handle]);
@@ -56,7 +56,7 @@ test("BleCommandQueue shared, direct, generating commands and removing duplicate
 
 test("BleCommandQueue shared, direct, meshRelay, one stone", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({meshId: meshId});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
@@ -69,13 +69,11 @@ test("BleCommandQueue shared, direct, meshRelay, one stone", async () => {
 
 test("BleCommandQueue shared, direct, meshRelay, 5 stones", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
-  let stone3 = addStone({meshNetworkId: meshId});
-  let stone4 = addStone({meshNetworkId: meshId});
-  let stone5 = addStone({meshNetworkId: meshId});
-  let stone6 = addStone({meshNetworkId: "mesh2"});
-
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:meshId});
+  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId:"mesh2"});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
@@ -88,10 +86,10 @@ test("BleCommandQueue shared, direct, meshRelay, 5 stones", async () => {
 
 test("BleCommandQueue shared, direct, meshRelay, 3 stones in mesh, see if the minimum connection count works", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
-  let stone3 = addStone({meshNetworkId: meshId});
-  let stone4 = addStone({meshNetworkId: "mesh-2"});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:"mesh-2"});
 
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
@@ -106,10 +104,10 @@ test("BleCommandQueue shared, direct, meshRelay, 3 stones in mesh, see if the mi
 
 test("BleCommandQueue shared, direct, check if there are commands available", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
-  let stone3 = addStone({meshNetworkId: meshId});
-  let stone4 = addStone({meshNetworkId: "mesh-2"});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:"mesh-2"});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
@@ -124,8 +122,8 @@ test("BleCommandQueue shared, direct, check if there are commands available", as
 
 test("BleCommandQueue shared, direct, check a command can be performed", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
@@ -148,10 +146,10 @@ test("BleCommandQueue shared, direct, check a command can be performed", async (
 
 test("BleCommandQueue shared, perform and finish command in mesh", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
-  let stone3 = addStone({meshNetworkId: meshId});
-  let stone4 = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:meshId});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
@@ -182,7 +180,7 @@ test("BleCommandQueue shared, perform and finish command in mesh", async () => {
 
 test("BleCommandQueue private, direct and finish command in mesh", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let promise2 = { resolve: jest.fn(), reject: jest.fn() };
@@ -210,12 +208,12 @@ test("BleCommandQueue private, direct and finish command in mesh", async () => {
 
 test("BleCommandQueue Multiple commands", async () => {
   let sphere = addSphere();
-  let stone1 = addStone({meshNetworkId: meshId});
-  let stone2 = addStone({meshNetworkId: meshId});
-  let stone3 = addStone({meshNetworkId: meshId});
-  let stone4 = addStone({meshNetworkId: meshId});
-  let stone5 = addStone({meshNetworkId: meshId});
-  let stone6 = addStone({meshNetworkId: "mesh2"});
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:meshId});
+  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId:meshId});
+  let { stone: stone6, handle:handle6 } = addStone({meshNetworkId:"mesh2"});
 
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };

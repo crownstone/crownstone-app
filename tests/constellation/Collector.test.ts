@@ -31,11 +31,12 @@ test("Collect handles", async () => {
   let sphere2 = addSphere();
   let location1 = addLocation();
   let location2 = addLocation();
-  let stone1 = addStone({locationId: location1.id,  meshNetworkId: meshId});
-  let stone2 = addStone({locationId: location1.id,  meshNetworkId: meshId});
-  let stone3 = addStone({locationId: location2.id, meshNetworkId: meshId});
-  let stone4 = addStone({locationId: location2.id, meshNetworkId: otherMeshId});
-  let stone5 = addStone({locationId: location1.id,  meshNetworkId: otherMeshId});
+  let { stone: stone1, handle:handle1 } = addStone({locationId: location1.id,  meshNetworkId: meshId});
+  let { stone: stone2, handle:handle2 } = addStone({locationId: location1.id,  meshNetworkId: meshId});
+  let { stone: stone3, handle:handle3 } = addStone({locationId: location2.id, meshNetworkId: meshId});
+  let { stone: stone4, handle:handle4 } = addStone({locationId: location2.id, meshNetworkId: otherMeshId});
+  let { stone: stone5, handle:handle5 } = addStone({locationId: location1.id,  meshNetworkId: otherMeshId});
+
 
   evt_ibeacon(-75, stone1.config.handle, sphere2.id, stone1.id);
   evt_ibeacon(-80, stone2.config.handle, sphere2.id, stone2.id);

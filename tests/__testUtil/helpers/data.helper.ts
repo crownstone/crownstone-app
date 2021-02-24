@@ -55,7 +55,9 @@ export function addStone(config? : any) {
   });
   MapProvider.refreshAll();
   lastUsedStoneId = stoneId;
-  return Get.stone(lastUsedSphereId, stoneId);
+
+  let stone = Get.stone(lastUsedSphereId, stoneId);
+  return { stone, handle: stone.config.handle };
 }
 export function addLocation(config? : any) {
   let locationId = 'location_' + xUtil.getUUID();
