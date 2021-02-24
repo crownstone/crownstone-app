@@ -8,7 +8,7 @@ export function mockNativeBus() {
   return mockBus;
 }
 
-class NativeBusMockClass extends EventBusClass {
+export class NativeBusMockClass extends EventBusClass {
   topics;
 
   constructor() {

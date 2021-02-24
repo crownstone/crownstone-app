@@ -17,7 +17,22 @@ export const Executor = {
     let baseMeshId    = stoneSummary.stoneConfig.meshNetworkId;
     let sphereId      = stoneSummary.sphereId;
 
-    let packets = [{ crownstoneId: stoneSummary.cid, state: getState(bleCommand) }];
+    let packets = [];
+    if (queue.direct[connectedHandle]) {
+      for (let command of queue.direct[connectedHandle]) {
+        // as long as we're in the same sphere, we might as well try to add it.
+        if (command.sphereId === sphereId) {
+          if (command.command.type === bleCommand.command.type) {
+            let extStoneSummary = MapProvider.stoneHandleMap[command.endTarget];
+            let state = getState(command);
+            if (state !== undefined) {
+              packets.push({ crownstoneId: stoneSummary.cid, state: getState(command) });
+            }
+          }
+        }
+      }
+    }
+
     // loop over all commands that are shared and in this sphere, get the ones with the TURN_ON command
     // We only check mesh commands, since anything that is direct and allowed to be relayed via the mesh is loaded there.
     for (let meshId in queue.mesh) {

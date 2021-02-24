@@ -15,9 +15,11 @@ import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise"
  * It will also have all intelligence on how to determine duplicate handling per command type.
  */
 export class BleCommandQueueClass {
-  executePending: boolean = false;
-
   queue : CommandQueueMap = { direct: {}, mesh: {}};
+
+  reset() {
+    this.queue = { direct: {}, mesh: {}};
+  }
 
   _removeDuplicates(command : BleCommand) {
     BleCommandCleaner.removeDuplicatesFromDirectQueue(command,this.queue);
@@ -31,7 +33,7 @@ export class BleCommandQueueClass {
    * @param allowMeshRelay
    * @param promise
    */
-  generateAndLoad(options: commandOptions, command: CommandInterface, allowMeshRelay: boolean,  promise : PromiseContainer) {
+  generateAndLoad(options: commandOptions, command: CommandInterface, allowMeshRelay: boolean, promise : PromiseContainer<any>) {
     let commandId = xUtil.getUUID();
 
     // we use every field from the options excep the command targets. Each target in this list get an individual command.
@@ -39,6 +41,8 @@ export class BleCommandQueueClass {
     delete usedOptions.commandTargets;
 
     let targets = options.commandTargets;
+
+    let commandsToLoad = [];
 
     for (let targetId of targets) {
       let sharedItems = {
@@ -55,11 +59,11 @@ export class BleCommandQueueClass {
         let bleCommand : BleCommand = { ...sharedItems, promise };
 
         // load the direct command.
-        this.load(bleCommand);
+        commandsToLoad.push(bleCommand);
 
         // possibly load extra mesh relays
         if (allowMeshRelay) {
-          let handle = options.commandTargets[0];
+          let handle = targetId;
           let meshId = MapProvider.handleMeshMap[handle];
           if (meshId) {
             let stoneData = MapProvider.stoneHandleMap[handle];
@@ -84,18 +88,24 @@ export class BleCommandQueueClass {
                   minConnections: Math.min(options.minConnections, amountOfStonesInMesh),
                   commandTarget: meshId,
                   endTarget: handle,
-                  promise: { resolve: () => {}, reject: (err) => {} } // the promise resolves when the direct message is delivered. The success of the redundant messages is optional.
+                  promise: xUtil.getPromiseContainer<any>()
                 };
-                this.load(relayBleCommand)
+                commandsToLoad.push(relayBleCommand);
               }
             }
           }
         }
       }
       else if (options.commandType === "MESH") {
-        return this.load({ ...sharedItems, promise });
+        commandsToLoad.push({ ...sharedItems, promise });
       }
     }
+
+    for (let command of commandsToLoad) {
+      this.load(command);
+    }
+
+    return commandsToLoad;
   }
 
   load(command: BleCommand) {
@@ -183,6 +193,8 @@ export class BleCommandQueueClass {
         let meshCommand = meshCommands[i];
         if (meshCommand.id === commandId || meshCommand.linkedId === commandId) {
           this.queue.mesh[meshId].splice(i,1);
+
+          meshCommand.promise.resolve();
           if (this.queue.mesh[meshId].length === 0) {
             delete this.queue.mesh[meshId];
           }
@@ -214,11 +226,11 @@ export class BleCommandQueueClass {
         commandRemoved = true;
       }
       else if (command.executedBy.length >= command.minConnections) {
+        // mesh action
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
       }
-
     }
     catch (err) {
       let attemptingIndex = command.attemptingBy.indexOf(handle)

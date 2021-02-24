@@ -4,8 +4,8 @@ import { DISABLE_TIMEOUT } from "../../ExternalConfig";
 import { LOGd, LOGv } from "../../logging/Log";
 
 const RSSI_TIMEOUT_MS = 5000;
-const RSSI_THRESHOLD = 3;
-const INVALID_RSSI = -1000;
+const RSSI_THRESHOLD  = 3;
+const INVALID_RSSI    = -1000;
 
 const TRIGGER_ID = "StoneTracker"
 
@@ -157,7 +157,9 @@ export class StoneAvailabilityTrackerClass {
     registerStoneId(data.stoneId, data.sphereId, data.rssi);
     // add stone that has been relayed by this advertisement via the mesh. If this is not a mesh message,
     // the payloadId and stoneId are the same and this call does nothing.
-    registerStoneId(data.payloadId, data.sphereId, null);
+    if (data.payloadId !== undefined) {
+      registerStoneId(data.payloadId, data.sphereId, null);
+    }
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
       this.sphereLog[data.sphereId][data.stoneId] = {t: null, rssi: null, handle: null };
@@ -179,7 +181,7 @@ export class StoneAvailabilityTrackerClass {
     if (data.handle) {
       LOGv.native("StoneAvailabilityTracker: Storing data in logs");
       this.log[data.stoneId].handle = data.handle;
-      this.sphereLog[data.sphereId][data.stoneId].rssi = data.handle;
+      this.sphereLog[data.sphereId][data.stoneId].handle = data.handle;
     }
 
     if (Math.abs(newRSSI - prevRSSI) > 3*RSSI_THRESHOLD) {
@@ -235,7 +237,7 @@ export class StoneAvailabilityTrackerClass {
   getAvgRssi(stoneId) {
     if (this.log[stoneId]) {
       if (Date.now() - this.log[stoneId].t < RSSI_TIMEOUT_MS) {
-        return this.log[stoneId].rssi || INVALID_RSSI;
+        return this.log[stoneId].rssi ?? INVALID_RSSI;
       }
     }
     return INVALID_RSSI;
@@ -244,7 +246,7 @@ export class StoneAvailabilityTrackerClass {
   getRssi(stoneId) {
     if (this.log[stoneId]) {
       if (Date.now() - this.log[stoneId].t < RSSI_TIMEOUT_MS) {
-        return this.log[stoneId].lastNotifiedRssi || INVALID_RSSI;
+        return this.log[stoneId].lastNotifiedRssi ?? INVALID_RSSI;
       }
     }
     return INVALID_RSSI;

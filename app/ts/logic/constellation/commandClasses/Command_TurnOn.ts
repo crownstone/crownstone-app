@@ -9,7 +9,6 @@ export class Command_TurnOn extends CommandBase implements CommandBaseInterface 
     super("turnOn");
   }
 
-
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
     let stoneSwitchPackets = Executor.aggregateTurnOnCommands(connectedHandle, options.bleCommand, options.queue);

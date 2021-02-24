@@ -187,11 +187,107 @@ test("Session manager failing private connection.", async () => {
   expect(p1Err).toBeCalledWith("SESSION_REQUEST_TIMEOUT");
 
   // this mimics how the kill is done in the lib.
-  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED")
-  await mBluenet.for(handle).succeed.cancelConnectionRequest()
+  await mBluenet.cancelConnectionRequest(handle);
 
   expect(sessionManager._sessions[handle]).toBeUndefined();
   expect(sessionManager._activeSessions[handle]).toBeUndefined();
   expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
 });
+
+
+test("Session manager request and revoke shared requests in different states.", async () => {
+  let sphere = addSphere();
+  let stone1 = addStone({meshNetworkId: meshId});
+  let handle = stone1.config.handle;
+  eventHelperSetActive(handle, sphere.id, stone1.id);
+
+  let sessionManager = new SessionManagerClass();
+
+  let id1 = 'commanderId_1';
+  let id2 = 'commanderId_2';
+  let id3 = 'commanderId_3';
+
+  // revoke while initializing...
+  sessionManager.request(handle, id1, false);
+  expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
+  sessionManager.revokeRequest(handle, id1)
+  expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+
+
+  // revoke while connecting...
+  sessionManager.request(handle, id2, false);
+  evt_ibeacon(-80);
+  expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
+  sessionManager.revokeRequest(handle, id2)
+
+  await TestUtil.nextTick();
+  await mBluenet.cancelConnectionRequest(handle);
+
+  expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+
+  // revoke while connected...
+  sessionManager.request(handle, id3, false);
+  evt_ibeacon(-80);
+  expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
+  await mBluenet.for(handle).succeed.connect("operation");
+  await TestUtil.nextTick();
+  expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).not.toBeUndefined();
+
+  sessionManager.revokeRequest(handle, id3)
+  await TestUtil.nextTick();
+  await mBluenet.for(handle).succeed.disconnectCommand();
+  await mBluenet.for(handle).succeed.phoneDisconnect();
+  // this event triggers the cleanup.
+  evt_disconnected();
+
+  expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+
+});
+
+
+
+test("Session manager request and revoke private requests in different states.", async () => {
+  let sphere = addSphere();
+  let stone1 = addStone({meshNetworkId: meshId});
+  let handle = stone1.config.handle;
+  eventHelperSetActive(handle, sphere.id, stone1.id);
+
+  let sessionManager = new SessionManagerClass();
+
+  let id1 = 'commanderId_1';
+  let id2 = 'commanderId_2';
+
+  // revoke while connecting...
+  sessionManager.request(handle, id1, true);
+  expect(sessionManager._pendingPrivateSessionRequests[handle].length).toBe(1);
+  sessionManager.revokeRequest(handle, id1)
+  await mBluenet.cancelConnectionRequest(handle);
+  expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+
+
+  // revoke while waiting for commands...
+  sessionManager.request(handle, id2, true);
+  expect(sessionManager._pendingPrivateSessionRequests[handle].length).toBe(1);
+  await mBluenet.for(handle).succeed.connect("operation");
+  await TestUtil.nextTick();
+  expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).not.toBeUndefined();
+
+  sessionManager.revokeRequest(handle, id2)
+  await TestUtil.nextTick();
+  await mBluenet.for(handle).succeed.disconnectCommand();
+  await mBluenet.for(handle).succeed.phoneDisconnect();
+  // this event triggers the cleanup.
+  evt_disconnected();
+  expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+});
+
+
+

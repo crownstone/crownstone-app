@@ -14,6 +14,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandQueue } from "./BleCommandQueue";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
+import { LOG } from "../../logging/Log";
 
 export class SessionManagerClass {
 
@@ -27,6 +28,14 @@ export class SessionManagerClass {
 
   _timeoutHandlers : {[handle: string] : {[commanderId: string]: { clearCallback: () => void }}} = {};
 
+  reset() {
+    this._sessions = {};
+    this._activeSessions = {};
+    this._pendingPrivateSessionRequests = {};
+    this._pendingSessionRequests = {};
+    this._timeoutHandlers = {};
+
+  }
 
   /**
    * This will resolve once the session is connected
@@ -106,7 +115,7 @@ export class SessionManagerClass {
   evaluateSessionNecessity() {
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
-        if (BleCommandQueue.areThereCommandsFor(handle) === false) {
+        if (BleCommandQueue.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
           this._endSession(handle);
         }
       }
@@ -205,11 +214,11 @@ export class SessionManagerClass {
   ) {
 
     if (privateSessionRequest) {
-      console.log("SessionManager: Adding request to private pending list.", handle, commanderId);
+      LOG.info("SessionManager: Adding request to private pending list.", handle, commanderId);
       addToPendingList(this._pendingPrivateSessionRequests, handle, commanderId, resolve, reject);
     }
     else {
-      console.log("SessionManager: Adding request to shared pending list.", handle, commanderId);
+      LOG.info("SessionManager: Adding request to shared pending list.", handle, commanderId);
       addToPendingList(this._pendingSessionRequests, handle, commanderId, resolve, reject);
     }
 
@@ -229,7 +238,7 @@ export class SessionManagerClass {
 
     this._timeoutHandlers[handle][commanderId] = {
       clearCallback: Scheduler.scheduleCallback(() => {
-        console.log("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
+        LOG.info("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
         reject("SESSION_REQUEST_TIMEOUT");
         let session = this._sessions[handle];
 
@@ -262,22 +271,23 @@ export class SessionManagerClass {
   revokeRequest(handle: string, commanderId: string) {
     let session = this._sessions[handle];
 
-    // remove the pending request from the private list if it's there.
-    if (this._pendingPrivateSessionRequests[handle] && this._pendingPrivateSessionRequests[handle][commanderId]) {
-      this.removeFromQueue(handle, commanderId);
-
-      if (session && session.isPrivate() === true && session.privateId === commanderId) {
+    // if it was in the public list, remove it from there.
+    if (isInList(this._pendingSessionRequests, handle, commanderId)) {
+      removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
+      if (session && session.isPrivate() === false && session.state === "INITIALIZING" || session.state === "CONNECTING") {
+        // public sessions close themselves, no need to end if it is connected
         this.closeSession(handle, commanderId);
       }
     }
 
-    // if it was in the public list, reve it from there.
-    if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle][commanderId]) {
-      this.removeFromQueue(handle, commanderId);
+    // remove the pending request from the private list if it's there.
+    if (isInList(this._pendingPrivateSessionRequests, handle, commanderId)) {
+      removeFromQueueList(this._pendingPrivateSessionRequests, handle, commanderId);
+    }
 
-      if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
-        this.closeSession(handle, commanderId);
-      }
+    // if the session is private, the revocation must close it.
+    if (session && session.isPrivate() === true && session.privateId === commanderId) {
+      this.closeSession(handle, commanderId);
     }
   }
 
@@ -327,9 +337,9 @@ export class SessionManagerClass {
     }
   }
 
-  async removeFromQueue(handle, commandId) {
-    removeFromQueueList(this._pendingPrivateSessionRequests, handle, commandId);
-    removeFromQueueList(this._pendingSessionRequests, handle, commandId);
+  async removeFromQueue(handle, commanderId) {
+    removeFromQueueList(this._pendingPrivateSessionRequests, handle, commanderId);
+    removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
   }
 
   clearAllSessions() {
@@ -349,6 +359,20 @@ function addToPendingList(map, handle, commanderId, resolve, reject) {
   map[handle].push({commanderId, resolve, reject})
 }
 
+
+function isInList(map, handle, commanderId) {
+  let arrayInMap = map[handle];
+  if (!arrayInMap) { return false; }
+
+  for (let i = 0; i < arrayInMap.length; i++) {
+    if (arrayInMap[i].commanderId === commanderId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function removeFromQueueList(map, handle, commanderId) {
   let arrayInMap = map[handle];
   if (!arrayInMap) { return; }
@@ -356,7 +380,6 @@ function removeFromQueueList(map, handle, commanderId) {
   for (let i = 0; i < arrayInMap.length; i++) {
     if (arrayInMap[i].commanderId === commanderId) {
       arrayInMap[i].reject("REMOVED_FROM_QUEUE");
-
       arrayInMap.splice(i,1);
       break;
     }

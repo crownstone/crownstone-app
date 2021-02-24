@@ -24,7 +24,8 @@ interface CommandQueueMap {
   direct: {[handle: string]        : BleCommand[]}
   mesh:   {[meshNetworkId: string] : BleCommand[]}
 }
-interface PromiseContainer {
+interface PromiseContainer<T> {
+  promise: Promise<T>,
   resolve: (data?: any) => void,
   reject:  (err:   any) => void
 }

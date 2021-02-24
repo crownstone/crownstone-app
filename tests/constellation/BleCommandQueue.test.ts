@@ -7,6 +7,7 @@ import { xUtil } from "../../app/ts/util/StandAloneUtil";
 import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
 import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
 import {
+  Command_AllowDimming,
   Command_GetFirmwareVersion,
   Command_GetHardwareVersion,
   Command_TurnOn
@@ -193,16 +194,39 @@ test("BleCommandQueue private, direct and finish command in mesh", async () => {
   expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle, id)).toBeTruthy()
   BleCommandQueue.performCommand(stone1.config.handle);
   expect(mBluenet.has(stone1.config.handle).called.getFirmwareVersion()).toBeFalsy();
-  BleCommandQueue.performCommand(stone1.config.handle, id);
-  expect(mBluenet.has(stone1.config.handle).called.getFirmwareVersion()).toBeTruthy()
-  await mBluenet.for(stone1.config.handle).succeed.getFirmwareVersion();
-  expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle, id)).toBeFalsy();
-  expect(promise.resolve).toBeCalled();
-
-  BleCommandQueue.generateAndLoad(options, new Command_GetHardwareVersion(), false, promise2);
-  BleCommandQueue.performCommand(stone1.config.handle, id);
-  await mBluenet.for(stone1.config.handle).fail.getHardwareVersion();
-  expect(promise2.reject).toBeCalled();
+  // BleCommandQueue.performCommand(stone1.config.handle, id);
+  // expect(mBluenet.has(stone1.config.handle).called.getFirmwareVersion()).toBeTruthy()
+  //
+  // await mBluenet.for(stone1.config.handle).succeed.getFirmwareVersion();
+  // expect(BleCommandQueue.areThereCommandsFor(stone1.config.handle, id)).toBeFalsy();
+  // expect(promise.resolve).toBeCalled();
+  //
+  // BleCommandQueue.generateAndLoad(options, new Command_GetHardwareVersion(), false, promise2);
+  // BleCommandQueue.performCommand(stone1.config.handle, id);
+  // await mBluenet.for(stone1.config.handle).fail.getHardwareVersion();
+  // expect(promise2.reject).toBeCalled();
 });
 
 
+test("BleCommandQueue Multiple commands", async () => {
+  let sphere = addSphere();
+  let stone1 = addStone({meshNetworkId: meshId});
+  let stone2 = addStone({meshNetworkId: meshId});
+  let stone3 = addStone({meshNetworkId: meshId});
+  let stone4 = addStone({meshNetworkId: meshId});
+  let stone5 = addStone({meshNetworkId: meshId});
+  let stone6 = addStone({meshNetworkId: "mesh2"});
+
+
+  let promise = { resolve: jest.fn(), reject: jest.fn() };
+  let options = getCommandOptions(sphere.id, [stone1.config.handle]);
+  let options2 = getCommandOptions(sphere.id, [stone2.config.handle]);
+
+  BleCommandQueue.generateAndLoad(options, new Command_TurnOn(), true, promise);
+  BleCommandQueue.generateAndLoad(options2, new Command_AllowDimming(true), false, promise);
+
+  expect(BleCommandQueue.queue.direct[stone1.config.handle].length).toBe(1);
+  expect(BleCommandQueue.queue.direct[stone2.config.handle].length).toBe(1);
+  expect(BleCommandQueue.queue.mesh[meshId].length).toBe(1);
+  expect(BleCommandQueue.queue.mesh[meshId][0].minConnections).toBe(3);
+});

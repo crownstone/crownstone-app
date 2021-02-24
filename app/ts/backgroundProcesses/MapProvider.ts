@@ -115,7 +115,7 @@ class MapProviderClass {
 
         if (this.meshMap[meshId] === undefined) { this.meshMap[meshId] = {}; }
 
-        this.meshMap[meshId][handle] = this.stoneSummaryMap[stoneId];
+        this.meshMap[meshId][stoneId] = this.stoneSummaryMap[stoneId];
       }
     }
   }

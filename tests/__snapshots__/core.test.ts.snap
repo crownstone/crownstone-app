@@ -69,7 +69,7 @@ Object {
   },
   "installations": Object {},
   "spheres": Object {
-    "uuid2000-2001": Object {
+    "sphere_uuid2000-2001": Object {
       "config": Object {
         "aiName": null,
         "cloudId": null,
@@ -82,7 +82,7 @@ Object {
         "updatedAt": 0,
       },
       "hubs": Object {},
-      "id": "uuid2000-2001",
+      "id": "sphere_uuid2000-2001",
       "keys": Object {},
       "locations": Object {},
       "messages": Object {},
@@ -96,7 +96,7 @@ Object {
         "smartHomeEnabled": true,
       },
       "stones": Object {
-        "uuid2002-2003": Object {
+        "stone_uuid2002-2003": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -131,7 +131,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": null,
             "firmwareVersionSeenInOverview": null,
-            "handle": "uuid2004",
+            "handle": "handle_uuid2004",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -155,7 +155,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "uuid2002-2003",
+          "id": "stone_uuid2002-2003",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -176,7 +176,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "uuid2006-2007": Object {
+        "stone_uuid2006-2007": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -211,7 +211,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": null,
             "firmwareVersionSeenInOverview": null,
-            "handle": "uuid2008",
+            "handle": "handle_uuid2008",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -235,7 +235,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "uuid2006-2007",
+          "id": "stone_uuid2006-2007",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -256,7 +256,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "uuid2010-2011": Object {
+        "stone_uuid2010-2011": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -291,7 +291,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": null,
             "firmwareVersionSeenInOverview": null,
-            "handle": "uuid2012",
+            "handle": "handle_uuid2012",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -315,7 +315,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "uuid2010-2011",
+          "id": "stone_uuid2010-2011",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,

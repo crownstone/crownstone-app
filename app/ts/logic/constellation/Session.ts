@@ -12,6 +12,7 @@ import { BleCommandQueue } from "./BleCommandQueue";
 import { core } from "../../core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { xUtil } from "../../util/StandAloneUtil";
 
 const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
 
@@ -19,6 +20,8 @@ export class Session {
   state    : ConnectionState = "INITIALIZING"
   handle   : string
   sphereId : string
+
+  identifier = xUtil.getShortUUID()
 
   sessionIsActivated = false;
   sessionIsKilled = false;
@@ -47,12 +50,13 @@ export class Session {
     this.initializeBootstrapper();
 
     if (this.privateId) {
-      this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, () => {
+      this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, async () => {
         if (this.state === "WAITING_FOR_COMMANDS") {
           // we do this next tick to ensure all the loading processes are finished.
           // I don't want it to matter too much when the commandloaded is called compared to when the actual command
           // is loaded. This solves that issue.
-          setImmediate(() => {this.handleCommands();});
+          await xUtil.nextTick()
+          await this.handleCommands();
         }
       }));
       this.tryToActivate();
@@ -122,7 +126,8 @@ export class Session {
 
     // on the next tick we check for commands.
     // This is done to allow for chaining commands in after the connect has succeeded.
-    setImmediate(() => { this.handleCommands(); })
+    await xUtil.nextTick()
+    await this.handleCommands();
   }
 
   async handleCommands() {
@@ -132,7 +137,7 @@ export class Session {
       // there is no task for us to do. If we're a private connection, we'll wait patiently for a new command
       if (this.isPrivate()) {
         // Tasks here CAN include connections.
-        this.state = "WAITING_FOR_COMMANDS"
+        this.state = "WAITING_FOR_COMMANDS";
         return;
       }
       else {
@@ -142,7 +147,6 @@ export class Session {
         return;
       }
     }
-
     this.state = "PERFORMING_COMMAND";
     await BleCommandQueue.performCommand(this.handle, this.privateId);
     this.state = "CONNECTED";
@@ -152,7 +156,8 @@ export class Session {
     }
 
     // We do this on the next tick to allow for chaining new commands after this one has been resolved.
-    setImmediate(() => { this.handleCommands(); })
+    await xUtil.nextTick()
+    await this.handleCommands();
   }
 
 
@@ -207,6 +212,9 @@ export class Session {
   sessionHasEnded() {
     this.interactionModule.sessionHasEnded();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
+    if (this.unsubscribeBootstrapper) {
+      this.unsubscribeBootstrapper();
+    }
   }
 }
 

@@ -46,4 +46,7 @@ class MockSchedulerClass {
       }
     }
   }
+
+  setRepeatingTrigger = jest.fn()
+  loadCallback        = jest.fn()
 }

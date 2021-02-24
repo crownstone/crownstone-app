@@ -2,6 +2,8 @@ import { mBluenet, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { Session } from "../../app/ts/logic/constellation/Session";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
+import { core } from "../../app/ts/core";
+import { NativeBusMockClass } from "../__testUtil/mocks/nativeBus.mock";
 
 
 beforeEach(async () => {
@@ -90,8 +92,7 @@ test("Session public deactivating.", async () => {
   expect(interactionModule.canActivate).toBeCalled();
   expect(interactionModule.willActivate).toBeCalled();
   session.deactivate();
-  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
-  await mBluenet.for(handle).succeed.cancelConnectionRequest();
+  await mBluenet.cancelConnectionRequest(handle);
 
   expect(interactionModule.isDeactivated).toBeCalled();
   expect(interactionModule.isConnected).not.toBeCalled()
@@ -114,8 +115,7 @@ test("Session public kill while connecting.", async () => {
   expect(interactionModule.willActivate).toBeCalled();
   expect(session.state).toBe("CONNECTING");
   session.kill();
-  await mBluenet.for(handle).succeed.cancelConnectionRequest("operation");
-  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenet.cancelConnectionRequest(handle);
 
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
@@ -151,8 +151,7 @@ test("Session private kill while connecting.", async () => {
   expect(interactionModule.willActivate).toBeCalled();
   expect(session.state).toBe("CONNECTING");
   session.kill();
-  await mBluenet.for(handle).succeed.cancelConnectionRequest("operation");
-  await mBluenet.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenet.cancelConnectionRequest(handle);
 
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
@@ -189,6 +188,54 @@ test("Session private kill while waiting for commands.", async () => {
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
+
+
+
+test("Session should cleanup its listeners", async () => {
+  let interactionModule = getInteractionModule()
+
+  // initializing
+  let session = new Session(handle,null, interactionModule);
+  session.kill();
+  expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
+  expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
+  expect(core.eventBus._topicIds).toStrictEqual({})
+
+  // connecting...
+  session = new Session(handle,null, interactionModule);
+  session.connect();
+  session.kill();
+  await mBluenet.cancelConnectionRequest(handle)
+  expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
+  expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
+  expect(core.eventBus._topicIds).toStrictEqual({})
+
+  // connected...
+  session = new Session(handle,null, interactionModule);
+  session.connect();
+  await mBluenet.for(handle).succeed.connect('operation');
+  session.kill();
+  await mBluenet.for(handle).succeed.disconnectCommand();
+  await mBluenet.for(handle).succeed.phoneDisconnect();
+  evt_disconnected(handle);
+  expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
+  expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
+  expect(core.eventBus._topicIds).toStrictEqual({})
+
+  // self cleanup with no commands
+  session = new Session(handle,null, interactionModule);
+  session.connect();
+  await mBluenet.for(handle).succeed.connect('operation');
+
+  await TestUtil.nextTick();
+
+  await mBluenet.for(handle).succeed.disconnectCommand();
+  await mBluenet.for(handle).succeed.phoneDisconnect();
+  evt_disconnected(handle);
+  expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
+  expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
+  expect(core.eventBus._topicIds).toStrictEqual({})
+});
 
 
 function getInteractionModule(canActivateFailCount: number = 0) {

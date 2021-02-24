@@ -2,6 +2,12 @@ import { base_core } from "../base_core";
 
 export const xUtil = {
 
+  nextTick: function() {
+    return new Promise<void>((resolve, reject) => {
+      setImmediate(() => { resolve() });
+    })
+  },
+
   pad: function(str) {
     if (Number(str) < 10) {
       return '0' + str;
@@ -135,6 +141,18 @@ export const xUtil = {
       }
     }
     return result;
+  },
+
+
+
+  getPromiseContainer<T>() : PromiseContainer<T> {
+    let promiseContainer : PromiseContainer<T> = { promise: undefined, resolve: undefined, reject: undefined }
+    let promise = new Promise<T>((resolve, reject) => {
+      promiseContainer.resolve = resolve;
+      promiseContainer.reject = reject;
+    })
+    promiseContainer.promise = promise;
+    return promiseContainer;
   },
 
 

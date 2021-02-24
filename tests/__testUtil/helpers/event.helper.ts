@@ -13,7 +13,7 @@ export function eventHelperSetActive(handle, sphereId = null, stoneId = null) {
 
 export function evt_ibeacon(rssi: number = -80, handle: string = ACTIVE_HANDLE, sphereId: string = ACTIVE_SPHERE_ID, stoneId: string = ACTIVE_STONE_ID) {
   core.eventBus.emit("iBeaconOfValidCrownstone", {
-    stoneId:  sphereId,
+    stoneId:  stoneId,
     handle:   handle,
     rssi:     rssi,
     sphereId: sphereId

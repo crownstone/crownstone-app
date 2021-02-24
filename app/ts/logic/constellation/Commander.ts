@@ -84,6 +84,7 @@ import {
   Command_TurnOn,
   Command_UpdateBehaviour
 } from "./commandClasses";
+import { SessionBroker } from "./SessionBroker";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -102,16 +103,17 @@ class CommandAPI_base {
   id : string | null;
   options : commandOptions;
 
-  _connectionRequested : boolean = false;
+  _connectionRequested   : boolean = false;
   _targetConnectionState : { [handle: string] : ConnectionState } = {};
 
-  handle;
+  broker : SessionBroker;
 
   constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
     this.options.commanderId ??= xUtil.getUUID();
     this.id = this.options.commanderId;
-    this.handle = this.options.commandTargets[0];
+
+    this.broker = new SessionBroker(this.options)
   }
 
   reconnect() {
@@ -124,16 +126,10 @@ class CommandAPI_base {
    * @param viaMesh
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays,{resolve, reject});
-
-      if (this._connectionRequested === false) {
-        // let collector = new Collector();
-        // collector.collect(this.options);
-
-        this._connectionRequested = true;
-      }
-    })
+    let promiseContainer = xUtil.getPromiseContainer<any>()
+    let commands = BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
+    this.broker.loadPendingCommands(commands);
+    return promiseContainer.promise;
   }
 }
 
@@ -185,17 +181,17 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_Toggle());
   }
 
-  async multiSwitch(state : number) : Promise<void>  {
+  async multiSwitch(state : number, allowMeshRelay = true) : Promise<void>  {
     // either broadcast or connect
     // if (BroadcastCommandManager.canBroadcast(command)) {
     //   // load in broadcast manager and auto-execute after setImmediate
     // }
     // else {
-    return this._load(new Command_MultiSwitch(state), true);
+    return this._load(new Command_MultiSwitch(state), allowMeshRelay);
     // }
   }
 
-  async turnOn() : Promise<void>  {
+  async turnOn(allowMeshRelay = true) : Promise<void>  {
     // either broadcast or connect
     // TODO: add broadcastng to the commanders
     // if (BroadcastCommandManager.canBroadcast(command)) {
@@ -203,7 +199,7 @@ export class CommandAPI extends CommandMeshAPI {
     // }
     // else {
       // load into the commandQueue
-      return this._load(new Command_TurnOn(), true);
+      return this._load(new Command_TurnOn(), allowMeshRelay);
     // }
   }
 
@@ -251,9 +247,9 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_SendMeshNoOp());
   }
 
-  async connect() : Promise< CrownstoneMode > {
-    // TODO: implement
-  }
+  // async connect() : Promise< CrownstoneMode > {
+  //   // TODO: implement
+  // }
 
   async cancelConnectionRequest() : Promise< void > {
     // TODO: implement

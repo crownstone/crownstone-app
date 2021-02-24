@@ -14,16 +14,23 @@ import { core } from "../../core";
  */
 export const Collector = {
 
-  collectMesh : function(meshId : string) : string[] {
+  /**
+   * This method will collect all handles that belong to this mesh network. The ignoreHandle can be used for meshRelay
+   * commands, where we also schedule a direct command to a Crownstone. This Crownstone's handle can be ignored for this.
+   * @param meshId
+   * @param ignoreHandle
+   */
+  collectMesh : function(meshId : string, ignoreHandle: string = null) : string[] {
     let handles = [];
     let meshData = MapProvider.meshMap[meshId];
     let stoneIds = Object.keys(meshData);
     for (let stoneId of stoneIds) {
       let stoneData = meshData[stoneId];
-      handles.push({handle: stoneData.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId)});
+      if (stoneData.handle !== ignoreHandle) {
+        handles.push({ handle: stoneData.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId) });
+      }
     };
-    handles.sort((a,b) => { return a.rssi - b.rssi });
-
+    handles.sort((a,b) => { return b.rssi - a.rssi });
     return handles.map((a) => { return a.handle });
   },
 
@@ -37,7 +44,7 @@ export const Collector = {
     return sphereStones.map((a) => { return a.handle });
   },
 
-  sendToLocation : function(locationId)  : string[]{
+  collectLocation : function(locationId)  : string[]{
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let locationSphereId = null;
@@ -64,6 +71,7 @@ export const Collector = {
       let stone = sphere.stones[stoneId];
       handles.push({handle: stone.config.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId), locationId: stone.config.locationId});
     };
-    handles.sort((a,b) => { return a.rssi - b.rssi });
+    handles.sort((a,b) => { return b.rssi - a.rssi });
+    return handles;
   }
 }

@@ -7,7 +7,7 @@ export function mockBluenetPromiseWrapper() {
     mocks[method] = function() {
       let args = arguments;
       let handle = args[0];
-      // console.log("Providing promise",method, handle, arguments)
+      console.log("Providing promise",method, handle, arguments)
       return new Promise((resolve, reject) => {
         libStateWrapper.loadTargeted(method, handle, resolve, reject, args)
       })
@@ -60,6 +60,11 @@ class LibContainer {
     }
   }
 
+  async cancelConnectionRequest(handle) : Promise<void> {
+     this._reject('connect', handle, 'CONNECTION_CANCELLED');
+     this._resolve('cancelConnectionRequest', handle)
+  }
+
   has(handle: string) : {called: MockedCallList} {
     return { called: this._getCallMethods(handle) }
   }
@@ -68,9 +73,10 @@ class LibContainer {
     let res = {};
     for (let method of targetedMethods) {
       res[method] = (data: any) => {
-        if (!this.targetedActions[method])         { return false }
-        if (!this.targetedActions[method][handle]) { return false }
-
+        try {
+          this._verifyTargetRegistration(method, handle);
+        }
+        catch (e) { return false; }
         return true;
       }
     }
@@ -82,10 +88,9 @@ class LibContainer {
     let res = {};
     for (let method of targetedMethods) {
       res[method] = (data: any) => {
-        if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
-        if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
+        this._verifyTargetRegistration(method, handle);
 
-        return this.targetedActions[method][handle].args
+        return this.targetedActions[method][handle].args;
       }
     }
     // @ts-ignore
@@ -95,33 +100,49 @@ class LibContainer {
   _getSuccessMethods(handle) : MockedLib {
     let res = {};
     for (let method of targetedMethods) {
-      res[method] = async (data: any) => {
-        if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
-        if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
+      res[method] = async (data?: any) => {
 
-        this.targetedActions[method][handle].resolve(data);
-        delete this.targetedActions[method][handle];
-        if (Object.keys(this.targetedActions[method]).length == 0) {
-          delete this.targetedActions[method];
-        }
+        this._resolve(method, handle, data);
         await skipTurn();
       }
     }
     // @ts-ignore
     return res;
   }
+
+  _resolve(method, handle, data?: any) {
+    this._verifyTargetRegistration(method, handle);
+
+    this.targetedActions[method][handle].resolve(data);
+
+    delete this.targetedActions[method][handle];
+    if (Object.keys(this.targetedActions[method]).length == 0) {
+      delete this.targetedActions[method];
+    }
+  }
+
+  _reject(method, handle, error?: any) {
+    this._verifyTargetRegistration(method, handle);
+
+    this.targetedActions[method][handle].reject(error);
+
+    delete this.targetedActions[method][handle];
+    if (Object.keys(this.targetedActions[method]).length == 0) {
+      delete this.targetedActions[method];
+    }
+  }
+
+  _verifyTargetRegistration(method, handle) {
+    if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
+    if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
+  }
+
+
   _getErrorMethods(handle) : MockedLib {
     let res = {};
     for (let method of targetedMethods) {
-      res[method] = async (error: any) => {
-        if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
-        if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
-
-        this.targetedActions[method][handle].reject(error);
-        delete this.targetedActions[method][handle];
-        if (Object.keys(this.targetedActions[method]).length == 0) {
-          delete this.targetedActions[method];
-        }
+      res[method] = async (error?: any) => {
+        this._reject(method, handle, error);
         await skipTurn();
       }
     }

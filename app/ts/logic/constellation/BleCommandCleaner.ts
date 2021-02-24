@@ -2,7 +2,7 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Get } from "../../util/GetUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
-import { LOGd } from "../../logging/Log";
+import { LOGd, LOGi } from "../../logging/Log";
 
 
 
@@ -49,6 +49,7 @@ export const BleCommandCleaner =  {
    */
   handleCommand(command: BleCommand, existingCommand: BleCommand) : boolean {
     if (BleCommandCleaner._isDuplicate(command.command, existingCommand.command) && BleCommandCleaner._canBeRemoved(existingCommand)) {
+      LOGi.info("BleCommandCleaner: Removed commed due to duplicate", command)
       BleCommandCleaner._removeCommand(existingCommand);
       return true;
     }
@@ -69,10 +70,8 @@ export const BleCommandCleaner =  {
               if (BleCommandCleaner.handleCommand(command, meshCommand)) {
                 continue;
               }
-              else {
-                cleanedCommandList.push(meshCommand);
-              }
             }
+            cleanedCommandList.push(meshCommand);
           }
           queue.mesh[meshId] = cleanedCommandList;
         }
@@ -87,9 +86,7 @@ export const BleCommandCleaner =  {
           if (BleCommandCleaner.handleCommand(command, meshCommand)) {
             continue;
           }
-          else {
-            cleanedCommandList.push(meshCommand);
-          }
+          cleanedCommandList.push(meshCommand);
         }
         queue.mesh[meshId] = cleanedCommandList;
       }
