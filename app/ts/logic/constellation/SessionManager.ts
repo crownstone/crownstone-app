@@ -250,7 +250,7 @@ export class SessionManagerClass {
           }
 
           // fail all commands owned by this commanderId
-          BleCommandQueue.failCommandsFor(handle, commanderId);
+          BleCommandQueue.cancelCommanderCommands(commanderId);
         }
         else {
           if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
@@ -268,7 +268,7 @@ export class SessionManagerClass {
    * @param handle
    * @param commanderId
    */
-  revokeRequest(handle: string, commanderId: string) {
+  async revokeRequest(handle: string, commanderId: string) {
     let session = this._sessions[handle];
 
     // if it was in the public list, remove it from there.
@@ -276,7 +276,7 @@ export class SessionManagerClass {
       removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
       if (session && session.isPrivate() === false && session.state === "INITIALIZING" || session.state === "CONNECTING") {
         // public sessions close themselves, no need to end if it is connected
-        this.closeSession(handle, commanderId);
+        await this.closeSession(handle, commanderId);
       }
     }
 
@@ -287,7 +287,7 @@ export class SessionManagerClass {
 
     // if the session is private, the revocation must close it.
     if (session && session.isPrivate() === true && session.privateId === commanderId) {
-      this.closeSession(handle, commanderId);
+      await this.closeSession(handle, commanderId);
     }
   }
 

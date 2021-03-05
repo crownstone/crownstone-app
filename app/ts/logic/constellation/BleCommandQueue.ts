@@ -300,8 +300,41 @@ export class BleCommandQueueClass {
   }
 
 
-  failCommandsFor(handle, commanderId: string) {
-    // TODO;
+
+  cancelCommanderCommands(commanderId: string) {
+    let directHandles = Object.keys(this.queue.direct);
+    for (let handle of directHandles) {
+      let commands = this.queue.direct[handle];
+      // reverse iterate to be able to remove items from the array while iterating over it.
+      for (let i = commands.length-1; i >= 0; i--) {
+        let command = commands[i];
+        if (command.commanderId === commanderId) {
+          this.queue.direct[handle].splice(i,1);
+          command.promise.reject("CANCELLED");
+
+          if (this.queue.direct[handle].length === 0) {
+            delete this.queue.direct[handle];
+          }
+        }
+      }
+    }
+
+    let meshIds = Object.keys(this.queue.mesh);
+    for (let meshId of meshIds) {
+      let meshCommands = this.queue.mesh[meshId];
+      // reverse iterate to be able to remove items from the array while iterating over it.
+      for (let i = meshCommands.length-1; i >= 0; i--) {
+        let meshCommand = meshCommands[i];
+        if (meshCommand.commanderId === commanderId) {
+          this.queue.mesh[meshId].splice(i,1);
+
+          meshCommand.promise.reject("CANCELLED");
+          if (this.queue.mesh[meshId].length === 0) {
+            delete this.queue.mesh[meshId];
+          }
+        }
+      }
+    }
   }
 
 

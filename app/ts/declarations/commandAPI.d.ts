@@ -31,24 +31,24 @@ interface PromiseContainer<T> {
 }
 
 interface BleCommand {
-  id:           string,
-  linkedId:     string,           // the linkedId refers to mesh_relay commands which can be cancelled if the direct command has succeeded
-  command:      CommandInterface,
-  promise:      PromiseContainer,
-  attemptingBy: string[],
-  executedBy:   string[],
+  id:              string,
+  linkedId:        string,           // the linkedId refers to mesh_relay commands which can be cancelled if the direct command has succeeded
+  command:         CommandInterface,
+  promise:         PromiseContainer,
+  attemptingBy:    string[],
+  executedBy:      string[],
 
   // injected the command options here.
-  commanderId?:   string,
-  sphereId:       string | null,
-  commandType?:   CommandType,
-  commandTarget:  string,   // this can be a meshId, a handleId or a sphereId
-  endTarget?:     string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
+  commanderId?:    string,
+  sphereId:        string | null,
+  commandType?:    CommandType,
+  commandTarget:   string,   // this can be a meshId, a handleId or a sphereId
+  endTarget?:      string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
                             // in order to relay the command to a target, the endTarget is a handle of the endTarget of the command.
-  private?: boolean,
+  private?:        boolean,
   minConnections?: number
-  startTime: number,
-  timeout?: number // seconds
+  startTime:       number,
+  timeout?:        number // seconds
 }
 
 interface CommandInterface {

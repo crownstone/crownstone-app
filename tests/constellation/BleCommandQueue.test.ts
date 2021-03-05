@@ -228,3 +228,26 @@ test("BleCommandQueue Multiple commands", async () => {
   expect(BleCommandQueue.queue.mesh[meshId].length).toBe(1);
   expect(BleCommandQueue.queue.mesh[meshId][0].minConnections).toBe(3);
 });
+
+test("BleCommandQueue clear commands from single commander", async () => {
+  let sphere = addSphere();
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
+  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
+  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId:meshId});
+  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId:meshId});
+  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId:meshId});
+  let { stone: stone6, handle:handle6 } = addStone({meshNetworkId:"mesh2"});
+
+  let promise  = { resolve: jest.fn(), reject: jest.fn() };
+  let promise2 = { resolve: jest.fn(), reject: jest.fn() };
+  let options  = getCommandOptions(sphere.id, [stone1.config.handle]);
+  let options2 = getCommandOptions(sphere.id, [stone2.config.handle]);
+
+  BleCommandQueue.generateAndLoad(options,  new Command_TurnOn(), true, promise);
+  BleCommandQueue.generateAndLoad(options2, new Command_AllowDimming(true), false, promise2);
+
+  BleCommandQueue.cancelCommanderCommands(options.commanderId);
+
+  expect(BleCommandQueue.queue.direct[stone1.config.handle]).toBeUndefined()
+  expect(BleCommandQueue.queue.mesh).toStrictEqual({})
+});

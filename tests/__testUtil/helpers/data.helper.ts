@@ -4,6 +4,7 @@ if (core["reset"] === undefined) { throw "ERROR: mockCore should be performed be
 import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 import { Get } from "../../../app/ts/util/GetUtil";
 import { MapProvider } from "../../../app/ts/backgroundProcesses/MapProvider";
+import { hostname } from "os";
 
 
 /**
@@ -67,4 +68,23 @@ export function addLocation(config? : any) {
   MapProvider.refreshAll();
   lastUsedStoneId = locationId;
   return Get.location(lastUsedSphereId, locationId);
+}
+
+export function createMockDatabase(meshId, meshId2) {
+  let sphere = addSphere();
+  let location1 = addLocation();
+  let location2 = addLocation();
+  let location3 = addLocation();
+  let location4 = addLocation();
+  let stone1 = addStone({locationId: location2.id, meshNetworkId: meshId});
+  let stone2 = addStone({locationId: location2.id, meshNetworkId: meshId});
+  let stone3 = addStone({locationId: location3.id, meshNetworkId: meshId});
+  let stone4 = addStone({locationId: location4.id, meshNetworkId: meshId});
+  let stone5 = addStone({locationId: location1.id, meshNetworkId: meshId2});
+  let stone6 = addStone({locationId: location1.id, meshNetworkId: meshId2});
+  return {
+    sphere,
+    locations: [location1, location2, location3, location4],
+    stones: [stone1, stone2, stone3, stone4, stone5, stone6]
+  };
 }

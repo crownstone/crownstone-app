@@ -12,8 +12,9 @@ export class SessionBroker {
   options: commandOptions;
   requestedSessions : [] = [];
 
-  pendingSessions : { [handle: string]: Promise<void> } = {};
-  pendingCommands : { [commandId: string]: BleCommand } = {};
+  connectedSessions : { [handle: string]: boolean } = {};
+  pendingSessions   : { [handle: string]: Promise<void> } = {};
+  pendingCommands   : { [commandId: string]: BleCommand } = {};
 
   constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
@@ -74,9 +75,25 @@ export class SessionBroker {
   }
 
 
-  requireSession(handle:string, command: BleCommand) {
+  async requireSession(handle:string, command: BleCommand) {
     if (this.pendingSessions[handle] === undefined) {
-      this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private);
+      this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private)
+        .then(() => {
+          // if this request lands, we can remove this session from the pending list.
+          // //This means that the session won't be closed automatically
+          // after command completion if its connected.
+          delete this.pendingSessions[handle];
+          this.connectedSessions[handle] = true;
+        })
+    }
+  }
+
+
+  async killConnectedSessions() {
+    let connectedSessions = Object.keys(this.connectedSessions);
+    for (let sessionHandle of connectedSessions) {
+      await SessionManager.revokeRequest(sessionHandle, this.options.commanderId);
+      delete this.connectedSessions[sessionHandle];
     }
   }
 

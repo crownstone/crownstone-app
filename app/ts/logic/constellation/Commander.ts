@@ -444,7 +444,8 @@ export class CommandAPI extends CommandMeshAPI {
   async factoryResetHubOnly() : Promise<HubDataReply> {
     return this._load(new Command_FactoryResetHubOnly());
   }
-  async end() {
 
+  async end() {
+    this.broker.killConnectedSessions();
   }
 }

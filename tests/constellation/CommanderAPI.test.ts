@@ -25,21 +25,6 @@ afterAll( async () => {})
 
 const meshId = "meshNetwork";
 
-test("Check the executor aggregation", async () => {
-  let sphere = addSphere();
-  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
-  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
-  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
-  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
-  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
+test("Check the CommanderAPI", async () => {
 
-  let promise = { resolve: jest.fn(), reject: jest.fn() };
-  let options = getCommandOptions(sphere.id, [handle1]);
-  let options2 = getCommandOptions(sphere.id, [handle2]);
-
-  BleCommandQueue.generateAndLoad(options,  new Command_TurnOn(), false, promise);
-  BleCommandQueue.generateAndLoad(options2, new Command_TurnOn(), true, promise);
-
-  expect(Executor.aggregateTurnOnCommands(handle1,BleCommandQueue.queue.direct[handle1][0],BleCommandQueue.queue).length).toBe(2);
-  expect(Executor.aggregateTurnOnCommands(handle2,BleCommandQueue.queue.direct[handle2][0],BleCommandQueue.queue).length).toBe(1);
 });

@@ -107,10 +107,31 @@ test("SessionBroker direct command finishes mesh commands", async () => {
   await mBluenet.for(handle1).succeed.phoneDisconnect();
   evt_disconnected(handle1);
 
-
   expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
 
   // check if the mesh sessions have been cancelled.
   expect(SessionManager._sessions).toStrictEqual({});
 });
 
+
+test("SessionBroker check if a private connection is not closed prematurely", async () => {
+  StoneAvailabilityTracker.init();
+  let sphere = addSphere();
+  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
+  let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
+  api.allowDimming(true)
+
+  await mBluenet.for(handle1).succeed.connect("operation");
+
+  await TestUtil.nextTick();
+
+  await mBluenet.for(handle1).succeed.allowDimming();
+
+  await TestUtil.nextTick();
+
+  expect(SessionManager._sessions[handle1].state).toBe("WAITING_FOR_COMMANDS");
+
+  api.end();
+
+  expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
+});
