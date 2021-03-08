@@ -38,6 +38,7 @@ export class SessionBroker {
           throw err;
         })
     }
+
     this.evaluateSessions();
   }
 

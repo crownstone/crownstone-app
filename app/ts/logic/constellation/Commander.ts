@@ -116,9 +116,6 @@ class CommandAPI_base {
     this.broker = new SessionBroker(this.options)
   }
 
-  reconnect() {
-
-  }
 
   /**
    * If via mesh is enabled, we will trigger a mesh connection request additionally to the direct one.
@@ -129,6 +126,8 @@ class CommandAPI_base {
     let promiseContainer = xUtil.getPromiseContainer<any>()
     let commands = BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
     this.broker.loadPendingCommands(commands);
+
+    core.eventBus.emit(`CommandLoaded_${this.id}`)
     return promiseContainer.promise;
   }
 }
