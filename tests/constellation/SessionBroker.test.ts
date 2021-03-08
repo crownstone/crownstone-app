@@ -124,14 +124,33 @@ test("SessionBroker check if a private connection is not closed prematurely", as
   let sphere = addSphere();
   let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
-  api.allowDimming(true)
+  api.allowDimming(true);
+  await mBluenet.for(handle1).succeed.connect("operation");
+  await TestUtil.nextTick();
+  await mBluenet.for(handle1).succeed.allowDimming();
+  await TestUtil.nextTick();
+  expect(SessionManager._sessions[handle1].state).toBe("WAITING_FOR_COMMANDS");
+});
+
+
+test("SessionBroker check the cleanup of closed private session", async () => {
+  StoneAvailabilityTracker.init();
+  let sphere = addSphere();
+  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
+
+  api.allowDimming(true);
+
+  expect(Object.keys(api.broker.pendingSessions).length).toBe(1);
+  expect(api.broker.connectedSessions).toStrictEqual({});
 
   await mBluenet.for(handle1).succeed.connect("operation");
 
+  expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
+  expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
+
   await TestUtil.nextTick();
-
   await mBluenet.for(handle1).succeed.allowDimming();
-
   await TestUtil.nextTick();
 
   expect(SessionManager._sessions[handle1].state).toBe("WAITING_FOR_COMMANDS");
@@ -139,4 +158,47 @@ test("SessionBroker check if a private connection is not closed prematurely", as
   api.end();
 
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
+  await mBluenet.for(handle1).succeed.disconnectCommand();
+  await mBluenet.for(handle1).succeed.phoneDisconnect();
+
+  evt_disconnected(handle1);
+
+  expect(SessionManager._sessions[handle1]).toBeUndefined();
+
+  expect(api.broker.connectedSessions).toStrictEqual({});
+});
+
+
+
+test("SessionBroker check the cleanup of closed public session", async () => {
+  StoneAvailabilityTracker.init();
+  let sphere = addSphere();
+  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], false));
+
+  api.allowDimming(true);
+
+  expect(Object.keys(api.broker.pendingSessions).length).toBe(1);
+  expect(api.broker.connectedSessions).toStrictEqual({});
+
+  evt_ibeacon(-80, handle1);
+
+  await mBluenet.for(handle1).succeed.connect("operation");
+
+  expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
+  expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
+
+  await TestUtil.nextTick();
+  await mBluenet.for(handle1).succeed.allowDimming();
+  await TestUtil.nextTick();
+
+  expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
+  await mBluenet.for(handle1).succeed.disconnectCommand();
+  await mBluenet.for(handle1).succeed.phoneDisconnect();
+
+  evt_disconnected(handle1);
+
+  expect(SessionManager._sessions[handle1]).toBeUndefined();
+
+  expect(api.broker.connectedSessions).toStrictEqual({});
 });

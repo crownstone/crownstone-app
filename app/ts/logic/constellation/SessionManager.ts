@@ -116,7 +116,7 @@ export class SessionManagerClass {
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
         if (BleCommandQueue.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
-          this._endSession(handle);
+          this._sessions[handle].kill();
         }
       }
     }

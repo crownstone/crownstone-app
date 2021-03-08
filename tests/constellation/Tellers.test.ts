@@ -48,5 +48,5 @@ test("Check the direct teller", async () => {
 
   api.end()
 
-  expect(SessionManager._sessions[handle].state).toBe("DISCONNECTING")
+  expect(SessionManager._sessions[handle].state).toBe("DISCONNECTING");
 });
