@@ -6,9 +6,12 @@ import { Collector } from "./Collector";
 import { core } from "../../core";
 import { CommandAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
+import { LOGd } from "../../logging/Log";
 
 
 export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
+  LOGd.constellation("Tellers: Starting a direct connection.", handle);
+
   let privateId = xUtil.getUUID();
   let stoneData = MapProvider.stoneHandleMap[handle];
   let sphereId = null;
@@ -16,13 +19,16 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
     sphereId = stoneData.sphereId;
   }
   await SessionManager.request(handle, privateId, true, timeoutSeconds);
-  return new CommandAPI({
+  let commander = new CommandAPI({
     commanderId:    privateId,
     sphereId:       sphereId,
     commandType:    "DIRECT",
     commandTargets: [handle],
     private:        true
   });
+
+  commander.broker.loadSession(handle);
+  return commander;
 }
 
 /**

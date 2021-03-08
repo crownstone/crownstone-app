@@ -49,7 +49,7 @@ export const BleCommandCleaner =  {
    */
   handleCommand(command: BleCommand, existingCommand: BleCommand) : boolean {
     if (BleCommandCleaner._isDuplicate(command.command, existingCommand.command) && BleCommandCleaner._canBeRemoved(existingCommand)) {
-      LOGi.info("BleCommandCleaner: Removed commed due to duplicate", command)
+      LOGi.constellation("BleCommandCleaner: Removed command due to duplicate", command.commandType, command.command)
       BleCommandCleaner._removeCommand(existingCommand);
       return true;
     }

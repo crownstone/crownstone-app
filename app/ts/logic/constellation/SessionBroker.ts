@@ -4,6 +4,7 @@
 import { SessionManager } from "./SessionManager";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class SessionBroker {
 
@@ -12,8 +13,8 @@ export class SessionBroker {
   options: commandOptions;
   requestedSessions : [] = [];
 
-  connectedSessions : { [handle: string]: boolean } = {};
-  pendingSessions   : { [handle: string]: Promise<void> } = {};
+  connectedSessions : { [handle: string]:    { id: string, private: boolean } } = {};
+  pendingSessions   : { [handle: string]:    Promise<void> } = {};
   pendingCommands   : { [commandId: string]: BleCommand } = {};
 
   constructor(commandOptions: commandOptions) {
@@ -21,12 +22,17 @@ export class SessionBroker {
   }
 
 
+  loadSession(handle: string, commandId: string = xUtil.getUUID(), privateSession: boolean = true) {
+    this.connectedSessions[handle] = { id: xUtil.getUUID(), private: privateSession };
+  }
+
   loadPendingCommands(commands: BleCommand[]) {
     for (let command of commands) {
       this.pendingCommands[command.id] = command;
       command.promise.promise
         .then(() => {
-          this.cleanup([command.id]); })
+          this.cleanup([command.id]);
+        })
         .catch((err) => {
           this.cleanup([command.id]);
           throw err;
@@ -39,6 +45,13 @@ export class SessionBroker {
   cleanup(commandIds: string[]) {
     for (let id of commandIds) {
       delete this.pendingCommands[id];
+      let handles = Object.keys(this.connectedSessions);
+      for (let handle of handles) {
+        let session = this.connectedSessions[handle];
+        if (session.id == id && session.private == false) {
+          delete this.connectedSessions[handle];
+        }
+      }
     }
 
     this.evaluateSessions();
@@ -68,22 +81,24 @@ export class SessionBroker {
     let openHandles = Object.keys(this.pendingSessions);
     for (let openHandle of openHandles) {
       if (requiredHandleMap[openHandle] === undefined) {
-        SessionManager.revokeRequest(openHandle, this.options.commanderId);
-        delete this.pendingSessions[openHandle];
+        if (this.options.private === false) {
+          SessionManager.revokeRequest(openHandle, this.options.commanderId);
+          delete this.pendingSessions[openHandle];
+        }
       }
     }
   }
 
 
   async requireSession(handle:string, command: BleCommand) {
-    if (this.pendingSessions[handle] === undefined) {
+    if (this.pendingSessions[handle] === undefined && this.connectedSessions[handle] === undefined) {
       this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private)
         .then(() => {
           // if this request lands, we can remove this session from the pending list.
           // //This means that the session won't be closed automatically
           // after command completion if its connected.
           delete this.pendingSessions[handle];
-          this.connectedSessions[handle] = true;
+          this.connectedSessions[handle] = {id: command.id, private: command.private};
         })
     }
   }

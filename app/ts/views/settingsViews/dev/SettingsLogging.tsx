@@ -25,7 +25,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
     return TopBarUtil.getOptions({title:  "Logging"});
   }
 
-
   unsubscribe;
 
   componentDidMount() {
@@ -56,6 +55,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
     let logLevelsData = {
       log_info:           { label: "General",         explanation: ''},
       log_promiseManager: { label: "PromiseManager",  explanation: ''},
+      log_constellation:  { label: "Constellation",   explanation: ''},
       log_native:         { label: "Native",          explanation: ''},
       log_nav:            { label: "Navigation",      explanation: ''},
       log_advertisements: { label: "Advertisements",  explanation: ''},

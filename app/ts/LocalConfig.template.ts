@@ -87,6 +87,7 @@ import { Platform } from "react-native";
    */
   export let LOG_INFO            = LOG_LEVEL.ERROR;   // enabling LOG.info          commands to be shown.
   export let LOG_PROMISE_MANAGER = LOG_LEVEL.ERROR;    // enabling LOG.promiseManager commands to be shown.
+  export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.info;    // enabling LOG.notifications commands to be shown.
   export let LOG_WARNINGS        = LOG_LEVEL.ERROR;   // enabling LOG.warn          commands to be shown.
   export let LOG_ERRORS          = LOG_LEVEL.ERROR;   // enabling LOG.error         commands to be shown.

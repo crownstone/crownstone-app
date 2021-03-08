@@ -40,14 +40,13 @@ test("Check the direct teller", async () => {
   api.allowDimming(true);
 
   await TestUtil.nextTick();
-
   expect(mBluenet.has(handle).called.allowDimming()).toBeTruthy();
   await mBluenet.for(handle).succeed.allowDimming();
-  console.log("a")
+  await TestUtil.nextTick();
+  expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
   await TestUtil.nextTick();
 
-  console.log("d")
-  await TestUtil.nextTick();
-  console.log("g")
-  expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
+  api.end()
+
+  expect(SessionManager._sessions[handle].state).toBe("DISCONNECTING")
 });

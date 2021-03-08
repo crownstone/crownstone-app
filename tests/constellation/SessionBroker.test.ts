@@ -41,13 +41,14 @@ test("SessionBroker finish mesh command", async () => {
   let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
   let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
 
-  let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
-  let api2 = new CommandAPI(getCommandOptions(sphere.id, [handle3]));
+  let turnOnCommander  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
+  let allowDimmingCommander = new CommandAPI(getCommandOptions(sphere.id, [handle3]));
 
-  api.turnOn();
+  // load the commands into the commanders.
+  turnOnCommander.turnOn();
+  allowDimmingCommander.allowDimming(true)
 
-  api2.allowDimming(true)
-
+  // trigger connects by faking ibeacons which are in range.
   evt_ibeacon(-80, handle2);
   evt_ibeacon(-80, handle3);
   evt_ibeacon(-80, handle4);
@@ -63,7 +64,9 @@ test("SessionBroker finish mesh command", async () => {
 
   await TestUtil.nextTick();
 
-  expect(Object.keys(api.broker.pendingSessions).length).toBe(5);
+  expect(Object.keys(turnOnCommander.broker.pendingSessions).length).toBe(2);
+  expect(Object.keys(turnOnCommander.broker.connectedSessions).length).toBe(3);
+
 
   await mBluenet.for(handle4).succeed.turnOnMesh();
   await TestUtil.nextTick();
@@ -73,7 +76,8 @@ test("SessionBroker finish mesh command", async () => {
   await TestUtil.nextTick();
 
   // check if the mesh sessions have been cancelled.
-  expect(Object.keys(api.broker.pendingSessions).length).toBe(1);
+  expect(Object.keys(turnOnCommander.broker.pendingSessions).length).toBe(1);
+  expect(Object.keys(turnOnCommander.broker.connectedSessions).length).toBe(0);
   expect(SessionManager._sessions[handle1]).not.toBeUndefined();
 });
 
@@ -98,7 +102,8 @@ test("SessionBroker direct command finishes mesh commands", async () => {
 
   await TestUtil.nextTick();
 
-  expect(Object.keys(api.broker.pendingSessions).length).toBe(5);
+  expect(Object.keys(api.broker.pendingSessions).length).toBe(4);
+  expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
 
   await mBluenet.for(handle1).succeed.turnOnMesh();
 

@@ -5,6 +5,7 @@ import {
   LOG_CLOUD,
   LOG_BLE,
   LOG_MESH,
+  LOG_CONSTELLATION,
   LOG_BEHAVIOUR,
   LOG_STORE,
   LOG_SCHEDULER,
@@ -49,6 +50,10 @@ class Logger {
 
   promiseManager(...any) {
     this._log('PROMISE MNGR', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
+  }
+
+  constellation(...any) {
+    this._log('CONSTELLATION', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
   }
 
   broadcast(...any) {

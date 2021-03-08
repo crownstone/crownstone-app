@@ -27,6 +27,7 @@ Object {
     "log_ble": 50,
     "log_broadcast": 50,
     "log_cloud": 30,
+    "log_constellation": 30,
     "log_dfu": 50,
     "log_events": 50,
     "log_info": 30,

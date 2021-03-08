@@ -13,6 +13,7 @@ import { core } from "../../core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
+import { LOGd, LOGi } from "../../logging/Log";
 
 const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
 
@@ -98,6 +99,7 @@ export class Session {
 
 
   async connect() {
+    LOGd.constellation("Session: Start connecting to", this.handle);
     // remove the listener for ibeacons from this device.
     this.unsubscribeBootstrapper();
     this.unsubscribeBootstrapper = null;
@@ -121,6 +123,8 @@ export class Session {
       this.initializeBootstrapper();
       return;
     }
+
+    LOGi.constellation("Session: Connected to", this.handle);
     this.state = "CONNECTED";
     this.interactionModule.isConnected();
 
@@ -129,6 +133,7 @@ export class Session {
     await xUtil.nextTick()
     await this.handleCommands();
   }
+
 
   async handleCommands() {
     let commandsAvailable = BleCommandQueue.areThereCommandsFor(this.handle, this.privateId);
@@ -185,6 +190,7 @@ export class Session {
         return;
     }
   }
+
 
   async disconnect() {
     this.state = "DISCONNECTING";

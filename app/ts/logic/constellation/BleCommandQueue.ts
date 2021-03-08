@@ -5,7 +5,7 @@ import { BCH_ERROR_CODES } from "../../Enums";
 import { BleCommandCleaner } from "./BleCommandCleaner";
 import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
-import { LOG } from "../../logging/Log";
+import { LOG, LOGi } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 
@@ -205,27 +205,30 @@ export class BleCommandQueueClass {
 
   async _performCommand(handle: string, command: BleCommand) {
     // After running:
-    //       - Move the attemptingBy for this handle to executedBy on success, clear the attemptingBy on failure.
-    //       - Check all executedBy and match this against the minConnections requirement
-    //       - Clean up the commands that have reached their goals.
-    //       - If a command is cleaned, ask the SessionManager to re-evaluate their required sessions.
-    //       - The goal is to close sessions that are still pending connections.
+    //   1 - Move the attemptingBy for this handle to executedBy on success, clear the attemptingBy on failure.
+    //   2 - Check all executedBy and match this against the minConnections requirement
+    //   3 - Clean up the commands that have reached their goals.
+    //   4 - If a command is cleaned, ask the SessionManager to re-evaluate their required sessions.
+    //   5 - The goal is to close sessions that are still pending connections.
 
     let commandRemoved = false;
     try {
       let result = await Executor.runCommand(handle, command, this.queue);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
 
+      // part 1
       if (attemptingIndex !== -1 && command.executedBy.indexOf(handle) === -1) {
         command.executedBy.push(handle);
         command.attemptingBy.splice(attemptingIndex, 1);
       }
+
       if (command.commandType === 'DIRECT') {
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
       }
       else if (command.executedBy.length >= command.minConnections) {
+        LOGi.constellation("BleCommandQueue: Mesh command finished.", command.minConnections, "connections achieved.")
         // mesh action
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);

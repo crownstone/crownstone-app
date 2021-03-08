@@ -5,7 +5,28 @@ import { mockReactNative } from "./react-native/Platform.mock";
 mockReactNative();
 
 import { mockLogger } from "./logger.mock";
-mockLogger();
+let silenceMap = {
+  info:           true,
+  promiseManager: true,
+  broadcast:      true,
+  constellation:  true,
+  notifications:  true,
+  event:          true,
+  cloud:          true,
+  advertisements: true,
+  bch:            true,
+  ble:            true,
+  store:          true,
+  dfu:            true,
+  behaviour:      true,
+  scheduler:      true,
+  mesh:           true,
+  messages:       true,
+  native:         true,
+  nav:            true,
+}
+let enabledMap = { v: false, d: false, i: false, w: false, e: false };
+mockLogger(enabledMap, silenceMap);
 
 import { mockRandom, resetMockRandom } from "./deterministicRandom.mock";
 mockRandom();

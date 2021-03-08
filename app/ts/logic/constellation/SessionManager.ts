@@ -214,11 +214,11 @@ export class SessionManagerClass {
   ) {
 
     if (privateSessionRequest) {
-      LOG.info("SessionManager: Adding request to private pending list.", handle, commanderId);
+      LOG.constellation("SessionManager: Adding request to private pending list.", handle, commanderId);
       addToPendingList(this._pendingPrivateSessionRequests, handle, commanderId, resolve, reject);
     }
     else {
-      LOG.info("SessionManager: Adding request to shared pending list.", handle, commanderId);
+      LOG.constellation("SessionManager: Adding request to shared pending list.", handle, commanderId);
       addToPendingList(this._pendingSessionRequests, handle, commanderId, resolve, reject);
     }
 
@@ -238,7 +238,7 @@ export class SessionManagerClass {
 
     this._timeoutHandlers[handle][commanderId] = {
       clearCallback: Scheduler.scheduleCallback(() => {
-        LOG.info("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
+        LOG.constellation("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
         reject("SESSION_REQUEST_TIMEOUT");
         let session = this._sessions[handle];
 

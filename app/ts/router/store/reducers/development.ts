@@ -4,6 +4,7 @@ import {LOG_LEVEL} from "../../../logging/LogLevels";
 let defaultState = {
   logging_enabled:   false,
   log_info:           LOG_LEVEL.info,
+  log_constellation:  LOG_LEVEL.info,
   log_promiseManager: LOG_LEVEL.info,
   log_native:         LOG_LEVEL.error,
   log_mesh:           LOG_LEVEL.error,
@@ -49,6 +50,7 @@ export default (state = defaultState, action : any = {}) => {
         newState = {...state};
         newState.logging_enabled =    update(action.data.logging_enabled,    newState.logging_enabled);
         newState.log_info =           update(action.data.log_info,           newState.log_info);
+        newState.log_constellation =  update(action.data.log_constellation, newState.log_constellation);
         newState.log_promiseManager = update(action.data.log_promiseManager, newState.log_promiseManager);
         newState.log_mesh =           update(action.data.log_mesh,           newState.log_mesh);
         newState.log_advertisements = update(action.data.log_advertisements, newState.log_advertisements);

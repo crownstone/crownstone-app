@@ -446,6 +446,6 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async end() {
-    this.broker.killConnectedSessions();
+    await this.broker.killConnectedSessions();
   }
 }
