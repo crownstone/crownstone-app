@@ -19,7 +19,6 @@ import { availableScreenHeight, background, colors } from "./../styles";
 import { MeshElement } from "../components/MeshElement";
 import { ForceDirectedView } from "../components/interactiveView/ForceDirectedView";
 import { Icon } from "../components/Icon";
-import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import { MeshUtil } from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";

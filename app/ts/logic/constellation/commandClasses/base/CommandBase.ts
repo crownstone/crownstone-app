@@ -1,6 +1,7 @@
 export class CommandBase implements CommandBaseInterface {
 
   type:   BridgeCommandType;
+  canBroadcast = false;
 
   constructor(type: BridgeCommandType) {
     this.type = type;

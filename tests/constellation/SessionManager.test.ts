@@ -1,4 +1,4 @@
-import { mBluenet, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
@@ -50,8 +50,8 @@ test("Session manager registration and queue for shared connections.", async () 
 
   evt_ibeacon(-80);
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy()
-  await mBluenet.for(handle).succeed.connect('operation');
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
+  await mBluenetPromise.for(handle).succeed.connect('operation');
 
   expect(p1).toBeCalled();
   expect(p2).toBeCalled();
@@ -59,9 +59,9 @@ test("Session manager registration and queue for shared connections.", async () 
   await TestUtil.nextTick();
   expect(p4).toBeCalled();
 
-  expect(mBluenet.has(handle).called.disconnectCommand()).toBeTruthy();
-  await mBluenet.for(handle).succeed.disconnectCommand();
-  await mBluenet.for(handle).succeed.phoneDisconnect();
+  expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected();
 
   expect(sessionManager._sessions[handle]).toBeUndefined();
@@ -99,21 +99,21 @@ test("Session manager registration and queue for private connections.", async ()
   expect(p3Err).toBeCalledWith("PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER");
 
   // private connections are queued one by one.
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).succeed.connect('operation');
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect('operation');
 
   expect(p1).toBeCalled();
 
   sessionManager.closeSession(handle, 'commanderId1');
 
-  expect(mBluenet.has(handle).called.disconnectCommand()).toBeTruthy();
-  await mBluenet.for(handle).succeed.disconnectCommand();
-  await mBluenet.for(handle).succeed.phoneDisconnect();
+  expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected();
 
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).succeed.connect('operation');
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect('operation');
   expect(p2).toBeCalled();
 });
 
@@ -135,15 +135,15 @@ test("Session manager failing shared connection.", async () => {
   evt_ibeacon(-80);
 
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).fail.connect();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).fail.connect();
 
   expect(p1Err).not.toBeCalled();
-  expect(mBluenet.has(handle).called.connect()).toBeFalsy();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
 
   evt_ibeacon(-80);
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
 
   await mScheduler.trigger()
 
@@ -167,15 +167,15 @@ test("Session manager failing private connection.", async () => {
   evt_ibeacon(-80);
 
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).fail.connect();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).fail.connect();
 
   expect(p1Err).not.toBeCalled();
-  expect(mBluenet.has(handle).called.connect()).toBeFalsy();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
 
   evt_ibeacon(-80);
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
 
   await mScheduler.trigger()
 
@@ -183,7 +183,7 @@ test("Session manager failing private connection.", async () => {
   expect(p1Err).toBeCalledWith("SESSION_REQUEST_TIMEOUT");
 
   // this mimics how the kill is done in the lib.
-  await mBluenet.cancelConnectionRequest(handle);
+  await mBluenetPromise.cancelConnectionRequest(handle);
 
   expect(sessionManager._sessions[handle]).toBeUndefined();
   expect(sessionManager._activeSessions[handle]).toBeUndefined();
@@ -218,7 +218,7 @@ test("Session manager request and revoke shared requests in different states.", 
   sessionManager.revokeRequest(handle, id2)
 
   await TestUtil.nextTick();
-  await mBluenet.cancelConnectionRequest(handle);
+  await mBluenetPromise.cancelConnectionRequest(handle);
 
   expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._sessions[handle]).toBeUndefined();
@@ -227,15 +227,15 @@ test("Session manager request and revoke shared requests in different states.", 
   sessionManager.request(handle, id3, false);
   evt_ibeacon(-80);
   expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
-  await mBluenet.for(handle).succeed.connect("operation");
+  await mBluenetPromise.for(handle).succeed.connect("operation");
   await TestUtil.nextTick();
   expect(sessionManager._pendingSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._sessions[handle]).not.toBeUndefined();
 
   sessionManager.revokeRequest(handle, id3)
   await TestUtil.nextTick();
-  await mBluenet.for(handle).succeed.disconnectCommand();
-  await mBluenet.for(handle).succeed.phoneDisconnect();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   // this event triggers the cleanup.
   evt_disconnected();
 
@@ -260,7 +260,7 @@ test("Session manager request and revoke private requests in different states.",
   sessionManager.request(handle, id1, true);
   expect(sessionManager._pendingPrivateSessionRequests[handle].length).toBe(1);
   sessionManager.revokeRequest(handle, id1)
-  await mBluenet.cancelConnectionRequest(handle);
+  await mBluenetPromise.cancelConnectionRequest(handle);
   expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._sessions[handle]).toBeUndefined();
 
@@ -268,15 +268,15 @@ test("Session manager request and revoke private requests in different states.",
   // revoke while waiting for commands...
   sessionManager.request(handle, id2, true);
   expect(sessionManager._pendingPrivateSessionRequests[handle].length).toBe(1);
-  await mBluenet.for(handle).succeed.connect("operation");
+  await mBluenetPromise.for(handle).succeed.connect("operation");
   await TestUtil.nextTick();
   expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._sessions[handle]).not.toBeUndefined();
 
   sessionManager.revokeRequest(handle, id2)
   await TestUtil.nextTick();
-  await mBluenet.for(handle).succeed.disconnectCommand();
-  await mBluenet.for(handle).succeed.phoneDisconnect();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   // this event triggers the cleanup.
   evt_disconnected();
   expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();

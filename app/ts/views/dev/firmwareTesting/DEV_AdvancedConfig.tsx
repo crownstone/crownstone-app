@@ -1,9 +1,3 @@
-//
-// import { Languages } from "../../../Languages"
-//
-// function lang(key,a?,b?,c?,d?,e?) {
-//   return Languages.get("DEV_AdvancedConfig", key)(a,b,c,d,e);
-// }
 import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -23,7 +17,6 @@ import { ListEditableItems } from "../../components/ListEditableItems";
 import { BleUtil } from "../../../util/BleUtil";
 import { IconButton } from "../../components/IconButton";
 import { DataUtil } from "../../../util/DataUtil";
-import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { LOGe } from "../../../logging/Log";
 

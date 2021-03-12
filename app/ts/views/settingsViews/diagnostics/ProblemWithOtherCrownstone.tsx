@@ -27,6 +27,7 @@ import {TestRunner} from "./TestRunner";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { core } from "../../../core";
+import { tell } from "../../../logic/constellation/Tellers";
 
 
 export class ProblemWithOtherCrownstone extends Component<any, any> {
@@ -57,8 +58,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
 
   _factoryResetMyLostCrownstone(handle) {
     let referenceId = Util.data.getReferenceId(core.store.getState());
-    let proxy = BleUtil.getProxy(handle, referenceId);
-    return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
+    tell(handle).commandFactoryReset()
       .then(() => { this.setState({factoryResetSuccess: true}); })
       .catch(() => { this.setState({factoryResetSuccess: false}); })
   }

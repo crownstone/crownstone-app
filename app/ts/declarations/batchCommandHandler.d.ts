@@ -1,8 +1,3 @@
-interface bchReturnType {
-  data: any,
-  viaMesh?: boolean
-}
-
 
 interface multiSwitchPayload {
   handle: string,

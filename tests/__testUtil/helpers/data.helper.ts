@@ -51,6 +51,7 @@ export function addStone(config? : any) {
       handle: 'handle_' + xUtil.getShortUUID(),
       name: getToken('stone'),
       crownstoneId: stoneCount,
+      firmwareVersion:'5.4.0',
       ...config
     }
   });
@@ -70,7 +71,11 @@ export function addLocation(config? : any) {
   return Get.location(lastUsedSphereId, locationId);
 }
 
-export function createMockDatabase(meshId, meshId2) {
+export function createMockDatabase(meshId, meshId2?) {
+  if (!meshId2) {
+    meshId2 = meshId;
+  }
+
   let sphere = addSphere();
   let location1 = addLocation();
   let location2 = addLocation();

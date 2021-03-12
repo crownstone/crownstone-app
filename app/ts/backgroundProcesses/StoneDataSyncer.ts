@@ -1,6 +1,5 @@
 import { core } from "../core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
-import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
@@ -12,6 +11,7 @@ import { StoneBehaviourSyncer } from "../cloud/sections/sync/modelSyncs/StoneBeh
 import { MapProvider } from "./MapProvider";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { Scheduler } from "../logic/Scheduler";
+import { tell } from "../logic/constellation/Tellers";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -68,10 +68,6 @@ class StoneDataSyncerClass {
           // update the list with this stone.
           if (this.masterHashTracker[sphereId][stoneId] === undefined) { this.masterHashTracker[sphereId][stoneId] = null; }
 
-          // clear the triggers since this method can be fired repeatedly
-          StoneAvailabilityTracker.clearMySetTriggers(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID);
-          StoneAvailabilityTracker.clearMySetTriggers(sphereId, stoneId, RULE_SYNCER_OWNER_ID);
-
           // handle abilities
           if (Permissions.inSphere(sphereId).canChangeAbilities) {
             this._syncAbility(sphereId, stoneId, initialAbilities.dimming,     'dimming');
@@ -106,89 +102,67 @@ class StoneDataSyncerClass {
   _setSyncRuleTrigger(sphereId, stoneId) {
     let sessionId = xUtil.getShortUUID()
     LOGi.info("StoneDataSyncer: Setting rule syncing trigger for ", sphereId, stoneId, sessionId);
-    StoneAvailabilityTracker.setTrigger(sphereId, stoneId, RULE_SYNCER_OWNER_ID, () => {
-      LOGi.info("StoneDataSyncer: Initializing rule syncing trigger for ", sphereId, stoneId, sessionId);
-      let id = sphereId+stoneId;
+    let id = sphereId+stoneId;
 
-      // clear the reschedule trigger since we're executing
-      delete this.rescheduledRuleTriggers[id];
 
-      // clear scheduledRetries
-      if (this.scheduledRetries[id] !== undefined) {
-        this.scheduledRetries[id].clearRetry();
-        delete this.scheduledRetries[id];
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone) { return; }
+
+    let ruleIds = Object.keys(stone.rules);
+    let rulePromises = [];
+
+    for (let k = 0; k < ruleIds.length; k++) {
+      let ruleId = ruleIds[k];
+      let rule = stone.rules[ruleId];
+      if (this._shouldRuleBeSynced(rule)) {
+        LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
+        rulePromises.push(
+          this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId)
+        );
       }
+    }
 
-      // if there is already a pending trigger, reschedule the trigger to be fired at a later time
-      if (this.pendingRuleTriggers[id] === true) {
-        this.rescheduledRuleTriggers[id] = true;
-        LOGi.info("StoneDataSyncer: Blocking rule syncing trigger for ", sphereId, stoneId, sessionId);
-        return;
-      }
-
-      let stone = DataUtil.getStone(sphereId, stoneId);
-      if (!stone) { return; }
-
-      this.pendingRuleTriggers[id] = true;
-      LOGi.info("StoneDataSyncer: Starting rule syncing trigger for ", sphereId, stoneId), sessionId;
-
-      let ruleIds = Object.keys(stone.rules);
-      let rulePromises = [];
-
-      for (let k = 0; k < ruleIds.length; k++) {
-        let ruleId = ruleIds[k];
-        let rule = stone.rules[ruleId];
-        if (this._shouldRuleBeSynced(rule)) {
-          LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
-          rulePromises.push(
-            this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId)
-          );
-        }
-      }
-
-      if (rulePromises.length > 0) {
-        LOGi.info("StoneDataSyncer: Executing rule syncing trigger for ", sphereId, stoneId, rulePromises.length, sessionId);
-        BatchCommandHandler.executePriority();
-        Promise.all(rulePromises)
-          .then(() => {
-            LOGi.info("StoneDataSyncer: Syncing behaviour now...", sphereId, stoneId, sessionId);
-            return this.checkAndSyncBehaviour(sphereId, stoneId);
-          })
-          .then(() => {
-            // clear pending
+    if (rulePromises.length > 0) {
+      LOGi.info("StoneDataSyncer: Executing rule syncing trigger for ", sphereId, stoneId, rulePromises.length, sessionId);
+      Promise.all(rulePromises)
+        .then(() => {
+          LOGi.info("StoneDataSyncer: Syncing behaviour now...", sphereId, stoneId, sessionId);
+          return this.checkAndSyncBehaviour(sphereId, stoneId);
+        })
+        .then(() => {
+          // clear pending
+          delete this.pendingRuleTriggers[id];
+          if (this.rescheduledRuleTriggers[id]) {
+            this._setSyncRuleTrigger(sphereId, stoneId)
+          }
+        })
+        .catch((err) => {
+          LOGe.info("StoneDataSyncer: Failed rule sync trigger", sphereId, stoneId, err, sessionId);
+          if (err && err.code && err.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
+          }
+          else {
+            /** if the syncing fails, we set another watcher **/
             delete this.pendingRuleTriggers[id];
             if (this.rescheduledRuleTriggers[id]) {
               this._setSyncRuleTrigger(sphereId, stoneId)
             }
-          })
-          .catch((err) => {
-            LOGe.info("StoneDataSyncer: Failed rule sync trigger", sphereId, stoneId, err, sessionId);
-            if (err && err.code && err.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-              // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
-            }
             else {
-              /** if the syncing fails, we set another watcher **/
-              delete this.pendingRuleTriggers[id];
-              if (this.rescheduledRuleTriggers[id]) {
-                this._setSyncRuleTrigger(sphereId, stoneId)
-              }
-              else {
-                LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger after failure for", sphereId, stoneId);
-                this.scheduledRetries[id] = {clearRetry: Scheduler.scheduleCallback(() => {
-                    LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
-                    this._setSyncRuleTrigger(sphereId, stoneId);
-                  }, 5000, "Retry rule sync for " + sphereId, stoneId)};
-              }
+              LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger after failure for", sphereId, stoneId);
+              this.scheduledRetries[id] = {clearRetry: Scheduler.scheduleCallback(() => {
+                  LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
+                  this._setSyncRuleTrigger(sphereId, stoneId);
+                }, 5000, "Retry rule sync for " + sphereId, stoneId)};
             }
-          })
+          }
+        })
+    }
+    else {
+      delete this.pendingRuleTriggers[id];
+      if (this.rescheduledRuleTriggers[id]) {
+        this._setSyncRuleTrigger(sphereId, stoneId)
       }
-      else {
-        delete this.pendingRuleTriggers[id];
-        if (this.rescheduledRuleTriggers[id]) {
-          this._setSyncRuleTrigger(sphereId, stoneId)
-        }
-      }
-    });
+    }
   }
 
   _syncAbility(sphereId, stoneId, initialAbility, abilityType) {
@@ -214,124 +188,110 @@ class StoneDataSyncerClass {
 
   _syncDimmingAbility(sphereId : string, stoneId : string) {
     LOGi.info("StoneDataSyncer: Setting ability trigger for dimming", sphereId, stoneId);
-    StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
-      LOGi.info("StoneDataSyncer: Excuting ability trigger for dimming", sphereId, stoneId);
-      // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-      let stone = DataUtil.getStone(sphereId, stoneId);
-      if (!stone) { return };
-      let ability = stone.abilities.dimming;
-      if (ability.syncedToCrownstone) { return; }
+    // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone) { return };
+    let ability = stone.abilities.dimming;
+    if (ability.syncedToCrownstone) { return; }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'allowDimming', value: ability.enabledTarget}, {}, 2)
-        .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
-          let actions = [];
-          actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
-          actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming", err, sphereId, stoneId);
-            /** if the syncing fails, we set another watcher **/
-            this.update();
-          }
-        });
+    tell(stone).allowDimming(ability.enabledTarget)
+      .then(() => {
+        LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
+        let actions = [];
+        actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
+        actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+        core.store.batchDispatch(actions);
+      })
+      .catch((err) => {
+        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming", err, sphereId, stoneId);
+          /** if the syncing fails, we set another watcher **/
+          this.update();
+        }
+      });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setSoftOnSpeed', softOnSpeed: Number(ability.softOnSpeed)}, {}, 2)
-        .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
-          let actions = [];
-          actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { softOnSpeed: Number(ability.softOnSpeed)}});
-          actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err);
-            /** if the syncing fails, we set another watcher **/
-            this.update();
-          }
-        });
-      BatchCommandHandler.executePriority();
-    })
+    tell(stone).setSoftOnSpeed(Number(ability.softOnSpeed))
+      .then(() => {
+        LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
+        let actions = [];
+        actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { softOnSpeed: Number(ability.softOnSpeed)}});
+        actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+        core.store.batchDispatch(actions);
+      })
+      .catch((err) => {
+        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err);
+          /** if the syncing fails, we set another watcher **/
+          this.update();
+        }
+      });
   }
 
 
   _syncSwitchcraftAbility(sphereId : string, stoneId : string) {
     LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
-    StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
-      LOGi.info("StoneDataSyncer: Executing ability trigger for switchcraft", sphereId, stoneId);
-
-      // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-      let stone = DataUtil.getStone(sphereId, stoneId);
-      if (!stone) { return };
-      let ability = stone.abilities.switchcraft;
-      if (ability.syncedToCrownstone) { return; }
-
-      BatchCommandHandler.load(stone, stoneId, sphereId, {type:'setSwitchCraft', value: ability.enabledTarget}, {}, 2)
-        .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
-          let actions = [];
-          actions.push({type: "UPDATE_ABILITY_SWITCHCRAFT",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
-          actions.push({type: "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            /** if the syncing fails, we set another watcher **/
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err);
-            this.update();
-          }
-        });
-      BatchCommandHandler.executePriority();
-    })
+    // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone) { return };
+    let ability = stone.abilities.switchcraft;
+    if (ability.syncedToCrownstone) { return; }
+    tell(stone).setSwitchCraft(ability.enabledTarget)
+      .then(() => {
+        LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
+        let actions = [];
+        actions.push({type: "UPDATE_ABILITY_SWITCHCRAFT",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
+        actions.push({type: "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+        core.store.batchDispatch(actions);
+      })
+      .catch((err) => {
+        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          /** if the syncing fails, we set another watcher **/
+          LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err);
+          this.update();
+        }
+      });
   }
 
 
   _syncTapToToggle(sphereId : string, stoneId : string) {
     LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
-    StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
-      LOGi.info("StoneDataSyncer: Excuting ability trigger for tap2toggle", sphereId, stoneId);
-      // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-      let stone = DataUtil.getStone(sphereId, stoneId);
-      if (!stone) { return };
-      let ability = stone.abilities.tapToToggle;
-      if (ability.syncedToCrownstone) { return; }
+    // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone) { return };
+    let ability = stone.abilities.tapToToggle;
+    if (ability.syncedToCrownstone) { return; }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setTapToToggle', value: ability.enabledTarget}, {}, 2)
-        .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle", sphereId, stoneId);
-          let actions = [];
-          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
-          actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle", err, sphereId, stoneId);
-            /** if the syncing fails, we set another watcher **/
-            this.update();
-          }
-        });
+    tell(stone).setTapToToggle(ability.enabledTarget)
+      .then(() => {
+        LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle", sphereId, stoneId);
+        let actions = [];
+        actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
+        actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+        core.store.batchDispatch(actions);
+      })
+      .catch((err) => {
+        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle", err, sphereId, stoneId);
+          /** if the syncing fails, we set another watcher **/
+          this.update();
+        }
+      });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{type:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffsetTarget}, {}, 2)
-        .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.rssiOffsetTarget);
-          let actions = [];
-          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffsetTarget}});
-          actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err);
-            /** if the syncing fails, we set another watcher **/
-            this.update();
-          }
-        });
-      BatchCommandHandler.executePriority();
-    })
+    tell(stone).setTapToToggleThresholdOffset(ability.rssiOffsetTarget)
+      .then(() => {
+        LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.rssiOffsetTarget);
+        let actions = [];
+        actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffsetTarget}});
+        actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+        core.store.batchDispatch(actions);
+      })
+      .catch((err) => {
+        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err);
+          /** if the syncing fails, we set another watcher **/
+          this.update();
+        }
+      });
   }
 
 
@@ -342,11 +302,11 @@ class StoneDataSyncerClass {
       LOGi.info("StoneDataSyncer: Syncing deleted rule", sphereId, stoneId, ruleId, sessionId);
       if (rule.idOnCrownstone !== null) {
         LOGi.info("StoneDataSyncer: Syncing deleted rule which is already on Crownstone", sphereId, stoneId, ruleId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "removeBehaviour", index: rule.idOnCrownstone},{ keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        tell(stone).removeBehaviour(rule.idOnCrownstone)
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
-            let masterHash = returnData.data && returnData.data.masterHash || null;
+            let masterHash = returnData.masterHash || null;
             this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
@@ -368,11 +328,11 @@ class StoneDataSyncerClass {
 
       if (rule.idOnCrownstone !== null) {
         LOGi.info("StoneDataSyncer: Updating rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "updateBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        tell(stone).updateBehaviour(behaviour)
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully updated rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
-            let masterHash = returnData.data && returnData.data.masterHash || null;
+            let masterHash = returnData.masterHash || null;
             this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
@@ -382,11 +342,11 @@ class StoneDataSyncerClass {
       }
       else {
         LOGi.info("StoneDataSyncer: Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "addBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        tell(stone).addBehaviour(behaviour)
           .then((returnData) => {
             LOGi.info("StoneDataSyncer: Successfully Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
-            let index = returnData.data.index;
-            let masterHash = returnData.data && returnData.data.masterHash || null;
+            let index = returnData.index;
+            let masterHash = returnData.masterHash || null;
             this.masterHashTracker[sphereId][stoneId] = masterHash;
 
             // handle duplicates!
@@ -455,14 +415,11 @@ class StoneDataSyncerClass {
         if (this.masterHashTracker[sphereId][stoneId] !== masterHash || force) {
           // SYNC!
           LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId]);
-          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { type: "syncBehaviour", behaviours: ruleData });
-          BatchCommandHandler.executePriority();
-          return commandPromise;
+          return tell(stone).syncBehaviours(ruleData);
         }
         throw "NO_SYNC_REQUIRED"
       })
-      .then((result) => {
-        rulesAccordingToCrownstone = result.data;
+      .then((rulesAccordingToCrownstone) => {
         // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
         // the behaviour comparing locally.
         if (stone.config.cloudId) {
@@ -592,7 +549,6 @@ class StoneDataSyncerClass {
       .catch((err) => {
         if (err == "NO_SYNC_REQUIRED") {
           LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour DONE Syncing! NOT REQUIRED!");
-          BatchCommandHandler.closeKeptOpenConnection();
           return;
         }
         else {

@@ -7,6 +7,8 @@ import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
 import { LOG, LOGi } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { BroadcastCommandManager } from "./BroadcastCommandManager";
+import { ConstellationUtil } from "./util/ConstellationUtil";
 
 
 /**
@@ -14,7 +16,7 @@ import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise"
  * It will provide commands to slots when they request them. It will handle duplicates according to "Last command wins".
  * It will also have all intelligence on how to determine duplicate handling per command type.
  */
-export class BleCommandQueueClass {
+export class BleCommandManagerClass {
   queue : CommandQueueMap = { direct: {}, mesh: {}};
 
   reset() {
@@ -55,18 +57,25 @@ export class BleCommandQueueClass {
         executedBy:   [],
         attemptingBy: []
       }
+
       if (options.commandType === 'DIRECT') {
         let bleCommand : BleCommand = { ...sharedItems, promise };
+        let handle = targetId;
+        let stoneData = MapProvider.stoneHandleMap[handle];
+        if (stoneData) {
+          if (command.canBroadcast && ConstellationUtil.canBroadcast(stoneData.stone)) {
+            BroadcastCommandManager.broadcast(bleCommand as BleCommand<BroadcastInterface>)
+            return;
+          }
+        }
 
         // load the direct command.
         commandsToLoad.push(bleCommand);
 
         // possibly load extra mesh relays
         if (allowMeshRelay) {
-          let handle = targetId;
           let meshId = MapProvider.handleMeshMap[handle];
           if (meshId) {
-            let stoneData = MapProvider.stoneHandleMap[handle];
             if (stoneData) {
               let sphere = Get.sphere(stoneData.sphereId);
               if (sphere) {
@@ -228,7 +237,7 @@ export class BleCommandQueueClass {
         commandRemoved = true;
       }
       else if (command.executedBy.length >= command.minConnections) {
-        LOGi.constellation("BleCommandQueue: Mesh command finished.", command.minConnections, "connections achieved.")
+        LOGi.constellation("BleCommandManager: Mesh command finished.", command.minConnections, "connections achieved.")
         // mesh action
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);
@@ -358,4 +367,4 @@ export class BleCommandQueueClass {
   }
 }
 
-export const BleCommandQueue = new BleCommandQueueClass();
+export const BleCommandManager = new BleCommandManagerClass();

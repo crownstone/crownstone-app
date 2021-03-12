@@ -2,7 +2,6 @@ import { Bluenet  }  from '../native/libInterface/Bluenet';
 import {LOG, LOGd} from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 
-import { DirectCommand } from '../logic/DirectCommand'
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "./StandAloneUtil";
 import { core } from "../core";
@@ -139,14 +138,14 @@ export const BleUtil = {
 
 
 
-  /**
-   *
-   * @param bleHandle     Handle used to connect to Crownstone
-   * @param referenceId   Id of the matching keyset. This is usually a SphereId in our app.
-   */
-  getProxy: function (bleHandle : string, referenceId : string) {
-    return new DirectCommand(bleHandle, referenceId);
-  },
+  // /**
+  //  *
+  //  * @param bleHandle     Handle used to connect to Crownstone
+  //  * @param referenceId   Id of the matching keyset. This is usually a SphereId in our app.
+  //  */
+  // getProxy: function (bleHandle : string, referenceId : string) {
+  //   return new DirectCommand(bleHandle, referenceId);
+  // },
 
   /**
    *

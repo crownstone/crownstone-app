@@ -15,11 +15,11 @@ import {
 import { IconButton }           from '../components/IconButton'
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { styles, colors } from '../styles'
-import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Scheduler }            from "../../logic/Scheduler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { tell } from "../../logic/constellation/Tellers";
 
 export class LockOverlay extends Component<any, any> {
 
@@ -59,28 +59,26 @@ export class LockOverlay extends Component<any, any> {
     }
   }
 
-  _lockCrownstone(stone) {
+  async _lockCrownstone(stone) {
     core.eventBus.emit("showLoading", lang("Locking_Crownstone___"));
-    BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { type : 'lockSwitch', value: true })
-      .then(() => {
-        core.eventBus.emit("showLoading", "Done!");
-        Scheduler.scheduleCallback(() => {
-          core.eventBus.emit("hideLoading");
-          core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
-          this.setState({visible: false, sphereId: null}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
-        }, 500, 'Locked Crownstone');
-      })
-      .catch((err) => {
-        core.eventBus.emit("hideLoading");
-        this.setState({visible: false, sphereId: null}, () => {
-          NavigationUtil.closeOverlay(this.props.componentId);
-          Alert.alert(
-            lang("_Im_sorry____Something_we_header"),
-            lang("_Im_sorry____Something_we_body"),
-            [{text:lang("_Im_sorry____Something_we_left")}]);
-        });
+    try {
+      await tell(stone).lockSwitch(true);
+      core.eventBus.emit("showLoading", "Done!");
+      await Scheduler.delay(500);
+      core.eventBus.emit("hideLoading");
+      core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
+      this.setState({visible: false, sphereId: null}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
+    }
+    catch (e) {
+      core.eventBus.emit("hideLoading");
+      this.setState({visible: false, sphereId: null}, () => {
+        NavigationUtil.closeOverlay(this.props.componentId);
+        Alert.alert(
+          lang("_Im_sorry____Something_we_header"),
+          lang("_Im_sorry____Something_we_body"),
+          [{text:lang("_Im_sorry____Something_we_left")}]);
       });
-    BatchCommandHandler.executePriority();
+    }
   }
 
   _getButtons() {

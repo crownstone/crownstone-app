@@ -20,7 +20,10 @@ https://reactnative.dev/docs/hermes
 
 Presumably we'll be moving to RN 0.63.4
 
-add a getBehaviourMasterHashCRC where we get the CRC hash instead of the fletcher hash.
-This does not mean we will remove the other method.
+- add a getBehaviourMasterHashCRC where we get the CRC hash instead of the fletcher hash.
+- This does not mean we will remove the other method.
 
-remove setMeshChannel bridge method. this is from the old mesh.
+- remove setMeshChannel bridge method. this is from the old mesh.
+
+- Updated data type for this event:
+    crownstoneAdvertisementReceived: "crownstoneAdvertisementReceived",   // data type = crownstoneAdvertisementSummary, this is only the handle. // Any advertisement, verified and unverified from crownstones.

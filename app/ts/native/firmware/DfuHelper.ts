@@ -1,4 +1,3 @@
-import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { SetupStateHandler } from "../setup/SetupStateHandler";

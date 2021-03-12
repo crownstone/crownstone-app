@@ -479,7 +479,7 @@ class SchedulerClass {
   }
 
 
-  delay(ms, label = '') : Promise<void> {
+  async delay(ms, label = '') : Promise<void> {
     return new Promise((resolve, reject) => {
       Scheduler.scheduleCallback(() => { resolve(); }, ms, 'schedulerDelay_' + label);
     })

@@ -1,4 +1,4 @@
-import { mBluenet, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mConstellationState, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
@@ -11,15 +11,16 @@ import {
   Command_GetFirmwareVersion,
   Command_GetHardwareVersion
 } from "../../app/ts/logic/constellation/commandClasses";
-import { BleCommandQueue } from "../../app/ts/logic/constellation/BleCommandQueue";
+import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
 import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
 
 beforeEach(async () => {
   StoneAvailabilityTracker.sphereLog = {};
   StoneAvailabilityTracker.log = {};
-  BleCommandQueue.reset();
+  BleCommandManager.reset();
   SessionManager.reset();
   resetMocks()
+  mConstellationState.allowBroadcasting = false;
 })
 beforeAll(async () => { })
 afterEach(async () => { await TestUtil.nextTick(); })
@@ -53,14 +54,14 @@ test("SessionBroker finish mesh command", async () => {
   evt_ibeacon(-80, handle3);
   evt_ibeacon(-80, handle4);
 
-  await mBluenet.for(handle2).succeed.connect("operation");
-  await mBluenet.for(handle3).succeed.connect("operation");
-  await mBluenet.for(handle4).succeed.connect("operation");
+  await mBluenetPromise.for(handle2).succeed.connect("operation");
+  await mBluenetPromise.for(handle3).succeed.connect("operation");
+  await mBluenetPromise.for(handle4).succeed.connect("operation");
 
   await TestUtil.nextTick();
 
-  await mBluenet.for(handle2).succeed.turnOnMesh();
-  await mBluenet.for(handle3).succeed.allowDimming();
+  await mBluenetPromise.for(handle2).succeed.turnOnMesh();
+  await mBluenetPromise.for(handle3).succeed.allowDimming();
 
   await TestUtil.nextTick();
 
@@ -68,10 +69,10 @@ test("SessionBroker finish mesh command", async () => {
   expect(Object.keys(turnOnCommander.broker.connectedSessions).length).toBe(3);
 
 
-  await mBluenet.for(handle4).succeed.turnOnMesh();
+  await mBluenetPromise.for(handle4).succeed.turnOnMesh();
   await TestUtil.nextTick();
 
-  await mBluenet.for(handle3).succeed.turnOnMesh();
+  await mBluenetPromise.for(handle3).succeed.turnOnMesh();
 
   await TestUtil.nextTick();
 
@@ -98,18 +99,18 @@ test("SessionBroker direct command finishes mesh commands", async () => {
 
   evt_ibeacon(-80, handle1);
 
-  await mBluenet.for(handle1).succeed.connect("operation");
+  await mBluenetPromise.for(handle1).succeed.connect("operation");
 
   await TestUtil.nextTick();
 
   expect(Object.keys(api.broker.pendingSessions).length).toBe(4);
   expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
 
-  await mBluenet.for(handle1).succeed.turnOnMesh();
+  await mBluenetPromise.for(handle1).succeed.turnOnMesh();
 
   await TestUtil.nextTick();
-  await mBluenet.for(handle1).succeed.disconnectCommand();
-  await mBluenet.for(handle1).succeed.phoneDisconnect();
+  await mBluenetPromise.for(handle1).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
   evt_disconnected(handle1);
 
   expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
@@ -125,9 +126,9 @@ test("SessionBroker check if a private connection is not closed prematurely", as
   let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
   api.allowDimming(true);
-  await mBluenet.for(handle1).succeed.connect("operation");
+  await mBluenetPromise.for(handle1).succeed.connect("operation");
   await TestUtil.nextTick();
-  await mBluenet.for(handle1).succeed.allowDimming();
+  await mBluenetPromise.for(handle1).succeed.allowDimming();
   await TestUtil.nextTick();
   expect(SessionManager._sessions[handle1].state).toBe("WAITING_FOR_COMMANDS");
 });
@@ -144,13 +145,13 @@ test("SessionBroker check the cleanup of closed private session", async () => {
   expect(Object.keys(api.broker.pendingSessions).length).toBe(1);
   expect(api.broker.connectedSessions).toStrictEqual({});
 
-  await mBluenet.for(handle1).succeed.connect("operation");
+  await mBluenetPromise.for(handle1).succeed.connect("operation");
 
   expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
   expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
 
   await TestUtil.nextTick();
-  await mBluenet.for(handle1).succeed.allowDimming();
+  await mBluenetPromise.for(handle1).succeed.allowDimming();
   await TestUtil.nextTick();
 
   expect(SessionManager._sessions[handle1].state).toBe("WAITING_FOR_COMMANDS");
@@ -158,8 +159,8 @@ test("SessionBroker check the cleanup of closed private session", async () => {
   api.end();
 
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
-  await mBluenet.for(handle1).succeed.disconnectCommand();
-  await mBluenet.for(handle1).succeed.phoneDisconnect();
+  await mBluenetPromise.for(handle1).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
 
@@ -183,18 +184,18 @@ test("SessionBroker check the cleanup of closed public session", async () => {
 
   evt_ibeacon(-80, handle1);
 
-  await mBluenet.for(handle1).succeed.connect("operation");
+  await mBluenetPromise.for(handle1).succeed.connect("operation");
 
   expect(Object.keys(api.broker.connectedSessions).length).toBe(1);
   expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
 
   await TestUtil.nextTick();
-  await mBluenet.for(handle1).succeed.allowDimming();
+  await mBluenetPromise.for(handle1).succeed.allowDimming();
   await TestUtil.nextTick();
 
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
-  await mBluenet.for(handle1).succeed.disconnectCommand();
-  await mBluenet.for(handle1).succeed.phoneDisconnect();
+  await mBluenetPromise.for(handle1).succeed.disconnectCommand();
+  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
 

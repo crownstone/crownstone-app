@@ -20,7 +20,6 @@ import { colors, screenWidth, screenHeight, background } from "./../styles";
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import {LOG, LOGe} from '../../logging/Log'
-import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 import { xUtil } from "../../util/StandAloneUtil";
@@ -28,6 +27,7 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { tell } from "../../logic/constellation/Tellers";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static options(props) {
@@ -219,11 +219,8 @@ lang("_No_nearby_Crownstones____body"),
   recoverStone(handle) {
     this.switchImages();
     LOG.info('attempting to factory reset handle:', handle);
-    let recoveryPromise = () => {
-      return BluenetPromiseWrapper.recover(handle);
-    };
 
-    BlePromiseManager.registerPriority(recoveryPromise, {from: 'Recovering stone'})
+    tell(handle).recover()
       .then(() => {
         let defaultAction = () => {
           // pop twice to get back to the settings.

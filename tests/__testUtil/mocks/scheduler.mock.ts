@@ -25,9 +25,9 @@ class MockSchedulerClass {
       }
 
       this._callbacks[0].callback();
-      this._callbacks.shift()
+      this._callbacks.shift();
     }
-    await TestUtil.nextTick()
+    await TestUtil.nextTick();
   }
 
   reset() {

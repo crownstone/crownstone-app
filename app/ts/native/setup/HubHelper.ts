@@ -1,12 +1,10 @@
 import { Alert } from 'react-native';
 
-import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
 import { HubReplyCode, HubReplyError, KEY_TYPES, STONE_TYPES } from "../../Enums";

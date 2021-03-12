@@ -1,14 +1,16 @@
 import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { Executor } from "../Executor";
+import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 
 
-export class Command_MultiSwitch extends CommandBase implements CommandBaseInterface {
+export class Command_MultiSwitch extends CommandBase implements BroadcastInterface {
 
   state:  number;
   constructor(state: number) {
     super("multiSwitch");
     this.state = state;
+    this.canBroadcast = true;
   }
 
 
@@ -16,6 +18,13 @@ export class Command_MultiSwitch extends CommandBase implements CommandBaseInter
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
     let stoneSwitchPackets = Executor.aggregateMultiSwitchCommands(connectedHandle, options.bleCommand, options.queue);
     return BluenetPromiseWrapper.multiSwitch(connectedHandle, stoneSwitchPackets);
+  }
+
+  async broadcast(bleCommand: BleCommand) {
+    let stoneSummary  = MapProvider.stoneHandleMap[bleCommand.commandTarget];
+    let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
+
+    return BluenetPromiseWrapper.broadcastSwitch(bleCommand.sphereId, crownstoneId, this.state, false)
   }
 
   isDuplicate(otherCommand: CommandBaseInterface): boolean {

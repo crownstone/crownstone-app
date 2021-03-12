@@ -16,12 +16,12 @@ import { core } from "../../../core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { IconButton } from "../../components/IconButton";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { DataUtil } from "../../../util/DataUtil";
 import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { FileUtil } from "../../../util/FileUtil";
+import { from } from "../../../logic/constellation/Tellers";
 const RNFS = require('react-native-fs');
 
 const triggerId = "SettingsStoneBleDebug";
@@ -133,7 +133,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Debug Info...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
+        from(stone).getBehaviourDebugInformation()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
 
@@ -150,7 +150,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
               return result;
             }
 
-            let data = returnData.data;
+            let data : any = returnData;
 
             data.overrideState = data.overrideState == '128' ? "None" : data.overrideState;
 
@@ -178,7 +178,6 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
       }
     });
   }
@@ -188,22 +187,20 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       label: "Get Crownstone Uptime",
       icon: <IconButton name={"ios-clock"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueLight.hex }}/>,
       type: 'navigation',
-      callback: () => {
+      callback: async () => {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Getting Crownstone Uptime...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getCrownstoneUptime'}, {}, 2, "From StoneDebug")
-          .then((returnData) => {
-            core.eventBus.emit("hideLoading");
-            let data = returnData.data;
-            LOGe.info("STONE DEBUG INFORMATION: UPTIME", data);
-            this.setState({debugInformationText: xUtil.getDurationFormat(data*1000)});
-          })
-          .catch((err) => {
-            core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
-          })
-        BatchCommandHandler.executePriority()
+        try {
+          let uptime = await from(stone).getCrownstoneUptime()
+          core.eventBus.emit("hideLoading");
+          LOGe.info("STONE DEBUG INFORMATION: UPTIME", uptime);
+          this.setState({debugInformationText: xUtil.getDurationFormat(uptime*1000)});
+        }
+        catch (err) {
+          core.eventBus.emit("hideLoading");
+          Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+        }
       }
     });
   }
@@ -217,10 +214,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get ADC Restarts...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getAdcRestarts'}, {}, 2, "From StoneDebug")
+        from(stone).getAdcRestarts()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : AdcRestart = returnData.data;
+            let data : AdcRestart = returnData;
             LOGe.info("STONE DEBUG INFORMATION: getAdcRestarts", data);
             let resultString = "\n\nRestarts:" + data.restartCount + "\n\nLast ADC restart: " + xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(data.timestamp))
 
@@ -230,7 +227,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -245,10 +242,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get ADC channel swaps...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getAdcChannelSwaps'}, {}, 2, "From StoneDebug")
+        from(stone).getAdcChannelSwaps()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : AdcSwapCount = returnData.data;
+            let data : AdcSwapCount = returnData;
             LOGe.info("STONE DEBUG INFORMATION: getAdcChannelSwaps", data);
             let resultString = "\n\nSwaps:" + data.swapCount + "\n\nLast ADC swap: " + xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(data.timestamp))
 
@@ -258,7 +255,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -271,11 +268,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       callback: () => {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get last reset reason...");
-
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getLastResetReason'}, {}, 2, "From StoneDebug")
+        from(stone).getLastResetReason()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : ResetReason = returnData.data;
+            let data : ResetReason = returnData;
             LOGe.info("STONE DEBUG INFORMATION: getLastResetReason", data);
             let resultString = JSON.stringify(data, undefined, 2);
 
@@ -285,7 +281,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -299,10 +295,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get Min Scheduler Free Space...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getMinSchedulerFreeSpace'}, {}, 2, "From StoneDebug")
+        from(stone).getMinSchedulerFreeSpace()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : number = returnData.data;
+            let data : number = returnData;
             LOGe.info("STONE DEBUG INFORMATION: getMinSchedulerFreeSpace", data);
             let resultString = data;
 
@@ -312,7 +308,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -325,10 +321,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get GPREGRET...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getGPREGRET'}, {}, 2, "From StoneDebug")
+        from(stone).getGPREGRET()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : GPREGRET = returnData.data;
+            let data : GPREGRET[] = returnData;
             LOGe.info("STONE DEBUG INFORMATION: getGPREGRET", data);
             let resultString = JSON.stringify(data, undefined, 2);
 
@@ -338,7 +334,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -352,10 +348,10 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         this.setState({debugInformationText: null, debugData1: null, debugData2: null, typeOfData: null});
         core.eventBus.emit("showLoading", "Get switch history...");
 
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getSwitchHistory'}, {}, 2, "From StoneDebug")
+        from(stone).getSwitchHistory()
           .then((returnData) => {
             core.eventBus.emit("hideLoading");
-            let data : SwitchHistory[] = returnData.data.reverse();
+            let data : SwitchHistory[] = returnData.reverse();
             LOGe.info("STONE DEBUG INFORMATION: SwitchHistory", data);
             let resultString = "";
             let getSource = function(switchHistory) {
@@ -405,7 +401,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             core.eventBus.emit("hideLoading");
             Alert.alert("Something went wrong", err, [{text:"Damn."}]);
           })
-        BatchCommandHandler.executePriority()
+
       }
     });
   }
@@ -723,11 +719,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   getBuffers(stone, type : PowersampleDataType) {
     this.visibleBuffer = null;
-    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getPowerSamples', powersampleDataType: type}, {}, 2, "From StoneDebug")
+    from(stone).getPowerSamples(type)
       .then((returnData) => {
         core.eventBus.emit("hideLoading");
-        let data : PowerSamples[] = returnData.data;
-        this.visibleBuffer = returnData.data;
+        let data : PowerSamples[] = returnData;
+        this.visibleBuffer = returnData;
         LOGe.info("STONE DEBUG INFORMATION: getPowerSamples", type, data);
 
         let getData = function(buffer: PowerSamples, initialCountValue: number = 0, dataContainer = []) : [number, any[]] {
@@ -746,7 +742,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         if (type == "filteredBuffer" || type == "unfilteredBuffer") {
           let voltage = getData(data[0])[1];
           let current = getData(data[1])[1];
-          this.setState({debugInformationText: null, debugData1: voltage, debugData2: current, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+          this.setState({debugInformationText: null, debugData1: voltage, debugData2: current, debugTimestamp: returnData[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
         }
         else {
           let counter = 0;
@@ -755,14 +751,13 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             let result = getData(powerSampleSet, counter, plotData)
             counter = result[0];
           })
-          this.setState({debugInformationText: null, debugData1: plotData, debugData2:0, debugTimestamp: returnData.data[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
+          this.setState({debugInformationText: null, debugData1: plotData, debugData2:0, debugTimestamp: returnData[0].timestamp, debugDataHash: Math.ceil(Math.random()*1e8).toString(36)});
         }
       })
       .catch((err) => {
         core.eventBus.emit("hideLoading");
         Alert.alert("Something went wrong", err, [{text:"Damn."}]);
       })
-    BatchCommandHandler.executePriority()
   }
 
   render() {

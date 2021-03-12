@@ -1,8 +1,8 @@
-import { BatchCommandHandler } from '../logic/BatchCommandHandler'
 import {LOG, LOGe} from "../logging/Log";
 import { Util } from "../util/Util";
 import { core } from "../core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
+import { from, tell } from "../logic/constellation/Tellers";
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;
@@ -38,33 +38,32 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute when in range:", execute);
       // random chance to check the firmware again.
       if (execute) {
-        StoneAvailabilityTracker.setTrigger(sphereId, stoneId, "FIRMWARE_WATCHER", () => {
-          BatchCommandHandler.load(stone, stoneId, sphereId, {type: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
-            .then((firmwareVersion : {data: string}) => {
-              core.store.dispatch({
-                type: "UPDATE_STONE_CONFIG",
-                stoneId: stoneId,
-                sphereId: sphereId,
-                data: {
-                  firmwareVersion: firmwareVersion.data
-                }
-              });
-            })
-            .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
-          BatchCommandHandler.load(stone, stoneId, sphereId, {type: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
-            .then((hardwareVersion : {data: string}) => {
-              core.store.dispatch({
-                type: "UPDATE_STONE_CONFIG",
-                stoneId: stoneId,
-                sphereId: sphereId,
-                data: {
-                  hardwareVersion: hardwareVersion.data
-                }
-              });
-            })
-            .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err)});
-          BatchCommandHandler.execute();
-        })
+        from(stone).getFirmwareVersion()
+          .then((firmwareVersion : string) => {
+            core.store.dispatch({
+              type:     "UPDATE_STONE_CONFIG",
+              stoneId:  stoneId,
+              sphereId: sphereId,
+              data: {
+                firmwareVersion: firmwareVersion
+              }
+            });
+          })
+          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+
+        from(stone).getHardwareVersion()
+          .then((hardwareVersion : string) => {
+            core.store.dispatch({
+              type: "UPDATE_STONE_CONFIG",
+              stoneId: stoneId,
+              sphereId: sphereId,
+              data: {
+                hardwareVersion: hardwareVersion
+              }
+            });
+          })
+          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err) });
+
         loadedCommands = true;
       }
     });

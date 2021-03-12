@@ -13,6 +13,15 @@ export function mockBluenetPromiseWrapper() {
       })
     }
   }
+  for (let method of genericMethods) {
+    mocks[method] = function() {
+      let args = arguments;
+      // console.log("Providing generic promise", method, arguments)
+      return new Promise((resolve, reject) => {
+        libStateWrapper.loadGeneric(method, resolve, reject, args)
+      })
+    }
+  }
 
   jest.mock("../../../app/ts/native/libInterface/BluenetPromise", () => {
     return {
@@ -26,6 +35,7 @@ export function mockBluenetPromiseWrapper() {
 class LibContainer {
 
   targetedActions : {[commandName: string]: {[handle: string]: {resolve: (data?: any) => void, reject: (err: any) => void, args: any[]}}} = {}
+  genericActions  : {[commandName: string]: {resolve: (data?: any) => void, reject: (err: any) => void, args: any[]}[]} = {}
 
   reset() {
     for (let [commandName, handleObj] of Object.entries(this.targetedActions)) {
@@ -36,7 +46,12 @@ class LibContainer {
     this.targetedActions = {};
   }
 
-
+  loadGeneric(commandName, resolve: (data?: any) => void, reject: (err: any) => void, args: any) {
+    if (this.genericActions[commandName] === undefined) {
+      this.genericActions[commandName] = []
+    }
+    this.genericActions[commandName].push({resolve, reject, args})
+  }
 
   loadTargeted(commandName, handle, resolve: (data?: any) => void, reject: (err: any) => void, args: any) {
     if (this.targetedActions[commandName] === undefined) {
@@ -52,6 +67,14 @@ class LibContainer {
     }
   }
 
+  succeed(): MockedGenericLib {
+    return this._getSuccessMethodsGeneric()
+  }
+
+  fail(): MockedGenericLibError {
+    return this._getErrorMethodsGeneric()
+  }
+
   for(handle: string) : Resolver {
     return {
       succeed:    this._getSuccessMethods(handle),
@@ -65,8 +88,11 @@ class LibContainer {
      this._resolve('cancelConnectionRequest', handle)
   }
 
-  has(handle: string) : {called: MockedCallList} {
-    return { called: this._getCallMethods(handle) }
+  has(handle?: string) : {called: MockedCallList, stacked: MockedCountList} {
+    return {
+      called: this._getCallMethods(handle),
+      stacked: this._getStackCount()
+    }
   }
 
   _getCallMethods(handle) : MockedCallList {
@@ -80,6 +106,34 @@ class LibContainer {
         return true;
       }
     }
+
+    for (let method of genericMethods) {
+      res[method] = (data: any) => {
+        try {
+          this._verifyGenericRegistration(method);
+        }
+        catch (e) { return false; }
+        return true;
+      }
+    }
+
+    // @ts-ignore
+    return res
+  }
+
+  _getStackCount() : MockedCountList {
+    let res = {};
+    for (let method of genericMethods) {
+      res[method] = (data: any) => {
+        try {
+          this._verifyGenericRegistration(method);
+        }
+        catch (e) { return 0; }
+
+        return this.genericActions[method].length
+      }
+    }
+
     // @ts-ignore
     return res
   }
@@ -91,6 +145,29 @@ class LibContainer {
         this._verifyTargetRegistration(method, handle);
 
         return this.targetedActions[method][handle].args;
+      }
+    }
+    // @ts-ignore
+    return res;
+  }
+  _getArgGettersGeneric() : MockedLibArgs {
+    let res = {};
+    for (let method of targetedMethods) {
+      res[method] = (data: any) => {
+        this._verifyGenericRegistration(method);
+        return this.genericActions[method][0].args;
+      }
+    }
+    // @ts-ignore
+    return res;
+  }
+  _getSuccessMethodsGeneric() : MockedGenericLib {
+    let res = {};
+    for (let method of genericMethods) {
+      res[method] = async (data?: any) => {
+
+        this._resolveGeneric(method, data);
+        await skipTurn();
       }
     }
     // @ts-ignore
@@ -110,6 +187,16 @@ class LibContainer {
     return res;
   }
 
+  _resolveGeneric(method, data?: any) {
+    this._verifyGenericRegistration(method);
+    this.genericActions[method][0].resolve(data);
+    this.genericActions[method].shift();
+  }
+  _rejectGeneric(method, err?: any) {
+    this._verifyGenericRegistration(method);
+    this.genericActions[method][0].reject(err);
+    this.genericActions[method].shift();
+  }
   _resolve(method, handle, data?: any) {
     this._verifyTargetRegistration(method, handle);
 
@@ -136,9 +223,25 @@ class LibContainer {
     if (!this.targetedActions[method])         { throw "UNREGISTERED_METHOD:"+method }
     if (!this.targetedActions[method][handle]) { throw "UNREGISTERED_HANDLE_FOR:"+method+":"+handle }
   }
+  _verifyGenericRegistration(method) {
+    if (!this.genericActions[method])             { throw "UNREGISTERED_METHOD:"+method }
+    if (this.genericActions[method].length == 0 ) { throw "UNREGISTERED_METHOD:"+method }
+  }
 
 
-  _getErrorMethods(handle) : MockedLib {
+  _getErrorMethodsGeneric() : MockedGenericLibError {
+    let res = {};
+    for (let method of targetedMethods) {
+      res[method] = async (error?: any) => {
+        this._rejectGeneric(method, error);
+        await skipTurn();
+      }
+    }
+    // @ts-ignore
+    return res;
+  }
+
+  _getErrorMethods(handle) : MockedLibError {
     let res = {};
     for (let method of targetedMethods) {
       res[method] = async (error?: any) => {
@@ -161,6 +264,26 @@ interface Resolver {
   succeed: MockedLib,
   fail: MockedLibError,
   getArgsFor: MockedLibArgs
+}
+
+interface MockedGenericLibArgs {
+  clearTrackedBeacons:               () => any[],
+  isReady:                           () => any[],
+  isPeripheralReady:                 () => any[],
+  finalizeFingerprint:               () => any[],
+  setKeySets:                        () => any[],
+  requestLocation:                   () => any[],
+  broadcastUpdateTrackedDevice:      () => any[],
+  setTimeViaBroadcast:               () => any[],
+  broadcastSwitch:                   () => any[],
+  turnOnBroadcast:                   () => any[],
+  broadcastBehaviourSettings:        () => any[],
+  getBehaviourMasterHash:            () => any[],
+  getTrackingState:                  () => any[],
+  clearFingerprintsPromise:          () => any[],
+  isDevelopmentEnvironment:          () => any[],
+  canUseDynamicBackgroundBroadcasts: () => any[],
+  checkBroadcastAuthorizatio:        () => any[],
 }
 
 interface MockedLibArgs {
@@ -250,6 +373,25 @@ interface MockedLibArgs {
   factoryResetHubOnly           : () => any[],
 }
 
+interface MockedGenericLib {
+  clearTrackedBeacons:               (data?: any) => Promise<void>,
+  isReady:                           (data?: any) => Promise<void>,
+  isPeripheralReady:                 (data?: any) => Promise<void>,
+  finalizeFingerprint:               (data?: any) => Promise<void>,
+  setKeySets:                        (data?: any) => Promise<void>,
+  requestLocation:                   (data?: any) => Promise<void>,
+  broadcastUpdateTrackedDevice:      (data?: any) => Promise<void>,
+  setTimeViaBroadcast:               (data?: any) => Promise<void>,
+  broadcastSwitch:                   (data?: any) => Promise<void>,
+  turnOnBroadcast:                   (data?: any) => Promise<void>,
+  broadcastBehaviourSettings:        (data?: any) => Promise<void>,
+  getBehaviourMasterHash:            (data?: any) => Promise<void>,
+  getTrackingState:                  (data?: any) => Promise<void>,
+  clearFingerprintsPromise:          (data?: any) => Promise<void>,
+  isDevelopmentEnvironment:          (data?: any) => Promise<void>,
+  canUseDynamicBackgroundBroadcasts: (data?: any) => Promise<void>,
+  checkBroadcastAuthorizatio:        (data?: any) => Promise<void>,
+}
 
 interface MockedLib {
   connect                       : (data?: any) => Promise<void>,
@@ -338,6 +480,25 @@ interface MockedLib {
   factoryResetHubOnly           : (data?: any) => Promise<void>,
 }
 
+interface MockedGenericLibError {
+  clearTrackedBeacons:               (err?: any) => Promise<void>,
+  isReady:                           (err?: any) => Promise<void>,
+  isPeripheralReady:                 (err?: any) => Promise<void>,
+  finalizeFingerprint:               (err?: any) => Promise<void>,
+  setKeySets:                        (err?: any) => Promise<void>,
+  requestLocation:                   (err?: any) => Promise<void>,
+  broadcastUpdateTrackedDevice:      (err?: any) => Promise<void>,
+  setTimeViaBroadcast:               (err?: any) => Promise<void>,
+  broadcastSwitch:                   (err?: any) => Promise<void>,
+  turnOnBroadcast:                   (err?: any) => Promise<void>,
+  broadcastBehaviourSettings:        (err?: any) => Promise<void>,
+  getBehaviourMasterHash:            (err?: any) => Promise<void>,
+  getTrackingState:                  (err?: any) => Promise<void>,
+  clearFingerprintsPromise:          (err?: any) => Promise<void>,
+  isDevelopmentEnvironment:          (err?: any) => Promise<void>,
+  canUseDynamicBackgroundBroadcasts: (err?: any) => Promise<void>,
+  checkBroadcastAuthorizatio:        (err?: any) => Promise<void>,
+}
 
 interface MockedLibError {
   connect                       : (err?: any) => Promise<void>,
@@ -512,6 +673,45 @@ interface MockedCallList {
   requestCloudId                : () => boolean,
   factoryResetHub               : () => boolean,
   factoryResetHubOnly           : () => boolean,
+
+  clearTrackedBeacons:               () => boolean,
+  isReady:                           () => boolean,
+  isPeripheralReady:                 () => boolean,
+  finalizeFingerprint:               () => boolean,
+  setKeySets:                        () => boolean,
+  requestLocation:                   () => boolean,
+  broadcastUpdateTrackedDevice:      () => boolean,
+  setTimeViaBroadcast:               () => boolean,
+  broadcastSwitch:                   () => boolean,
+  turnOnBroadcast:                   () => boolean,
+  broadcastBehaviourSettings:        () => boolean,
+  getBehaviourMasterHash:            () => boolean,
+  getTrackingState:                  () => boolean,
+  clearFingerprintsPromise:          () => boolean,
+  isDevelopmentEnvironment:          () => boolean,
+  canUseDynamicBackgroundBroadcasts: () => boolean,
+  checkBroadcastAuthorizatio:        () => boolean,
+}
+
+
+interface MockedCountList {
+  clearTrackedBeacons:               () => number,
+  isReady:                           () => number,
+  isPeripheralReady:                 () => number,
+  finalizeFingerprint:               () => number,
+  setKeySets:                        () => number,
+  requestLocation:                   () => number,
+  broadcastUpdateTrackedDevice:      () => number,
+  setTimeViaBroadcast:               () => number,
+  broadcastSwitch:                   () => number,
+  turnOnBroadcast:                   () => number,
+  broadcastBehaviourSettings:        () => number,
+  getBehaviourMasterHash:            () => number,
+  getTrackingState:                  () => number,
+  clearFingerprintsPromise:          () => number,
+  isDevelopmentEnvironment:          () => number,
+  canUseDynamicBackgroundBroadcasts: () => number,
+  checkBroadcastAuthorizatio:        () => number,
 }
 
 let targetedMethods = [
@@ -601,7 +801,7 @@ let targetedMethods = [
   "factoryResetHubOnly",
 ];
 
-const otherMethods = [
+const genericMethods = [
   "clearTrackedBeacons",
   "isReady",
   "isPeripheralReady",

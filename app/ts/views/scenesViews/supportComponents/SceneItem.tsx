@@ -16,12 +16,12 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 import { Util } from "../../../util/Util";
+import { tell } from "../../../logic/constellation/Tellers";
 
 export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
   const [editMode, setEditMode] = useState(stateEditMode);
@@ -237,9 +237,6 @@ export const executeScene = function(switchData, sphereId: string, sceneId: stri
   Object.keys(correctedList).forEach((stoneCID) => {
     action = true;
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {type:"multiSwitch", state: correctedList[stoneCID]}, {autoExecute: false}).catch()
+    tell(stoneData.stone).multiSwitch(correctedList[stoneCID])
   })
-  if (action) {
-    BatchCommandHandler.executePriority();
-  }
 }

@@ -1,7 +1,7 @@
-import { mBluenet, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { BleCommandQueue } from "../../app/ts/logic/constellation/BleCommandQueue";
+import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
 import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
 import { xUtil } from "../../app/ts/util/StandAloneUtil";
 import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
@@ -13,11 +13,11 @@ import {
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
 import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { connectTo } from "../../app/ts/logic/constellation/Tellers";
+import { connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
 import { SessionManager } from "../../app/ts/logic/constellation/SessionManager";
 
 beforeEach(async () => {
-  BleCommandQueue.reset()
+  BleCommandManager.reset()
   SessionManager.reset()
   resetMocks()
 })
@@ -28,20 +28,21 @@ afterAll( async () => {})
 const meshId       = "meshNetwork";
 const secondMeshId = "secondMeshId";
 
+
 test("Check the direct teller", async () => {
   let db = createMockDatabase(meshId, secondMeshId);
   let handle = db.stones[0].handle;
   let apiPromise = connectTo(handle);
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).succeed.connect("operation")
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect("operation")
 
   let api = await apiPromise;
   api.allowDimming(true);
 
   await TestUtil.nextTick();
-  expect(mBluenet.has(handle).called.allowDimming()).toBeTruthy();
-  await mBluenet.for(handle).succeed.allowDimming();
+  expect(mBluenetPromise.has(handle).called.allowDimming()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.allowDimming();
   await TestUtil.nextTick();
   expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
   await TestUtil.nextTick();
@@ -51,19 +52,20 @@ test("Check the direct teller", async () => {
   expect(SessionManager._sessions[handle].state).toBe("DISCONNECTING");
 });
 
+
 test("Check the direct teller with slowly incoming commands.", async () => {
   let db = createMockDatabase(meshId, secondMeshId);
   let handle = db.stones[0].handle;
   let apiPromise = connectTo(handle);
 
-  expect(mBluenet.has(handle).called.connect()).toBeTruthy();
-  await mBluenet.for(handle).succeed.connect("operation")
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect("operation")
 
   let api = await apiPromise;
   api.allowDimming(true);
 
   await TestUtil.nextTick();
-  await mBluenet.for(handle).succeed.allowDimming();
+  await mBluenetPromise.for(handle).succeed.allowDimming();
   await TestUtil.nextTick();
   expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
   await TestUtil.nextTick();
@@ -75,9 +77,36 @@ test("Check the direct teller with slowly incoming commands.", async () => {
     })
 
   await TestUtil.nextTick();
-  await mBluenet.for(handle).succeed.getBootloaderVersion('2.3.1');
+  await mBluenetPromise.for(handle).succeed.getBootloaderVersion('2.3.1');
   await TestUtil.nextTick();
   expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
   await TestUtil.nextTick();
   expect(valueReturned).toBeTruthy()
 });
+
+
+test("Check basic tell for cleanup of session", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  let result = tell(handle).getFirmwareVersion()
+
+  let valueReturned = false
+  result.then((fwVersion) => {
+    valueReturned = true;
+    expect(fwVersion).toBe("5.4.0");
+  })
+
+  evt_ibeacon(-80, handle);
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+  await TestUtil.nextTick();
+  await mBluenetPromise.for(handle).succeed.getFirmwareVersion("5.4.0");
+  await TestUtil.nextTick();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+  await TestUtil.nextTick();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect()
+  await TestUtil.nextTick();
+  evt_disconnected(handle);
+  expect(valueReturned).toBeTruthy()
+});
+
+

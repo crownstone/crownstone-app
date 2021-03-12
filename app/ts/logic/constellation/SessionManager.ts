@@ -11,7 +11,7 @@
  * The slot manager will determine when to terminate a slot based on how many users a slot has.
  */
 import { xUtil } from "../../util/StandAloneUtil";
-import { BleCommandQueue } from "./BleCommandQueue";
+import { BleCommandManager } from "./BleCommandManager";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
 import { LOG } from "../../logging/Log";
@@ -110,12 +110,12 @@ export class SessionManagerClass {
 
   /**
    * This will check all registered sessions to see if they're required.
-   * It will query the BleCommandQueue for all outstanding sessions. If the shared ones have no commands, they're cancelled.
+   * It will query the BleCommandManager for all outstanding sessions. If the shared ones have no commands, they're cancelled.
    */
   evaluateSessionNecessity() {
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
-        if (BleCommandQueue.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
+        if (BleCommandManager.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
           this._sessions[handle].kill();
         }
       }
@@ -250,7 +250,7 @@ export class SessionManagerClass {
           }
 
           // fail all commands owned by this commanderId
-          BleCommandQueue.cancelCommanderCommands(commanderId);
+          BleCommandManager.cancelCommanderCommands(commanderId);
         }
         else {
           if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
@@ -330,7 +330,7 @@ export class SessionManagerClass {
     }
     else {
       // if it was a shared session, it could have been an error or it had nothing to do.
-      if (BleCommandQueue.areThereCommandsFor(handle) === true || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
+      if (BleCommandManager.areThereCommandsFor(handle) === true || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
         // there are still shared commands, so the session will be retried.
         await this.request(handle, xUtil.getUUID(), false);
       }

@@ -10,17 +10,13 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { DataUtil } from "../../util/DataUtil";
-import { STONE_TYPES } from "../../Enums";
+import { CONDITION_MAP, STONE_TYPES } from "../../Enums";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
 const UPDATE_STONE_TIME_LAST_SEEN          = 'UPDATE_STONE_TIME_LAST_SEEN';
 const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
 
-
-export const conditionMap = {
-  SWITCH_STATE: 'switchState',
-};
 
 interface condition {
   type: string,
@@ -458,7 +454,7 @@ export class StoneEntity {
         for (let i = 0; i < this.ignoreConditions.length; i++) {
           let condition : condition = this.ignoreConditions[i];
 
-          if (condition.type === conditionMap.SWITCH_STATE) {
+          if (condition.type === CONDITION_MAP.SWITCH_STATE) {
             let switchState = Math.min(100,advertisement.serviceData[condition.type]);
             if (switchState !== condition.expectedValue) {
               result = false;

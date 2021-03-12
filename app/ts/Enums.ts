@@ -95,3 +95,16 @@ export const HubReplyCode : HubReplyCode = {
 export const HubRequestDataType : HubRequestDataType = {
   CLOUD_ID: 0
 }
+
+
+// Broadcast
+export const BROADCAST_ERRORS = {
+  CANNOT_BROADCAST:               { message: "CANNOT_BROADCAST",               fatal: false},
+  BROADCAST_REMOVED_AS_DUPLICATE: { message: "BROADCAST_REMOVED_AS_DUPLICATE", fatal: false},
+  BROADCAST_INCOMPLETE:           { message: "BROADCAST_INCOMPLETE",           fatal: false},
+  BROADCAST_FAILED:               { message: "BROADCAST_FAILED",               fatal: false},
+};
+
+export const CONDITION_MAP = {
+  SWITCH_STATE: 'switchState',
+};

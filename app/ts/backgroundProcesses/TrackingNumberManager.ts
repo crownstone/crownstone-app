@@ -6,6 +6,7 @@ import { BroadcastStateManager } from "./BroadcastStateManager";
 import { core } from "../core";
 import { Scheduler } from "../logic/Scheduler";
 import { LOGe, LOGi } from "../logging/Log";
+import { tellSphere } from "../logic/constellation/Tellers";
 
 
 const REGISTER_TRIGGER_ID = "TrackingNumberManager";
@@ -69,28 +70,18 @@ class TrackingNumberManagerClass {
       // we used to register the activeRandomDeviceToken since this one is ALWAYS the same as the one we broadcast on the background.
       // if the connections for heartbeat or register give errors, we cannot recover this while in the background. To be able to recover, we always register and track the randomDeviceToken.
       // this can mean that our broadcasted deviceToken might mismatch the token we use with connection. Worst case we have a ghost in a room for 2 hours.
-      StoneAvailabilityTracker.sendCommandToNearestCrownstones(
-        activeSphereId,
-        {
-          type: 'trackedDeviceHeartbeat',
-          trackingNumber: preferences.trackingNumber,
-          locationUID: () => {
-            return BroadcastStateManager.getCurrentLocationUID();
-          },
-          deviceToken: preferences.randomDeviceToken,
-          ttlMinutes: 3
-        },
-        2)
-        .then((promises) => {
-          return Promise.all(promises);
-        })
+      tellSphere(activeSphereId).trackedDeviceHeartbeat(
+        preferences.trackingNumber,
+        () => { return BroadcastStateManager.getCurrentLocationUID(); },
+        preferences.randomDeviceToken,
+        3
+      )
         .catch((err) => {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);
           if (err === "ERR_NOT_FOUND") {
             this._updateMyDeviceTrackingRegistration(activeSphereId);
           }
         })
-
     }
   }
 
@@ -175,23 +166,16 @@ class TrackingNumberManagerClass {
     if (AppState.currentState === 'active') {
       this._broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom);
     }
-    StoneAvailabilityTracker.sendCommandToNearestCrownstones(
-      sphereId,
-      {
-        type : 'registerTrackedDevice',
-        trackingNumber: preferences.trackingNumber,
-        locationUID: () => { return BroadcastStateManager.getCurrentLocationUID(); },
-        profileId: 0,
-        rssiOffset: preferences.rssiOffset,
-        ignoreForPresence: preferences.ignoreForBehaviour,
-        tapToToggleEnabled: preferences.tapToToggleEnabled,
-        deviceToken: suggestedNewRandom,
-        ttlMinutes: 120
-      },
-      1, 3)
-      .then((promises: Promise<any>[]) => {
-        return Promise.all(promises);
-      })
+    tellSphere(sphereId).registerTrackedDevice(
+      preferences.trackingNumber,
+      () => { return BroadcastStateManager.getCurrentLocationUID(); },
+      0,
+      preferences.rssiOffset,
+      preferences.ignoreForBehaviour,
+      preferences.tapToToggleEnabled,
+      suggestedNewRandom,
+      120
+    )
       .then(() => {
         // No error! store the new registered token!
         let state = core.store.getState();
@@ -253,26 +237,16 @@ class TrackingNumberManagerClass {
         try {
           // we used to register the active token since this one is ALWAYS the same as the one we broadcast on the background.
           // Except we cannot recover problems in the background if we do. We now use the random device token and prefer to trust the connections vs the broadcasts.
-          await StoneAvailabilityTracker.sendCommandToNearestCrownstones(
-            sphereId,
-            {
-              type: 'registerTrackedDevice',
-              trackingNumber: preferences.trackingNumber,
-              locationUID: () => {
-                return BroadcastStateManager.getCurrentLocationUID();
-              },
-              profileId: 0,
-              rssiOffset: preferences.rssiOffset,
-              ignoreForPresence: preferences.ignoreForBehaviour,
-              tapToToggleEnabled: preferences.tapToToggleEnabled,
-              deviceToken: preferences.randomDeviceToken,
-              ttlMinutes: 120
-            },
-            2)
-            .then((promises) => {
-              return Promise.all(promises);
-            })
-
+          await tellSphere(sphereId).registerTrackedDevice(
+            preferences.trackingNumber,
+            () => { return BroadcastStateManager.getCurrentLocationUID(); },
+            0,
+            preferences.rssiOffset,
+            preferences.ignoreForBehaviour,
+            preferences.tapToToggleEnabled,
+            preferences.randomDeviceToken,
+            120
+          );
           updateTime = Date.now();
         }
         catch (err) {

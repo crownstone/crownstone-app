@@ -34,6 +34,7 @@ import {BleUtil} from "../../../util/BleUtil";
 import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { core } from "../../../core";
+import { tell } from "../../../logic/constellation/Tellers";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {
@@ -176,8 +177,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
   _factoryResetMyLostCrownstone(handle) {
     let referenceId = Util.data.getReferenceId(core.store.getState());
-    let proxy = BleUtil.getProxy(handle, referenceId);
-    return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
+    tell(handle).commandFactoryReset()
       .then(() => { this.setState({factoryResetSuccess: true}); })
       .catch(() => { this.setState({factoryResetSuccess: false}); })
   }
@@ -589,29 +589,25 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
   }
 
-  _tryToSwitchCrownstone() {
+  async _tryToSwitchCrownstone() {
     let sphereId = this.state.problemStoneSummary.sphereId;
     let stoneId = this.state.problemStoneSummary.id;
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
 
-    StoneUtil.switchBCH(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1,{onlyAllowDirectCommand: true},
-      (err) => {
-        if (err) {
-          if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {
-            this.setState({switchedCrownstone: false, switchedCrownstoneNotNear: true});
-          }
-          else {
-            this.setState({switchedCrownstone: false});
-          }
-        }
-        else {
-          this.setState({switchedCrownstone: true});
-        }
-      },
-      2,
-      'from Diagnostics')
+    try {
+      await StoneUtil.multiSwitch(stone, stone.state.state > 0 ? 0 : 1, false);
+      this.setState({switchedCrownstone: true});
+    }
+    catch (err) {
+      if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {
+        this.setState({switchedCrownstone: false, switchedCrownstoneNotNear: true});
+      }
+      else {
+        this.setState({switchedCrownstone: false});
+      }
+    }
   }
 
 

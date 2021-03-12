@@ -1,12 +1,9 @@
-import { BroadcastCommandManager } from "../bchComponents/BroadcastCommandManager";
-import { SessionManager } from "./SessionManager";
+import { LOGd } from "../../logging/Log";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { Collector } from "./Collector";
-import { core } from "../../core";
+import { SessionManager } from "./SessionManager";
 import { CommandAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
-import { LOGd } from "../../logging/Log";
 
 
 export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
@@ -40,7 +37,7 @@ export function tell(handle: string | StoneData) : CommandAPI {
     handle = handle.config.handle
   }
 
-  let sphereId = MapProvider.stoneHandleMap[handle].sphereId
+  let sphereId = MapProvider.stoneHandleMap[handle].sphereId;
 
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),
@@ -51,6 +48,14 @@ export function tell(handle: string | StoneData) : CommandAPI {
   });
 }
 
+/**
+ * This does exactly the same as tell, it just sounds nices when we use get methods.
+ * from(stone).getFirmwareVersion()
+ * @param handle
+ */
+export function from(handle: string | StoneData) : CommandAPI {
+  return tell(handle);
+}
 
 /**
  * @param meshId

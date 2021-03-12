@@ -8,12 +8,13 @@
 
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
-import { BleCommandQueue } from "./BleCommandQueue";
+import { BleCommandManager } from "./BleCommandManager";
 import { core } from "../../core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { LOGd, LOGi } from "../../logging/Log";
+import { act } from "@testing-library/react-native";
 
 const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
 
@@ -30,7 +31,7 @@ export class Session {
   privateId : string | null;
   listeners = [];
 
-  unsubscribeBootstrapper = null
+  _unsubscribeBootstrappers = []
 
   crownstoneMode : CrownstoneMode;
   interactionModule: SessionInteractionModule;
@@ -68,17 +69,28 @@ export class Session {
     this.state = "INITIALIZING";
     this.sessionIsActivated = false;
 
-    if (this.unsubscribeBootstrapper) {
-      this.unsubscribeBootstrapper();
-      this.unsubscribeBootstrapper = null;
-    }
-    this.unsubscribeBootstrapper = core.eventBus.on("iBeaconOfValidCrownstone", (data) => {
-      if (this.sessionIsActivated === false && data.handle.toLowerCase() === this.handle.toLowerCase()) {
-        if (data.rssi >= CONNECTION_THRESHOLD) {
-          this.tryToActivate();
+    this._clearBootstrapper();
+
+    let activator = (data : crownstoneBaseAdvertisement) => {
+      if (data.handle.toLowerCase() === this.handle.toLowerCase()) {
+        if (this.sessionIsActivated === false && data.handle.toLowerCase() === this.handle.toLowerCase()) {
+          if (data.rssi >= CONNECTION_THRESHOLD) {
+            this.tryToActivate();
+          }
         }
       }
-    });
+    }
+
+    // we use either a setup advertisement or a dfu advertisement in case this is not a
+    this._unsubscribeBootstrappers.push(NativeBus.on(NativeBus.topics.crownstoneAdvertisementReceived, activator));
+    this._unsubscribeBootstrappers.push(core.eventBus.on("iBeaconOfValidCrownstone", activator));
+  }
+
+  _clearBootstrapper() {
+    for (let unsubscribe of this._unsubscribeBootstrappers) {
+      unsubscribe();
+    }
+    this._unsubscribeBootstrappers = [];
   }
 
   async tryToActivate() {
@@ -101,8 +113,7 @@ export class Session {
   async connect() {
     LOGd.constellation("Session: Start connecting to", this.handle);
     // remove the listener for ibeacons from this device.
-    this.unsubscribeBootstrapper();
-    this.unsubscribeBootstrapper = null;
+    this._clearBootstrapper()
 
     this.interactionModule.willActivate();
     this.sessionIsActivated = true;
@@ -136,7 +147,7 @@ export class Session {
 
 
   async handleCommands() {
-    let commandsAvailable = BleCommandQueue.areThereCommandsFor(this.handle, this.privateId);
+    let commandsAvailable = BleCommandManager.areThereCommandsFor(this.handle, this.privateId);
 
     if (commandsAvailable === false) {
       // there is no task for us to do. If we're a private connection, we'll wait patiently for a new command
@@ -153,7 +164,7 @@ export class Session {
       }
     }
     this.state = "PERFORMING_COMMAND";
-    await BleCommandQueue.performCommand(this.handle, this.privateId);
+    await BleCommandManager.performCommand(this.handle, this.privateId);
     this.state = "CONNECTED";
 
     if (this.sessionIsKilled) {
@@ -195,7 +206,7 @@ export class Session {
   async disconnect() {
     this.state = "DISCONNECTING";
     try {
-      await BleCommandQueue.performClosingCommands(this.handle, this.privateId, this.crownstoneMode)
+      await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode)
     }
     catch (e) {}
     await BluenetPromiseWrapper.phoneDisconnect(this.handle);
@@ -218,9 +229,7 @@ export class Session {
   sessionHasEnded() {
     this.interactionModule.sessionHasEnded();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
-    if (this.unsubscribeBootstrapper) {
-      this.unsubscribeBootstrapper();
-    }
+    this._clearBootstrapper();
   }
 }
 

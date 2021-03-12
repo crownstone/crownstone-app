@@ -1,9 +1,3 @@
-//
-// import { Languages } from "../../../Languages"
-//
-// function lang(key,a?,b?,c?,d?,e?) {
-//   return Languages.get("DEV_FirmwareTest", key)(a,b,c,d,e);
-// }
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
@@ -25,7 +19,6 @@ import React from "react";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { Icon } from "../../components/Icon";
 import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
-import { BlePromiseManager } from "../../../logic/BlePromiseManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 
 const BLE_STATE_READY = "ready";

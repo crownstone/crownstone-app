@@ -829,7 +829,7 @@ open class BluenetJS: RCTEventEmitter {
 
     GLOBAL_BLUENET.bluenetOnUnverified("advertisementData", {data -> Void in
       if let castData = data as? Advertisement {
-        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
+        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: {"handle":castData.handle, "rssi": castData.rssi})
       }
     })
   }

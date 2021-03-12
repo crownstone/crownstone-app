@@ -78,4 +78,4 @@ type BridgeCommandType = "addBehaviour"                     |
                          "trackedDeviceHeartbeat"           |
                          "transferHubTokenAndCloudId"       |
                          "turnOn"                           |
-                         "updateBehaviour"                  |
+                         "updateBehaviour"

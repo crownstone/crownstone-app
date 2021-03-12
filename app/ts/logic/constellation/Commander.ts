@@ -1,10 +1,10 @@
-import { BroadcastCommandManager } from "../bchComponents/BroadcastCommandManager";
+import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { SessionManager } from "./SessionManager";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { core } from "../../core";
-import { BleCommandQueue } from "./BleCommandQueue";
+import { BleCommandManager } from "./BleCommandManager";
 import {
   Command_AddBehaviour,
   Command_AllowDimming,
@@ -124,7 +124,8 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     let promiseContainer = xUtil.getPromiseContainer<any>()
-    let commands = BleCommandQueue.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
+
+    let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
     this.broker.loadPendingCommands(commands);
 
     core.eventBus.emit(`CommandLoaded_${this.id}`)
@@ -181,13 +182,8 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async multiSwitch(state : number, allowMeshRelay = true) : Promise<void>  {
-    // either broadcast or connect
-    // if (BroadcastCommandManager.canBroadcast(command)) {
-    //   // load in broadcast manager and auto-execute after setImmediate
-    // }
-    // else {
+    // this next tick allows us to gather all multiswitch commands
     return this._load(new Command_MultiSwitch(state), allowMeshRelay);
-    // }
   }
 
   async turnOn(allowMeshRelay = true) : Promise<void>  {
@@ -200,6 +196,9 @@ export class CommandAPI extends CommandMeshAPI {
       // load into the commandQueue
       return this._load(new Command_TurnOn(), allowMeshRelay);
     // }
+  }
+  async turnOff(allowMeshRelay = true) : Promise<void>  {
+    return this.multiSwitch(0, allowMeshRelay);
   }
 
   async getBootloaderVersion() : Promise<string> {
@@ -447,4 +446,12 @@ export class CommandAPI extends CommandMeshAPI {
   async end() {
     await this.broker.killConnectedSessions();
   }
+  freeze() {
+
+  }
+  release() {
+
+  }
+
+
 }

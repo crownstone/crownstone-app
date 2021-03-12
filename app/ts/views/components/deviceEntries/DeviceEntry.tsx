@@ -140,39 +140,21 @@ export class DeviceEntry extends Component<{
     }
   }
 
-  _pressedDevice(stone) {
-    let newSwitchState = (stone.state.state > 0 ? 0 : 100);
+  async _pressedDevice(stone) {
     this.setState({pendingCommand:true});
-    if (newSwitchState > 0) {
-      StoneUtil.turnOnBCH(
-        this.props.sphereId,
-        this.props.stoneId,
-        stone,
-        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-        (err, result) => {
-          let newState = {pendingCommand:false, percentage: newSwitchState};
-          this.setState(newState);
-        },
-        1,
-        'from _pressedDevice in DeviceEntry'
-      );
+    try {
+      if (stone.state.state > 0) {
+        // turn off
+        await StoneUtil.turnOff(stone);
+        this.setState({pendingCommand:false, percentage: 0});
+      }
+      else {
+        // turn on
+        let newState = await StoneUtil.turnOn(stone)
+        this.setState({pendingCommand:false, percentage: newState});
+      }
     }
-    else {
-      StoneUtil.switchBCH(
-        this.props.sphereId,
-        this.props.stoneId,
-        stone, newSwitchState,
-        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-        (err, result) => {
-          let newState = {pendingCommand:false, percentage: newSwitchState};
-          this.setState(newState);
-        },
-        1,
-        'from _pressedDevice in DeviceEntry'
-      );
-    }
-
-
+    catch (err) {}
   }
 
   _getControl(stone) {
@@ -241,18 +223,9 @@ export class DeviceEntry extends Component<{
 
 
 
-  _switch(stone, state) {
-    StoneUtil.switchBCH(
-      this.props.sphereId,
-      this.props.stoneId,
-      stone,
-      state,
-      {},
-      () => { this._planStoreAction(state); },
-      1,
-      'from _getButton in DeviceSummary',
-      true
-    );
+  async _switch(stone, state) {
+    await StoneUtil.multiSwitch(stone, state,true, true).catch();
+    this._planStoreAction(state);
   }
 
   _planStoreAction(state) {

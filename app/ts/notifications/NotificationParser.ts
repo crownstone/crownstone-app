@@ -10,8 +10,8 @@ import { SphereUserSyncer } from "../cloud/sections/sync/modelSyncs/SphereUserSy
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { StoneUtil } from "../util/StoneUtil";
 import { INTENTS } from "../native/libInterface/Constants";
-import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { InviteCenter } from "../backgroundProcesses/InviteCenter";
+import { tell } from "../logic/constellation/Tellers";
 
 class NotificationParserClass {
 
@@ -156,7 +156,8 @@ class NotificationParserClass {
     let localStoneId  = MapProvider.cloud2localMap.stones[notificationData.stoneId];
     if (!localSphereId || !localStoneId) { return; }
 
-    if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
+    let stone = state?.spheres[localSphereId]?.stones[localStoneId] || null;
+    if (stone) {
       LOG.notifications("NotificationParser: switching based on notification", notificationData);
       // remap existing 0..1 range from cloud to 0..100
       if (notificationData.switchState > 0 && notificationData.switchState <= 1) {
@@ -164,30 +165,11 @@ class NotificationParserClass {
       }
       let switchState = Math.min(100, notificationData.switchState);
       if (switchState === 100) {
-        StoneUtil.turnOnBCH(
-          localSphereId,
-          localStoneId,
-          state.spheres[localSphereId].stones[localStoneId],
-          {},
-          (err) => {},
-          5,
-          'from _getButton in DeviceSummary'
-        );
+        tell(stone).turnOn(true).catch();
       }
       else {
-        StoneUtil.switchBCH(
-          localSphereId,
-          localStoneId,
-          state.spheres[localSphereId].stones[localStoneId],
-          switchState,
-          {},
-          (err) => {},
-          5,
-          'from handle in NotificationParser'
-        );
+        tell(stone).multiSwitch(switchState,true).catch();
       }
-
-      BatchCommandHandler.executePriority();
     }
   }
 
@@ -223,18 +205,14 @@ class NotificationParserClass {
           break;
         case "TURN_ON":
           actionToPerform = true;
-          BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type:"turnOn"}, {autoExecute: false}).catch()
+          tell(stone).turnOn(true).catch();
           return;
         default:
           return;
       }
       actionToPerform = true;
-      BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type:"multiSwitch", state: switchState}, {autoExecute: false}).catch()
+      tell(stone).multiSwitch(switchState,true).catch();
     });
-
-    if (actionToPerform) {
-      BatchCommandHandler.executePriority();
-    }
   }
 }
 

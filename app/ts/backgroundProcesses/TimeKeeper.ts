@@ -1,12 +1,12 @@
 import { Scheduler } from "../logic/Scheduler";
 import { core } from "../core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
-import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { AppState, Platform } from "react-native";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { xUtil } from "../util/StandAloneUtil";
+import { tellSphere } from "../logic/constellation/Tellers";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
@@ -78,40 +78,8 @@ class TimeKeeperClass {
           return;
         }
         else {
-          let stoneIds = Object.keys(sphere.stones);
-
-          // Fisher-Yates shuffle.
-          function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-              let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-              let t = array[i];
-              array[i] = array[j];
-              array[j] = t
-
-            }
-          }
-
-          // randomly shuffle the IDs
-          shuffle(stoneIds);
-
-          for (let i = 0; i < stoneIds.length; i++) {
-            // do not update more than 4. Mesh will do the rest.
-            if (i > 3) { break; }
-
-            StoneAvailabilityTracker.setTrigger(sphereId, stoneIds[i], TRIGGER_ID, () => {
-              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, { type: "setTime" })
-                .catch((err) => {
-                })
-              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, {
-                type: "setSunTimes",
-                sunriseSecondsSinceMidnight: suntimes.sunrise,
-                sunsetSecondsSinceMidnight: suntimes.sunset
-              })
-                .catch((err) => {
-                })
-              BatchCommandHandler.executePriority()
-            })
-          }
+          tellSphere(sphereId).setTime();
+          tellSphere(sphereId).setSunTimesViaConnection(suntimes.sunrise, suntimes.sunset);
         }
       }
     })

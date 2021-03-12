@@ -1,4 +1,4 @@
-import { mBluenet, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";

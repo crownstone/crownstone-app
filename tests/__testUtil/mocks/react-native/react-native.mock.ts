@@ -1,4 +1,5 @@
 import * as ReactNative from "react-native";
+import { AppState } from "react-native";
 
 export const Platform = {
   ...ReactNative.Platform,
@@ -10,10 +11,20 @@ export const Platform = {
 
 
 export function mockReactNative() {
+  let mockRN = {
+    appState: "active",
+    reset: null,
+  }
   jest.mock("react-native", () => {
     return {
       // ...ReactNative,
-      Platform: Platform
+      Platform: Platform,
+      AppState: {
+        currentState: mockRN.appState
+      }
     }
   })
+
+  mockRN.reset = () => { mockRN.appState = 'active' }
+  return mockRN;
 }

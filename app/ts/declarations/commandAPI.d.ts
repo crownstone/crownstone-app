@@ -30,10 +30,10 @@ interface PromiseContainer<T> {
   reject:  (err:   any) => void
 }
 
-interface BleCommand {
+interface BleCommand<T = CommandInterface> {
   id:              string,
   linkedId:        string,           // the linkedId refers to mesh_relay commands which can be cancelled if the direct command has succeeded
-  command:         CommandInterface,
+  command:         T,
   promise:         PromiseContainer,
   attemptingBy:    string[],
   executedBy:      string[],
@@ -51,14 +51,21 @@ interface BleCommand {
   timeout?:        number // seconds
 }
 
+
+interface BroadcastInterface extends CommandInterface {
+  canBroadcast: boolean,
+  broadcast(command: BleCommand) : Promise<void>
+}
+
 interface CommandInterface {
   type: BridgeCommandType,
-
+  canBroadcast: boolean,
   execute(connectedHandle: string, options?: ExecutionOptions = null) : Promise< any >
   isDuplicate(otherCommand: CommandBase) : boolean
 }
 interface CommandBaseInterface {
   type: BridgeCommandType,
+  canBroadcast: boolean,
   isDuplicate(otherCommand: CommandBase) : boolean
 }
 

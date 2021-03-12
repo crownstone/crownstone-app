@@ -4,7 +4,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StoneUtil", key)(a,b,c,d,e);
 }
 
-import {BatchCommandHandler} from "../logic/BatchCommandHandler";
+// import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
 import {LOGe} from "../logging/Log";
 import {Scheduler} from "../logic/Scheduler";
@@ -18,90 +18,53 @@ import { BEHAVIOUR_TYPES } from "../router/store/reducers/stoneSubReducers/rules
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { xUtil } from "./StandAloneUtil";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
+import { from, tell } from "../logic/constellation/Tellers";
+import { MapProvider } from "../backgroundProcesses/MapProvider";
+import { Get } from "./GetUtil";
 
 export const StoneUtil = {
-  switchBCH: function (
-      sphereId : string,
-      stoneId : string,
-      stone : any,
-      newState : number,
-      options : batchCommandEntryOptions = {},
-      finalize = (err, result?: any) => {},
-      attempts : number = 1,
-      label : string = 'from StoneUtil',
-      transient = false
-    ) {
+  multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) {
     let data = {state: newState};
     if (newState === 0) {
       data['currentUsage'] = 0;
     }
 
-    BatchCommandHandler.loadPriority(
-      stone,
-      stoneId,
-      sphereId,
-      {type:'multiSwitch', state: newState},
-      options,
-      attempts,
-      label
-    )
-      .then((result) => {
-        core.store.dispatch({
-          type: transient ? 'UPDATE_STONE_SWITCH_STATE_TRANSIENT' : 'UPDATE_STONE_SWITCH_STATE',
-          sphereId: sphereId,
-          stoneId: stoneId,
-          data: data
-        });
-        finalize(null, result);
-      })
-      .catch((err) => {
-        finalize(err);
-      });
+    let sphereId = Get.sphereId(stone.id);
+    if (!sphereId) { return; }
+    await tell(stone).multiSwitch(newState, allowMeshRelay);
 
-    BatchCommandHandler.executePriority(options);
+    core.store.dispatch({
+      type: transient ? 'UPDATE_STONE_SWITCH_STATE_TRANSIENT' : 'UPDATE_STONE_SWITCH_STATE',
+      sphereId: sphereId,
+      stoneId: stone.id,
+      data: data
+    });
   },
 
-  turnOnBCH: function (
-    sphereId : string,
-    stoneId : string,
-    stone : any,
-    options : batchCommandEntryOptions = {},
-    finalize = (err, result?: any) => {},
-    attempts : number = 1,
-    label : string = 'from StoneUtil'
-  ) {
+  turnOn: async function (stone : any, allowMeshRelay: boolean = true) {
+    let sphereId = Get.sphereId(stone.id);
+    if (!sphereId) { return; }
+    await tell(stone).turnOn(allowMeshRelay);
+
     let expectedState = AicoreUtil.getActiveTurnOnPercentage(sphereId, stone)
-    let data = {state: expectedState};
-
-    BatchCommandHandler.loadPriority(
-      stone,
-      stoneId,
-      sphereId,
-      {type:'turnOn'},
-      options,
-      attempts,
-      label
-    )
-      .then((result) => {
-        core.store.dispatch({
-          type: 'UPDATE_STONE_SWITCH_STATE',
-          sphereId: sphereId,
-          stoneId: stoneId,
-          data: data
-        });
-        finalize(null, result);
-      })
-      .catch((err) => {
-        finalize(err);
-      });
-
-    BatchCommandHandler.executePriority(options);
+    core.store.dispatch({
+      type: 'UPDATE_STONE_SWITCH_STATE',
+      sphereId: sphereId,
+      stoneId: stone.id,
+      data: {state: expectedState}
+    });
+    return expectedState;
   },
 
-  setupPulse: function (handle, sphereId) {
-    let proxy = BleUtil.getProxy(handle, sphereId);
-    return proxy.performPriority(BluenetPromiseWrapper.setupPulse);
+  turnOff: async function (stone : any, allowMeshRelay: boolean = true) {
+    return StoneUtil.multiSwitch(stone, 0, allowMeshRelay);
   },
+
+  //
+  // setupPulse: function (handle, sphereId) {
+  //   let proxy = BleUtil.getProxy(handle, sphereId);
+  //   return proxy.performPriority(BluenetPromiseWrapper.setupPulse);
+  // },
 
 
   getStoneObject: function(sphereId, stoneId) {
@@ -112,26 +75,22 @@ export const StoneUtil = {
     return stone;
   },
 
-  checkFirmwareVersion: function(sphereId, stoneId, stone?) : Promise<bchReturnType>  {
+  checkFirmwareVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type: 'getFirmwareVersion'},{},1, 'from StoneUtil checkFirmware');
-    BatchCommandHandler.executePriority();
-    return promise;
+    return await from(stone).getFirmwareVersion()
   },
 
-  checkBootloaderVersion: function(sphereId, stoneId, stone?) : Promise<bchReturnType>  {
+  checkBootloaderVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {type: 'getBootloaderVersion'},{},1, 'from StoneUtil checkBootloaderVersion');
-    BatchCommandHandler.executePriority();
-    return promise;
+    return await from(stone).getBootloaderVersion()
   },
 
 
-  clearErrors: function(sphereId, stoneId, stone, store) {
+  clearErrors: async function(sphereId, stoneId, stone, store) {
     let clearTheseErrors = {
       dimmerOnFailure:    true,
       dimmerOffFailure:   true,
@@ -142,38 +101,26 @@ export const StoneUtil = {
     };
 
     core.eventBus.emit("showLoading", lang("Attempting_to_Reset_Error"));
-    BatchCommandHandler.loadPriority(
-      stone,
-      stoneId,
-      sphereId,
-      {type:'clearErrors', clearErrorJSON: clearTheseErrors},
-      {},
-      1000,
-      'from _getButton in ErrorOverlay'
-    )
-      .then(() => {
-        core.eventBus.emit("showLoading", lang("Success_"));
-        store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
-          dimmerOnFailure:    false,
-          dimmerOffFailure:   false,
-          temperatureDimmer:  false,
-          temperatureChip:    false,
-          overCurrentDimmer:  false,
-          overCurrent:        false,
-        }});
-        return Scheduler.delay(500);
-      })
-      .then(() => {
-        core.eventBus.emit("hideLoading");
-        Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
-      })
-      .catch((err) => {
-        LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
-        core.eventBus.emit("hideLoading");
-        Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK'}]);
-      });
-
-    BatchCommandHandler.executePriority()
+    try {
+      await tell(stone).clearErrors(clearTheseErrors)
+      core.eventBus.emit("showLoading", lang("Success_"));
+      store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
+        dimmerOnFailure:    false,
+        dimmerOffFailure:   false,
+        temperatureDimmer:  false,
+        temperatureChip:    false,
+        overCurrentDimmer:  false,
+        overCurrent:        false,
+      }});
+      await Scheduler.delay(500);
+      core.eventBus.emit("hideLoading");
+      Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
+    }
+    catch (err) {
+      LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
+      core.eventBus.emit("hideLoading");
+      Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK'}]);
+    }
   },
 
 

@@ -1,8 +1,11 @@
 import { advanceBy, advanceTo, clear } from 'jest-date-mock';
-advanceTo(0); // reset to timestamp = 0
+advanceTo(1e6); // reset to timestamp = 1.000.000
 
-import { mockReactNative } from "./react-native/Platform.mock";
-mockReactNative();
+import { mockReactNative } from "./react-native/react-native.mock";
+let mockRN = mockReactNative();
+
+import { mockBluenet } from "./bluenet.mock";
+let mockedBluenet = mockBluenet()
 
 import { mockLogger } from "./logger.mock";
 let silenceMap = {
@@ -36,7 +39,8 @@ import { mockBluenetPromiseWrapper } from "./bluenetPromiseWrapper.mock";
 
 const libStateWrapper = mockBluenetPromiseWrapper();
 const core = mockCore(); // core also mocks native bus
-export const mBluenet = libStateWrapper;
+export const mBluenetPromise = libStateWrapper;
+export const mBluenet = mockedBluenet;
 export const mCore = core;
 
 import { mockScheduler } from "./scheduler.mock";
@@ -46,10 +50,28 @@ import { mockExternalConfig } from "./externalConfig.mock";
 mockExternalConfig();
 
 import { resetDataHelper } from "../helpers/data.helper";
+import { mockConstellationUtil } from "./constellationUtil.mock";
+
+export const mConstellationState = mockConstellationUtil()
+
 export const resetMocks = function() {
   libStateWrapper.reset();
   mScheduler.reset();
   core.reset();
+  mockedBluenet.reset();
+  mockRN.reset();
   resetMockRandom();
   resetDataHelper();
+  mConstellationState.reset();
+  advanceTo(1e6);
+}
+
+export const mocks = {
+  core,
+  mConstellationState,
+  mBluenet: mBluenetPromise,
+  mScheduler,
+  mRN: mockRN,
+  mockedBluenet,
+  reset: resetMocks,
 }

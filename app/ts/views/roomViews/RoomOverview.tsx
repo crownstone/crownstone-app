@@ -8,7 +8,6 @@ import * as React from 'react';
 import { Alert, Image, ScrollView, View, Text, TouchableOpacity } from "react-native";
 
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
-import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 
 import {

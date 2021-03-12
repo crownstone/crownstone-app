@@ -9,7 +9,6 @@ import { background, colors } from "../../styles";
 import { Util }                from "../../../util/Util";
 import { IconCircle }          from "../../components/IconCircle";
 import { MeshUtil }            from "../../../util/MeshUtil";
-import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";

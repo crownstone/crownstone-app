@@ -3,7 +3,7 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 import { Executor } from "../Executor";
 
 
-export class Command_SetSunTimesViaConnection extends CommandBase implements CommandInterface {
+export class Command_SetSunTimesViaConnection extends CommandBase implements CommandBaseInterface {
 
   sunriseSecondsSinceMidnight : number;
   sunsetSecondsSinceMidnight  : number;

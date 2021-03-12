@@ -275,6 +275,11 @@ interface crownstoneServiceData {
   uniqueElement             : number // Partial timestamp, counter, etc. Is this required?
 }
 
+interface crownstoneAdvertisementSummary {
+  handle : string,
+  rssi   : number,
+}
+
 
 interface crownstoneAdvertisement {
   handle              : string,
