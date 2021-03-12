@@ -25,7 +25,6 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import { INTENTS } from "../../native/libInterface/Constants";
 
 import {SphereDeleted} from "../static/SphereDeleted";
@@ -40,6 +39,7 @@ import { BackgroundNoNotification } from "../components/BackgroundNoNotification
 import { SortingManager } from "../../logic/SortingManager";
 import { DataUtil } from "../../util/DataUtil";
 import { HubHelper } from "../../native/setup/HubHelper";
+import { tell } from "../../logic/constellation/Tellers";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -317,7 +317,7 @@ lang("_Something_went_wrong_____body"),
       })
       .then(() => {
         core.eventBus.emit('showLoading', lang("Factory_resetting_the_Cro"));
-        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
+        tell(stone).commandFactoryReset()
           .then(() => {
             this._removeCrownstoneFromRedux(true);
           })
@@ -332,9 +332,6 @@ lang("_Something_went_wrong_____body"),
                 }}]
             )
           });
-
-        BatchCommandHandler.executePriority();
-
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
@@ -452,14 +449,14 @@ lang("_Something_went_wrong_____body"),
 
           this.setState({refreshingStoneVersions: true});
           let promises = [];
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getFirmwareVersion'},{},2, 'from checkFirmware')
-            .then((firmwareVersion : {data: string}) => {
+          promises.push(tell(stone).getFirmwareVersion()
+            .then((firmwareVersion : string) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  firmwareVersion: firmwareVersion.data,
+                  firmwareVersion: firmwareVersion,
                 }
               })
             })
@@ -470,14 +467,14 @@ lang("_Something_went_wrong_____body"),
                 [{text:lang("_Whoops___I_could_not_get_left")}]);
               throw err;
             }));
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getHardwareVersion'},{},2, 'from checkFirmware')
-            .then((hardwareVersion : {data: string}) => {
+          promises.push(tell(stone).getHardwareVersion()
+            .then((hardwareVersion : string) => {
               core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  hardwareVersion: hardwareVersion.data,
+                  hardwareVersion: hardwareVersion,
                 }
               })
             })
@@ -488,16 +485,15 @@ lang("_Something_went_wrong_____body"),
                 [{text:lang("_Whoops___I_could_not_get__left")}]);
               throw err;
             }))
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {type: 'getBootloaderVersion'},{},2, 'from checkFirmware')
-            .then((bootloaderVersion : {data: string}) => {
-              let version = bootloaderVersion.data;
-              if (version) {
+          promises.push(tell(stone).getBootloaderVersion()
+            .then((bootloaderVersion : string) => {
+              if (bootloaderVersion) {
                 core.store.dispatch({
                   type: "UPDATE_STONE_CONFIG",
                   stoneId: this.props.stoneId,
                   sphereId: this.props.sphereId,
                   data: {
-                    bootloaderVersion: version,
+                    bootloaderVersion: bootloaderVersion,
                   }
                 })
               }
@@ -509,7 +505,6 @@ lang("_Something_went_wrong_____body"),
                 [{text:lang("_Whoops___I_could_not_get__left")}]);
               throw err;
             }))
-          BatchCommandHandler.executePriority();
 
 
           Promise.all(promises)

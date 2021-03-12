@@ -15,6 +15,7 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { LOGd, LOGi } from "../../logging/Log";
 import { act } from "@testing-library/react-native";
+import { Scheduler } from "../Scheduler";
 
 const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
 
@@ -36,17 +37,23 @@ export class Session {
   crownstoneMode : CrownstoneMode;
   interactionModule: SessionInteractionModule;
 
+  _cleanupPrivateBackup = null;
+
 
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
     this.handle = handle;
     this.interactionModule = interactionModule;
     this.privateId = privateId || null;
-    let reference = MapProvider.stoneHandleMap[handle];
-    this.sphereId = reference?.sphereId || null;
+    let reference  = MapProvider.stoneHandleMap[handle];
+    this.sphereId  = reference?.sphereId || null;
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
-    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.state = "DISCONNECTED";
-      if (this.isPrivate() === false || this.sessionIsKilled) { this.sessionHasEnded(); }
+    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
+      this.state = "DISCONNECTED";
+      // if (this.isPrivate() === false || this.sessionIsKilled) {
+      //   this.sessionHasEnded();
+      // }
+      this.sessionHasEnded();
     });
 
     this.initializeBootstrapper();
@@ -64,6 +71,17 @@ export class Session {
       this.tryToActivate();
     }
   }
+
+
+  reActivate() {
+    if (this._cleanupPrivateBackup !== null) {
+      this._cleanupPrivateBackup();
+      this._cleanupPrivateBackup = null;
+      this.interactionModule.isDeactivated();
+      this.initializeBootstrapper();
+    }
+  }
+
 
   initializeBootstrapper() {
     this.state = "INITIALIZING";
@@ -86,6 +104,7 @@ export class Session {
     this._unsubscribeBootstrappers.push(core.eventBus.on("iBeaconOfValidCrownstone", activator));
   }
 
+
   _clearBootstrapper() {
     for (let unsubscribe of this._unsubscribeBootstrappers) {
       unsubscribe();
@@ -93,17 +112,20 @@ export class Session {
     this._unsubscribeBootstrappers = [];
   }
 
+
   async tryToActivate() {
     if (this.interactionModule.canActivate()) {
       await this.connect();
     }
   }
 
+
   _respondTo(event : string, callback: () => void) {
     this.listeners.push(NativeBus.on(event,(handle) => {
       if (handle.toLowerCase() === this.handle.toLowerCase()) { callback(); }
     }));
   }
+
 
   isPrivate()   : boolean { return this.privateId !== null;        }
   isClosing()   : boolean { return this.state === "DISCONNECTING"; }
@@ -230,6 +252,8 @@ export class Session {
     this.interactionModule.sessionHasEnded();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
     this._clearBootstrapper();
+
+    core.eventBus.emit(`SessionClosed_${this.handle}`, this.privateId);
   }
 }
 

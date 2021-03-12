@@ -182,21 +182,13 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async multiSwitch(state : number, allowMeshRelay = true) : Promise<void>  {
-    // this next tick allows us to gather all multiswitch commands
     return this._load(new Command_MultiSwitch(state), allowMeshRelay);
   }
 
   async turnOn(allowMeshRelay = true) : Promise<void>  {
-    // either broadcast or connect
-    // TODO: add broadcastng to the commanders
-    // if (BroadcastCommandManager.canBroadcast(command)) {
-    //   // load in broadcast manager and auto-execute after setImmediate
-    // }
-    // else {
-      // load into the commandQueue
-      return this._load(new Command_TurnOn(), allowMeshRelay);
-    // }
+    return this._load(new Command_TurnOn(), allowMeshRelay);
   }
+
   async turnOff(allowMeshRelay = true) : Promise<void>  {
     return this.multiSwitch(0, allowMeshRelay);
   }
@@ -249,21 +241,21 @@ export class CommandAPI extends CommandMeshAPI {
   //   // TODO: implement
   // }
 
-  async cancelConnectionRequest() : Promise< void > {
-    // TODO: implement
-  }
-
-  async disconnectCommand() : Promise< void > {
-    // TODO: implement
-  }
+  // async cancelConnectionRequest() : Promise< void > {
+  //   // TODO: implement
+  // }
+  //
+  // async disconnectCommand() : Promise< void > {
+  //   // TODO: implement
+  // }
 
   async getMACAddress() : Promise< string > {
     return this._load(new Command_GetMACAddress());
   }
 
-  async phoneDisconnect() : Promise< void > {
-    // TODO: implement
-  }
+  // async phoneDisconnect() : Promise< void > {
+  //   // TODO: implement
+  // }
 
   async setupCrownstone(dataObject: setupData) : Promise< void > {
     return this._load(new Command_SetupCrownstone(dataObject));
@@ -446,12 +438,4 @@ export class CommandAPI extends CommandMeshAPI {
   async end() {
     await this.broker.killConnectedSessions();
   }
-  freeze() {
-
-  }
-  release() {
-
-  }
-
-
 }

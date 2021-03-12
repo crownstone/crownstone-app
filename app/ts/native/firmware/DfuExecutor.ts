@@ -8,7 +8,6 @@ import { FileUtil } from "../../util/FileUtil";
 import { DfuUtil } from "../../util/DfuUtil";
 import { DfuStateHandler } from "./DfuStateHandler";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
-import { BluenetPromiseWrapper } from "../libInterface/BluenetPromise";
 import { Scheduler } from "../../logic/Scheduler";
 import { Animated } from "react-native";
 import add = Animated.add;

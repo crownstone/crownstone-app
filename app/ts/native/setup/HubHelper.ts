@@ -1,12 +1,11 @@
 import { Alert } from 'react-native';
 
-import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { CLOUD }                 from '../../cloud/cloudAPI'
-import {Scheduler} from "../../logic/Scheduler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {ScheduleUtil} from "../../util/ScheduleUtil";
-import {StoneUtil} from "../../util/StoneUtil";
+import { Scheduler } from "../../logic/Scheduler";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { ScheduleUtil } from "../../util/ScheduleUtil";
+import { StoneUtil } from "../../util/StoneUtil";
 import { HubReplyCode, HubReplyError, KEY_TYPES, STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
@@ -15,6 +14,7 @@ import { DataUtil } from "../../util/DataUtil";
 import { NativeBus } from "../libInterface/NativeBus";
 import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 import { Get } from "../../util/GetUtil";
+import { connectTo } from "../../logic/constellation/Tellers";
 
 
 const networkError = 'network_error';
@@ -50,98 +50,104 @@ export class HubHelper {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     let stone = DataUtil.getStone(sphereId, stoneId);
     let handle = stone.config.handle;
-    if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
-    if (!stone.config.handle) { throw {code: 2, message:"No handle."};     }
+    if (!stone) {
+      throw { code: 1, message: "Invalid stone." };
+    }
+    if (!stone.config.handle) {
+      throw { code: 2, message: "No handle." };
+    }
 
     let uartKey = null;
     let hubToken = null;
     let hubCloudId = null;
     let hubId = xUtil.getUUID();
-    core.eventBus.emit("setupInProgress", { handle: handle, progress: 22 / 20 });
-    let setupHubPromise = async () => {
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 24 / 20 });
-      // download UART key from this stone in the cloud
-      let keyData = await CLOUD.getKeys(sphereId, stoneId);
-      if (keyData.length === 1) {
-        let stoneKeys = keyData[0].stoneKeys[stone.config.cloudId] || [];
-        for (let i = 0; i < stoneKeys.length; i++) {
-          if (stoneKeys[i].keyType === "UART_DEVICE_KEY") {
-            uartKey = stoneKeys[i].key;
-            break;
-          }
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 24 / 20 });
+    // download UART key from this stone in the cloud
+    let keyData = await CLOUD.getKeys(sphereId, stoneId);
+    if (keyData.length === 1) {
+      let stoneKeys = keyData[0].stoneKeys[stone.config.cloudId] || [];
+      for (let i = 0; i < stoneKeys.length; i++) {
+        if (stoneKeys[i].keyType === "UART_DEVICE_KEY") {
+          uartKey = stoneKeys[i].key;
+          break;
         }
       }
-
-      if (!uartKey) { throw {code: 10, message:"No Uart Key available."}; }
-      // we now have everything we need to create a hub.
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 26 / 20 });
-      if (createHubOnline) {
-        // generate token
-        hubToken = xUtil.getHubHexToken()
-        // Create hub in cloud
-        let hubData = await CLOUD.forSphere(sphereId).createHub({ token: hubToken, name: stone.config.name, linkedStoneId: stone.config.cloudId, locationId: stone.config.locationId });
-        core.store.dispatch({
-          type: "ADD_HUB",
-          sphereId,
-          hubId: hubId,
-          data: { cloudId: hubData.id, linkedStoneId: stoneId, locationId: stone.config.locationId }
-        })
-        hubCloudId = hubData.id;
-      }
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 28 / 20 });
-      await BluenetPromiseWrapper.connect(handle, sphereId);
-
-      LOG.info("hubSetupProgress: connected");
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 30 / 20 });
-      if (createHubOnline) {
-        LOG.info("hubSetupProgress: token and sphereId being prepared...");
-        let tokenResult = await BluenetPromiseWrapper.transferHubTokenAndCloudId(handle, hubToken, hubCloudId);
-        core.eventBus.emit("setupInProgress", { handle: handle, progress: 32 / 20 });
-        if (tokenResult.type === 'error') {
-          try {
-            await CLOUD.deleteHub(hubCloudId);
-          }
-          catch (e) {}
-          core.store.dispatch({
-            type: "REMOVE_HUB",
-            sphereId,
-            hubId: hubId,
-          })
-          throw {message:"Something went wrong during the transferHubTokenAndCloudId", code: 15, errorType: tokenResult.errorType};
-        }
-        LOG.info("hubSetupProgress: token and sphereId has been transferrred");
-      }
-
-      if (!createHubOnline) {
-        LOG.info("hubSetupProgress: Requesting cloud Id...");
-        let requestedData = await BluenetPromiseWrapper.requestCloudId(handle);
-        console.log("requestCloudId Received key data", requestedData);
-        if (requestedData.type === 'error') {
-          throw { code: 3, errorType: requestedData.errorType, message:"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) }
-        }
-        hubCloudId = requestedData.message;
-      }
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 34 / 20 });
-
-      await BluenetPromiseWrapper.setUartKey(handle, uartKey);
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 36 / 20 });
-      await BluenetPromiseWrapper.disconnectCommand(handle);
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 38 / 20 });
-
-      if (!createHubOnline) {
-        hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
-      }
-
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 39 / 20 });
-      await Scheduler.delay(3000, 'wait for hub to initialize')
-      core.eventBus.emit("setupInProgress", { handle: handle, progress: 40 / 20 });
-      await Scheduler.delay(500, 'wait for hub to initialize')
-
-      return { hubId: hubId, cloudId: hubCloudId };
     }
 
-    // we load the setup into the promise manager with priority so we are not interrupted
-    return BlePromiseManager.registerPriority(setupHubPromise, {from: 'Setup: claiming hub'});
+    if (!uartKey) {
+      throw { code: 10, message: "No Uart Key available." };
+    }
+    // we now have everything we need to create a hub.
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 26 / 20 });
+    if (createHubOnline) {
+      // generate token
+      hubToken = xUtil.getHubHexToken();
+      // Create hub in cloud
+      let hubData = await CLOUD.forSphere(sphereId).createHub({
+        token: hubToken,
+        name: stone.config.name,
+        linkedStoneId: stone.config.cloudId,
+        locationId: stone.config.locationId
+      });
+      core.store.dispatch({
+        type: "ADD_HUB",
+        sphereId,
+        hubId: hubId,
+        data: { cloudId: hubData.id, linkedStoneId: stoneId, locationId: stone.config.locationId }
+      })
+      hubCloudId = hubData.id;
+    }
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 28 / 20 });
+
+    let commander = await connectTo(handle);
+    LOG.info("hubSetupProgress: connected");
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 30 / 20 });
+    if (createHubOnline) {
+      LOG.info("hubSetupProgress: token and sphereId being prepared...");
+      let tokenResult = await commander.transferHubTokenAndCloudId(hubToken, hubCloudId);
+      core.eventBus.emit("setupInProgress", { handle: handle, progress: 32 / 20 });
+      if (tokenResult.type === 'error') {
+        try { await CLOUD.deleteHub(hubCloudId); } catch (e) {}
+        core.store.dispatch({type: "REMOVE_HUB", sphereId, hubId: hubId});
+        throw {
+          message: "Something went wrong during the transferHubTokenAndCloudId",
+          code: 15,
+          errorType: tokenResult.errorType
+        };
+      }
+      LOG.info("hubSetupProgress: token and sphereId has been transferrred");
+    }
+
+    if (!createHubOnline) {
+      LOG.info("hubSetupProgress: Requesting cloud Id...");
+      let requestedData = await commander.requestCloudId();
+      console.log("requestCloudId Received key data", requestedData);
+      if (requestedData.type === 'error') {
+        throw {
+          code: 3,
+          errorType: requestedData.errorType,
+          message: "Something went wrong while requesting CloudId " + JSON.stringify(requestedData)
+        }
+      }
+      hubCloudId = requestedData.message;
+    }
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 34 / 20 });
+
+    await commander.setUartKey(uartKey);
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 36 / 20 });
+    await commander.end();
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 38 / 20 });
+
+    if (!createHubOnline) {
+      hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
+    }
+
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 39 / 20 });
+    await Scheduler.delay(3000, 'wait for hub to initialize');
+    core.eventBus.emit("setupInProgress", { handle: handle, progress: 40 / 20 });
+    await Scheduler.delay(500, 'wait for hub to initialize');
+
+    return { hubId: hubId, cloudId: hubCloudId };
   }
 
 

@@ -1,4 +1,4 @@
-import { mBluenetPromise, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
@@ -15,6 +15,7 @@ import {
 import { Executor } from "../../app/ts/logic/constellation/Executor";
 import { connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
 import { SessionManager } from "../../app/ts/logic/constellation/SessionManager";
+import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
 
 beforeEach(async () => {
   BleCommandManager.reset()
@@ -107,6 +108,70 @@ test("Check basic tell for cleanup of session", async () => {
   await TestUtil.nextTick();
   evt_disconnected(handle);
   expect(valueReturned).toBeTruthy()
+});
+
+
+test("Check connectTo error propagation", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+
+  let caught = false;
+  connectTo(handle)
+    .catch((err) => {
+      caught = true;
+      expect(err).toBe('SESSION_REQUEST_TIMEOUT');
+    })
+
+  await mBluenetPromise.for(handle).fail.connect("Failed");
+  await TestUtil.nextTick();
+  await mScheduler.trigger();
+  expect(caught).toBeTruthy();
+});
+
+test("Check connectTo and the sessionbroker work together", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+
+  let commander : CommandAPI = null;
+  connectTo(handle).then((result) => { commander = result; })
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+  expect(commander).not.toBe(null);
+
+  commander.setupPulse();
+
+  expect(commander.broker.pendingSessions[handle]).toBeUndefined();
+  expect(commander.broker.connectedSessions[handle]).not.toBeUndefined();
+  expect(mBluenetPromise.has(handle).called.setupPulse).toBeTruthy();
+});
+
+
+test("Check pivate connected session error handling.", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+
+  let commander : CommandAPI = null;
+  connectTo(handle).then((result) => { commander = result; })
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  evt_disconnected(handle);
+
+  expect(SessionManager._sessions[handle]).toBeUndefined();
+  expect(commander.broker.pendingSessions[handle]).toBeUndefined();
+  expect(commander.broker.connectedSessions[handle]).toBeUndefined();
+
+  // this does automatically reconnect
+  commander.getBootloaderVersion()
+
+  expect(SessionManager._sessions[handle]).not.toBeUndefined();
+  expect(commander.broker.pendingSessions[handle]).not.toBeUndefined();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+  expect(commander.broker.pendingSessions[handle]).toBeUndefined();
+  expect(commander.broker.connectedSessions[handle]).not.toBeUndefined();
+
+  expect(mBluenetPromise.has(handle).called.getBootloaderVersion()).toBeTruthy();
 });
 
 

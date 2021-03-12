@@ -15,7 +15,13 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
   if (stoneData) {
     sphereId = stoneData.sphereId;
   }
-  await SessionManager.request(handle, privateId, true, timeoutSeconds);
+  try {
+    await SessionManager.request(handle, privateId, true, timeoutSeconds);
+  }
+  catch (err) {
+    SessionManager.revokeRequest(handle, privateId);
+    throw err;
+  }
   let commander = new CommandAPI({
     commanderId:    privateId,
     sphereId:       sphereId,

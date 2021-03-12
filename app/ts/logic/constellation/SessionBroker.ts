@@ -5,12 +5,16 @@ import { SessionManager } from "./SessionManager";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
 
 export class SessionBroker {
 
   handles : string[] = []
 
   options: commandOptions;
+
+  _unsubscribeListeners = [];
+
   requestedSessions : [] = [];
 
   connectedSessions : { [handle: string]:    { id: string, private: boolean } } = {};
@@ -24,6 +28,13 @@ export class SessionBroker {
 
   loadSession(handle: string, commandId: string = xUtil.getUUID(), privateSession: boolean = true) {
     this.connectedSessions[handle] = { id: xUtil.getUUID(), private: privateSession };
+    this.addCleanupEventListener(handle);
+  }
+
+  addCleanupEventListener(handle) {
+    this._unsubscribeListeners.push(core.eventBus.once(`SessionClosed_${handle}`, (privateId) => {
+      delete this.connectedSessions[handle];
+    }))
   }
 
   loadPendingCommands(commands: BleCommand[]) {
@@ -100,6 +111,8 @@ export class SessionBroker {
           // after command completion if its connected.
           delete this.pendingSessions[handle];
           this.connectedSessions[handle] = {id: command.id, private: command.private};
+
+          this.addCleanupEventListener(handle);
         })
     }
   }
@@ -110,6 +123,10 @@ export class SessionBroker {
     for (let sessionHandle of connectedSessions) {
       await SessionManager.revokeRequest(sessionHandle, this.options.commanderId);
       delete this.connectedSessions[sessionHandle];
+    }
+
+    for (let unsubscriber of this._unsubscribeListeners) {
+      unsubscriber();
     }
   }
 

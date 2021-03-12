@@ -16,7 +16,7 @@ afterAll(async () => {})
 const handle    = 'TestHandle';
 const privateId = 'PrivateIDX';
 eventHelperSetActive(handle);
-test("Session private connection fail. Should not sessionHasEnded.", async () => {
+test("Session private connection fail. Should not sessionHasEnded. Should retry.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,'test', interactionModule);
   expect(interactionModule.canActivate).toBeCalled();
@@ -25,6 +25,10 @@ test("Session private connection fail. Should not sessionHasEnded.", async () =>
   expect(interactionModule.isDeactivated).toBeCalled();
   expect(interactionModule.sessionHasEnded).not.toBeCalled()
   expect(session.state).toBe("INITIALIZING");
+
+  evt_ibeacon(-80, handle);
+  expect(interactionModule.canActivate).toBeCalled();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
 });
 
 test("Session public connection fail. Should retry.", async () => {
@@ -187,8 +191,6 @@ test("Session private kill while waiting for commands.", async () => {
   await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
-
-
 
 
 test("Session should cleanup its listeners", async () => {

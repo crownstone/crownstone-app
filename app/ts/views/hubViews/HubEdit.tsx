@@ -25,7 +25,6 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import { INTENTS } from "../../native/libInterface/Constants";
 
 import {SphereDeleted} from "../static/SphereDeleted";

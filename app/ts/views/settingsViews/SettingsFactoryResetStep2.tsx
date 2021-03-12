@@ -46,6 +46,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     };
   }
 
+
   componentDidMount() {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     core.eventBus.emit("ignoreTriggers");
@@ -57,11 +58,13 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     });
   }
 
+
   componentWillUnmount() {
     // Restore trigger state
     core.eventBus.emit("useTriggers");
     BleUtil.cancelAllSearches();
   }
+
 
   switchImages() {
     if (this.lookingForCrownstone === true) {
@@ -82,6 +85,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     }
   }
 
+
   _getDescription(stoneInfo) {
     let description = stoneInfo.name;
     if (stoneInfo.locationName) {
@@ -89,6 +93,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     }
     return description;
   }
+
 
   _removeOwnedCrownstone(handle) {
     // todo: think about what to do here. What if the person is not an admin?
@@ -165,10 +170,10 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
             let description = this._getDescription(map[nearestNormal.handle]);
             if (nearestNormal.rssi > -60) {
               Alert.alert(
-lang("_No_unknown_Crownstone_ne_header"),
-lang("_No_unknown_Crownstone_ne_body",description),
-[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.dismissModal(); }},{
-text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
+                lang("_No_unknown_Crownstone_ne_header"),
+                lang("_No_unknown_Crownstone_ne_body",description),
+                [{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.dismissModal(); }},{
+                text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}],
                 { cancelable: false }
@@ -176,9 +181,9 @@ text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
             }
             else {
               Alert.alert(
-lang("_No_unknown_Crownstones_f_header"),
-lang("_No_unknown_Crownstones_f_body",description),
-[{text:lang("_No_unknown_Crownstones_f_left"), onPress: defaultAction }],
+                lang("_No_unknown_Crownstones_f_header"),
+                lang("_No_unknown_Crownstones_f_body",description),
+                [{text:lang("_No_unknown_Crownstones_f_left"), onPress: defaultAction }],
                 { cancelable: false }
               );
             }
@@ -189,9 +194,9 @@ lang("_No_unknown_Crownstones_f_body",description),
             }
             else {
               Alert.alert(
-lang("_No_Crownstones_near___We_header"),
-lang("_No_Crownstones_near___We_body"),
-[{text:lang("_No_Crownstones_near___We_left"), onPress: defaultAction }],
+                lang("_No_Crownstones_near___We_header"),
+                lang("_No_Crownstones_near___We_body"),
+                [{text:lang("_No_Crownstones_near___We_left"), onPress: defaultAction }],
                 { cancelable: false }
               );
             }
@@ -199,17 +204,17 @@ lang("_No_Crownstones_near___We_body"),
         }
         else if (nearestSetup !== undefined && nearestNormal === undefined) {
           Alert.alert(
-lang("_Recovery_might_not_be_ne_header"),
-lang("_Recovery_might_not_be_ne_body"),
-[{text:lang("_Recovery_might_not_be_ne_left"), onPress: defaultAction }],
+            lang("_Recovery_might_not_be_ne_header"),
+            lang("_Recovery_might_not_be_ne_body"),
+            [{text:lang("_Recovery_might_not_be_ne_left"), onPress: defaultAction }],
             { cancelable: false }
           )
         }
         else {
           Alert.alert(
-lang("_No_nearby_Crownstones____header"),
-lang("_No_nearby_Crownstones____body"),
-[{text:lang("_No_nearby_Crownstones____left"), onPress: defaultAction }],
+            lang("_No_nearby_Crownstones____header"),
+            lang("_No_nearby_Crownstones____body"),
+            [{text:lang("_No_nearby_Crownstones____left"), onPress: defaultAction }],
             { cancelable: false }
           )
         }
@@ -227,9 +232,9 @@ lang("_No_nearby_Crownstones____body"),
           NavigationUtil.dismissModal();
         };
         Alert.alert(
-lang("_Success___This_Crownston_header"),
-lang("_Success___This_Crownston_body"),
-[{text:lang("_Success___This_Crownston_left"), onPress: defaultAction}],
+          lang("_Success___This_Crownston_header"),
+          lang("_Success___This_Crownston_body"),
+          [{text:lang("_Success___This_Crownston_left"), onPress: defaultAction}],
           { cancelable: false }
         )
       })
@@ -238,17 +243,17 @@ lang("_Success___This_Crownston_body"),
         let defaultAction = () => { NavigationUtil.back(); };
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert(
-lang("_Not_in_Factory_Reset_mod_header"),
-lang("_Not_in_Factory_Reset_mod_body"),
-[{text:lang("_Not_in_Factory_Reset_mod_left"), onPress: defaultAction}],
+            lang("_Not_in_Factory_Reset_mod_header"),
+            lang("_Not_in_Factory_Reset_mod_body"),
+            [{text:lang("_Not_in_Factory_Reset_mod_left"), onPress: defaultAction}],
             { cancelable: false }
           )
         }
         else {
           Alert.alert(
-lang("_Error_during_Factory_Res_header"),
-lang("_Error_during_Factory_Res_body"),
-[{text:lang("_Error_during_Factory_Res_left"), onPress: defaultAction}],
+            lang("_Error_during_Factory_Res_header"),
+            lang("_Error_during_Factory_Res_body"),
+            [{text:lang("_Error_during_Factory_Res_left"), onPress: defaultAction}],
             { cancelable: false }
           )
         }

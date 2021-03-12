@@ -14,6 +14,14 @@ export function mockScheduler() {
 class MockSchedulerClass {
   _callbacks = [];
 
+  printCallbacks() {
+    console.log("Printing the Scheduled callbacks....", this._callbacks.length);
+    for (let i = 0; i < this._callbacks.length; i++) {
+      console.log(i, String(this._callbacks[i].callback));
+    }
+    console.log("Done.")
+  }
+
   async trigger(count: number = 1) {
     for (let i = 0; i < count; i++) {
       if (this._callbacks.length === 0 && i === 0) {

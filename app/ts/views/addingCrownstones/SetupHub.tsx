@@ -24,8 +24,6 @@ import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { SetupCircle } from "../components/animated/SetupCircle";
 import { Icon } from "../components/Icon";
 import KeepAwake from 'react-native-keep-awake';
-import { BlePromiseManager } from "../../logic/BlePromiseManager";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { delay, Util } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";

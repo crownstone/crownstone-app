@@ -21,6 +21,7 @@ import { StoneUtil } from "../../../util/StoneUtil";
 import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 import { STONE_TYPES } from "../../../Enums";
+import { tell } from "../../../logic/constellation/Tellers";
 
 
 export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?}, any> {
@@ -102,7 +103,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
       );
       action = () => {
         this.setState({pendingCommand:true});
-        StoneUtil.setupPulse(this.props.handle, this.props.sphereId)
+        tell(this.props.handle).setupPulse()
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
             Alert.alert(

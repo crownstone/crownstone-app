@@ -8,7 +8,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 
 import { Background } from '../components/Background'
-import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../core";
@@ -44,6 +43,7 @@ import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 import { HubHelper } from "../../native/setup/HubHelper";
 import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { tell } from "../../logic/constellation/Tellers";
 
 
 export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
@@ -147,8 +147,6 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     this.unsubscribeStoreEvents();
     // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
     // If there is no connection being kept open, this command will not do anything.
-    BatchCommandHandler.closeKeptOpenConnection();
-
     const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
@@ -178,17 +176,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       this.setState({switchIsOn: true});
     }
 
-    StoneUtil.switchBCH(
-      this.props.sphereId,
-      this.props.stoneId,
-      stone,
-      state,
-      {},
-      () => { this._planStoreAction(); },
-      1,
-      'from _getButton in DeviceSummary',
-      true
-    );
+    tell(stone).multiSwitch(state).catch()
   }
 
   _planStoreAction() {
@@ -236,11 +224,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
           stone={stone}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
-          unlockCrownstone={ () => {
-            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { type : 'lockSwitch', value: false });
-            BatchCommandHandler.executePriority();
-            return promise;
-          }}
+          unlockCrownstone={  () => { return tell(stone).lockSwitch(false); }}
           unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
         />
       );
@@ -388,15 +372,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
           }
           else {
             this.setState({switchIsOn: true});
-            BatchCommandHandler.loadPriority(
-              stone,
-              this.props.stoneId,
-              this.props.sphereId,
-              {type:'turnOn'},
-              {},
-              2,
-              "From DeviceOverview"
-            )
+            tell(stone).turnOn()
               .then((result) => {
                 let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
                 core.store.dispatch({

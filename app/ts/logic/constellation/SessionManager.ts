@@ -132,7 +132,7 @@ export class SessionManagerClass {
    * @param privateSessionRequest
    * @param timeoutSeconds
    */
-  async request(handle, commanderId : string, privateSessionRequest: boolean, timeoutSeconds?: number) : Promise<void> {
+  async request(handle, commanderId : string, privateSessionRequest: boolean, timeoutSeconds?: number, cleanup?: () => void) : Promise<void> {
     // TODO: make sure a private connection is more important than a shared one.
     if (privateSessionRequest && !timeoutSeconds) {
       timeoutSeconds = 20;
