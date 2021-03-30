@@ -48,13 +48,7 @@ export class Session {
     this.sphereId  = reference?.sphereId || null;
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
-    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
-      this.state = "DISCONNECTED";
-      // if (this.isPrivate() === false || this.sessionIsKilled) {
-      //   this.sessionHasEnded();
-      // }
-      this.sessionHasEnded();
-    });
+    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.sessionHasEnded();   });
 
     this.initializeBootstrapper();
 
@@ -194,7 +188,7 @@ export class Session {
     }
 
     // We do this on the next tick to allow for chaining new commands after this one has been resolved.
-    await xUtil.nextTick()
+    await xUtil.nextTick();
     await this.handleCommands();
   }
 
@@ -249,6 +243,8 @@ export class Session {
 
 
   sessionHasEnded() {
+    this.state = "DISCONNECTED";
+
     this.interactionModule.sessionHasEnded();
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
     this._clearBootstrapper();

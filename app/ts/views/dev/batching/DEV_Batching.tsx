@@ -23,6 +23,8 @@ import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { CommandAPI } from "../../../logic/constellation/Commander";
+import { tell } from "../../../logic/constellation/Tellers";
 
 const RNFS = require('react-native-fs');
 
@@ -100,55 +102,42 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
       })
   }
 
-  bleAction(selectedStone, attempt = 0) {
-    let action = null
-    switch (this.state.operation) {
-      case "resetCounter":
-        action = BluenetPromiseWrapper.getResetCounter;
-        break;
-      case "firmwareVersion":
-        action = BluenetPromiseWrapper.getFirmwareVersion;
-        break;
-    }
 
-    ConnectionManager.connectWillStart(selectedStone.handle)
-    let proxy = BleUtil.getProxy(selectedStone.handle, selectedStone.sphereId);
-    let promise = proxy.performPriority(action, [])
-
-    // perform.
-    return promise
-      .then((result) => {
-        this.setState({
-          values:   {...this.state.values, [selectedStone.handle]: result.data},
-          pending:  {...this.state.pending, [selectedStone.handle]: false},
-          finished: {...this.state.finished, [selectedStone.handle]: true},
-        })
-        return ConnectionManager.disconnect()
-      })
-      .catch((err) => {
-        ConnectionManager.disconnect()
-        if (attempt < 3) {
-          return this.bleAction(selectedStone, attempt +1)
-        }
-        else {
-          this.setState({
-            failed: {...this.state.failed, [selectedStone.handle]: true},
-            pending:  {...this.state.pending, [selectedStone.handle]: false},
-          })
-        }
-      })
-  }
 
   // { handle: handle, rssi: rssi, type: advertisementType, data: data, sphereId: data.referenceId || null }
-  performBatchOperation() {
+  async performBatchOperation() {
     let pending = {}
-    this.props.selectedStones.forEach((stoneData) => {
-      pending[stoneData.handle] = true;
-    })
+    for (let stone of this.props.selectedStones) {
+      pending[stone.handle] = true;
+    }
 
     this.setState({pending: pending, failed: {}, values: {}})
 
-    return xUtil.promiseBatchPerformer(this.props.selectedStones, this.bleAction.bind(this))
+    for (let stone of this.props.selectedStones) {
+      let value = null;
+      try {
+        switch (this.state.operation) {
+          case "resetCounter":
+            value = await tell(stone).getResetCounter();
+            break;
+          case "firmwareVersion":
+            value = await tell(stone).getFirmwareVersion()
+            break;
+        }
+        this.setState({
+          values: { ...this.state.values, [stone.handle]: value },
+          pending: { ...this.state.pending, [stone.handle]: false },
+          finished: { ...this.state.finished, [stone.handle]: true },
+        })
+      }
+      catch (e) {
+        this.setState({
+          failed: {...this.state.failed, [stone.handle]: true},
+          pending:  {...this.state.pending, [stone.handle]: false},
+        })
+      }
+
+    }
   }
 
 

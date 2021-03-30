@@ -162,7 +162,6 @@ lang("_Indoor_localization_is_c_body"),
     this.unsubscribeStoreEvents();
 
     // we keep open a connection for a few seconds to await a second command
-    BatchCommandHandler.closeKeptOpenConnection();
     NAVBAR_PARAMS_CACHE = null;
   }
 

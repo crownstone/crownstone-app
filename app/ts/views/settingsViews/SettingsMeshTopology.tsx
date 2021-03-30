@@ -26,6 +26,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { tell } from "../../logic/constellation/Tellers";
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
@@ -144,11 +145,10 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     };
 
     stoneIds.forEach((stoneId) => {
-      BatchCommandHandler.loadPriority(stones[stoneId], stoneId, sphereId, {type: 'sendMeshNoOp'}, {}, 2, 'meshNoOp_meshRefresh' + stoneId )
+      tell(stones[stoneId]).sendMeshNoOp()
         .then(() => { evaluateRefreshProgress() })
         .catch(() => { evaluateRefreshProgress() })
     });
-    BatchCommandHandler.executePriority()
   }
 
   // _debugPrints(sphereId, connections, edgeId, stones) {

@@ -28,6 +28,8 @@ export class SessionManagerClass {
 
   _timeoutHandlers : {[handle: string] : {[commanderId: string]: { clearCallback: () => void }}} = {};
 
+  blocked = false;
+
   reset() {
     this._sessions = {};
     this._activeSessions = {};
@@ -59,7 +61,9 @@ export class SessionManagerClass {
   _getInteractionModule(handle: string, commanderId: string, privateSession: boolean) : SessionInteractionModule {
     let privateId = privateSession ? commanderId : null;
     return {
-      canActivate:     () => { return Object.keys(this._activeSessions).length <= this._maxActiveSessions },
+      canActivate:     () => {
+        return this.blocked === false && Object.keys(this._activeSessions).length <= this._maxActiveSessions;
+      },
       willActivate:    () => { this._activeSessions[handle] = { connected:false }; },
       isDeactivated:   () => { delete this._activeSessions[handle]; },
       sessionHasEnded: () => { this._endSession(handle); },
@@ -169,7 +173,6 @@ export class SessionManagerClass {
       else {
         // If the session is private, you cannot re-request it even with the same commanderId.
         // It has to be ended first.
-        // TODO: test
         if (session.isPrivate()) {
           if (session.privateId === privateId) {
             // this shouldnt happen, it would be a bug if it did.
@@ -246,7 +249,7 @@ export class SessionManagerClass {
         if (privateSessionRequest) {
           if (session && session.privateId === commanderId) {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
-            this.closeSession(handle, commanderId);
+            this.closeSession(handle);
           }
 
           // fail all commands owned by this commanderId
@@ -255,7 +258,7 @@ export class SessionManagerClass {
         else {
           if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
-            this.closeSession(handle, commanderId);
+            this.closeSession(handle);
           }
         }
       })
@@ -276,7 +279,7 @@ export class SessionManagerClass {
       removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
       if (session && session.isPrivate() === false && session.state === "INITIALIZING" || session.state === "CONNECTING") {
         // public sessions close themselves, no need to end if it is connected
-        await this.closeSession(handle, commanderId);
+        await this.closeSession(handle);
       }
     }
 
@@ -287,7 +290,7 @@ export class SessionManagerClass {
 
     // if the session is private, the revocation must close it.
     if (session && session.isPrivate() === true && session.privateId === commanderId) {
-      await this.closeSession(handle, commanderId);
+      await this.closeSession(handle);
     }
   }
 
@@ -298,7 +301,7 @@ export class SessionManagerClass {
    * @param handle
    * @param commanderId
    */
-  async closeSession(handle : string, commanderId : string) {
+  async closeSession(handle : string) {
     let session = this._sessions[handle];
     if (session) {
       await session.kill();
@@ -342,9 +345,56 @@ export class SessionManagerClass {
     removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
   }
 
-  clearAllSessions() {
-    // TODO: implement.
+  async pause() {
+    this.blocked = true;
+
+    let privateSessionsPresent = true;
+    let timeWaitedMs = 0;
+    let stepMs = 250;
+
+    // here we wait for a max of 1 minute for any private sessions to close.
+    // new sessions cannot be started due to the blocked boolean.
+    while (privateSessionsPresent && timeWaitedMs < 60000) {
+      privateSessionsPresent = false;
+      for (let handle in this._activeSessions) {
+        let session = this._sessions[handle];
+        if (session && session.isPrivate()) {
+          privateSessionsPresent = true;
+        }
+      }
+      if (privateSessionsPresent != false) {
+        await Scheduler.delay(stepMs);
+      }
+      timeWaitedMs += stepMs;
+    }
+
+    // now we close any remaining active session.
+    for (let handle in this._activeSessions) {
+      await this.closeSession(handle);
+    }
+
+    // since we wait for disconnect events from the bluetooth stack, we wait for all active sessions to automatically be deactivated.
+
+    timeWaitedMs = 0;
+    // by allowing the wait to be 20 seconds, we ensure that all connections are over.
+    // The only exception here being DFU. That is why we first wait for all private connections to end by themselves.
+    while (Object.keys(this._activeSessions).length > 0 && timeWaitedMs < 20000) {
+      await Scheduler.delay(stepMs);
+      timeWaitedMs += stepMs;
+    }
+
+    // if any are stuck for whatever reason, we manually clean them up.
+    for (let handle in this._activeSessions) {
+      await this._sessions[handle].sessionHasEnded();
+    }
+
+    this._activeSessions = {};
   }
+
+  resume() {
+    this.blocked = false;
+  }
+
 }
 
 function addToPendingList(map, handle, commanderId, resolve, reject) {

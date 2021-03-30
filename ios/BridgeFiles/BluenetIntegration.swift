@@ -547,7 +547,6 @@ open class BluenetJS: RCTEventEmitter {
     let meshNetworkKey     = data["meshNetworkKey"] as? String
     let meshApplicationKey = data["meshApplicationKey"] as? String
     let meshDeviceKey      = data["meshDeviceKey"] as? String
-    let meshAccessAddress  = data["meshAccessAddress"] as? String // legacy
     let ibeaconUUID        = data["ibeaconUUID"] as? String
     let ibeaconMajor       = data["ibeaconMajor"] as? NSNumber
     let ibeaconMinor       = data["ibeaconMinor"] as? NSNumber
@@ -564,7 +563,6 @@ open class BluenetJS: RCTEventEmitter {
       meshNetworkKey != nil &&
       meshApplicationKey != nil &&
       meshDeviceKey != nil &&
-      meshAccessAddress != nil &&
       ibeaconUUID != nil &&
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
@@ -579,7 +577,6 @@ open class BluenetJS: RCTEventEmitter {
         meshNetworkKey: meshNetworkKey!,
         meshApplicationKey: meshApplicationKey!,
         meshDeviceKey: meshDeviceKey!,
-        meshAccessAddress: meshAccessAddress!,
         ibeaconUUID: ibeaconUUID!,
         ibeaconMajor: (ibeaconMajor!).uint16Value,
         ibeaconMinor: (ibeaconMinor!).uint16Value)
@@ -594,7 +591,7 @@ open class BluenetJS: RCTEventEmitter {
         }
     }
     else {
-      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1\(crownstoneId != nil) 2\(sphereId != nil) 3\(adminKey != nil) 4\(memberKey != nil) 5\(basicKey != nil) 6\(localizationKey != nil) 7\(serviceDataKey != nil) 8\(meshApplicationKey != nil) 9\(meshNetworkKey != nil) 10\(meshDeviceKey != nil) 11\(meshAccessAddress != nil) 12\(ibeaconUUID != nil) 13\(ibeaconMajor != nil) 14\(ibeaconMinor != nil)"]])
+      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1\(crownstoneId != nil) 2\(sphereId != nil) 3\(adminKey != nil) 4\(memberKey != nil) 5\(basicKey != nil) 6\(localizationKey != nil) 7\(serviceDataKey != nil) 8\(meshApplicationKey != nil) 9\(meshNetworkKey != nil) 10\(meshDeviceKey != nil) 11\(ibeaconUUID != nil) 12\(ibeaconMajor != nil) 13\(ibeaconMinor != nil)"]])
     }
   }
   
@@ -1006,7 +1003,7 @@ open class BluenetJS: RCTEventEmitter {
   // DEV
   @objc func switchRelay(_ handle: String, state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     let handleUUID = UUID(uuidString: handle)
-     LOGGER.info("BluenetBridge: Called setSwitchState")
+     LOGGER.info("BluenetBridge: Called switchRelay")
      GLOBAL_BLUENET.bluenet.control(handleUUID!).switchRelay(state.uint8Value)
        .done{_ in callback([["error" : false]])}
        .catch{err in

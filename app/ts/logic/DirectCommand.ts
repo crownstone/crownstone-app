@@ -1,4 +1,3 @@
-// import { BlePromiseManager } from './BlePromiseManager'
 // import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 // import {LOG, LOGe} from '../logging/Log'
 //

@@ -63,7 +63,7 @@ import {
   Command_SetSoftOnSpeed,
   Command_SetSunTimesViaConnection,
   Command_SetSwitchCraft,
-  Command_SetSwitchcraftThreshold,
+  Command_SetSwitchcraftThreshold, Command_setSwitchState,
   Command_SetTapToToggle,
   Command_SetTapToToggleThresholdOffset,
   Command_SetTime,
@@ -316,6 +316,9 @@ export class CommandAPI extends CommandMeshAPI {
   }
   async getSoftOnSpeed() : Promise< number > {
     return this._load(new Command_GetSoftOnSpeed());
+  }
+  async setSwitchState(state: number) : Promise< void > {
+    return this._load(new Command_setSwitchState(state));
   }
   async switchRelay(state: number) : Promise< void > {
     return this._load(new Command_SwitchRelay(state));

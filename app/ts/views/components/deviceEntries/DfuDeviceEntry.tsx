@@ -21,6 +21,7 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
 import { BleUtil } from "../../../util/BleUtil";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
+import { tell } from "../../../logic/constellation/Tellers";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -112,7 +113,7 @@ export class DfuDeviceEntry extends Component<any, any> {
     );
   }
 
-  repair() {
+  async repair() {
     if (this.state.restoring === false) {
       if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
         let updatableStones = DfuUtil.getUpdatableStones(this.props.sphereId);
@@ -121,18 +122,15 @@ export class DfuDeviceEntry extends Component<any, any> {
         }
         else {
           this.setState({restoring: true})
-          let proxy = BleUtil.getProxy(this.props.handle, this.props.sphereId);
-          proxy.performPriority(() => {
-            return BluenetPromiseWrapper.bootloaderToNormalMode(this.props.handle)
-          })
-            .then(() => {
-              // this.setState({restoring: false});
-            })
-            .catch((err) => {
-              core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{firmwareVersion: null}});
-              this.setState({restoring: false})
-              NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
-            })
+          try {
+            await tell(this.props.handle).bootloaderToNormalMode();
+            this.setState({restoring: false});
+          }
+          catch (err) {
+            core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{firmwareVersion: null}});
+            this.setState({restoring: false});
+            NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
+          }
         }
       }
       else {

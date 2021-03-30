@@ -1,4 +1,3 @@
-
 import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { Executor } from "../Executor";

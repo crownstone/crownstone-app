@@ -2,8 +2,14 @@ import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/sui
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
+import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
 import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
+import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
+import {
+  Command_AllowDimming,
+  Command_GetHardwareVersion,
+  Command_TurnOn
+} from "../../app/ts/logic/constellation/commandClasses";
 
 
 beforeEach(async () => {
@@ -11,11 +17,12 @@ beforeEach(async () => {
 })
 beforeAll(async () => {})
 afterEach(async () => { await TestUtil.nextTick(); })
-afterAll(async () => {})
+afterAll( async () => {})
 
-const handle    = 'TestHandle';
-const meshId    = 'MeshId';
-const privateId = 'PrivateIDX';
+const handle       = 'TestHandle';
+const meshId       = 'MeshId';
+const secondMeshId = 'otherMesh';
+const privateId    = 'PrivateIDX';
 eventHelperSetActive(handle);
 
 test("Session manager registration and queue for shared connections.", async () => {
@@ -104,7 +111,7 @@ test("Session manager registration and queue for private connections.", async ()
 
   expect(p1).toBeCalled();
 
-  sessionManager.closeSession(handle, 'commanderId1');
+  sessionManager.closeSession(handle);
 
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
@@ -282,6 +289,113 @@ test("Session manager request and revoke private requests in different states.",
   expect(sessionManager._pendingPrivateSessionRequests[handle]).toBeUndefined();
   expect(sessionManager._sessions[handle]).toBeUndefined();
 });
+
+
+test("Session manager private connections cannot request the same session twice.", async () => {
+  let sphere = addSphere();
+  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  eventHelperSetActive(handle, sphere.id, stone1.id);
+  let sessionManager = new SessionManagerClass();
+  let id1 = 'commanderId_1';
+
+  sessionManager.request(handle, id1, true);
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  let thrown = false;
+  await sessionManager.request(handle, id1, true)
+    .catch((err) => {
+      thrown = true;
+      expect(err).toBe('PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER')
+    })
+
+  expect(thrown).toBeTruthy();
+});
+
+
+test("Session manager being paused with no active sessions. It should block new ones.", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let sessionManager = new SessionManagerClass();
+  await sessionManager.pause()
+
+  sessionManager.request(handle, "commander", true);
+
+  await TestUtil.nextTick();
+
+  expect(sessionManager._sessions[handle].state).toBe("INITIALIZING");
+  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
+  expect(sessionManager._activeSessions).toStrictEqual({});
+
+  // this should normally trigger a connection request if it was allowed
+  evt_ibeacon(-80, handle);
+  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
+  expect(sessionManager._sessions[handle].state).toBe("INITIALIZING");
+});
+
+
+test("Session manager being paused with private connections. These should be awaited.", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let sessionManager = new SessionManagerClass();
+  sessionManager.request(handle, "commander", true);
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  let pauseFinished = false;
+  sessionManager.pause().then(() => { pauseFinished = true; })
+
+  await mScheduler.triggerDelay()
+  expect(pauseFinished).toBeFalsy();
+
+  evt_disconnected(handle);
+  await TestUtil.nextTick();
+
+  expect(Object.keys(sessionManager._activeSessions).length).toBe(0)
+  expect(pauseFinished).toBeFalsy();
+  await mScheduler.triggerDelay()
+  await TestUtil.nextTick();
+  expect(pauseFinished).toBeTruthy()
+});
+
+
+test("Session manager being paused with public connections. These should be closed.", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let sessionManager = new SessionManagerClass();
+  sessionManager.request(handle, "commander", false);
+  evt_ibeacon(-80)
+
+  let promise = { promise: new Promise(() => {}), resolve: jest.fn(), reject: jest.fn() };
+  let options2 = getCommandOptions(db.sphere.id, [handle]);
+  BleCommandManager.generateAndLoad(options2, new Command_AllowDimming(true), false, promise);
+
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  let pauseFinished = false;
+  expect(sessionManager._sessions[handle].state).toBe("CONNECTED");
+  expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeFalsy();
+  sessionManager.pause().then(() => { pauseFinished = true; })
+
+  expect(pauseFinished).toBeFalsy();
+  await mBluenetPromise.for(handle).succeed.disconnectCommand()
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect()
+
+  evt_disconnected(handle);
+
+  expect(Object.keys(sessionManager._activeSessions).length).toBe(0)
+  expect(pauseFinished).toBeFalsy();
+  await mScheduler.triggerDelay();
+  await TestUtil.nextTick();
+  expect(pauseFinished).toBeTruthy();
+});
+
 
 
 

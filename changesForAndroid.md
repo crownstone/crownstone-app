@@ -27,3 +27,5 @@ Presumably we'll be moving to RN 0.63.4
 
 - Updated data type for this event:
     crownstoneAdvertisementReceived: "crownstoneAdvertisementReceived",   // data type = crownstoneAdvertisementSummary, this is only the handle. // Any advertisement, verified and unverified from crownstones.
+    
+Setup command will no longer receive meshAccessAddress. Hardcode into lib if required for legacy.

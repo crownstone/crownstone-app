@@ -58,6 +58,7 @@ type BridgeCommandType = "addBehaviour"                     |
                          "setPowerZero"                     |
                          "setSoftOnSpeed"                   |
                          "setSunTimesViaConnection"         |
+                         "setSwitchState"                   |
                          "setSwitchCraft"                   |
                          "setSwitchcraftThreshold"          |
                          "setTapToToggle"                   |

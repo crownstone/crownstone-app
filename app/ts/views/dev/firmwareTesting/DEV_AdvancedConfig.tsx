@@ -19,6 +19,7 @@ import { IconButton } from "../../components/IconButton";
 import { DataUtil } from "../../../util/DataUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { LOGe } from "../../../logging/Log";
+import { CommandAPI } from "../../../logic/constellation/Commander";
 
 
 const BLE_STATE_READY = "ready";
@@ -76,46 +77,25 @@ export class DEV_AdvancedConfig extends LiveComponent<{
   }
 
 
-  bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, failureHandler = () => {}, connect = true) {
+  async bleAction(action : (api: CommandAPI) => Promise<any>, failureHandler: () => void = () => {}) {
     if (this.state.bleState === BLE_STATE_BUSY) {
       Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       return;
     }
-
-    FocusManager.setUpdateFreeze(type);
-
-    let promise = null;
     this.setState({bleState: BLE_STATE_BUSY})
-    let state = core.store.getState();
 
-    if (connect) {
-      ConnectionManager.connectWillStart(this.props.handle)
-      let proxy = BleUtil.getProxy(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
-      promise = proxy.performPriority(action, props, PROXY_OPTIONS)
+    try {
+      let api = await ConnectionManager.connect(this.props.handle);
+      await action(api);
+      await ConnectionManager.disconnect()
     }
-    else {
-      ConnectionManager.disconnect()
-      let actionPromise = () => {
-        return action.apply(this, props);
-      };
-      // @ts-ignore
-      promise = BlePromiseManager.registerPriority(actionPromise, { from: 'performing self contained action' })
+    catch (err) {
+      this.showBleError(err);
+      await ConnectionManager.disconnect()
     }
-
-    // perform.
-    promise
-      .then((result) => {
-        resultHandler(result);
-        FocusManager.setFreezeTimeout(type);
-        this.setState({bleState: BLE_STATE_READY});
-        if (connect) { ConnectionManager.setDisconnectTimeout() }
-      })
-      .catch((err) => {
-        FocusManager.clearUpdateFreeze(type);
-        failureHandler()
-        this.showBleError(err);
-        if (connect) { ConnectionManager.disconnect() }
-      })
+    finally {
+      this.setState({bleState: BLE_STATE_READY});
+    }
   }
 
 
@@ -149,14 +129,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Switchcraft Threshold",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.switchCraftThreshold || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getSwitchcraftThreshold, [], null, (result) => {
-            FocusManager.crownstoneState.switchCraftThreshold = result.data;
-            this.forceUpdate();
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.switchCraftThreshold = await api.getSwitchcraftThreshold();
           })
+          this.forceUpdate();
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, success, failed )
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setSwitchcraftThreshold(value);
+            success();
+          }, failed);
         }
       });
 
@@ -164,15 +147,12 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Max Chip Temp",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.maxChipTemp || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getMaxChipTemp, [], null, (result) => {
-            FocusManager.crownstoneState.maxChipTemp = result.data;
-            this.forceUpdate();
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.maxChipTemp = await api.getMaxChipTemp();
           })
+          this.forceUpdate();
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setMaxChipTemp, [Number(value)], null, success, failed)
-        }
       });
 
       items.push({label: "DIMMER", type: 'explanation', color: explanationColor});
@@ -180,14 +160,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Dimmer Threshold",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerCurrentThreshold || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getDimmerCurrentThreshold, [], null, (result) => {
-            FocusManager.crownstoneState.dimmerCurrentThreshold = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.dimmerCurrentThreshold = api.getDimmerCurrentThreshold()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerCurrentThreshold, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setDimmerCurrentThreshold(value);
+            success();
+          }, failed);
         }
       });
 
@@ -195,14 +178,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Dimmer Temp Up",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempUpThreshold || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getDimmerTempUpThreshold, [], null, (result) => {
-            FocusManager.crownstoneState.dimmerTempUpThreshold = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.dimmerTempUpThreshold = await api.getDimmerTempUpThreshold;
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerTempUpThreshold, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setDimmerTempUpThreshold(value);
+            success();
+          }, failed);
         }
       });
 
@@ -210,14 +196,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Dimmer Temp Down",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempDownThreshold || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getDimmerTempDownThreshold, [], null, (result) => {
-            FocusManager.crownstoneState.dimmerTempDownThreshold = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.dimmerTempDownThreshold = await api.getDimmerTempDownThreshold()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerTempDownThreshold, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setDimmerTempDownThreshold(value);
+            success();
+          }, failed);
         }
       });
 
@@ -226,42 +215,51 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Voltage Zero",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.voltageZero || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getVoltageZero, [], null, (result) => {
-            FocusManager.crownstoneState.voltageZero = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.voltageZero = await api.getVoltageZero()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setVoltageZero, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setVoltageZero(value);
+            success();
+          }, failed);
         }
       });
       items.push({
         label: "Current Zero",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.currentZero || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getCurrentZero, [], null, (result) => {
-            FocusManager.crownstoneState.currentZero = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.currentZero = await api.getCurrentZero()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setSwitchcraftThreshold(value);
+            success();
+          }, failed);
         }
       });
       items.push({
         label: "Power Zero",
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.powerZero || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getPowerZero, [], null, (result) => {
-            FocusManager.crownstoneState.powerZero = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.powerZero = await api.getPowerZero()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setPowerZero, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setPowerZero(value);
+            success();
+          }, failed);
         }
       });
 
@@ -272,14 +270,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         digits: 6,
         value: FocusManager.crownstoneState.voltageMultiplier || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getVoltageMultiplier, [], null, (result) => {
-            FocusManager.crownstoneState.voltageMultiplier = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.voltageMultiplier = await api.getVoltageMultiplier()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setVoltageMultiplier, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setVoltageMultiplier(value);
+            success();
+          }, failed);
         }
       });
       items.push({
@@ -287,14 +288,17 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         digits: 6,
         value: FocusManager.crownstoneState.currentMultiplier || null,
-        getCallback: () => {
-          this.bleAction(BluenetPromiseWrapper.getCurrentMultiplier, [], null, (result) => {
-            FocusManager.crownstoneState.currentMultiplier = result.data;
+        getCallback: async () => {
+          await this.bleAction(async(api) => {
+            FocusManager.crownstoneState.currentMultiplier = await api.getCurrentMultiplier()
             this.forceUpdate();
           })
         },
-        setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setCurrentMultiplier, [Number(value)], null, success, failed)
+        setCallback: async (value) => {
+          await this.bleAction(async(api) => {
+            await api.setCurrentMultiplier(value);
+            success();
+          }, failed);
         }
       });
 
@@ -305,24 +309,30 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         label: "Disable UART",
         type: 'button',
         style: {color:colors.blue.hex},
-        callback: () => {
-          this.bleAction(BluenetPromiseWrapper.setUartState, [0], null);
+        callback: async () => {
+          await this.bleAction(async(api) => {
+            await api.setUartState(0)
+          })
         }
       });
       items.push({
         label: "UART RX ONLY",
         type: 'button',
         style: {color:colors.blue.hex},
-        callback: () => {
-          this.bleAction(BluenetPromiseWrapper.setUartState, [1], null);
+        callback: async () => {
+          await this.bleAction(async(api) => {
+            await api.setUartState(1)
+          })
         }
       });
       items.push({
         label: "UART TX & RX",
         type: 'button',
         style: {color:colors.blue.hex},
-        callback: () => {
-          this.bleAction(BluenetPromiseWrapper.setUartState, [3], null);
+        callback: async () => {
+          await this.bleAction(async(api) => {
+            await api.setUartState(3)
+          })
         }
       });
     }
@@ -331,44 +341,45 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       label: "Get Behaviour Debug Information",
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
-      callback: () => {
+      callback: async () => {
         this.setState({debugInformation: null});
-        this.bleAction(BluenetPromiseWrapper.getBehaviourDebugInformation, [], null, (response) => {
-          let data = response.data;
-          const mapBitmaskArray = (arr) => {
-            let result = "None";
-            for (let i = 0; i < arr.length; i++) {
-              if (result === "None" && arr[i]) {
-                result = i + '';
-              }
-              else if (arr[i]) {
-                result += ", " + i
-              }
+        let data : behaviourDebug = null;
+        let formattedData : any = {};
+        await this.bleAction(async(api) => {
+          data = await api.getBehaviourDebugInformation()
+        });
+        const mapBitmaskArray = (arr) => {
+          let result = "None";
+          for (let i = 0; i < arr.length; i++) {
+            if (result === "None" && arr[i]) {
+              result = i + '';
             }
-            return result;
+            else if (arr[i]) {
+              result += ", " + i
+            }
           }
+          return result;
+        }
 
-          data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
-          data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
+        formattedData.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
+        formattedData.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
 
-          data.behavioursInTimeoutPeriod = mapBitmaskArray(data.behavioursInTimeoutPeriod);
+        formattedData.behavioursInTimeoutPeriod = mapBitmaskArray(data.behavioursInTimeoutPeriod);
 
-          data.presenceProfile_0 = mapBitmaskArray(data.presenceProfile_0);
-          data.presenceProfile_1 = mapBitmaskArray(data.presenceProfile_1);
-          data.presenceProfile_2 = mapBitmaskArray(data.presenceProfile_2);
-          data.presenceProfile_3 = mapBitmaskArray(data.presenceProfile_3);
-          data.presenceProfile_4 = mapBitmaskArray(data.presenceProfile_4);
-          data.presenceProfile_5 = mapBitmaskArray(data.presenceProfile_5);
-          data.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
-          data.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
+        formattedData.presenceProfile_0 = mapBitmaskArray(data.presenceProfile_0);
+        formattedData.presenceProfile_1 = mapBitmaskArray(data.presenceProfile_1);
+        formattedData.presenceProfile_2 = mapBitmaskArray(data.presenceProfile_2);
+        formattedData.presenceProfile_3 = mapBitmaskArray(data.presenceProfile_3);
+        formattedData.presenceProfile_4 = mapBitmaskArray(data.presenceProfile_4);
+        formattedData.presenceProfile_5 = mapBitmaskArray(data.presenceProfile_5);
+        formattedData.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
+        formattedData.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
 
-          data.storedBehaviours = mapBitmaskArray(data.storedBehaviours);
+        formattedData.storedBehaviours = mapBitmaskArray(data.storedBehaviours);
 
-          let string = xUtil.stringify(data, 2);
-          console.log("STONE DEBUG INFORMATION:", string);
-          this.setState({debugInformation: string});
-        })
-        BatchCommandHandler.executePriority()
+        let str = xUtil.stringify(data, 2);
+        console.log("STONE DEBUG INFORMATION:", str);
+        this.setState({debugInformation: str});
       }
     });
 

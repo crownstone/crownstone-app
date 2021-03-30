@@ -178,7 +178,6 @@ class LibContainer {
     let res = {};
     for (let method of targetedMethods) {
       res[method] = async (data?: any) => {
-
         this._resolve(method, handle, data);
         await skipTurn();
       }

@@ -373,13 +373,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     items.push({label: "MESH", type: 'explanation', below: false});
     items.push({
-      label: "Change Channels",
-      type: 'navigation',
-      icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
-      callback:() => {
-        NavigationUtil.navigate( "SettingsMeshDebug");
-      }});
-    items.push({
       label: "Show RSSI in Topology",
       value: dev.show_rssi_values_in_mesh,
       type: 'switch',

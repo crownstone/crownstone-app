@@ -124,7 +124,7 @@ export class NumericOverlay extends Component<any, any> {
             onPress={() => {
               if (this.state.value !== null) {
                 this.setState({pending: true})
-                this.props.data.callback(this.state.value)
+                this.props.data.callback(Number(this.state.value))
               }
               else {
                 this.setState({ visible: false, value: null, ok: false })

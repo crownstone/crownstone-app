@@ -173,5 +173,3 @@ test("Check pivate connected session error handling.", async () => {
 
   expect(mBluenetPromise.has(handle).called.getBootloaderVersion()).toBeTruthy();
 });
-
-

@@ -22,7 +22,6 @@ import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { SetupCircle } from "../components/animated/SetupCircle";
 import { Icon } from "../components/Icon";
 import KeepAwake from 'react-native-keep-awake';
-import { BlePromiseManager } from "../../logic/BlePromiseManager";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { delay } from "../../util/Util";
@@ -30,6 +29,8 @@ import { BleUtil } from "../../util/BleUtil";
 import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { TopbarImitation } from "../components/TopbarImitation";
+import { connectTo } from "../../logic/constellation/Tellers";
+import { CommandAPI } from "../../logic/constellation/Commander";
 
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
@@ -90,12 +91,24 @@ export class SetupCrownstone extends LiveComponent<{
   }
 
 
-  _startSetup() {
+  async _startSetup() {
     this._disableBackButton();
     this.abort = false;
 
-    const performSetup = () => {
-      SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
+    if (this.props.unownedVerified) {
+      let api: CommandAPI;
+      try {
+        api = await connectTo(this.props.setupItem.handle);
+        await api.commandFactoryReset();
+      } finally {
+        if (api) { await api.end(); }
+      }
+      await Scheduler.delay(2000);
+      await BleUtil.detectSetupCrownstone(this.props.setupItem.handle);
+    }
+
+    try {
+      await SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId)
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupItem.handle, this.props.sphereId); } throw err;})
         .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
@@ -158,36 +171,9 @@ export class SetupCrownstone extends LiveComponent<{
           }
           this._interview.setLockedCard("problemBle");
         })
-    };
-
-
-    if (this.props.unownedVerified) {
-      let resetPromise = () : Promise<void> => {
-        return new Promise((resolve, reject) => {
-          BluenetPromiseWrapper.connect(this.props.setupItem.handle, this.props.sphereId)
-            .then(() => { return BluenetPromiseWrapper.commandFactoryReset(this.props.setupItem.handle) })
-            .then(() => { return BluenetPromiseWrapper.disconnectCommand(this.props.setupItem.handle) })
-            .then(() => { return BluenetPromiseWrapper.phoneDisconnect(this.props.setupItem.handle) })
-            .then(() => { resolve() })
-            .catch((err) => { reject(err) })
-        })
-      };
-      BlePromiseManager.registerPriority(resetPromise, {from: 'Setup: resetting stone ' + this.props.setupItem.handle})
-        .then(() => {
-          return delay(2000);
-        })
-        .then(() => {
-          return BlePromiseManager.registerPriority(() => { return BleUtil.detectSetupCrownstone(this.props.setupItem.handle); }, {from: 'Setup: searching for stone ' + this.props.setupItem.handle})
-        })
-        .then(() => {
-          return performSetup();
-        })
-        .catch((err) => {
-          this._interview.setLockedCard("problem");
-        })
     }
-    else {
-      performSetup();
+    catch (err) {
+      this._interview.setLockedCard("problem");
     }
 
 

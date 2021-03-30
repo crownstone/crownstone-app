@@ -1,8 +1,11 @@
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { connectTo } from "../../logic/constellation/Tellers";
+import { CommandAPI } from "../../logic/constellation/Commander";
 
 class ConnectionManagerClass {
   bleConnectionTimeout = null;
   handle: string = null;
+  api: CommandAPI = null;
 
   constructor() {}
 
@@ -13,16 +16,18 @@ class ConnectionManagerClass {
     this.bleConnectionTimeout = setTimeout(() => { this.disconnect() }, 5000);
   }
 
-  connectWillStart(handle: string) {
-    clearTimeout(this.bleConnectionTimeout);
-    this.bleConnectionTimeout = null;
+  async connect(handle: string) : Promise<CommandAPI> {
+    if (this.api !== null) {
+      return this.api;
+    }
+    this.handle = handle;
+    this.api = await connectTo(handle);
+    return this.api;
   }
 
-  disconnect() {
-    clearTimeout(this.bleConnectionTimeout);
-    return BluenetPromiseWrapper.phoneDisconnect(this.handle)
-      .catch(() => { return BluenetPromiseWrapper.disconnectCommand(this.handle)})
-
+  async disconnect() {
+    await this.api.end();
+    this.api = null;
   }
 
 }

@@ -51,7 +51,6 @@ import { SettingsFactoryResetStep2 }      from '../views/settingsViews/SettingsF
 import { SettingsFAQ }                    from "../views/settingsViews/SettingsFAQ";
 import { SettingsLocalizationDebug }      from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                from "../views/settingsViews/dev/SettingsLogging";
-import { SettingsMeshDebug }              from "../views/settingsViews/dev/SettingsMeshDebug";
 import { SettingsMeshOverview }           from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsMeshTopology}            from '../views/settingsViews/SettingsMeshTopology'
 import { SettingsMeshTopologyHelp }       from "../views/settingsViews/SettingsMeshTopologyHelp";
@@ -194,7 +193,6 @@ export const Views = {
   SettingsFactoryResetStep2:         SettingsFactoryResetStep2,
   SettingsLocalizationDebug:         SettingsLocalizationDebug,
   SettingsLogging:                   SettingsLogging,
-  SettingsMeshDebug:                 SettingsMeshDebug,
   SettingsMeshOverview:              SettingsMeshOverview,
   SettingsMeshTopology:              SettingsMeshTopology,
   SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,

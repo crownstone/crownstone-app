@@ -217,7 +217,6 @@ test("BleCommandManager Multiple commands", async () => {
   let { stone: stone5, handle:handle5 } = addStone({meshNetworkId:meshId});
   let { stone: stone6, handle:handle6 } = addStone({meshNetworkId:otherMeshId});
 
-
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [stone1.config.handle]);
   let options2 = getCommandOptions(sphere.id, [stone2.config.handle]);

@@ -12,6 +12,7 @@ export function mockScheduler() {
 }
 
 class MockSchedulerClass {
+  delayPromises = [];
   _callbacks = [];
 
   printCallbacks() {
@@ -53,6 +54,21 @@ class MockSchedulerClass {
         }
       }
     }
+  }
+
+  async triggerDelay(count = 1) {
+    for (let i = 0; i < count; i++) {
+      if (this.delayPromises.length > 0) {
+        this.delayPromises[0]();
+        this.delayPromises.shift()
+      }
+    }
+  }
+
+  delay(ms, label) {
+    return new Promise((resolve, reject) => {
+      this.delayPromises.push(resolve);
+    })
   }
 
   setRepeatingTrigger = jest.fn()

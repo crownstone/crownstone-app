@@ -215,6 +215,7 @@ interface behaviourDebug {
   activeBehaviours    : boolean[]
   activeEndConditions : boolean[]
   behavioursInTimeoutPeriod: boolean[]
+  storedBehaviours    : boolean[]
   presenceProfile_0   : boolean[]
   presenceProfile_1   : boolean[]
   presenceProfile_2   : boolean[]
@@ -377,7 +378,6 @@ interface setupData {
   meshNetworkKey:     string,
   meshApplicationKey: string,
   meshDeviceKey:      string,
-  meshAccessAddress:  string,
   ibeaconUUID:        string,
   ibeaconMajor:       number,
   ibeaconMinor:       number,

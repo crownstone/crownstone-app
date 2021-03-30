@@ -19,14 +19,17 @@ export function evt_ibeacon(rssi: number = -80, handle: string = ACTIVE_HANDLE, 
     sphereId: sphereId
   });
 }
+
 export function evt_connected(handle: string = ACTIVE_HANDLE) {
   // @ts-ignore
   core.nativeBus.emit(NativeBus.topics.connectedToPeripheral, handle);
 }
+
 export function evt_connectionFailed(handle: string = ACTIVE_HANDLE) {
   // @ts-ignore
   core.nativeBus.emit(NativeBus.topics.connectedToPeripheralFailed, handle);
 }
+
 export function evt_disconnected(handle: string = ACTIVE_HANDLE) {
   // @ts-ignore
   core.nativeBus.emit(NativeBus.topics.disconnectedFromPeripheral, handle);

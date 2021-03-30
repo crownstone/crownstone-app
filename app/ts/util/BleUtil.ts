@@ -131,7 +131,7 @@ export const BleUtil = {
     return this._detect(stoneHandle, core.nativeBus.topics.advertisement);
   },
 
-  detectSetupCrownstone: function(stoneHandle) {
+  detectSetupCrownstone: function(stoneHandle) : Promise<void> {
     this.cancelSetupSearch();
     return this._detect(stoneHandle, core.nativeBus.topics.setupAdvertisement);
   },
