@@ -18,7 +18,7 @@ import { LOG } from "../../logging/Log";
 
 export class SessionManagerClass {
 
-  _maxActiveSessions = 1000;
+  _maxActiveSessions = 20;
 
   _sessions: {[handle: string] : Session} = {};
   _activeSessions: {[handle:string] : { connected: boolean }} = {};

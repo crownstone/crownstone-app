@@ -1,5 +1,8 @@
+const SOURCE = '../ios/BridgeFiles/BluenetIntegration.swift';
+const TARGET = '../ios/BridgeObjCFiles/NativeBridge.m'
+
 const fs = require("fs");
-let str = fs.readFileSync('./ios/BridgeFiles/BluenetIntegration.swift','utf-8')
+let str = fs.readFileSync('../ios/BridgeFiles/BluenetIntegration.swift','utf-8')
 
 let strArray = str.split("\n");
 let functions = [];
@@ -44,7 +47,7 @@ function getType(fn, x) {
 
   switch (type) {
     case "NSNumber":
-      result += '(nonnul NSNumber *)'
+      result += '(nonnull NSNumber *)'
       break;
     case "@escaping RCTResponseSenderBlock":
       result += '(RCTResponseSenderBlock)'
@@ -54,6 +57,9 @@ function getType(fn, x) {
       break;
     case "NSDictionary":
       result += '(NSDictionary *)'
+      break;
+    case "[NSNumber]":
+      result += '(NSArray *)'
       break;
     case "[NSDictionary]":
       result += '(NSArray *)'
@@ -90,4 +96,27 @@ functions.forEach((fn) => {
   }
 })
 
-mapped.forEach((x) => { console.log(x) })
+let targetSource = `
+//
+//  NativeBridge.m
+//  Crownstone
+//
+//  Created by Alex de Mulder on 16/03/16.
+//  Copyright © 2016 Facebook. All rights reserved.
+//
+
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
+
+@interface RCT_EXTERN_MODULE(BluenetJS, RCTEventEmitter)
+`
+mapped.forEach((x) => { targetSource += x + "\n" })
+
+targetSource += `
+
++ (BOOL)requiresMainQueueSetup { return YES; }
+@end
+`
+
+fs.writeFileSync(TARGET, targetSource)
+

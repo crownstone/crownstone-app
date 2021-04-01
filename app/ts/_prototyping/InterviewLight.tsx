@@ -150,7 +150,7 @@ export class InterviewLight extends Component<any, any> {
         })
       },
       time: null,
-      image: require("..../assets/images/overlayCircles/time.png")
+      image: require("../../assets/images/overlayCircles/time.png")
     })
   }
 

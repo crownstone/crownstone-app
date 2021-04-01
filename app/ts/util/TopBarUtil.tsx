@@ -143,7 +143,7 @@ function getLeftButton(id, label) {
   if (Platform.OS === 'android') {
     return {
       id: id,
-      icon: require('..../assets/images/icons/backArrow.png'),
+      icon: require('../../assets/images/icons/backArrow.png'),
       showAsAction: 'always',
     }
   }

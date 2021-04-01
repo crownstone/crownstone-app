@@ -15,8 +15,6 @@ const BluenetAPI = {
   startScanningForCrownstones:           () => { console.log("BluenetBridgeCall: startScanningForCrownstones:           "); },
   startScanningForCrownstonesUniqueOnly: () => { console.log("BluenetBridgeCall: startScanningForCrownstonesUniqueOnly: "); },
   stopScanning:             () => { console.log("BluenetBridgeCall: stopDFU:    "); },
-  keepAliveState:           () => { console.log("BluenetBridgeCall: keepAliveState:  "); },
-  keepAlive:                () => { console.log("BluenetBridgeCall: keepAlive:       "); },
   requestBleState:          () => { console.log("BluenetBridgeCall: requestBleState: "); },// Send events "bleStatus" and "locationStatus" with the current state.
 
   startIndoorLocalization:  () => { console.log("BluenetBridgeCall: startIndoorLocalization: "); },
@@ -46,8 +44,6 @@ const BluenetAPI = {
   clearLogs:                () => { console.log("BluenetBridgeCall: clearLogs:             "); },
 
   // mesh
-  meshKeepAlive:            () => { console.log("BluenetBridgeCall: meshKeepAlive:           "); },
-  meshKeepAliveState:       () => { console.log("BluenetBridgeCall: meshKeepAliveState:      "); },
   multiSwitch:              () => { console.log("BluenetBridgeCall: multiSwitch:             "); },
   getHardwareVersion:       () => { console.log("BluenetBridgeCall: getHardwareVersion:      "); },
   getBootloaderVersion:     () => { console.log("BluenetBridgeCall: getBootloaderVersion:    "); },
@@ -59,11 +55,6 @@ const BluenetAPI = {
   meshSetTime:              () => { console.log("BluenetBridgeCall: meshSetTime:             "); },
   batterySaving:            () => { console.log("BluenetBridgeCall: batterySaving:           "); },
   setBackgroundScanning:    () => { console.log("BluenetBridgeCall: setBackgroundScanning:   "); },
-  setSchedule:              () => { console.log("BluenetBridgeCall: setSchedule:             "); },
-  clearSchedule:            () => { console.log("BluenetBridgeCall: clearSchedule:           "); },
-  addSchedule:              () => { console.log("BluenetBridgeCall: addSchedule:             "); },
-  getSchedules:             () => { console.log("BluenetBridgeCall: getSchedules:            "); },
-  getAvailableScheduleEntryIndex: () => { console.log("BluenetBridgeCall: getAvailableScheduleEntryIndex:"); },
 
   viewsInitialized:         () => { console.log("BluenetBridgeCall: viewsInitialized:  "); },
   lockSwitch:               () => { console.log("BluenetBridgeCall: lockSwitch:        "); },
@@ -104,7 +95,6 @@ const BluenetAPI = {
   setSwitchState:              () => { console.log("BluenetBridgeCall: setSwitchState"); },
   isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); },
   clearErrors:                 () => { console.log("BluenetBridgeCall: clearErrors"); },
-  forceClearActiveRegion:      () => { console.log("BluenetBridgeCall: forceClearActiveRegion"); },
   broadcastSwitch:             () => { console.log("BluenetBridgeCall: broadcastSwitch"); },
   addBehaviour:                () => { console.log("BluenetBridgeCall: addBehaviour"); },
   updateBehaviour:             () => { console.log("BluenetBridgeCall: updateBehaviour"); },

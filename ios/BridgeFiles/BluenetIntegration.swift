@@ -223,7 +223,7 @@ open class BluenetJS: RCTEventEmitter {
     callback([["error" : false]])
   }
   
-  @objc func isReady(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+  @objc func isReady(_ callback: @escaping RCTResponseSenderBlock) {
     wrapForBluenet("isReady", callback, GLOBAL_BLUENET.bluenet.isReady())
   }
   
@@ -751,7 +751,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func isDevelopmentEnvironment(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func isDevelopmentEnvironment(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called isDevelopmentEnvironment")
     callback([["error" : false, "data": GLOBAL_BLUENET.devEnvironment ]])
   }
@@ -780,7 +780,7 @@ open class BluenetJS: RCTEventEmitter {
     );
   }
   
-  @objc func canUseDynamicBackgroundBroadcasts(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func canUseDynamicBackgroundBroadcasts(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("canUseDynamicBackgroundBroadcasts", callback, BluenetLib.BroadcastProtocol.useDynamicBackground())
   }
   

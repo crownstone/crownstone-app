@@ -104,101 +104,101 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
       .catch(() => { core.eventBus.emit("disconnect"); })
   },
 
-  getMACAddress:                  (handle: string)           => { return BluenetPromise('getMACAddress');               },
-  setupCrownstone:                (handle: string, dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
-  setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
+  getMACAddress:                  (handle: string)           => { return BluenetPromise('getMACAddress', handle);               },
+  setupCrownstone:                (handle: string, dataObject) => { return BluenetPromise('setupCrownstone', handle, dataObject); },
+  setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets', dataObject); },
   requestLocation:                ()           => { return BluenetPromise('requestLocation');             },
   recover:                        (handle: string)     => { return BluenetPromise('recover', handle);             },                                // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
   finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
-  commandFactoryReset:            (handle: string)           => { return BluenetPromise('commandFactoryReset');         },
+  commandFactoryReset:            (handle: string)           => { return BluenetPromise('commandFactoryReset', handle);         },
 
-  multiSwitch:                    (handle: string, arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
+  multiSwitch:                    (handle: string, arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch', handle, arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 
-  getFirmwareVersion:             (handle: string) => { return BluenetPromise('getFirmwareVersion'); },
-  getBootloaderVersion:           (handle: string) => { return BluenetPromise('getBootloaderVersion'); },
-  setupFactoryReset:              (handle: string) => { return BluenetPromise('setupFactoryReset'); },
-  putInDFU:                       (handle: string) => { return BluenetPromise('putInDFU'); },
+  getFirmwareVersion:             (handle: string) => { return BluenetPromise('getFirmwareVersion', handle); },
+  getBootloaderVersion:           (handle: string) => { return BluenetPromise('getBootloaderVersion', handle); },
+  setupFactoryReset:              (handle: string) => { return BluenetPromise('setupFactoryReset', handle); },
+  putInDFU:                       (handle: string) => { return BluenetPromise('putInDFU', handle); },
   performDFU:                     (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 
-  getHardwareVersion:             (handle: string) => { return BluenetPromise('getHardwareVersion'); },
-  setupPutInDFU:                  (handle: string) => { return BluenetPromise('setupPutInDFU'); },
-  toggleSwitchState:              (handle: string, stateForOn: number) => { return BluenetPromise('toggleSwitchState', stateForOn); }, // stateForOn is a number between 0 and 100. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
+  getHardwareVersion:             (handle: string) => { return BluenetPromise('getHardwareVersion', handle); },
+  setupPutInDFU:                  (handle: string) => { return BluenetPromise('setupPutInDFU', handle); },
+  toggleSwitchState:              (handle: string, stateForOn: number) => { return BluenetPromise('toggleSwitchState', handle, stateForOn); }, // stateForOn is a number between 0 and 100. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
   bootloaderToNormalMode:         (handle: string, ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
 
   //new
-  clearErrors:                    (handle: string, clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
-  restartCrownstone:              (handle: string)     => { return BluenetPromise('restartCrownstone'); },
+  clearErrors:                    (handle: string, clearErrorJSON) => { return BluenetPromise('clearErrors', handle, clearErrorJSON); },
+  restartCrownstone:              (handle: string)     => { return BluenetPromise('restartCrownstone', handle); },
   clearFingerprintsPromise:       ()     => { return BluenetPromise('clearFingerprintsPromise'); },
-  setTime:                        (handle: string, time) => { return BluenetPromise('setTime',time); },
+  setTime:                        (handle: string, time) => { return BluenetPromise('setTime', handle, time); },
   setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId); },
-  meshSetTime:                    (handle: string, time) => { return BluenetPromise('meshSetTime',time); },
-  getTime:                        (handle: string)     => { return BluenetPromise('getTime'); },
+  meshSetTime:                    (handle: string, time) => { return BluenetPromise('meshSetTime', handle, time); },
+  getTime:                        (handle: string)     => { return BluenetPromise('getTime', handle); },
 
-  setSwitchState:                 (handle: string, state) => { return BluenetPromise('setSwitchState', state); },
-  getSwitchState:                 (handle: string) => { return BluenetPromise('getSwitchState'); },
-  lockSwitch:                     (handle: string, lock: boolean)   => { return BluenetPromise('lockSwitch',     lock);  },
-  allowDimming:                   (handle: string, allow : boolean) => { return BluenetPromise('allowDimming',   allow); },
-  setSwitchCraft:                 (handle: string, state : boolean) => { return BluenetPromise('setSwitchCraft', state); },
+  setSwitchState:                 (handle: string, state) => { return BluenetPromise('setSwitchState', handle, state); },
+  getSwitchState:                 (handle: string) => { return BluenetPromise('getSwitchState', handle); },
+  lockSwitch:                     (handle: string, lock: boolean)   => { return BluenetPromise('lockSwitch', handle,     lock);  },
+  allowDimming:                   (handle: string, allow : boolean) => { return BluenetPromise('allowDimming', handle,   allow); },
+  setSwitchCraft:                 (handle: string, state : boolean) => { return BluenetPromise('setSwitchCraft', handle, state); },
 
-  sendNoOp:                       (handle: string) => { return BluenetPromise('sendNoOp'); },
-  sendMeshNoOp:                   (handle: string) => { return BluenetPromise('sendMeshNoOp'); },
+  sendNoOp:                       (handle: string) => { return BluenetPromise('sendNoOp', handle); },
+  sendMeshNoOp:                   (handle: string) => { return BluenetPromise('sendMeshNoOp', handle); },
 
   getTrackingState:               () => { return BluenetPromise('getTrackingState'); },         // return type: trackingState
   isDevelopmentEnvironment:       () => { return BluenetPromise('isDevelopmentEnvironment'); }, // return type: boolean
-  setupPulse:                     (handle: string) => { return BluenetPromise('setupPulse'); },               // return type: void
+  setupPulse:                     (handle: string) => { return BluenetPromise('setupPulse', handle); },               // return type: void
   checkBroadcastAuthorization:    () => { return BluenetPromise('checkBroadcastAuthorization'); },   // return type: string
 
   broadcastSwitch:                (referenceId, stoneId, switchState, autoExecute) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState, autoExecute); },
 
-  addBehaviour:                   (handle: string, behaviour: behaviourTransfer) => { return BluenetPromise('addBehaviour',behaviour) },
-  updateBehaviour:                (handle: string, behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour',behaviour) },
-  removeBehaviour:                (handle: string, index: number)                => { return BluenetPromise('removeBehaviour',index) },
-  getBehaviour:                   (handle: string, index: number)                => { return BluenetPromise('getBehaviour',index) },
+  addBehaviour:                   (handle: string, behaviour: behaviourTransfer) => { return BluenetPromise('addBehaviour', handle, behaviour) },
+  updateBehaviour:                (handle: string, behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour', handle, behaviour) },
+  removeBehaviour:                (handle: string, index: number)                => { return BluenetPromise('removeBehaviour', handle, index) },
+  getBehaviour:                   (handle: string, index: number)                => { return BluenetPromise('getBehaviour', handle, index) },
 
-  setTapToToggle:                 (handle: string, enabled: boolean)             => { return BluenetPromise('setTapToToggle' ,enabled); },
-  setTapToToggleThresholdOffset:  (handle: string, rssiThresholdOffset: number)  => { return BluenetPromise('setTapToToggleThresholdOffset', rssiThresholdOffset); },
-  getTapToToggleThresholdOffset:  (handle: string)                             => { return BluenetPromise('getTapToToggleThresholdOffset'); },
-  setSoftOnSpeed:                 (handle: string, speed: number)                => { return BluenetPromise('setSoftOnSpeed', speed); },
-  getSoftOnSpeed:                 (handle: string)                             => { return BluenetPromise('getSoftOnSpeed'); },
+  setTapToToggle:                 (handle: string, enabled: boolean)             => { return BluenetPromise('setTapToToggle', handle, enabled); },
+  setTapToToggleThresholdOffset:  (handle: string, rssiThresholdOffset: number)  => { return BluenetPromise('setTapToToggleThresholdOffset', handle, rssiThresholdOffset); },
+  getTapToToggleThresholdOffset:  (handle: string)                             => { return BluenetPromise('getTapToToggleThresholdOffset', handle); },
+  setSoftOnSpeed:                 (handle: string, speed: number)                => { return BluenetPromise('setSoftOnSpeed', handle, speed); },
+  getSoftOnSpeed:                 (handle: string)                             => { return BluenetPromise('getSoftOnSpeed', handle); },
 
-  syncBehaviours:                 (handle: string, behaviours: behaviourTransfer[]) => { return BluenetPromise('syncBehaviours', behaviours); },
+  syncBehaviours:                 (handle: string, behaviours: behaviourTransfer[]) => { return BluenetPromise('syncBehaviours', handle, behaviours); },
   getBehaviourMasterHash:         (behaviours: behaviourTransfer[]) => { return BluenetPromise('getBehaviourMasterHash', behaviours); },
   getBehaviourMasterHashCRC:      (behaviours: behaviourTransfer[]) => { return BluenetPromise('getBehaviourMasterHashCRC', behaviours); },
 
   // dev
-  getResetCounter:                (handle: string) => { return BluenetPromise('getResetCounter'); },          // return type: uint16
+  getResetCounter:                (handle: string) => { return BluenetPromise('getResetCounter', handle); },          // return type: uint16
 
-  switchRelay:                    (handle: string, state) => { return BluenetPromise('switchRelay',  state); },  // return type: void
-  switchDimmer:                   (handle: string, state) => { return BluenetPromise('switchDimmer', state); }, // return type: void
+  switchRelay:                    (handle: string, state) => { return BluenetPromise('switchRelay', handle,  state); },  // return type: void
+  switchDimmer:                   (handle: string, state) => { return BluenetPromise('switchDimmer', handle, state); }, // return type: void
 
-  getSwitchcraftThreshold:        (handle: string)        => { return BluenetPromise('getSwitchcraftThreshold')},
-  setSwitchcraftThreshold:        (handle: string, value) => { return BluenetPromise('setSwitchcraftThreshold', value)},
-  getMaxChipTemp:                 (handle: string)        => { return BluenetPromise('getMaxChipTemp')},
-  setMaxChipTemp:                 (handle: string, value) => { return BluenetPromise('setMaxChipTemp', value) },
-  getDimmerCurrentThreshold:      (handle: string)        => { return BluenetPromise('getDimmerCurrentThreshold') },
-  setDimmerCurrentThreshold:      (handle: string, value) => { return BluenetPromise('setDimmerCurrentThreshold', value) },
-  getDimmerTempUpThreshold:       (handle: string)        => { return BluenetPromise('getDimmerTempUpThreshold')},
-  setDimmerTempUpThreshold:       (handle: string, value) => { return BluenetPromise('setDimmerTempUpThreshold', value)},
-  getDimmerTempDownThreshold:     (handle: string)        => { return BluenetPromise('getDimmerTempDownThreshold')},
-  setDimmerTempDownThreshold:     (handle: string, value) => { return BluenetPromise('setDimmerTempDownThreshold', value)},
-  getVoltageZero:                 (handle: string)        => { return BluenetPromise('getVoltageZero')},
-  setVoltageZero:                 (handle: string, value) => { return BluenetPromise('setVoltageZero', value)},
-  getCurrentZero:                 (handle: string)        => { return BluenetPromise('getCurrentZero')},
-  setCurrentZero:                 (handle: string, value) => { return BluenetPromise('setCurrentZero', value)},
-  getPowerZero:                   (handle: string)        => { return BluenetPromise('getPowerZero')},
-  setPowerZero:                   (handle: string, value) => { return BluenetPromise('setPowerZero', value)},
-  getVoltageMultiplier:           (handle: string)        => { return BluenetPromise('getVoltageMultiplier')},
-  setVoltageMultiplier:           (handle: string, value) => { return BluenetPromise('setVoltageMultiplier', value)},
-  getCurrentMultiplier:           (handle: string)        => { return BluenetPromise('getCurrentMultiplier')},
-  setCurrentMultiplier:           (handle: string, value) => { return BluenetPromise('setCurrentMultiplier', value)},
-  setUartState:                   (handle: string, value) => { return BluenetPromise('setUartState', value)},
+  getSwitchcraftThreshold:        (handle: string)        => { return BluenetPromise('getSwitchcraftThreshold', handle)},
+  setSwitchcraftThreshold:        (handle: string, value) => { return BluenetPromise('setSwitchcraftThreshold', handle, value)},
+  getMaxChipTemp:                 (handle: string)        => { return BluenetPromise('getMaxChipTemp', handle)},
+  setMaxChipTemp:                 (handle: string, value) => { return BluenetPromise('setMaxChipTemp', handle, value) },
+  getDimmerCurrentThreshold:      (handle: string)        => { return BluenetPromise('getDimmerCurrentThreshold', handle) },
+  setDimmerCurrentThreshold:      (handle: string, value) => { return BluenetPromise('setDimmerCurrentThreshold', handle, value) },
+  getDimmerTempUpThreshold:       (handle: string)        => { return BluenetPromise('getDimmerTempUpThreshold', handle)},
+  setDimmerTempUpThreshold:       (handle: string, value) => { return BluenetPromise('setDimmerTempUpThreshold', handle, value)},
+  getDimmerTempDownThreshold:     (handle: string)        => { return BluenetPromise('getDimmerTempDownThreshold', handle)},
+  setDimmerTempDownThreshold:     (handle: string, value) => { return BluenetPromise('setDimmerTempDownThreshold', handle, value)},
+  getVoltageZero:                 (handle: string)        => { return BluenetPromise('getVoltageZero', handle)},
+  setVoltageZero:                 (handle: string, value) => { return BluenetPromise('setVoltageZero', handle, value)},
+  getCurrentZero:                 (handle: string)        => { return BluenetPromise('getCurrentZero', handle)},
+  setCurrentZero:                 (handle: string, value) => { return BluenetPromise('setCurrentZero', handle, value)},
+  getPowerZero:                   (handle: string)        => { return BluenetPromise('getPowerZero', handle)},
+  setPowerZero:                   (handle: string, value) => { return BluenetPromise('setPowerZero', handle, value)},
+  getVoltageMultiplier:           (handle: string)        => { return BluenetPromise('getVoltageMultiplier', handle)},
+  setVoltageMultiplier:           (handle: string, value) => { return BluenetPromise('setVoltageMultiplier', handle, value)},
+  getCurrentMultiplier:           (handle: string)        => { return BluenetPromise('getCurrentMultiplier', handle)},
+  setCurrentMultiplier:           (handle: string, value) => { return BluenetPromise('setCurrentMultiplier', handle, value)},
+  setUartState:                   (handle: string, value) => { return BluenetPromise('setUartState', handle, value)},
 
-  getBehaviourDebugInformation:     (handle: string) => { return BluenetPromise('getBehaviourDebugInformation'); },
+  getBehaviourDebugInformation:     (handle: string) => { return BluenetPromise('getBehaviourDebugInformation', handle); },
   canUseDynamicBackgroundBroadcasts:() => { return BluenetPromise('canUseDynamicBackgroundBroadcasts'); },
 
-  turnOnMesh:                     (handle: string, stoneIdList: number[]) => { return BluenetPromise('turnOnMesh', stoneIdList)},
+  turnOnMesh:                     (handle: string, stoneIdList: number[]) => { return BluenetPromise('turnOnMesh', handle, stoneIdList)},
   turnOnBroadcast:                (referenceId, stoneId, autoExecute)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId, autoExecute)},
-  setSunTimesViaConnection:       (handle: string, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
+  setSunTimesViaConnection:       (handle: string, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', handle, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
   broadcastBehaviourSettings:     (referenceId, enabled) => { return BluenetPromise('broadcastBehaviourSettings', referenceId, enabled)},
 
   registerTrackedDevice:          (handle: string,
@@ -209,12 +209,12 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
                                    ignoreForPresence: boolean,
                                    tapToToggleEnabled: boolean,
                                    deviceToken: number,
-                                   ttlMinutes: number) => { return BluenetPromise('registerTrackedDevice', trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
+                                   ttlMinutes: number) => { return BluenetPromise('registerTrackedDevice', handle, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
   trackedDeviceHeartbeat:         (handle: string,
                                    trackingNumber: number,
                                    locationUID: number,
                                    deviceToken: number,
-                                   ttlMinutes: number) => { return BluenetPromise('trackedDeviceHeartbeat', trackingNumber, locationUID, deviceToken, ttlMinutes); },
+                                   ttlMinutes: number) => { return BluenetPromise('trackedDeviceHeartbeat', handle, trackingNumber, locationUID, deviceToken, ttlMinutes); },
 
   broadcastUpdateTrackedDevice:   (referenceId: string,
                                    trackingNumber:number,
@@ -227,18 +227,18 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
                                    ttlMinutes:number) => { return BluenetPromise('broadcastUpdateTrackedDevice', referenceId, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
 
 
-  getCrownstoneUptime:         (handle: string) => { return BluenetPromise('getCrownstoneUptime'); },
+  getCrownstoneUptime:         (handle: string) => { return BluenetPromise('getCrownstoneUptime', handle); },
 
-  getMinSchedulerFreeSpace:    (handle: string) => { return BluenetPromise('getMinSchedulerFreeSpace'); },
-  getLastResetReason:          (handle: string) => { return BluenetPromise('getLastResetReason'); },
-  getGPREGRET:                 (handle: string) => { return BluenetPromise('getGPREGRET'); },
-  getAdcChannelSwaps:          (handle: string) => { return BluenetPromise('getAdcChannelSwaps'); },
+  getMinSchedulerFreeSpace:    (handle: string) => { return BluenetPromise('getMinSchedulerFreeSpace', handle); },
+  getLastResetReason:          (handle: string) => { return BluenetPromise('getLastResetReason', handle); },
+  getGPREGRET:                 (handle: string) => { return BluenetPromise('getGPREGRET', handle); },
+  getAdcChannelSwaps:          (handle: string) => { return BluenetPromise('getAdcChannelSwaps', handle); },
 
-  getAdcRestarts:              (handle: string) => { return BluenetPromise('getAdcRestarts'); },
-  getSwitchHistory:            (handle: string) => { return BluenetPromise('getSwitchHistory'); },
-  getPowerSamples:             (handle: string, type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', type); },
+  getAdcRestarts:              (handle: string) => { return BluenetPromise('getAdcRestarts', handle); },
+  getSwitchHistory:            (handle: string) => { return BluenetPromise('getSwitchHistory', handle); },
+  getPowerSamples:             (handle: string, type: PowersampleDataType) => { return BluenetPromise('getPowerSamples', handle, type); },
 
-  setUartKey:                  (handle: string, uartKey: string)                   => { return BluenetPromise('setUartKey', uartKey); },
+  setUartKey:                  (handle: string, uartKey: string)                   => { return BluenetPromise('setUartKey', handle, uartKey); },
   transferHubTokenAndCloudId:  (handle: string, hubToken: string, cloudId: string) => { return BluenetPromise('transferHubTokenAndCloudId', handle, hubToken, cloudId); },
   requestCloudId:              (handle: string) => { return BluenetPromise('requestCloudId', handle); },
   factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
