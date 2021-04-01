@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* CrownstoneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CrownstoneTests.m */; };
-		464244A439F61FCCBF58C086 /* libPods-CrownstoneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 329D6CD09648D217F0A578FE /* libPods-CrownstoneTests.a */; };
+		444E5C3A9B04D0C48C99B8DA /* libPods-Crownstone-CrownstoneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 783DE2E6853663CE2433D20E /* libPods-Crownstone-CrownstoneTests.a */; };
 		850A944C3A2D722C9FC2489C /* libPods-Crownstone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FAB44A2E262A4A611A047A /* libPods-Crownstone.a */; };
 		FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177CE1FC462F5001C8FD6 /* ErrorTranslator.swift */; };
 		FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D31FC46359001C8FD6 /* Portal.swift */; };
@@ -79,9 +79,9 @@
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FACF15862615DFDE00A9163F /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF15852615DFDE00A9163F /* BluenetBasicLocalization.framework */; };
-		FAD98B0E2614BC9100E46E1B /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B0D2614BC9100E46E1B /* BluenetLib */; };
-		FAD98B442614BE2100E46E1B /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B432614BE2100E46E1B /* BluenetLib */; };
-		FAD98C192614C64700E46E1B /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98C182614C64700E46E1B /* BluenetShared */; };
+		FAD98B0E2614BC9100E46E1B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B0D2614BC9100E46E1B /* SwiftPackageProductDependency */; };
+		FAD98B442614BE2100E46E1B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B432614BE2100E46E1B /* SwiftPackageProductDependency */; };
+		FAD98C192614C64700E46E1B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98C182614C64700E46E1B /* SwiftPackageProductDependency */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -486,7 +486,6 @@
 		2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		2E8AF19E20804D5189EE1623 /* libRNCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCamera.a; sourceTree = "<group>"; };
 		3168EF210533498EAC7B488C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		329D6CD09648D217F0A578FE /* libPods-CrownstoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CrownstoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3624663A3C2E47DF9D040AB4 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		399B9F79E411460EAE31B346 /* libRCTToast.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTToast.a; sourceTree = "<group>"; };
 		46FE7150DB694F9E85D27BFC /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
@@ -499,6 +498,7 @@
 		61260398DBEF4402B146EF80 /* libFastImage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libFastImage.a; sourceTree = "<group>"; };
 		68D2A9283AFF4B7892603493 /* libSplashScreen.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSplashScreen.a; sourceTree = "<group>"; };
 		6F94E04D8F3A48E5ABC73F3E /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		783DE2E6853663CE2433D20E /* libPods-Crownstone-CrownstoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Crownstone-CrownstoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B5E4B7DF9521D26824E2C2 /* Pods-Crownstone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Crownstone.debug.xcconfig"; path = "Target Support Files/Pods-Crownstone/Pods-Crownstone.debug.xcconfig"; sourceTree = "<group>"; };
 		81720DF7A506458AA65323BF /* libRCTImageResizer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTImageResizer.a; sourceTree = "<group>"; };
 		83EED6E7677649159ADF42F7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
@@ -511,7 +511,9 @@
 		B64ABABC89564D0DA2B696F0 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		BB52802436124542B3AD3458 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		BD62BE562BBA4C0CB119E4C6 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		BDA5A0BFFFCD2812375100C3 /* Pods-Crownstone-CrownstoneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Crownstone-CrownstoneTests.debug.xcconfig"; path = "Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1BE5133CF45403FBE811FFB /* ReactNativeNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReactNativeNavigationTests.xctest; sourceTree = "<group>"; };
+		C3C5AC56F42A535AF0B97B5D /* Pods-Crownstone-CrownstoneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Crownstone-CrownstoneTests.release.xcconfig"; path = "Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests.release.xcconfig"; sourceTree = "<group>"; };
 		C4FAB44A2E262A4A611A047A /* libPods-Crownstone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Crownstone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C648D1E337B4439DA8CF7411 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		D3FBDC110CEC4744A6A26FF2 /* libRNSentry.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSentry.a; sourceTree = "<group>"; };
@@ -592,7 +594,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				464244A439F61FCCBF58C086 /* libPods-CrownstoneTests.a in Frameworks */,
+				444E5C3A9B04D0C48C99B8DA /* libPods-Crownstone-CrownstoneTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,11 +614,11 @@
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
 				FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */,
-				FAD98C192614C64700E46E1B /* BluenetShared in Frameworks */,
+				FAD98C192614C64700E46E1B /* BuildFile in Frameworks */,
 				FA274EF72410171B00D7C858 /* libreact-native-keep-awake.a in Frameworks */,
 				FA274EF82410171B00D7C858 /* libreact-native-maps.a in Frameworks */,
 				FA274EF92410171B00D7C858 /* libreact-native-slider.a in Frameworks */,
-				FAD98B0E2614BC9100E46E1B /* BluenetLib in Frameworks */,
+				FAD98B0E2614BC9100E46E1B /* BuildFile in Frameworks */,
 				FA274EFA2410171B00D7C858 /* libreact-native-splash-screen.a in Frameworks */,
 				FA274EFC2410171B00D7C858 /* libReact-RCTAnimation.a in Frameworks */,
 				FA274EFD2410171B00D7C858 /* libReact-RCTBlob.a in Frameworks */,
@@ -654,7 +656,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAD98B442614BE2100E46E1B /* BluenetLib in Frameworks */,
+				FAD98B442614BE2100E46E1B /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,6 +706,8 @@
 				4FBFB746FBF282871D0029B1 /* Pods-Crownstone.release.xcconfig */,
 				2C841AE998235FEF24666BB0 /* Pods-CrownstoneTests.debug.xcconfig */,
 				9DBCF4D056738983A7B9F7FB /* Pods-CrownstoneTests.release.xcconfig */,
+				BDA5A0BFFFCD2812375100C3 /* Pods-Crownstone-CrownstoneTests.debug.xcconfig */,
+				C3C5AC56F42A535AF0B97B5D /* Pods-Crownstone-CrownstoneTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -898,7 +902,7 @@
 				FAD98BAD2614C59C00E46E1B /* UIKit.framework */,
 				FA12B79322450C84003B017E /* JavaScriptCore.framework */,
 				C4FAB44A2E262A4A611A047A /* libPods-Crownstone.a */,
-				329D6CD09648D217F0A578FE /* libPods-CrownstoneTests.a */,
+				783DE2E6853663CE2433D20E /* libPods-Crownstone-CrownstoneTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1003,6 +1007,7 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				ABA8D8946C9C6A499BD1B9F6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1036,8 +1041,8 @@
 			);
 			name = Crownstone;
 			packageProductDependencies = (
-				FAD98B0D2614BC9100E46E1B /* BluenetLib */,
-				FAD98C182614C64700E46E1B /* BluenetShared */,
+				FAD98B0D2614BC9100E46E1B /* SwiftPackageProductDependency */,
+				FAD98C182614C64700E46E1B /* SwiftPackageProductDependency */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1076,7 +1081,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FAD98B432614BE2100E46E1B /* BluenetLib */,
+				FAD98B432614BE2100E46E1B /* SwiftPackageProductDependency */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1136,8 +1141,8 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
-				FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
+				FAD98B0C2614BC9100E46E1B /* RemoteSwiftPackageReference */,
+				FAD98C172614C64700E46E1B /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1632,7 +1637,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CrownstoneTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Crownstone-CrownstoneTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1652,6 +1657,56 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
+		};
+		ABA8D8946C9C6A499BD1B9F6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FA12B7D522450D7F003B017E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1788,7 +1843,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2C841AE998235FEF24666BB0 /* Pods-CrownstoneTests.debug.xcconfig */;
+			baseConfigurationReference = BDA5A0BFFFCD2812375100C3 /* Pods-Crownstone-CrownstoneTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1883,7 +1938,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9DBCF4D056738983A7B9F7FB /* Pods-CrownstoneTests.release.xcconfig */;
+			baseConfigurationReference = C3C5AC56F42A535AF0B97B5D /* Pods-Crownstone-CrownstoneTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -2450,7 +2505,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
+		FAD98B0C2614BC9100E46E1B /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
@@ -2458,7 +2513,7 @@
 				kind = branch;
 			};
 		};
-		FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
+		FAD98C172614C64700E46E1B /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
 			requirement = {
@@ -2469,19 +2524,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FAD98B0D2614BC9100E46E1B /* BluenetLib */ = {
+		FAD98B0D2614BC9100E46E1B /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			package = FAD98B0C2614BC9100E46E1B /* RemoteSwiftPackageReference */;
 			productName = BluenetLib;
 		};
-		FAD98B432614BE2100E46E1B /* BluenetLib */ = {
+		FAD98B432614BE2100E46E1B /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			package = FAD98B0C2614BC9100E46E1B /* RemoteSwiftPackageReference */;
 			productName = BluenetLib;
 		};
-		FAD98C182614C64700E46E1B /* BluenetShared */ = {
+		FAD98C182614C64700E46E1B /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
+			package = FAD98C172614C64700E46E1B /* RemoteSwiftPackageReference */;
 			productName = BluenetShared;
 		};
 /* End XCSwiftPackageProductDependency section */

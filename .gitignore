@@ -65,16 +65,8 @@ app-logs
 Carthage
 
 # ignore all js files since they are compiled
-*.js
-!index.js
-!vis.js
-!./App.js
-!sentrySettings.template.js
-!testRouterEquality.js
-!__tests__/**
-!**.tapetest.js
-!babel.config.js
-./app/js/**
+./app/js/
+__test.js
 
 sentrySettings.js
 sentry.properties
