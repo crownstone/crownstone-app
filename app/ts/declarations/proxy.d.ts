@@ -105,7 +105,7 @@ interface BluenetPromiseWrapperProtocol {
   setUartState(handle: string, value: 0 | 1 | 3)                        : Promise< number >,
   getBehaviourDebugInformation(handle: string)                          : Promise< behaviourDebug >,
 
-  turnOnMesh(handle: string, arrayOfStoneSwitchPackets: any[])          : Promise< void >,
+  turnOnMesh(handle: string, arrayOfStoneIds: number[])                 : Promise< void >,
   turnOnBroadcast(referenceId, stoneId, autoExecute)                    : Promise< void >,
   setSunTimesViaConnection(handle: string, sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 

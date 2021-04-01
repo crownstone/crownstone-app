@@ -7,7 +7,7 @@
 //
 
 import WatchKit
-import BluenetWatch
+import BluenetLib
 
 class SwitchableStone {
     

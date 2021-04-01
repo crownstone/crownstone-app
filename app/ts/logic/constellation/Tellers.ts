@@ -34,6 +34,35 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
   return commander;
 }
 
+
+export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
+  LOGd.constellation("Tellers: Claiming the .", handle);
+
+  let privateId = xUtil.getUUID();
+  let stoneData = MapProvider.stoneHandleMap[handle];
+  let sphereId = null;
+  if (stoneData) {
+    sphereId = stoneData.sphereId;
+  }
+  try {
+    await SessionManager.request(handle, privateId, true, timeoutSeconds);
+  }
+  catch (err) {
+    SessionManager.revokeRequest(handle, privateId);
+    throw err;
+  }
+  let commander = new CommandAPI({
+    commanderId:    privateId,
+    sphereId:       sphereId,
+    commandType:    "DIRECT",
+    commandTargets: [handle],
+    private:        true
+  });
+
+  commander.broker.loadSession(handle);
+  return commander;
+}
+
 /**
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.

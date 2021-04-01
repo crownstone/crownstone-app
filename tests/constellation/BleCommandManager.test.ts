@@ -138,7 +138,7 @@ test("BleCommandManager shared, direct, check a command can be performed", async
   BleCommandManager.performCommand(stone1.config.handle);
 
   expect(mBluenetPromise.has(stone1.config.handle).called.turnOnMesh()).toBeTruthy();
-  expect(mBluenetPromise.for(stone1.config.handle).getArgsFor.turnOnMesh()[1]).toEqual([{crownstoneId: 1, state:100}]);
+  expect(mBluenetPromise.for(stone1.config.handle).getArgsFor.turnOnMesh()[1]).toEqual([1]);
   await mBluenetPromise.for(stone1.config.handle).succeed.turnOnMesh();
 
   expect(BleCommandManager.queue.direct[stone1.config.handle]).toBeUndefined();

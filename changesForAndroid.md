@@ -18,7 +18,7 @@ Add cancelConnectionRequest(handle) bridge method which will fail the connection
 Move to the HERMES engine
 https://reactnative.dev/docs/hermes
 
-Presumably we'll be moving to RN 0.63.4
+Presumably we'll be moving to RN 0.64.0
 
 - add a getBehaviourMasterHashCRC where we get the CRC hash instead of the fletcher hash.
 - This does not mean we will remove the other method.
@@ -29,3 +29,6 @@ Presumably we'll be moving to RN 0.63.4
     crownstoneAdvertisementReceived: "crownstoneAdvertisementReceived",   // data type = crownstoneAdvertisementSummary, this is only the handle. // Any advertisement, verified and unverified from crownstones.
     
 Setup command will no longer receive meshAccessAddress. Hardcode into lib if required for legacy.
+
+Turn on mesh command data changed. It is now a list of stone short ids.
+turnOnMesh(handle: string, arrayOfStoneIds: number[])  

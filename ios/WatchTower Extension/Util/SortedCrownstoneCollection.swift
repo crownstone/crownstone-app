@@ -7,7 +7,7 @@
 //
 
 import WatchKit
-import BluenetWatch
+import BluenetLib
 
 class SortedCrownstoneCollection {
     var items = [String: [String: Any]]()

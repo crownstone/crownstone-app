@@ -254,7 +254,7 @@ open class BluenetJS: RCTEventEmitter {
           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN  connect \(err)"]])
         }
     }
   }
@@ -607,9 +607,9 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  @objc func turnOnMesh(_ handle: String, arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func turnOnMesh(_ handle: String, arrayOfStoneIds: [NSNumber], callback: @escaping RCTResponseSenderBlock) -> Void {
     let handleUUID = UUID(uuidString: handle)
-    wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
+    wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).turnOn(stoneIds: arrayOfStoneIds as! [NSNumber]))
   }
   
   @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, autoExecute: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -826,7 +826,7 @@ open class BluenetJS: RCTEventEmitter {
 
     GLOBAL_BLUENET.bluenetOnUnverified("advertisementData", {data -> Void in
       if let castData = data as? Advertisement {
-        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: {"handle":castData.handle, "rssi": castData.rssi})
+        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: ["handle":castData.handle, "rssi": castData.rssi])
       }
     })
   }

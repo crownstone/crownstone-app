@@ -28,7 +28,7 @@ export class SessionManagerClass {
 
   _timeoutHandlers : {[handle: string] : {[commanderId: string]: { clearCallback: () => void }}} = {};
 
-  blocked = false;
+  _blocked = false;
 
   reset() {
     this._sessions = {};
@@ -42,11 +42,26 @@ export class SessionManagerClass {
   /**
    * This will resolve once the session is connected
    * @param handle
-   * @param privateId
+   * @param commanderId
+   * @param privateSession
    */
   async _createSession(handle: string, commanderId: string, privateSession: boolean) {
     let privateId = privateSession ? commanderId : null;
     this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, privateSession));
+  }
+
+  /**
+   * This will resolve once the session is connected
+   * A claimed session is the only allowed session when the block is enabled.
+   * @param handle
+   * @param commanderId
+   */
+  async claimSession(handle: string, commanderId: string) {
+    if (this._blocked !== true) {
+      throw "SESSION_MANAGER_IS_NOT_BLOCKED";
+    }
+    let privateId = commanderId;
+    this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, true, true));
   }
 
 
@@ -58,11 +73,16 @@ export class SessionManagerClass {
    * @param resolve
    * @param reject
    */
-  _getInteractionModule(handle: string, commanderId: string, privateSession: boolean) : SessionInteractionModule {
+  _getInteractionModule(handle: string, commanderId: string, privateSession: boolean, claimedSession: boolean = false) : SessionInteractionModule {
     let privateId = privateSession ? commanderId : null;
     return {
       canActivate:     () => {
-        return this.blocked === false && Object.keys(this._activeSessions).length <= this._maxActiveSessions;
+        if (claimedSession) {
+          return Object.keys(this._activeSessions).length <= this._maxActiveSessions;
+        }
+        else {
+          return this._blocked === false && Object.keys(this._activeSessions).length <= this._maxActiveSessions;
+        }
       },
       willActivate:    () => { this._activeSessions[handle] = { connected:false }; },
       isDeactivated:   () => { delete this._activeSessions[handle]; },
@@ -345,15 +365,15 @@ export class SessionManagerClass {
     removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
   }
 
-  async pause() {
-    this.blocked = true;
+  async intiateBlock() {
+    this._blocked = true;
 
     let privateSessionsPresent = true;
     let timeWaitedMs = 0;
     let stepMs = 250;
 
     // here we wait for a max of 1 minute for any private sessions to close.
-    // new sessions cannot be started due to the blocked boolean.
+    // new sessions cannot be started due to the _blocked boolean.
     while (privateSessionsPresent && timeWaitedMs < 60000) {
       privateSessionsPresent = false;
       for (let handle in this._activeSessions) {
@@ -391,8 +411,8 @@ export class SessionManagerClass {
     this._activeSessions = {};
   }
 
-  resume() {
-    this.blocked = false;
+  releaseBlock() {
+    this._blocked = false;
   }
 
 }

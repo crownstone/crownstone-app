@@ -4,6 +4,8 @@ import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { core } from "../../core";
 import { StoneUtil } from "../../util/StoneUtil";
 import { delay } from "../../util/Util";
+import { CommandAPI } from "../../logic/constellation/Commander";
+import { Scheduler } from "../../logic/Scheduler";
 
 export class DfuHelper {
   handle : any;
@@ -20,58 +22,41 @@ export class DfuHelper {
     this.stoneId = stoneId;
   }
 
-  putInDFU(crownstoneMode: crownstoneModes) {
-    if (crownstoneMode.dfuMode === true) {
+  async putInDFU(commander: CommandAPI, crownstoneMode: crownstoneModes) : Promise<void> {
+    if (crownstoneMode.dfuMode) {
       LOGi.info("DfuHelper: putInDFU: already in DFU mode!", crownstoneMode);
-      return Promise.resolve();
     }
-
-    let setupPromise = () => {
-      return this._putInDFU(crownstoneMode.setupMode);
-    };
-
-    // we load the DFU into the promise manager with priority so we are not interrupted
-    return BlePromiseManager.registerPriority(setupPromise, {from: 'DFU: setting in dfu mode: ' + this.handle});
+    else {
+      return this._putInDFU(commander, crownstoneMode.setupMode);
+    }
   }
 
-  _putInDFU(stoneIsInSetupMode : boolean) : Promise<void> {
-    return new Promise((resolve, reject) => {
-      BluenetPromiseWrapper.connect(this.handle, this.sphereId)
-        .then(() => {
-          LOG.info("DfuHelper: DFU progress: Connected.");
-          if (stoneIsInSetupMode) {
-            return BluenetPromiseWrapper.setupPutInDFU(this.handle);
-          }
-          else {
-            return BluenetPromiseWrapper.putInDFU(this.handle);
-          }
-        })
-        .then(() => {
-          LOG.info("DfuHelper: DFU progress: Placed in DFU mode.");
-          if (stoneIsInSetupMode) {
-            return BluenetPromiseWrapper.phoneDisconnect(this.handle);
-          }
-          else {
-            return BluenetPromiseWrapper.disconnectCommand(this.handle);
-          }
-        })
-        .then(() => { return delay(3000); })
-        .then(() => { resolve(); })
-        .catch((err) => {
-          LOGe.info("DfuHelper: Error during putInDFU.", err);
-          BluenetPromiseWrapper.phoneDisconnect(this.handle).catch(() => {});
-          reject(err);
-        })
-    })
+  async _putInDFU(commander: CommandAPI, stoneIsInSetupMode : boolean) : Promise<void> {
+    try {
+      if (stoneIsInSetupMode) {
+        await commander.setupPutInDFU();
+      } else {
+        await commander.putInDFU();
+      }
+      LOG.info("DfuHelper: DFU progress: Placed in DFU mode.");
+      await commander.end();
+
+      await Scheduler.delay(3000)
+    }
+    catch (err) {
+      LOGe.info("DfuHelper: Error during putInDFU.", err);
+      commander.end();
+      throw err;
+    }
   }
 
-  restartInAppMode() {
-    let action = () => {
-      LOG.info("DfuHelper: performing bootloaderToNormalMode.");
-      return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle ).then(() => { return delay(1000); });
-    };
-    return BlePromiseManager.registerPriority(action, {from: 'DFU: bootloaderToNormalMode' + this.handle});
-  }
+  // restartInAppMode() {
+  //   let action = () => {
+  //     LOG.info("DfuHelper: performing bootloaderToNormalMode.");
+  //     return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle ).then(() => { return delay(1000); });
+  //   };
+  //   return BlePromiseManager.registerPriority(action, {from: 'DFU: bootloaderToNormalMode' + this.handle});
+  // }
 
   updateBootloader(crownstoneMode: crownstoneModes, bootloaderPath, progressCallback) {
     return this.performUpdate(crownstoneMode, bootloaderPath, progressCallback, 'Bootloader');
@@ -81,36 +66,34 @@ export class DfuHelper {
     return this.performUpdate(crownstoneMode, firmwarePath, progressCallback, 'Firmware');
   }
 
-  performUpdate(crownstoneMode, path, progressCallback, label="Data") {
-    let action = () => {
-      let updateProcess = () => {
-        let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
-          LOGd.info("DfuHelper: DFU event:", data);
-          progressCallback(data.progress*0.01);
-        });
+  performUpdate(crownstoneMode, path, progressCallback, label= "Data") {
+    let updateProcess = () => {
+      let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
+        LOGd.info("DfuHelper: DFU event:", data);
+        progressCallback(data.progress*0.01);
+      });
 
-        LOG.info("DfuHelper: performing " + label + " update.");
-        return BluenetPromiseWrapper.performDFU(this.handle, path)
-          .then(() => { return delay(1500); })
-          .then(() => { unsubscribe(); })
-          .catch((err) => {
-            unsubscribe();
-            BluenetPromiseWrapper.phoneDisconnect(this.handle);
-            throw err;
-          })
-      };
-
-      if (crownstoneMode.dfuMode === false) {
-        return this._putInDFU(crownstoneMode.setupMode)
-          .then(() => { return updateProcess(); })
-      }
-      else {
-        return updateProcess();
-      }
+      LOG.info("DfuHelper: performing " + label + " update.");
+      return BluenetPromiseWrapper.performDFU(this.handle, path)
+        .then(() => { return delay(1500); })
+        .then(() => { unsubscribe(); })
+        .catch((err) => {
+          unsubscribe();
+          BluenetPromiseWrapper.phoneDisconnect(this.handle);
+          throw err;
+        })
     };
+
+    if (crownstoneMode.dfuMode === false) {
+      return this._putInDFU(crownstoneMode, crownstoneMode.setupMode)
+        .then(() => { return updateProcess(); })
+    }
+    else {
+      return updateProcess();
+    }
+
     // we load the DFU into the promise manager with priority so we are not interrupted
     LOG.info("DfuHelper: Scheduling " +label+ " update in promise manager for handle:", this.handle);
-    return BlePromiseManager.registerPriority(action, {from: 'DFU: updating ' + label + this.handle}, 300000); // 5 min timeout
   }
 
 
@@ -150,5 +133,3 @@ export class DfuHelper {
     }
   }
 }
-
-

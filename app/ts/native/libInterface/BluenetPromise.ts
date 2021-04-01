@@ -196,7 +196,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getBehaviourDebugInformation:     (handle: string) => { return BluenetPromise('getBehaviourDebugInformation'); },
   canUseDynamicBackgroundBroadcasts:() => { return BluenetPromise('canUseDynamicBackgroundBroadcasts'); },
 
-  turnOnMesh:                     (handle: string, arrayOfStoneSwitchPackets: any[]) => { return BluenetPromise('turnOnMesh', arrayOfStoneSwitchPackets)},
+  turnOnMesh:                     (handle: string, stoneIdList: number[]) => { return BluenetPromise('turnOnMesh', stoneIdList)},
   turnOnBroadcast:                (referenceId, stoneId, autoExecute)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId, autoExecute)},
   setSunTimesViaConnection:       (handle: string, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
   broadcastBehaviourSettings:     (referenceId, enabled) => { return BluenetPromise('broadcastBehaviourSettings', referenceId, enabled)},

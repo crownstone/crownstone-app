@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -81,6 +81,10 @@
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
+		FACF15862615DFDE00A9163F /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF15852615DFDE00A9163F /* BluenetBasicLocalization.framework */; };
+		FAD98B0E2614BC9100E46E1B /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B0D2614BC9100E46E1B /* BluenetLib */; };
+		FAD98B442614BE2100E46E1B /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98B432614BE2100E46E1B /* BluenetLib */; };
+		FAD98C192614C64700E46E1B /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FAD98C182614C64700E46E1B /* BluenetShared */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -554,6 +558,8 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
+		FACF15852615DFDE00A9163F /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = ExternalFrameworks/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
+		FAD98BAD2614C59C00E46E1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../app/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../app/assets/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
 		FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-LightItalic.ttf"; path = "../app/assets/fonts/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -604,9 +610,11 @@
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
 				FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */,
+				FAD98C192614C64700E46E1B /* BluenetShared in Frameworks */,
 				FA274EF72410171B00D7C858 /* libreact-native-keep-awake.a in Frameworks */,
 				FA274EF82410171B00D7C858 /* libreact-native-maps.a in Frameworks */,
 				FA274EF92410171B00D7C858 /* libreact-native-slider.a in Frameworks */,
+				FAD98B0E2614BC9100E46E1B /* BluenetLib in Frameworks */,
 				FA274EFA2410171B00D7C858 /* libreact-native-splash-screen.a in Frameworks */,
 				FA274EFB2410171B00D7C858 /* libReact-RCTActionSheet.a in Frameworks */,
 				FA274EFC2410171B00D7C858 /* libReact-RCTAnimation.a in Frameworks */,
@@ -625,6 +633,7 @@
 				FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */,
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
+				FACF15862615DFDE00A9163F /* BluenetBasicLocalization.framework in Frameworks */,
 				FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */,
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
 				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
@@ -644,6 +653,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD98B442614BE2100E46E1B /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,6 +718,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				FACF15852615DFDE00A9163F /* BluenetBasicLocalization.framework */,
 				FADC2B2225F7B518000AE5A7 /* Crownstone.ttf */,
 				FADC2B2025F7B518000AE5A7 /* Crownstone2.ttf */,
 				FADC2B1A25F7B518000AE5A7 /* CustomIcons.ttf */,
@@ -882,6 +893,7 @@
 		FA5459D7209B14A80062E4DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAD98BAD2614C59C00E46E1B /* UIKit.framework */,
 				FA12B79322450C84003B017E /* JavaScriptCore.framework */,
 				147C740A2AD631171CA89CC6 /* libPods-Crownstone.a */,
 				629D4A0319D4A3CBF4D5EAAC /* libPods-CrownstoneTests.a */,
@@ -1022,6 +1034,8 @@
 			);
 			name = Crownstone;
 			packageProductDependencies = (
+				FAD98B0D2614BC9100E46E1B /* BluenetLib */,
+				FAD98C182614C64700E46E1B /* BluenetShared */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1059,6 +1073,9 @@
 			dependencies = (
 			);
 			name = "WatchTower Extension";
+			packageProductDependencies = (
+				FAD98B432614BE2100E46E1B /* BluenetLib */,
+			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
@@ -1117,6 +1134,8 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
+				FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
+				FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1590,7 +1609,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
 		};
 		FA12B7D522450D7F003B017E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1615,14 +1634,7 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
-				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
+				"$(SRCROOT)/ExternalFrameworks/BluenetBasicLocalization.framework",
 			);
 			name = "Run Script";
 			outputPaths = (
@@ -1639,10 +1651,6 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/watchOS/PromiseKit.framework",
-				"$(SRCROOT)/Carthage/Build/watchOS/SwiftyJSON.framework",
-				"$(SRCROOT)/Carthage/Build/watchOS/CryptoSwift.framework",
-				"$(SRCROOT)/Carthage/Build/watchOS/BluenetWatch.framework",
 			);
 			outputFileListPaths = (
 			);
@@ -1940,13 +1948,14 @@
 					"$(PROJECT_DIR)",
 					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/",
 					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/",
+					"$(PROJECT_DIR)/ExternalFrameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/@react-native-community/push-notification-ios/ios",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1981,13 +1990,14 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
 					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Release-iphoneos/",
+					"$(PROJECT_DIR)/ExternalFrameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/@react-native-community/push-notification-ios/ios",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2399,6 +2409,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FAD98B0D2614BC9100E46E1B /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			productName = BluenetLib;
+		};
+		FAD98B432614BE2100E46E1B /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAD98B0C2614BC9100E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			productName = BluenetLib;
+		};
+		FAD98C182614C64700E46E1B /* BluenetShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAD98C172614C64700E46E1B /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
+			productName = BluenetShared;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

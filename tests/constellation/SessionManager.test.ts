@@ -318,7 +318,7 @@ test("Session manager being paused with no active sessions. It should block new 
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
   let sessionManager = new SessionManagerClass();
-  await sessionManager.pause()
+  await sessionManager.intiateBlock()
 
   sessionManager.request(handle, "commander", true);
 
@@ -346,7 +346,7 @@ test("Session manager being paused with private connections. These should be awa
   await mBluenetPromise.for(handle).succeed.connect("operation");
 
   let pauseFinished = false;
-  sessionManager.pause().then(() => { pauseFinished = true; })
+  sessionManager.intiateBlock().then(() => { pauseFinished = true; })
 
   await mScheduler.triggerDelay()
   expect(pauseFinished).toBeFalsy();
@@ -381,7 +381,7 @@ test("Session manager being paused with public connections. These should be clos
   let pauseFinished = false;
   expect(sessionManager._sessions[handle].state).toBe("CONNECTED");
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeFalsy();
-  sessionManager.pause().then(() => { pauseFinished = true; })
+  sessionManager.intiateBlock().then(() => { pauseFinished = true; })
 
   expect(pauseFinished).toBeFalsy();
   await mBluenetPromise.for(handle).succeed.disconnectCommand()

@@ -14,7 +14,11 @@ export class Command_TurnOn extends CommandBase implements BroadcastInterface {
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     if (!options) { throw "NO_OPTIONS_PROVIDED"; }
     let stoneSwitchPackets = Executor.aggregateTurnOnCommands(connectedHandle, options.bleCommand, options.queue);
-    return BluenetPromiseWrapper.turnOnMesh(connectedHandle, stoneSwitchPackets);
+    let stoneIdList = [];
+    for (let item of stoneSwitchPackets) {
+      stoneIdList.push(item.crownstoneId);
+    }
+    return BluenetPromiseWrapper.turnOnMesh(connectedHandle, stoneIdList);
   }
 
   async broadcast(bleCommand: BleCommand) {

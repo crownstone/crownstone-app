@@ -8,7 +8,7 @@
 
 import WatchKit
 import WatchConnectivity
-import BluenetWatch
+import BluenetLib
 
 var eventBus        = EventBus()
 var bluenetManager  = BluenetManager()

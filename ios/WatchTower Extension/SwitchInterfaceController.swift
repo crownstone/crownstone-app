@@ -8,7 +8,7 @@
 
 import Foundation
 import WatchKit
-import BluenetWatch
+import BluenetLib
 import WatchConnectivity
 
 
