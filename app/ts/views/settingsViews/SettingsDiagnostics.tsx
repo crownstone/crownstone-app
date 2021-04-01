@@ -53,8 +53,8 @@ export class SettingsDiagnostics extends Component<any, any> {
   }
 
   startInitialTest() {
-    Animated.timing(this.state.leftOffset, {toValue: -screenWidth, duration:300}).start();
-    Animated.timing(this.state.opacity,    {toValue: 0, duration:200}).start();
+    Animated.timing(this.state.leftOffset, {toValue: -screenWidth, useNativeDriver: false, duration:300}).start();
+    Animated.timing(this.state.opacity,    {toValue: 0, useNativeDriver: false, duration:200}).start();
     setTimeout(() => { this.initialTest() }, 200)
   }
 

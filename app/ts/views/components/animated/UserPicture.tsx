@@ -27,15 +27,15 @@ export class UserPicture extends Component<any, any> {
     let animations = [];
     if (this.props.x !== this.x) {
       this.x = this.props.x;
-      animations.push(Animated.timing(this.state.x, {toValue: this.props.x, duration: 300}));
+      animations.push(Animated.timing(this.state.x, {toValue: this.props.x, useNativeDriver: false, duration: 300}));
     }
     if (this.props.y !== this.y) {
       this.y = this.props.y;
-      animations.push(Animated.timing(this.state.y, {toValue: this.props.y, duration: 300}));
+      animations.push(Animated.timing(this.state.y, {toValue: this.props.y, useNativeDriver: false, duration: 300}));
     }
     if (this.props.opacity !== this.opacity) {
       this.opacity = this.props.opacity;
-      animations.push(Animated.timing(this.state.opacity, {toValue: this.props.opacity, duration: 300}));
+      animations.push(Animated.timing(this.state.opacity, {toValue: this.props.opacity, useNativeDriver: false, duration: 300}));
     }
 
     if (animations.length > 0) {
@@ -47,7 +47,7 @@ export class UserPicture extends Component<any, any> {
     if (this.props.opacity !== this.opacity) {
       this.opacity = this.props.opacity;
       if (this.props.disableFadeIn !== true) {
-        Animated.timing(this.state.opacity, {toValue: this.props.opacity, duration: 300}).start();
+        Animated.timing(this.state.opacity, {toValue: this.props.opacity, useNativeDriver: false, duration: 300}).start();
       }
       else {
         this.state.opacity.setValue(this.props.opacity);

@@ -33,9 +33,9 @@ export class NavigationBar extends Component<any, any> {
     // this event makes the background of the device entry blink to incidate the error.
     this.unsubscribe.push(core.eventBus.on('highlight_nav_field', (fieldId) => {
       if (fieldId === this.props.fieldId) {
-        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 50 }).start();
+        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 50, useNativeDriver: false }).start();
         setTimeout(() => {
-          Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 200 }).start();
+          Animated.timing(this.state.backgroundColor, { toValue: 0, useNativeDriver: false, duration: 200 }).start();
         }, 1000);
       }
     }));

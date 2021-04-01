@@ -25,14 +25,14 @@ export class SlideInView extends Component<any, any> {
         Animated.timing(this.state.viewHeight, {
           toValue: (this.props.height || (this.props.style && this.props.style.height)) || 0,
           delay: this.props.delay || 0,
-          duration:this.props.duration || 200
+          duration:this.props.duration || 200, useNativeDriver: false
         }).start();
       }
       else {
         Animated.timing(this.state.viewHeight, {
           toValue: 0,
           delay: this.props.delay || 0,
-          duration: this.props.duration || 200
+          duration: this.props.duration || 200, useNativeDriver: false
         }).start();
       }
       this.visible = this.props.visible;

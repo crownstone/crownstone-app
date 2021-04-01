@@ -444,7 +444,7 @@ export class CrownstoneBatchEntry extends Component<{item: any, value: string, p
 //     let animations = [];
 //     this.state.progress1Width.stopAnimation()
 //     this.state.successIndicatorWidth.setValue(0);
-//     animations.push(Animated.timing(this.state.progress1Width, {toValue: totalProgress * screenWidth, duration: 100}));
+//     animations.push(Animated.timing(this.state.progress1Width, {toValue: totalProgress * screenWidth, useNativeDriver: false, duration: 100}));
 //     Animated.parallel(animations).start();
 //   }
 //

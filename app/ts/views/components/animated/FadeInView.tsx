@@ -38,7 +38,8 @@ export class FadeInView extends Component<any, any> {
           Animated.timing(this.state.viewOpacity, {
             toValue:  this.props.maxOpacity || this.maxOpacity,
             delay:    this.props.delay     || 0,
-            duration: this.props.duration  || defaultDuration
+            duration: this.props.duration  || defaultDuration,
+            useNativeDriver: false
           }).start();
         }, 0);
       }
@@ -46,7 +47,8 @@ export class FadeInView extends Component<any, any> {
         Animated.timing(this.state.viewOpacity, {
           toValue:  0,
           delay:    this.props.hideDelay ? (this.props.delay || 0) : 0,
-          duration: this.props.duration || defaultDuration
+          duration: this.props.duration || defaultDuration,
+          useNativeDriver: false
         }).start();
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
@@ -146,7 +148,8 @@ export class HiddenFadeInBlur extends Component<any, any> {
           Animated.timing(this.state.viewOpacity, {
             toValue:  this.props.maxOpacity || this.maxOpacity,
             delay:    this.props.delay     || 0,
-            duration: this.props.duration  || defaultDuration
+            duration: this.props.duration  || defaultDuration,
+            useNativeDriver: false
           }).start();
         }, 0);
       }
@@ -154,7 +157,8 @@ export class HiddenFadeInBlur extends Component<any, any> {
         Animated.timing(this.state.viewOpacity, {
           toValue:  0,
           delay:    this.props.hideDelay ? (this.props.delay || 0) : 0,
-          duration: this.props.duration || defaultDuration
+          duration: this.props.duration || defaultDuration,
+          useNativeDriver: false
         }).start();
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;

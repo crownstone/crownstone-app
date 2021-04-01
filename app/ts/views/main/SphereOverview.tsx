@@ -241,6 +241,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     let activeSphereId = state.app.activeSphere;
     let backgroundOverride = background.main;
 
+
     LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
@@ -255,7 +256,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
-      backgroundOverride = backgroundOverride.lightBlur;
+      backgroundOverride = background.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
@@ -284,6 +285,8 @@ export class SphereOverview extends LiveComponent<any, any> {
           backgroundOverride = require('../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')
         }
       }
+
+      console.log("rendering", backgroundOverride)
 
       return (
         <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>

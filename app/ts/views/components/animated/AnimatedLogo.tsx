@@ -36,7 +36,7 @@ export class AnimatedLogo extends Component<any, any> {
     // we want a noticeable difference from the old size
     let newSize = this._getNewSize();
 
-    Animated.spring(this.state.size, {toValue: newSize, friction:3}).start();
+    Animated.spring(this.state.size, {toValue: newSize, friction:3, useNativeDriver: false}).start();
 
     this.animationTimeout = setTimeout(() => {this.animate();}, 1250);
   }

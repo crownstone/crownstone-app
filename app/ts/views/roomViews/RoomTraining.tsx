@@ -164,8 +164,8 @@ export class RoomTraining extends LiveComponent<any, any> {
   animatePulse() {
     let newIconIndex = (this.state.iconIndex+1) % 4;
     this.setState({iconIndex: newIconIndex});
-    Animated.timing(this.state.opacity, {toValue: 1, duration:80}).start();
-    setTimeout(() => {Animated.timing(this.state.opacity, {toValue: 0, duration:450}).start();},80);
+    Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration:80}).start();
+    setTimeout(() => {Animated.timing(this.state.opacity, {toValue: 0, useNativeDriver: false, duration:450}).start();},80);
   }
 
   finalizeFingerprint() {

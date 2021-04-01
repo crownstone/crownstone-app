@@ -57,13 +57,13 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     let animations = [];
     this.state.totalProgressWidth.stopAnimation()
     this.state.successIndicatorWidth.setValue(0);
-    animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: totalProgress * screenWidth, duration: 100}));
+    animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: totalProgress * screenWidth, useNativeDriver: false, duration: 100}));
     if (stateData.progress === 0) {
       this.state.phaseProgressWidth.setValue(0);
     }
     else {
       this.state.phaseProgressWidth.stopAnimation()
-      animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: stateData.progress * screenWidth, duration: 100}));
+      animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: stateData.progress * screenWidth, useNativeDriver: false, duration: 100}));
     }
     Animated.parallel(animations).start();
   }
@@ -99,18 +99,18 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         this.setState({isUpdating: false, updateSuccessful: true, updateFailed: false})
         this.props.success(this.state.attempts);
         let animations = [];
-        animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: 0, duration: 400}));
-        animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: 0, duration: 400}));
-        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: screenWidth, duration: 400}));
+        animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: 0, useNativeDriver: false, duration: 400}));
+        animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: 0, useNativeDriver: false, duration: 400}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: screenWidth, useNativeDriver: false, duration: 400}));
         Animated.parallel(animations).start();
       })
       .catch((err) => {
         let attemptCount = this.state.attempts + 1
         this.setState({isUpdating: false, updateSuccessful: false, updateFailed: true, attempts: attemptCount});
         let animations = [];
-        animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: 0, duration: 100}));
-        animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: 0, duration: 100}));
-        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: 0, duration: 100}));
+        animations.push(Animated.timing(this.state.totalProgressWidth, {toValue: 0, useNativeDriver: false, duration: 100}));
+        animations.push(Animated.timing(this.state.phaseProgressWidth, {toValue: 0, useNativeDriver: false, duration: 100}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: 0, useNativeDriver: false, duration: 100}));
         Animated.parallel(animations).start();
 
         let cloudIssue = false;

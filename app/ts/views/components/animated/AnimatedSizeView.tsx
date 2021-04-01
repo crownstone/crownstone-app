@@ -31,7 +31,8 @@ export class AnimatedSizeView extends Component<any, any> {
         Animated.timing(this.state.width, {
           toValue: this.props.width     || 0,
           delay:   this.props.delay    || 0,
-          duration:this.props.duration || 200
+          duration:this.props.duration || 200,
+          useNativeDriver: false
         })
       );
     }
@@ -40,7 +41,8 @@ export class AnimatedSizeView extends Component<any, any> {
         Animated.timing(this.state.height, {
           toValue: this.props.height    || 0,
           delay:   this.props.delay    || 0,
-          duration:this.props.duration || 200
+          duration:this.props.duration || 200,
+          useNativeDriver: false
         })
       );
     }

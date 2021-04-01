@@ -42,7 +42,7 @@ export class AnimatedCircle extends Component<any, any> {
 
     if (change) {
       let newValue = this.value === 0 ? 1 : 0;
-      Animated.timing(this.state.colorPhase, {toValue: newValue, duration: this.props.duration || 300}).start();
+      Animated.timing(this.state.colorPhase, {toValue: newValue, useNativeDriver: false, duration: this.props.duration || 300}).start();
       this.value = newValue;
     }
     return true;

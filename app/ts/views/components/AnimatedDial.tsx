@@ -175,7 +175,7 @@ class AnimatedBlock extends Component<{
       this.visible = this.props.visible;
       this.previousStopIndex = this.props.stopIndex;
 
-      Animated.timing(this.state.opacity, {toValue: this.props.visible ? 1 : 0, delay: delay, duration: this.props.animationSpeed}).start()
+      Animated.timing(this.state.opacity, {toValue: this.props.visible ? 1 : 0, delay: delay, useNativeDriver: false, duration: this.props.animationSpeed}).start()
     }
   }
 

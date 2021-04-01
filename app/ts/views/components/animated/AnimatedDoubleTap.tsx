@@ -60,45 +60,45 @@ export class AnimatedDoubleTap extends Component<any, any> {
     let iconAnimations = [];
     iconAnimations.push(
       Animated.parallel([
-        Animated.timing(this.state.iconOpacity, { toValue: 1, duration: 300}),
-        Animated.timing(this.state.iconTopOffset, { toValue: 0, duration: 300}),
-        Animated.timing(this.state.oneOpacity, { toValue: 1, delay:150, duration: 150}),
+        Animated.timing(this.state.iconOpacity, { toValue: 1, useNativeDriver: false, duration: 300}),
+        Animated.timing(this.state.iconTopOffset, { toValue: 0, useNativeDriver: false, duration: 300}),
+        Animated.timing(this.state.oneOpacity, { toValue: 1, delay:150, useNativeDriver: false, duration: 150}),
       ])
     );
     iconAnimations.push(
       Animated.parallel([
-        Animated.timing(this.state.iconTopOffset, { toValue: 10, duration: 200}),
-        Animated.timing(this.state.oneOpacity, { toValue: 0, delay:150, duration: 50}),
+        Animated.timing(this.state.iconTopOffset, { toValue: 10, useNativeDriver: false, duration: 200}),
+        Animated.timing(this.state.oneOpacity, { toValue: 0, delay:150, useNativeDriver: false, duration: 50}),
       ])
     );
     iconAnimations.push(
       Animated.parallel([
-        Animated.timing(this.state.iconTopOffset, { toValue: 0, duration: 200}),
-        Animated.timing(this.state.twoOpacity, { toValue: 1, delay:50, duration: 150}),
+        Animated.timing(this.state.iconTopOffset, { toValue: 0, useNativeDriver: false, duration: 200}),
+        Animated.timing(this.state.twoOpacity, { toValue: 1, delay:50, useNativeDriver: false, duration: 150}),
       ])
     );
     iconAnimations.push(
       Animated.parallel([
-        Animated.timing(this.state.iconTopOffset, { toValue: 20, duration: 200}),
-        Animated.timing(this.state.iconOpacity, { toValue: 0, duration: 200}),
-        Animated.timing(this.state.twoOpacity, { toValue: 0, duration: 1000}),
+        Animated.timing(this.state.iconTopOffset, { toValue: 20, useNativeDriver: false, duration: 200}),
+        Animated.timing(this.state.iconOpacity, { toValue: 0, useNativeDriver: false, duration: 200}),
+        Animated.timing(this.state.twoOpacity, { toValue: 0, useNativeDriver: false, duration: 1000}),
       ])
     );
 
     let firstTapAnimations = [];
-    firstTapAnimations.push(Animated.timing(this.state.firstTapOpacity, { toValue: 1, delay:200, duration: 50}));
-    firstTapAnimations.push(Animated.timing(this.state.firstTapOpacity, { toValue: 0, delay:100, duration: 500}));
+    firstTapAnimations.push(Animated.timing(this.state.firstTapOpacity, { toValue: 1, delay:200, useNativeDriver: false, duration: 50}));
+    firstTapAnimations.push(Animated.timing(this.state.firstTapOpacity, { toValue: 0, delay:100, useNativeDriver: false, duration: 500}));
 
     let secondTapAnimations = [];
-    secondTapAnimations.push(Animated.timing(this.state.secondTapOpacity, { toValue: 1, delay: 650, duration: 150}));
-    secondTapAnimations.push(Animated.timing(this.state.secondTapOpacity, { toValue: 0, delay: 0, duration: 400}));
+    secondTapAnimations.push(Animated.timing(this.state.secondTapOpacity, { toValue: 1, delay: 650, useNativeDriver: false, duration: 150}));
+    secondTapAnimations.push(Animated.timing(this.state.secondTapOpacity, { toValue: 0, delay: 0, useNativeDriver: false, duration: 400}));
 
     Animated.parallel([
       Animated.sequence(iconAnimations),
       Animated.sequence(firstTapAnimations),
       Animated.sequence(secondTapAnimations),
-      Animated.timing(this.state.firstTapSize,  { toValue: 100, delay:200, duration: 700}),
-      Animated.timing(this.state.secondTapSize, { toValue: 300, delay:650, duration: 700})
+      Animated.timing(this.state.firstTapSize,  { toValue: 100, delay:200, useNativeDriver: false, duration: 700}),
+      Animated.timing(this.state.secondTapSize, { toValue: 300, delay:650, useNativeDriver: false, duration: 700})
     ]).start(() => { this.animating = false; })
 
   }

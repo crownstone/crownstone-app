@@ -71,7 +71,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
       this.state.leftOffset.setValue(offset);
     }
     else {
-      Animated.timing(this.state.leftOffset, {toValue: offset, duration: 400}).start();
+      Animated.timing(this.state.leftOffset, {toValue: offset, useNativeDriver: false, duration: 400}).start();
     }
     this.lastOffset = offset;
 
@@ -179,7 +179,7 @@ export class Network extends Component<any, any> {
   }
 
   componentDidMount() {
-    Animated.timing(this.state.opacity, {toValue: 1, duration: 400}).start();
+    Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 400}).start();
   }
 
   getLineHeight(props) {
@@ -197,7 +197,7 @@ export class Network extends Component<any, any> {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.remove === true) {
-      Animated.timing(this.state.opacity, {toValue: 0, duration: 200}).start();
+      Animated.timing(this.state.opacity, {toValue: 0, useNativeDriver: false, duration: 200}).start();
       return;
     }
 
@@ -207,8 +207,8 @@ export class Network extends Component<any, any> {
     if (currentHeight !== newHeight) {
       let fullHeight = this.getHeight(this.props);
 
-      Animated.timing(this.state.height, {toValue: fullHeight, duration: 400}).start();
-      Animated.timing(this.state.connectionLineHeight, {toValue: newHeight, duration: 400}).start();
+      Animated.timing(this.state.height, {toValue: fullHeight, useNativeDriver: false, duration: 400}).start();
+      Animated.timing(this.state.connectionLineHeight, {toValue: newHeight, useNativeDriver: false, duration: 400}).start();
     }
   }
 

@@ -33,7 +33,7 @@ export class SwitchBar extends Component<any, any> {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.experimental !== this.props.experimental) {
       if (this.props.experimental === true) {
-        Animated.timing(this.state.opacity, {toValue: 1, duration: 200}).start();
+        Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 200}).start();
         this.loop()
       }
       else {
@@ -55,9 +55,9 @@ export class SwitchBar extends Component<any, any> {
   loop() {
     this.animationAllowed = true;
     let duration = 20000;
-    Animated.timing(this.state.leftPos, {toValue: screenWidth - 540 - 50, duration: duration}).start(() => {
+    Animated.timing(this.state.leftPos, {toValue: screenWidth - 540 - 50, useNativeDriver: false, duration: duration}).start(() => {
       if (this.animationAllowed) {
-        Animated.timing(this.state.leftPos, {toValue: 20, duration: duration}).start(() => {
+        Animated.timing(this.state.leftPos, {toValue: 20, useNativeDriver: false, duration: duration}).start(() => {
           if (this.animationAllowed) {
             this.loop()
           }

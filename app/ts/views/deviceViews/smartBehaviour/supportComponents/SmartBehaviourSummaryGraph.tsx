@@ -111,15 +111,15 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     if (this.explanationVisible) {
       // hide
       let animations = [];
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, useNativeDriver: false, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  duration:200, useNativeDriver: false}));
       Animated.parallel(animations).start(() => { this.explanationVisible = false; });
     }
     else {
       // show
       let animations = [];
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          delay:10, useNativeDriver: false, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, delay:0,  duration:200, useNativeDriver: false}));
       Animated.parallel(animations).start(() => { this.explanationVisible = true; });
     }
   }
@@ -260,17 +260,17 @@ class TimeSelector extends Component<any, any> {
     if (this.explanationVisible) {
       // hide
       let animations = [];
-      animations.push(Animated.timing(this.state.timeOpacity,        {toValue: 1, delay:50, duration:200}));
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.timeOpacity,        {toValue: 1, delay:50, useNativeDriver: false, duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, useNativeDriver: false, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  useNativeDriver: false, duration:200}));
       Animated.parallel(animations).start(() => { this.explanationVisible = false; });
     }
     else {
       // show
       let animations = [];
-      animations.push(Animated.timing(this.state.timeOpacity,        {toValue: 0.2,        delay:50,  duration:200}));
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.timeOpacity,        {toValue: 0.2,        useNativeDriver: false, delay:50, duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          useNativeDriver: false, delay:10, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, useNativeDriver: false, delay:0,  duration:200}));
       Animated.parallel(animations).start(() => { this.explanationVisible = true; });
     }
   }
@@ -330,15 +330,15 @@ class DayNightIndicator extends Component<any, any> {
     if (this.explanationVisible) {
       // hide
       let animations = [];
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 0, delay:10, useNativeDriver: false, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: 0, delay:0,  useNativeDriver: false, duration:200}));
       Animated.parallel(animations).start(() => { this.explanationVisible = false; });
     }
     else {
       // show
       let animations = [];
-      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          delay:10, duration:200}));
-      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, delay:0,  duration:200}));
+      animations.push(Animated.timing(this.state.explanationOpacity, {toValue: 1,          useNativeDriver: false, delay:10, duration:200}));
+      animations.push(Animated.timing(this.state.explanationWidth,   {toValue: this.width, useNativeDriver: false, delay:0,  duration:200}));
       Animated.parallel(animations).start(() => { this.explanationVisible = true; });
     }
   }

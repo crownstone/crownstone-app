@@ -74,8 +74,8 @@
 //     let switchState = stone.state.state;
 //
 //     let animations = [];
-//     animations.push(Animated.timing(this.state.offsetLeft,  {toValue: 0.01*switchState*RANGE+PADDING_LEFT, duration:150}));
-//     animations.push(Animated.timing(this.state.whiteMaskWidth,  {toValue: (1-0.01*switchState)*screenWidth, duration:150}));
+//     animations.push(Animated.timing(this.state.offsetLeft,  {toValue: 0.01*switchState*RANGE+PADDING_LEFT, useNativeDriver: false, duration:150}));
+//     animations.push(Animated.timing(this.state.whiteMaskWidth,  {toValue: (1-0.01*switchState)*screenWidth, useNativeDriver: false, duration:150}));
 //     Animated.parallel(animations).start();
 //
 //     if (state.app.hasSeenSwitchOverview === false) {
@@ -151,8 +151,8 @@
 //           }
 //
 //           let animations = [];
-//           animations.push(Animated.timing(this.state.offsetLeft,  {toValue: 0.01*switchState*RANGE+PADDING_LEFT, duration:150}));
-//           animations.push(Animated.timing(this.state.whiteMaskWidth,  {toValue: (1-0.01*switchState)*screenWidth, duration:150}));
+//           animations.push(Animated.timing(this.state.offsetLeft,  {toValue: 0.01*switchState*RANGE+PADDING_LEFT, useNativeDriver: false, duration:150}));
+//           animations.push(Animated.timing(this.state.whiteMaskWidth,  {toValue: (1-0.01*switchState)*screenWidth, useNativeDriver: false, duration:150}));
 //           Animated.parallel(animations).start(() => { this.setState({ percentage: switchState }) });
 //         }
 //       },

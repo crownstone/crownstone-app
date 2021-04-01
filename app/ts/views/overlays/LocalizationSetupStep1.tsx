@@ -121,26 +121,26 @@ export class LocalizationSetupStep1 extends Component<any, any> {
       this.setState({bigHouseSize: this.state.bigHouseSize + 0.01*this.w})
     });
     let animations = [];
-    animations.push(Animated.timing(this.state.homeOpacity, {toValue: 1, duration: 4*duration}));
+    animations.push(Animated.timing(this.state.homeOpacity, {toValue: 1, useNativeDriver: false, duration: 4*duration}));
     let c1 = [
-      Animated.timing(this.state.c1_left,    {toValue: this.targets.c1_left, duration: duration}),
-      Animated.timing(this.state.c1_top,     {toValue: this.targets.c1_top, duration: duration}),
-      Animated.timing(this.state.c1_opacity, {toValue: 1, duration: duration})
+      Animated.timing(this.state.c1_left,    {toValue: this.targets.c1_left, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c1_top,     {toValue: this.targets.c1_top, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c1_opacity, {toValue: 1, useNativeDriver: false, duration: duration})
     ];
     let c2 = [
-      Animated.timing(this.state.c2_left,    {toValue: this.targets.c2_left, duration: duration}),
-      Animated.timing(this.state.c2_top,     {toValue: this.targets.c2_top, duration: duration}),
-      Animated.timing(this.state.c2_opacity, {toValue: 1, duration: duration}),
+      Animated.timing(this.state.c2_left,    {toValue: this.targets.c2_left, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c2_top,     {toValue: this.targets.c2_top, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c2_opacity, {toValue: 1, useNativeDriver: false, duration: duration}),
     ];
     let c3 = [
-      Animated.timing(this.state.c3_left,    {toValue: this.targets.c3_left, duration: duration}),
-      Animated.timing(this.state.c3_top,     {toValue: this.targets.c3_top, duration: duration}),
-      Animated.timing(this.state.c3_opacity, {toValue: 1, duration: duration}),
+      Animated.timing(this.state.c3_left,    {toValue: this.targets.c3_left, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c3_top,     {toValue: this.targets.c3_top, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c3_opacity, {toValue: 1, useNativeDriver: false, duration: duration}),
     ];
     let c4 = [
-      Animated.timing(this.state.c4_left,    {toValue: this.targets.c4_left, duration: duration}),
-      Animated.timing(this.state.c4_top,     {toValue: this.targets.c4_top, duration: duration}),
-      Animated.timing(this.state.c4_opacity, {toValue: 1, duration: duration}),
+      Animated.timing(this.state.c4_left,    {toValue: this.targets.c4_left, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c4_top,     {toValue: this.targets.c4_top, useNativeDriver: false, duration: duration}),
+      Animated.timing(this.state.c4_opacity, {toValue: 1, useNativeDriver: false, duration: duration}),
     ];
 
     animations.push(Animated.parallel(c1));
@@ -158,29 +158,29 @@ export class LocalizationSetupStep1 extends Component<any, any> {
           this.setState({outerCircleAmount: 0, innerCirclesAmount: 0});
           let animations2 = [];
           let c1 = [
-            Animated.timing(this.state.c1_left,    {toValue: this.targets2.c1_left, duration: 1.25*duration}),
-            Animated.timing(this.state.c1_top,     {toValue: this.targets2.c1_top,  duration: 1.25*duration}),
+            Animated.timing(this.state.c1_left,    {toValue: this.targets2.c1_left, useNativeDriver: false, duration: 1.25*duration}),
+            Animated.timing(this.state.c1_top,     {toValue: this.targets2.c1_top,  useNativeDriver: false, duration: 1.25*duration}),
           ];
           let c2 = [
-            Animated.timing(this.state.c2_left,    {toValue: this.targets2.c2_left, duration: duration}),
-            Animated.timing(this.state.c2_top,     {toValue: this.targets2.c2_top,  duration: duration}),
-            Animated.timing(this.state.homeOpacity, {toValue: 0, duration: duration}),
-            Animated.timing(this.state.smallHomeOpacity, {toValue: 1, duration: 0.5*duration}),
+            Animated.timing(this.state.c2_left,    {toValue: this.targets2.c2_left, useNativeDriver: false, duration: duration}),
+            Animated.timing(this.state.c2_top,     {toValue: this.targets2.c2_top,  useNativeDriver: false,  duration: duration}),
+            Animated.timing(this.state.homeOpacity, {toValue: 0, useNativeDriver: false, duration: duration}),
+            Animated.timing(this.state.smallHomeOpacity, {toValue: 1, useNativeDriver: false, duration: 0.5*duration}),
           ];
           let c3 = [
-            Animated.timing(this.state.c3_left,    {toValue: this.targets2.c3_left, duration: 0.75*duration}),
-            Animated.timing(this.state.c3_top,     {toValue: this.targets2.c3_top,  duration: 0.75*duration}),
+            Animated.timing(this.state.c3_left,    {toValue: this.targets2.c3_left, useNativeDriver: false, duration: 0.75*duration}),
+            Animated.timing(this.state.c3_top,     {toValue: this.targets2.c3_top,  useNativeDriver: false,  duration: 0.75*duration}),
           ];
           let c4 = [
-            Animated.timing(this.state.c4_left,    {toValue: this.targets2.c4_left, duration: 0.5*duration}),
-            Animated.timing(this.state.c4_top,     {toValue: this.targets2.c4_top,  duration: 0.5*duration}),
+            Animated.timing(this.state.c4_left,    {toValue: this.targets2.c4_left, useNativeDriver: false, duration: 0.5*duration}),
+            Animated.timing(this.state.c4_top,     {toValue: this.targets2.c4_top,  useNativeDriver: false, duration: 0.5*duration}),
           ];
 
           animations2.push(Animated.parallel(c1));
           animations2.push(Animated.parallel(c2));
           animations2.push(Animated.parallel(c3));
           animations2.push(Animated.parallel(c4));
-          animations2.push(Animated.timing(this.state.textOpacity, {toValue: 1, duration: 0.75*duration}));
+          animations2.push(Animated.timing(this.state.textOpacity, {toValue: 1, useNativeDriver: false, duration: 0.75*duration}));
 
           Animated.sequence(animations2).start();
         }

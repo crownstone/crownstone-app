@@ -312,12 +312,12 @@ export class ForceDirectedView extends Component<{
               }
             }
             else {
-              return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
+              return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
             }
           }
           else {
             this._clearTap();
-            return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
+            return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
           }
         }
         else {
@@ -333,7 +333,7 @@ export class ForceDirectedView extends Component<{
             this._initialDistance = distance;
 
             this.state.scale.setValue(this._currentScale);
-            return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
+            return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
           }
         }
       },
@@ -357,7 +357,7 @@ export class ForceDirectedView extends Component<{
           if (gestureState.vx !== 0 || gestureState.vy !== 0) {
             Animated.decay(this.state.pan, {
               velocity: {x: gestureState.vx, y: gestureState.vy},
-              deceleration: 0.99
+              deceleration: 0.99, useNativeDriver: false
             }).start(() => {
               this._panOffset.x = this._currentPan.x;
               this._panOffset.y = this._currentPan.y;
@@ -431,10 +431,10 @@ export class ForceDirectedView extends Component<{
         }
 
         if (this._currentScale > this._maxScale) {
-          Animated.spring(this.state.scale, { toValue: this._maxScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._maxScale; });
+          Animated.spring(this.state.scale, { toValue: this._maxScale, friction: 7, tension: 70, useNativeDriver: false }).start(() => { this._currentScale = this._maxScale; });
         }
         else if (this._currentScale < this._minScale) {
-          Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._minScale; });
+          Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70, useNativeDriver: false }).start(() => { this._currentScale = this._minScale; });
         }
 
 
@@ -550,15 +550,15 @@ export class ForceDirectedView extends Component<{
     // batch animations together.
     let animations = [];
     if (fadeIn) {
-      animations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 600}));
+      animations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 600}));
     }
     else {
       // fallback in case the transparency is not perfectly set due to animation race conditions.
-      animations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 0}));
+      animations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 0}));
     }
 
-    animations.push(Animated.timing(this.state.scale, { toValue: this.boundingBoxData.requiredScale, duration:600}));
-    animations.push(Animated.timing(this.state.pan, { toValue: {x: offsetRequired.x, y: offsetRequired.y}, duration:600}));
+    animations.push(Animated.timing(this.state.scale, { toValue: this.boundingBoxData.requiredScale, useNativeDriver: false, duration:600}));
+    animations.push(Animated.timing(this.state.pan, { toValue: {x: offsetRequired.x, y: offsetRequired.y}, useNativeDriver: false, duration:600}));
     Animated.parallel(animations).start(() => {
       this._panOffset.x += offsetRequired.x;
       this._panOffset.y += offsetRequired.y;

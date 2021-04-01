@@ -69,17 +69,17 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
   switchImages() {
     if (this.lookingForCrownstone === true) {
       this.setState({text:lang("Attempting_to_reset_Crown"),});
-      Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
+      Animated.timing(this.state.fade1, {toValue: 0, useNativeDriver: false, duration: 200}).start();
       setTimeout(() => {
-        Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();
+        Animated.timing(this.state.fade2, {toValue: 1, useNativeDriver: false, duration: 200}).start();
       }, 150);
       this.lookingForCrownstone = false;
     }
     else {
       this.setState({text:lang("Looking_for_Crownstones_ne")});
-      Animated.timing(this.state.fade2, {toValue: 0, duration: 200}).start();
+      Animated.timing(this.state.fade2, {toValue: 0, useNativeDriver: false, duration: 200}).start();
       setTimeout(() => {
-        Animated.timing(this.state.fade1, {toValue: 1, duration: 200}).start();
+        Animated.timing(this.state.fade1, {toValue: 1, useNativeDriver: false, duration: 200}).start();
       }, 150);
       this.lookingForCrownstone = true;
     }

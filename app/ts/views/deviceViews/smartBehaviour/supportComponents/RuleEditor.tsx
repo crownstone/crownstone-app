@@ -227,11 +227,11 @@ export class RuleEditor extends LiveComponent<
       let animation = [];
       this.setState({detail: selectedBehaviourType, selectedDetailField: null});
       this.state.detailHeight.setValue(behaviourHeight);
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, duration: 100}));
-      animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, duration: 100}));
-      animation.push(Animated.timing(this.state.containerHeight  , {toValue: behaviourHeight, delay: 0, duration: 200}));
-      animation.push(Animated.timing(this.state.mainBottomHeight  ,{toValue: behaviourHeight, delay: 0, duration: 200}));
-      // animation.push(Animated.timing(this.state.mainBottomHeight,{toValue: originalHeight, delay: 0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, useNativeDriver: false, duration: 100}));
+      animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, useNativeDriver: false, duration: 100}));
+      animation.push(Animated.timing(this.state.containerHeight  , {toValue: behaviourHeight, delay: 0, useNativeDriver: false, duration: 200}));
+      animation.push(Animated.timing(this.state.mainBottomHeight  ,{toValue: behaviourHeight, delay: 0, useNativeDriver: false, duration: 200}));
+      // animation.push(Animated.timing(this.state.mainBottomHeight,{toValue: originalHeight, delay: 0, useNativeDriver: false, duration: 200}));
       Animated.parallel(animation).start(() => { this.state.mainBottomHeight.setValue(0) })
     }
     else if (selectedBehaviourType === null) {
@@ -241,22 +241,22 @@ export class RuleEditor extends LiveComponent<
         baseHeight = this.baseHeight + this._shouldShowSuggestions().amountOfSuggestions * 25;
       }
       this.state.mainBottomHeight.setValue(baseHeight);
-      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 100}));
-      animation.push(Animated.timing(this.state.mainBottomOpacity,{toValue:1, delay:100, duration: 100}));
-      animation.push(Animated.timing(this.state.containerHeight,  {toValue: baseHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailHeight,     {toValue: baseHeight, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, useNativeDriver: false, duration: 100}));
+      animation.push(Animated.timing(this.state.mainBottomOpacity,{toValue:1, delay:100, useNativeDriver: false, duration: 100}));
+      animation.push(Animated.timing(this.state.containerHeight,  {toValue: baseHeight, delay:0, useNativeDriver: false, duration: 200}));
+      animation.push(Animated.timing(this.state.detailHeight,     {toValue: baseHeight, delay:0, useNativeDriver: false, duration: 200}));
       Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType, selectedDetailField: null}); })
     }
     else {
       // changing between selected behaviour types, fade out, and fadein
       let animation = [];
-      animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}));
+      animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, useNativeDriver: false, duration: 200}));
+      animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, useNativeDriver: false, duration: 200}));
+      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, useNativeDriver: false, duration: 150}));
       Animated.parallel(animation).start(() => {
         this.setState({detail: selectedBehaviourType, selectedDetailField: null}, () => {
           let animation = [];
-          animation.push(Animated.timing(this.state.detailOpacity,{toValue:1, delay:0, duration: 150}));
+          animation.push(Animated.timing(this.state.detailOpacity,{toValue:1, delay:0, useNativeDriver: false, duration: 150}));
           Animated.parallel(animation).start()
         })
       })

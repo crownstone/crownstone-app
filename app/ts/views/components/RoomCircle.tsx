@@ -261,8 +261,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.scaledUp = true;
 
     let tapAnimations = [];
-    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
-    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, duration: 100}));
+    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
+    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
     Animated.parallel(tapAnimations).start();
 
     this.touching = true;
@@ -270,7 +270,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   _onHoldAnimation() {
-    Animated.timing(this.state.opacity, {toValue: 1, duration: 100}).start(() => { this._onHoldProgress() })
+    Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}).start(() => { this._onHoldProgress() })
   }
 
   _onHoldProgress() {
@@ -304,8 +304,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       this.scaledUp = false;
 
       let revertAnimations = [];
-      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
-      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
       Animated.parallel(revertAnimations).start();
     }
 
@@ -321,8 +321,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.scaledUp = false;
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, useNativeDriver: false, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
     Animated.parallel(revertAnimations).start();
 
     this._clearHold();

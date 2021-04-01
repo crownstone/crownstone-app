@@ -43,7 +43,7 @@ export class AnimatedScaledImage extends Component<{
 
     if (change) {
       let newValue = this.value === 0 ? 1 : 0;
-      Animated.timing(this.state.fade, {toValue: newValue, duration: this.props.duration || 500}).start();
+      Animated.timing(this.state.fade, {toValue: newValue, useNativeDriver: false, duration: this.props.duration || 500}).start();
       this.value = newValue;
     }
   }

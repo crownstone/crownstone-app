@@ -30,22 +30,24 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
           toValue:  1,
           delay:    delay + 0.2*duration,
           duration: duration,
+          useNativeDriver: false
         }));
         animations.push(Animated.timing(this.state.viewHeight, {
           toValue:  height,
           delay:    delay,
-          duration: duration
+          duration: duration,
+          useNativeDriver: false
         }))
       }
       else {
-        animations.push(Animated.timing(this.state.viewOpacity, {toValue: 0, delay:delay, duration:duration}));
-        animations.push(Animated.timing(this.state.viewHeight,  {toValue: 0, delay:delay, duration:duration}));
+        animations.push(Animated.timing(this.state.viewOpacity, {toValue: 0, delay:delay, useNativeDriver: false, duration:duration}));
+        animations.push(Animated.timing(this.state.viewHeight,  {toValue: 0, delay:delay, useNativeDriver: false, duration:duration}));
       }
       Animated.parallel(animations).start();
       this.visible = this.props.visible;
     }
     else if (this.visible && this.height !== height) {
-      Animated.timing(this.state.viewHeight, {toValue: height, delay: delay, duration: duration }).start(() => { this.height = height; })
+      Animated.timing(this.state.viewHeight, {toValue: height, delay: delay, useNativeDriver: false, duration: duration }).start(() => { this.height = height; })
     }
   }
 
@@ -85,22 +87,24 @@ export class SlideSideFadeInView extends Component<{visible, width, delay?, dura
           toValue:  1,
           delay:    delay + 0.2*duration,
           duration: duration,
+          useNativeDriver: false
         }));
         animations.push(Animated.timing(this.state.viewWidth, {
           toValue:  width,
           delay:    delay,
-          duration: duration
+          duration: duration,
+          useNativeDriver: false
         }))
       }
       else {
-        animations.push(Animated.timing(this.state.viewOpacity, {toValue: 0, delay:delay, duration:duration}));
-        animations.push(Animated.timing(this.state.viewWidth,   {toValue: 0, delay:delay, duration:duration}));
+        animations.push(Animated.timing(this.state.viewOpacity, {toValue: 0, delay:delay, useNativeDriver: false, duration:duration}));
+        animations.push(Animated.timing(this.state.viewWidth,   {toValue: 0, delay:delay, useNativeDriver: false, duration:duration}));
       }
       Animated.parallel(animations).start();
       this.visible = this.props.visible;
     }
     else if (this.visible && this.width !== width) {
-      Animated.timing(this.state.viewWidth, {toValue: width, delay: delay, duration: duration }).start(() => { this.width = width; })
+      Animated.timing(this.state.viewWidth, {toValue: width, delay: delay, useNativeDriver: false, duration: duration }).start(() => { this.width = width; })
     }
   }
 

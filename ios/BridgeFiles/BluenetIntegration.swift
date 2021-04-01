@@ -227,7 +227,7 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("isReady", callback, GLOBAL_BLUENET.bluenet.isReady())
   }
   
-  @objc func isPeripheralReady(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+  @objc func isPeripheralReady(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called isPeripheralReady")
     GLOBAL_BLUENET.bluenet.isPeripheralReady()
       .done{_ -> Void in

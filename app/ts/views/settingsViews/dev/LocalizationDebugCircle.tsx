@@ -202,8 +202,8 @@ class LocalizationDebugCircleClass extends Component<any, any> {
     this.state.opacity.stopAnimation();
 
     let tapAnimations = [];
-    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
-    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, duration: 100}));
+    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, useNativeDriver: false, friction: 4, tension: 70 }));
+    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
     Animated.parallel(tapAnimations).start();
   }
 
@@ -213,8 +213,8 @@ class LocalizationDebugCircleClass extends Component<any, any> {
     this.state.opacity.stopAnimation();
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
     Animated.parallel(revertAnimations).start();
   }
 
@@ -224,8 +224,8 @@ class LocalizationDebugCircleClass extends Component<any, any> {
     this.state.opacity.stopAnimation();
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
     Animated.parallel(revertAnimations).start();
   }
 

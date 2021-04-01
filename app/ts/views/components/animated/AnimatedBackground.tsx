@@ -67,7 +67,7 @@ export class AnimatedBackground extends Component<{
     }
     if (imageChanged) {
       let newValue = this.backgroundOpacity === 0 ? 1 : 0;
-      Animated.timing(this.state.fade, {toValue: newValue, duration: nextProps.duration || 500}).start();
+      Animated.timing(this.state.fade, {toValue: newValue, useNativeDriver: false, duration: nextProps.duration || 500}).start();
       this.backgroundOpacity = newValue;
     }
     return true

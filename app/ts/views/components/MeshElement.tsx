@@ -86,8 +86,8 @@ class MeshElementClass extends LiveComponent<any, any> {
     if (this.reachable === true) {
       let animations = [];
       this.state.pulse.stopAnimation();
-      animations.push(Animated.timing(this.state.pulse, { toValue: 1, duration: 50 }));
-      animations.push(Animated.timing(this.state.pulse, { toValue: 0, duration: 250 }));
+      animations.push(Animated.timing(this.state.pulse, { toValue: 1, useNativeDriver: false, duration: 50 }));
+      animations.push(Animated.timing(this.state.pulse, { toValue: 0, useNativeDriver: false, duration: 250 }));
       Animated.sequence(animations).start();
 
       this.delayUnreachable();
@@ -130,7 +130,7 @@ class MeshElementClass extends LiveComponent<any, any> {
       this.state.pulse.stopAnimation();
 
       let animations = [];
-      animations.push(Animated.timing(this.state.pulse, {toValue: 0, duration: 600}));
+      animations.push(Animated.timing(this.state.pulse, {toValue: 0, useNativeDriver: false, duration: 600}));
       Animated.parallel(animations).start();
     }
   }
@@ -259,12 +259,12 @@ lang("_Update_Required__The_fir_body"),
     }
 
     let tapAnimations = [];
-    tapAnimations.push(Animated.spring(this.state.scale,      { toValue: 1.35, friction: 4, tension: 70 }));
-    tapAnimations.push(Animated.timing(this.state.locationX,  { toValue: 0.8*offset, duration: 300}));
-    tapAnimations.push(Animated.timing(this.state.locationY,  { toValue: offset, duration: 300}));
-    tapAnimations.push(Animated.timing(this.state.opacity,    { toValue: 1, duration: 300}));
-    tapAnimations.push(Animated.timing(this.state.width,      { toValue: 3.5*this.props.radius + 0.5*screenWidth, duration: 300}));
-    tapAnimations.push(Animated.timing(this.state.height,     { toValue: 3.5*this.props.radius, duration: 300}));
+    tapAnimations.push(Animated.spring(this.state.scale,      { toValue: 1.35, friction: 4, tension: 70, useNativeDriver: false}));
+    tapAnimations.push(Animated.timing(this.state.locationX,  { toValue: 0.8*offset, useNativeDriver: false, duration: 300}));
+    tapAnimations.push(Animated.timing(this.state.locationY,  { toValue: offset, useNativeDriver: false, duration: 300}));
+    tapAnimations.push(Animated.timing(this.state.opacity,    { toValue: 1, useNativeDriver: false, duration: 300}));
+    tapAnimations.push(Animated.timing(this.state.width,      { toValue: 3.5*this.props.radius + 0.5*screenWidth, useNativeDriver: false, duration: 300}));
+    tapAnimations.push(Animated.timing(this.state.height,     { toValue: 3.5*this.props.radius, useNativeDriver: false, duration: 300}));
     Animated.parallel(tapAnimations).start();
   }
 
@@ -273,13 +273,13 @@ lang("_Update_Required__The_fir_body"),
     this._stopAnimations();
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale,       {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.locationX,   {toValue: 0, duration: 300}));
-    revertAnimations.push(Animated.timing(this.state.locationY,   {toValue: 0, duration: 300}));
-    revertAnimations.push(Animated.timing(this.state.opacity,     {toValue: 0, duration: 300}));
-    revertAnimations.push(Animated.timing(this.state.width,       {toValue: 2*this.props.radius, duration: 300}));
-    revertAnimations.push(Animated.timing(this.state.height,      {toValue: 2*this.props.radius, duration: 300}));
-    // revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale,       {toValue: 1, useNativeDriver: false, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.locationX,   {toValue: 0, useNativeDriver: false, duration: 300}));
+    revertAnimations.push(Animated.timing(this.state.locationY,   {toValue: 0, useNativeDriver: false, duration: 300}));
+    revertAnimations.push(Animated.timing(this.state.opacity,     {toValue: 0, useNativeDriver: false, duration: 300}));
+    revertAnimations.push(Animated.timing(this.state.width,       {toValue: 2*this.props.radius, useNativeDriver: false, duration: 300}));
+    revertAnimations.push(Animated.timing(this.state.height,      {toValue: 2*this.props.radius, useNativeDriver: false, duration: 300}));
+    // revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
     Animated.parallel(revertAnimations).start();
   }
 

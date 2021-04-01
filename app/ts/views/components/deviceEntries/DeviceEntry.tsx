@@ -92,9 +92,9 @@ export class DeviceEntry extends Component<{
     // this event makes the background of the device entry blink to incidate the error.
     this.unsubscribe.push(core.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
-        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
+        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90, useNativeDriver: false }).start();
         setTimeout(() => {
-          Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 2500 }).start();
+          Animated.timing(this.state.backgroundColor, { toValue: 0, useNativeDriver: false, duration: 2500 }).start();
         }, 5000);
       }
     }));

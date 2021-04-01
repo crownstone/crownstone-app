@@ -93,13 +93,13 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   cancelConnectionRequest: (handle: string) => { return BluenetPromise('cancelConnectionRequest', handle); },
   // this never rejects
   disconnectCommand: (handle: string) => {
-    return BluenetPromise('disconnectCommand')
+    return BluenetPromise('disconnectCommand', handle)
       .then( () => { core.eventBus.emit("disconnect"); })
       .catch(() => { core.eventBus.emit("disconnect"); })
   },
   // this never rejects
   phoneDisconnect: (handle: string) => {
-    return BluenetPromise('phoneDisconnect')
+    return BluenetPromise('phoneDisconnect', handle)
       .then( () => { core.eventBus.emit("disconnect"); })
       .catch(() => { core.eventBus.emit("disconnect"); })
   },
