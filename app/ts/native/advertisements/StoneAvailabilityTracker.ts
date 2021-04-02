@@ -30,6 +30,7 @@ export class StoneAvailabilityTrackerClass {
   sphereLog : sphereLogFormat = {}
   initialized = false;
 
+  handleMap = {};
 
   init() {
     if (this.initialized === false) {
@@ -138,6 +139,9 @@ export class StoneAvailabilityTrackerClass {
     }
 
     let registerStoneId = (stoneId, sphereId, rssi) => {
+      // store the handle so we can quickly check if we have an RSSI value for a handle.
+      this.handleMap[data.handle] = stoneId;
+
       LOGv.native("StoneAvailabilityTracker: registerStoneId stoneId, sphereId, rssi", stoneId, sphereId, rssi);
       if (this.log[stoneId] === undefined) {
         LOGd.native("StoneAvailabilityTracker: registerStoneId storing in LOG stoneId, sphereId, rssi", stoneId, sphereId, rssi);
@@ -239,6 +243,14 @@ export class StoneAvailabilityTrackerClass {
       if (Date.now() - this.log[stoneId].t < RSSI_TIMEOUT_MS) {
         return this.log[stoneId].rssi ?? INVALID_RSSI;
       }
+    }
+    return INVALID_RSSI;
+  }
+
+  getHandleAvgRssi(handle) {
+    let stoneId = this.handleMap[handle]
+    if (stoneId) {
+      return this.getAvgRssi(stoneId);
     }
     return INVALID_RSSI;
   }

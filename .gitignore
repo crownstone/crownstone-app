@@ -65,7 +65,7 @@ app-logs
 Carthage
 
 # ignore all js files since they are compiled
-./app/js/
+/app/js/
 __test.js
 
 sentrySettings.js

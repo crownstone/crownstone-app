@@ -50,9 +50,9 @@ test("SessionBroker finish mesh command", async () => {
   allowDimmingCommander.allowDimming(true)
 
   // trigger connects by faking ibeacons which are in range.
-  evt_ibeacon(-80, handle2);
-  evt_ibeacon(-80, handle3);
-  evt_ibeacon(-80, handle4);
+  evt_ibeacon(-70, handle2);
+  evt_ibeacon(-70, handle3);
+  evt_ibeacon(-70, handle4);
 
   await mBluenetPromise.for(handle2).succeed.connect("operation");
   await mBluenetPromise.for(handle3).succeed.connect("operation");
@@ -97,7 +97,7 @@ test("SessionBroker direct command finishes mesh commands", async () => {
 
   api.turnOn();
 
-  evt_ibeacon(-80, handle1);
+  evt_ibeacon(-70, handle1);
 
   await mBluenetPromise.for(handle1).succeed.connect("operation");
 
@@ -182,7 +182,7 @@ test("SessionBroker check the cleanup of closed public session", async () => {
   expect(Object.keys(api.broker.pendingSessions).length).toBe(1);
   expect(api.broker.connectedSessions).toStrictEqual({});
 
-  evt_ibeacon(-80, handle1);
+  evt_ibeacon(-70, handle1);
 
   await mBluenetPromise.for(handle1).succeed.connect("operation");
 

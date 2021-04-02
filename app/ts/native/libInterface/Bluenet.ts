@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
+import { LOGi } from "../../logging/Log";
 
 export let Bluenet;
 
@@ -88,7 +89,7 @@ const BluenetAPI = {
   subscribeToUnverified:    () => { console.log("BluenetBridgeCall:  subscribeToUnverified "); },
   unsubscribeUnverified:    () => { console.log("BluenetBridgeCall:  unsubscribeUnverified "); },
 
-  initBroadcasting:         () => { console.log("BluenetBridgeCall:  initBroadcasting "); },
+  initBroadcasting:            () => { console.log("BluenetBridgeCall:  initBroadcasting "); },
   checkBroadcastAuthorization: () => { console.log("BluenetBridgeCall:  checkBroadcastAuthorization "); },
 
   isPeripheralReady:           () => { console.log("BluenetBridgeCall: isPeripheralReady"); },
@@ -125,28 +126,47 @@ const BluenetAPI = {
   setCurrentMultiplier:        () => { console.log("BluenetBridgeCall: setCurrentMultiplier"); },
   setUartState:                () => { console.log("BluenetBridgeCall: setUartState"); },
 
-  setTapToToggle:                () => { console.log("BluenetBridgeCall: setTapToToggle"); },
-  setTapToToggleThresholdOffset: () => { console.log("BluenetBridgeCall: setTapToToggleThresholdOffset"); },
+  setTapToToggle:                      () => { console.log("BluenetBridgeCall: setTapToToggle"); },
+  setTapToToggleThresholdOffset:       () => { console.log("BluenetBridgeCall: setTapToToggleThresholdOffset"); },
 
 
-  setSunTimes:      () => { console.log("BluenetBridgeCall: setSunTimes"); },
-  setSunTimesViaConnection:  () => { console.log("BluenetBridgeCall: setSunTimesViaConnection"); },
-  turnOnMesh:       () => { console.log("BluenetBridgeCall: turnOnMesh"); },
-  turnOnBroadcast:  () => { console.log("BluenetBridgeCall: turnOnBroadcast"); },
-  broadcastBehaviourSettings:  () => { console.log("BluenetBridgeCall: broadcastBehaviourSettings"); },
+  setSunTimes:                         () => { console.log("BluenetBridgeCall: setSunTimes"); },
+  setSunTimesViaConnection:            () => { console.log("BluenetBridgeCall: setSunTimesViaConnection"); },
+  turnOnMesh:                          () => { console.log("BluenetBridgeCall: turnOnMesh"); },
+  turnOnBroadcast:                     () => { console.log("BluenetBridgeCall: turnOnBroadcast"); },
+  broadcastBehaviourSettings:          () => { console.log("BluenetBridgeCall: broadcastBehaviourSettings"); },
 
 
-  syncBehaviours:         () => { console.log("BluenetBridgeCall: syncBehaviours"); },
-  getBehaviourMasterHash: () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
-  setTimeViaBroadcast:    () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
-  broadcastExecute:       () => { console.log("BluenetBridgeCall: broadcastExecute"); },
+  syncBehaviours:                      () => { console.log("BluenetBridgeCall: syncBehaviours"); },
+  getBehaviourMasterHash:              () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
+  setTimeViaBroadcast:                 () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
+  broadcastExecute:                    () => { console.log("BluenetBridgeCall: broadcastExecute"); },
 
 
-  transferHubTokenAndCloudId:   () => { console.log("BluenetBridgeCall: transferHubTokenAndCloudId"); },
-  setUartKey:                   () => { console.log("BluenetBridgeCall: setUartKey"); },
-  requestCloudId:               () => { console.log("BluenetBridgeCall: requestCloudId"); },
-  factoryResetHub:              () => { console.log("BluenetBridgeCall: factoryResetHub"); },
-  factoryResetHubOnly:          () => { console.log("BluenetBridgeCall: factoryResetHubOnly"); },
+  transferHubTokenAndCloudId:          () => { console.log("BluenetBridgeCall: transferHubTokenAndCloudId"); },
+  setUartKey:                          () => { console.log("BluenetBridgeCall: setUartKey"); },
+  requestCloudId:                      () => { console.log("BluenetBridgeCall: requestCloudId"); },
+  factoryResetHub:                     () => { console.log("BluenetBridgeCall: factoryResetHub"); },
+  factoryResetHubOnly:                 () => { console.log("BluenetBridgeCall: factoryResetHubOnly"); },
+
+  cancelConnectionRequest:             () => { console.log("BluenetBridgeCall: cancelConnectionRequest"); },
+  getBehaviourDebugInformation:        () => { console.log("BluenetBridgeCall: getBehaviourDebugInformation"); },
+  getTapToToggleThresholdOffset:       () => { console.log("BluenetBridgeCall: getTapToToggleThresholdOffset"); },
+  canUseDynamicBackgroundBroadcasts:   () => { console.log("BluenetBridgeCall: canUseDynamicBackgroundBroadcasts"); },
+  registerTrackedDevice:               () => { console.log("BluenetBridgeCall: registerTrackedDevice"); },
+  trackedDeviceHeartbeat:              () => { console.log("BluenetBridgeCall: trackedDeviceHeartbeat"); },
+  broadcastUpdateTrackedDevice:        () => { console.log("BluenetBridgeCall: broadcastUpdateTrackedDevice"); },
+  getCrownstoneUptime:                 () => { console.log("BluenetBridgeCall: getCrownstoneUptime"); },
+  getAdcRestarts:                      () => { console.log("BluenetBridgeCall: getAdcRestarts"); },
+  getSwitchHistory:                    () => { console.log("BluenetBridgeCall: getSwitchHistory"); },
+  getPowerSamples:                     () => { console.log("BluenetBridgeCall: getPowerSamples"); },
+  getMinSchedulerFreeSpace:            () => { console.log("BluenetBridgeCall: getMinSchedulerFreeSpace"); },
+  getLastResetReason:                  () => { console.log("BluenetBridgeCall: getLastResetReason"); },
+  getGPREGRET:                         () => { console.log("BluenetBridgeCall: getGPREGRET"); },
+  getAdcChannelSwaps:                  () => { console.log("BluenetBridgeCall: getAdcChannelSwaps"); },
+  setSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: setSoftOnSpeed"); },
+  getSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: getSoftOnSpeed"); },
+  getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
 
 };
 
@@ -170,7 +190,7 @@ else if (NativeModules.BluenetJS) {
             bluenetArguments.push(arguments[i])
           }
         }
-        console.log("XX BLUENET CALL:", key, bluenetArguments);
+        LOGi.info("BLUENET CALL:", key, bluenetArguments);
         return NativeModules.BluenetJS[key].apply(this, bluenetArguments);
       }
     })

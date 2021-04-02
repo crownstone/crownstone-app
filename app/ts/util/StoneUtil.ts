@@ -30,7 +30,7 @@ export const StoneUtil = {
     }
 
     let sphereId = Get.sphereId(stone.id);
-    if (!sphereId) { return; }
+    if (!sphereId) { throw "NO_SPHERE_ID" }
     await tell(stone).multiSwitch(newState, allowMeshRelay);
 
     core.store.dispatch({
@@ -43,7 +43,7 @@ export const StoneUtil = {
 
   turnOn: async function (stone : any, allowMeshRelay: boolean = true) {
     let sphereId = Get.sphereId(stone.id);
-    if (!sphereId) { return; }
+    if (!sphereId) { throw "NO_SPHERE_ID" }
     await tell(stone).turnOn(allowMeshRelay);
 
     let expectedState = AicoreUtil.getActiveTurnOnPercentage(sphereId, stone)

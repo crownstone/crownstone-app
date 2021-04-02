@@ -244,7 +244,7 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
 
-
+  
   @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called connect to handle \(handle)")
     GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
@@ -255,6 +255,20 @@ open class BluenetJS: RCTEventEmitter {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN  connect \(err)"]])
+        }
+    }
+  }
+  
+  @objc func cancelConnectionRequest(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+    LOGGER.info("BluenetBridge: Called cancelConnectionRequest from handle \(handle)")
+    GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
+      .done{ crownstoneMode in callback([["error" : false, "data": "\(crownstoneMode)"]]) }
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN  cancelConnectionRequest \(err)"]])
         }
     }
   }

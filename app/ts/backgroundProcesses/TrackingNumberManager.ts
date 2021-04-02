@@ -32,7 +32,6 @@ class TrackingNumberManagerClass {
   init() {
     if (this.initialized === false) {
       this.initialized = true;
-
       // update the _requests token every hour.
       Scheduler.setRepeatingTrigger(REGISTER_TRIGGER_ID, {repeatEveryNSeconds: 3600} );
       Scheduler.loadOverwritableCallback( REGISTER_TRIGGER_ID, "REGISTRATION_UPDATE", this.updateMyDeviceTrackingRegistrationInActiveSphere.bind(this), false);

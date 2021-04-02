@@ -6,6 +6,7 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
+import { LOGd, LOGi, LOGw } from "../../logging/Log";
 
 export class SessionBroker {
 
@@ -79,12 +80,14 @@ export class SessionBroker {
       if (command.commandType === 'DIRECT') {
         let handle = command.commandTarget;
         requiredHandleMap[handle] = commandId;
+        LOGd.constellation("SessionBroker: requiring session", handle, "DIRECT for", this.options.commanderId);
         this.requireSession(handle, command);
       }
       else if (command.commandType === 'MESH') {
         let meshHandles = Collector.collectMesh(command.commandTarget, command.endTarget);
         for (let handle of meshHandles) {
           requiredHandleMap[handle] = commandId;
+          LOGd.constellation("SessionBroker: requiring session", handle, "for MESH", this.options.commanderId);
           this.requireSession(handle, command);
         }
       }
@@ -94,7 +97,12 @@ export class SessionBroker {
     for (let openHandle of openHandles) {
       if (requiredHandleMap[openHandle] === undefined) {
         if (this.options.private === false) {
-          SessionManager.revokeRequest(openHandle, this.options.commanderId);
+          LOGi.constellation("SessionBroker: Revoke session", openHandle, "for", this.options.commanderId);
+          SessionManager.revokeRequest(openHandle, this.options.commanderId).catch((err) => {
+            if (err !== "REMOVED_FROM_QUEUE") {
+              LOGw.constellation("SessionBroker: Failed to revoke session", openHandle, "for", this.options.commanderId, err);
+            }
+          })
           delete this.pendingSessions[openHandle];
         }
       }
@@ -104,6 +112,7 @@ export class SessionBroker {
 
   async requireSession(handle:string, command: BleCommand) {
     if (this.pendingSessions[handle] === undefined && this.connectedSessions[handle] === undefined) {
+      LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private);
       this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private)
         .then(() => {
           // if this request lands, we can remove this session from the pending list.
@@ -119,9 +128,15 @@ export class SessionBroker {
 
 
   async killConnectedSessions() {
+    LOGi.constellation("SessionBroker: Killing sessions for", this.options.commanderId);
     let connectedSessions = Object.keys(this.connectedSessions);
     for (let sessionHandle of connectedSessions) {
-      await SessionManager.revokeRequest(sessionHandle, this.options.commanderId);
+      LOGi.constellation("SessionBroker: Revoke session for kill", sessionHandle, "for", this.options.commanderId);
+      await SessionManager.revokeRequest(sessionHandle, this.options.commanderId).catch((err) => {
+        if (err !== "REMOVED_FROM_QUEUE") {
+          LOGw.constellation("SessionBroker: Failed to revoke session", sessionHandle, "for", this.options.commanderId, err);
+        }
+      })
       delete this.connectedSessions[sessionHandle];
     }
 

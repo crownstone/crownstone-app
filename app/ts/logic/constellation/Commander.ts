@@ -85,6 +85,7 @@ import {
   Command_UpdateBehaviour
 } from "./commandClasses";
 import { SessionBroker } from "./SessionBroker";
+import { LOGd } from "../../logging/Log";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -124,11 +125,14 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     let promiseContainer = xUtil.getPromiseContainer<any>()
-
     let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
-    this.broker.loadPendingCommands(commands);
+    LOGd.constellation("Commander: Loading command", command.type, allowMeshRelays);
+    // in case this command is broadcast instead of done via
+    if (commands) {
+      this.broker.loadPendingCommands(commands);
+      core.eventBus.emit(`CommandLoaded_${this.id}`)
+    }
 
-    core.eventBus.emit(`CommandLoaded_${this.id}`)
     return promiseContainer.promise;
   }
 }

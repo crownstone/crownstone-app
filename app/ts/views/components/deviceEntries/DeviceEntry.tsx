@@ -154,7 +154,10 @@ export class DeviceEntry extends Component<{
         this.setState({pendingCommand:false, percentage: newState});
       }
     }
-    catch (err) {}
+    catch (err) {
+      console.log("ERROR", err)
+      this.setState({pendingCommand:false});
+    }
   }
 
   _getControl(stone) {

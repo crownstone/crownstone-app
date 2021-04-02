@@ -17,7 +17,7 @@ export const Get = {
 
   sphereId(stoneId: string) : string | null {
     let state = core.store.getState();
-    let sphereIds = Object.keys(state.sphereId);
+    let sphereIds = Object.keys(state.spheres);
     for (let sphereId of sphereIds) {
       if (state.spheres[sphereId].stones[stoneId] !== undefined) {
         return sphereId;

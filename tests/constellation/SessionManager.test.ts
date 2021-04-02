@@ -55,7 +55,7 @@ test("Session manager registration and queue for shared connections.", async () 
   expect(p2Err).not.toBeCalled();
   expect(p3Err).toBeCalledWith("ALREADY_REQUESTED");
 
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
 
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
   await mBluenetPromise.for(handle).succeed.connect('operation');
@@ -139,7 +139,7 @@ test("Session manager failing shared connection.", async () => {
 
   sessionManager.request(handle, 'commanderId1', false).then(() => { p1(); }).catch((err) => { p1Err(err); })
   await TestUtil.nextTick();
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
 
 
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
@@ -148,7 +148,7 @@ test("Session manager failing shared connection.", async () => {
   expect(p1Err).not.toBeCalled();
   expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
 
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
 
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
 
@@ -171,7 +171,7 @@ test("Session manager failing private connection.", async () => {
 
   sessionManager.request(handle, 'commanderId1', true).then(() => { p1(); }).catch((err) => { p1Err(err); })
   await TestUtil.nextTick();
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
 
 
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
@@ -180,7 +180,7 @@ test("Session manager failing private connection.", async () => {
   expect(p1Err).not.toBeCalled();
   expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
 
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
 
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
 
@@ -220,7 +220,7 @@ test("Session manager request and revoke shared requests in different states.", 
 
   // revoke while connecting...
   sessionManager.request(handle, id2, false);
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
   expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
   sessionManager.revokeRequest(handle, id2)
 
@@ -232,7 +232,7 @@ test("Session manager request and revoke shared requests in different states.", 
 
   // revoke while connected...
   sessionManager.request(handle, id3, false);
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
   expect(sessionManager._pendingSessionRequests[handle].length).toBe(1);
   await mBluenetPromise.for(handle).succeed.connect("operation");
   await TestUtil.nextTick();
@@ -329,7 +329,7 @@ test("Session manager being paused with no active sessions. It should block new 
   expect(sessionManager._activeSessions).toStrictEqual({});
 
   // this should normally trigger a connection request if it was allowed
-  evt_ibeacon(-80, handle);
+  evt_ibeacon(-70, handle);
   expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
   expect(sessionManager._sessions[handle].state).toBe("INITIALIZING");
 });
@@ -369,7 +369,7 @@ test("Session manager being paused with public connections. These should be clos
 
   let sessionManager = new SessionManagerClass();
   sessionManager.request(handle, "commander", false);
-  evt_ibeacon(-80)
+  evt_ibeacon(-70)
 
   let promise = { promise: new Promise(() => {}), resolve: jest.fn(), reject: jest.fn() };
   let options2 = getCommandOptions(db.sphere.id, [handle]);

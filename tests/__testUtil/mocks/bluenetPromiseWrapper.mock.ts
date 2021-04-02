@@ -6,7 +6,7 @@ export function mockBluenetPromiseWrapper() {
   for (let method of targetedMethods) {
     mocks[method] = function() {
       let args = arguments;
-      let handle = args[0];
+      let handle = args[0].toLowerCase();
       // console.log("Providing promise",method, handle, arguments)
       return new Promise((resolve, reject) => {
         libStateWrapper.loadTargeted(method, handle, resolve, reject, args)
@@ -76,6 +76,7 @@ class LibContainer {
   }
 
   for(handle: string) : Resolver {
+    handle = handle.toLowerCase();
     return {
       succeed:    this._getSuccessMethods(handle),
       fail:       this._getErrorMethods(handle),
@@ -84,11 +85,13 @@ class LibContainer {
   }
 
   async cancelConnectionRequest(handle) : Promise<void> {
+    handle = handle.toLowerCase();
      this._reject('connect', handle, 'CONNECTION_CANCELLED');
      this._resolve('cancelConnectionRequest', handle)
   }
 
   has(handle?: string) : {called: MockedCallList, stacked: MockedCountList} {
+    if (handle) { handle = handle.toLowerCase(); }
     return {
       called: this._getCallMethods(handle),
       stacked: this._getStackCount()

@@ -19,7 +19,7 @@ import { styles, colors} from '../styles'
 import { xUtil } from "../../util/StandAloneUtil";
 
 import ImagePicker from 'react-native-image-picker';
-import { ImagePickerOptions } from "react-native-image-picker/src/internal/types";
+import { CameraOptions } from "react-native-image-picker/src/types";
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
@@ -28,39 +28,39 @@ export class PictureCircle extends Component<any, any> {
       return;
     }
 
-    const options : ImagePickerOptions = {
-      title: lang("Select_Picture"),
-      takePhotoButtonTitle: lang("Take_Photo___"),
-      chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
-      chooseWhichLibraryTitle: lang("Choose_which_Library___"),
-      cancelButtonTitle: Platform.OS === 'ios' ? lang("Cancel") : lang("CANCEL"),
-      noData: true,
+    const options : CameraOptions = {
+      // title: lang("Select_Picture"),
+      // takePhotoButtonTitle: lang("Take_Photo___"),
+      // chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
+      // chooseWhichLibraryTitle: lang("Choose_which_Library___"),
+      // cancelButtonTitle: Platform.OS === 'ios' ? lang("Cancel") : lang("CANCEL"),
+      // noData: true,
       mediaType: "photo",
-      storageOptions: {
-        waitUntilSaved: false,
-        cameraRoll: false,
-        privateDirectory:true,
-        skipBackup: true,
-      },
-      permissionDenied: {
-        title: lang("Permission_denied"),
-        text: lang("I_need_permission_to_use_"),
-        reTryTitle: lang("Retry"),
-        okTitle: lang("I_understand"),
-      },
-      allowsEditing: true,
-      quality: 0.99
+      // storageOptions: {
+      //   waitUntilSaved: false,
+      //   cameraRoll: false,
+      //   privateDirectory:true,
+      //   skipBackup: true,
+      // },
+      // permissionDenied: {
+      //   title: lang("Permission_denied"),
+      //   text: lang("I_need_permission_to_use_"),
+      //   reTryTitle: lang("Retry"),
+      //   okTitle: lang("I_understand"),
+      // },
+      // allowsEditing: true,
+      // quality: 0.99
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.launchImageLibrary(options, (response) => {
       // console.log('Response = ', response);
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
       }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-        if (response.error === 'Camera permissions not granted') {
+      else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorCode);
+        if (response.errorCode === 'permission') {
           Alert.alert(lang("Permission_denied"), lang("I_need_permission_to_use_"),[{text:lang("OK")}])
         }
       }

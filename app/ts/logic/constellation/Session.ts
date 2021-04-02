@@ -16,8 +16,12 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { LOGd, LOGi } from "../../logging/Log";
 import { act } from "@testing-library/react-native";
 import { Scheduler } from "../Scheduler";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
-const CONNECTION_THRESHOLD = Platform.OS === 'ios' ? -90 : -90;
+const CONNECTION_THRESHOLD_MIN  = Platform.OS === 'ios' ? -73 : -73;
+const CONNECTION_THRESHOLD_STEP = Platform.OS === 'ios' ? -3  : -3;
+const CONNECTION_THRESHOLD_MAX  = Platform.OS === 'ios' ? -85 : -85;
+const HISTORICAL_THRESHOLD      = Platform.OS === 'ios' ? -75 : -75;
 
 export class Session {
   state    : ConnectionState = "INITIALIZING"
@@ -39,9 +43,10 @@ export class Session {
 
   _cleanupPrivateBackup = null;
 
+  _weakRSSImeasurements = 0;
 
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
-    this.handle = handle;
+    this.handle = handle.toLowerCase();
     this.interactionModule = interactionModule;
     this.privateId = privateId || null;
     let reference  = MapProvider.stoneHandleMap[handle];
@@ -51,6 +56,15 @@ export class Session {
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.sessionHasEnded();   });
 
     this.initializeBootstrapper();
+
+    // if we know we were very close recently, immediately try to activate.
+    // This is an optimization for public sessions only since private sessions already immediately try to activate.
+    if (!this.privateId) {
+      let historicalRSSI = StoneAvailabilityTracker.getHandleAvgRssi(this.handle);
+      if (historicalRSSI >= HISTORICAL_THRESHOLD) {
+        this.tryToActivate();
+      }
+    }
 
     if (this.privateId) {
       this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, async () => {
@@ -80,14 +94,18 @@ export class Session {
   initializeBootstrapper() {
     this.state = "INITIALIZING";
     this.sessionIsActivated = false;
+    this._weakRSSImeasurements = 0;
 
     this._clearBootstrapper();
 
     let activator = (data : crownstoneBaseAdvertisement) => {
-      if (data.handle.toLowerCase() === this.handle.toLowerCase()) {
-        if (this.sessionIsActivated === false && data.handle.toLowerCase() === this.handle.toLowerCase()) {
-          if (data.rssi >= CONNECTION_THRESHOLD) {
+      if (data.handle.toLowerCase() === this.handle) {
+        if (this.sessionIsActivated === false) {
+          if (data.rssi >= Math.max(CONNECTION_THRESHOLD_MAX, CONNECTION_THRESHOLD_MIN + this._weakRSSImeasurements*CONNECTION_THRESHOLD_STEP)) {
             this.tryToActivate();
+          }
+          else {
+            this._weakRSSImeasurements += 1;
           }
         }
       }
@@ -108,6 +126,8 @@ export class Session {
 
 
   async tryToActivate() {
+    if (this.state !== "INITIALIZING") { return; }
+
     if (this.interactionModule.canActivate()) {
       await this.connect();
     }
@@ -180,7 +200,9 @@ export class Session {
       }
     }
     this.state = "PERFORMING_COMMAND";
+    LOGd.constellation("Session: performing available command...", this.handle, this.privateId)
     await BleCommandManager.performCommand(this.handle, this.privateId);
+    LOGd.constellation("Session: Finished available command...", this.handle, this.privateId)
     this.state = "CONNECTED";
 
     if (this.sessionIsKilled) {

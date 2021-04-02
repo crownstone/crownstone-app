@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GLOBAL_BLUENET.initController(viewController: nil)
 
         RNSplashScreen.show()
+        
+        
 
         return true
     }
@@ -90,4 +92,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         return GLOBAL_BLUENET.parseUserActivity(userActivity: userActivity)
     }
+    
+    #if RCT_DEV
+    func bridge(bridge: RCTBridge, didNotFindModule: String) {
+      return YES;
+    }
+    #endif
 }

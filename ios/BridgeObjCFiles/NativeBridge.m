@@ -17,6 +17,7 @@ RCT_EXTERN_METHOD(setKeySets:(NSArray *)keySets callback:(RCTResponseSenderBlock
 RCT_EXTERN_METHOD(isReady:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(isPeripheralReady:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(connect:(NSString *)handle referenceId:(NSString *)referenceId callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(cancelConnectionRequest:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(disconnectCommand:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(toggleSwitchState:(NSString *)handle stateForOn:(nonnull NSNumber *)stateForOn callback:(RCTResponseSenderBlock)callback)

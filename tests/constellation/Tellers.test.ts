@@ -45,7 +45,7 @@ test("Check the direct teller", async () => {
   expect(mBluenetPromise.has(handle).called.allowDimming()).toBeTruthy();
   await mBluenetPromise.for(handle).succeed.allowDimming();
   await TestUtil.nextTick();
-  expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS")
+  expect(SessionManager._sessions[handle].state).toBe("WAITING_FOR_COMMANDS");
   await TestUtil.nextTick();
 
   api.end()
@@ -97,7 +97,7 @@ test("Check basic tell for cleanup of session", async () => {
     expect(fwVersion).toBe("5.4.0");
   })
 
-  evt_ibeacon(-80, handle);
+  evt_ibeacon(-70, handle);
   await mBluenetPromise.for(handle).succeed.connect("operation");
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.getFirmwareVersion("5.4.0");

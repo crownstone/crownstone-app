@@ -1,4 +1,4 @@
-import { LOGd } from "../../logging/Log";
+import { LOG, LOGi } from "../../logging/Log";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { SessionManager } from "./SessionManager";
@@ -7,7 +7,7 @@ import { Get } from "../../util/GetUtil";
 
 
 export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
-  LOGd.constellation("Tellers: Starting a direct connection.", handle);
+  LOGi.constellation("Tellers: Starting a direct connection.", handle);
 
   let privateId = xUtil.getUUID();
   let stoneData = MapProvider.stoneHandleMap[handle];
@@ -36,7 +36,7 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
 
 
 export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
-  LOGd.constellation("Tellers: Claiming the .", handle);
+  LOGi.constellation("Tellers: Claiming BLE for", handle);
 
   let privateId = xUtil.getUUID();
   let stoneData = MapProvider.stoneHandleMap[handle];
@@ -73,7 +73,7 @@ export function tell(handle: string | StoneData) : CommandAPI {
   }
 
   let sphereId = MapProvider.stoneHandleMap[handle].sphereId;
-
+  LOG.constellation("Tellers: Planning to tell", handle);
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),
     sphereId:       sphereId,
@@ -97,6 +97,7 @@ export function from(handle: string | StoneData) : CommandAPI {
  * @param minimalConnections
  */
 export function tellMesh(meshId, minConnections = 3) : CommandAPI {
+  LOGi.constellation("Telling the meshnetwork...", meshId, minConnections);
   let stonesInMap = MapProvider.meshMap[meshId];
   let stoneIds = Object.keys(stonesInMap);
   if (stoneIds.length > 0) {
@@ -107,7 +108,8 @@ export function tellMesh(meshId, minConnections = 3) : CommandAPI {
       sphereId:       sphereId,
       commandType:    "MESH",
       commandTargets: [meshId],
-      private:        false
+      private:        false,
+      minConnections: minConnections,
     });
   }
 }
@@ -118,6 +120,8 @@ export function tellMesh(meshId, minConnections = 3) : CommandAPI {
  * @param sphereId
  */
 export function tellSphere(sphereId, minConnections = 3) : CommandAPI {
+  LOGi.constellation("Telling sphere", sphereId, minConnections);
+
   let sphere = Get.sphere(sphereId);
   if (!sphere) { throw "INVALID_SPHERE_ID" }
 
@@ -138,8 +142,8 @@ export function tellSphere(sphereId, minConnections = 3) : CommandAPI {
       sphereId:       sphereId,
       commandType:    "MESH",
       commandTargets: meshNetworks,
-      private:        false
+      private:        false,
+      minConnections: minConnections,
     });
   }
-
 }

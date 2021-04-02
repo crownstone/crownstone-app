@@ -2,7 +2,7 @@ import { mBluenetPromise, mConstellationState, resetMocks } from "../__testUtil/
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { BleCommandManagerClass } from "../../app/ts/logic/constellation/BleCommandManager";
-import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
+import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
 import { xUtil } from "../../app/ts/util/StandAloneUtil";
 import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
 import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
@@ -12,6 +12,7 @@ import {
   Command_GetHardwareVersion,
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
+import { connectTo } from "../../app/ts/logic/constellation/Tellers";
 
 let BleCommandManager = null;
 beforeEach(async () => {
@@ -251,4 +252,26 @@ test("BleCommandManager clear commands from single commander", async () => {
 
   expect(BleCommandManager.queue.direct[stone1.config.handle]).toBeUndefined()
   expect(BleCommandManager.queue.mesh).toStrictEqual({})
+});
+
+
+test("BleCommandManager check returning the commands", async () => {
+  let db = createMockDatabase(meshId, 'm2');
+  let handle = db.stones[0].handle;
+
+  let promise  = { resolve: jest.fn(), reject: jest.fn() };
+  let promise2 = { resolve: jest.fn(), reject: jest.fn() };
+  let options  = getCommandOptions(db.sphere.id, [db.stones[0].handle]);
+  let options2 = getCommandOptions(db.sphere.id, [db.stones[1].handle]);
+
+  let commands1 = BleCommandManager.generateAndLoad(options,  new Command_TurnOn(), true, promise);
+  let commands2 = BleCommandManager.generateAndLoad(options2, new Command_AllowDimming(true), false, promise2);
+
+  expect(commands1).not.toBeUndefined()
+  expect(commands2).not.toBeUndefined()
+
+  mConstellationState.allowBroadcasting = true;
+
+  let commands3 = BleCommandManager.generateAndLoad(options,  new Command_TurnOn(), true, promise);
+  expect(commands3).toBeUndefined();
 });

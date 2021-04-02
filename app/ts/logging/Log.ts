@@ -25,7 +25,6 @@ class Logger {
   level : number;
   levelPrefix : string;
 
-
   constructor(level) {
     this.level = level;
     switch(this.level) {
@@ -53,7 +52,7 @@ class Logger {
   }
 
   constellation(...any) {
-    this._log('CONSTELLATION', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
+    this._log('CONSTELLATION', LOG_CONSTELLATION, LogProcessor.log_promiseManager, arguments);
   }
 
   broadcast(...any) {

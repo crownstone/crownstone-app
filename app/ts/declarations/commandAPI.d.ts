@@ -46,7 +46,7 @@ interface BleCommand<T = CommandInterface> {
   endTarget?:      string,   // in case that a command can be convayed via the mesh (like a multiswitch) the commandTarget is a meshId
                             // in order to relay the command to a target, the endTarget is a handle of the endTarget of the command.
   private?:        boolean,
-  minConnections?: number
+  minConnections:  number
   startTime:       number,
   timeout?:        number // seconds
 }

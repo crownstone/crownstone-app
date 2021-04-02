@@ -21,12 +21,13 @@ test("Session private connection fail. Should not sessionHasEnded. Should retry.
   let session = new Session(handle,'test', interactionModule);
   expect(interactionModule.canActivate).toBeCalled();
 
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
   await mBluenetPromise.for(handle).fail.connect("Error");
   expect(interactionModule.isDeactivated).toBeCalled();
   expect(interactionModule.sessionHasEnded).not.toBeCalled()
   expect(session.state).toBe("INITIALIZING");
 
-  evt_ibeacon(-80, handle);
+  evt_ibeacon(-70, handle);
   expect(interactionModule.canActivate).toBeCalled();
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
 });
@@ -81,7 +82,7 @@ test("Session public scanning start successful.", async () => {
   expect(interactionModule.canActivate).not.toBeCalled()
 
   // this should be close enough;
-  evt_ibeacon(-80)
+  evt_ibeacon(-70)
   expect(interactionModule.canActivate).toBeCalled();
 
   await mBluenetPromise.for(handle).succeed.connect("operation");
@@ -92,7 +93,7 @@ test("Session public scanning start successful.", async () => {
 test("Session public deactivating.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,null, interactionModule);
-  evt_ibeacon(-80)
+  evt_ibeacon(-70)
   expect(interactionModule.canActivate).toBeCalled();
   expect(interactionModule.willActivate).toBeCalled();
   session.deactivate();
@@ -115,7 +116,7 @@ test("Session public kill while initializing.", async () => {
 test("Session public kill while connecting.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,null, interactionModule);
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
   expect(interactionModule.willActivate).toBeCalled();
   expect(session.state).toBe("CONNECTING");
   session.kill();
@@ -127,7 +128,7 @@ test("Session public kill while connecting.", async () => {
 test("Session public kill while connected.", async () => {
   let interactionModule = getInteractionModule()
   let session = new Session(handle,null, interactionModule);
-  evt_ibeacon(-80);
+  evt_ibeacon(-70);
   expect(interactionModule.willActivate).toBeCalled();
   await mBluenetPromise.for(handle).succeed.connect("operation");
   expect(session.state).toBe("CONNECTED");

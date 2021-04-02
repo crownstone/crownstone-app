@@ -5,7 +5,7 @@ import { BCH_ERROR_CODES } from "../../Enums";
 import { BleCommandCleaner } from "./BleCommandCleaner";
 import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
-import { LOG, LOGi } from "../../logging/Log";
+import { LOG, LOGi, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
@@ -49,6 +49,7 @@ export class BleCommandManagerClass {
     for (let targetId of targets) {
       let sharedItems = {
         id: commandId,
+        minConnections: options.minConnections,
         ...usedOptions,
         commandTarget: targetId,
         command,
@@ -77,7 +78,7 @@ export class BleCommandManagerClass {
           let meshId = MapProvider.handleMeshMap[handle];
           if (meshId) {
             if (stoneData) {
-              let sphere = Get.sphere(stoneData.sphereId);
+              let sphere = Get.sphere(options.sphereId);
               if (sphere) {
                 let stoneIdsInSphere = Object.keys(sphere.stones);
                 let amountOfStonesInMesh = 0;
@@ -106,7 +107,21 @@ export class BleCommandManagerClass {
         }
       }
       else if (options.commandType === "MESH") {
-        commandsToLoad.push({ ...sharedItems, promise });
+        // target is the meshId
+        let sphere = Get.sphere(options.sphereId);
+        if (sphere) {
+          let stoneIdsInSphere = Object.keys(sphere.stones);
+          let amountOfStonesInMesh = 0;
+          for (let stoneId of stoneIdsInSphere) {
+            if (sphere.stones[stoneId].config.meshNetworkId === targetId) {
+              amountOfStonesInMesh++;
+            }
+          }
+
+          let command : BleCommand = { ...sharedItems, promise };
+          command.minConnections = Math.min(options.minConnections ?? 3, amountOfStonesInMesh);
+          commandsToLoad.push(command);
+        }
       }
     }
 
@@ -222,22 +237,31 @@ export class BleCommandManagerClass {
 
     let commandRemoved = false;
     try {
+      // mark this handle as something that is attempting this command.
+      command.attemptingBy.push(handle);
+
+      // start performing the command.
+      LOGi.constellation("BleCommandManager: Performing command", command.command.type, "on", handle, command.id);
       let result = await Executor.runCommand(handle, command, this.queue);
+      LOGi.constellation("BleCommandManager: Succeeded command", command.command.type, "on", handle, command.id);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
 
-      // part 1
+      // move attempingby to executed by.
       if (attemptingIndex !== -1 && command.executedBy.indexOf(handle) === -1) {
         command.executedBy.push(handle);
         command.attemptingBy.splice(attemptingIndex, 1);
       }
 
+      console.log("attemptingBy", handle, command.commandType, command.attemptingBy, command.attemptingBy.length, command.minConnections)
+      console.log("executedBy",   handle, command.commandType, command.executedBy, command.executedBy.length, command.minConnections)
       if (command.commandType === 'DIRECT') {
+        LOGi.constellation("BleCommandManager: Direct command finished.", handle, command.command.type, command.id);
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
       }
       else if (command.executedBy.length >= command.minConnections) {
-        LOGi.constellation("BleCommandManager: Mesh command finished.", command.minConnections, "connections achieved.")
+        LOGi.constellation("BleCommandManager: Mesh command finished.", command.minConnections, "connections achieved.", command.command.type, command.id);
         // mesh action
         command.promise.resolve(result);
         this.removeCommand(handle, command.id);
@@ -245,6 +269,7 @@ export class BleCommandManagerClass {
       }
     }
     catch (err) {
+      LOGw.constellation("BleCommandManager: Something went wrong while performing", command.command.type, handle, err, command.id);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
       if (attemptingIndex !== -1 && command.executedBy.indexOf(handle) === -1) {
         command.attemptingBy.splice(attemptingIndex, 1);
@@ -252,6 +277,7 @@ export class BleCommandManagerClass {
 
       if (command.commandType === 'DIRECT') {
         command.promise.reject(err);
+        LOGw.constellation("BleCommandManager: Failing the direct command", command.command.type, handle, err, command.id);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
       }

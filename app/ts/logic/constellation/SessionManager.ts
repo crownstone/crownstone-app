@@ -14,11 +14,12 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandManager } from "./BleCommandManager";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
-import { LOG } from "../../logging/Log";
+import { LOG, LOGi } from "../../logging/Log";
+import { Platform } from "react-native";
 
 export class SessionManagerClass {
 
-  _maxActiveSessions = 1;
+  _maxActiveSessions = Platform.OS === 'ios' ? 20 : 20;
 
   _sessions: {[handle: string] : Session} = {};
   _activeSessions: {[handle:string] : { connected: boolean }} = {};
@@ -36,8 +37,8 @@ export class SessionManagerClass {
     this._pendingPrivateSessionRequests = {};
     this._pendingSessionRequests = {};
     this._timeoutHandlers = {};
-
   }
+
 
   /**
    * This will resolve once the session is connected
@@ -140,6 +141,7 @@ export class SessionManagerClass {
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
         if (BleCommandManager.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
+          LOGi.constellation("SessionManager: Killing session", handle)
           this._sessions[handle].kill();
         }
       }

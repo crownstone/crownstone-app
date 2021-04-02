@@ -13,7 +13,8 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import ImagePicker from "react-native-image-picker";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Button } from "../components/Button";
-import { ImagePickerOptions } from "react-native-image-picker/src/internal/types";
+import { ErrorCode } from "react-native-image-picker/lib/typescript/types";
+import { ImageLibraryOptions } from "react-native-image-picker/src/types";
 
 
 export const PICTURE_GALLERY_TYPES = {
@@ -273,30 +274,29 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
   }
 
   handleCustomImage = () => {
-    const options : ImagePickerOptions = {
-      title: lang("Select_Picture"),
-      takePhotoButtonTitle: lang("Take_Photo___"),
-      chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
-      chooseWhichLibraryTitle: lang("Choose_which_Library___"),
-      cancelButtonTitle: lang("CANCEL"),
-      noData: true,
+    const options : ImageLibraryOptions = {
+      // title: lang("Select_Picture"),
+      // takePhotoButtonTitle: lang("Take_Photo___"),
+      // chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
+      // chooseWhichLibraryTitle: lang("Choose_which_Library___"),
+      // cancelButtonTitle: lang("CANCEL"),
+      // noData: true,
       mediaType: "photo",
-      storageOptions: {
-        waitUntilSaved: false,
-        cameraRoll: false,
-        privateDirectory:true,
-        skipBackup: true,
-      },
-      allowsEditing: true,
-      quality: 0.99
+      // storageOptions: {
+      //   waitUntilSaved: false,
+      //   cameraRoll: false,
+      //   privateDirectory:true,
+      //   skipBackup: true,
+      // },
+      // allowsEditing: true,
     };
     NavigationUtil.dismissModal();
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.launchImageLibrary(options, (response) => {
       // console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorCode, response.errorMessage);
       } else {
         this.props.callback(response.uri, PICTURE_GALLERY_TYPES.CUSTOM);
       }
