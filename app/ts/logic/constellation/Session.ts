@@ -46,11 +46,13 @@ export class Session {
   _weakRSSImeasurements = 0;
 
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
-    this.handle = handle.toLowerCase();
+    this.handle = handle;
     this.interactionModule = interactionModule;
     this.privateId = privateId || null;
     let reference  = MapProvider.stoneHandleMap[handle];
     this.sphereId  = reference?.sphereId || null;
+
+    LOGd.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.sessionHasEnded();   });
@@ -62,7 +64,7 @@ export class Session {
     if (!this.privateId) {
       let historicalRSSI = StoneAvailabilityTracker.getHandleAvgRssi(this.handle);
       if (historicalRSSI >= HISTORICAL_THRESHOLD) {
-        this.tryToActivate();
+        this.tryToActivate(HISTORICAL_THRESHOLD, historicalRSSI);
       }
     }
 
@@ -99,10 +101,11 @@ export class Session {
     this._clearBootstrapper();
 
     let activator = (data : crownstoneBaseAdvertisement) => {
-      if (data.handle.toLowerCase() === this.handle) {
+      if (data.handle === this.handle) {
         if (this.sessionIsActivated === false) {
-          if (data.rssi >= Math.max(CONNECTION_THRESHOLD_MAX, CONNECTION_THRESHOLD_MIN + this._weakRSSImeasurements*CONNECTION_THRESHOLD_STEP)) {
-            this.tryToActivate();
+          let threshold = Math.max(CONNECTION_THRESHOLD_MAX, CONNECTION_THRESHOLD_MIN + this._weakRSSImeasurements*CONNECTION_THRESHOLD_STEP);
+          if (data.rssi >= threshold) {
+            this.tryToActivate(threshold, data.rssi);
           }
           else {
             this._weakRSSImeasurements += 1;
@@ -125,10 +128,25 @@ export class Session {
   }
 
 
-  async tryToActivate() {
+  /**
+   * Each incoming scan which is close enough will try to activate the session.
+   * The session asks the sessionManager if it is allowed to start.
+   * If the SessionManager agrees, it will activate and start connecting.
+   *
+   * The threshold and measurement are only provided for logging purposes.
+   * @param threshold
+   * @param measurement
+   */
+  async tryToActivate(threshold? : number, measurement? : number) {
     if (this.state !== "INITIALIZING") { return; }
 
     if (this.interactionModule.canActivate()) {
+      if (measurement) {
+        LOGd.constellation(`Session: Passed activation check with ${measurement} threshold ${threshold}`, this.handle, this.identifier);
+      }
+      else {
+        LOGd.constellation(`Session: Passed activation check with privateId ${this.privateId}`, this.handle, this.identifier);
+      }
       await this.connect();
     }
   }
@@ -136,7 +154,7 @@ export class Session {
 
   _respondTo(event : string, callback: () => void) {
     this.listeners.push(NativeBus.on(event,(handle) => {
-      if (handle.toLowerCase() === this.handle.toLowerCase()) { callback(); }
+      if (handle === this.handle) { callback(); }
     }));
   }
 
@@ -147,7 +165,7 @@ export class Session {
 
 
   async connect() {
-    LOGd.constellation("Session: Start connecting to", this.handle);
+    LOGd.constellation("Session: Start connecting to", this.handle, this.identifier);
     // remove the listener for ibeacons from this device.
     this._clearBootstrapper()
 
@@ -171,7 +189,7 @@ export class Session {
       return;
     }
 
-    LOGi.constellation("Session: Connected to", this.handle);
+    LOGi.constellation("Session: Connected to", this.handle, this.identifier);
     this.state = "CONNECTED";
     this.interactionModule.isConnected();
 
@@ -200,9 +218,9 @@ export class Session {
       }
     }
     this.state = "PERFORMING_COMMAND";
-    LOGd.constellation("Session: performing available command...", this.handle, this.privateId)
+    LOGd.constellation("Session: performing available command...", this.handle, this.identifier);
     await BleCommandManager.performCommand(this.handle, this.privateId);
-    LOGd.constellation("Session: Finished available command...", this.handle, this.privateId)
+    LOGd.constellation("Session: Finished available command...", this.handle, this.identifier);
     this.state = "CONNECTED";
 
     if (this.sessionIsKilled) {
@@ -219,25 +237,28 @@ export class Session {
    * This will be called when the SessionManager closes this session.
    */
   async kill() {
+    LOGd.constellation("Session: killing session",this.state, this.handle, this.identifier)
     this.sessionIsKilled = true;
     switch (this.state) {
       case "INITIALIZING":
-        return this.sessionHasEnded();
+        this.sessionHasEnded();
+        break;
       case "CONNECTING":
         await BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
-        return;
+        break;
       case "CONNECTED":
         await this.disconnect();
-        return;
+        break;
       case "PERFORMING_COMMAND":
-        return;
+        break;
       case "WAITING_FOR_COMMANDS":
         await this.disconnect();
-        return;
+        break;
       case "DISCONNECTING":
         // the session will be cleared by the disconnected event listener
-        return;
+        break;
     }
+    LOGd.constellation("Session: killing session completed", this.handle, this.identifier);
   }
 
 
@@ -265,6 +286,8 @@ export class Session {
 
 
   sessionHasEnded() {
+    LOGd.constellation("Session: Session has ended..", this.handle, this.identifier);
+
     this.state = "DISCONNECTED";
 
     this.interactionModule.sessionHasEnded();

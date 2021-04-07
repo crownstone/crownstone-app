@@ -351,12 +351,19 @@ export class SessionManagerClass {
     // check if there are any private requests queued. These get priority.
     if (this._pendingPrivateSessionRequests[handle] && this._pendingPrivateSessionRequests[handle].length > 0) {
       let pendingPrivate = this._pendingPrivateSessionRequests[handle][0];
+      LOGi.constellation("SessionManager: creating session after the previous session had ended for private commander.", handle, pendingPrivate.commanderId);
       this._createSession(handle, pendingPrivate.commanderId, true)
     }
     else {
       // if it was a shared session, it could have been an error or it had nothing to do.
-      if (BleCommandManager.areThereCommandsFor(handle) === true || (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0)) {
+      if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
+        let pendingPublic = this._pendingSessionRequests[handle][0].commanderId;
+        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);
+        await this.request(handle, pendingPublic, false);
+      }
+      else if (BleCommandManager.areThereCommandsFor(handle)) {
         // there are still shared commands, so the session will be retried.
+        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle);
         await this.request(handle, xUtil.getUUID(), false);
       }
     }

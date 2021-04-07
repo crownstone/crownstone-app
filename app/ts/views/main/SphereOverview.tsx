@@ -286,7 +286,6 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
       }
 
-      console.log("rendering", backgroundOverride)
 
       return (
         <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>

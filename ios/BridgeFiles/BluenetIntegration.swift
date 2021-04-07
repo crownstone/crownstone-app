@@ -235,12 +235,7 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false]]
         )}
       .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN isPeripheralReady"]])
-        }
+        errReply("isPeripheralReady", err, callback)
     }
   }
 
@@ -250,12 +245,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
       .done{ crownstoneMode in callback([["error" : false, "data": "\(crownstoneMode)"]]) }
       .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN  connect \(err)"]])
-        }
+        errReply("connect", err, callback)
     }
   }
   
@@ -264,12 +254,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
       .done{ crownstoneMode in callback([["error" : false, "data": "\(crownstoneMode)"]]) }
       .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN  cancelConnectionRequest \(err)"]])
-        }
+        errReply("cancelConnectionRequest", err, callback)
     }
   }
   
@@ -362,12 +347,7 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false, "data": returnType]])
       }
       .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN requestLocation \(err)"]])
-        }
+        errReply("requestLocation", err, callback)
       }
   }
   
@@ -864,12 +844,7 @@ open class BluenetJS: RCTEventEmitter {
       wrapBehaviourMethodForBluenet("addBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour(handleUUID!).addBehaviour(behaviour: behaviour))
     }
     catch let error {
-      if let bluenetErr = error as? BluenetError {
-        callback([["error" : true, "data": getBluenetErrorString(bluenetErr) ]])
-      }
-      else {
-        callback([["error" : true, "data": "UNKNOWN ERROR" ]])
-      }
+      errReply("addBehaviour", error, callback)
     }
   }
   
@@ -885,12 +860,7 @@ open class BluenetJS: RCTEventEmitter {
       }
     }
     catch let error {
-      if let bluenetErr = error as? BluenetError {
-        callback([["error" : true, "data": getBluenetErrorString(bluenetErr) ]])
-      }
-      else {
-        callback([["error" : true, "data": "UNKNOWN ERROR" ]])
-      }
+      errReply("updateBehaviour", error, callback)
     }
   }
   
@@ -903,12 +873,7 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false, "data": dictionaryData]])
       }
       .catch{err in
-         if let bleErr = err as? BluenetError {
-           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-         }
-         else {
-           callback([["error" : true, "data": "UNKNOWN ERROR IN getBehaviour \(err)"]])
-         }
+          errReply("getBehaviour", err, callback)
       }
   }
   
@@ -931,12 +896,7 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false, "data": resultMap]])
       }
       .catch{err in
-         if let bleErr = err as? BluenetError {
-           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-         }
-         else {
-           callback([["error" : true, "data": "UNKNOWN ERROR IN getBehaviour \(err)"]])
-         }
+        errReply("syncBehaviours", err, callback)
       }
   }
   
@@ -1021,12 +981,7 @@ open class BluenetJS: RCTEventEmitter {
      GLOBAL_BLUENET.bluenet.control(handleUUID!).switchRelay(state.uint8Value)
        .done{_ in callback([["error" : false]])}
        .catch{err in
-         if let bleErr = err as? BluenetError {
-           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-         }
-         else {
-           callback([["error" : true, "data": "UNKNOWN ERROR IN switchRelay \(err)"]])
-         }
+          errReply("switchRelay", err, callback)
      }
    }
    
@@ -1036,12 +991,7 @@ open class BluenetJS: RCTEventEmitter {
       GLOBAL_BLUENET.bluenet.debug(handleUUID!).getUptime()
         .done{result in callback([["error" : false, "data": NSNumber(value: result)]])}
         .catch{err in
-          if let bleErr = err as? BluenetError {
-            callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-          }
-          else {
-            callback([["error" : true, "data": "UNKNOWN ERROR IN getCrownstoneUptime \(err)"]])
-          }
+          errReply("getCrownstoneUptime", err, callback)
       }
     }
   
@@ -1051,12 +1001,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.debug(handleUUID!).getAdcRestarts()
       .done{result in callback([["error" : false, "data": result ]])}
       .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN getAdcRestarts \(err)"]])
-        }
+        errReply("getAdcRestarts", err, callback)
     }
   }
   
@@ -1066,12 +1011,7 @@ open class BluenetJS: RCTEventEmitter {
      GLOBAL_BLUENET.bluenet.debug(handleUUID!).getSwitchHistory()
        .done{switchHistory in callback([["error" : false, "data": switchHistory ]])}
        .catch{err in
-         if let bleErr = err as? BluenetError {
-           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-         }
-         else {
-           callback([["error" : true, "data": "UNKNOWN ERROR IN getSwitchHistory \(err)"]])
-         }
+          errReply("getSwitchHistory", err, callback)
      }
    }
   
@@ -1102,12 +1042,7 @@ open class BluenetJS: RCTEventEmitter {
       GLOBAL_BLUENET.bluenet.debug(handleUUID!).getPowerSamples(type: typeEnum)
        .done{powerSamples in callback([["error" : false, "data": powerSamples ]])}
        .catch{err in
-         if let bleErr = err as? BluenetError {
-           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-         }
-         else {
-           callback([["error" : true, "data": "UNKNOWN ERROR IN getPowerSamples \(err)"]])
-         }
+         errReply("getPowerSamples", err, callback)
       }
    }
   
@@ -1312,14 +1247,12 @@ open class BluenetJS: RCTEventEmitter {
 func wrapForBluenet<T>(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<T>) {
   LOGGER.info("BluenetBridge: Called \(label)")
   promise
-    .done{ value in callback([["error" : false, "data": value]]) }
+    .done{ value in
+      LOGGER.info("BluenetBridge: Success with \(label)")
+      callback([["error" : false, "data": value]])
+    }
     .catch{err in
-      if let bleErr = err as? BluenetError {
-        callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-      }
-      else {
-        callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
-      }
+      errReply(label, err, callback)
   }
 }
 
@@ -1329,30 +1262,26 @@ func wrapForBluenet<T>(_ label: String, _ callback: @escaping RCTResponseSenderB
 }
 
 func wrapForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<Void>) {
-  LOGGER.info("BluenetBridge: Called \(label)")
+  LOGGER.info("BluenetBridge: Called \(label) as promise")
   promise
-    .done{ _ in callback([["error" : false]]) }
+    .done{ _ in
+      LOGGER.info("BluenetBridge: Success with \(label)")
+      callback([["error" : false]])
+    }
     .catch{err in
-      if let bleErr = err as? BluenetError {
-        callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-      }
-      else {
-        callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
-      }
-  }
+      errReply(label, err, callback)
+    }
 }
 
 func wrapBehaviourMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<BehaviourResultPacket>) {
-  LOGGER.info("BluenetBridge: Called \(label)")
+  LOGGER.info("BluenetBridge: Called \(label) as promise")
   promise
-    .done{ (value : BehaviourResultPacket) in callback([["error" : false, "data": ["index": value.index, "masterHash": value.masterHash]]]) }
+    .done{ (value : BehaviourResultPacket) in
+      LOGGER.info("BluenetBridge: Success with \(label)")
+      callback([["error" : false, "data": ["index": value.index, "masterHash": value.masterHash]]])
+    }
     .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
-        }
+      errReply(label, err, callback)
     }
 }
 
@@ -1363,6 +1292,7 @@ func wrapHubMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseS
     .done{ value in
       let hubResult = HubParser(value)
       if (hubResult.valid) {
+        LOGGER.info("BluenetBridge: Success with \(label)")
         callback([["error" : false, "data": [
           "protocolVersion": hubResult.protocolVersion,
           "type":            hubResult.typeString,
@@ -1372,15 +1302,23 @@ func wrapHubMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseS
         ]]])
       }
       else {
+        LOGGER.info("BluenetBridge: Error with \(label) \("INVALID_REPLY")")
         callback([["error" : true, "data": "INVALID_REPLY"]])
       }
     }
     .catch{err in
-      if let bleErr = err as? BluenetError {
-        callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-      }
-      else {
-        callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
-      }
+      errReply(label, err, callback)
+    }
   }
-}
+  
+  
+  func errReply(_ label: String, _ err: Any, _ callback: @escaping RCTResponseSenderBlock) {
+    if let bleErr = err as? BluenetError {
+      LOGGER.info("BluenetBridge: Error with \(label) \(getBluenetErrorString(bleErr))")
+      callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+    }
+    else {
+      LOGGER.info("BluenetBridge: Error with \(label) Unknown")
+      callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
+    }
+  }

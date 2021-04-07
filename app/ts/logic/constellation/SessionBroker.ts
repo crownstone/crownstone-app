@@ -98,11 +98,7 @@ export class SessionBroker {
       if (requiredHandleMap[openHandle] === undefined) {
         if (this.options.private === false) {
           LOGi.constellation("SessionBroker: Revoke session", openHandle, "for", this.options.commanderId);
-          SessionManager.revokeRequest(openHandle, this.options.commanderId).catch((err) => {
-            if (err !== "REMOVED_FROM_QUEUE") {
-              LOGw.constellation("SessionBroker: Failed to revoke session", openHandle, "for", this.options.commanderId, err);
-            }
-          })
+          SessionManager.revokeRequest(openHandle, this.options.commanderId)
           delete this.pendingSessions[openHandle];
         }
       }
@@ -122,6 +118,13 @@ export class SessionBroker {
           this.connectedSessions[handle] = {id: command.id, private: command.private};
 
           this.addCleanupEventListener(handle);
+        })
+        .catch((err) => {
+          delete this.pendingSessions[handle];
+          if (err !== "REMOVED_FROM_QUEUE") {
+            LOGw.constellation("SessionBroker: Failed to revoke session", handle, "for", this.options.commanderId, err);
+            throw err;
+          }
         })
     }
   }

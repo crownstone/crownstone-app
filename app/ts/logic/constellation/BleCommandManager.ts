@@ -5,7 +5,7 @@ import { BCH_ERROR_CODES } from "../../Enums";
 import { BleCommandCleaner } from "./BleCommandCleaner";
 import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
-import { LOG, LOGi, LOGw } from "../../logging/Log";
+import { LOG, LOGd, LOGi, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
@@ -158,13 +158,18 @@ export class BleCommandManagerClass {
     let meshId   = MapProvider.handleMeshMap[handle] || null;
     let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
 
-    if (!sphereId) { return false; }
+    LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} checking meshId ${meshId} and sphereId ${sphereId}`);
+    if (!sphereId) {
+      LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} failed because no sphereId`);
+      return false;
+    }
 
     if (privateKey) {
       if (this.queue.direct[handle]) {
         let commands = this.queue.direct[handle];
         for (let command of commands) {
           if (command.private && command.commanderId) {
+            LOGd.constellation(`BleCommandManager.areThereCommandsFor private ${handle} ${privateKey} is TRUE: ${command.command.type}`);
             return true;
           }
         }
@@ -175,6 +180,7 @@ export class BleCommandManagerClass {
         let commands = this.queue.direct[handle];
         for (let command of commands) {
           if (command.private === false) {
+            LOGd.constellation(`BleCommandManager.areThereCommandsFor public ${handle} ${privateKey} is TRUE: ${command.command.type}`);
             return true;
           }
         }
@@ -183,12 +189,14 @@ export class BleCommandManagerClass {
         let commands = this.queue.mesh[meshId];
         for (let command of commands) {
           if (command.executedBy.indexOf(handle) === -1 && command.attemptingBy.indexOf(handle) === -1) {
+            LOGd.constellation(`BleCommandManager.areThereCommandsFor mesh ${handle} ${privateKey} is TRUE: ${command.command.type}`);
             return true;
           }
         }
       }
     }
 
+    LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} is FALSE`);
     return false;
   }
 
@@ -252,8 +260,6 @@ export class BleCommandManagerClass {
         command.attemptingBy.splice(attemptingIndex, 1);
       }
 
-      console.log("attemptingBy", handle, command.commandType, command.attemptingBy, command.attemptingBy.length, command.minConnections)
-      console.log("executedBy",   handle, command.commandType, command.executedBy, command.executedBy.length, command.minConnections)
       if (command.commandType === 'DIRECT') {
         LOGi.constellation("BleCommandManager: Direct command finished.", handle, command.command.type, command.id);
         command.promise.resolve(result);
