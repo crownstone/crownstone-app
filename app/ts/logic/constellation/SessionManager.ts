@@ -14,7 +14,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandManager } from "./BleCommandManager";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
-import { LOG, LOGi } from "../../logging/Log";
+import { LOG, LOGd, LOGi } from "../../logging/Log";
 import { Platform } from "react-native";
 
 export class SessionManagerClass {
@@ -138,6 +138,7 @@ export class SessionManagerClass {
    * It will query the BleCommandManager for all outstanding sessions. If the shared ones have no commands, they're cancelled.
    */
   evaluateSessionNecessity() {
+    LOGd.constellation("SessionManager: evaluateSessionNecessity now")
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
         if (BleCommandManager.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
@@ -258,7 +259,7 @@ export class SessionManagerClass {
     }
 
     if (this._timeoutHandlers[handle][commanderId] !== undefined) {
-      throw "ALREADY_REQUESTED"
+      throw "ALREADY_REQUESTED_TIMEOUT"
     }
 
     this._timeoutHandlers[handle][commanderId] = {
@@ -300,8 +301,14 @@ export class SessionManagerClass {
     if (isInList(this._pendingSessionRequests, handle, commanderId)) {
       removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
       if (session && session.isPrivate() === false && session.state === "INITIALIZING" || session.state === "CONNECTING") {
-        // public sessions close themselves, no need to end if it is connected
-        await this.closeSession(handle);
+        // if other processes require this public session, allow them to use it instead.
+        if (this.checkIfSessionIsStillRequired(handle) === false) {
+          // public sessions close themselves, no need to end if it is connected
+          await this.closeSession(handle);
+        }
+        else {
+          LOGd.constellation("SessionManager: Keep session open for other requests", handle);
+        }
       }
     }
 
@@ -355,19 +362,27 @@ export class SessionManagerClass {
       this._createSession(handle, pendingPrivate.commanderId, true)
     }
     else {
-      // if it was a shared session, it could have been an error or it had nothing to do.
-      if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
-        let pendingPublic = this._pendingSessionRequests[handle][0].commanderId;
-        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);
-        await this.request(handle, pendingPublic, false);
-      }
-      else if (BleCommandManager.areThereCommandsFor(handle)) {
-        // there are still shared commands, so the session will be retried.
-        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle);
-        await this.request(handle, xUtil.getUUID(), false);
+      let newRequest = this.checkIfSessionIsStillRequired(handle);
+      if (newRequest !== false) {
+        await this.request(handle, newRequest, false);
       }
     }
   }
+
+  checkIfSessionIsStillRequired(handle) {
+    // if it was a shared session, it could have been an error or it had nothing to do.
+    if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
+      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);
+      return xUtil.getUUID();
+    }
+    else if (BleCommandManager.areThereCommandsFor(handle)) {
+      // there are still shared commands, so the session will be retried.
+      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle);
+      return xUtil.getUUID();
+    }
+    return false;
+  }
+
 
   async removeFromQueue(handle, commanderId) {
     removeFromQueueList(this._pendingPrivateSessionRequests, handle, commanderId);

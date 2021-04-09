@@ -73,3 +73,11 @@ interface ExecutionOptions {
   bleCommand: BleCommand,
   queue: CommandQueueMap
 }
+
+interface RegisterPayload {
+  profileId:number,
+  rssiOffset:number,
+  ignoreForPresence:boolean,
+  tapToToggleEnabled:boolean,
+  ttlMinutes:number
+}

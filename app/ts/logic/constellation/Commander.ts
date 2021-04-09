@@ -160,12 +160,22 @@ class CommandMeshAPI extends CommandAPI_base {
   }
 
 
+  /**
+   * This command can recover from certain errors by registering instead. This is why it requires the same arguments as the register command.
+   * @param trackingNumber
+   * @param locationUID
+   * @param deviceToken
+   * @param ttlMinutes
+   * @param registerPayload
+   */
   async trackedDeviceHeartbeat(
     trackingNumber:number,
     locationUID:() => number | number,
     deviceToken:number,
-    ttlMinutes:number) : Promise< void > {
-    return this._load(new Command_TrackedDeviceHeartbeat(trackingNumber, locationUID, deviceToken, ttlMinutes));
+    ttlMinutes:number,
+    registerPayload: RegisterPayload
+    ) : Promise< void > {
+    return this._load(new Command_TrackedDeviceHeartbeat(trackingNumber, locationUID, deviceToken, ttlMinutes, registerPayload));
   }
 
 

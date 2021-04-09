@@ -122,7 +122,7 @@ export class SessionBroker {
         .catch((err) => {
           delete this.pendingSessions[handle];
           if (err !== "REMOVED_FROM_QUEUE") {
-            LOGw.constellation("SessionBroker: Failed to revoke session", handle, "for", this.options.commanderId, err);
+            LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
             throw err;
           }
         })
@@ -137,7 +137,7 @@ export class SessionBroker {
       LOGi.constellation("SessionBroker: Revoke session for kill", sessionHandle, "for", this.options.commanderId);
       await SessionManager.revokeRequest(sessionHandle, this.options.commanderId).catch((err) => {
         if (err !== "REMOVED_FROM_QUEUE") {
-          LOGw.constellation("SessionBroker: Failed to revoke session", sessionHandle, "for", this.options.commanderId, err);
+          LOGw.constellation("SessionBroker: Failed to request session", sessionHandle, "for", this.options.commanderId, err);
         }
       })
       delete this.connectedSessions[sessionHandle];

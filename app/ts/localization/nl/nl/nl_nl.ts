@@ -3369,7 +3369,7 @@ export default {
     __stringSameAsBaseLanguage: {
       Walk_around_the_room_so__:             false,
     },
-    Walk_around_the_room_so__:              function() { return "Loop door de kamer, zodat " + arguments[0] + " kan leren om je te lokaliseren in de kamer. Elke beat leert " + arguments[1] + " een beetje meer over de kamer!"; },
+    Walk_around_the_room_so__:              function() { return "Loop door de kamer, zodat ik kan leren om je te lokaliseren in de kamer. Elke beat leer ik een beetje meer over de kamer!"; },
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_training.tsx",
   },
   RuleEditor:{

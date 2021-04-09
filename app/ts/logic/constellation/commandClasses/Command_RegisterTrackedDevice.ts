@@ -35,17 +35,22 @@ export class Command_RegisterTrackedDevice extends CommandBase implements Comman
 
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
     let locationUID = typeof this.locationUID == "function" ? this.locationUID() : this.locationUID;
-    return BluenetPromiseWrapper.registerTrackedDevice(
-      connectedHandle,
-      this.trackingNumber,
-      locationUID,
-      this.profileId,
-      this.rssiOffset,
-      this.ignoreForPresence,
-      this.tapToToggleEnabled,
-      this.deviceToken,
-      this.ttlMinutes
-    );
+    try {
+      await BluenetPromiseWrapper.registerTrackedDevice(
+        connectedHandle,
+        this.trackingNumber,
+        locationUID,
+        this.profileId,
+        this.rssiOffset,
+        this.ignoreForPresence,
+        this.tapToToggleEnabled,
+        this.deviceToken,
+        this.ttlMinutes
+      );
+    }
+    catch (err) {
+      throw err;
+    }
   }
 
   duplicateCheck(otherCommand: CommandBaseInterface): boolean {

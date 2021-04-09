@@ -52,7 +52,7 @@ class Logger {
   }
 
   constellation(...any) {
-    this._log('CONSTELLATION', LOG_CONSTELLATION, LogProcessor.log_promiseManager, arguments);
+    this._log('CONSTELLATION', LOG_CONSTELLATION, LogProcessor.log_constellation, arguments);
   }
 
   broadcast(...any) {
@@ -138,15 +138,9 @@ class Logger {
         logToFile.apply(this, args);
       }
 
-      if (RELEASE_MODE_USED === false || base_core.sessionMemory.developmentEnvironment) {
-        if (this.level > LOG_LEVEL.info) {
-          // @ts-ignore
-          console.log.apply(this, args);
-        }
-        else {
-          // @ts-ignore
-          console.log.apply(this, args);
-        }
+      if (base_core.sessionMemory.developmentEnvironment) {
+        // @ts-ignore
+        console.log.apply(this, args);
       }
     }
   }

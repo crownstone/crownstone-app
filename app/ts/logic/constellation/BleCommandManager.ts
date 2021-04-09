@@ -5,7 +5,7 @@ import { BCH_ERROR_CODES } from "../../Enums";
 import { BleCommandCleaner } from "./BleCommandCleaner";
 import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
-import { LOG, LOGd, LOGi, LOGw } from "../../logging/Log";
+import { LOG, LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
@@ -158,9 +158,9 @@ export class BleCommandManagerClass {
     let meshId   = MapProvider.handleMeshMap[handle] || null;
     let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
 
-    LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} checking meshId ${meshId} and sphereId ${sphereId}`);
+    LOGv.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} checking meshId ${meshId} and sphereId ${sphereId}`);
     if (!sphereId) {
-      LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} failed because no sphereId`);
+      LOGv.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} failed because no sphereId`);
       return false;
     }
 
@@ -286,6 +286,15 @@ export class BleCommandManagerClass {
         LOGw.constellation("BleCommandManager: Failing the direct command", command.command.type, handle, err, command.id);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
+      }
+      else if (command.commandType === 'MESH') {
+        // if the error is not connected,
+        if (err !== "NOT_CONNECTED") {
+          command.promise.reject(err);
+          LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err, command.id);
+          this.removeCommand(handle, command.id);
+          commandRemoved = true;
+        }
       }
     }
 

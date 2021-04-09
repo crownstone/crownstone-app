@@ -13,7 +13,7 @@ Connect bridge method now returns the Crownstone's operation mode:
 "operation"
 "dfu"
 
-Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED". This will always succeed.
+Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED". If this fails due to timeout, throw error "CANCEL_PENDING_CONNECTION_TIMEOUT". Other errors will be treated as bugs to solve (for now).
 
 Move to the HERMES engine
 https://reactnative.dev/docs/hermes
@@ -32,3 +32,5 @@ Setup command will no longer receive meshAccessAddress. Hardcode into lib if req
 
 Turn on mesh command data changed. It is now a list of stone short ids.
 turnOnMesh(handle: string, arrayOfStoneIds: number[])  
+
+If a command fails due to not being connected to a crownstone (anymore), throw this error: "NOT_CONNECTED"

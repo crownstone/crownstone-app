@@ -13,7 +13,7 @@ import { core } from "../../core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
-import { LOGd, LOGi } from "../../logging/Log";
+import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
 import { act } from "@testing-library/react-native";
 import { Scheduler } from "../Scheduler";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
@@ -30,8 +30,11 @@ export class Session {
 
   identifier = xUtil.getShortUUID()
 
-  sessionIsActivated = false;
-  sessionIsKilled = false;
+  _sessionIsActivated = false;
+  _sessionIsKilled = false;
+  _sessionHasEnded = false;
+
+  _pendingForClose = [];
 
   privateId : string | null;
   listeners = [];
@@ -55,7 +58,9 @@ export class Session {
     LOGd.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
-    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => { this.sessionHasEnded();   });
+    this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
+      LOGi.constellation("Session: Disconnected from Crownstone, ending session...")
+      this.sessionHasEnded();   });
 
     this.initializeBootstrapper();
 
@@ -94,15 +99,16 @@ export class Session {
 
 
   initializeBootstrapper() {
+    LOGv.constellation("Session: Initializing bootstrapper", this.handle, this.identifier);
     this.state = "INITIALIZING";
-    this.sessionIsActivated = false;
+    this._sessionIsActivated = false;
     this._weakRSSImeasurements = 0;
 
     this._clearBootstrapper();
 
     let activator = (data : crownstoneBaseAdvertisement) => {
       if (data.handle === this.handle) {
-        if (this.sessionIsActivated === false) {
+        if (this._sessionIsActivated === false) {
           let threshold = Math.max(CONNECTION_THRESHOLD_MAX, CONNECTION_THRESHOLD_MIN + this._weakRSSImeasurements*CONNECTION_THRESHOLD_STEP);
           if (data.rssi >= threshold) {
             this.tryToActivate(threshold, data.rssi);
@@ -121,6 +127,7 @@ export class Session {
 
 
   _clearBootstrapper() {
+    LOGv.constellation("Session: Clearing bootstrapper", this.handle, this.identifier);
     for (let unsubscribe of this._unsubscribeBootstrappers) {
       unsubscribe();
     }
@@ -170,20 +177,20 @@ export class Session {
     this._clearBootstrapper()
 
     this.interactionModule.willActivate();
-    this.sessionIsActivated = true;
+    this._sessionIsActivated = true;
     this.state = "CONNECTING";
     try {
       this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId);
     }
     catch (err) {
-      if (err === "CONNECTION_CANCELLED") {
-        if (this.sessionIsKilled) {
-          this.sessionHasEnded();
-          return;
-        }
+      LOGi.constellation("Session: Failed to connect", err, this.handle, this.identifier, this._sessionIsKilled);
+      if (this._sessionIsKilled) {
+        // the session will be ended once the cancelConnectionRequest has finished.
+        return;
       }
 
       // a failed connection will automatically retry untill the session is ended.
+      LOGi.constellation("Session: Reinitializing the bootstrapper to reactivate the session", this.handle, this. identifier);
       this.interactionModule.isDeactivated();
       this.initializeBootstrapper();
       return;
@@ -223,7 +230,7 @@ export class Session {
     LOGd.constellation("Session: Finished available command...", this.handle, this.identifier);
     this.state = "CONNECTED";
 
-    if (this.sessionIsKilled) {
+    if (this._sessionIsKilled) {
       return this.disconnect();
     }
 
@@ -237,20 +244,38 @@ export class Session {
    * This will be called when the SessionManager closes this session.
    */
   async kill() {
-    LOGd.constellation("Session: killing session",this.state, this.handle, this.identifier)
-    this.sessionIsKilled = true;
+    // session already ended. return/
+    if (this._sessionHasEnded) { return; }
+    // kill already in progress. resolve on end.
+    if (this._sessionIsKilled) { return new Promise((resolve, reject) => { this._pendingForClose.push(resolve) }); }
+
+    LOGd.constellation("Session: killing session requested...",this.state, this.handle, this.identifier);
+    this._sessionIsKilled = true;
     switch (this.state) {
       case "INITIALIZING":
         this.sessionHasEnded();
         break;
       case "CONNECTING":
-        await BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
+        await BluenetPromiseWrapper.cancelConnectionRequest(this.handle).catch((err) => {
+          if (err === "CANCEL_PENDING_CONNECTION_TIMEOUT") {
+            // assume this has cancelled the connection request but did not enter the did disconnect
+            // this can be ignored. Other errors will be treated as bugs.
+          }
+          else {
+            LOGe.constellation("Session: Error when cancellingConnectionRequest", err);
+          }
+        })
+        LOGd.constellation("Session: cancelConnectionRequest finished, ending session", this.handle, this.identifier);
+        this.sessionHasEnded();
         break;
       case "CONNECTED":
         await this.disconnect();
         break;
       case "PERFORMING_COMMAND":
-        break;
+        // wait for the command to finish.
+        LOGd.constellation("Session: waiting for command to finish...",this.state, this.handle, this.identifier)
+        await Scheduler.delay(100);
+        return;
       case "WAITING_FOR_COMMANDS":
         await this.disconnect();
         break;
@@ -258,6 +283,8 @@ export class Session {
         // the session will be cleared by the disconnected event listener
         break;
     }
+
+
     LOGd.constellation("Session: killing session completed", this.handle, this.identifier);
   }
 
@@ -265,16 +292,18 @@ export class Session {
   async disconnect() {
     this.state = "DISCONNECTING";
     try {
-      await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode)
+      await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode);
     }
-    catch (e) {}
+    catch (e) {
+      LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e);
+    }
     await BluenetPromiseWrapper.phoneDisconnect(this.handle);
   }
 
 
   deactivate() {
     if (this.isPrivate() || this.isClosing()) { return; }
-    if (this.sessionIsActivated === false)    { return; }
+    if (this._sessionIsActivated === false)    { return; }
     if (this.state === "CONNECTED")           { return; }
     if (this.state === "CONNECTING") {
       BluenetPromiseWrapper.cancelConnectionRequest(this.handle);
@@ -285,15 +314,25 @@ export class Session {
   }
 
 
-  sessionHasEnded() {
+  async sessionHasEnded() {
+    if (this._sessionHasEnded) { return; }
+
+    this._sessionHasEnded = true;
     LOGd.constellation("Session: Session has ended..", this.handle, this.identifier);
 
     this.state = "DISCONNECTED";
-
-    this.interactionModule.sessionHasEnded();
-    for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
     this._clearBootstrapper();
 
+    for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }
+
+    // wait for the next tick so the cleanup can be done before the next session might be started.
+    await xUtil.nextTick();
+
+    this.interactionModule.sessionHasEnded();
+    for (let waiter of this._pendingForClose) {
+      waiter();
+    }
+    this._pendingForClose = [];
     core.eventBus.emit(`SessionClosed_${this.handle}`, this.privateId);
   }
 }

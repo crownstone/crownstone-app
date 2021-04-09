@@ -73,7 +73,14 @@ class TrackingNumberManagerClass {
         preferences.trackingNumber,
         () => { return BroadcastStateManager.getCurrentLocationUID(); },
         preferences.randomDeviceToken,
-        3
+        3,
+        {
+          profileId: 0,
+          rssiOffset: preferences.rssiOffset,
+          ignoreForPresence: preferences.ignoreForBehaviour,
+          tapToToggleEnabled: preferences.tapToToggleEnabled,
+          ttlMinutes: 120
+        }
       )
         .catch((err) => {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);

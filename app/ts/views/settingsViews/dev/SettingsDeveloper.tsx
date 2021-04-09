@@ -343,7 +343,13 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           cleanup();
         }
       }});
-
+    items.push({
+      label: "Crash to test Sentry",
+      type: 'button',
+      icon: <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+      callback:() => {
+        throw new Error("SentryTest!")
+      }})
 
 
     // let deviceId = Util.data.getCurrentDeviceId(state);
@@ -614,7 +620,7 @@ export function getDevAppItems() {
       }
     });
     items.push({
-      label: "This can brick your Crownstones. Beware! Your locationhandler will be sessionIsKilled. Restart the app to go back to app mode.",
+      label: "This can brick your Crownstones. Beware! Your locationhandler will be _sessionIsKilled. Restart the app to go back to app mode.",
       type: 'explanation',
       below: true
     });
