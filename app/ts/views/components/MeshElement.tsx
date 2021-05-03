@@ -159,7 +159,7 @@ class MeshElementClass extends LiveComponent<any, any> {
           width:innerSize,
           height:innerSize,
           borderRadius:innerSize * 0.5,
-          backgroundColor: colors.orange.hex
+          backgroundColor: colors.csOrange.hex
         }, styles.centered]}>
           <Icon name={'c1-update-arrow'} size={innerSize - 2 * borderWidth} color={ colors.white.hex } />
         </View>

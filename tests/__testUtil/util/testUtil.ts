@@ -1,8 +1,8 @@
 export const TestUtil = {
-  nextTick: async () => {
-    return new Promise<void>((resolve,reject) => {
-      setImmediate(() => { resolve(); })
-    })
+  nextTick: async (count = 1) => {
+    for (let i = 0; i < count; i++) {
+      await tick();
+    }
   },
 
   wait: async (delayMs: number = 50) => {
@@ -10,4 +10,11 @@ export const TestUtil = {
       setTimeout(() => { resolve(); }, delayMs)
     })
   }
+}
+
+
+function tick() {
+  return new Promise<void>((resolve,reject) => {
+    setImmediate(() => { resolve(); })
+  })
 }

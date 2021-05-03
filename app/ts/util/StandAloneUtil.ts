@@ -150,7 +150,7 @@ export const xUtil = {
     let promise = new Promise<T>((resolve, reject) => {
       promiseContainer.resolve = resolve;
       promiseContainer.reject = reject;
-    })
+    });
     promiseContainer.promise = promise;
     return promiseContainer;
   },

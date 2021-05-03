@@ -30,6 +30,7 @@ import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
 import { Stacks } from "../../../router/Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
+import { base_core } from "../../../base_core";
 const RNFS = require('react-native-fs');
 
 
@@ -559,6 +560,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     }});
 
     items.push({label: "CLOUD URL: " + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({label: "Debug version loaded :" + base_core.sessionMemory.developmentEnvironment, type: 'explanation'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
 

@@ -147,7 +147,7 @@ test("BleCommandManager shared, direct, check a command can be performed", async
 });
 
 
-test("BleCommandManager shared, perform and finish command in mesh", async () => {
+test("BleCommandManager shared, perform and fail mesh command. An error in the performing should fail the command. We don't expect errors.", async () => {
   let sphere = addSphere();
   let { stone: stone1, handle:handle1 } = addStone({meshNetworkId:meshId});
   let { stone: stone2, handle:handle2 } = addStone({meshNetworkId:meshId});
@@ -171,12 +171,10 @@ test("BleCommandManager shared, perform and finish command in mesh", async () =>
   BleCommandManager.performCommand(stone4.config.handle);
   expect(mBluenetPromise.has(stone4.config.handle).called.turnOnMesh()).toBeTruthy();
   await mBluenetPromise.for(stone4.config.handle).fail.turnOnMesh();
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
-
-  BleCommandManager.performCommand(stone4.config.handle);
-  expect(mBluenetPromise.has(stone4.config.handle).called.turnOnMesh()).toBeTruthy();
-  await mBluenetPromise.for(stone4.config.handle).succeed.turnOnMesh();
   expect(BleCommandManager.queue.mesh[meshId]).toBeUndefined();
+
+  await TestUtil.nextTick();
+  expect(promise.reject).toBeCalledWith("GenericError")
 });
 
 

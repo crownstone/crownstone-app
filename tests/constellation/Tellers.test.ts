@@ -155,7 +155,7 @@ test("Check pivate connected session error handling.", async () => {
   await mBluenetPromise.for(handle).succeed.connect("operation");
 
   evt_disconnected(handle);
-
+  await TestUtil.nextTick();
   expect(SessionManager._sessions[handle]).toBeUndefined();
   expect(commander.broker.pendingSessions[handle]).toBeUndefined();
   expect(commander.broker.connectedSessions[handle]).toBeUndefined();
@@ -171,5 +171,6 @@ test("Check pivate connected session error handling.", async () => {
   expect(commander.broker.pendingSessions[handle]).toBeUndefined();
   expect(commander.broker.connectedSessions[handle]).not.toBeUndefined();
 
+  await TestUtil.nextTick();
   expect(mBluenetPromise.has(handle).called.getBootloaderVersion()).toBeTruthy();
 });

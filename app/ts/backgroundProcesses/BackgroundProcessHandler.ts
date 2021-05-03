@@ -282,8 +282,9 @@ class BackgroundProcessHandlerClass {
         }
       });
 
-      core.eventBus.emit("AppStateChange", appState)
-      this._applyAppStateOnScanning(appState);
+      // TODO: REVERT
+      core.eventBus.emit("AppStateChange", appState);
+      // this._applyAppStateOnScanning(appState); // TODO: presumably this triggers something!
       this._applyAppStateOnCaching(appState);
       this._applyAppStateOnActiveSphere(appState);
     });
@@ -446,12 +447,12 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    LogProcessor.init();
     BleLogger.init();
     CloudEventHandler.init();
     DfuStateHandler.init();
     EncryptionManager.init();
     FirmwareWatcher.init();
-    LogProcessor.init();
     LocationHandler.init();
     LocalizationMonitor.init();
     MapProvider.init();

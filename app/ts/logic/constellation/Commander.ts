@@ -63,7 +63,8 @@ import {
   Command_SetSoftOnSpeed,
   Command_SetSunTimesViaConnection,
   Command_SetSwitchCraft,
-  Command_SetSwitchcraftThreshold, Command_setSwitchState,
+  Command_SetSwitchcraftThreshold,
+  Command_SetSwitchState,
   Command_SetTapToToggle,
   Command_SetTapToToggleThresholdOffset,
   Command_SetTime,
@@ -85,7 +86,8 @@ import {
   Command_UpdateBehaviour
 } from "./commandClasses";
 import { SessionBroker } from "./SessionBroker";
-import { LOGd } from "../../logging/Log";
+import { LOGd, LOGi } from "../../logging/Log";
+import { Scheduler } from "../Scheduler";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -114,6 +116,7 @@ class CommandAPI_base {
     this.options.commanderId ??= xUtil.getUUID();
     this.id = this.options.commanderId;
 
+    LOGi.constellation("CommanderAPI Created for target", this.options.commandTargets, "id:", this.id);
     this.broker = new SessionBroker(this.options)
   }
 
@@ -125,8 +128,8 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     let promiseContainer = xUtil.getPromiseContainer<any>()
-    let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
     LOGd.constellation("Commander: Loading command", command.type, allowMeshRelays);
+    let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
     // in case this command is broadcast instead of done via
     if (commands) {
       this.broker.loadPendingCommands(commands);
@@ -332,7 +335,7 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_GetSoftOnSpeed());
   }
   async setSwitchState(state: number) : Promise< void > {
-    return this._load(new Command_setSwitchState(state));
+    return this._load(new Command_SetSwitchState(state));
   }
   async switchRelay(state: number) : Promise< void > {
     return this._load(new Command_SwitchRelay(state));

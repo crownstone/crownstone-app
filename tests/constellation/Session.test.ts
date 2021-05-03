@@ -110,6 +110,7 @@ test("Session public kill while initializing.", async () => {
   let session = new Session(handle,null, interactionModule);
   expect(session.state).toBe("INITIALIZING");
   session.kill();
+  await TestUtil.nextTick();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -122,6 +123,7 @@ test("Session public kill while connecting.", async () => {
   session.kill();
   await mBluenetPromise.cancelConnectionRequest(handle);
 
+  await TestUtil.nextTick(2);
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -136,6 +138,8 @@ test("Session public kill while connected.", async () => {
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenetPromise.for(handle).succeed.phoneDisconnect();
+
+  await TestUtil.nextTick();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -145,6 +149,7 @@ test("Session private kill while initializing.", async () => {
   let session = new Session(handle, privateId, interactionModule);
   expect(session.state).toBe("INITIALIZING");
   session.kill();
+  await TestUtil.nextTick();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -158,6 +163,7 @@ test("Session private kill while connecting.", async () => {
   session.kill();
   await mBluenetPromise.cancelConnectionRequest(handle);
 
+  await TestUtil.nextTick(2);
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -172,6 +178,7 @@ test("Session private kill while connected.", async () => {
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   evt_disconnected();
   await mBluenetPromise.for(handle).succeed.phoneDisconnect();
+  await TestUtil.nextTick();
   expect(interactionModule.sessionHasEnded).toHaveBeenCalledTimes(1);
 });
 
@@ -209,6 +216,7 @@ test("Session should cleanup its listeners", async () => {
   session.connect();
   session.kill();
   await mBluenetPromise.cancelConnectionRequest(handle)
+  await TestUtil.nextTick(2);
   expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
   expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
   expect(core.eventBus._topicIds).toStrictEqual({})
@@ -221,6 +229,8 @@ test("Session should cleanup its listeners", async () => {
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected(handle);
+  await TestUtil.nextTick(2);
+
   expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
   expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
   expect(core.eventBus._topicIds).toStrictEqual({})
@@ -235,6 +245,7 @@ test("Session should cleanup its listeners", async () => {
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected(handle);
+  await TestUtil.nextTick(2);
   expect((core.nativeBus as NativeBusMockClass)._topics).toStrictEqual({})
   expect((core.nativeBus as NativeBusMockClass)._topicIds).toStrictEqual({})
   expect(core.eventBus._topicIds).toStrictEqual({})

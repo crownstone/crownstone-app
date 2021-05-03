@@ -13,22 +13,29 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       resolve()
     }
     else {
+      let bluenetArguments = [];
+      // fill the bluenet arguments list with all arguments we will send to bluenet.
+      for (let i = 1; i < arguments.length; i++) {
+        bluenetArguments.push(arguments[i])
+      }
       Sentry.addBreadcrumb({
         category: 'ble',
         data: {
           functionCalled: functionName,
+          id: id,
+          arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
           t: Date.now(),
           state: 'started',
         }
       });
-      let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+          LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           Sentry.addBreadcrumb({
             category: 'ble',
             data: {
               functionCalled: functionName,
+              id: id,
               t: Date.now(),
               state: 'failed',
               err: result.data
@@ -37,11 +44,12 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
           reject(result.data);
         }
         else {
-			LOGi.bch("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           Sentry.addBreadcrumb({
             category: 'ble',
             data: {
               functionCalled: functionName,
+              id: id,
               t: Date.now(),
               state: 'success',
             }
@@ -50,12 +58,8 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
         }
       };
 
-      // fill the bluenet arguments list with all arguments we will send to bluenet.
-      for (let i = 1; i < arguments.length; i++) {
-        bluenetArguments.push(arguments[i])
-      }
 
-      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
+      LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);

@@ -484,6 +484,10 @@ class SchedulerClass {
       Scheduler.scheduleCallback(() => { resolve(); }, ms, 'schedulerDelay_' + label);
     })
   }
+
+  setTimeout(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    return this.scheduleCallback(callback, afterMilliseconds, label);
+  }
 }
 
 export const Scheduler : any = new SchedulerClass();

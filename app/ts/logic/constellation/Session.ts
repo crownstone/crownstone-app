@@ -246,6 +246,7 @@ export class Session {
   async kill() {
     // session already ended. return/
     if (this._sessionHasEnded) { return; }
+
     // kill already in progress. resolve on end.
     if (this._sessionIsKilled) { return new Promise((resolve, reject) => { this._pendingForClose.push(resolve) }); }
 

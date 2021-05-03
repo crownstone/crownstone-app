@@ -55,7 +55,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       invalidationkey:'ImHereForTheDraggable'
     }
 
-    this.localEventBus = new EventBusClass();
+    this.localEventBus = new EventBusClass('localScenesOverview');
   }
 
   initializeSortedList(activeSphereId, state) {

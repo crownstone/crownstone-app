@@ -29,7 +29,7 @@ Object {
     "log_cloud": 30,
     "log_constellation": 30,
     "log_dfu": 50,
-    "log_events": 50,
+    "log_events": 30,
     "log_info": 30,
     "log_mesh": 50,
     "log_native": 50,

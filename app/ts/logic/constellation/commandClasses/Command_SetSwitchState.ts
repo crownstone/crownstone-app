@@ -4,7 +4,7 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 import { Executor } from "../Executor";
 
 
-export class Command_setSwitchState extends CommandBase implements CommandBaseInterface {
+export class Command_SetSwitchState extends CommandBase implements CommandBaseInterface {
 
   switchState;
   constructor(switchState : number) {

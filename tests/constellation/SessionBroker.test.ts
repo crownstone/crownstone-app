@@ -42,13 +42,16 @@ test("SessionBroker finish mesh command", async () => {
   let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
   let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
 
-  let turnOnCommander  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
+  let turnOnCommander       = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
   let allowDimmingCommander = new CommandAPI(getCommandOptions(sphere.id, [handle3]));
 
   // load the commands into the commanders.
   turnOnCommander.turnOn();
   allowDimmingCommander.allowDimming(true)
 
+
+  // sessions for all items in the mesh should be requested
+  expect(Object.keys(SessionManager._sessions).length).toBe(5)
   // trigger connects by faking ibeacons which are in range.
   evt_ibeacon(-70, handle2);
   evt_ibeacon(-70, handle3);
@@ -58,23 +61,19 @@ test("SessionBroker finish mesh command", async () => {
   await mBluenetPromise.for(handle3).succeed.connect("operation");
   await mBluenetPromise.for(handle4).succeed.connect("operation");
 
-  await TestUtil.nextTick();
 
   await mBluenetPromise.for(handle2).succeed.turnOnMesh();
   await mBluenetPromise.for(handle3).succeed.allowDimming();
 
-  await TestUtil.nextTick();
 
   expect(Object.keys(turnOnCommander.broker.pendingSessions).length).toBe(2);
   expect(Object.keys(turnOnCommander.broker.connectedSessions).length).toBe(3);
 
 
   await mBluenetPromise.for(handle4).succeed.turnOnMesh();
-  await TestUtil.nextTick();
 
   await mBluenetPromise.for(handle3).succeed.turnOnMesh();
 
-  await TestUtil.nextTick();
 
   // check if the mesh sessions have been cancelled.
   expect(Object.keys(turnOnCommander.broker.pendingSessions).length).toBe(1);
@@ -113,6 +112,7 @@ test("SessionBroker direct command finishes mesh commands", async () => {
   await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
   evt_disconnected(handle1);
 
+  await TestUtil.nextTick();
   expect(Object.keys(api.broker.pendingSessions).length).toBe(0);
 
   // check if the mesh sessions have been cancelled.
@@ -163,7 +163,7 @@ test("SessionBroker check the cleanup of closed private session", async () => {
   await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
-
+  await TestUtil.nextTick();
   expect(SessionManager._sessions[handle1]).toBeUndefined();
 
   expect(api.broker.connectedSessions).toStrictEqual({});
@@ -198,7 +198,7 @@ test("SessionBroker check the cleanup of closed public session", async () => {
   await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
-
+  await TestUtil.nextTick();
   expect(SessionManager._sessions[handle1]).toBeUndefined();
 
   expect(api.broker.connectedSessions).toStrictEqual({});

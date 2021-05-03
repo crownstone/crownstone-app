@@ -12,7 +12,7 @@ let silenceMap = {
   info:           true,
   promiseManager: true,
   broadcast:      true,
-  constellation:  true,
+  constellation:  false,
   notifications:  true,
   event:          true,
   cloud:          true,
@@ -28,7 +28,7 @@ let silenceMap = {
   native:         true,
   nav:            true,
 }
-let enabledMap = { v: false, d: false, i: false, w: false, e: false };
+let enabledMap = { v: false, d: true, i: true, w: true, e: true };
 mockLogger(enabledMap, silenceMap);
 
 import { mockRandom, resetMockRandom } from "./deterministicRandom.mock";

@@ -70,6 +70,7 @@ export class SetupHelper {
     let api : CommandAPI = null;
     try {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 1/20 });
+      LOG.info("setup progress: connecting to ", this.handle);
       api = await connectTo(this.handle);
       LOG.info("setup progress: connected");
 

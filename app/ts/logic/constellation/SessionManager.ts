@@ -14,7 +14,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandManager } from "./BleCommandManager";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
-import { LOG, LOGd, LOGi } from "../../logging/Log";
+import { LOG, LOGd, LOGe, LOGi } from "../../logging/Log";
 import { Platform } from "react-native";
 
 export class SessionManagerClass {
@@ -89,6 +89,12 @@ export class SessionManagerClass {
       isDeactivated:   () => { delete this._activeSessions[handle]; },
       sessionHasEnded: () => { this._endSession(handle); },
       isConnected:     () => {
+        // in case this session connects but it has also already been deleted.
+        if (this._activeSessions[handle] === undefined) {
+          LOGe.constellation("SessionManager: A session has connected while already being deleted.")
+          return;
+        }
+
         // remove the timeout listener for this session.
         if (this._activeSessions[handle].connected === false) {
           // resolve the createSession
@@ -159,7 +165,7 @@ export class SessionManagerClass {
    * @param privateSessionRequest
    * @param timeoutSeconds
    */
-  async request(handle, commanderId : string, privateSessionRequest: boolean, timeoutSeconds?: number, cleanup?: () => void) : Promise<void> {
+  async request(handle, commanderId : string, privateSessionRequest: boolean, timeoutSeconds?: number) : Promise<void> {
     // TODO: make sure a private connection is more important than a shared one.
     if (privateSessionRequest && !timeoutSeconds) {
       timeoutSeconds = 20;
@@ -347,6 +353,7 @@ export class SessionManagerClass {
    * @param handle
    */
   async _endSession(handle) {
+    LOGd.constellation("SessionManager: Ending session in manager", handle)
     let session = this._sessions[handle];
 
     delete this._sessions[handle];

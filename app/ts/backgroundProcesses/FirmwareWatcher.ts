@@ -38,7 +38,7 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute when in range:", execute);
       // random chance to check the firmware again.
       if (execute) {
-        from(stone).getFirmwareVersion()
+        from(stone, 3000).getFirmwareVersion()
           .then((firmwareVersion : string) => {
             core.store.dispatch({
               type:     "UPDATE_STONE_CONFIG",
@@ -51,7 +51,7 @@ class FirmwareWatcherClass {
           })
           .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
 
-        from(stone).getHardwareVersion()
+        from(stone, 3000).getHardwareVersion()
           .then((hardwareVersion : string) => {
             core.store.dispatch({
               type: "UPDATE_STONE_CONFIG",

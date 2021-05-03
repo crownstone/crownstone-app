@@ -145,7 +145,6 @@ export function mockLogger(enabledMap = {}, silenceMap = {}) {
 export function silence() {
   return {
     info: true,
-    promiseManager: true,
     broadcast: true,
     constellation: true,
     notifications: true,

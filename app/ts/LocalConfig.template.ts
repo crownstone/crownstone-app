@@ -107,7 +107,6 @@ import { Platform } from "react-native";
   export let LOG_VERBOSE    = LOG_LEVEL.ERROR;      // enabling LOG.verbose    commands to be shown.
   export let LOG_SCHEDULER  = LOG_LEVEL.ERROR;      // enabling LOG.scheduler  commands to be shown.
   export let LOG_BLE        = LOG_LEVEL.ERROR;      // enabling LOG.ble        commands to be shown.
-  export let LOG_BCH        = LOG_LEVEL.ERROR;      // enabling LOG.bch        commands to be shown
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;      // enabling LOG.event      commands to be shown.
   export let LOG_STORE      = LOG_LEVEL.ERROR;      // enabling LOG.store      commands to be shown.
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;      // enabling LOG.cloud      commands to be shown.

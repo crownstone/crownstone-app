@@ -53,7 +53,9 @@ class BroadcastStateManagerClass {
           if (AppState.currentState !== 'active') {
             this.updatePreferencesWhenActive = true;
           }
-          this._reloadDevicePreferences();
+          else {
+            this._reloadDevicePreferences();
+          }
         }
         if (reloadActiveSphereUpdate) { this._handleActiveSphereUpdate(); }
       }));

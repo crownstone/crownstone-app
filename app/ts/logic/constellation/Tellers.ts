@@ -27,7 +27,8 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
     sphereId:       sphereId,
     commandType:    "DIRECT",
     commandTargets: [handle],
-    private:        true
+    private:        true,
+    timeout:        timeoutSeconds
   });
 
   commander.broker.loadSession(handle);
@@ -56,7 +57,8 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
     sphereId:       sphereId,
     commandType:    "DIRECT",
     commandTargets: [handle],
-    private:        true
+    private:        true,
+    timeout:        timeoutSeconds
   });
 
   commander.broker.loadSession(handle);
@@ -67,7 +69,7 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.
  */
-export function tell(handle: string | StoneData) : CommandAPI {
+export function tell(handle: string | StoneData, timeoutSeconds = 30) : CommandAPI {
   if (typeof handle != 'string') {
     handle = handle.config.handle
   }
@@ -79,7 +81,8 @@ export function tell(handle: string | StoneData) : CommandAPI {
     sphereId:       sphereId,
     commandType:    "DIRECT",
     commandTargets: [handle],
-    private:        false
+    private:        false,
+    timeout:        timeoutSeconds
   });
 }
 
@@ -88,15 +91,15 @@ export function tell(handle: string | StoneData) : CommandAPI {
  * from(stone).getFirmwareVersion()
  * @param handle
  */
-export function from(handle: string | StoneData) : CommandAPI {
-  return tell(handle);
+export function from(handle: string | StoneData, timeoutSeconds = 30) : CommandAPI {
+  return tell(handle, timeoutSeconds);
 }
 
 /**
  * @param meshId
  * @param minimalConnections
  */
-export function tellMesh(meshId, minConnections = 3) : CommandAPI {
+export function tellMesh(meshId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
   LOGi.constellation("Telling the meshnetwork...", meshId, minConnections);
   let stonesInMap = MapProvider.meshMap[meshId];
   let stoneIds = Object.keys(stonesInMap);
@@ -110,6 +113,7 @@ export function tellMesh(meshId, minConnections = 3) : CommandAPI {
       commandTargets: [meshId],
       private:        false,
       minConnections: minConnections,
+      timeout:        timeoutSeconds
     });
   }
 }
@@ -119,7 +123,7 @@ export function tellMesh(meshId, minConnections = 3) : CommandAPI {
  * TellSphere will notify all Meshes in the Sphere
  * @param sphereId
  */
-export function tellSphere(sphereId, minConnections = 3) : CommandAPI {
+export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
   LOGi.constellation("Telling sphere", sphereId, minConnections);
 
   let sphere = Get.sphere(sphereId);
@@ -144,6 +148,7 @@ export function tellSphere(sphereId, minConnections = 3) : CommandAPI {
       commandTargets: meshNetworks,
       private:        false,
       minConnections: minConnections,
+      timeout:        timeoutSeconds
     });
   }
 }

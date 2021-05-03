@@ -1,5 +1,7 @@
 import { LOG_LEVEL }  from "./LogLevels";
 import { core } from "../core";
+import { LOGi } from "./Log";
+import DeviceInfo from "react-native-device-info";
 
 
 class LogProcessorClass {
@@ -34,6 +36,20 @@ class LogProcessorClass {
         }
       });
       this.refreshData();
+      LOGi.info("Initializing Logprocessor.")
+
+      LOGi.info("Device Manufacturer",    DeviceInfo.getManufacturer());  // e.g. Apple
+      LOGi.info("Device Brand",           DeviceInfo.getBrand());  // e.g. Apple / htc / Xiaomi
+      LOGi.info("Device Model",           DeviceInfo.getModel());  // e.g. iPhone 6
+      LOGi.info("Device ID",              DeviceInfo.getDeviceId());  // e.g. iPhone7,2 / or the board on Android e.g. goldfish
+      LOGi.info("System Name",            DeviceInfo.getSystemName());  // e.g. iPhone OS
+      LOGi.info("System Version",         DeviceInfo.getSystemVersion());  // e.g. 9.0
+      LOGi.info("Bundle ID",              DeviceInfo.getBundleId());  // e.g. com.learnium.mobile
+      LOGi.info("Build Number",           DeviceInfo.getBuildNumber());  // e.g. 89
+      LOGi.info("App Version",            DeviceInfo.getVersion());  // e.g. 1.1.0
+      LOGi.info("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
+      LOGi.info("Device Name",            DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
+// LOG.info("User Agent",             DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
     }
   }
 

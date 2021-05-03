@@ -217,7 +217,7 @@ class ToonSchedule extends Component<any, any> {
     let entries = [];
     let programColors = {
       sleep: colors.csBlue.hex,
-      away: colors.orange.hex,
+      away: colors.csOrange.hex,
       home: colors.green.hex,
       comfort: colors.blue.hex
     };

@@ -41,13 +41,14 @@ export class SessionBroker {
   loadPendingCommands(commands: BleCommand[]) {
     for (let command of commands) {
       this.pendingCommands[command.id] = command;
+      // This then/catch will not halt the propagation of the error.
+      // This promise chain is parallel to the one that is returned by the commander.
       command.promise.promise
         .then(() => {
           this.cleanup([command.id]);
         })
         .catch((err) => {
           this.cleanup([command.id]);
-          throw err;
         })
     }
 
@@ -109,7 +110,7 @@ export class SessionBroker {
   async requireSession(handle:string, command: BleCommand) {
     if (this.pendingSessions[handle] === undefined && this.connectedSessions[handle] === undefined) {
       LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private);
-      this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private)
+      this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private, this.options.timeout)
         .then(() => {
           // if this request lands, we can remove this session from the pending list.
           // //This means that the session won't be closed automatically

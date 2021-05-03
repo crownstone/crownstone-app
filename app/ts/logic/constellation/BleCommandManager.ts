@@ -75,6 +75,8 @@ export class BleCommandManagerClass {
 
         // possibly load extra mesh relays
         if (allowMeshRelay) {
+
+          // we will generate an additional command for each mesh network in the sphere.
           let meshId = MapProvider.handleMeshMap[handle];
           if (meshId) {
             if (stoneData) {
@@ -203,11 +205,14 @@ export class BleCommandManagerClass {
 
 
 
-  removeCommand(handle: string, commandId: string) {
+  removeCommand(handle: string, commandId: string, error = null) {
     if (this.queue.direct[handle]) {
       for (let i = 0; i < this.queue.direct[handle].length; i++) {
         let command = this.queue.direct[handle][i];
         if (command.id === commandId) {
+          if (error !== null) {
+            command.promise.reject(error)
+          }
           this.queue.direct[handle].splice(i,1);
           if (this.queue.direct[handle].length === 0) {
             delete this.queue.direct[handle];
@@ -216,6 +221,7 @@ export class BleCommandManagerClass {
         }
       }
     }
+
 
     let meshIds = Object.keys(this.queue.mesh);
     for (let meshId of meshIds) {
@@ -226,7 +232,13 @@ export class BleCommandManagerClass {
         if (meshCommand.id === commandId || meshCommand.linkedId === commandId) {
           this.queue.mesh[meshId].splice(i,1);
 
-          meshCommand.promise.resolve();
+          // if this remove is called because of an error, reject all promises
+          if (error !== null) {
+            meshCommand.promise.reject(error);
+          }
+          else {
+            meshCommand.promise.resolve();
+          }
           if (this.queue.mesh[meshId].length === 0) {
             delete this.queue.mesh[meshId];
           }
@@ -292,7 +304,14 @@ export class BleCommandManagerClass {
         if (err !== "NOT_CONNECTED") {
           command.promise.reject(err);
           LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err, command.id);
-          this.removeCommand(handle, command.id);
+          // if this is a mesh relay, we have to fail the initial promise. The handle of the endTarget will handle the direct command.
+          if (command.endTarget) {
+            LOGw.constellation("BleCommandManager: Failing the original direct command", command.command.type,  handle, err, command.id, "Source:", command.endTarget, command.linkedId);
+            this.removeCommand(command.endTarget, command.linkedId, err);
+          }
+          // we always have to remove the mesh commands.
+          this.removeCommand(handle, command.id, err);
+
           commandRemoved = true;
         }
       }

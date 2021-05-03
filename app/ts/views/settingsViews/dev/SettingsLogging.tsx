@@ -54,7 +54,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     let logLevelsData = {
       log_info:           { label: "General",         explanation: ''},
-      log_promiseManager: { label: "PromiseManager",  explanation: ''},
       log_constellation:  { label: "Constellation",   explanation: ''},
       log_native:         { label: "Native",          explanation: ''},
       log_nav:            { label: "Navigation",      explanation: ''},
@@ -66,7 +65,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
       log_scheduler:      { label: "Scheduler",       explanation: ''},
       log_ble:            { label: "BLE",             explanation: ''},
       log_dfu:            { label: "DFU",             explanation: ''},
-      log_bch:            { label: "Batch C Handler", explanation: ''},
       log_events:         { label: "Events",          explanation: ''},
       log_store:          { label: "Store",           explanation: ''},
       log_cloud:          { label: "Cloud",           explanation: ''},

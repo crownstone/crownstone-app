@@ -1,0 +1,11 @@
+framework module BluenetBasicLocalization {
+  umbrella header "BluenetBasicLocalization.h"
+
+  export *
+  module * { export * }
+}
+
+module BluenetBasicLocalization.Swift {
+    header "BluenetBasicLocalization-Swift.h"
+    requires objc
+}

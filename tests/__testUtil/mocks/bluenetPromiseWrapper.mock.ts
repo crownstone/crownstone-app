@@ -194,7 +194,7 @@ class LibContainer {
     this.genericActions[method][0].resolve(data);
     this.genericActions[method].shift();
   }
-  _rejectGeneric(method, err?: any) {
+  _rejectGeneric(method, err: any = "GenericError") {
     this._verifyGenericRegistration(method);
     this.genericActions[method][0].reject(err);
     this.genericActions[method].shift();
@@ -210,7 +210,7 @@ class LibContainer {
     }
   }
 
-  _reject(method, handle, error?: any) {
+  _reject(method, handle, error= "GenericError") {
     this._verifyTargetRegistration(method, handle);
 
     this.targetedActions[method][handle].reject(error);

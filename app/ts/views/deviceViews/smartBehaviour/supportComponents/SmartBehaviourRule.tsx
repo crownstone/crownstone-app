@@ -172,7 +172,7 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
 
   if (indoorLocalizationDisabled && !showEditIcons && ai.isUsingPresence()) {
     subLabel = lang("Indoor_localization_disab");
-    subLabelStyle = { color: colors.orange.hex, fontWeight:'bold'};
+    subLabelStyle = { color: colors.csOrange.hex, fontWeight:'bold'};
   }
 
   let content = (

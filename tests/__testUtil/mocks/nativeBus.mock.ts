@@ -12,7 +12,7 @@ export class NativeBusMockClass extends EventBusClass {
   topics;
 
   constructor() {
-    super();
+    super("test");
 
     this.topics = {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
