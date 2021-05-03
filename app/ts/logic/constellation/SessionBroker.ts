@@ -147,6 +147,7 @@ export class SessionBroker {
     for (let unsubscriber of this._unsubscribeListeners) {
       unsubscriber();
     }
+    this._unsubscribeListeners = [];
   }
 
 }

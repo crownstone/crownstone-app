@@ -5,7 +5,6 @@ import { SessionManager } from "./SessionManager";
 import { CommandAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
 
-
 export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
   LOGi.constellation("Tellers: Starting a direct connection.", handle);
 
@@ -15,6 +14,7 @@ export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAP
   if (stoneData) {
     sphereId = stoneData.sphereId;
   }
+
   try {
     await SessionManager.request(handle, privateId, true, timeoutSeconds);
   }

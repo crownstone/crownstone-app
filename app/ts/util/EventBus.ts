@@ -92,6 +92,7 @@ export class EventBusClass {
       unsubscriber();
       callback(data);
     });
+    return unsubscriber;
   }
 
 

@@ -135,7 +135,6 @@ class CommandAPI_base {
       this.broker.loadPendingCommands(commands);
       core.eventBus.emit(`CommandLoaded_${this.id}`)
     }
-
     return promiseContainer.promise;
   }
 }

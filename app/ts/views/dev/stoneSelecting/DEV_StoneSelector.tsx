@@ -34,6 +34,8 @@ import Slider from "@react-native-community/slider";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { BleUtil } from "../../../util/BleUtil";
 import { AppUtil } from "../../../util/AppUtil";
+import { TESTING_SPHERE_ID } from "../../../backgroundProcesses/dev/DevAppState";
+import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 
 let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
@@ -221,6 +223,24 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
         delete StoneSelectorDataContainer.data[otherType][data.handle];
       }
     })
+
+    if (data.referenceId === TESTING_SPHERE_ID) {
+      MapProvider.stoneHandleMap[data.handle] = {
+        id: null,
+        cid: 0,
+        handle: data.handle,
+        name: "devStone",
+        sphereId: TESTING_SPHERE_ID,
+        stone: {},
+        stoneConfig: {},
+      };
+    }
+    else {
+      if (MapProvider.stoneHandleMap[data.handle]?.sphereId === TESTING_SPHERE_ID) {
+        MapProvider.refreshAll();
+      }
+    }
+
 
     if (newStone) {
       let now = Date.now();

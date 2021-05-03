@@ -161,10 +161,6 @@ export class BleCommandManagerClass {
     let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
 
     LOGv.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} checking meshId ${meshId} and sphereId ${sphereId}`);
-    if (!sphereId) {
-      LOGv.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} failed because no sphereId`);
-      return false;
-    }
 
     if (privateKey) {
       if (this.queue.direct[handle]) {
@@ -333,9 +329,6 @@ export class BleCommandManagerClass {
    */
   async performCommand(handle: string, privateId: string | null = null) : Promise<void> {
     let meshId   = MapProvider.handleMeshMap[handle] || null;
-    let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
-
-    if (!sphereId) { return; }
 
     if (privateId) {
       if (this.queue.direct[handle]) {

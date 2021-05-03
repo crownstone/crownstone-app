@@ -118,10 +118,10 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
       try {
         switch (this.state.operation) {
           case "resetCounter":
-            value = await tell(stone).getResetCounter();
+            value = await tell(stone.handle).getResetCounter();
             break;
           case "firmwareVersion":
-            value = await tell(stone).getFirmwareVersion()
+            value = await tell(stone.handle).getFirmwareVersion()
             break;
         }
         this.setState({
@@ -131,6 +131,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
         })
       }
       catch (e) {
+        console.log("ERROR", e)
         this.setState({
           failed: {...this.state.failed, [stone.handle]: true},
           pending:  {...this.state.pending, [stone.handle]: false},

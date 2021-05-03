@@ -85,7 +85,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     this.setState({bleState: BLE_STATE_BUSY})
 
     try {
-      let api = await ConnectionManager.connect(this.props.handle);
+      let state = core.store.getState();
+      let api = await ConnectionManager.connect(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
       await action(api);
       await ConnectionManager.disconnect()
     }
