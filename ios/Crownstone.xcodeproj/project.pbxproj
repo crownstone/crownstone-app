@@ -50,9 +50,9 @@
 		FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC42410144F00D7C858 /* libRNVectorIcons.a */; };
 		FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC62410144F00D7C858 /* libSentry.a */; };
 		FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274ECA2410144F00D7C858 /* libYoga.a */; };
-		FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* BluenetLib */; };
-		FA3DF885263AF7A20037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF884263AF7A20037B29F /* BluenetLib */; };
-		FA3DF887263AF7A30037B29F /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF886263AF7A30037B29F /* BluenetShared */; };
+		FA3DF883263AF7920037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */; };
+		FA3DF885263AF7A20037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */; };
+		FA3DF887263AF7A30037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
@@ -81,7 +81,7 @@
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
-		FAC79769263B0BA80023B899 /* BluenetBasicLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAC79768263B0BA80023B899 /* BluenetBasicLocalization */; };
+		FAC79769263B0BA80023B899 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FAC79768263B0BA80023B899 /* SwiftPackageProductDependency */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -604,13 +604,13 @@
 				FA274EEA2410171B00D7C858 /* libglog.a in Frameworks */,
 				FA274EED2410171B00D7C858 /* libRCTTypeSafety.a in Frameworks */,
 				FA274EEE2410171B00D7C858 /* libReact-Core.a in Frameworks */,
-				FA3DF885263AF7A20037B29F /* BluenetLib in Frameworks */,
+				FA3DF885263AF7A20037B29F /* BuildFile in Frameworks */,
 				FA274EEF2410171B00D7C858 /* libReact-CoreModules.a in Frameworks */,
 				FA274EF02410171B00D7C858 /* libReact-cxxreact.a in Frameworks */,
 				FA274EF12410171B00D7C858 /* libReact-jsi.a in Frameworks */,
 				FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */,
-				FAC79769263B0BA80023B899 /* BluenetBasicLocalization in Frameworks */,
-				FA3DF887263AF7A30037B29F /* BluenetShared in Frameworks */,
+				FAC79769263B0BA80023B899 /* BuildFile in Frameworks */,
+				FA3DF887263AF7A30037B29F /* BuildFile in Frameworks */,
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
 				FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */,
@@ -653,7 +653,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */,
+				FA3DF883263AF7920037B29F /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1002,6 +1002,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				CE914F8D2ADA2FFD53A8A0C6 /* [CP] Copy Pods Resources */,
+				FEE401AB8DBEDB2CCEB767BE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1026,6 +1027,7 @@
 				7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */,
 				FAB8C1C926206A9900F2FB9A /* ShellScript */,
 				C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */,
+				191DCBE4EBAED917EBF44C6E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1034,9 +1036,9 @@
 			);
 			name = Crownstone;
 			packageProductDependencies = (
-				FA3DF884263AF7A20037B29F /* BluenetLib */,
-				FA3DF886263AF7A30037B29F /* BluenetShared */,
-				FAC79768263B0BA80023B899 /* BluenetBasicLocalization */,
+				FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */,
+				FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */,
+				FAC79768263B0BA80023B899 /* SwiftPackageProductDependency */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1075,7 +1077,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FA3DF882263AF7920037B29F /* BluenetLib */,
+				FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1135,9 +1137,9 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
-				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
-				FAC79767263B0BA80023B899 /* XCRemoteSwiftPackageReference "BluenetBasicLocalization" */,
+				FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */,
+				FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */,
+				FAC79767263B0BA80023B899 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1589,6 +1591,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		191DCBE4EBAED917EBF44C6E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1736,6 +1756,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+		FEE401AB8DBEDB2CCEB767BE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2483,7 +2521,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FAC79767263B0BA80023B899 /* XCRemoteSwiftPackageReference "BluenetBasicLocalization" */ = {
+		FAC79767263B0BA80023B899 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "file:///Users/alex/Dropbox/Crownstone/Projects/XCode/BluenetBasicLocalization";
 			requirement = {
@@ -2491,7 +2529,7 @@
 				kind = branch;
 			};
 		};
-		FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
+		FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
@@ -2499,7 +2537,7 @@
 				kind = branch;
 			};
 		};
-		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
+		FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
 			requirement = {
@@ -2510,24 +2548,24 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FA3DF882263AF7920037B29F /* BluenetLib */ = {
+		FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			package = FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */;
 			productName = BluenetLib;
 		};
-		FA3DF884263AF7A20037B29F /* BluenetLib */ = {
+		FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			package = FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */;
 			productName = BluenetLib;
 		};
-		FA3DF886263AF7A30037B29F /* BluenetShared */ = {
+		FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
+			package = FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */;
 			productName = BluenetShared;
 		};
-		FAC79768263B0BA80023B899 /* BluenetBasicLocalization */ = {
+		FAC79768263B0BA80023B899 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAC79767263B0BA80023B899 /* XCRemoteSwiftPackageReference "BluenetBasicLocalization" */;
+			package = FAC79767263B0BA80023B899 /* RemoteSwiftPackageReference */;
 			productName = BluenetBasicLocalization;
 		};
 /* End XCSwiftPackageProductDependency section */
