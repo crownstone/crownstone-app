@@ -46,7 +46,7 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
     sphereId = stoneData.sphereId;
   }
   try {
-    await SessionManager.request(handle, privateId, true, timeoutSeconds);
+    await SessionManager.claimSession(handle, privateId, timeoutSeconds);
   }
   catch (err) {
     SessionManager.revokeRequest(handle, privateId);

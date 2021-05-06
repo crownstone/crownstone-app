@@ -282,9 +282,8 @@ class BackgroundProcessHandlerClass {
         }
       });
 
-      // TODO: REVERT
       core.eventBus.emit("AppStateChange", appState);
-      // this._applyAppStateOnScanning(appState); // TODO: presumably this triggers something!
+      this._applyAppStateOnScanning(appState);
       this._applyAppStateOnCaching(appState);
       this._applyAppStateOnActiveSphere(appState);
     });

@@ -115,10 +115,6 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     let success = () => { core.eventBus.emit("hideNumericOverlaySuccess"); }
     let failed = () => { core.eventBus.emit("hideNumericOverlayFailed"); }
 
-
-
-
-
     if (this.state.mode === 'unverified') {
       items.push({label: "Disabled for unverified Crownstone.", type: 'info'});
     }

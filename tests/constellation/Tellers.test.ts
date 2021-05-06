@@ -13,8 +13,8 @@ import {
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
 import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
-import { SessionManager } from "../../app/ts/logic/constellation/SessionManager";
+import { claimBluetooth, connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
+import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
 import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
 
 beforeEach(async () => {
@@ -174,3 +174,21 @@ test("Check pivate connected session error handling.", async () => {
   await TestUtil.nextTick();
   expect(mBluenetPromise.has(handle).called.getBootloaderVersion()).toBeTruthy();
 });
+
+
+test("Session manager sets a block on sessions, and allows something to claim it.", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  await SessionManager.intiateBlock();
+
+  let claimed = false;
+  claimBluetooth(handle).then(() => { claimed = true });
+
+  await mBluenetPromise.for(handle).succeed.connect('operation');
+
+  expect(claimed).toBeTruthy()
+});
+
+

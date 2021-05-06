@@ -620,6 +620,7 @@ export default {
     Getting_update_informatio:              function() { return "Getting update information..." },
     Looking_for_Crownstone___:              function() { return "Looking for Crownstone..." },
     Checking_versions___:                   function() { return "Checking versions..." },
+    WAITING_TO_USE_BLE_CONTROLLER:          function() { return "Waiting for pending bluetooth commands to finish..." },
     Checking_Firmware_version:              function() { return "Checking Firmware version..." },
     Checking_Bootloader_versi:              function() { return "Checking Bootloader version..." },
     Checking_Bootloader_steps:              function() { return "Checking Bootloader steps..." },

@@ -1206,6 +1206,7 @@ export default {
     Preparing_for_update:                   function() { return "Aan het voorbereiden..."; },
     Preparing___:                           function() { return "Voorbereiden..."; },
     Getting_update_informatio:              function() { return "Information ophalen..."; },
+    WAITING_TO_USE_BLE_CONTROLLER:          function() { return "Wachten op overige Bluetooth processen..."; },
     Looking_for_Crownstone___:              function() { return "Op zoek naar de Crownstone..."; },
     Checking_versions___:                   function() { return "Versies controleren..."; },
     Checking_Firmware_version:              function() { return "Firmwareversie controleren..."; },

@@ -41,6 +41,7 @@ export const DfuPhases = {
   PREPARATION:                 "PREPERATION",
   GET_INFORMATION_FROM_CLOUD:  "GET_INFORMATION_FROM_CLOUD",
   SEACHING_FOR_CROWNSTONE:     "SEACHING_FOR_CROWNSTONE",
+  RESERVING_BLE_CONTROLLER:    "RESERVING_BLE_CONTROLLER",
   GETTING_VERSION_INFORMATION: "GETTING_VERSION_INFORMATION",
   GETTING_FIRMWARE_VERSION:    "GETTING_FIRMWARE_VERSION",
   GETTING_BOOTLOADER_VERSION:  "GETTING_BOOTLOADER_VERSION",
@@ -211,7 +212,7 @@ export class DfuExecutor {
     let cloudPromises = [];
 
     // we start blocking the BLE. We don't have to await this here, we'll await it below.
-    let blockToFinish = SessionManager.intiateBlock();
+    let blockToFinish : Promise<void> = SessionManager.intiateBlock().then(() => { console.log("FINISHED BLOCK")})
 
     // download information on the latest firmware and bootloader available to us.
     this._setProgress(DfuPhases.GET_INFORMATION_FROM_CLOUD, this.currentStep, 0, DfuExecutionInformation.GETTING_INFORMATION);
@@ -243,6 +244,7 @@ export class DfuExecutor {
         let crownstoneMode = await this._searchForCrownstone();
 
         // IMPORTANT: we now need to block bluetooth and claimBLE for our session.
+        this._setProgress(DfuPhases.RESERVING_BLE_CONTROLLER, this.currentStep, 0.1, DfuExecutionInformation.CROWNSTONE_FOUND);
         await blockToFinish;
 
         // now the block is set, claim bluetooth for this commander.
@@ -708,6 +710,7 @@ export class DfuExecutor {
       };
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement) => {
+        console.log("Got a scan advertisement", advertisement)
         if (advertisement.handle === this.stone.config.handle) {
           rssiResolver(advertisement, false, false);
         }
@@ -717,6 +720,7 @@ export class DfuExecutor {
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+        console.log("Got a scan setupAdvertisement", setupAdvertisement)
         if (setupAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
@@ -726,6 +730,7 @@ export class DfuExecutor {
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
+        console.log("Got a scan dfuAdvertisement", dfuAdvertisement)
         if (dfuAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(dfuAdvertisement, false, true);
         }

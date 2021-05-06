@@ -149,24 +149,26 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     if (this.state.isUpdating) {
       let progressLabel = null;
       switch (this.state.phase) {
-        case DfuPhases.PREPARATION:                 progressLabel = lang("Preparing___");              break;
-        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = lang("Getting_update_informatio"); break;
-        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = lang("Looking_for_Crownstone___"); break;
-        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = lang("Checking_versions___");      break;
-        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = lang("Checking_Firmware_version"); break;
-        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = lang("Checking_Bootloader_versi"); break;
-        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = lang("Checking_Bootloader_steps"); break;
-        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = lang("Preparing_Crownstone_for_"); break;
-        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = lang("Checking_Firmware_steps__"); break;
-        case DfuPhases.BOOTLOADER:                  progressLabel = lang("Updating_Bootloader___");    break;
-        case DfuPhases.FIRMWARE:                    progressLabel = lang("Updating_Firmware___");      break;
-        case DfuPhases.SETUP:                       progressLabel = lang("Finalizing___");             break;
+        case DfuPhases.PREPARATION:                 progressLabel = lang("Preparing___");                  break;
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = lang("Getting_update_informatio");     break;
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = lang("Looking_for_Crownstone___");     break;
+        case DfuPhases.RESERVING_BLE_CONTROLLER:    progressLabel = lang("WAITING_TO_USE_BLE_CONTROLLER"); break;
+        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = lang("Checking_versions___");          break;
+        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = lang("Checking_Firmware_version");     break;
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = lang("Checking_Bootloader_versi");     break;
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = lang("Checking_Bootloader_steps");     break;
+        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = lang("Preparing_Crownstone_for_");     break;
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = lang("Checking_Firmware_steps__");     break;
+        case DfuPhases.BOOTLOADER:                  progressLabel = lang("Updating_Bootloader___");        break;
+        case DfuPhases.FIRMWARE:                    progressLabel = lang("Updating_Firmware___");          break;
+        case DfuPhases.SETUP:                       progressLabel = lang("Finalizing___");                 break;
       }
 
       switch (this.state.phase) {
         case DfuPhases.PREPARATION:
         case DfuPhases.GET_INFORMATION_FROM_CLOUD:
         case DfuPhases.SEACHING_FOR_CROWNSTONE:
+        case DfuPhases.RESERVING_BLE_CONTROLLER:
         case DfuPhases.GETTING_VERSION_INFORMATION:
         case DfuPhases.GETTING_FIRMWARE_VERSION:
         case DfuPhases.GETTING_BOOTLOADER_VERSION:
@@ -187,6 +189,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       case DfuPhases.PREPARATION:
       case DfuPhases.GET_INFORMATION_FROM_CLOUD:
       case DfuPhases.SEACHING_FOR_CROWNSTONE:
+      case DfuPhases.RESERVING_BLE_CONTROLLER:
       case DfuPhases.GETTING_VERSION_INFORMATION:
       case DfuPhases.GETTING_FIRMWARE_VERSION:
       case DfuPhases.GETTING_BOOTLOADER_VERSION:
