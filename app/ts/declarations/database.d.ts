@@ -7,7 +7,6 @@ interface SphereData {
     iBeaconUUID: string, // ibeacon uuid
     uid: number,
     cloudId: string,
-    meshAccessAddress: string,
 
     aiName: string,
 

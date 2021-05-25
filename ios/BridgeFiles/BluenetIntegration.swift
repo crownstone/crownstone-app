@@ -341,7 +341,7 @@ open class BluenetJS: RCTEventEmitter {
         GLOBAL_BLUENET.bluenet.emitBleState()
     }
     
-    @objc func requestLocation(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
         let function_uuid = UUID().uuidString
         LOGGER.info("BluenetBridge: Called requestLocation uuid:\(function_uuid)")
         GLOBAL_BLUENET.bluenetLocalization.requestLocation()

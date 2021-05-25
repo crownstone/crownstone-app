@@ -18,7 +18,6 @@ let defaultSettings : SphereData = {
     iBeaconUUID: undefined, // ibeacon uuid
     uid: null,
     cloudId: null,
-    meshAccessAddress: null,
 
     aiName: null,
 
@@ -79,8 +78,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
 
         newState.latitude    = update(action.data.latitude, newState.latitude);
         newState.longitude   = update(action.data.longitude, newState.longitude);
-
-        newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
 
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;

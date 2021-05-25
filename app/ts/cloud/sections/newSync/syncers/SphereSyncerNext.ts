@@ -18,7 +18,6 @@ export class SphereSyncer extends SyncInterface<SphereData, cloud_Sphere, cloud_
       uid:  localData.config.uid,
       uuid: localData.config.iBeaconUUID,
       aiName: localData.config.aiName,
-      meshAccessAddress: localData.config.meshAccessAddress,
       updatedAt: new Date(localData.config.updatedAt).toISOString(),
     }
   }
@@ -39,7 +38,6 @@ export class SphereSyncer extends SyncInterface<SphereData, cloud_Sphere, cloud_
       iBeaconUUID:       cloudItem.uuid, // ibeacon uuid
       uid:               cloudItem.uid,
       cloudId:           cloudItem.id,
-      meshAccessAddress: cloudItem.meshAccessAddress,
       aiName:            cloudItem.aiName,
       latitude:          cloudItem.gpsLocation?.lat || undefined,
       longitude:         cloudItem.gpsLocation?.lng || undefined,

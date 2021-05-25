@@ -17,7 +17,6 @@ interface cloud_Sphere {
   uuid: string,
   name: string,
   aiName: string,
-  meshAccessAddress: string,
   exitDelay: number,
   gpsLocation?: {
     lat: number,
@@ -31,7 +30,6 @@ interface cloud_Sphere_settable {
   uuid?: string,
   name?: string,
   aiName?: string,
-  meshAccessAddress?: string,
   updatedAt: string,
 }
 

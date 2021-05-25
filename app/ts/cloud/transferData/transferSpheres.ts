@@ -24,8 +24,7 @@ type transferSphereToLocalData = {
 let fieldMap : fieldMap = [
   {local:'name',               cloud: 'name'},
   {local:'aiName',             cloud: 'aiName'},
-  {local:'iBeaconUUID',        cloud: 'uuid',             },
-  {local:'meshAccessAddress',  cloud: 'meshAccessAddress',},
+  {local:'iBeaconUUID',        cloud: 'uuid'},
   {local:'updatedAt',          cloud: 'updatedAt'},
 
   // used for local

@@ -87,7 +87,7 @@ export function tell(handle: string | StoneData, timeoutSeconds = 30) : CommandA
 }
 
 /**
- * This does exactly the same as tell, it just sounds nices when we use get methods.
+ * This does exactly the same as tell, it just sounds nicer when we use get methods.
  * from(stone).getFirmwareVersion()
  * @param handle
  */
@@ -140,15 +140,19 @@ export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) :
     }
   }
 
-  if (meshNetworks.length > 0) {
-    return new CommandAPI({
-      commanderId:    xUtil.getUUID(),
-      sphereId:       sphereId,
-      commandType:    "MESH",
-      commandTargets: meshNetworks,
-      private:        false,
-      minConnections: minConnections,
-      timeout:        timeoutSeconds
-    });
+  // if there are no known mesh networks, assume that the phone just doenst know them and treat "null" as a mesh network.
+  // null is the default networkId if a stone has no mesh network.
+  if (meshNetworks.length == 0) {
+    meshNetworks.push(null);
   }
+
+  return new CommandAPI({
+    commanderId:    xUtil.getUUID(),
+    sphereId:       sphereId,
+    commandType:    "MESH",
+    commandTargets: meshNetworks,
+    private:        false,
+    minConnections: minConnections,
+    timeout:        timeoutSeconds
+  });
 }

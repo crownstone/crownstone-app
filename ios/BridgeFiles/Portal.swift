@@ -84,7 +84,7 @@ class Portal : NSObject {
   }
   
   func bluenetClearUnverified() {
-    for unsubscribeCallback in self.nearestSubscriptions {
+    for unsubscribeCallback in self.unverifiedSubscriptions {
       unsubscribeCallback()
     }
     self.unverifiedSubscriptions = []

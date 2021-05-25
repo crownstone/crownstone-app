@@ -11,7 +11,6 @@ class DevAppStateClass {
   name = null;
   iBeaconUUID = null;
   uid = null
-  meshAccessAddress = null;
 
   ADMIN_KEY            = null;
   MEMBER_KEY           = null;
@@ -32,7 +31,6 @@ class DevAppStateClass {
       this.name = TESTING_SPHERE_NAME;
       this.iBeaconUUID = "1843423e-e175-4af0-a2e4-31e32f729a8a";
       this.uid = 1;
-      this.meshAccessAddress = "4f745905";
 
       this.ADMIN_KEY = "adminKeyForCrown";
       this.MEMBER_KEY = "memberKeyForHome";
@@ -81,7 +79,6 @@ class DevAppStateClass {
       meshNetworkKey:     this.MESH_NETWORK_KEY,
       meshApplicationKey: this.MESH_APPLICATION_KEY,
       meshDeviceKey:      "aStoneKeyForMesh",
-      meshAccessAddress:  this.meshAccessAddress,
       ibeaconUUID:        this.iBeaconUUID,
       ibeaconMajor:       Math.floor(Math.random()*60000),
       ibeaconMinor:       Math.floor(Math.random()*60000),
