@@ -8,12 +8,17 @@
 
 import Foundation
 import UIKit
+import Embrace
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        print("LaunchOps", launchOptions)
+        Embrace.sharedInstance().start(launchOptions: launchOptions)
+        Embrace.sharedInstance().setCleanLogsEnabled(true)
+        
         #if CS_DEBUG
             print("DEBUG")
             let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
@@ -27,9 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GLOBAL_BLUENET.initController(viewController: nil)
 
-        RNSplashScreen.show()
-        
-        
+        RNSplashScreen.show()        
 
         return true
     }

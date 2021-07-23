@@ -26,7 +26,7 @@ import { LogProcessor }          from "../logging/LogProcessor";
 import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
 import { MeshUtil }              from "../util/MeshUtil";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
 import { BroadcastStateManager } from "./BroadcastStateManager";
@@ -51,6 +51,7 @@ import { ActiveSphereManager } from "./ActiveSphereManager";
 import { LocalizationMonitor } from "./LocalizationMonitor";
 import { Languages } from "../Languages";
 import { OverlayManager } from "./OverlayManager";
+import { LocalizationLogger } from "./LocalizationLogger";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -120,6 +121,8 @@ class BackgroundProcessHandlerClass {
         Languages.updateLocale();
 
         this.startSingletons();
+
+        this.startDeveloperSingletons();
 
         this.startCloudService();
 
@@ -275,12 +278,12 @@ class BackgroundProcessHandlerClass {
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
 
-      Sentry.addBreadcrumb({
-        category: 'AppState',
-        data: {
-          state: appState,
-        }
-      });
+      // Sentry.addBreadcrumb({
+      //   category: 'AppState',
+      //   data: {
+      //     state: appState,
+      //   }
+      // });
 
       core.eventBus.emit("AppStateChange", appState);
       this._applyAppStateOnScanning(appState);
@@ -472,6 +475,13 @@ class BackgroundProcessHandlerClass {
     UpdateCenter.init();
     UptimeMonitor.init();
     WatchStateManager.init();
+  }
+
+  startDeveloperSingletons() {
+    let state = core.store.getState();
+    if (state.user.developer) {
+      LocalizationLogger.init();
+    }
   }
 }
 

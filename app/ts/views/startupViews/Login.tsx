@@ -38,7 +38,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
 import { base_core } from "../../base_core";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { BackgroundProcessHandler } from "../../backgroundProcesses/BackgroundProcessHandler";
 
 export class Login extends Component<any, any> {
@@ -361,12 +361,12 @@ lang("arguments___arguments___O_body",content),
         })
     );
 
-    Sentry.addBreadcrumb({
-      category: 'login',
-      data: {
-        state: 'downloading settings'
-      }
-    });
+    // Sentry.addBreadcrumb({
+    //   category: 'login',
+    //   data: {
+    //     state: 'downloading settings'
+    //   }
+    // });
 
     // check if we need to upload a picture that has been set aside during the _requests process.
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
@@ -434,12 +434,12 @@ lang("arguments___arguments___O_body",content),
 
     Promise.all(promises)
       .then(() => {
-        Sentry.addBreadcrumb({
-          category: 'login',
-          data: {
-            state:'finished'
-          }
-        });
+        // Sentry.addBreadcrumb({
+        //   category: 'login',
+        //   data: {
+        //     state:'finished'
+        //   }
+        // });
 
         LOG.info("Login: finished promises");
         core.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});

@@ -150,7 +150,7 @@ export class SmartHomeStateButton extends Component<any, any> {
 
     let outerRadius = 0.11 * screenWidth;
     let innerRadius = outerRadius - 10;
-    let size = 0.06 * screenWidth;
+    let size = 0.055 * screenWidth;
 
     let explanationOpen = !activeState || this.state.doubleCheck || this.state.showLoading;
     let contentData = this.getContentData(activeState, outerRadius)

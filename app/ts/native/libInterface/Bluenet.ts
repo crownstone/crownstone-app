@@ -43,6 +43,7 @@ const BluenetAPI = {
   enableLoggingToFile:      () => { console.log("BluenetBridgeCall: enableLoggingToFile:   "); },
   enableExtendedLogging:    () => { console.log("BluenetBridgeCall: enableExtendedLogging: "); },
   clearLogs:                () => { console.log("BluenetBridgeCall: clearLogs:             "); },
+  crash:                    () => { console.log("BluenetBridgeCall: crash!             "); },
 
   // mesh
   multiSwitch:              () => { console.log("BluenetBridgeCall: multiSwitch:             "); },

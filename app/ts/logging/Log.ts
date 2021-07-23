@@ -14,11 +14,13 @@ import {
   LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST, LOG_PROMISE_MANAGER, LOG_NAVIGATION
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
-import { logToFile } from "./LogUtil";
 import { LOG_LEVEL } from "./LogLevels";
 import { base_core } from "../base_core";
+import { FileLoggerClass } from "./LogUtil";
 
 let lastLogTime = 0;
+
+const FileLogger = new FileLoggerClass()
 
 class Logger {
   level : number;
@@ -126,7 +128,7 @@ class Logger {
 
       if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
         // @ts-ignore
-        logToFile.apply(this, args);
+        FileLogger.log(args);
       }
 
       if (base_core.sessionMemory.developmentEnvironment) {

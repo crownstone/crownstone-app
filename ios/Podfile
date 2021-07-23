@@ -14,7 +14,6 @@ target 'Crownstone' do
     )
   use_flipper!('Flipper' => '0.75.1', 'Flipper-Folly' => '2.5.3', 'Flipper-RSocket' => '1.3.1')
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
-  pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
 
   target 'CrownstoneTests' do
     inherit! :complete
@@ -24,5 +23,8 @@ target 'Crownstone' do
   post_install do |installer|
     react_native_post_install(installer)
   end
+
+  pod 'EmbraceIO'
+  pod 'RNEmbrace', :path => '../node_modules/react-native-embrace'
 end
 

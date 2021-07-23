@@ -5,7 +5,7 @@ const RNFS = require('react-native-fs');
 
 export const LOG_PREFIX = 'CrownstoneAppLog';
 
-export function getLoggingFilename(timestamp, prefix) {
+export function getLoggingFilename(timestamp, prefix, time: boolean = false) {
   let monthNumber = new Date(timestamp).getMonth()+1;
   let dayNumber = new Date(timestamp).getDate();
 
@@ -13,6 +13,9 @@ export function getLoggingFilename(timestamp, prefix) {
   let day = dayNumber < 10 ? '0' + dayNumber : '' + dayNumber;
 
   let dateStamp = new Date(timestamp).getFullYear() + "-" + month + "-" +day;
+  if (time) {
+    dateStamp += ` ${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}:${new Date(timestamp).getSeconds()}`
+  }
   return prefix + dateStamp + '.log';
 }
 
@@ -54,27 +57,81 @@ export function clearLogs() {
 }
 
 
+/**
+ * RN does not appreciate many outstanding callbacks to the native side. This class will condense all logging to a single outstanding callback.
+ */
+export class FileLoggerClass {
 
-export function logToFile() {
-  // create a path you want to write to
-  let logPath = FileUtil.getPath();
+  _logPath: string;
+  _writeQueue = [];
+  _writing = false;
 
-  // generate filename based on current date.
-  let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
-  let filePath = logPath + '/' + filename;
+  constructor() {
+    this._logPath = FileUtil.getPath();
+  }
 
-  // create string
-  let str = '' + Date.now() + ' - ' + new Date() + " -";
-  for (let i = 0; i < arguments.length; i++) {
-    if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
-      str += " " + JSON.stringify(arguments[i])
+  log(args: any[]) {
+    // generate filename based on current date.
+    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
+
+    // create string
+    let str = '' + Date.now() + ' - ' + new Date() + " -";
+    for (let i = 0; i < arguments.length; i++) {
+      if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
+        str += " " + JSON.stringify(arguments[i])
+      }
+      else {
+        str += " " + arguments[i]
+      }
     }
-    else {
-      str += " " + arguments[i]
+    str += " \n"
+
+
+    this._writeQueue.push([this._logPath + '/' + filename, str]);
+    this._write();
+  }
+
+  async _write() {
+    if (this._writeQueue.length === 0) {
+      return
+    }
+
+    if (this._writing === false) {
+      this._writing = true;
+
+      if (this._writeQueue.length > 0) {
+        // check if we can combine entries.
+        let [filename, combinedEntries] = this._combineLogEntryCalls()
+
+        await RNFS.appendFile(filename, combinedEntries, 'utf8').catch((err) => {})
+      }
+
+      this._writing = false;
+
+      if (this._writeQueue.length > 0) {
+        this._write();
+      }
     }
   }
-  str += " \n";
 
-  // write the file
-  RNFS.appendFile(filePath, str, 'utf8').catch((err) => {})
+  _combineLogEntryCalls() : [string, string] {
+    let filename = this._writeQueue[0][0];
+    let str = this._writeQueue[0][1];
+    let count = 1;
+
+    for (let i = 1; i < this._writeQueue.length; i++) {
+      if (this._writeQueue[i][0] == filename) {
+        str += this._writeQueue[i][1];
+        count += 1;
+      }
+      else {
+        break;
+      }
+    }
+
+    this._writeQueue.splice(0,count);
+
+    return [filename, str];
+  }
 }
+

@@ -23,6 +23,7 @@ import { MapProvider } from "../backgroundProcesses/MapProvider";
 import { Get } from "./GetUtil";
 
 export const StoneUtil = {
+
   multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) {
     let data = {state: newState};
     if (newState === 0) {

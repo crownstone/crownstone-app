@@ -14,8 +14,8 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
   if (Permissions.inSphere(props.sphereId).addRoom) {
     let setupIcon = props.noCrownstones && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
 
-    let outerRadius = 0.12*screenWidth;
-    let iconSize = 0.09*screenWidth;
+    let outerRadius = 0.11*screenWidth;
+    let iconSize = 0.084*screenWidth;
     let iconColor = colors.csBlueDark.rgba(0.75);
     if (setupIcon) {
       iconSize = 0.11*screenWidth;

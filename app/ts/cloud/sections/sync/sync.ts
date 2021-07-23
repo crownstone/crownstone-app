@@ -11,7 +11,7 @@ import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { core } from "../../../core";
 import { CloudPoller } from "../../../logic/CloudPoller";
@@ -60,12 +60,12 @@ export const sync = {
 
     core.eventBus.emit("CloudSyncStarting");
 
-    Sentry.addBreadcrumb({
-      category: 'sync',
-      data: {
-        state:'start'
-      }
-    });
+    // Sentry.addBreadcrumb({
+    //   category: 'sync',
+    //   data: {
+    //     state:'start'
+    //   }
+    // });
 
     let reloadOfTrackingRequired = false;
     let globalCloudIdMap = getGlobalIdMap();
@@ -184,12 +184,12 @@ export const sync = {
         CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
 
-        Sentry.addBreadcrumb({
-          category: 'sync',
-          data: {
-            state:'success'
-          }
-        });
+        // Sentry.addBreadcrumb({
+        //   category: 'sync',
+        //   data: {
+        //     state:'success'
+        //   }
+        // });
 
         core.eventBus.emit("CloudSyncComplete");
 
@@ -208,13 +208,13 @@ export const sync = {
         //   core.store.batchDispatch(actions);
         // }
 
-        Sentry.addBreadcrumb({
-          category: 'sync',
-          data: {
-            state:'failed',
-            err: err
-          }
-        });
+        // Sentry.addBreadcrumb({
+        //   category: 'sync',
+        //   data: {
+        //     state:'failed',
+        //     err: err
+        //   }
+        // });
 
         CLOUD.__currentlySyncing = false;
         CLOUD.__syncTriggerDatabaseEvents = true;

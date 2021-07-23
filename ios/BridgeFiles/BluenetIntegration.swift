@@ -264,7 +264,6 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     @objc func phoneDisconnect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
-        let handleUUID = UUID(uuidString: handle)
         wrapForBluenet("phoneDisconnect", callback, GLOBAL_BLUENET.bluenet.disconnect(handle: handle))
     }
     
@@ -1065,6 +1064,10 @@ open class BluenetJS: RCTEventEmitter {
         )
     }
     
+    @objc func crash() {
+        let test : UInt8? = nil
+        _ = test!
+    }
     
     @objc func factoryResetHub(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)

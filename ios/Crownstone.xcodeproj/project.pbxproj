@@ -48,7 +48,6 @@
 		FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC02410144F00D7C858 /* libRNSVG.a */; };
 		FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */; };
 		FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC42410144F00D7C858 /* libRNVectorIcons.a */; };
-		FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC62410144F00D7C858 /* libSentry.a */; };
 		FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274ECA2410144F00D7C858 /* libYoga.a */; };
 		FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* BluenetLib */; };
 		FA3DF885263AF7A20037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF884263AF7A20037B29F /* BluenetLib */; };
@@ -82,6 +81,7 @@
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FAC79769263B0BA80023B899 /* BluenetBasicLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAC79768263B0BA80023B899 /* BluenetBasicLocalization */; };
+		FADA695D26A8294D00403920 /* Embrace-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADA691D26A8294D00403920 /* Embrace-Info.plist */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -344,13 +344,6 @@
 			remoteGlobalIDString = 8998273719FDD789E6F9C7541AFD0B33;
 			remoteInfo = RNVectorIcons;
 		};
-		FA274EC52410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0115C3C00C175D77422084DD0542CE6F;
-			remoteInfo = Sentry;
-		};
 		FA274EC92410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -371,13 +364,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 0B9BD901B3EB04B824A157C85265F044;
 			remoteInfo = RNCPushNotificationIOS;
-		};
-		FA6FDE10244DDD82002BEB27 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0869B584D93A292F0E54724F0B8DA382;
-			remoteInfo = RNSentry;
 		};
 		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -505,6 +491,13 @@
 			remoteGlobalIDString = 666E72807891C591E025A75410CD2A26;
 			remoteInfo = "React-perflogger";
 		};
+		FADA691926A8280F00403920 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2857EAAE8765EDC6F1C33DBE9D61176E;
+			remoteInfo = RNEmbrace;
+		};
 		FAE05691243765B0003BE780 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -573,6 +566,7 @@
 		83EED6E7677649159ADF42F7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libKCKeepAwake.a; sourceTree = "<group>"; };
 		A0C7056DB5294DFE8A81AC2B /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
+		A181FCA1AE656F66DA1E17C2 /* Instabug.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = Instabug.xcframework; path = "../node_modules/instabug-reactnative/ios/Instabug.xcframework"; sourceTree = "<group>"; };
 		A7A7F8A2427C2D93C761D9E4 /* libPods-Crownstone-CrownstoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Crownstone-CrownstoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7EF23E51E204C98B3653CE8 /* libReactNativeCameraKit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeCameraKit.a; sourceTree = "<group>"; };
 		AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
@@ -633,6 +627,7 @@
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
 		FAD98BAD2614C59C00E46E1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FADA691D26A8294D00403920 /* Embrace-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Embrace-Info.plist"; sourceTree = "<group>"; };
 		FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../app/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../app/assets/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
 		FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-LightItalic.ttf"; path = "../app/assets/fonts/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -704,7 +699,6 @@
 				FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */,
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
-				FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */,
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
 				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
@@ -759,6 +753,7 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				FADA691D26A8294D00403920 /* Embrace-Info.plist */,
 				FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */,
 			);
 			indentWidth = 4;
@@ -936,15 +931,14 @@
 				FA274EBA2410144F00D7C858 /* libRNCAsyncStorage.a */,
 				FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */,
 				FA274EBC2410144F00D7C858 /* libRNDeviceInfo.a */,
+				FADA691A26A8280F00403920 /* libRNEmbrace.a */,
 				FA274EBE2410144F00D7C858 /* libRNFS.a */,
 				FA345D9424111FEA00C288D3 /* libRNLocalize.a */,
 				FABC3D0624349B9100F4002E /* libRNReanimated.a */,
-				FA6FDE11244DDD82002BEB27 /* libRNSentry.a */,
 				FAC6D17B24BCAA8A007AA96F /* libRNShare.a */,
 				FA274EC02410144F00D7C858 /* libRNSVG.a */,
 				FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */,
 				FA274EC42410144F00D7C858 /* libRNVectorIcons.a */,
-				FA274EC62410144F00D7C858 /* libSentry.a */,
 				FA274ECA2410144F00D7C858 /* libYoga.a */,
 				FAB9720F264C4333006E716C /* libYogaKit.a */,
 			);
@@ -977,6 +971,7 @@
 				FA12B79322450C84003B017E /* JavaScriptCore.framework */,
 				BB46ABBB36F7F05E7F860F78 /* libPods-Crownstone.a */,
 				A7A7F8A2427C2D93C761D9E4 /* libPods-Crownstone-CrownstoneTests.a */,
+				A181FCA1AE656F66DA1E17C2 /* Instabug.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1104,10 +1099,9 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FA86C6D921CCEED000811933 /* Embed Watch Content */,
-				7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */,
-				FAB8C1C926206A9900F2FB9A /* ShellScript */,
 				C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */,
 				191DCBE4EBAED917EBF44C6E /* [CP] Embed Pods Frameworks */,
+				FADA695E26A8567700403920 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1471,13 +1465,6 @@
 			remoteRef = FA274EC32410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA274EC62410144F00D7C858 /* libSentry.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSentry.a;
-			remoteRef = FA274EC52410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274ECA2410144F00D7C858 /* libYoga.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1497,13 +1484,6 @@
 			fileType = archive.ar;
 			path = libRNCPushNotificationIOS.a;
 			remoteRef = FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FA6FDE11244DDD82002BEB27 /* libRNSentry.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSentry.a;
-			remoteRef = FA6FDE10244DDD82002BEB27 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA9F56A9263AE19600A8219A /* libPods-Crownstone-CrownstoneTests.a */ = {
@@ -1618,6 +1598,13 @@
 			remoteRef = FACF166D26160CB500A9163F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FADA691A26A8280F00403920 /* libRNEmbrace.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNEmbrace.a;
+			remoteRef = FADA691926A8280F00403920 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FAE05692243765B0003BE780 /* libreact-native-image-picker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1641,6 +1628,7 @@
 			files = (
 				FADC2B2D25F7B519000AE5A7 /* Roboto-Bold.ttf in Resources */,
 				FADC2B3525F7B519000AE5A7 /* Lato-Bold.ttf in Resources */,
+				FADA695D26A8294D00403920 /* Embrace-Info.plist in Resources */,
 				FADC2B2C25F7B519000AE5A7 /* Roboto-Regular.ttf in Resources */,
 				FADC2B3725F7B519000AE5A7 /* Roboto-Medium.ttf in Resources */,
 				FADC2B3125F7B519000AE5A7 /* flaticon_custom_selection_1.ttf in Resources */,
@@ -1695,7 +1683,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\nexport SENTRY_PROPERTIES=./sentry.properties\n\n# If you are using RN 0.46+\n\\\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export NODE_BINARY=node\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle.map\"\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0E45A9B2237FE76816B0340C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1748,30 +1736,18 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Embrace/Embrace.framework/Embrace",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Embrace.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Debug Symbols to Sentry";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nexport SENTRY_PROPERTIES=./sentry.properties\n\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode --force-foreground ../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1873,23 +1849,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FAB8C1C926206A9900F2FB9A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=./sentry.properties\n\n../node_modules/@sentry/cli/bin/sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\"\n";
-		};
 		FABB8A0421E0F47D007E1396 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1907,6 +1866,23 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
+		FADA695E26A8567700403920 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export EMBRACE_ID=$(/usr/libexec/PlistBuddy -c \"Print :API_KEY\" ./Embrace-Info.plist)\nexport EMBRACE_TOKEN=$(/usr/libexec/PlistBuddy -c \"Print :API_TOKEN\" ./Embrace-Info.plist)\nexport EMBRACE_DEBUG_DSYM=1\n\"${PODS_ROOT}/EmbraceIO/run.sh\"\n";
+		};
 		FEE401AB8DBEDB2CCEB767BE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1914,10 +1890,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Crownstone-CrownstoneTests/Pods-Crownstone-CrownstoneTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Embrace/Embrace.framework/Embrace",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Embrace.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2204,12 +2182,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"../node_modules/instabug-reactnative/ios",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2221,7 +2202,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2244,12 +2225,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"../node_modules/instabug-reactnative/ios",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2261,7 +2244,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2402,7 +2385,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2432,7 +2415,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2469,7 +2452,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2498,7 +2481,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2534,7 +2517,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2551,7 +2534,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -2590,7 +2573,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2606,15 +2589,14 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.6.1;
+				MARKETING_VERSION = 4.6.2;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
-				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "WatchTower Extension/WatchTower Extension-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 5.0;

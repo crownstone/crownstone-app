@@ -42,6 +42,7 @@ import { Background } from "../components/Background";
 import { SmartHomeStateButton } from "./buttons/SmartHomeStateButton";
 import { ActiveSphereManager } from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
+import { DebugToolsButton } from "./buttons/DebugToolsButton";
 
 
 const ZOOM_LEVELS = {
@@ -299,6 +300,7 @@ export class SphereOverview extends LiveComponent<any, any> {
             sphereId={activeSphereId}
             visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false && Permissions.inSphere(activeSphereId).canDisableBehaviour }
           />
+          <DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
         </AnimatedBackground>
       );
     }

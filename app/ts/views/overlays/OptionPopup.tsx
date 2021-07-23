@@ -37,6 +37,9 @@ export class OptionPopup extends Component<any, any> {
   componentDidMount() {
     this.setState({visible: true})
     Keyboard.dismiss();
+    this.unsubscribe.push(core.eventBus.on('UpdateOptionPopup', (data) => {
+      this.setState({buttons: data.buttons})
+    }));
     this.unsubscribe.push(core.eventBus.on('hidePopup', () => {
       this.setState({visible:false}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
     }));
@@ -54,7 +57,10 @@ export class OptionPopup extends Component<any, any> {
     let buttons = [];
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableOpacity style={styles.joinedButtons} onPress={() => { core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableOpacity style={styles.joinedButtons} onPress={() => {
+          if (button.close !== false) { core.eventBus.emit("hidePopup"); }
+          button.callback();
+        }} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableOpacity>
       );
@@ -97,7 +103,10 @@ export class OptionPopup extends Component<any, any> {
 
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {
+          if (button.close !== false) { core.eventBus.emit("hidePopup"); }
+          button.callback();
+        }} key={'option_button_' + index}>
           <Text style={styles.buttonTextAndroid}>{button.text}</Text>
         </TouchableHighlight>
       );
@@ -110,7 +119,19 @@ export class OptionPopup extends Component<any, any> {
       </TouchableHighlight>
     );
 
-
+    let amountOfOptions = this.state.buttons.length + 1;
+    let buttonContainerHeight = 50 * amountOfOptions + amountOfOptions - 1;
+    if (buttonContainerHeight > screenHeight - 65) {
+      return (
+        <ScrollView style={{height: screenHeight - 50, width:screenWidth}} contentOffset={{x:0,y:buttonContainerHeight - (screenHeight - 100)}}>
+          <View style={styles.centered}>
+            <View style={{height:buttonContainerHeight}}>
+              {buttons}
+            </View>
+          </View>
+        </ScrollView>
+      );
+    }
     return (
       <View style={{height:screenHeight, width: screenWidth, alignItems:'center', justifyContent:'center'}}>
         {buttons}

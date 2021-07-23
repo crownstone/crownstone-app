@@ -1,5 +1,5 @@
 import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
 import { core } from "../core";
 
@@ -528,7 +528,7 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
-    addSentryLog("showOverlay", target);
+    // // addSentryLog("showOverlay", target);
     LOGi.nav("I WANT TO SHOW THIS OVERLAY", target);
 
     LOGi.nav("is this overlay open?", target, NavState.isThisOverlayOpen(target));
@@ -559,7 +559,7 @@ export const NavigationUtil = {
   },
 
   closeOverlay(componentId) {
-    addSentryLog("componentId", componentId);
+    // // addSentryLog("componentId", componentId);
     NavState.closeOverlay(componentId);
     Navigation.dismissOverlay(componentId);
   },
@@ -572,7 +572,7 @@ export const NavigationUtil = {
   setRoot(rootStack : StackData) {
     // we add a timeout to ensure that there are no raceconditions when
     setTimeout(() => {
-      addSentryLog("rootStack", "stack");
+      // // addSentryLog("rootStack", "stack");
 
       // reset the NavState
       NavState.setRoot();
@@ -596,7 +596,7 @@ export const NavigationUtil = {
 
 
   launchModal: function(target, props = {}) {
-    addSentryLog("launchModal", target);
+    // // addSentryLog("launchModal", target);
     LOGi.nav("Navigating from", NavState.activeView, "to", target, props);
     NavState.expectModal(target);
     // NavState.modalActive();
@@ -626,7 +626,7 @@ export const NavigationUtil = {
   dismissModal: function() {
     LOGi.nav("CALLING dismissModal");
     let backFrom = NavState.getActiveComponent();
-    addSentryLog("dismissModal", backFrom);
+    // addSentryLog("dismissModal", backFrom);
     NavState.modalDismissed();
     return Navigation.dismissModal(backFrom)
       .then(() => {
@@ -638,14 +638,14 @@ export const NavigationUtil = {
   },
 
   dismissModalAndBack: function() {
-    addSentryLog("dismissModalAndBack", "null");
+    // addSentryLog("dismissModalAndBack", "null");
     NavigationUtil.baseStackBack();
     NavigationUtil.dismissModal();
   },
 
 
   dismissAllModals: function() {
-    addSentryLog("dismissAllModals", "null");
+    // addSentryLog("dismissAllModals", "null");
     LOGi.nav("Closing all modals");
     Navigation.dismissAllModals();
     NavState.allModalsDismissed();
@@ -653,20 +653,20 @@ export const NavigationUtil = {
 
 
   dismissModalAndNavigate(target,props) {
-    addSentryLog("dismissModalAndNavigate", target);
+    // addSentryLog("dismissModalAndNavigate", target);
     NavigationUtil.navigateFromUnderlyingStack(target, props);
     NavigationUtil.dismissModal()
   },
 
   dismissModalAndNavigateFromModal(target,props) {
-    addSentryLog("dismissModalAndNavigateFromModal", target);
+    // addSentryLog("dismissModalAndNavigateFromModal", target);
     NavigationUtil.dismissModal();
     NavigationUtil.navigateFromUnderlyingModal(target, props);
   },
 
 
   dismissAllModalsAndNavigate(target,props) {
-    addSentryLog("dismissAllModalsAndNavigate", target);
+    // addSentryLog("dismissAllModalsAndNavigate", target);
     NavigationUtil.navigateFromUnderlyingStack(target, props);
     NavigationUtil.dismissAllModals()
   },
@@ -688,7 +688,7 @@ export const NavigationUtil = {
    * @param props
    */
   navigateSafely: function(livesOnTab : string, target : string, props : any) {
-    addSentryLog("navigateSafely", target);
+    // addSentryLog("navigateSafely", target);
 
     if (!NavState.tabIsLoaded(livesOnTab)) {
       // if not, ignore.
@@ -731,7 +731,7 @@ export const NavigationUtil = {
       return;
     }
 
-    addSentryLog("navigate", target);
+    // addSentryLog("navigate", target);
     LOGi.nav("Navigating from",activeView, "to", target, props);
     Navigation.push(activeView, {
       component: {
@@ -746,7 +746,7 @@ export const NavigationUtil = {
   navigateFromUnderlyingModal(target, props) {
     LOGi.nav("UNDERLYING MODAL");
     let goFrom = NavState._getModalId();
-    addSentryLog("navigateFromUnderlyingModal", target);
+    // addSentryLog("navigateFromUnderlyingModal", target);
     LOGi.nav("navigateFromUnderlyingModal from", goFrom, "to", target);
     Navigation.push(goFrom, {
       component: {
@@ -759,7 +759,7 @@ export const NavigationUtil = {
 
   navigateFromUnderlyingStack(target, props) {
     let goFrom = NavState._getViewId();
-    addSentryLog("navigateFromUnderlyingStack", target);
+    // addSentryLog("navigateFromUnderlyingStack", target);
     LOGi.nav("Navigating from", goFrom, "to", target);
     Navigation.push(goFrom, {
       component: {
@@ -772,12 +772,12 @@ export const NavigationUtil = {
 
 
   navigateToBaseTab() {
-    addSentryLog("navigateToBaseTab", "null");
+    // addSentryLog("navigateToBaseTab", "null");
     NavigationUtil.navigateToTab(0)
   },
 
   navigateToTabName(tabName) {
-    addSentryLog("navigateToTabName", tabName);
+    // addSentryLog("navigateToTabName", tabName);
 
     let tabIndex = tabBarComponentNames.indexOf(tabName);
     if (tabIndex !== -1) {
@@ -786,7 +786,7 @@ export const NavigationUtil = {
   },
 
   navigateToTab(tabIndex) {
-    addSentryLog("back", tabIndex);
+    // addSentryLog("back", tabIndex);
 
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
       LOGi.nav(tabBarComponentNames, tabIndex);
@@ -805,7 +805,7 @@ export const NavigationUtil = {
     let backFrom = NavState.getActiveComponent();
     NavState.pop();
 
-    addSentryLog("back", backFrom);
+    // addSentryLog("back", backFrom);
     return Navigation.pop(backFrom)
       .then(() => {
         LOGi.nav("Going back from ", backFrom, " success!")
@@ -818,7 +818,7 @@ export const NavigationUtil = {
 
   baseStackBack() {
     let backFrom = NavState._getViewId();
-    addSentryLog("baseStackBack", backFrom);
+    // addSentryLog("baseStackBack", backFrom);
     LOGi.nav("Going back baseStackBack", backFrom);
     Navigation.pop(backFrom)
       .then(() => {
@@ -832,7 +832,7 @@ export const NavigationUtil = {
 
 
   backTo(target) {
-    addSentryLog("backTo", target);
+    // addSentryLog("backTo", target);
 
     let componentId = NavState.backTo(target);
     if (componentId) {
@@ -846,13 +846,13 @@ export const NavigationUtil = {
 
 
 function addSentryLog(methodName: string, data: string) {
-  Sentry.addBreadcrumb({
-    category: 'Navigation',
-    data: {
-      methodName: methodName,
-      data: data
-    }
-  });
+  // Sentry.addBreadcrumb({
+  //   category: 'Navigation',
+  //   data: {
+  //     methodName: methodName,
+  //     data: data
+  //   }
+  // });
 }
 
 

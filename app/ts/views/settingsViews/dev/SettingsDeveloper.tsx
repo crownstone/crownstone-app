@@ -31,6 +31,8 @@ import { Stacks } from "../../../router/Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../base_core";
+import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
+import { LOGw } from "../../../logging/Log";
 const RNFS = require('react-native-fs');
 
 
@@ -38,11 +40,12 @@ type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" 
 interface iEmailData { [key: string]: emailDataType }
 
 const EMAIL_DATA_TYPE = {
-  allBuffers:           'allBuffers',
-  switchCraftBuffers:   'switchCraftBuffers',
-  measurementBuffers:   'measurementBuffers',
-  errorBuffers:         'errorBuffers',
-  logs:                 'logs',
+  allBuffers:           'All buffers',
+  switchCraftBuffers:   'SwitchCraft buffers',
+  measurementBuffers:   'Measurement buffers',
+  errorBuffers:         'Error buffers',
+  logs:                 'Logs',
+  localization:         'Localization datasets',
 }
 
 
@@ -64,6 +67,9 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
+    // this is done on boot if the user was already a developer. This can be repeated without sideeffects.
+    LocalizationLogger.init();
+
     this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
@@ -132,120 +138,61 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           NavigationUtil.navigate("SettingsLogging");
         }
       });
-      items.push({
-        label: "Clear Logs!",
-        type: 'button',
-        style: { color: colors.csBlueDark.hex },
-        icon: <IconButton name="ios-cut" size={22} color="#fff"
-                          buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
-        callback: () => {
-          Alert.alert(
-            "Clear all Logs?",
-            "Press OK to clear logs.",
-            [{ text: "Cancel", style: 'cancel' }, {
-              text: "OK", onPress: () => {
-                clearAllLogs();
-              }
-            }])
-        }
-      });
     }
-      if (this.state.showSharingSettings) {
-        items.push({label: "SHARE WITH LOVELY DEVELOPERS", type: 'explanation', below: false});
-        items.push({
-          type:'dropdown',
-          value: this.state.sharingDataType,
-          label: 'Share Data:',
-          items:[{label: EMAIL_DATA_TYPE.logs}, {label: EMAIL_DATA_TYPE.allBuffers}, {label: EMAIL_DATA_TYPE.switchCraftBuffers}, {label: EMAIL_DATA_TYPE.measurementBuffers}, {label: EMAIL_DATA_TYPE.errorBuffers}],
-          callback: (data) => { this.setState({sharingDataType: data})}
-        })
 
-        if (this.state.sharingDataType !== null) {
-
-          items.push({
-            label: "Share data now!",
-            type: 'button',
-            style: {color: colors.purple.hex},
-            icon: <IconButton name="ios-mail" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
-            callback:(newValue) => {
-              let shareDataType = this.state.sharingDataType;
-              let storagePath = FileUtil.getPath();
-              let options = {};
-              if (shareDataType === EMAIL_DATA_TYPE.logs) {
-                let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
-                options = {urls:[
-                    "file://" + storagePath + "/" + filename,
-                  ]}
-              }
-              else if (shareDataType === EMAIL_DATA_TYPE.allBuffers) {
-                options = {urls:[
-                    "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-                    "file://" + storagePath + '/power-samples-filteredData.log',
-                    "file://" + storagePath + '/power-samples-unfilteredData.log',
-                    "file://" + storagePath + '/power-samples-softFuseData.log',
-                  ]}
-              }
-              else if (shareDataType ===  EMAIL_DATA_TYPE.switchCraftBuffers) {
-                options = {urls:[
-                    "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-                    "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-                  ]}
-              }
-              else if (shareDataType ===  EMAIL_DATA_TYPE.measurementBuffers) {
-                options = {urls:[
-                    "file://" + storagePath + '/power-samples-filteredData.log',
-                    "file://" + storagePath + '/power-samples-unfilteredData.log',
-                  ]}
-              }
-              else if (shareDataType ===  EMAIL_DATA_TYPE.errorBuffers) {
-                options = {urls:[
-                    "file://" + storagePath + '/power-samples-filteredData.log',
-                    "file://" + storagePath + '/power-samples-unfilteredData.log',
-                    "file://" + storagePath + '/power-samples-softFuseData.log',
-                  ]}
-              }
-
-              Share.open(options)
-                .then((res) => { console.log(res) })
-                .catch((err) => { err && console.log(err); });
-            }});
-        }
+    items.push({
+      label: "Share debug data",
+      type: 'button',
+      style: { color: colors.purple.hex },
+      icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.purple.hex }}/>,
+      callback: () => {
+        core.eventBus.emit("showPopup", {buttons: [
+          {text: EMAIL_DATA_TYPE.logs              , callback: () => { shareData(EMAIL_DATA_TYPE.logs              ) }},
+          {text: EMAIL_DATA_TYPE.localization      , callback: () => { shareData(EMAIL_DATA_TYPE.localization      ) }},
+          {text: EMAIL_DATA_TYPE.allBuffers        , callback: () => { shareData(EMAIL_DATA_TYPE.allBuffers        ) }},
+          {text: EMAIL_DATA_TYPE.switchCraftBuffers, callback: () => { shareData(EMAIL_DATA_TYPE.switchCraftBuffers) }},
+          {text: EMAIL_DATA_TYPE.measurementBuffers, callback: () => { shareData(EMAIL_DATA_TYPE.measurementBuffers) }},
+          {text: EMAIL_DATA_TYPE.errorBuffers      , callback: () => { shareData(EMAIL_DATA_TYPE.errorBuffers      ) }},
+        ]});
       }
-      else {
-        items.push({
-          label: "Share Data",
-          type: 'button',
-          style: { color: colors.purple.hex },
-          icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.purple.hex }}/>,
-          callback: () => {
-            this.setState({ showSharingSettings: true })
-          }
-        });
-      }
+    })
 
-      items.push({
-        label: "Delete collected data",
-        type: 'button',
-        style: { color: colors.csBlueDarker.hex },
-        icon: <IconButton name="ios-trash" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csBlueDarker.hex }}/>,
-        callback: () => {
-          Alert.alert("Sure about that?","This will delete all collected power curves.",[{text:'no'},{text:"yes", onPress: () => {
+
+    items.push({
+      label: "Delete debug data",
+      type: 'button',
+      style: { color: colors.csBlueDarker.hex },
+      icon: <IconButton name="ios-trash" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csBlueDarker.hex }}/>,
+      callback: () => {
+        core.eventBus.emit("showPopup", {buttons: [
+            {text:"Delete logs", callback: () => {
+                Alert.alert(
+                  "Clear all Logs?",
+                  "Press OK to clear logs.",
+                  [{ text: "Cancel", style: 'cancel' }, {
+                    text: "OK", onPress: () => {
+                      clearAllLogs();
+                    }
+                  }])
+            }},
+            {text:"Delete power curve datasets", callback: () => { Alert.alert("Sure about that?","This will delete all collected power curves.",[{text:'no'},{text:"yes", onPress: async () => {
               let storagePath = FileUtil.getPath();
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-positive.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-positive.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-negative.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-negative.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-filteredData.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-unfilteredData.log')
-              FileUtil.safeDeleteFile(storagePath + '/power-samples-softFuseData.log')
-            }}])
-        }
-      });
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-positive.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-positive.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-false-negative.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-switchcraft-true-negative.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-filteredData.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-unfilteredData.log')
+              await FileUtil.safeDeleteFile(storagePath + '/power-samples-softFuseData.log')
+              Alert.alert("Done!");
+            }}]) }},
+            {text:"Delete localization datasets",  callback: () => {
+            Alert.alert("Sure about that?","This will delete all collected Localization datasets.",[{text:'no'},{text:"yes", onPress: async () => {
+              await LocalizationLogger.clearDataFiles();
+              Alert.alert("Done!");
+            }}]) }},
+          ]})
+      }})
 
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
@@ -345,11 +292,14 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         }
       }});
     items.push({
-      label: "Crash to test Sentry",
+      label: "Cause Crash",
       type: 'button',
-      icon: <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+      icon: <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.darkRed.hex}} />,
       callback:() => {
-        throw new Error("SentryTest!")
+        core.eventBus.emit("showPopup", {buttons: [
+          {text:"Crash JS",   callback: () => { throw new Error("Javascript CRASH Induced") }},
+          {text:"Crash Bridge",  callback: () => { Bluenet.crash() }},
+        ]})
       }})
 
 
@@ -555,7 +505,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         store.batchDispatch(actions);
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
-
+        LocalizationLogger.destroy();
         NavigationUtil.back();
     }});
 
@@ -642,3 +592,57 @@ export function getDevAppItems() {
     return items;
 }
 
+
+async function shareData(shareDataType) {
+  let storagePath = FileUtil.getPath();
+  let options = {};
+  if (shareDataType === EMAIL_DATA_TYPE.logs) {
+    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
+    options = {urls:[
+        "file://" + storagePath + "/" + filename,
+      ]}
+  }
+  else if (shareDataType === EMAIL_DATA_TYPE.localization) {
+    options = {urls: (await LocalizationLogger.getURLS()).map((a) => { return "file://" + a }) }
+  }
+  else if (shareDataType === EMAIL_DATA_TYPE.allBuffers) {
+    options = {urls:[
+        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+        "file://" + storagePath + '/power-samples-softFuseData.log',
+      ]}
+  }
+  else if (shareDataType ===  EMAIL_DATA_TYPE.switchCraftBuffers) {
+    options = {urls:[
+        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+      ]}
+  }
+  else if (shareDataType ===  EMAIL_DATA_TYPE.measurementBuffers) {
+    options = {urls:[
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+      ]}
+  }
+  else if (shareDataType ===  EMAIL_DATA_TYPE.errorBuffers) {
+    options = {urls:[
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+        "file://" + storagePath + '/power-samples-softFuseData.log',
+      ]}
+  }
+  console.log(options)
+  try {
+    let result = await Share.open(options)
+    console.log(result)
+  }
+  catch (err) {
+    LOGw.info("Something went wrong while sharing data:",err)
+  }
+}

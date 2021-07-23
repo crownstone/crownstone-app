@@ -73,6 +73,8 @@ sentry.properties
 LocalConfig.ts
 toonConfig.ts
 
+Embrace-Info.plist
+
 !scripts/**
 __prototypes
 .logs
