@@ -78,21 +78,13 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
     core.eventBus.emit("connecting", handle, " with priority:", highPriority);
 
     // connect
-    if (handle) {
-      return BluenetPromise('connect', handle, referenceId)
-        .then(() => {
-          core.eventBus.emit("connected", handle);
-        })
-    }
-    else if (highPriority) {
-      return new Promise((resolve, reject) => {
-        Alert.alert(
-          "Can't connect to this Crownstone.",
-          "Please move a little closer to it and try again.",
-          [{text:'OK', onPress: reject}]
-        )
-      });
-    }
+    if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") };
+
+    return BluenetPromise('connect', handle, referenceId)
+      .then(() => {
+        core.eventBus.emit("connected", handle);
+      })
+
   },
   cancelConnectionRequest: (handle: string) => { return BluenetPromise('cancelConnectionRequest', handle); },
   // this never rejects

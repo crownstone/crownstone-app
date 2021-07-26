@@ -57,10 +57,13 @@ class LocalizationLoggerClass {
     }
   }
 
-  async classify(secondsToLookBack: number, location: LocationData) {
+  async classify(secondsToLookBack: number, location: LocationData) : Promise<number> {
     let data = this._data.slice(this._data.length - 1 - secondsToLookBack);
+    let length = data.length;
     let name = Localization_LOG_PREFIX + location.config.name + "_" + location.config.uid + "_";
     await writeLocalizationDataset(name, data);
+    this._data = []
+    return length;
   }
 
   classifyAfter(secondsFromNow: number, location: LocationData) {

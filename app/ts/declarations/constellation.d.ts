@@ -60,6 +60,7 @@ interface BroadcastInterface extends CommandInterface {
 interface CommandInterface {
   type: BridgeCommandType,
   canBroadcast: boolean,
+  info() : string,
   execute(connectedHandle: string, options?: ExecutionOptions = null) : Promise< any >
   isDuplicate(otherCommand: CommandBase) : boolean
 }

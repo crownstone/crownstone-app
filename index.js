@@ -18,42 +18,38 @@ import { config } from './sentrySettings'
 import { USE_SENTRY } from "./app/js/ExternalConfig";
 import { loadRoutes } from "./app/js/router/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";
-
-import {initialize} from 'react-native-embrace'
-
+import * as Sentry from "@sentry/react-native";
 
 
-
-initialize({patch:"constellation"});
 if (USE_SENTRY) {
-  // let sentryConfig = {
-  //   dsn: null,
-  //   deactivateStacktraceMerging: true,
-  //   autoBreadcrumbs: {
-  //     'xhr': false,      // XMLHttpRequest
-  //     'console': false,  // console logs
-  //   }
-  // }
-  //
-  // if (Platform.OS === 'android') {
-  //   if (config.android) {
-  //     sentryConfig.dsn = config.android;
-  //   }
-  // }
-  // else {
-  //   if (config.ios) {
-  //     sentryConfig.dsn = config.ios;
-  //   }
-  // }
-  //
-  // Sentry.init(sentryConfig)
-  //
-  // Sentry.addBreadcrumb({
-  //   category: 'AppState',
-  //   data: {
-  //     state: "started",
-  //   }
-  // });
+  let sentryConfig = {
+    dsn: null,
+    // deactivateStacktraceMerging: true,
+    autoBreadcrumbs: {
+      'xhr': false,      // XMLHttpRequest
+      'console': false,  // console logs
+    }
+  }
+
+  if (Platform.OS === 'android') {
+    if (config.android) {
+      sentryConfig.dsn = config.android;
+    }
+  }
+  else {
+    if (config.ios) {
+      sentryConfig.dsn = config.ios;
+    }
+  }
+
+  Sentry.init(sentryConfig)
+
+  Sentry.addBreadcrumb({
+    category: 'AppState',
+    data: {
+      state: "started",
+    }
+  });
 }
 
 loadRoutes();

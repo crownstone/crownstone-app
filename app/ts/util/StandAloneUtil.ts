@@ -376,7 +376,7 @@ export const xUtil = {
     return true;
   },
 
-  deepCompare: function (a, b, d=0) {
+  deepCompare: function (a, b, d=0) : boolean {
     let iterated = false;
     for (let prop in b) {
       iterated = true;

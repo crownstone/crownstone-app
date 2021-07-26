@@ -9,6 +9,7 @@ export class Command_SyncBehaviours extends CommandBase implements CommandBaseIn
   behaviourTransfers : behaviourTransfer[]
   constructor(behaviours: behaviourTransfer[]) {
     super("syncBehaviours");
+    this.behaviourTransfers = behaviours;
   }
 
 

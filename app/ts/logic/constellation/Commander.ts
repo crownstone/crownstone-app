@@ -128,7 +128,7 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     let promiseContainer = xUtil.getPromiseContainer<any>()
-    LOGd.constellation("Commander: Loading command", command.type, allowMeshRelays);
+    LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
     let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
     // in case this command is broadcast instead of done via
     if (commands) {

@@ -33,6 +33,8 @@ import Share from "react-native-share";
 import { base_core } from "../../../base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 import { LOGw } from "../../../logging/Log";
+import * as Sentry from "@sentry/react-native";
+
 const RNFS = require('react-native-fs');
 
 
@@ -298,7 +300,8 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       callback:() => {
         core.eventBus.emit("showPopup", {buttons: [
           {text:"Crash JS",   callback: () => { throw new Error("Javascript CRASH Induced") }},
-          {text:"Crash Bridge",  callback: () => { Bluenet.crash() }},
+          {text:"Crash Bridge",  callback: () => { Bluenet.crash(); }},
+          {text:"Crash via Sentry",  callback: () => { Sentry.nativeCrash();}},
         ]})
       }})
 

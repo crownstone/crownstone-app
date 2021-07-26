@@ -38,9 +38,13 @@ import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Button } from "../../components/Button";
+import { NoRulesYet } from "./DeviceSmartBehaviour_NoRulesYet";
+import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
+import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 
 
 let className = "DeviceSmartBehaviour";
+
 
 export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   static options(props) {
@@ -251,48 +255,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
-              <Button
-                backgroundColor={colors.blue.rgba(0.5)}
-                label={ lang("Copy_from___")}
-                callback={() => {
-                  let copyFrom = () => {
-                    NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection", {
-                      sphereId: this.props.sphereId,
-                      stoneId: this.props.stoneId,
-                      copyType: "FROM",
-                      originId: this.props.stoneId,
-                      callback: (fromStoneId, selectedRuleIds) => {
-                        let stoneName = DataUtil.getStoneName(this.props.sphereId, fromStoneId);
-                        Alert.alert(
-                          lang("Shall_I_copy_the_behaviou", stoneName),
-                          undefined,
-                          [{text:lang("Cancel")}, {text:lang("OK"), onPress:() => {
-                              StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
-                                .then((success) => {
-                                  if (success) {
-                                    BehaviourCopySuccessPopup();
-                                  }
-                                })
-                        }}])
-                      }
-                    });
-                  }
-
-                  if (ruleIds.length > 0) {
-                    Alert.alert(
-lang("_Copying_will_override_ex_header"),
-lang("_Copying_will_override_ex_body"),
-[{text:lang("_Copying_will_override_ex_left")}, {
-text:lang("_Copying_will_override_ex_right"), onPress: copyFrom}])
-                  }
-                  else{
-                    copyFrom()
-                  }
-                }}
-                icon={'md-log-in'}
-                iconSize={14}
-                iconColor={colors.blue.rgba(0.75)}
-              />
+              <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} rulesAvailable={ruleIds.length > 0}/>
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <Button
@@ -319,25 +282,7 @@ text:lang("_Copying_will_override_ex_right"), onPress: copyFrom}])
             </SlideFadeInView>
 
             <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
-              <Button
-                backgroundColor={colors.csBlue.rgba(0.5)}
-                label={ "Sync behaviour" }
-                callback={() => {
-                  core.eventBus.emit("showLoading","Syncing...");
-                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId, true)
-                    .then(() => { core.eventBus.emit("hideLoading"); })
-                    .catch((err) => {
-                      Alert.alert(
-                        "Failed to sync",
-                        err,
-                        [{text:"OK", onPress:() => { core.eventBus.emit("hideLoading"); }}],
-                        { cancelable: false }
-                      )});
-                }}
-                icon={'md-refresh-circle'}
-                iconSize={14}
-                iconColor={colors.darkPurple.blend(colors.blue, 0.5).rgba(0.75)}
-              />
+              <BehaviourSyncButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
             </SlideFadeInView>
 
             <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
@@ -352,126 +297,6 @@ text:lang("_Copying_will_override_ex_right"), onPress: copyFrom}])
   }
 }
 
-function NoRulesYet(props) {
-  let state = core.store.getState();
-  let sphere = state.spheres[props.sphereId];
-  if (!sphere) return <View />;
-  let stone = sphere.stones[props.stoneId];
-  if (!stone) return <View />;
-
-  let updateRequired = !xUtil.versions.canIUse(stone.config.firmwareVersion, '4.0.0')
-
-  return (
-    <Background image={background.lightBlurLighter} hasNavBar={false}>
-      <ScrollView contentContainerStyle={{flexGrow:1}}>
-        <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>
-          <View style={{height: 40}} />
-          <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
-            <ScaledImage source={require('../../../../assets/images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
-            <ScaledImage source={require('../../../../assets/images/overlayCircles/roomsCircle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
-            <ScaledImage source={require('../../../../assets/images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
-          </View>
-          <View style={{height: 40}} />
-          <Text style={styles.boldExplanation}>{ lang("My_behaviour_is_a_combina") }</Text>
-          <Text style={styles.explanation}>{ lang("I_can_take_multiple_peopl") }</Text>
-          <Text style={styles.explanation}>{ lang("Tap_the_Add_button_below_") }</Text>
-          <View style={{flex:1, minHeight: 40}} />
-          { updateRequired && <Button
-            backgroundColor={colors.green.rgba(0.9)}
-            label={ "Update to use behaviour!"}
-            callback={() => {
-              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert(
-lang("_You_dont_have_permission_header"),
-lang("_You_dont_have_permission_body"),
-[{text:lang("_You_dont_have_permission_left")}]);
-                return
-              }
-
-              NavigationUtil.launchModal( "DfuIntroduction", {sphereId: props.sphereId}); }}
-          /> }
-
-          { !updateRequired && <Button
-            backgroundColor={colors.green.rgba(0.9)}
-            label={ lang("Add_my_first_behaviour_")}
-            callback={() => {
-              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert(
-lang("_You_dont_have_permission__header"),
-lang("_You_dont_have_permission__body"),
-[{text:lang("_You_dont_have_permission__left")}]);
-                return
-              }
-
-              NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {
-                sphereId: props.sphereId,
-                stoneId: props.stoneId
-              });
-            }}
-          />
-          }
-          { !updateRequired && <Button
-            backgroundColor={colors.blue.rgba(0.6)}
-            label={ lang("Copy_from_another_Crownst")}
-            icon={'md-log-in'}
-            iconSize={14}
-            iconColor={colors.blue.rgba(0.75)}
-            callback={() => {
-              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert(
-lang("_You_dont_have_permission_t_header"),
-lang("_You_dont_have_permission_t_body"),
-[{text:lang("_You_dont_have_permission_t_left")}]);
-                return
-              }
-
-              NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection", {
-                ...props,
-                copyType: "FROM",
-                originId: props.stoneId,
-                isModal: true,
-                originIsDimmable: stone.abilities.dimming.enabledTarget,
-                callback: (fromStoneId, selectedRuleIds) => {
-                  let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
-                  Alert.alert(
-                    "Shall I copy the behaviour from " + stoneName + "?",
-                    undefined,
-                    [{ text: "Cancel" }, {
-                      text: "OK", onPress: () => {
-                        StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
-                          .then((success) => {
-                            if (success) {
-                              let seeResults = () => {
-                                NavigationUtil.dismissModal();
-                              }
-                              Alert.alert(
-                                "Success!",
-                                "Behaviour has been copied!",
-                                [{
-                                  text: "Great!", onPress: () => {
-                                    seeResults()
-                                  }
-                                }], {
-                                  onDismiss: () => {
-                                    seeResults()
-                                  }
-                                })
-                            }
-                          })
-                      }
-                    }])
-                },
-              })
-            }}
-            />
-          }
-          <View style={{height:30}} />
-        </View>
-      </ScrollView>
-    </Background>
-  )
-}
 
 function DisabledBehaviourBanner(props) {
   return (

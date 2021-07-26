@@ -70,11 +70,14 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
  * This will also be able to possibly use a hub to propagate these commands.
  */
 export function tell(handle: string | StoneData, timeoutSeconds = 30) : CommandAPI {
-  if (typeof handle != 'string') {
-    handle = handle.config.handle
-  }
+  if (!handle) { throw "INVALID_HANDLE"; }
 
-  let sphereId = MapProvider.stoneHandleMap[handle].sphereId;
+  if (typeof handle != 'string') { handle = handle.config.handle; }
+  if (!handle) { throw "INVALID_HANDLE"; }
+
+  let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId || null;
+  if (!sphereId) { throw "COULD_NOT_GET_SPHEREID"; }
+
   LOG.constellation("Tellers: Planning to tell", handle);
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),

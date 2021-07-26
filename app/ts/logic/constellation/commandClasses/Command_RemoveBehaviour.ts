@@ -2,6 +2,7 @@ import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { Executor } from "../Executor";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { LOGw } from "../../../logging/Log";
 
 
 export class Command_RemoveBehaviour extends CommandBase implements CommandBaseInterface {
@@ -19,7 +20,15 @@ export class Command_RemoveBehaviour extends CommandBase implements CommandBaseI
 
 
   duplicateCheck(otherCommand: CommandBase) {
-    return this.index == (otherCommand as Command_RemoveBehaviour).index;
+    let isDuplicate = this.index == (otherCommand as Command_RemoveBehaviour).index;
+    if (isDuplicate) {
+      LOGw.info("Duplicate behaviour removal trigger detected", this.index, (otherCommand as Command_RemoveBehaviour).index);
+    }
+    return isDuplicate
+  }
+
+  info() {
+    return "Removing " + this.index;
   }
 }
 

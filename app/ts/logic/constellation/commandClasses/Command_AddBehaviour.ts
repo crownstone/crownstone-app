@@ -2,6 +2,7 @@ import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { Executor } from "../Executor";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { LOGw } from "../../../logging/Log";
 
 
 export class Command_AddBehaviour extends CommandBase implements CommandBaseInterface {
@@ -19,7 +20,11 @@ export class Command_AddBehaviour extends CommandBase implements CommandBaseInte
 
 
   duplicateCheck(otherCommand: CommandBase) {
-    return xUtil.deepCompare(this.behaviourTransfer, (otherCommand as Command_AddBehaviour).behaviourTransfer);
+    let isDuplicate = xUtil.deepCompare(this.behaviourTransfer, (otherCommand as Command_AddBehaviour).behaviourTransfer);
+    if (isDuplicate) {
+      LOGw.info("Duplicate behaviour detected", JSON.stringify(this.behaviourTransfer), JSON.stringify((otherCommand as Command_AddBehaviour).behaviourTransfer));
+    }
+    return isDuplicate
   }
   
 }

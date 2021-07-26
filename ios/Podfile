@@ -23,8 +23,5 @@ target 'Crownstone' do
   post_install do |installer|
     react_native_post_install(installer)
   end
-
-  pod 'EmbraceIO'
-  pod 'RNEmbrace', :path => '../node_modules/react-native-embrace'
 end
 

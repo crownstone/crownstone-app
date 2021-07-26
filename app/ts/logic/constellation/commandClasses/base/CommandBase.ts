@@ -21,4 +21,11 @@ export class CommandBase implements CommandBaseInterface {
   duplicateCheck(otherCommand: CommandBaseInterface) : boolean {
     return true;
   }
+
+  /**
+   * This can be used to print additional information of this command to the logs. Only used for development.
+   */
+  info() : string {
+    return '';
+  }
 }

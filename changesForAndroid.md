@@ -34,3 +34,7 @@ Turn on mesh command data changed. It is now a list of stone short ids.
 turnOnMesh(handle: string, arrayOfStoneIds: number[])  
 
 If a command fails due to not being connected to a crownstone (anymore), throw this error: "NOT_CONNECTED"
+
+Added crash method to bridge
+
+Updated sentry config (Contact Alex for details.)

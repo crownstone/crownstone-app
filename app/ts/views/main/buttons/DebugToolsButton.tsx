@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DebugToolsButton", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   Alert,
@@ -88,9 +94,9 @@ function selectRecentRoom(sphereId: string, minutes: number) {
       let location = locations[locationId];
       data.push({
         text: "... in the " + locations[locationId].config.name, callback: async () => {
-          await LocalizationLogger.classify(minutes * 60, location);
+          let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
           setTimeout(() => {
-            Alert.alert("Stored!", "The localization dataset has been saved. Share it via the developer menu.")
+            Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
           }, 300);
         }
       })
@@ -114,9 +120,9 @@ function selectFromRoomList(sphereId:string, minutes: number) {
     let location = locations[locationId];
     data.push({
       text: "... in the " + locations[locationId].config.name, callback: async () => {
-        await LocalizationLogger.classify(minutes * 60, location);
+        let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
         setTimeout(() => {
-          Alert.alert("Stored!", "The localization dataset has been saved. Share it via the developer menu.")
+          Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
         }, 300);
       }
     })
