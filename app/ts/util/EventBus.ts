@@ -110,18 +110,17 @@ export class EventBusClass {
   clearMostEvents() {
     let topics = Object.keys(this._topics);
     let remainingTopics = {};
+    this._count = 0;
     for (let i = 0; i < topics.length; i++) {
       if (EXCLUDE_FROM_CLEAR[topics[i]] !== true) {
         delete this._topics[topics[i]];
       }
       else {
         remainingTopics[topics[i]] = this._topics[topics[i]].length;
+        this._count += this._topics[topics[i]].length
       }
     }
-    this._count = 0;
-    for (let i = 0; i < topics.length; i++) {
-      this._count += this._topics[topics[i]].length;
-    }
+
     for (let topic in remainingTopics) {
       LOGi.event(`EventBus: RemainingTopics topic[${topic}], topicCount:[${remainingTopics[topic].length}], totalCount:[${this._count}] type:[${this._type}] busId:[${this._id}]`);
     }

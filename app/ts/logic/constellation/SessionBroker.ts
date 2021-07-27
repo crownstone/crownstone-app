@@ -7,6 +7,7 @@ import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { LOGd, LOGi, LOGw } from "../../logging/Log";
+import { BleCommandManager } from "./BleCommandManager";
 
 export class SessionBroker {
 
@@ -38,6 +39,13 @@ export class SessionBroker {
     }))
   }
 
+  /**
+   * This is usually the starting point of the broker from the commander.
+   * If this is a direct connection, the first call is loadSession.
+   *
+   * All commands from the commander are passed through this.
+   * @param commands
+   */
   loadPendingCommands(commands: BleCommand[]) {
     for (let command of commands) {
       this.pendingCommands[command.id] = command;
@@ -122,14 +130,16 @@ export class SessionBroker {
         })
         .catch((err) => {
           delete this.pendingSessions[handle];
-          if (err !== "REMOVED_FROM_QUEUE") {
+          if (err === "SESSION_REQUEST_TIMEOUT") {
+            BleCommandManager.removeCommand(handle, command.id, "TIME_OUT");
+          }
+          else if (err !== "REMOVED_FROM_QUEUE") {
             LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
             throw err;
           }
         })
     }
   }
-
 
   async killConnectedSessions() {
     LOGi.constellation("SessionBroker: Killing sessions for", this.options.commanderId);

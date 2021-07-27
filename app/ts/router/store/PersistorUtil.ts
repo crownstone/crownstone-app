@@ -3,7 +3,22 @@ import {HISTORY_CYCLE_SIZE, HISTORY_PREFIX} from "./Persistor";
 
 export const PersistorUtil = {
 
-  extractUserKeys: function(allKeys : string[], userId : string) {
+  extractUserKeys: function(allKeys : string[], userId : string) : string[] {
+    // Extract user keys from the complete key list
+    let userKeys = [];
+
+    for (let i = 0; i < allKeys.length; i++) {
+      let key = allKeys[i];
+      let keyArray = key.split('.');
+      if (keyArray[0] === userId) {
+        userKeys.push(key);
+      }
+    }
+
+    return userKeys
+  },
+
+  extractUserKeyData: function(allKeys : string[], userId : string) : userKeyObject[] {
     // Extract user keys from the complete key list
     let userKeys = [];
 

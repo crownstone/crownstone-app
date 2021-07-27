@@ -8,7 +8,7 @@ import { Alert }                    from 'react-native';
 
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
-import { LOG, LOGe } from '../../logging/Log';
+import { LOG, LOGe, LOGi } from "../../logging/Log";
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";

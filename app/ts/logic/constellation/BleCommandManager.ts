@@ -47,6 +47,9 @@ export class BleCommandManagerClass {
     let commandsToLoad = [];
 
     for (let targetId of targets) {
+      // if the handle is missing, do not create a command. If no commands are created at all, error is thrown below.
+      if (!targetId) { continue; }
+
       let sharedItems = {
         id: commandId,
         minConnections: options.minConnections,
@@ -129,6 +132,10 @@ export class BleCommandManagerClass {
 
     for (let command of commandsToLoad) {
       this.load(command);
+    }
+
+    if (commandsToLoad.length === 0) {
+      throw "NO_COMMANDS_TO_LOAD_OR_INVALID_TARGETS";
     }
 
     return commandsToLoad;

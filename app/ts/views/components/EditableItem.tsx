@@ -33,6 +33,7 @@ import { NumericSet }        from "./editComponents/NumericSet";
 import { NumericGetSet }     from "./editComponents/NumericGetSet";
 
 import {styles, colors, NORMAL_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
+import { Popup } from "./editComponents/Popup";
 
 
 /**
@@ -135,6 +136,12 @@ export class EditableItem extends Component<any, any> {
         return <InfoBar barHeight={NORMAL_ROW_SIZE} {...this.props} style={[this.props.style, {color: colors.darkGray2.hex }]} />;
       case 'navigation':
         return <NavigationBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'numericGetSet':
+        return <NumericGetSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'numericSet':
+        return <NumericSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'popup':
+        return <Popup barHeight={NORMAL_ROW_SIZE} {...this.props} />
       case 'picture':
         return <PictureEdit barHeightLarge={EXTRA_LARGE_ROW_SIZE} {...this.props} />;
       case 'optionalSwitch':
@@ -151,10 +158,6 @@ export class EditableItem extends Component<any, any> {
         return <TextBlob barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'timePicker':
         return <TimePicker barHeight={NORMAL_ROW_SIZE} {...this.props} />;
-      case 'numericGetSet':
-        return <NumericGetSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
-      case 'numericSet':
-        return <NumericSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       default:
         return (
           <View>

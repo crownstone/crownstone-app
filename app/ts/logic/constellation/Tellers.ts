@@ -5,7 +5,7 @@ import { SessionManager } from "./SessionManager";
 import { CommandAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
 
-export async function connectTo(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
+export async function connectTo(handle, timeoutSeconds = 20) : Promise<CommandAPI> {
   LOGi.constellation("Tellers: Starting a direct connection.", handle);
 
   let privateId = xUtil.getUUID();
@@ -69,14 +69,12 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.
  */
-export function tell(handle: string | StoneData, timeoutSeconds = 30) : CommandAPI {
-  if (!handle) { throw "INVALID_HANDLE"; }
-
+export function tell(handle: string | StoneData, timeoutSeconds = 10) : CommandAPI {
   if (typeof handle != 'string') { handle = handle.config.handle; }
-  if (!handle) { throw "INVALID_HANDLE"; }
-
   let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId || null;
-  if (!sphereId) { throw "COULD_NOT_GET_SPHEREID"; }
+
+  // we do not check for handle and sphere here, this is done when the first command is loaded. This makes it so that the
+  // error can be caught in the promise chain instead of before that.
 
   LOG.constellation("Tellers: Planning to tell", handle);
   return new CommandAPI({
@@ -94,7 +92,7 @@ export function tell(handle: string | StoneData, timeoutSeconds = 30) : CommandA
  * from(stone).getFirmwareVersion()
  * @param handle
  */
-export function from(handle: string | StoneData, timeoutSeconds = 30) : CommandAPI {
+export function from(handle: string | StoneData, timeoutSeconds = 10) : CommandAPI {
   return tell(handle, timeoutSeconds);
 }
 

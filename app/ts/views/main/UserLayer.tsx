@@ -131,15 +131,6 @@ export class UserLayer extends LiveComponent<any, any> {
 
 
       let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, locationId);
-      //
-      // presentUsers = [
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      //   {id:Math.floor(Math.random()*1e5), data: {accessLevel: "admin",email: "bart@dobots.nl",firstName: "bart",invitationPending: false,lastName: "dobots",picture: "file:///var/mobile/Containers/Data/Application/B62EB16C-F33D-4C99-8D31-F130C4F7C039/Documents/585aa3befe73d7130042801b.jpg",pictureId: "5b76e8ba518f81001d14d27e",present: false,updatedAt: 1574248629885}},
-      // ]
       if (presentUsers.length > 0) {
         let currentOtherUserIndex = 0;
         let userIsInRoom = false;

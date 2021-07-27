@@ -293,7 +293,7 @@ export class SessionManagerClass {
             this.closeSession(handle);
           }
         }
-      })
+      }, timeoutSeconds*1000)
     };
   }
 

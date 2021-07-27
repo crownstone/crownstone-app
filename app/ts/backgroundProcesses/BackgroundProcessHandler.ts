@@ -389,6 +389,7 @@ class BackgroundProcessHandlerClass {
     core.store = StoreManager.getStore();
     base_core.store = StoreManager.getStore();
     let state = core.store.getState();
+    console.log("Bootstate", state.user)
     // if we have an accessToken, we proceed with logging in automatically
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
@@ -396,6 +397,7 @@ class BackgroundProcessHandlerClass {
       CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
+            console.log("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             LOGw.info("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
@@ -413,11 +415,11 @@ class BackgroundProcessHandlerClass {
           }
         })
         .then(() => {
-          LOG.info("BackgroundProcessHandler: Verified User.");
+          console.log("BackgroundProcessHandler: Verified User.");
           CLOUD.sync(core.store, true).catch(() => {})
         })
         .catch((err) => {
-          LOG.info("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
+          console.log("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
             AppUtil.logOut(core.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }

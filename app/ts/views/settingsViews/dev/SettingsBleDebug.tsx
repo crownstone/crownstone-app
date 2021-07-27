@@ -46,12 +46,12 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
     let rssiData = StoneAvailabilityTracker.getRssi(this.props.stoneId) > -1000 ? (StoneAvailabilityTracker.getRssi(this.props.stoneId) + " in ") : '';
       items.push({
       mediumIcon: <IconCircle
-        icon={stone && stone.config.icon || 'ios-analytics'}
+        icon={stone?.config?.icon || 'ios-analytics'}
         size={52}
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: stone ? stone.config && stone.config.name : "Any",
+      label: stone?.config?.name || "Any",
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',

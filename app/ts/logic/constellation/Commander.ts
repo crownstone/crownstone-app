@@ -127,6 +127,18 @@ class CommandAPI_base {
    * @param viaMesh
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
+    // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
+    let validHandleToPerformAction = false;
+    for (let target of this.options.commandTargets) {
+      if (target) {
+        validHandleToPerformAction = true;
+      }
+    }
+
+    if (!validHandleToPerformAction) {
+      throw "INVALID_HANDLE";
+    }
+
     let promiseContainer = xUtil.getPromiseContainer<any>()
     LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
     let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);

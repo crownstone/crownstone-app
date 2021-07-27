@@ -65,6 +65,7 @@ export class Persistor {
 
         // get the keys for this user from the list of all keys.
         let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
+        console.log("ALL USER KEYS", userKeys)
         return AsyncStorage.multiRemove(userKeys)
       })
   }
@@ -329,7 +330,7 @@ export class Persistor {
         LOGd.store("Persistor: all keys found:", allKeys);
 
         // get the keys for this user from the list of all keys.
-        let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
+        let userKeys = PersistorUtil.extractUserKeyData(allKeys, this.userId);
 
         // generate a user key cache
         this._createUserKeyCache(allKeys);

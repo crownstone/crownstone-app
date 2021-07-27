@@ -1,4 +1,4 @@
-import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mocks, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
@@ -190,5 +190,32 @@ test("Session manager sets a block on sessions, and allows something to claim it
 
   expect(claimed).toBeTruthy()
 });
+
+
+
+
+test("Timeout the request from the teller should also clean up the commands", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let caughtErrors = [];
+  tell(handle).getFirmwareVersion().catch((err) => { caughtErrors.push(err); })
+  tell(handle).getGPREGRET().catch((err) => { caughtErrors.push(err); })
+  tell(handle).getBootloaderVersion().catch((err) => { caughtErrors.push(err); })
+  tell(handle).getTime().catch((err) => { caughtErrors.push(err); })
+  tell(handle).getAdcChannelSwaps().catch((err) => { caughtErrors.push(err); })
+
+  console.log(mocks.mScheduler._callbacks)
+  await mocks.mScheduler.trigger(5)
+  await TestUtil.nextTick()
+
+  expect(caughtErrors[0]).toBe("TIME_OUT")
+  expect(caughtErrors[1]).toBe("TIME_OUT")
+  expect(caughtErrors[2]).toBe("TIME_OUT")
+  expect(caughtErrors[3]).toBe("TIME_OUT")
+  expect(caughtErrors[4]).toBe("TIME_OUT")
+});
+
 
 

@@ -52,9 +52,10 @@ export const AppUtil = {
       StoreManager.destroyActiveUser()
         .then(() => {
           CLOUD.__syncTriggerDatabaseEvents = false;
-          CLOUD.sync()
+          return CLOUD.sync(false, false)
         })
         .then(() => {
+          StoreManager.persistor.persistFull();
           core.eventBus.emit("showLoading", lang("Finalizing___"));
           return new Promise((resolve, reject) => {
             setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",5)); }, 1000);

@@ -160,7 +160,7 @@ class TrackingNumberManagerClass {
 
   _cycleMyDeviceTrackingToken(sphereId) {
     LOGi.info("TrackingNumberManager: Will cycle the deviceRandomTrackingToken. Appstate:", AppState.currentState);
-    LOGi.info("TrackingNumberManager: Cycling the deviceRandomTrackingToken...")
+    LOGi.info("TrackingNumberManager: Cycling the deviceRandomTrackingToken...");
     // block other requests for _requests based on the stored token.
     this.currentlyCyclingToken = true;
 

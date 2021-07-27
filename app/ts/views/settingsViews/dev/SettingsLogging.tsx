@@ -91,10 +91,9 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     logLevels.forEach((level) => {
       items.push({
-        type: 'dropdown',
+        type: 'popup',
         label: logLevelsData[level].label,
         labelStyle: { paddingLeft: 15 },
-        dropdownHeight: 130,
         valueRight: true,
         buttons: true,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},

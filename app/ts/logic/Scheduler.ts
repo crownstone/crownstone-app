@@ -244,7 +244,11 @@ class SchedulerClass {
    * @param afterMilliseconds
    * @param label
    */
-  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+  scheduleCallback(callback, afterMilliseconds = null, label = "unlabeled") : () => void {
+    if (afterMilliseconds === null) {
+      throw "NO_TIMEOUT_PROVIDED_TO_SCHEDULE_CALLBACK";
+    }
+
     if (AppState.currentState === 'active') {
       return this.scheduleActiveCallback(callback, afterMilliseconds, label);
     }

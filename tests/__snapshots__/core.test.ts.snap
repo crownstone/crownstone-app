@@ -77,7 +77,6 @@ Object {
         "iBeaconUUID": undefined,
         "latitude": null,
         "longitude": null,
-        "meshAccessAddress": null,
         "name": "testSphere",
         "uid": null,
         "updatedAt": 1000000,
