@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 import { Util } from "../util/Util";
 import { KEY_TYPES } from "../Enums";
 import { act } from "@testing-library/react-native";

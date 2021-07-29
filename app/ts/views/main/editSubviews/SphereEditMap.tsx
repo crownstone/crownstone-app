@@ -9,7 +9,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { background, colors, screenWidth } from "../../styles";
 import {Background} from "../../components/Background";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import MapView, { Marker } from "react-native-maps";
 import { Util } from "../../../util/Util";
 import { BehaviourSubmitButton } from "../../deviceViews/smartBehaviour/supportComponents/BehaviourSubmitButton";

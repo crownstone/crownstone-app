@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import { NativeBus } from "../../native/libInterface/NativeBus";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { xUtil } from "../../util/StandAloneUtil";
 
 class FocusManagerClass {

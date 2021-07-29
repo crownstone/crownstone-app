@@ -1,6 +1,6 @@
 import { LOGd, LOGi } from '../../logging/Log';
 import { Util }       from "../../util/Util";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds

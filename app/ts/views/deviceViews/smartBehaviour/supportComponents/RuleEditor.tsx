@@ -22,7 +22,7 @@ import {
 } from "../../../styles";
 import { SELECTABLE_TYPE } from "../../../../Enums";
 import { RoomList } from "../../../components/RoomList";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";

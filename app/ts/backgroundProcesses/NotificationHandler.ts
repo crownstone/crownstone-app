@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 import { LOG, LOGd, LOGe, LOGi, LOGw } from "../logging/Log";
 import { Util } from "../util/Util";
 import { CLOUD } from "../cloud/cloudAPI";
-import { core } from "../core";
+import { core } from "../Core";
 
 class NotificationHandlerClass {
   requesting = false;

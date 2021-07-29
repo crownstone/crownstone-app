@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 
 
 class OnScreenNotificationsClass {

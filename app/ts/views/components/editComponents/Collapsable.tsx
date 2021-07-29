@@ -16,7 +16,7 @@ import { styles, colors, screenWidth} from '../../styles'
 import {SlideInView} from "../animated/SlideInView";
 import {Separator} from "../Separator";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class CollapsableBar extends Component<any, any> {

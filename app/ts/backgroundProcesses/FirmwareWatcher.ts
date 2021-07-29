@@ -1,6 +1,6 @@
 import {LOG, LOGe} from "../logging/Log";
 import { Util } from "../util/Util";
-import { core } from "../core";
+import { core } from "../Core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { from, tell } from "../logic/constellation/Tellers";
 

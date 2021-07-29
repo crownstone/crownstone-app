@@ -20,7 +20,7 @@ import { CLOUD } from "../../../cloud/cloudAPI";
 import { ScaledImage } from "../../components/ScaledImage";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
 import { LOGe } from "../../../logging/Log";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";

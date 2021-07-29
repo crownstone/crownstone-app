@@ -26,7 +26,7 @@ import { Permissions }            from "../../backgroundProcesses/PermissionMana
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { LiveComponent }          from "../LiveComponent";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";

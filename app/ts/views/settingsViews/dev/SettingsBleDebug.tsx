@@ -8,7 +8,7 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors } from "../../styles";
 import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../../util/TopBarUtil";

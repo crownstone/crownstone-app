@@ -16,7 +16,7 @@ import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { HiddenFadeIn, HiddenFadeInView } from "../components/animated/FadeInView";
 

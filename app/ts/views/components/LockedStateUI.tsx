@@ -18,7 +18,7 @@ import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
 import {LOGe} from "../../logging/Log";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 export class LockedStateUI extends Component<any, any> {
   _panResponder;

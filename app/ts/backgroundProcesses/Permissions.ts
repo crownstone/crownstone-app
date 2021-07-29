@@ -1,6 +1,6 @@
 import {LOG} from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 export class PermissionBase {
   canEditSphere              = false; // a or m

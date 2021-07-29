@@ -4,7 +4,7 @@ import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { background, colors } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { ScrollView, Text } from "react-native";
 import React from "react";

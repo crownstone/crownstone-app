@@ -7,7 +7,7 @@ import {
 import {colors} from "../../styles";
 import {Icon} from "../../components/Icon";
 import {IconCircle} from "../../components/IconCircle";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 let ALERT_TYPES = {

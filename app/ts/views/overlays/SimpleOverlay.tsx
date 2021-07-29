@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SimpleOverlay extends Component<any, any> {

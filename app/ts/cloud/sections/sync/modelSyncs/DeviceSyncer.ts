@@ -16,7 +16,7 @@ import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
 import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
-import { base_core } from "../../../../base_core";
+import { base_core } from "../../../../Base_core";
 import { BluenetPromiseWrapper } from "../../../../native/libInterface/BluenetPromise";
 import DeviceInfo from "react-native-device-info";
 

@@ -26,7 +26,7 @@ import {
 } from "../../../util/DataUtil";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 

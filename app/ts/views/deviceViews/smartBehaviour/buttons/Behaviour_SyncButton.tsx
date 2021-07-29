@@ -1,5 +1,5 @@
 import { colors } from "../../../styles";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { StoneDataSyncer } from "../../../../backgroundProcesses/StoneDataSyncer";
 import { Alert } from "react-native";
 import { Button } from "../../../components/Button";

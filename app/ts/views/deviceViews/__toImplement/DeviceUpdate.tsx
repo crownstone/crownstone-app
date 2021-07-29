@@ -15,7 +15,7 @@ import {
 import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import { IconButton }   from "../../components/IconButton";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 

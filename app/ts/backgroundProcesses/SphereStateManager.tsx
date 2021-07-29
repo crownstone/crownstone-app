@@ -1,5 +1,5 @@
 import { LOG } from "../logging/Log";
-import { core } from "../core";
+import { core } from "../Core";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 
 const AFTER_INTENT_TIMEOUT = 30000;

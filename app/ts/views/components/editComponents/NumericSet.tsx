@@ -13,7 +13,7 @@ import {
 
 import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
 import { Icon } from "../Icon";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 const DEFAULT_VALUE = '.....';
 export class NumericSet extends Component<any, any> {

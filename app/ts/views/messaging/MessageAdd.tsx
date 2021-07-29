@@ -24,7 +24,7 @@ import {MessageUtil} from "../../util/MessageUtil";
 
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";

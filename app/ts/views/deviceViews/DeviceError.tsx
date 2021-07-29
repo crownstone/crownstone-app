@@ -13,7 +13,7 @@ import { ErrorContent } from "../content/ErrorContent";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { StoneUtil } from "../../util/StoneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { DeviceIcon } from "./DeviceOverview";
 
 

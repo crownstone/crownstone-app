@@ -19,7 +19,7 @@ import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import { background, colors, screenWidth } from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 

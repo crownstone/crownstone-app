@@ -12,7 +12,7 @@ import { Scheduler } from "../logic/Scheduler";
 import { Permissions } from "../backgroundProcesses/PermissionManager";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 import { xUtil } from "./StandAloneUtil";
-import { core } from "../core";
+import { core } from "../Core";
 import { LOGd } from "../logging/Log";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/ScenePictureGallery";
 import { Platform } from "react-native";

@@ -5,7 +5,7 @@ import { colors, screenWidth, styles } from "../styles";
 import { IconButton } from "./IconButton";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 export class NotificationLine extends LiveComponent<{notificationsVisible?: boolean, hideOrangeLine?: boolean}, any> {

@@ -24,7 +24,7 @@ import {NoStones} from "./diagnostics/NoStones";
 import {TestResult} from "./diagnostics/DiagnosticUtil";
 import {InSphere} from "./diagnostics/InSphere";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";

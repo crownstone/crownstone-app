@@ -7,7 +7,7 @@ import * as React                 from 'react';
 import { Platform, Text, View, Image, Alert, ScrollView } from "react-native";
 import { screenWidth, colors, background } from "../styles";
 import { LiveComponent }          from "../LiveComponent";
-import { core }                   from "../../core";
+import { core }                   from "../../Core";
 import { TopBarUtil }             from "../../util/TopBarUtil";
 import { Background }             from "../components/Background";
 import { BackButtonHandler }      from "../../backgroundProcesses/BackButtonHandler";

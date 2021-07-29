@@ -385,20 +385,6 @@
 			remoteGlobalIDString = EF341C3C9A97E14DF84802EFB14C5AC2;
 			remoteInfo = "Pods-Crownstone-CrownstoneTests";
 		};
-		FAB5F63726AED9CD00FDEC23 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0869B584D93A292F0E54724F0B8DA382;
-			remoteInfo = RNSentry;
-		};
-		FAB5F63926AED9CD00FDEC23 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0115C3C00C175D77422084DD0542CE6F;
-			remoteInfo = Sentry;
-		};
 		FAB971FC264C4333006E716C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -572,7 +558,6 @@
 		83EED6E7677649159ADF42F7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libKCKeepAwake.a; sourceTree = "<group>"; };
 		A0C7056DB5294DFE8A81AC2B /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
-		A181FCA1AE656F66DA1E17C2 /* Instabug.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = Instabug.xcframework; path = "../node_modules/instabug-reactnative/ios/Instabug.xcframework"; sourceTree = "<group>"; };
 		A7A7F8A2427C2D93C761D9E4 /* libPods-Crownstone-CrownstoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Crownstone-CrownstoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7EF23E51E204C98B3653CE8 /* libReactNativeCameraKit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeCameraKit.a; sourceTree = "<group>"; };
 		AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
@@ -938,12 +923,10 @@
 				FA274EBE2410144F00D7C858 /* libRNFS.a */,
 				FA345D9424111FEA00C288D3 /* libRNLocalize.a */,
 				FABC3D0624349B9100F4002E /* libRNReanimated.a */,
-				FAB5F63826AED9CD00FDEC23 /* libRNSentry.a */,
 				FAC6D17B24BCAA8A007AA96F /* libRNShare.a */,
 				FA274EC02410144F00D7C858 /* libRNSVG.a */,
 				FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */,
 				FA274EC42410144F00D7C858 /* libRNVectorIcons.a */,
-				FAB5F63A26AED9CD00FDEC23 /* libSentry.a */,
 				FA274ECA2410144F00D7C858 /* libYoga.a */,
 				FAB9720F264C4333006E716C /* libYogaKit.a */,
 			);
@@ -976,7 +959,6 @@
 				FA12B79322450C84003B017E /* JavaScriptCore.framework */,
 				BB46ABBB36F7F05E7F860F78 /* libPods-Crownstone.a */,
 				A7A7F8A2427C2D93C761D9E4 /* libPods-Crownstone-CrownstoneTests.a */,
-				A181FCA1AE656F66DA1E17C2 /* Instabug.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1106,7 +1088,6 @@
 				FA86C6D921CCEED000811933 /* Embed Watch Content */,
 				C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */,
 				191DCBE4EBAED917EBF44C6E /* [CP] Embed Pods Frameworks */,
-				B11DE88C24C74ADDA17B5E15 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -1498,20 +1479,6 @@
 			remoteRef = FA9F56A8263AE19600A8219A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FAB5F63826AED9CD00FDEC23 /* libRNSentry.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSentry.a;
-			remoteRef = FAB5F63726AED9CD00FDEC23 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FAB5F63A26AED9CD00FDEC23 /* libSentry.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSentry.a;
-			remoteRef = FAB5F63926AED9CD00FDEC23 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FAB971FD264C4333006E716C /* libCocoaAsyncSocket.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1694,7 +1661,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nexport SENTRY_PROPERTIES=./sentry.properties\nexport SENTRY_LOG_LEVEL=\"info\"\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh --force-foreground\n";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0E45A9B2237FE76816B0340C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1757,20 +1724,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		B11DE88C24C74ADDA17B5E15 /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Debug Symbols to Sentry";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=./sentry.properties\nexport SENTRY_LOG_LEVEL=\"info\"\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym --force-foreground \n";
 		};
 		C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2186,7 +2139,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
@@ -2194,7 +2147,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"../node_modules/instabug-reactnative/ios",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2229,14 +2181,13 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"../node_modules/instabug-reactnative/ios",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2389,7 +2340,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2456,7 +2407,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2521,7 +2472,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2577,7 +2528,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (

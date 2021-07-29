@@ -12,7 +12,7 @@ import { LOG, LOGe, LOGi } from "../../logging/Log";
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 

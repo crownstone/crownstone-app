@@ -19,7 +19,7 @@ import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
 import {MessageUtil} from "../../util/MessageUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 export class MessageEntry extends Component<{
   deleteMessage(): void

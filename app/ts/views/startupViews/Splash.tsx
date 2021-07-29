@@ -14,7 +14,7 @@ import { Background } from './../components/Background'
 import { background, colors } from "./../styles";
 
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../../core";
+import { core } from "../../Core";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",

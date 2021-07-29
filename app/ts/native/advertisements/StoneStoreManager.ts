@@ -1,5 +1,5 @@
 import { Scheduler } from "../../logic/Scheduler";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 const TRIGGER_ID = "STONE_STORE_MANAGER_TRIGGER";

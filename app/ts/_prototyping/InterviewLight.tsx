@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text, TextStyle,
   View} from "react-native";
-import { core } from "../core";
+import { core } from "../Core";
 import { Background } from "../views/components/Background";
 import { background, colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';

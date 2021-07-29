@@ -12,7 +12,7 @@ import {
 import {getPresentUsersInLocation} from "../../util/DataUtil";
 import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 export class UserLayer extends LiveComponent<any, any> {

@@ -12,7 +12,7 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   requireMoreFingerprints
 } from "./DataUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 
 export const SphereUtil = {

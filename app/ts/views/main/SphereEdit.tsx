@@ -17,7 +17,7 @@ import { background, colors } from "./../styles";
 import { Permissions }       from "../../backgroundProcesses/PermissionManager";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
-import { core }              from "../../core";
+import { core }              from "../../Core";
 import { NavigationUtil }    from "../../util/NavigationUtil";
 import { TopBarUtil }        from "../../util/TopBarUtil";
 import { LiveComponent }     from "../LiveComponent";

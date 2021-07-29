@@ -26,7 +26,7 @@ import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
 import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil } from "../../util/StandAloneUtil";

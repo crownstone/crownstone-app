@@ -1,4 +1,4 @@
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Scheduler } from "../../logic/Scheduler";
 import { DISABLE_TIMEOUT } from "../../ExternalConfig";
 import { LOGd, LOGv } from "../../logging/Log";

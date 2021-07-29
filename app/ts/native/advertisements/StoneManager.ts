@@ -4,7 +4,7 @@ import { Scheduler }              from "../../logic/Scheduler";
 import { Util }                   from "../../util/Util";
 import { StoneEntity }            from "./StoneEntity";
 import { StoneStoreManager }      from "./StoneStoreManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 /**

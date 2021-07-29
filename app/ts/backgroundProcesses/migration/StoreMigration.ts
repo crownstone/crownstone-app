@@ -1,7 +1,7 @@
 import { upTo3_0 } from "./steps/upToV3_0";
 import { clean_upTo4_0 } from "./steps/upToV4_0";
 import { upTo4_3 } from "./steps/upToV4_3";
-import { StoreManager } from "../../router/store/storeManager";
+import { StoreManager } from "../../database/storeManager";
 import { clean_upTo4_4, upTo4_4 } from "./steps/upToV4_4";
 
 export function migrate() {

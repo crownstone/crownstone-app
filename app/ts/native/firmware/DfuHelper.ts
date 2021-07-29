@@ -1,7 +1,7 @@
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { StoneUtil } from "../../util/StoneUtil";
 import { delay } from "../../util/Util";
 import { CommandAPI } from "../../logic/constellation/Commander";

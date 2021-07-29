@@ -11,7 +11,7 @@ import {
   View
 } from "react-native";
 import { background, colors, screenWidth, styles } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn } from "../components/animated/FadeInView";

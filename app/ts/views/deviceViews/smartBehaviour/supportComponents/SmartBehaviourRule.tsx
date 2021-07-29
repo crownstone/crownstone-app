@@ -9,7 +9,7 @@ import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { colors, deviceStyles, screenWidth, styles } from "../../../styles";
 import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { Icon } from "../../../components/Icon";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import * as React from "react";

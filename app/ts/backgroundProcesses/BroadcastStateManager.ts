@@ -1,7 +1,7 @@
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { SphereUtil } from "../util/SphereUtil";
-import { core } from "../core";
+import { core } from "../Core";
 import { LOGi } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
 import { TrackingNumberManager } from "./TrackingNumberManager";

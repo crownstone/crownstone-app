@@ -6,7 +6,7 @@
 
 import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 
 export class KeySyncer extends SyncingBase {
   userId : string;

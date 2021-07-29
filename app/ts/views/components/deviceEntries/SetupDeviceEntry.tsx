@@ -16,7 +16,7 @@ import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Util} from "../../../util/Util";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";

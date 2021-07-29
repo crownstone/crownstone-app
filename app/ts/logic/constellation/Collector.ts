@@ -7,7 +7,7 @@ import { SessionManager } from "./SessionManager";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Get } from "../../util/GetUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 /**
  * The collector is a util class that gathers handles you can request sessions for.

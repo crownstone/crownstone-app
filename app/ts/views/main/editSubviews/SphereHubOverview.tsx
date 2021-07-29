@@ -14,7 +14,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {DeviceEntry} from "../../components/deviceEntries/DeviceEntry";
 import {Icon} from "../../components/Icon";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { HubEntry } from "../../components/deviceEntries/HubEntry";

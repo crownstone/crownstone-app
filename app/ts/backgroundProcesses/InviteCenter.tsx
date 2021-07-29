@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("InviteCenter", key)(a,b,c,d,e);
 }
 import { CLOUD } from "../cloud/cloudAPI";
-import { core } from "../core";
+import { core } from "../Core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 import { ScaledImage } from "../views/components/ScaledImage";
 import { colors, screenHeight, styles } from "../views/styles";

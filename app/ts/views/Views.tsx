@@ -77,7 +77,6 @@ import { DfuIntroduction }                   from "../views/dfu/DfuIntroduction"
 import { DfuScanning }                       from "../views/dfu/DfuScanning";
 import { DfuBatch }                          from "../views/dfu/DfuBatch";
 import { DfuFinished }                       from "../views/dfu/DfuFinished";
-import { Initializer }                       from "./Initializer";
 import { Processing }                        from "../views/overlays/Processing";
 import { AicoreTimeCustomizationOverlay }    from "../views/overlays/AicoreTimeCustomizationOverlay";
 import { BleStateOverlay }                   from "../views/overlays/BleStateOverlay";
@@ -126,6 +125,7 @@ import { SetupHub } from "../views/addingCrownstones/SetupHub";
 import { HubOverview } from "../views/hubViews/HubOverview";
 import { SphereHubOverview } from "../views/main/editSubviews/SphereHubOverview";
 import { HubEdit } from "../views/hubViews/HubEdit";
+import { Initializer } from "./startupViews/Initializer";
 
 
 export const Views = {

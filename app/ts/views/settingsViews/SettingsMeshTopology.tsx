@@ -21,7 +21,7 @@ import { ForceDirectedView } from "../components/interactiveView/ForceDirectedVi
 import { Icon } from "../components/Icon";
 import { MeshUtil } from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";

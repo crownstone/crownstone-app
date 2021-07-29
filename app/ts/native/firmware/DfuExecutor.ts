@@ -1,5 +1,5 @@
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { LOG, LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
 import { BleUtil } from "../../util/BleUtil";
 import { DfuHelper } from "./DfuHelper";

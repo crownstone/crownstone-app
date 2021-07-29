@@ -24,7 +24,7 @@ import Svg,{
   Defs,
   Stop
 } from 'react-native-svg';
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { ScaledImage } from "../components/ScaledImage";
 

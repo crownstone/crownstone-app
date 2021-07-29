@@ -18,7 +18,7 @@ import { screenWidth, availableScreenHeight, colors, overviewStyles } from "../s
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 
 

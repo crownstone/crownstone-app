@@ -6,7 +6,7 @@
 // }
 import * as React from 'react'; import { Component } from 'react';
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { ScrollView, View, Text, Alert, TouchableOpacity } from "react-native";
 import { availableScreenHeight, background, colors, NORMAL_ROW_SIZE, screenWidth } from "../../styles";
@@ -15,7 +15,7 @@ import { IconButton } from "../../components/IconButton";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { SwitchBar } from "../../components/editComponents/SwitchBar";
 import { IconCircle } from "../../components/IconCircle";
-import { base_core } from "../../../base_core";
+import { base_core } from "../../../Base_core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { AppUtil } from "../../../util/AppUtil";

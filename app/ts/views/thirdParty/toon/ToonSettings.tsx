@@ -19,7 +19,7 @@ import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
 import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/ToonIntegration";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";

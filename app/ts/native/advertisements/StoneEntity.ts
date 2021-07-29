@@ -7,7 +7,7 @@ import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneStoreManager } from "./StoneStoreManager";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { CONDITION_MAP, STONE_TYPES } from "../../Enums";

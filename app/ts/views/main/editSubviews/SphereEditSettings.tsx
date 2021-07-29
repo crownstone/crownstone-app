@@ -18,7 +18,7 @@ import {CLOUD} from "../../../cloud/cloudAPI";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SphereEditSettings extends LiveComponent<any, any> {

@@ -15,7 +15,7 @@ import {
 
 import { screenWidth, availableScreenHeight, deviceStyles, availableModalHeight, background } from "../styles";
 import { Graph } from "../components/graph/Graph";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";

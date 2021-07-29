@@ -13,7 +13,7 @@ import {
 
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { DataUtil } from "../../../util/DataUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Circle } from "../Circle";

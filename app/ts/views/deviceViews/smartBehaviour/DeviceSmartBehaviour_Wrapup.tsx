@@ -16,7 +16,7 @@ import {
   deviceStyles,
   screenWidth, styles
 } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import {
@@ -28,7 +28,7 @@ import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
-import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
+import { BEHAVIOUR_TYPES } from "../../../database/reducers/stoneSubReducers/rules";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";

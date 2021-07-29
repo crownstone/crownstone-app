@@ -15,7 +15,7 @@ import {
 import { Icon } from "../../../components/Icon";
 import { colors, screenWidth } from "../../../styles";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { AicoreUtil } from "../supportCode/AicoreUtil";

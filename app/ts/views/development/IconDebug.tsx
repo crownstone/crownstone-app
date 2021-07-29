@@ -11,7 +11,7 @@ import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
 import {iconCorrections} from "../../fonts/iconCorrections";
 import {DebugIconSelection} from "./DebugIconSelection";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";

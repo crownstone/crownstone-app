@@ -6,7 +6,7 @@
 // }
 import React from "react";
 import { Background } from "../../components/Background";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";

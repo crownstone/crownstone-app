@@ -15,7 +15,7 @@ import {
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from "../../styles";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";
 
 

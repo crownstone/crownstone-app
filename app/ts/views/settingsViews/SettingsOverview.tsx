@@ -18,7 +18,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { styles, colors, background } from "../styles";
 
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { AppUtil } from "../../util/AppUtil";

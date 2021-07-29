@@ -1,6 +1,6 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import {LOG, LOGe, LOGi, LOGw} from '../logging/Log'
-import { core } from "../core";
+import { core } from "../Core";
 
 
 const MESH_PROPAGATION_TIMEOUT_MS = 8000;

@@ -15,7 +15,7 @@ import {
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { LOG_LEVEL } from "./LogLevels";
-import { base_core } from "../base_core";
+import { base_core } from "../Base_core";
 import { FileLoggerClass } from "./LogUtil";
 
 let lastLogTime = 0;

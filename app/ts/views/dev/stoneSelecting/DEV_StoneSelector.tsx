@@ -18,12 +18,12 @@ import {
 } from "react-native";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { Stacks } from "../../../router/Stacks";
+import { Stacks } from "../../Stacks";
 import { SlideInView } from "../../components/animated/SlideInView";
 import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import React from "react";
@@ -48,7 +48,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
   unsubscribe = [];
   refreshTimeout = null;
   doUpdate = false;
-  
+
   scanning = false;
   HFTimeout;
   trackingItems = [];

@@ -13,7 +13,7 @@ import {
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 

@@ -15,7 +15,7 @@ import {Icon} from "../../components/Icon";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Util } from "../../../util/Util";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 

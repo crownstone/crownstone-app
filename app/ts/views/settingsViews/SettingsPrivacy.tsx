@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { background, colors } from "../styles";
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 

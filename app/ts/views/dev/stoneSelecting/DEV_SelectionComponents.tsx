@@ -9,7 +9,7 @@ import { colors, screenWidth, styles } from "../../styles";
 import { Component } from "react";
 import React from "react";
 import { ScaledImage } from "../../components/ScaledImage";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export const filterState = {

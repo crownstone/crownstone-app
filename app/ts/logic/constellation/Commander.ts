@@ -3,7 +3,7 @@ import { SessionManager } from "./SessionManager";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { BleCommandManager } from "./BleCommandManager";
 import {
   Command_AddBehaviour,

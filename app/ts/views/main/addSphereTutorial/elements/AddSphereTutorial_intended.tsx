@@ -18,9 +18,9 @@ import {
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { createNewSphere } from "../../../../util/CreateSphere";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { Stacks } from "../../../../router/Stacks";
+import { Stacks } from "../../../Stacks";
 import { tutorialStyle } from "../AddSphereTutorial";
 
 

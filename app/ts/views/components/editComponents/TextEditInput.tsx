@@ -9,7 +9,7 @@ import {
   Keyboard,
   TextInput,
 } from 'react-native';
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class TextEditInput extends Component<any, any> {

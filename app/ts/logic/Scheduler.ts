@@ -2,7 +2,7 @@ import { AppState } from 'react-native'
 import {LOG, LOGe, LOGw} from '../logging/Log'
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 
 interface scheduledCallback {

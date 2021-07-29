@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import {colors, screenWidth} from "../../styles";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 export function AutoArrangeButton(props) {
   return (

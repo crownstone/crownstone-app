@@ -1,5 +1,5 @@
 import { update, refreshDefaults } from './reducerUtil'
-import {LOG_LEVEL} from "../../../logging/LogLevels";
+import { LOG_LEVEL } from "../../logging/LogLevels";
 
 let defaultState = {
   logging_enabled:   false,

@@ -27,7 +27,7 @@ import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 
 export class ForceDirectedView extends Component<{

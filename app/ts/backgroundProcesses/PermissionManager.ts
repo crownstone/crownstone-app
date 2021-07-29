@@ -1,6 +1,6 @@
 import { LOG, LOGd } from "../logging/Log";
 import {PermissionBase, PermissionClass} from "./Permissions";
-import { core } from "../core";
+import { core } from "../Core";
 import { DataUtil } from "../util/DataUtil";
 
 export class PermissionManagerClass {

@@ -22,10 +22,10 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, background } f
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { Stacks } from "../../router/Stacks";
+import { Stacks } from "../Stacks";
 import { BehaviourSubmitButton } from "../deviceViews/smartBehaviour/supportComponents/BehaviourSubmitButton";
 import { ScaledImage } from "../components/ScaledImage";
 

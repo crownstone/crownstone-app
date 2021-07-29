@@ -9,7 +9,7 @@ import { BackgroundNoNotification } from '../../components/BackgroundNoNotificat
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -27,13 +27,12 @@ import { LocationHandler } from "../../../native/localization/LocationHandler";
 import { OverlayManager } from "../../../backgroundProcesses/OverlayManager";
 import { ScaledImage } from "../../components/ScaledImage";
 import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
-import { Stacks } from "../../../router/Stacks";
+import { Stacks } from "../../Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
-import { base_core } from "../../../base_core";
+import { base_core } from "../../../Base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 import { LOGw } from "../../../logging/Log";
-import * as Sentry from "@sentry/react-native";
 
 const RNFS = require('react-native-fs');
 
@@ -300,8 +299,14 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       callback:() => {
         core.eventBus.emit("showPopup", {buttons: [
           {text:"Crash JS",   callback: () => { throw new Error("Javascript CRASH Induced") }},
+          {text:"Crash JS escalated",   callback: () => {
+            try {
+              throw new Error("Javascript escalated CRASH Induced")
+            }
+            catch (err) {
+              throw err;
+            }}},
           {text:"Crash Bridge",  callback: () => { Bluenet.crash(); }},
-          {text:"Crash via Sentry",  callback: () => { Sentry.nativeCrash();}},
         ]})
       }})
 

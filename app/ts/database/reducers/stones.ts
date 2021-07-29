@@ -6,7 +6,7 @@ import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer  from './stoneSubReducers/lastUpdated'
 import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
 import abilityReducer      from './stoneSubReducers/abilities'
-import { STONE_TYPES }     from "../../../Enums";
+import { STONE_TYPES } from "../../Enums";
 
 let defaultSettings : StoneData = {
   id: undefined,

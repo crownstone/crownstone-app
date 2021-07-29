@@ -3,7 +3,7 @@ import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
 // import * as Sentry from "@sentry/react-native";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)

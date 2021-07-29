@@ -2,7 +2,7 @@ import {LOGe} from "../../../logging/Log";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
 import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 let syncingUsersInSpheres = {};
 

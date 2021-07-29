@@ -16,7 +16,7 @@ import {
 
 import { SlideFadeInView }  from '../animated/SlideFadeInView'
 import { styles, colors, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { FileUtil } from "../../../util/FileUtil";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 

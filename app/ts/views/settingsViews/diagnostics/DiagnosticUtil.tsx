@@ -20,7 +20,7 @@ import {Icon} from "../../components/Icon";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { Stacks } from "../../../router/Stacks";
+import { Stacks } from "../../Stacks";
 
 
 class DiagResponseBase extends Component<{

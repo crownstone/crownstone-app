@@ -5,7 +5,7 @@ import { DFU_MODE_TIMEOUT }   from '../../ExternalConfig';
 import { MapProvider }        from "../../backgroundProcesses/MapProvider";
 import {Scheduler} from "../../logic/Scheduler";
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 /**
  * This class keeps track of the Crownstones in DFU state.

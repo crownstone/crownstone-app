@@ -16,7 +16,7 @@ import {
 import { Util } from '../../util/Util'
 import { background, colors, screenWidth } from "./../styles";
 import { IconCircle } from "../components/IconCircle";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 

@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 import { Alert, Platform }       from 'react-native';
-import { StoreManager }          from '../router/store/storeManager'
+import { StoreManager }          from '../database/storeManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
 import { Bluenet }               from '../native/libInterface/Bluenet';
 import {LOG, LOGe} from "../logging/Log";
@@ -13,9 +13,9 @@ import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
 // import * as Sentry from "@sentry/react-native";
 import {Scheduler} from "../logic/Scheduler";
-import { core } from "../core";
+import { core } from "../Core";
 import { NavigationUtil } from "./NavigationUtil";
-import { Stacks } from "../router/Stacks";
+import { Stacks } from "../views/Stacks";
 
 export const AppUtil = {
   quit: function() {

@@ -16,7 +16,7 @@ import { BackgroundNoNotification } from '../components/BackgroundNoNotification
 import { setupStyle, NextButton } from './SetupShared'
 import { background, colors, screenHeight } from "./../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 

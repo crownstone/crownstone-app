@@ -1,10 +1,10 @@
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { Stacks } from "../../../router/Stacks";
+import { Stacks } from "../../Stacks";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import Toast from 'react-native-same-toast';
 import { BleUtil } from "../../../util/BleUtil";
 import { SetupHelper } from "../../../native/setup/SetupHelper";

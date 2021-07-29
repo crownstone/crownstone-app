@@ -1,6 +1,6 @@
-import {LOGw} from '../../logging/Log'
-import { core } from "../../core";
-import { BATCH } from "./reducers/BatchReducer";
+import { BATCH } from "../reducers/BatchReducer";
+import { core }  from "../../Core";
+import { LOGw }  from "../../logging/Log";
 
 
 /**

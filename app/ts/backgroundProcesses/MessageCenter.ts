@@ -4,7 +4,7 @@ import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";
 import { MapProvider }        from "./MapProvider";
 import { xUtil }              from "../util/StandAloneUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 class MessageCenterClass {
   _initialized: boolean = false;

@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import { Bluenet } from "../native/libInterface/Bluenet";
-import { core } from "../core";
+import { core } from "../Core";
 
 class WatchStateManagerClass {
   initialized = false;

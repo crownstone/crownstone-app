@@ -2,7 +2,7 @@ import {LOGe} from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
 import {Util} from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 const CHECK_TOON_SCHEDULE_TRIGGER = "CHECK_TOON_SCHEDULE_TRIGGER";
 

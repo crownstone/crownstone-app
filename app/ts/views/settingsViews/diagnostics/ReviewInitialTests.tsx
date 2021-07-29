@@ -18,7 +18,7 @@ import { TestResult} from "./DiagnosticUtil";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {TestRunner} from "./TestRunner";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class ReviewInitialTests extends Component<any, any> {

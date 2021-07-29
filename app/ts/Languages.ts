@@ -1,7 +1,7 @@
 import localization_en_us from "./localization/en/us/en_us";
 import localization_nl_nl from "./localization/nl/nl/nl_nl";
-import { core } from "./core";
-import AsyncStorage from "@react-native-community/async-storage";
+import { core } from "./Core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS";
 const LANGUAGE_KEY = "CROWNSTONE_LANGUAGE";
 

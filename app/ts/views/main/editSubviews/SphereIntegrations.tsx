@@ -14,7 +14,7 @@ import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 
 import {ScaledImage} from "../../components/ScaledImage";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";

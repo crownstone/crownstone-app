@@ -12,7 +12,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { background } from "../../styles";
 

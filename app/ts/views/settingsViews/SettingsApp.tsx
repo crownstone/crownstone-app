@@ -17,7 +17,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { background, colors } from "../styles";
 import {Util} from "../../util/Util";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SliderBar } from "../components/editComponents/SliderBar";
 import { NavigationUtil } from "../../util/NavigationUtil";

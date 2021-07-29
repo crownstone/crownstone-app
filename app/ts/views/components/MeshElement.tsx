@@ -21,7 +21,7 @@ import {IconCircle} from "./IconCircle";
 import {Scheduler} from "../../logic/Scheduler";
 import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { xUtil } from "../../util/StandAloneUtil";
 
 

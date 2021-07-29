@@ -1,6 +1,6 @@
 import {LOG, LOGe} from "../logging/Log";
 import {syncEvents} from "../cloud/sections/sync/syncEvents";
-import { core } from "../core";
+import { core } from "../Core";
 
 class CloudEventHandlerClass {
   _initialized : boolean = false;

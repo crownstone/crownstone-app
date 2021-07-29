@@ -15,7 +15,7 @@ import { background, colors } from "../../styles";
 import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";

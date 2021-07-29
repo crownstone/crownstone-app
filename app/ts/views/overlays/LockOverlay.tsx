@@ -17,7 +17,7 @@ import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { styles, colors } from '../styles'
 import { Scheduler }            from "../../logic/Scheduler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { tell } from "../../logic/constellation/Tellers";
 

@@ -23,7 +23,7 @@ import {LOG, LOGe} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";

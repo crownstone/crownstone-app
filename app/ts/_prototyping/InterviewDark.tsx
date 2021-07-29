@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text, TextStyle,
   View} from "react-native";
-import { core } from "../core";
+import { core } from "../Core";
 import { background, colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn} from "../views/components/animated/FadeInView";

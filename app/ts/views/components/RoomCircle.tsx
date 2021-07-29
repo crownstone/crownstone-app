@@ -19,7 +19,7 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/Da
 
 
 import {IconCircle} from "./IconCircle";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Circle } from "./Circle";
 import Svg from "react-native-svg";

@@ -1,7 +1,7 @@
-import { Bluenet } from '../../native/libInterface/Bluenet'
-import { LOG } from '../../logging/Log'
-import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
-import { BATCH } from "./reducers/BatchReducer";
+import { BATCH } from "../reducers/BatchReducer";
+import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
+import { LOG } from "../../logging/Log";
+import { Bluenet } from "../../native/libInterface/Bluenet";
 
 
 /**

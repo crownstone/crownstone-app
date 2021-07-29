@@ -1,5 +1,5 @@
-import { StoreManager } from "../../../router/store/storeManager";
-import { core } from "../../../core";
+import { StoreManager } from "../../../database/storeManager";
+import { core } from "../../../Core";
 import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
 

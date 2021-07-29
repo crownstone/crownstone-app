@@ -17,7 +17,7 @@ import {
 import { HiddenFadeInView }   from '../components/animated/FadeInView'
 import { SlideInFromBottomView }  from '../components/animated/SlideInFromBottomView'
 import { styles, screenHeight, screenWidth, tabBarMargin } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 

@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 import {colors, screenWidth, styles} from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 

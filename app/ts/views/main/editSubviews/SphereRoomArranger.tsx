@@ -17,7 +17,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CancelButton} from "../../components/topbar/CancelButton";
 import {TopbarButton} from "../../components/topbar/TopbarButton";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { ForceDirectedView } from "../../components/interactiveView/ForceDirectedView";
 import { Background } from "../../components/Background";
 import { Util } from "../../../util/Util";

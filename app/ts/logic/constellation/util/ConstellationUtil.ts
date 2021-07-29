@@ -1,4 +1,4 @@
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MINIMUM_FIRMWARE_VERSION_BROADCAST } from "../../../ExternalConfig";
 import { AppState, Platform } from "react-native";

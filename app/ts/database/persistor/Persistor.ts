@@ -1,8 +1,8 @@
 import { Alert } from 'react-native'
-import AsyncStorage from "@react-native-community/async-storage";
-import {LOGd, LOGe, LOGi, LOGw} from '../../logging/Log'
-import {LOG_LEVEL} from "../../logging/LogLevels";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {PersistorUtil} from "./PersistorUtil";
+import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
+import { LOG_LEVEL } from "../../logging/LogLevels";
 
 const LEGACY_BASE_STORAGE_KEY = 'CrownstoneStore_';
 const MIGRATION_PROGRESS_STORAGE_KEY = 'CrownstoneMigrationProgress';

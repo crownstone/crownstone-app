@@ -33,7 +33,7 @@ import {INTENTS} from "../../../native/libInterface/Constants";
 import {BleUtil} from "../../../util/BleUtil";
 import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { tell } from "../../../logic/constellation/Tellers";
 
 

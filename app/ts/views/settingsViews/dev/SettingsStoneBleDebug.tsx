@@ -12,7 +12,7 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import { Util } from "../../../util/Util";
 import { Scheduler } from "../../../logic/Scheduler";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { IconButton } from "../../components/IconButton";
 import { NavigationUtil } from "../../../util/NavigationUtil";

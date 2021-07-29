@@ -21,7 +21,7 @@ import { background, colors } from "./../styles";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { FileUtil } from "../../util/FileUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";

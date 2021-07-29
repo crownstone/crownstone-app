@@ -26,7 +26,7 @@ import {Util} from "../../../util/Util";
 import {TestRunner} from "./TestRunner";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { tell } from "../../../logic/constellation/Tellers";
 
 

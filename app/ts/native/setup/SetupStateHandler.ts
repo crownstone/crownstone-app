@@ -6,8 +6,8 @@ import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
-import { core } from "../../core";
-import { base_core } from "../../base_core";
+import { core } from "../../Core";
+import { base_core } from "../../Base_core";
 
 
 

@@ -18,7 +18,7 @@ import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 
 import {ScaledImage} from "../../components/ScaledImage";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 

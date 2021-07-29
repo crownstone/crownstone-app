@@ -9,7 +9,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { DfuHelper } from "../../../native/firmware/DfuHelper";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { ActivityIndicator, Alert, View, Text, ScrollView } from "react-native";
 import { background, colors, screenWidth } from "../../styles";
 import React from "react";

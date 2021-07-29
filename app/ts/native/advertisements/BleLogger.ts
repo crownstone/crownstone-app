@@ -1,7 +1,7 @@
 import {LogProcessor} from "../../logging/LogProcessor";
 import {LOG_BLE} from "../../ExternalConfig";
 import {LOG} from "../../logging/Log";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 
 /**

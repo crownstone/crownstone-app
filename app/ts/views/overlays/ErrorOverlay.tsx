@@ -16,7 +16,7 @@ import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth, availableScreenHeight } from '../styles'
 import { Util } from "../../util/Util";
 import {ErrorContent} from "../content/ErrorContent";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 

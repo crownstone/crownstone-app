@@ -11,10 +11,10 @@ import {Scheduler} from "../logic/Scheduler";
 import {
   Alert,
 } from 'react-native';
-import { core } from "../core";
+import { core } from "../Core";
 import { BleUtil } from "./BleUtil";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { BEHAVIOUR_TYPES } from "../router/store/reducers/stoneSubReducers/rules";
+import { BEHAVIOUR_TYPES } from "../database/reducers/stoneSubReducers/rules";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { xUtil } from "./StandAloneUtil";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";

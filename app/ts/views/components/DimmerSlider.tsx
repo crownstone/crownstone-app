@@ -17,7 +17,7 @@ import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
 import { HiddenFadeInView } from "./animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import ResponsiveText from "./ResponsiveText";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 const SLIDER_BUBBLE_SIZE = Math.min(0.12*availableScreenHeight, 70);
 const PADDING = 0.125*screenWidth;

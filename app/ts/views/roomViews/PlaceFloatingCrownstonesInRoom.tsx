@@ -18,7 +18,7 @@ import { background, screenHeight, screenWidth, tabBarHeight, topBarHeight } fro
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Background } from "../components/Background";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
 import { RoomList } from "../components/RoomList";

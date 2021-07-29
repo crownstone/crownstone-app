@@ -17,7 +17,7 @@ import { Icon } from './Icon';
 
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'

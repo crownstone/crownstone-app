@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Platform } from "react-native";
 import { CLOUD } from "../cloud/cloudAPI";

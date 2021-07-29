@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Alert } from "react-native";
 import { LOGe, LOGi } from "../logging/Log";

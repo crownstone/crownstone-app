@@ -1,7 +1,7 @@
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { Bluenet  }              from '../libInterface/Bluenet';
 import { LOG }                   from '../../logging/Log'
-import { core } from "../../core";
+import { core } from "../../Core";
 
 class FingerprintManagerClass {
   fingerprintingActive : any;

@@ -10,7 +10,7 @@ import {
   ScrollView, Text, TouchableOpacity,
   View} from "react-native";
 import { background, colors, screenWidth, styles } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";

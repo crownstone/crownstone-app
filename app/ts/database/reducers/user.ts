@@ -1,5 +1,5 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import { xUtil } from "../../../util/StandAloneUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 let defaultSettings = {
   firstName: null,

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { colors, screenHeight, screenWidth } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Interview } from "../../components/Interview";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";

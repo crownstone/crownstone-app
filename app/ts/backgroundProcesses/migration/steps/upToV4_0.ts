@@ -1,4 +1,4 @@
-import { StoreManager } from "../../../router/store/storeManager";
+import { StoreManager } from "../../../database/storeManager";
 
 export const clean_upTo4_0 = function() {
   return StoreManager.persistor.destroyDataFields([

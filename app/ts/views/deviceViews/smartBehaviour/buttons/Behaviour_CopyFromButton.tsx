@@ -4,7 +4,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Behaviour_CopyFromButton", key)(a,b,c,d,e);
 }
 import { colors } from "../../../styles";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { StoneDataSyncer } from "../../../../backgroundProcesses/StoneDataSyncer";
 import { Alert } from "react-native";
 import { Button } from "../../../components/Button";

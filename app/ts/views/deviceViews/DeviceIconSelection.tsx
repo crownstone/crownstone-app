@@ -11,7 +11,7 @@ import {
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { background, colors } from "../styles";

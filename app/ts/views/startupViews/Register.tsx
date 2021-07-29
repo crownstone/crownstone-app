@@ -19,7 +19,7 @@ import { emailChecker, getImageFileFromUser, processImage } from "../../util/Uti
 
 import { background, colors, screenHeight, screenWidth, styles, topBarHeight } from "../styles";
 
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
@@ -28,7 +28,7 @@ import { PictureCircle } from "../components/PictureCircle";
 import { InterviewPasswordInput, InterviewTextInput } from "../components/InterviewComponents";
 import { FileUtil } from "../../util/FileUtil";
 import { Icon } from "../components/Icon";
-import { base_core } from "../../base_core";
+import { base_core } from "../../Base_core";
 
 
 export class Register extends LiveComponent<any, any> {

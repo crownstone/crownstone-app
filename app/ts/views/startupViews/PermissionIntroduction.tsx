@@ -16,10 +16,10 @@ import {
   styles,
   tabBarMargin
 } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { Stacks } from "../../router/Stacks";
+import { Stacks } from "../Stacks";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { LOG } from "../../logging/Log";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";

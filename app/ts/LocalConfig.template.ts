@@ -15,7 +15,7 @@ import { Platform } from "react-native";
   export const FALLBACKS_ENABLED = true;
 
   // possiblity to block Sentry
-  export let USE_SENTRY = true;
+  export let USE_ERROR_REPORTING = true;
 
   // DO NOT CHANGE THIS LINE.
   // the global is meant as a last resort, forcing release to true when compiled in release mode.

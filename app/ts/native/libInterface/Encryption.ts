@@ -1,6 +1,6 @@
 import { BluenetPromiseWrapper } from "./BluenetPromise";
 import { Bluenet } from "./Bluenet";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { LOGe } from "../../logging/Log";
 import { KEY_TYPES } from "../../Enums";
 

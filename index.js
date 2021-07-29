@@ -15,41 +15,40 @@ YellowBox.ignoreWarnings([
 import { Platform } from 'react-native';
 // import * as Sentry from "@sentry/react-native";
 import { config } from './sentrySettings'
-import { USE_SENTRY } from "./app/js/ExternalConfig";
-import { loadRoutes } from "./app/js/router/Routes";
+import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";
+import { loadRoutes } from "./app/js/views/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";
-import * as Sentry from "@sentry/react-native";
+import DeviceInfo from 'react-native-device-info';
 
-
-if (USE_SENTRY) {
-  let sentryConfig = {
-    dsn: null,
-    // deactivateStacktraceMerging: true,
-    autoBreadcrumbs: {
-      'xhr': false,      // XMLHttpRequest
-      'console': false,  // console logs
-    }
-  }
-
-  if (Platform.OS === 'android') {
-    if (config.android) {
-      sentryConfig.dsn = config.android;
-    }
-  }
-  else {
-    if (config.ios) {
-      sentryConfig.dsn = config.ios;
-    }
-  }
-
-  Sentry.init(sentryConfig)
-
-  Sentry.addBreadcrumb({
-    category: 'AppState',
-    data: {
-      state: "started",
-    }
-  });
+if (USE_ERROR_REPORTING) {
+  // let sentryConfig = {
+  //   dsn: null,
+  //   // deactivateStacktraceMerging: true,
+  //   autoBreadcrumbs: {
+  //     'xhr': false,      // XMLHttpRequest
+  //     'console': false,  // console logs
+  //   }
+  // }
+  //
+  // if (Platform.OS === 'android') {
+  //   if (config.android) {
+  //     sentryConfig.dsn = config.android;
+  //   }
+  // }
+  // else {
+  //   if (config.ios) {
+  //     sentryConfig.dsn = config.ios;
+  //   }
+  // }
+  //
+  // Sentry.init(sentryConfig)
+  //
+  // Sentry.addBreadcrumb({
+  //   category: 'AppState',
+  //   data: {
+  //     state: "started",
+  //   }
+  // });
 }
 
 loadRoutes();

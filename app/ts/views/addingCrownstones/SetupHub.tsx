@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
 import { colors, screenHeight, screenWidth, styles } from "../styles";

@@ -25,7 +25,7 @@
 // import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 // import { AnimatedCircle } from "../../animated/AnimatedCircle";
 // import { STONE_TYPES } from "../../../../Enums";
-// import { core } from "../../../../core";
+// import { core } from "../../../../Core";
 // import { DeviceEntryIcon } from "./DeviceEntryIcon";
 // import { StoneUtil } from "../../../../util/StoneUtil";
 // import { safeStoreUpdate } from "../../../deviceViews/DeviceOverview";

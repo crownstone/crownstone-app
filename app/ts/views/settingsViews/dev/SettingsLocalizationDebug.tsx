@@ -11,7 +11,7 @@ import {LocalizationDebugCircle} from "./LocalizationDebugCircle";
 import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";

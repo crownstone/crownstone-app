@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("OverlayUtil", key)(a,b,c,d,e);
 }
-import { core } from "../../core";
+import { core } from "../../Core";
 import { RoomList } from "../components/RoomList";
 import * as React from "react";
 import { colors } from "../styles";

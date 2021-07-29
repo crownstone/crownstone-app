@@ -11,7 +11,7 @@ import { BleUtil } from "../../../util/BleUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
 import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, Alert, Animated } from "react-native";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { FileUtil } from "../../../util/FileUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { DfuHelper } from "../../../native/firmware/DfuHelper";

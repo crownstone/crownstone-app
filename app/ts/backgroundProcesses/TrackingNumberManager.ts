@@ -3,7 +3,7 @@ import { AppState, Platform } from "react-native";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../util/DataUtil";
 import { BroadcastStateManager } from "./BroadcastStateManager";
-import { core } from "../core";
+import { core } from "../Core";
 import { Scheduler } from "../logic/Scheduler";
 import { LOGe, LOGi } from "../logging/Log";
 import { tellSphere } from "../logic/constellation/Tellers";

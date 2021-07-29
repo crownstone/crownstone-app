@@ -7,7 +7,7 @@ import { TokenStore } from "./cloudApiBase";
 import { user } from "./user";
 import { stones } from "./stones";
 import { locations } from "./locations";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { CLOUD } from "../cloudAPI";
 
 export const spheres = {

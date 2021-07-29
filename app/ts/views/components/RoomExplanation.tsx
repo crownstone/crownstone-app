@@ -16,7 +16,7 @@ import {
   DataUtil, enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
 } from "../../util/DataUtil";
 import { colors } from '../styles'
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 /**

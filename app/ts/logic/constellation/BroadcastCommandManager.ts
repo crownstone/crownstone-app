@@ -1,7 +1,7 @@
 import { Platform, AppState } from 'react-native'
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { LOGd, LOGi } from "../../logging/Log";
 import { BROADCAST_THROTTLE_TIME, MINIMUM_FIRMWARE_VERSION_BROADCAST } from "../../ExternalConfig";
 import { Scheduler } from "../Scheduler";

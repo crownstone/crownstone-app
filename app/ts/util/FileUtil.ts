@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import { xUtil } from "./StandAloneUtil";
-import { base_core } from "../base_core";
+import { base_core } from "../Base_core";
 const RNFS = require('react-native-fs');
 
 export const FileUtil = {

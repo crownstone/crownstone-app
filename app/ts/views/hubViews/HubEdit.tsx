@@ -30,7 +30,7 @@ import { INTENTS } from "../../native/libInterface/Constants";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 import { STONE_TYPES } from "../../Enums";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../util/TopBarUtil";

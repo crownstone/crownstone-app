@@ -1,16 +1,16 @@
 import { Alert }          from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import CrownstoneReducer                from './reducer'
-import { NativeEnhancer }               from './nativeEnhancer'
-import { CloudEnhancer }                from './cloudEnhancer'
-import { EventEnhancer }                from './eventEnhancer'
-import {LOG, LOGe} from '../../logging/Log'
-import { PersistenceEnhancer }          from "./persistenceEnhancer";
-import {Persistor} from "./Persistor";
-import { core } from "../../core";
-import AsyncStorage from "@react-native-community/async-storage";
+import { NativeEnhancer }               from './enhancers/nativeEnhancer'
+import { CloudEnhancer }                from './enhancers/cloudEnhancer'
+import { EventEnhancer }                from './enhancers/eventEnhancer'
+import {LOG, LOGe} from '../logging/Log'
+import { PersistenceEnhancer }          from "./enhancers/persistenceEnhancer";
+import {Persistor} from "./persistor/Persistor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { batchActions, enableBatching } from "./reducers/BatchReducer";
-import { migrateBeforeInitialization } from "../../backgroundProcesses/migration/StoreMigration";
+import { migrateBeforeInitialization } from "../backgroundProcesses/migration/StoreMigration";
+import { core } from "../Core";
 
 const LOGGED_IN_USER_ID_STORAGE_KEY = 'CrownstoneLoggedInUser';
 

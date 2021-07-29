@@ -15,7 +15,7 @@ import { SyncingBase } from "./SyncingBase";
 import { CLOUD } from "../../../cloudAPI";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
-import abilities from "../../../../router/store/reducers/stoneSubReducers/abilities";
+import abilities from "../../../../database/reducers/stoneSubReducers/abilities";
 
 interface locationSummary {
   [key: string]: { locationConfig: any, localLocationId: string, sphereId: string}

@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SceneEdit", key)(a,b,c,d,e);
 }
 import { LiveComponent } from "../LiveComponent";
-import { core } from "../../core";
+import { core } from "../../Core";
 import * as React from "react";
 import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";

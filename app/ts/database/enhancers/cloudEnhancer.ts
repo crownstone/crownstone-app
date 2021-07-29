@@ -1,22 +1,22 @@
-import { CLOUD }         from '../../cloud/cloudAPI'
-import { Util }          from '../../util/Util'
+import { CLOUD }                       from '../../cloud/cloudAPI'
+import { Util }                        from '../../util/Util'
 import { LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
-import { transferUser} from "../../cloud/transferData/transferUser";
-import { transferStones} from "../../cloud/transferData/transferStones";
-import { transferSpheres} from "../../cloud/transferData/transferSpheres";
-import { Permissions} from "../../backgroundProcesses/PermissionManager";
-import { LOG_LEVEL} from "../../logging/LogLevels";
-import { MapProvider} from "../../backgroundProcesses/MapProvider";
-import { transferLocations} from "../../cloud/transferData/transferLocations";
-import { core } from "../../core";
-import { BATCH } from "./reducers/BatchReducer";
-import { transferBehaviours } from "../../cloud/transferData/transferBehaviours";
-import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
-import { transferScenes } from "../../cloud/transferData/transferScenes";
-import { StoneAbilitySyncer } from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
-import { getGlobalIdMap } from "../../cloud/sections/sync/modelSyncs/SyncingBase";
-import { StoneSyncer } from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
-import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
+import { transferUser}                 from "../../cloud/transferData/transferUser";
+import { transferStones}               from "../../cloud/transferData/transferStones";
+import { transferSpheres}              from "../../cloud/transferData/transferSpheres";
+import { Permissions}                  from "../../backgroundProcesses/PermissionManager";
+import { LOG_LEVEL}                    from "../../logging/LogLevels";
+import { MapProvider}                  from "../../backgroundProcesses/MapProvider";
+import { transferLocations}            from "../../cloud/transferData/transferLocations";
+import { core }                        from "../../Core";
+import { BATCH }                       from "../reducers/BatchReducer";
+import { transferBehaviours }          from "../../cloud/transferData/transferBehaviours";
+import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/ScenePictureGallery";
+import { transferScenes }              from "../../cloud/transferData/transferScenes";
+import { StoneAbilitySyncer }          from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
+import { getGlobalIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
+import { StoneSyncer }                 from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
+import { HubSyncer }                   from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {

@@ -18,7 +18,7 @@ import {Background} from "../../components/Background";
 import { background, screenWidth } from "../../styles";
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 

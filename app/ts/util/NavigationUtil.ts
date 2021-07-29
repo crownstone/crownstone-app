@@ -1,7 +1,7 @@
 import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
 // import * as Sentry from "@sentry/react-native";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
-import { core } from "../core";
+import { core } from "../Core";
 
 const BASE_TAB_NAME = "BASE_TAB";
 

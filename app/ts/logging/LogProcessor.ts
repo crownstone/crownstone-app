@@ -1,5 +1,5 @@
 import { LOG_LEVEL }  from "./LogLevels";
-import { core } from "../core";
+import { core } from "../Core";
 import { LOGi } from "./Log";
 import DeviceInfo from "react-native-device-info";
 

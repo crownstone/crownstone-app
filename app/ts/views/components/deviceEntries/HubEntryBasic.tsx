@@ -13,7 +13,7 @@ import {
 import { Icon } from '../Icon';
 import { styles, colors}        from '../../styles'
 import {AnimatedCircle} from "../animated/AnimatedCircle";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class HubEntryBasic extends Component<any, any> {

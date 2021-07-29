@@ -11,11 +11,11 @@ import {
   AICORE_TIME_TYPES
 } from "../../../../Enums";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviour } from "./AicoreBehaviour";
 import { AicoreTwilight } from "./AicoreTwilight";
-import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
+import { BEHAVIOUR_TYPES } from "../../../../database/reducers/stoneSubReducers/rules";
 import { DAY_INDICES_MONDAY_START, DAY_INDICES_SUNDAY_START } from "../../../../Constants";
 import { Util } from "../../../../util/Util";
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";

@@ -7,13 +7,13 @@ import {
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { background, colors, screenWidth } from "../../styles";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TextEditBar } from "../../components/editComponents/TextEditBar";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
-import { Persistor } from "../../../router/store/Persistor";
-import { StoreManager } from "../../../router/store/storeManager";
+import { Persistor } from "../../../database/persistor/Persistor";
+import { StoreManager } from "../../../database/storeManager";
 
 const viewStyle : ViewStyle = {
   width: screenWidth,

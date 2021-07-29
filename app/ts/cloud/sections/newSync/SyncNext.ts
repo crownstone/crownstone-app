@@ -1,4 +1,4 @@
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import DeviceInfo from "react-native-device-info";
 import { CLOUD } from "../../cloudAPI";
 import { LOGe } from "../../../logging/Log";

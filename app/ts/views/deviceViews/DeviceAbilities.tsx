@@ -17,7 +17,7 @@ import {
   availableModalHeight,
   deviceStyles, background
 } from "../styles";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { AnimatedScaledImage } from "../components/animated/AnimatedScaledImage";

@@ -14,7 +14,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";

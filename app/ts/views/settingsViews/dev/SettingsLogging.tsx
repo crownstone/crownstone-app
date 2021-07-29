@@ -9,7 +9,7 @@ import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";

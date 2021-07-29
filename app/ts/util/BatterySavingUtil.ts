@@ -5,7 +5,7 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { Util } from "./Util";
 import { Scheduler } from "../logic/Scheduler";
 import {BleUtil} from "./BleUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 class BatterySavingClass {
   _initialized: boolean = false;

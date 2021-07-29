@@ -26,7 +26,7 @@ import { RoomTraining_finished } from './trainingComponents/RoomTraining_finishe
 import { Util } from "../../util/Util";
 
 import {CLOUD} from "../../cloud/cloudAPI";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";

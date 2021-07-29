@@ -10,7 +10,7 @@ import * as React from 'react';
 import { Background } from '../components/Background'
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import {Icon} from "../Icon";
 import {colors} from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 export class AnimatedDoubleTap extends Component<any, any> {
   unsubscribe : any;

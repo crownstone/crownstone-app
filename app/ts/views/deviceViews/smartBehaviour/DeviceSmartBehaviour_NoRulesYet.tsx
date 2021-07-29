@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react';
 import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";

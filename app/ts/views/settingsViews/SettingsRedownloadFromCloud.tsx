@@ -15,7 +15,7 @@ import { BackgroundNoNotification } from '../components/BackgroundNoNotification
 import { availableModalHeight, background, colors, deviceStyles, screenHeight, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {AppUtil} from "../../util/AppUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 

@@ -4,7 +4,7 @@ import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "./StandAloneUtil";
-import { core } from "../core";
+import { core } from "../Core";
 
 
 export const BleUtil = {

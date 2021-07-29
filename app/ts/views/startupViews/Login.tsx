@@ -26,18 +26,18 @@ import { emailChecker, getImageFileFromUser, Util } from "../../util/Util";
 import { CLOUD }              from '../../cloud/cloudAPI'
 import { TextEditInput }      from '../components/editComponents/TextEditInput'
 import { Background }         from '../components/Background'
-import { StoreManager }       from '../../router/store/storeManager'
+import { StoreManager }       from '../../database/storeManager'
 import loginStyles            from './LoginStyles'
 import { screenWidth, screenHeight, colors, topBarHeight, background } from "../styles";
 import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
 import { TopbarImitation }             from "../components/TopbarImitation";
 import { Icon }               from "../components/Icon";
 import { FileUtil } from "../../util/FileUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
-import { Stacks } from "../../router/Stacks";
-import { base_core } from "../../base_core";
+import { Stacks } from "../Stacks";
+import { base_core } from "../../Base_core";
 // import * as Sentry from "@sentry/react-native";
 import { BackgroundProcessHandler } from "../../backgroundProcesses/BackgroundProcessHandler";
 

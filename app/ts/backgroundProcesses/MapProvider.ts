@@ -8,7 +8,7 @@ import {
 } from "../util/MapUtil";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { LOG } from "../logging/Log";
-import { core } from "../core";
+import { core } from "../Core";
 
 /**
  * Map format

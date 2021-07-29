@@ -27,7 +27,7 @@ import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { Navigation } from "react-native-navigation";

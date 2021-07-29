@@ -22,7 +22,7 @@ import { DataUtil } from "../../../../util/DataUtil";
 import { FileUtil } from "../../../../util/FileUtil";
 import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
 import { SceneSyncer } from "./SceneSyncer";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;

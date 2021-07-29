@@ -13,7 +13,7 @@ import {
 
 import { Icon } from '../Icon';
 import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class NavigationBar extends Component<any, any> {

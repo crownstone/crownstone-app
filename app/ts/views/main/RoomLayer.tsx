@@ -17,7 +17,7 @@ import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class RoomLayer extends LiveComponent<any, any> {

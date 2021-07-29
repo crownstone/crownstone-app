@@ -4,7 +4,7 @@ import { LOGe } from '../logging/Log'
 import { KEY_TYPES, STONE_TYPES } from "../Enums";
 
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../core";
+import { core } from "../Core";
 import { FileUtil } from "./FileUtil";
 
 import * as RNLocalize from "react-native-localize";

@@ -13,7 +13,7 @@ import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { CloudPoller } from "../../../logic/CloudPoller";
 import { syncNext } from "../newSync/SyncNext";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";

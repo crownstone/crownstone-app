@@ -16,7 +16,7 @@ import { NavigationUtil, topBarComponentNames } from "../util/NavigationUtil";
 import React from "react";
 
 
-import "./TextFontFix";
+import * as TextFontFix from "../util/TextFontFix";
 import { IconDevSelector } from "../views/development/IconDevSelector";
 import { IconDebug } from "../views/development/IconDebug";
 

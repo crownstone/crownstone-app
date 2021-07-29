@@ -14,7 +14,7 @@ import { AlternatingContent }                             from "../../components
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../ScenePictureGallery";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";

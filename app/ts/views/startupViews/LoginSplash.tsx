@@ -18,7 +18,7 @@ import { background, colors, screenWidth, tabBarMargin } from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 let versionStyle : TextStyle = {

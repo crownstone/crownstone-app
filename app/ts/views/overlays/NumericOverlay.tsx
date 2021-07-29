@@ -18,7 +18,7 @@ import { OverlayBox } from '../components/overlays/OverlayBox'
 import { colors, screenHeight, screenWidth, styles } from "../styles";
 import { InterviewTextInput } from "../components/InterviewComponents";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Icon } from "../components/Icon";
 
 

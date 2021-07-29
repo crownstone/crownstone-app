@@ -22,7 +22,7 @@ import {ProblemWithLocalization} from "./ProblemWithLocalization";
 import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 
 
 export class InSphere extends Component<any, any> {

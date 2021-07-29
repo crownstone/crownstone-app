@@ -1,5 +1,5 @@
 import { Scheduler } from "../logic/Scheduler";
-import { core } from "../core";
+import { core } from "../Core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";

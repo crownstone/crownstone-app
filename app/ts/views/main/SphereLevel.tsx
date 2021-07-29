@@ -12,7 +12,7 @@ import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values

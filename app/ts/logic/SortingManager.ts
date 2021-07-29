@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 import { xUtil } from "../util/StandAloneUtil";
 
 

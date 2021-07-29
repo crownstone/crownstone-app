@@ -16,7 +16,7 @@ import {
 import { screenWidth, colors, deviceStyles, background } from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";

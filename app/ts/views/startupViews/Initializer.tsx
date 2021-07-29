@@ -2,15 +2,15 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
 } from 'react-native';
-import { StoreManager }    from './store/storeManager'
-import { BackgroundProcessHandler } from '../backgroundProcesses/BackgroundProcessHandler'
-import SplashScreen        from 'react-native-splash-screen'
-import { Splash }          from "../views/startupViews/Splash";
-import { core } from "../core";
-import { NavigationUtil } from "../util/NavigationUtil";
-import { Stacks } from "./Stacks";
-import { stylesUpdateConstants } from "../views/styles";
-import { Bluenet } from "../native/libInterface/Bluenet";
+import { StoreManager }             from '../../database/storeManager'
+import { BackgroundProcessHandler } from '../../backgroundProcesses/BackgroundProcessHandler'
+import SplashScreen                 from 'react-native-splash-screen'
+import { Splash }                   from "./Splash";
+import { core }                     from "../../Core";
+import { NavigationUtil }           from "../../util/NavigationUtil";
+import { Stacks }                   from "../Stacks";
+import { stylesUpdateConstants }    from "../../views/styles";
+import { Bluenet }                  from "../../native/libInterface/Bluenet";
 
 
 export class Initializer extends Component<any, any> {

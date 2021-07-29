@@ -4,7 +4,7 @@ import { Languages } from "../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("UpdateCenter", key)(a,b,c,d,e);
 }
-import { core } from "../core";
+import { core } from "../Core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { DfuUtil } from "../util/DfuUtil";

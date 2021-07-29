@@ -18,7 +18,7 @@ import {
   screenWidth
 } from "../../styles";
 import { Background } from "../../components/Background";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { RuleEditor } from "./supportComponents/RuleEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import ResponsiveText from "../../components/ResponsiveText";

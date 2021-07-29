@@ -15,7 +15,7 @@ import { AnimatedLogo }       from '../components/animated/AnimatedLogo'
 import { AnimatedLoadingBar } from '../components/animated/AnimatedLoadingBar'
 import { HiddenFadeInView }         from '../components/animated/FadeInView'
 import { styles, colors , screenHeight} from '../styles'
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class Processing extends Component<any, any> {

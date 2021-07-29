@@ -26,7 +26,7 @@ import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { SlideFadeInView, SlideSideFadeInView } from "../animated/SlideFadeInView";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../../Enums";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../../../util/DataUtil";

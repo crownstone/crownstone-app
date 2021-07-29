@@ -2,7 +2,7 @@ import { CLOUD }          from "../cloud/cloudAPI";
 import {LOG, LOGe} from "../logging/Log";
 import { FileUtil } from "./FileUtil";
 import { Languages } from "../Languages";
-import { core } from "../core";
+import { core } from "../Core";
 import { xUtil } from "./StandAloneUtil";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 

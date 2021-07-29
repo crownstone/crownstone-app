@@ -7,7 +7,7 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScheduleUtil } from "../../util/ScheduleUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { HubReplyCode, HubReplyError, KEY_TYPES, STONE_TYPES } from "../../Enums";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 import { DataUtil } from "../../util/DataUtil";

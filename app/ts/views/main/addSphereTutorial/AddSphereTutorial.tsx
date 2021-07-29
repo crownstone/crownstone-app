@@ -14,7 +14,7 @@ import { availableModalHeight, background, colors, screenWidth } from "../../sty
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { TopBarUtil } from "../../../util/TopBarUtil";

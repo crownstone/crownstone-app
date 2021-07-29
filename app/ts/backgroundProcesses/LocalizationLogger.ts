@@ -2,7 +2,7 @@ import { Scheduler } from "../logic/Scheduler";
 import { FileUtil } from "../util/FileUtil";
 import { LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS, LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 import { getLoggingFilename, LOG_PREFIX } from "../logging/LogUtil";
-import { core } from "../core";
+import { core } from "../Core";
 import { MapProvider } from "./MapProvider";
 import { LOG, LOGw } from "../logging/Log";
 

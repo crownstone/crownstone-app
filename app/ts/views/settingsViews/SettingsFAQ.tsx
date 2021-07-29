@@ -19,7 +19,7 @@ import { background, colors } from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 

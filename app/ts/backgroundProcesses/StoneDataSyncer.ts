@@ -1,4 +1,4 @@
-import { core } from "../core";
+import { core } from "../Core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";

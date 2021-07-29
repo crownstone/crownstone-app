@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { colors, styles } from "../../styles";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { Svg, Circle } from 'react-native-svg';
 import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
 

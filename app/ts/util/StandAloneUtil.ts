@@ -1,4 +1,4 @@
-import { base_core } from "../base_core";
+import { base_core } from "../Base_core";
 
 export const xUtil = {
 

@@ -19,7 +19,7 @@ import {
 } from '../../util/DataUtil'
 import { colors, screenWidth, overviewStyles } from "../styles";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
 

@@ -2,7 +2,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { RefreshControl, ScrollView, Text, TextStyle, View } from "react-native";
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 import { FileUtil } from "../../../util/FileUtil";

@@ -16,7 +16,7 @@ import { background, colors, styles } from "./../styles";
 import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 

@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import stonesReducer       from './stones'
-import { STONE_TYPES }     from "../../../Enums";
 
 
 

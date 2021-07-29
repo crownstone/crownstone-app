@@ -5,7 +5,7 @@ import { SessionManager } from "./SessionManager";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { LOGd, LOGi, LOGw } from "../../logging/Log";
 import { BleCommandManager } from "./BleCommandManager";
 

@@ -18,7 +18,7 @@ import { background, colors, screenHeight, screenWidth, styles } from "../../../
 import {Background} from "../../../components/Background";
 import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
-import { core } from "../../../../core";
+import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";

@@ -15,7 +15,7 @@ import {
 
 import { availableModalHeight, background, colors, screenHeight, styles } from "../styles";
 
-import { core } from "../../core";
+import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { RoomAddCore } from "./RoomAddCore";

@@ -9,7 +9,7 @@
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BleCommandManager } from "./BleCommandManager";
-import { core } from "../../core";
+import { core } from "../../Core";
 import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";

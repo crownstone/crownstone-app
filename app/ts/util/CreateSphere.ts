@@ -8,7 +8,7 @@ import { Alert } from 'react-native';
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { CLOUD } from "../cloud/cloudAPI";
 import {LOGe} from '../logging/Log'
-import { core } from "../core";
+import { core } from "../Core";
 import { xUtil } from "./StandAloneUtil";
 import { transferLocations } from "../cloud/transferData/transferLocations";
 

@@ -16,7 +16,7 @@ import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
+import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
 import { BleUtil } from "../../../util/BleUtil";
