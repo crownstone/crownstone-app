@@ -81,6 +81,7 @@
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FAC79769263B0BA80023B899 /* BluenetBasicLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAC79768263B0BA80023B899 /* BluenetBasicLocalization */; };
+		FAC9796626B2DB80008BB51D /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC9792326B2B31A008BB51D /* libBugsnagReactNative.a */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -469,6 +470,13 @@
 			remoteGlobalIDString = 484E6781D8E6CE2FB8F6C8D7C9578D97;
 			remoteInfo = RNShare;
 		};
+		FAC9792226B2B31A008BB51D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3EEAA606F6866DA20E6601B9655B1027;
+			remoteInfo = BugsnagReactNative;
+		};
 		FACF166926160CB500A9163F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -654,6 +662,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAC9796626B2DB80008BB51D /* libBugsnagReactNative.a in Frameworks */,
 				FA274EE72410171B00D7C858 /* libDoubleConversion.a in Frameworks */,
 				FA274EE82410171B00D7C858 /* libFBReactNativeSpec.a in Frameworks */,
 				FA274EEA2410171B00D7C858 /* libglog.a in Frameworks */,
@@ -876,6 +885,7 @@
 		FA274E4B2410144E00D7C858 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				FAC9792326B2B31A008BB51D /* libBugsnagReactNative.a */,
 				FAB971FD264C4333006E716C /* libCocoaAsyncSocket.a */,
 				FA274E7C2410144F00D7C858 /* libDoubleConversion.a */,
 				FA274E7E2410144F00D7C858 /* libFBReactNativeSpec.a */,
@@ -1088,6 +1098,7 @@
 				FA86C6D921CCEED000811933 /* Embed Watch Content */,
 				C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */,
 				191DCBE4EBAED917EBF44C6E /* [CP] Embed Pods Frameworks */,
+				462EBE42CA0A4D6F873EDEBA /* Upload source maps to Bugsnag */,
 			);
 			buildRules = (
 			);
@@ -1563,6 +1574,13 @@
 			remoteRef = FAC6D17A24BCAA8A007AA96F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FAC9792326B2B31A008BB51D /* libBugsnagReactNative.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBugsnagReactNative.a;
+			remoteRef = FAC9792226B2B31A008BB51D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FACF166A26160CB500A9163F /* libRCT-Folly.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1661,7 +1679,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export EXTRA_PACKAGER_ARGS=\"--sourcemap-output $TMPDIR/$(md5 -qs \"$CONFIGURATION_BUILD_DIR\")-main.jsbundle.map\"\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0E45A9B2237FE76816B0340C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1724,6 +1742,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Crownstone/Pods-Crownstone-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		462EBE42CA0A4D6F873EDEBA /* Upload source maps to Bugsnag */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload source maps to Bugsnag";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./bugsnag_env.sh\nSOURCE_MAP=\"$TMPDIR/$(md5 -qs \"$CONFIGURATION_BUILD_DIR\")-main.jsbundle.map\" ../node_modules/@bugsnag/react-native/bugsnag-react-native-xcode.sh\n";
 		};
 		C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

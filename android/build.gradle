@@ -26,7 +26,8 @@ buildscript {
     }
     dependencies {
 //        classpath("com.android.tools.build:gradle:3.4.2")
-        classpath("com.android.tools.build:gradle:3.5.3") // react-native-navigation requires 3.5.3 or higher
+        classpath("com.android.tools.build:gradle:3.5.3")
+        classpath("com.bugsnag:bugsnag-android-gradle-plugin:5.+") // react-native-navigation requires 3.5.3 or higher
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong

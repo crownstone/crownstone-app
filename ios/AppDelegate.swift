@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import Bugsnag
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("LaunchOps", launchOptions)
+        Bugsnag.start()
+
         #if CS_DEBUG
             print("DEBUG")
             let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
