@@ -73,7 +73,7 @@ sentry.properties
 LocalConfig.ts
 toonConfig.ts
 
-Embrace-Info.plist
+bugsnag.plist
 
 !scripts/**
 __prototypes

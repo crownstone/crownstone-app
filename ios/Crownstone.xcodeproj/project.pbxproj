@@ -82,6 +82,8 @@
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FAC79769263B0BA80023B899 /* BluenetBasicLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAC79768263B0BA80023B899 /* BluenetBasicLocalization */; };
 		FAC9796626B2DB80008BB51D /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC9792326B2B31A008BB51D /* libBugsnagReactNative.a */; };
+		FAC979EE26B2FAD3008BB51D /* bugsnag.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAC979EC26B2F5B1008BB51D /* bugsnag.plist */; };
+		FAC979F226B30046008BB51D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 562A66FB958C404F86EE89D9 /* libz.tbd */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -625,6 +627,7 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
+		FAC979EC26B2F5B1008BB51D /* bugsnag.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = bugsnag.plist; sourceTree = "<group>"; };
 		FAD98BAD2614C59C00E46E1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../app/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../app/assets/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
@@ -664,6 +667,7 @@
 			files = (
 				FAC9796626B2DB80008BB51D /* libBugsnagReactNative.a in Frameworks */,
 				FA274EE72410171B00D7C858 /* libDoubleConversion.a in Frameworks */,
+				FAC979F226B30046008BB51D /* libz.tbd in Frameworks */,
 				FA274EE82410171B00D7C858 /* libFBReactNativeSpec.a in Frameworks */,
 				FA274EEA2410171B00D7C858 /* libglog.a in Frameworks */,
 				FA274EED2410171B00D7C858 /* libRCTTypeSafety.a in Frameworks */,
@@ -752,6 +756,7 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				FAC979EC26B2F5B1008BB51D /* bugsnag.plist */,
 				FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */,
 			);
 			indentWidth = 4;
@@ -1631,6 +1636,7 @@
 				FADC2B3025F7B519000AE5A7 /* Roboto-Light.ttf in Resources */,
 				FADC2B3825F7B519000AE5A7 /* Roboto-ThinItalic.ttf in Resources */,
 				FADC2B2E25F7B519000AE5A7 /* CustomIcons.ttf in Resources */,
+				FAC979EE26B2FAD3008BB51D /* bugsnag.plist in Resources */,
 				FADC2B3925F7B519000AE5A7 /* flaticon_essentials.ttf in Resources */,
 				FADC2B3325F7B519000AE5A7 /* Roboto-Italic.ttf in Resources */,
 				FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */,
@@ -1755,7 +1761,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./bugsnag_env.sh\nSOURCE_MAP=\"$TMPDIR/$(md5 -qs \"$CONFIGURATION_BUILD_DIR\")-main.jsbundle.map\" ../node_modules/@bugsnag/react-native/bugsnag-react-native-xcode.sh\n";
+			shellScript = "export BUGSNAG_API_KEY=$(/usr/libexec/PlistBuddy -c \"Print apiKey\" ./bugsnag.plist) \nSOURCE_MAP=\"$TMPDIR/$(md5 -qs \"$CONFIGURATION_BUILD_DIR\")-main.jsbundle.map\" ../node_modules/@bugsnag/react-native/bugsnag-react-native-xcode.sh\n";
 		};
 		C4C69A5511CD6F014A8077FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -17,5 +17,6 @@
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 
 #import "RNSplashScreen.h"
+#import <Bugsnag/Bugsnag.h>
 
 

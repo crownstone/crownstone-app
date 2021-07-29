@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Bugsnag
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("LaunchOps", launchOptions)
-        Bugsnag.start()
+        
+        // get the API key for bugsnag from the plist file. This is done because I don't want to add the bugsnag key to git :)
+        var nsDictionary: NSDictionary?
+        if let path = Bundle.main.path(forResource: "bugsnag", ofType: "plist") {
+           nsDictionary = NSDictionary(contentsOfFile: path)
+        }
+        
+        Bugsnag.start(withApiKey: nsDictionary!["apiKey"] as! String)
 
         #if CS_DEBUG
             print("DEBUG")
