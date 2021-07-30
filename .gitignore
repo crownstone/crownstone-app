@@ -80,3 +80,5 @@ __prototypes
 .logs
 /ios/Pods/
 .jest/
+
+__errorReporting/

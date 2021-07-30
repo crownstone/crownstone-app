@@ -104,6 +104,7 @@ function selectRecentRoom(sphereId: string, minutes: number) {
   }
   if (data.length > 0) {
     data.push({close: false, text: "Somewhere else...", callback: () => { selectFromRoomList(sphereId, minutes); }})
+    data.push({text: "Custom label",   callback: () => { customRoom(sphereId, minutes); }})
     core.eventBus.emit("UpdateOptionPopup", {buttons: data});
     return
   }
@@ -129,4 +130,15 @@ function selectFromRoomList(sphereId:string, minutes: number) {
   }
   data.sort((a,b) =>  { return a.text < b.text ? -1 : 1})
   core.eventBus.emit("UpdateOptionPopup", {buttons: data});
+}
+
+function customRoom(sphereId: string, minutes: number) {
+  core.eventBus.emit("showTextInputOverlay", {title: "How shall we call this dataset?", callback: async (label) => {
+      // @ts-ignore
+      let pointsStored = await LocalizationLogger.classify(minutes * 60, { config: { name: label, uid: "custom"} });
+      setTimeout(() => {
+        core.eventBus.emit("hideTextInputOverlaySuccess");
+        Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
+      }, 300);
+  }})
 }

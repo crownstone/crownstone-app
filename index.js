@@ -22,7 +22,7 @@ import DeviceInfo from 'react-native-device-info';
 import Bugsnag from "@bugsnag/react-native";
 
 Bugsnag.start();
-Bugsnag.notify(new Error('Test error'))
+
 if (USE_ERROR_REPORTING) {
   // let sentryConfig = {
   //   dsn: null,

@@ -88,18 +88,36 @@ class LocalizationLoggerClass {
     return await getDatasetUrls()
   }
 
+  async storeFingerprints() : Promise<string> {
+    let state = core.store.getState()
+    let data = {spheres:{}};
+    Object.keys(state.spheres).forEach((sphereId) => {
+      data.spheres[sphereId] = {};
+      Object.keys(state.spheres[sphereId].locations).forEach((locationId) => {
+        let location = state.spheres[sphereId].locations[locationId];
+        data.spheres[sphereId][location.config.uid] = {
+          name: location.config.name,
+          fingerprint: location.config.fingerprintRaw
+        };
+      })
+    })
+
+    return await writeLocalizationDataset("Fingerprints", data, true);
+  }
+
+
 }
 
 export const LocalizationLogger = new LocalizationLoggerClass();
 
 
 
-async function writeLocalizationDataset(labelName: string, data) {
+async function writeLocalizationDataset(labelName: string, data, ignoreDatetime = false) {
   // create a path you want to write to
   let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
-  let filename = getLoggingFilename(Date.now(), labelName, true);
+  let filename = ignoreDatetime ? `${labelName}.log` : getLoggingFilename(Date.now(), labelName, true);
   let filePath = logPath + '/' + filename;
 
   // create string
@@ -107,6 +125,8 @@ async function writeLocalizationDataset(labelName: string, data) {
 
   // write the file
   await RNFS.writeFile(filePath, str, 'utf8').catch((err) => {})
+
+  return filePath;
 }
 
 

@@ -1214,6 +1214,10 @@ export default {
     __filename: "../../js/views/overlays/NumericOverlay.tsx",
     Set_:                                   function() { return "Set!" },
   },
+  TextInputOverlay:{
+    __filename: "../../js/views/overlays/TextInputOverlay.tsx",
+    Set_:                                   function() { return "Set!" },
+  },
   NumericSet:{
     __filename: "../../js/views/components/editComponents/NumericSet.tsx",
     SET_:                                   function() { return "SET " + arguments[0] },

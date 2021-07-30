@@ -611,7 +611,11 @@ async function shareData(shareDataType) {
       ]}
   }
   else if (shareDataType === EMAIL_DATA_TYPE.localization) {
-    options = {urls: (await LocalizationLogger.getURLS()).map((a) => { return "file://" + a }) }
+    let fingerprintPath = await LocalizationLogger.storeFingerprints();
+    let logUrls = await LocalizationLogger.getURLS();
+    logUrls.push(fingerprintPath);
+    let urls = logUrls.map((a) => { return "file://" + a })
+    options = {urls: urls }
   }
   else if (shareDataType === EMAIL_DATA_TYPE.allBuffers) {
     options = {urls:[

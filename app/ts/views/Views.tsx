@@ -126,6 +126,7 @@ import { HubOverview } from "../views/hubViews/HubOverview";
 import { SphereHubOverview } from "../views/main/editSubviews/SphereHubOverview";
 import { HubEdit } from "../views/hubViews/HubEdit";
 import { Initializer } from "./startupViews/Initializer";
+import { TextInputOverlay } from "./overlays/TextInputOverlay";
 
 
 export const Views = {
@@ -242,9 +243,11 @@ export const Views = {
   LocalizationSetupStep2:           LocalizationSetupStep2,
   LocationPermissionOverlay:        LocationPermissionOverlay,
   LockOverlay:                      LockOverlay,
+  NumericOverlay:                   NumericOverlay,
   OptionPopup:                      OptionPopup,
   Processing:                       Processing,
   SimpleOverlay:                    SimpleOverlay,
+  TextInputOverlay:                 TextInputOverlay,
 
 
 
@@ -261,6 +264,4 @@ export const Views = {
   DEV_PresenceMocking:           DEV_PresenceMocking,
   DEV_UserData:                  DEV_UserData,
 
-  // Overlays:
-  NumericOverlay:                NumericOverlay,
 };
