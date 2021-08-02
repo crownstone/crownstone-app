@@ -53,8 +53,8 @@ class ToonIntegrationClass {
           else {
             CLOUD.forToon(toonId).thirdParty.toon.setToonToHome(deviceId)
               .catch((err) => {
-                if (err && err.statusCode == 405 && err.model) {
-                  return err.model;
+                if (err?.statusCode == 405 && err?.model) {
+                  return err?.model;
                 }
                 else {
                   LOGe.cloud("ToonIntegration: Unexpected error in cloud request:", err);
@@ -104,8 +104,8 @@ class ToonIntegrationClass {
         if (activeProgram && activeProgram.program === 'away') {
           CLOUD.forToon(toonId).thirdParty.toon.setToonToAway(deviceId)
             .catch((err) => {
-              if (err && err.statusCode == 405 && err.model) {
-                return err.model;
+              if (err?.statusCode == 405 && err?.model) {
+                return err?.model;
               }
               else {
                 LOGe.cloud("ToonIntegration: Unexpected error in cloud request:", err);

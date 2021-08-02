@@ -14,6 +14,7 @@ import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 import { DataUtil } from "../../util/DataUtil";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
+import { CodedError } from "../../util/Errors";
 
 
 const networkError = 'network_error';
@@ -205,10 +206,10 @@ export class SetupHelper {
         LOGi.info("SetupHelper: Not cleaning up after failed setup. StoneIdInCLoud", this.stoneIdInCloud, "stonewasAlreadyInCloud", this.stoneWasAlreadyInCloud)
       }
 
-      if (err == "INVALID_SESSION_DATA" && silent === false) {
+      if (err?.message == "INVALID_SESSION_DATA" && silent === false) {
         Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
       }
-      else if (err === networkError) {
+      else if (err?.message === networkError) {
         // do nothing, alert was already sent
       }
 
@@ -233,7 +234,7 @@ export class SetupHelper {
 
     return CLOUD.getKeys(sphereId, stoneId, false)
       .then((keyData) => {
-        if (keyData.length !== 1) { throw {code: networkError, message: "Invalid key data count"}; }
+        if (keyData.length !== 1) { throw new CodedError( networkError, "Invalid key data count"); }
 
         let cloudStoneId = MapProvider.local2cloudMap.stones[stoneId]   || stoneId;
         if (keyData[0] && keyData[0].stoneKeys && keyData[0].stoneKeys[cloudStoneId]) {
@@ -246,7 +247,7 @@ export class SetupHelper {
           }
         }
 
-        throw {code: networkError, message: "Invalid key data"};
+        throw new CodedError(networkError, "Invalid key data");
       })
   }
 
@@ -258,11 +259,11 @@ export class SetupHelper {
 
     return new Promise((resolve, reject) => {
       const processFailure = (err?) => {
-        if (err.message && err.message === 'Network request failed') {
-          reject({code: networkError, message: err.message});
+        if (err?.message === 'Network request failed') {
+          reject(new CodedError(networkError, err?.message));
         }
         else {
-          reject({code: networkError, message: err});
+          reject(new CodedError(networkError, err));
           // let defaultAction = () => { reject(networkError); };
           // Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{ text:"OK", onPress: defaultAction }], { onDismiss: defaultAction });
         }
@@ -280,7 +281,7 @@ export class SetupHelper {
       }, false)
         .then(resolve)
         .catch((err) => {
-          if (err.status === 422) {
+          if (err?.code === 422) {
             CLOUD.forSphere(sphereId).findStone(this.macAddress)
               .then((foundCrownstones) => {
                 if (foundCrownstones.length === 1) {

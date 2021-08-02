@@ -229,7 +229,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             .then(() => { core.eventBus.emit("showLoading","Done!"); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
             .catch((err) => { core.eventBus.emit("hideLoading"); Alert.alert(
               "Error during sync.",
-              err && err.message || JSON.stringify(err),
+              err?.message || JSON.stringify(err),
               [{text:"OK", onPress: () => { core.eventBus.emit("hideLoading"); }}]) })
         }
         else {

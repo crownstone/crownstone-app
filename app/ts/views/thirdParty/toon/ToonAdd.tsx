@@ -24,6 +24,7 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
+import { CodedError } from "../../../util/Errors";
 
 
 export class ToonAdd extends LiveComponent<any, any> {
@@ -74,7 +75,7 @@ export class ToonAdd extends LiveComponent<any, any> {
           return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
         }
         else {
-          throw {code: 1, message: "Failed to get AccessToken"};
+          throw new CodedError(1, "Failed to get AccessToken");
         }
       })
       .then((data) => {
@@ -85,7 +86,7 @@ export class ToonAdd extends LiveComponent<any, any> {
           return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
         }
         else {
-          throw  {code: 1, message: "Failed to get agreementIds"};
+          throw new CodedError(1, "Failed to get agreementIds");
         }
       })
       .then(() => {
@@ -140,14 +141,12 @@ export class ToonAdd extends LiveComponent<any, any> {
       })
       .catch((err) => {
         LOGe.info("ToonAdd: Error while adding Toon.", err);
-        if (err && typeof err === 'object' && err.code) {
-          if (err.code === 1 && this.state.code) {
-            Alert.alert(
-              lang("_Whoops__The_provided_cod_header"),
-              lang("_Whoops__The_provided_cod_body"),
-              [{text:lang("_Whoops__The_provided_cod_left")}]);
-            return;
-          }
+        if (err?.code === 1 && this.state.code) {
+          Alert.alert(
+            lang("_Whoops__The_provided_cod_header"),
+            lang("_Whoops__The_provided_cod_body"),
+            [{text:lang("_Whoops__The_provided_cod_left")}]);
+          return;
         }
 
         Alert.alert(

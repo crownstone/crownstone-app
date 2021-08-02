@@ -138,7 +138,7 @@ class StoneDataSyncerClass {
         })
         .catch((err) => {
           LOGe.info("StoneDataSyncer: Failed rule sync trigger", sphereId, stoneId, err, sessionId);
-          if (err && err.code && err.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          if (err?.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
             // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
           }
           else {
@@ -203,7 +203,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming", err, sphereId, stoneId);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -219,7 +219,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -244,7 +244,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           /** if the syncing fails, we set another watcher **/
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err);
           this.update();
@@ -270,7 +270,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle", err, sphereId, stoneId);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -286,7 +286,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -412,7 +412,7 @@ class StoneDataSyncerClass {
 
   async checkAndSyncBehaviour(sphereId, stoneId, force = false) : Promise<void> {
     let stone = DataUtil.getStone(sphereId,stoneId);
-    if (!stone) { throw "STONE_NOT_FOUND "; }
+    if (!stone) { throw new Error("STONE_NOT_FOUND"); }
 
     let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
     let rulesAccordingToCrownstone = null;

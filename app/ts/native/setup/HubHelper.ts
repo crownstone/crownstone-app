@@ -16,6 +16,7 @@ import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 import { Get } from "../../util/GetUtil";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
+import { CodedError, CodedTypedError } from "../../util/Errors";
 
 
 const networkError = 'network_error';
@@ -52,10 +53,10 @@ export class HubHelper {
     let stone = DataUtil.getStone(sphereId, stoneId);
     let handle = stone.config.handle;
     if (!stone) {
-      throw { code: 1, message: "Invalid stone." };
+      throw new CodedError(1,"Invalid stone.");
     }
     if (!stone.config.handle) {
-      throw { code: 2, message: "No handle." };
+      throw new CodedError(2, "No handle.");
     }
 
     let uartKey = null;
@@ -76,7 +77,7 @@ export class HubHelper {
     }
 
     if (!uartKey) {
-      throw { code: 10, message: "No Uart Key available." };
+      throw new CodedError(10,"No Uart Key available.");
     }
     // we now have everything we need to create a hub.
     core.eventBus.emit("setupInProgress", { handle: handle, progress: 26 / 20 });
@@ -110,11 +111,7 @@ export class HubHelper {
       if (tokenResult.type === 'error') {
         try { await CLOUD.deleteHub(hubCloudId); } catch (e) {}
         core.store.dispatch({type: "REMOVE_HUB", sphereId, hubId: hubId});
-        throw {
-          message: "Something went wrong during the transferHubTokenAndCloudId",
-          code: 15,
-          errorType: tokenResult.errorType
-        };
+        throw new CodedTypedError(15,tokenResult.errorType,"Something went wrong during the transferHubTokenAndCloudId");
       }
       LOG.info("hubSetupProgress: token and sphereId has been transferrred");
     }
@@ -124,11 +121,7 @@ export class HubHelper {
       let requestedData = await commander.requestCloudId();
       console.log("requestCloudId Received key data", requestedData);
       if (requestedData.type === 'error') {
-        throw {
-          code: 3,
-          errorType: requestedData.errorType,
-          message: "Something went wrong while requesting CloudId " + JSON.stringify(requestedData)
-        }
+        throw new CodedTypedError(3,requestedData.errorType,"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) );
       }
       hubCloudId = requestedData.message;
     }
@@ -162,8 +155,8 @@ export class HubHelper {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     let stone = DataUtil.getStone(sphereId, stoneId);
     let handle = stone.config.handle;
-    if (!stone)               { throw {code: 1, message:"Invalid stone."}; }
-    if (!stone.config.handle) { throw {code: 2, message:"No handle."};     }
+    if (!stone)               { throw new CodedError(1, "Invalid stone."); }
+    if (!stone.config.handle) { throw new CodedError(2, "No handle.");     }
 
     let uartKey = null;
     let hubToken = null;
@@ -179,13 +172,13 @@ export class HubHelper {
       try {
         let requestedData = await api.requestCloudId();
         if (requestedData.type === 'error') {
-          throw { code: 3, errorType: requestedData.errorType, message: "Something went wrong while requesting CloudId" }
+          throw new CodedTypedError(3, requestedData.errorType, "Something went wrong while requesting CloudId");
         }
         hubCloudId = requestedData.message;
         hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
       catch (err) {
-        if (err === "HUB_REPLY_TIMEOUT") {
+        if (err?.message === "HUB_REPLY_TIMEOUT") {
           hubId = xUtil.getUUID();
           core.store.dispatch({
             type:"ADD_HUB", sphereId, hubId,
@@ -245,7 +238,7 @@ export class HubHelper {
           });
         }
         else {
-          throw "DIFFERENT_SPHERE";
+          throw new Error("DIFFERENT_SPHERE");
         }
     }
     catch (e) {
@@ -271,7 +264,7 @@ export class HubHelper {
       LOG.info("hubFactoryResetProgress: Factory resetting...");
       let result = await api.factoryResetHub();
       if (result.type === 'error') {
-        throw { code: 3, errorType: result.errorType, message: "Something went wrong while resetting hub" }
+        throw new CodedTypedError(3,result.errorType,"Something went wrong while resetting hub" );
       }
 
       await Scheduler.delay(2000, 'wait for hub to initialize');
@@ -298,7 +291,7 @@ export class HubHelper {
       LOG.info("hubFactoryResetHubONLYProgress: Factory resetting hub only...");
       let result = await api.factoryResetHubOnly();
       if (result.type === 'error') {
-        throw { code: 3, errorType: result.errorType, message:"Something went wrong while resetting hub only." }
+        throw new CodedTypedError(3,result.errorType,"Something went wrong while resetting hub only." );
       }
       await Scheduler.delay(2000, 'wait for hub to initialize');
     }
@@ -320,7 +313,7 @@ export class HubHelper {
       LOG.info("getCloudIdFromHub: Requesting cloud Id...");
       let result = await api.requestCloudId();
       if (result.type === 'error') {
-        throw { code: 3, errorType: result.errorType, message:"Something went wrong while getting CloudId" }
+        throw new CodedTypedError(3,result.errorType,"Something went wrong while getting CloudId");
       }
       LOG.info("getCloudIdFromHub: disconnecting");
       return result.message;

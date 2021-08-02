@@ -259,7 +259,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                   this.setState({fixing:false})
                 })
                 .catch(async (err) => {
-                  if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+                  if (err?.code === 3 && err?.type === HubReplyError.IN_SETUP_MODE) {
                     await this.createHub();
                     await Scheduler.delay(5000);
                     this.setState({ fixing: false });
@@ -556,7 +556,7 @@ lang("_Something_went_wrong_____Plea_body"),
         }
       }
       catch(err) {
-        if (source === "ROOT" && err?.errorType === HubReplyError.IN_SETUP_MODE) {
+        if (source === "ROOT" && err?.type === HubReplyError.IN_SETUP_MODE) {
           await this.createHub('fixMultipleHubs')
           return
         }
