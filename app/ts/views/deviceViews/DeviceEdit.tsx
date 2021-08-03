@@ -191,7 +191,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
                     }
                     catch(err) {
                       core.eventBus.emit('hideLoading');
-                      if (err === "HUB_REPLY_TIMEOUT") {
+                      if (err?.message === "HUB_REPLY_TIMEOUT") {
                         Alert.alert(lang("The_hub_is_not_responding"),
                           lang("If_this_hub_is_broken__yo"),
                           [{ text: lang("Delete_anyway"), onPress: () => {this._removeCrownstone(stone).catch((err) => {});} , style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}]);
@@ -269,7 +269,7 @@ lang("_Something_went_wrong_____body"),
       CLOUD.deleteHub(hub.data.config.cloudId)
         .catch((err) => {
           return new Promise<void>((resolve, reject) => {
-            if (err && err.status === 404) {
+            if (err && err?.code === 404) {
               resolve();
             }
           })
@@ -278,7 +278,7 @@ lang("_Something_went_wrong_____body"),
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise<void>((resolve, reject) => {
-          if (err && err.status === 404) {
+          if (err && err?.code === 404) {
             resolve();
           }
           else {
@@ -306,7 +306,7 @@ lang("_Something_went_wrong_____body"),
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise<void>((resolve, reject) => {
-          if (err && err.status === 404) {
+          if (err && err?.code === 404) {
             resolve();
           }
           else {

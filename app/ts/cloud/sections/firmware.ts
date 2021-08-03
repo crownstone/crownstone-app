@@ -14,7 +14,7 @@ export const firmware = {
       return cloudApiBase._setupRequest('GET', '/Firmwares/latest?appVersion=' + appVersion, {background: background});
     }
     else {
-      return new Promise((resolve, reject) => { reject("Can't get app version correctly."); })
+      return new Promise((resolve, reject) => { reject(new Error("Can't get app version correctly.")); })
     }
   },
 };

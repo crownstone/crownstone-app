@@ -128,7 +128,7 @@ export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) :
   LOGi.constellation("Telling sphere", sphereId, minConnections);
 
   let sphere = Get.sphere(sphereId);
-  if (!sphere) { throw "INVALID_SPHERE_ID" }
+  if (!sphere) { throw new Error("INVALID_SPHERE_ID"); }
 
   let stoneIds = Object.keys(sphere.stones)
   let meshNetworks = [];

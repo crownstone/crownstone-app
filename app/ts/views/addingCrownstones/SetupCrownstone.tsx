@@ -158,11 +158,11 @@ export class SetupCrownstone extends LiveComponent<{
             return this._interview.setLockedCard("aborted");
           }
 
-          if (err.code) {
-            if (err.code === 1) {
+          if (err?.code) {
+            if (err?.code === 1) {
               this._interview.setLockedCard("problemBle");
             }
-            else if (err.code === "network_error") {
+            else if (err?.code === "network_error") {
               this._interview.setLockedCard("problemCloud");
             }
             else {

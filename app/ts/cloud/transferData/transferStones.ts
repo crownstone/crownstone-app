@@ -2,6 +2,7 @@ import { CLOUD }        from "../cloudAPI";
 import { LOGe }         from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 import { Permissions }  from "../../backgroundProcesses/PermissionManager";
+import { CodedError } from "../../util/Errors";
 
 let fieldMap : fieldMap = [
   {local: 'uid',                cloud: 'uid'},
@@ -52,7 +53,7 @@ export const transferStones = {
 
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
-      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
+      return Promise.reject(new CodedError(404,"Can not update in cloud, no cloudId available"));
     }
 
     let payload = {};

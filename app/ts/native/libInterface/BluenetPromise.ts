@@ -41,7 +41,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
           //     err: result.data
           //   }
           // });
-          reject(result.data);
+          reject(new Error(result.data));
         }
         else {
 			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);

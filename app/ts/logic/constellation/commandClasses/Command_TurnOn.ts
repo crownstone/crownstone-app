@@ -12,7 +12,7 @@ export class Command_TurnOn extends CommandBase implements BroadcastInterface {
   }
 
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
-    if (!options) { throw "NO_OPTIONS_PROVIDED"; }
+    if (!options) { throw new Error("NO_OPTIONS_PROVIDED"); }
     let stoneSwitchPackets = Executor.aggregateTurnOnCommands(connectedHandle, options.bleCommand, options.queue);
     let stoneIdList = [];
     for (let item of stoneSwitchPackets) {

@@ -15,7 +15,7 @@ export class Command_MultiSwitch extends CommandBase implements BroadcastInterfa
 
 
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<void> {
-    if (!options) { throw "NO_OPTIONS_PROVIDED"; }
+    if (!options) { throw new Error("NO_OPTIONS_PROVIDED"); }
     let stoneSwitchPackets = Executor.aggregateMultiSwitchCommands(connectedHandle, options.bleCommand, options.queue);
     return BluenetPromiseWrapper.multiSwitch(connectedHandle, stoneSwitchPackets);
   }

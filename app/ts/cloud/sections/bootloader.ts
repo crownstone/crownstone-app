@@ -15,7 +15,7 @@ export const bootloader = {
       return cloudApiBase._setupRequest('GET', '/Bootloaders/latest?appVersion=' + appVersion, {background: background});
     }
     else {
-      return new Promise((resolve, reject) => { reject("Can't get app version correctly."); })
+      return new Promise((resolve, reject) => { reject(new Error("Can't get app version correctly.")); })
     }
   },
 };

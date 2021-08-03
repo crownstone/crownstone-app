@@ -136,7 +136,7 @@ class CommandAPI_base {
     }
 
     if (!validHandleToPerformAction) {
-      throw "INVALID_HANDLE";
+      throw new Error("INVALID_HANDLE");
     }
 
     let promiseContainer = xUtil.getPromiseContainer<any>()

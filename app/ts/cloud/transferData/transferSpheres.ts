@@ -1,6 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
 import {LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
+import { CodedError } from "../../util/Errors";
 
 
 type transferNewSphereToCloudData = {
@@ -53,7 +54,7 @@ export const transferSpheres = {
 
   updateOnCloud: function( data : transferSphereToCloudData ) {
     if (data.cloudId === undefined) {
-      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
+      return Promise.reject(new CodedError(404,"Can not update in cloud, no cloudId available"));
     }
 
 

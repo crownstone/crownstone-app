@@ -81,7 +81,7 @@ export const BleUtil = {
       stateContainer.timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         this._cancelSearch(stateContainer);
-        reject("_getNearestCrownstoneFromEvent: Nothing Near");
+        reject(new Error("_getNearestCrownstoneFromEvent: Nothing Near"));
       }, timeoutMilliseconds, '_getNearestCrownstoneFromEvent stateContainer.timeout');
     })
   },
@@ -121,7 +121,7 @@ export const BleUtil = {
       cleanup.timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         cleanup.unsubscribe();
-        reject(false);
+        reject(new Error());
       }, 10000, 'detectCrownstone timeout');
     })
   },

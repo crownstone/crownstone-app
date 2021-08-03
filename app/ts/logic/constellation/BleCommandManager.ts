@@ -135,7 +135,7 @@ export class BleCommandManagerClass {
     }
 
     if (commandsToLoad.length === 0) {
-      throw "NO_COMMANDS_TO_LOAD_OR_INVALID_TARGETS";
+      throw new Error("NO_COMMANDS_TO_LOAD_OR_INVALID_TARGETS");
     }
 
     return commandsToLoad;
@@ -304,7 +304,7 @@ export class BleCommandManagerClass {
       }
       else if (command.commandType === 'MESH') {
         // if the error is not connected,
-        if (err !== "NOT_CONNECTED") {
+        if (err?.message !== "NOT_CONNECTED") {
           command.promise.reject(err);
           LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err, command.id);
           // if this is a mesh relay, we have to fail the initial promise. The handle of the endTarget will handle the direct command.
@@ -382,7 +382,7 @@ export class BleCommandManagerClass {
         let command = commands[i];
         if (command.commanderId === commanderId) {
           this.queue.direct[handle].splice(i,1);
-          command.promise.reject("CANCELLED");
+          command.promise.reject(new Error("CANCELLED"));
 
           if (this.queue.direct[handle].length === 0) {
             delete this.queue.direct[handle];
@@ -400,7 +400,7 @@ export class BleCommandManagerClass {
         if (meshCommand.commanderId === commanderId) {
           this.queue.mesh[meshId].splice(i,1);
 
-          meshCommand.promise.reject("CANCELLED");
+          meshCommand.promise.reject(new Error("CANCELLED"));
           if (this.queue.mesh[meshId].length === 0) {
             delete this.queue.mesh[meshId];
           }

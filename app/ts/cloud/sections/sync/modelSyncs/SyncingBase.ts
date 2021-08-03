@@ -35,15 +35,15 @@ export class SyncingBase {
   }
 
   sync(...any) {
-    throw "SyncingBase: NOT OVERLOADED sync";
+    throw new Error("SyncingBase: NOT OVERLOADED sync");
   }
 
   syncDown(...any) {
-    throw "SyncingBase: NOT OVERLOADED syncDown";
+    throw new Error("SyncingBase: NOT OVERLOADED syncDown");
   }
 
   syncUp(...any) {
-    throw "SyncingBase: NOT OVERLOADED syncUp";
+    throw new Error("SyncingBase: NOT OVERLOADED syncUp");
   }
 
   syncChildren(...any) {
@@ -73,7 +73,7 @@ export class SyncingBase {
    * @private
    */
   _getCloudIdMap(thingsInState : any) {
-    throw "SyncingBase: NOT OVERLOADED _getCloudIdMap";
+    throw new Error("SyncingBase: NOT OVERLOADED _getCloudIdMap");
   }
 
 
@@ -99,7 +99,7 @@ export class SyncingBase {
    * @private
    */
   _searchForLocalMatch(thingsInState, thing_in_cloud) {
-    throw "SyncingBase: NOT OVERLOADED _searchForLocalMatch"
+    throw new Error("SyncingBase: NOT OVERLOADED _searchForLocalMatch");
   }
 }
 

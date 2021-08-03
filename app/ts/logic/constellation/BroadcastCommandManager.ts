@@ -10,6 +10,7 @@ import { BCH_ERROR_CODES, BROADCAST_ERRORS, CONDITION_MAP } from "../../Enums";
 import { Command_MultiSwitch, Command_TurnOn } from "../constellation/commandClasses";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { EventUtil } from "../../util/EventUtil";
+import { CodedError } from "../../util/Errors";
 
 
 
@@ -148,7 +149,7 @@ export class BroadcastCommandManagerClass {
         if (commandSummary.command.isDuplicate(this.queue[i].command)) {
           LOGd.broadcast("Remove item from duplicate queue",i, this.queue[i].command.type)
           // fail the pending item
-          this.queue[i].promise.reject(BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE);
+          this.queue[i].promise.reject(new CodedError(BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE));
           // remove from queue
           this.queue.pop();
         }

@@ -3,6 +3,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { Get } from "../../util/GetUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
 import { LOGd, LOGi } from "../../logging/Log";
+import { CodedError } from "../../util/Errors";
 
 
 
@@ -95,7 +96,7 @@ export const BleCommandCleaner =  {
 
 
   _removeCommand(command: BleCommand) {
-    command.promise.reject({code: BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE, message:"Removed because of duplicate"});
+    command.promise.reject(new CodedError(BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE,"Removed because of duplicate"));
   },
 
   _canBeRemoved(existingCommand: BleCommand) : boolean {

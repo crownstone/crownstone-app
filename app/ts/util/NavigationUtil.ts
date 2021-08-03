@@ -839,7 +839,7 @@ export const NavigationUtil = {
       Navigation.popTo(componentId)
     }
     else {
-      throw "CAN NOT FIND THIS COMPONENT " + target
+      throw new Error("CAN NOT FIND THIS COMPONENT " + target);
     }
   },
 };

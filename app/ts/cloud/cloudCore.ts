@@ -9,7 +9,6 @@ import { xUtil } from "../util/StandAloneUtil";
 import { FileUtil } from "../util/FileUtil";
 
 
-
 /**
  *
  * This method communicates with the cloud services.
@@ -89,7 +88,7 @@ export function request(
   return new Promise((resolve, reject) => {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true) {
-      reject("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");
+      reject(new Error("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on."));
     }
     else {
       let stopRequest = false;
@@ -98,14 +97,14 @@ export function request(
       let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
           stopRequest = true;
           if (finishedRequest !== true)
-            reject('Network request to ' + url + ' failed')
+            reject(new Error('Network request to ' + url + ' failed'))
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
       fetch(url, requestConfig as any)
         .catch((connectionError) => {
           if (stopRequest === false) {
-            reject('Network request to ' + url + ' failed');
+            reject(new Error('Network request to ' + url + ' failed'));
           }
         })
         .then((response) => {

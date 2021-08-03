@@ -82,7 +82,7 @@ export const cloudApiBase = {
     return RNFS.exists(xUtil.preparePictureURI(options.path, false))
       .then((fileExists) => {
         if (fileExists === false) {
-          throw "File does not exist."
+          throw new Error("File does not exist.");
         }
         else {
           LOGi.cloud("CloudAPIBase: file exists, continue upload");

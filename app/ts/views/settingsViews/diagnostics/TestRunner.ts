@@ -123,7 +123,7 @@ class TestRunnerClass {
   run(timeout?) {
     return new Promise((resolve, reject) => {
       if (this.pendingResolve !== null) {
-        reject("Test already running!");
+        reject(new Error("Test already running!"));
       }
 
       this.pendingResolve = resolve;

@@ -230,7 +230,7 @@ export const sync = {
 let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
   return (err) => {
     // perhaps there is a 401, user token expired or replaced. Retry logging in.
-    if (err.status === 401) {
+    if (err?.code === 401) {
       LOGw.cloud("Could not verify user, attempting to login again and retry sync.");
       return CLOUD.login({
         email: state.user.email,
@@ -245,7 +245,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
         })
         .catch((err) => {
           LOG.info("Sync: COULD NOT VERIFY USER -- ERROR", err);
-          if (err.status === 401) {
+          if (err?.code === 401) {
             AppUtil.logOut(store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         })

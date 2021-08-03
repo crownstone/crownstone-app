@@ -172,8 +172,8 @@ lang("arguments___arguments___O_body",content),
     })
       .catch((err) => {
         let handledError = false;
-        if (err.data && err.data.error && err.data.error.code) {
-          switch (err.data.error.code) {
+        if (err?.data && err?.data.error && err?.data.error.code) {
+          switch (err?.data.error.code) {
             case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
               handledError = true;
               unverifiedEmailCallback();
@@ -187,7 +187,7 @@ lang("arguments___arguments___O_body",content),
 
         if (handledError === false) {
           // do not show a popup if it is a failed request: this has its own pop up
-          if (err.message && err.message === 'Network request failed') {
+          if (err?.message && err?.message === 'Network request failed') {
             core.eventBus.emit('hideLoading');
           }
           else {

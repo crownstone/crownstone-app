@@ -41,7 +41,7 @@ export class Command_TrackedDeviceHeartbeat extends CommandBase implements Comma
     }
     catch (err) {
       LOGe.constellation("Command: TrackedDeviceHeartBeat has generated error: ", err, connectedHandle)
-      switch (err) {
+      switch (err?.message) {
         case "ERR_NOT_FOUND":
         case "ERR_TIMEOUT":
           LOGi.constellation("Command: TrackedDeviceHeartBeat will try to register to recover ", err, connectedHandle)

@@ -101,7 +101,7 @@ export class DfuHelper {
     if (crownstoneMode.dfuMode === true) {
       return new Promise((resolve, reject) => {
         LOGe.info("DfuHelper: Cannot perform setup in DFU mode!");
-        reject("Cannot perform setup in DFU mode!");
+        reject(new Error("Cannot perform setup in DFU mode!"));
       });
     }
     else {

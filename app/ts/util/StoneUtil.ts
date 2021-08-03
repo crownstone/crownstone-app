@@ -31,7 +31,7 @@ export const StoneUtil = {
     }
 
     let sphereId = Get.sphereId(stone.id);
-    if (!sphereId) { throw "NO_SPHERE_ID" }
+    if (!sphereId) { throw new Error("NO_SPHERE_ID"); }
     await tell(stone).multiSwitch(newState, allowMeshRelay);
 
     core.store.dispatch({
@@ -44,7 +44,7 @@ export const StoneUtil = {
 
   turnOn: async function (stone : any, allowMeshRelay: boolean = true) {
     let sphereId = Get.sphereId(stone.id);
-    if (!sphereId) { throw "NO_SPHERE_ID" }
+    if (!sphereId) { throw new Error("NO_SPHERE_ID"); }
     await tell(stone).turnOn(allowMeshRelay);
 
     let expectedState = AicoreUtil.getActiveTurnOnPercentage(sphereId, stone)
@@ -78,14 +78,14 @@ export const StoneUtil = {
 
   checkFirmwareVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
-    if (!stone) { Promise.reject("NO_STONE") }
+    if (!stone) { Promise.reject(new Error("NO_STONE")) }
 
     return await from(stone).getFirmwareVersion()
   },
 
   checkBootloaderVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
-    if (!stone) { Promise.reject("NO_STONE") }
+    if (!stone) { Promise.reject(new Error("NO_STONE")) }
 
     return await from(stone).getBootloaderVersion()
   },

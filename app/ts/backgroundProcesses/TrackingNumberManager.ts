@@ -84,7 +84,7 @@ class TrackingNumberManagerClass {
       )
         .catch((err) => {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);
-          if (err === "ERR_NOT_FOUND") {
+          if (err?.message === "ERR_NOT_FOUND") {
             return this._updateMyDeviceTrackingRegistration(activeSphereId);
           }
         })
@@ -193,7 +193,7 @@ class TrackingNumberManagerClass {
       .catch((err) => {
         LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken with error...", err)
         this.currentlyCyclingToken = false;
-        if (err === "ERR_ALREADY_EXISTS") {
+        if (err?.message === "ERR_ALREADY_EXISTS") {
           LOGi.info("TrackingNumberManager: Retrying cycle of token", err)
           this._cycleMyDeviceTrackingToken(sphereId);
           return;
@@ -257,7 +257,7 @@ class TrackingNumberManagerClass {
         }
         catch (err) {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN _updateMyDeviceTrackingRegistration", err);
-          if (err === "ERR_ALREADY_EXISTS") {
+          if (err?.message === "ERR_ALREADY_EXISTS") {
             this._cycleMyDeviceTrackingToken(sphereId);
           }
         }

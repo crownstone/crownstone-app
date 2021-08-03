@@ -241,7 +241,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
       .catch((err) => {
         LOGe.info("ERROR IN RECOVERY", err);
         let defaultAction = () => { NavigationUtil.back(); };
-        if (err === "NOT_IN_RECOVERY_MODE") {
+        if (err?.message === "NOT_IN_RECOVERY_MODE") {
           Alert.alert(
             lang("_Not_in_Factory_Reset_mod_header"),
             lang("_Not_in_Factory_Reset_mod_body"),

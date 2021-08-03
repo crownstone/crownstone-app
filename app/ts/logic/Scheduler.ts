@@ -246,7 +246,7 @@ class SchedulerClass {
    */
   scheduleCallback(callback, afterMilliseconds = null, label = "unlabeled") : () => void {
     if (afterMilliseconds === null) {
-      throw "NO_TIMEOUT_PROVIDED_TO_SCHEDULE_CALLBACK";
+      throw new Error("NO_TIMEOUT_PROVIDED_TO_SCHEDULE_CALLBACK");
     }
 
     if (AppState.currentState === 'active') {
@@ -281,7 +281,7 @@ class SchedulerClass {
     if (typeof callback !== 'function') {
       LOGe.scheduler("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
       if (DEBUG) {
-        throw "Scheduler: Failed to schedule callback. Not a function: " + label;
+        throw new Error("Scheduler: Failed to schedule callback. Not a function: " + label);
       }
     }
     let uuid = label + xUtil.getUUID();

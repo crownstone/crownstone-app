@@ -54,7 +54,7 @@ const handleRemove = function(state, events, actions) {
       .then(() => { success(); })
       .catch((err) => {
         // already deleted
-        if (err.status === 404) { success(); }
+        if (err?.code === 404) { success(); }
       }));
   });
 
@@ -69,7 +69,7 @@ const handleRemove = function(state, events, actions) {
         .then(() => { success(); })
         .catch((err) => {
           // already deleted
-          if (err.status === 404) { success(); }
+          if (err?.code === 404) { success(); }
         })
     );
   });
@@ -85,7 +85,7 @@ const handleRemove = function(state, events, actions) {
         .then(() => { success(); })
         .catch((err) => {
           // already deleted
-          if (err.status === 404) { success(); }
+          if (err?.code === 404) { success(); }
         })
     );
   });
@@ -108,13 +108,13 @@ const handleSpecial = function(state, events, actions) {
       case 'receivedMessage':
         promises.push(CLOUD.receivedMessage(payload.cloudId).then(() => { success(); }).catch((err) => {
           // message we are trying to mark delivered is deleted. That's ok, the sender can delete the message.
-          if (err.status === 404 || err.status === 400) { success(); }
+          if (err?.code === 404 || err?.code === 400) { success(); }
         }));
         break;
       case 'readMessage':
         promises.push(CLOUD.readMessage(payload.cloudId).then(() => { success(); }).catch((err) => {
           // message we are trying to mark read is deleted. That's ok, the sender can delete the message.
-          if (err.status === 404 || err.status === 400) { success(); }
+          if (err?.code === 404 || err?.code === 400) { success(); }
         }));
         break;
     }

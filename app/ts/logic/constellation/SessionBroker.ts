@@ -130,10 +130,10 @@ export class SessionBroker {
         })
         .catch((err) => {
           delete this.pendingSessions[handle];
-          if (err === "SESSION_REQUEST_TIMEOUT") {
-            BleCommandManager.removeCommand(handle, command.id, "TIME_OUT");
+          if (err?.message === "SESSION_REQUEST_TIMEOUT") {
+            BleCommandManager.removeCommand(handle, command.id, "SESSION_REQUEST_TIMEOUT");
           }
-          else if (err !== "REMOVED_FROM_QUEUE") {
+          else if (err?.message !== "REMOVED_FROM_QUEUE") {
             LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
             throw err;
           }
@@ -147,7 +147,7 @@ export class SessionBroker {
     for (let sessionHandle of connectedSessions) {
       LOGi.constellation("SessionBroker: Revoke session for kill", sessionHandle, "for", this.options.commanderId);
       await SessionManager.revokeRequest(sessionHandle, this.options.commanderId).catch((err) => {
-        if (err !== "REMOVED_FROM_QUEUE") {
+        if (err?.message !== "REMOVED_FROM_QUEUE") {
           LOGw.constellation("SessionBroker: Failed to request session", sessionHandle, "for", this.options.commanderId, err);
         }
       })

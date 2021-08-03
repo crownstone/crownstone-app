@@ -150,7 +150,7 @@ export class DfuExecutor {
   _handleError(err, phase, info) {
     LOGe.dfu("Executor: Error", err, phase, info);
 
-    if (this.stopDFU)    { throw DFU_CANCELLED; }
+    if (this.stopDFU)    { throw new Error(DFU_CANCELLED); }
     if (this.shownError) { throw err; }
 
     this._setProgress(phase, this.currentStep, 0, info);
@@ -235,7 +235,7 @@ export class DfuExecutor {
     try {
       // Waiting for get information from the cloud to do the DFU
       await Promise.all(cloudPromises).catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.DOWNLOAD_FAILED); })
-      if (this.stopDFU) { throw DFU_CANCELLED; }
+      if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
       LOGi.dfu("Executor: cloud preperation step 1 finished.");
 
       // check the version of the firmware and bootload from the Crownstone via BLE
@@ -273,14 +273,14 @@ export class DfuExecutor {
 
       try {
         if (this.stopDFU) {
-          throw DFU_CANCELLED;
+          throw new Error(DFU_CANCELLED);
         }
         LOGi.dfu("Executor: ble preperation finished.");
         this._setProgress(DfuPhases.PREPARING_BOOTLOADER_STEPS, this.currentStep, 0.8, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
         await this._checkBootloaderOperations(newestBootloader);
 
         if (this.stopDFU) {
-          throw DFU_CANCELLED;
+          throw new Error(DFU_CANCELLED);
         }
         LOGi.dfu("Executor: cloud bootloader step count finished.");
         this._setProgress(DfuPhases.PREPARING_FIRMWARE_STEPS, this.currentStep, 0.9, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
@@ -291,7 +291,7 @@ export class DfuExecutor {
       }
 
       // The DFU phase starts here.
-      if (this.stopDFU) { throw DFU_CANCELLED; }
+      if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
       LOGi.dfu("Executor: cloud firmware step count finished.");
 
       // debugging overrides
@@ -302,7 +302,7 @@ export class DfuExecutor {
       this._setProgress(DfuPhases.PUT_IN_DFU_MODE, this.currentStep++, 1, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
       await this._handleBootloader(newestBootloader).catch((err) => { this._handleError(err, DfuPhases.BOOTLOADER, DfuExecutionInformation.UPDATE_FAILED); })
 
-      if (this.stopDFU) { throw DFU_CANCELLED; }
+      if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
       LOGi.dfu("Executor: bootloader has been finished.");
       await this._handleFirmware(newestFirmware).catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.UPDATE_FAILED); })
 
@@ -392,7 +392,7 @@ export class DfuExecutor {
     crownstoneMode = await this._searchForCrownstone();
     let bootloaderVersion = await this.claimedCommander.getBootloaderVersion();
     if (!bootloaderVersion) {
-      throw "Failed to get Bootloader!"
+      throw new Error("Failed to get Bootloader!")
     }
     this.currentBootloaderVersion = bootloaderVersion;
     LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
@@ -510,7 +510,7 @@ export class DfuExecutor {
 
 
   _handleBootloader(bootloaderCandidate) {
-    if (this.stopDFU) { return Promise.reject(DFU_CANCELLED); }
+    if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
 
     if (xUtil.versions.isHigherOrEqual(this.currentBootloaderVersion, bootloaderCandidate.version) && !this._debugRepeatBootloader()) {
       LOGi.dfu("Executor: bootloader is up-to-date!");
@@ -581,7 +581,7 @@ export class DfuExecutor {
 
 
   _handleFirmware(firmwareCandidate) {
-    if (this.stopDFU) { return Promise.reject(DFU_CANCELLED); }
+    if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
     if (xUtil.versions.isHigherOrEqual(this.currentFirmwareVersion, firmwareCandidate.version) && !this._debugRepeatFirmware()) {
       LOGi.dfu("Executor: Firmware is up-to-date!");
       this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
@@ -674,7 +674,7 @@ export class DfuExecutor {
 
 
   _searchForCrownstone() : Promise<crownstoneModes> {
-    if (this.stopDFU === true) { throw DFU_CANCELLED; }
+    if (this.stopDFU === true) { throw new Error(DFU_CANCELLED); }
 
     // we need high frequency scanning to get duplicates of the DFU crownstone.
     LOG.dfu("DfuOverlay: Start HF Scanning for all Crownstones");
@@ -686,7 +686,7 @@ export class DfuExecutor {
         BleUtil.stopHighFrequencyScanning(this.sessionUUID);
         this.stopScanning = null;
         this._searchCleanup();
-        reject("CANT_FIND_CROWNSTONE");
+        reject(new Error("CANT_FIND_CROWNSTONE"));
       }, 15000, "DFU Timeout")
 
 

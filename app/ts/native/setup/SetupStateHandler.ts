@@ -8,6 +8,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../Core";
 import { base_core } from "../../Base_core";
+import { CodedError } from "../../util/Errors";
 
 
 
@@ -221,7 +222,7 @@ class SetupStateHandlerClass {
     }
     else {
       return new Promise((resolve, reject) => {
-        reject({code: 1, message:"Stone not available"});
+        reject(new CodedError(1, "Stone not available"));
       })
     }
   }

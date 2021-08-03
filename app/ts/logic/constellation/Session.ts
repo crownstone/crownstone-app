@@ -183,7 +183,7 @@ export class Session {
       this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId);
     }
     catch (err) {
-      LOGi.constellation("Session: Failed to connect", err, this.handle, this.identifier, this._sessionIsKilled);
+      LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled);
       if (this._sessionIsKilled) {
         // the session will be ended once the cancelConnectionRequest has finished.
         return;
@@ -258,7 +258,7 @@ export class Session {
         break;
       case "CONNECTING":
         await BluenetPromiseWrapper.cancelConnectionRequest(this.handle).catch((err) => {
-          if (err === "CANCEL_PENDING_CONNECTION_TIMEOUT") {
+          if (err?.message === "CANCEL_PENDING_CONNECTION_TIMEOUT") {
             // assume this has cancelled the connection request but did not enter the did disconnect
             // this can be ignored. Other errors will be treated as bugs.
           }
@@ -296,7 +296,7 @@ export class Session {
       await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode);
     }
     catch (e) {
-      LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e);
+      LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e?.message);
     }
     await BluenetPromiseWrapper.phoneDisconnect(this.handle);
   }

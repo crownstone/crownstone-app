@@ -228,7 +228,7 @@ export class Persistor {
             migrationRequired = true;
             return this._hydrateClassic()
               .catch((err) => {
-                if (err === FAILED_DB_ERROR) {
+                if (err?.message === FAILED_DB_ERROR) {
                   throw err;
                 }
                 this.fail();
@@ -241,7 +241,7 @@ export class Persistor {
             abortHydration = true;
             break;
           default:
-            throw 'FAILED_GETTING_HYDRATE_MODES';
+            throw new Error('FAILED_GETTING_HYDRATE_MODES');
         }
       })
       .then((initialState) => {
@@ -384,8 +384,8 @@ export class Persistor {
           // handle all errors
           let failedKeys = [];
           errorArray.forEach((err : asyncMultiError) => {
-            let key = err.key;
-            LOGw.store("Persistor: Hydration v2 Step2, problem getting key in step 2:", key, err.message);
+            let key = err?.key;
+            LOGw.store("Persistor: Hydration v2 Step2, problem getting key in step 2:", key, err?.message);
             failedKeys.push(key);
           });
 

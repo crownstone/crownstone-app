@@ -204,7 +204,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
               })
               .catch((err) => {
                 let explanation =  lang("Please_try_again_later_");
-                if (err && err.data && err.data.error && err.data.error.message === "can't exit from sphere where user with id is the owner") {
+                if (err && err?.data && err?.data.error && err?.data.error.message === "can't exit from sphere where user with id is the owner") {
                   explanation =  lang("You_are_the_owner_of_this");
                 }
 

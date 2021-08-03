@@ -124,7 +124,7 @@ export class SetupHub extends LiveComponent<{
           return this._interview.setLockedCard("problemHub");
         }
         this._interview.setLockedCard("problemBle");
-        reject("NOT_FOUND");
+        reject(new Error("NOT_FOUND"));
       }, 10000);
     }).catch()
 
@@ -215,11 +215,11 @@ export class SetupHub extends LiveComponent<{
       }
 
 
-      if (err.code) {
-        if (err.code === 1) {
+      if (err?.code) {
+        if (err?.code === 1) {
           this._interview.setLockedCard("problemBle");
         }
-        else if (err.code === "network_error") {
+        else if (err?.code === "network_error") {
           this._interview.setLockedCard("problemCloud");
         }
         else {

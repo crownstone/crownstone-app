@@ -59,7 +59,7 @@ export class SessionManagerClass {
    */
   async claimSession(handle: string, commanderId: string, timeoutSeconds: number) {
     if (this._blocked !== true) {
-      throw "SESSION_MANAGER_IS_NOT_BLOCKED";
+      throw new Error("SESSION_MANAGER_IS_NOT_BLOCKED");
     }
     let privateId = commanderId;
     return new Promise<void>((resolve, reject) => {
@@ -208,7 +208,7 @@ export class SessionManagerClass {
         if (session.isPrivate()) {
           if (session.privateId === privateId) {
             // this shouldnt happen, it would be a bug if it did.
-            throw "PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER";
+            throw new Error("PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER");
           }
           // the request will be added to pending below;
         }
@@ -268,13 +268,13 @@ export class SessionManagerClass {
     }
 
     if (this._timeoutHandlers[handle][commanderId] !== undefined) {
-      throw "ALREADY_REQUESTED_TIMEOUT"
+      throw new Error("ALREADY_REQUESTED_TIMEOUT");
     }
 
     this._timeoutHandlers[handle][commanderId] = {
       clearCallback: Scheduler.scheduleCallback(() => {
         LOG.constellation("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
-        reject("SESSION_REQUEST_TIMEOUT");
+        reject(new Error("SESSION_REQUEST_TIMEOUT"));
         let session = this._sessions[handle];
 
         this.removeFromQueue(handle, commanderId);
@@ -374,7 +374,17 @@ export class SessionManagerClass {
     else {
       let newRequest = this.checkIfSessionIsStillRequired(handle);
       if (newRequest !== false) {
-        await this.request(handle, newRequest, false);
+        try {
+          await this.request(handle, newRequest, false)
+        }
+        catch (err) {
+          // if there is still a requirement for this session but we've timed out that means that the request called here has a
+          // shorter timeout than the one that is still required. Once the required one times out, the checkIfRequired will fail this loop
+          // will resolve. Until then however, retry this.
+          if (err?.message === "SESSION_REQUEST_TIMEOUT") {
+            await this._endSession(handle);
+          }
+        }
       }
     }
   }
@@ -471,7 +481,7 @@ function addToPendingList(map, handle, commanderId, resolve, reject) {
   }
   for (let sessionRequest of map[handle]) {
     if (sessionRequest.commanderId === commanderId) {
-      throw "ALREADY_REQUESTED";
+      throw new Error("ALREADY_REQUESTED");
     }
   }
   map[handle].push({commanderId, resolve, reject})
@@ -497,7 +507,7 @@ function removeFromQueueList(map, handle, commanderId) {
 
   for (let i = 0; i < arrayInMap.length; i++) {
     if (arrayInMap[i].commanderId === commanderId) {
-      arrayInMap[i].reject("REMOVED_FROM_QUEUE");
+      arrayInMap[i].reject(new Error("REMOVED_FROM_QUEUE"));
       arrayInMap.splice(i,1);
       break;
     }

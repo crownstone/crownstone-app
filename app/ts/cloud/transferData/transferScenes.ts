@@ -4,6 +4,7 @@ import {LOGe} from "../../logging/Log";
 
 import { transferUtil } from "./shared/transferUtil";
 import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
+import { CodedError } from "../../util/Errors";
 
 let fieldMap : fieldMap = [
   {local: 'name',          cloud: 'name'},
@@ -46,7 +47,7 @@ export const transferScenes = {
 
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
-      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
+      return Promise.reject(new CodedError(404,"Can not update in cloud, no cloudId available"));
     }
 
     if (data.localData.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {

@@ -5,6 +5,7 @@ import { getLoggingFilename, LOG_PREFIX } from "../logging/LogUtil";
 import { core } from "../Core";
 import { MapProvider } from "./MapProvider";
 import { LOG, LOGw } from "../logging/Log";
+import { DataUtil } from "../util/DataUtil";
 
 const RNFS = require('react-native-fs');
 
@@ -61,7 +62,20 @@ class LocalizationLoggerClass {
     let data = this._data.slice(this._data.length - 1 - secondsToLookBack);
     let length = data.length;
     let name = Localization_LOG_PREFIX + location.config.name + "_" + location.config.uid + "_";
-    await writeLocalizationDataset(name, data);
+
+    let state = core.store.getState();
+    let sphereId = state.app.activeSphere;
+    let sphere = state.spheres[sphereId];
+
+    await writeLocalizationDataset(name, {
+      sphereId: sphereId,
+      sphere: sphere.config,
+      location: {
+        name: location.config.name,
+        uid: location.config.uid,
+      },
+      dataset: data
+    });
     this._data = []
     return length;
   }
@@ -117,7 +131,7 @@ async function writeLocalizationDataset(labelName: string, data, ignoreDatetime 
   let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
-  let filename = ignoreDatetime ? `${labelName}.log` : getLoggingFilename(Date.now(), labelName, true);
+  let filename = ignoreDatetime ? `${labelName}.json` : getLoggingFilename(Date.now(), labelName, true);
   let filePath = logPath + '/' + filename;
 
   // create string
@@ -154,7 +168,7 @@ async function getDatasetUrls() {
         urls.push(filePath + '/' + files[i]);
       }
     }
-    return urls
+    return urls;
   }
   catch (err) {
     LOGw.info("Could not get localization urls");

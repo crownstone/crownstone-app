@@ -100,7 +100,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
                         core.eventBus.emit("hideLoading");
                         Alert.alert(
                         "Error during sync",
-                        err && err.message && JSON.stringify(err),
+                        err && err?.message && JSON.stringify(err),
                         [{text:"OK"}])
                       })
                   }

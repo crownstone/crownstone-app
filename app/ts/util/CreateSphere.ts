@@ -48,7 +48,7 @@ export const createNewSphere = function(name) {
       return newSphereLocalId;
     })
     .catch((err) => {
-      if (err.status == 422) {
+      if (err?.code == 422) {
         return createNewSphere(name + lang("_new"))
       }
       else {

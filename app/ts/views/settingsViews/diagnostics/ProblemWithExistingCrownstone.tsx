@@ -601,7 +601,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       this.setState({switchedCrownstone: true});
     }
     catch (err) {
-      if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {
+      if (err?.code === "NO_STONES_FOUND") {
         this.setState({switchedCrownstone: false, switchedCrownstoneNotNear: true});
       }
       else {

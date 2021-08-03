@@ -65,7 +65,7 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
         resolve(targetPath);
       })
       .catch((err) => {
-        reject("picture resizing error:" + err.message);
+        reject(new Error("picture resizing error:" + err?.message));
       });
   })
 };

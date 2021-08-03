@@ -30,39 +30,39 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
   }
 
   getLocalId() : string {
-    throw "MUST_BE_IMPLEMENTED";
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   static mapLocalToCloud(localSphereId: string, localId: string, localData) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   _mapLocalToCloud(localItem?: LocalDataFormat) : CloudSettableFormat | null {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   mapCloudToLocal(cloudItem: CloudDataFormat) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   updateCloudId(cloudId) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   removeFromLocal() {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   createLocal(cloudData: CloudDataFormat) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   updateLocal(cloudData: CloudDataFormat) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   setReplyWithData(reply: SyncRequestSphereData) {
-    throw "MUST_BE_IMPLEMENTED"
+    throw new Error("MUST_BE_IMPLEMENTED");
   }
 
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {

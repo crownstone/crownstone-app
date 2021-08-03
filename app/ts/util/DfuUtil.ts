@@ -22,7 +22,7 @@ export const DfuUtil = {
     return CLOUD.getFirmwareDetails(version, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
-          throw "No firmware available.";
+          throw new Error("No firmware available.");
         }
         return result;
       })
@@ -32,7 +32,7 @@ export const DfuUtil = {
     return CLOUD.getBootloaderDetails(version, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
-          throw "No bootloader available.";
+          throw new Error("No bootloader available.");
         }
         return result;
       })
@@ -139,8 +139,8 @@ function _download(sourceDetails, type) {
         }
         else {
           return FileUtil.safeDeleteFile(toPath)
-            .then(() => { reject("Invalid hash");})
-            .catch(() => { reject("Invalid hash");});
+            .then(() => {  reject(new Error("Invalid hash"));})
+            .catch(() => { reject(new Error("Invalid hash"));});
         }
       })
     })

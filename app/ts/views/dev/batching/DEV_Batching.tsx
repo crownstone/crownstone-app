@@ -187,7 +187,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
       let clearSearchTimeout = Scheduler.scheduleCallback(() => {
         BleUtil.stopHighFrequencyScanning(this.sessionUUID);
         this._searchCleanup();
-        reject("CANT_FIND_CROWNSTONE");
+        reject(new Error("CANT_FIND_CROWNSTONE"));
       }, 15000, "DFU Timeout")
 
 
