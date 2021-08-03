@@ -68,7 +68,7 @@ class LocalizationLoggerClass {
     let sphere = state.spheres[sphereId];
 
     await writeLocalizationDataset(name, {
-      sphereId: sphereId,
+      sphereCloudId: sphere.config.cloudId,
       sphere: sphere.config,
       location: {
         name: location.config.name,
@@ -106,11 +106,13 @@ class LocalizationLoggerClass {
     let state = core.store.getState()
     let data = {spheres:{}};
     Object.keys(state.spheres).forEach((sphereId) => {
-      data.spheres[sphereId] = {};
-      Object.keys(state.spheres[sphereId].locations).forEach((locationId) => {
-        let location = state.spheres[sphereId].locations[locationId];
-        data.spheres[sphereId][location.config.uid] = {
+      let sphere = state.spheres[sphereId];
+      data.spheres[sphere.config.cloudId] = {};
+      Object.keys(sphere.locations).forEach((locationId) => {
+        let location = sphere.locations[locationId];
+        data.spheres[sphere.config.cloudId][location.config.uid] = {
           name: location.config.name,
+          cloudId: location.config.cloudId,
           fingerprint: location.config.fingerprintRaw
         };
       })

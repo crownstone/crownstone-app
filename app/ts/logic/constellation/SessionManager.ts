@@ -521,3 +521,4 @@ function removeFromQueueList(map, handle, commanderId) {
 
 
 export const SessionManager = new SessionManagerClass()
+
