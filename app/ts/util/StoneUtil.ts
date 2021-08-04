@@ -24,7 +24,7 @@ import { Get } from "./GetUtil";
 
 export const StoneUtil = {
 
-  multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) {
+  multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) : Promise<void> {
     let data = {state: newState};
     if (newState === 0) {
       data['currentUsage'] = 0;

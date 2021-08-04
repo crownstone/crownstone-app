@@ -137,6 +137,12 @@ export class SessionBroker {
             LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
             throw err;
           }
+          else if (err?.message !== "ALREADY_REQUESTED_TIMEOUT") {
+            // ignore
+          }
+          else {
+            LOGw.constellation("SessionBroker: Require session has thrown an unexpected error.", err);
+          }
         })
     }
   }

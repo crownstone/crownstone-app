@@ -133,7 +133,7 @@ async function writeLocalizationDataset(labelName: string, data, ignoreDatetime 
   let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
-  let filename = ignoreDatetime ? `${labelName}.json` : getLoggingFilename(Date.now(), labelName, true);
+  let filename = ignoreDatetime ? `${labelName}.json` : getLoggingFilename(Date.now(), labelName, true).replace(".log", ".json");
   let filePath = logPath + '/' + filename;
 
   // create string

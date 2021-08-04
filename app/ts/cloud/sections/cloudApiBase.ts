@@ -164,10 +164,12 @@ export const cloudApiBase = {
       let startTime = Date.now();
       promise
         .then((reply) => {
-          if (reply.status === 200 || reply.status === 204)
+          if (reply.status === 200 || reply.status === 204) {
             resolve(reply.data);
-          else
+          }
+          else {
             this.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
+          }
         })
         .catch((error) => {
           //console.trace(error, this);
