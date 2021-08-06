@@ -501,7 +501,7 @@
 //           // send to BHC
 //           promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)
 //             .catch((err) => {
-//               if (err?.code !== "REMOVED_BECAUSE_IS_DUPLICATE") {
+//               if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
 //                 throw err;
 //               }
 //             })

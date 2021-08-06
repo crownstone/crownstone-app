@@ -117,7 +117,15 @@ class StoneDataSyncerClass {
       if (this._shouldRuleBeSynced(rule)) {
         LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
         rulePromises.push(
-          this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId)
+          this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId).catch((err) => {
+            if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+              // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
+              // this is done by rule so that the promise.All does not fail on a duplicate single rule.
+            }
+            else {
+              throw err;
+            }
+          })
         );
       }
     }
@@ -138,7 +146,7 @@ class StoneDataSyncerClass {
         })
         .catch((err) => {
           LOGe.info("StoneDataSyncer: Failed rule sync trigger", sphereId, stoneId, err, sessionId);
-          if (err?.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+          if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
             // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
           }
           else {
@@ -203,7 +211,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming", err, sphereId, stoneId);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -219,7 +227,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -244,7 +252,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           /** if the syncing fails, we set another watcher **/
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err);
           this.update();
@@ -270,7 +278,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle", err, sphereId, stoneId);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -286,7 +294,7 @@ class StoneDataSyncerClass {
         core.store.batchDispatch(actions);
       })
       .catch((err) => {
-        if (err?.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+        if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
           LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err);
           /** if the syncing fails, we set another watcher **/
           this.update();
@@ -296,7 +304,7 @@ class StoneDataSyncerClass {
 
 
 
-  _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper, sessionId) : Promise<void> {
+  async _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper, sessionId) : Promise<void> {
     LOGi.info("StoneDataSyncer: Executing trigger for rule", sphereId, stoneId, ruleId, sessionId);
     if (rule.deleted) {
       LOGi.info("StoneDataSyncer: Syncing deleted rule", sphereId, stoneId, ruleId, sessionId);
@@ -310,7 +318,7 @@ class StoneDataSyncerClass {
             this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
-            if (err?.code === "REMOVED_BECAUSE_IS_DUPLICATE") {
+            if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
               throw err;
             }
             LOGe.info("StoneDataSyncer: ERROR failed synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, err, sessionId);
@@ -320,7 +328,7 @@ class StoneDataSyncerClass {
       else {
         LOGi.info("StoneDataSyncer: Syncing deleted rule by deleting it locally.", sphereId, stoneId, ruleId, sessionId);
         core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
-        return Promise.resolve(null)
+        return;
       }
     }
     else {
@@ -339,7 +347,7 @@ class StoneDataSyncerClass {
             this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
-            if (err?.code === "REMOVED_BECAUSE_IS_DUPLICATE") {
+            if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
               throw err;
             }
             LOGe.info("StoneDataSyncer: ERROR updating rule which is already on Crownstone", sphereId, stoneId, ruleId, err, sessionId);
@@ -374,7 +382,7 @@ class StoneDataSyncerClass {
           })
           .catch((err) => {
             LOGi.info("StoneDataSyncer: ERROR Adding rule to Crownstone ", sphereId, stoneId, ruleId, err, sessionId);
-            if (err?.code === "REMOVED_BECAUSE_IS_DUPLICATE") {
+            if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
               throw err;
             }
             else {

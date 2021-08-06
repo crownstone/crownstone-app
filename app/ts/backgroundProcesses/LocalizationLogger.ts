@@ -15,7 +15,6 @@ class LocalizationLoggerClass {
   _initialized : boolean = false;
   _unsubscribeListeners = [];
   _data = [];
-  _futureClassification = [];
   _lastClassifications : locationDataContainer[] = [];
 
   init() {
@@ -37,29 +36,25 @@ class LocalizationLoggerClass {
   }
 
   _store(data: ibeaconPackage[]) {
-    let set = [];
+    let set = {};
     let now = Date.now()
     for (let ibeaconData of data) {
       let ibeaconString = (ibeaconData.uuid + '_' + ibeaconData.major + '_' + ibeaconData.minor).toLowerCase();
       let crownstoneId = MapProvider.stoneIBeaconMap[ibeaconString]?.cid || null;
       if (crownstoneId) {
-        set.push([now, ibeaconData.id, ibeaconData.rssi]);
+        set[ibeaconData.id] = ibeaconData.rssi;
       }
     }
-    this._data.push(set);
+    this._data.push({timestamp:now, devices:set});
     // do not store more than 1 hour of data.
     if (this._data.length > 3600) {
       this._data.shift()
     };
-
-    if (this._futureClassification.length > 0 && this._futureClassification[0] <= now) {
-      this.classify(this._futureClassification[1], this._futureClassification[2]);
-      this._futureClassification = [];
-    }
   }
 
+
   async classify(secondsToLookBack: number, location: LocationData) : Promise<number> {
-    let data = this._data.slice(this._data.length - 1 - secondsToLookBack);
+    let data = this._data.slice(this._data.length - secondsToLookBack);
     let length = data.length;
     let name = Localization_LOG_PREFIX + location.config.name + "_" + location.config.uid + "_";
 
@@ -72,7 +67,7 @@ class LocalizationLoggerClass {
       sphere: sphere.config,
       location: {
         name: location.config.name,
-        uid: location.config.uid,
+        uid: String(location.config.uid),
       },
       dataset: data
     });
@@ -80,9 +75,6 @@ class LocalizationLoggerClass {
     return length;
   }
 
-  classifyAfter(secondsFromNow: number, location: LocationData) {
-    this._futureClassification = [Date.now() + 1000*secondsFromNow, secondsFromNow, location];
-  }
 
   destroy() {
     // this will clear the in-memory db, remove the listener, remove the data files.
@@ -90,7 +82,6 @@ class LocalizationLoggerClass {
     this._unsubscribeListeners = [];
     this._initialized = false;
     this._data = [];
-    this._futureClassification = [];
     this.clearDataFiles()
   }
 
@@ -110,6 +101,7 @@ class LocalizationLoggerClass {
       data.spheres[sphere.config.cloudId] = {};
       Object.keys(sphere.locations).forEach((locationId) => {
         let location = sphere.locations[locationId];
+        data.spheres[sphere.config.cloudId].sphere = sphere.config;
         data.spheres[sphere.config.cloudId][location.config.uid] = {
           name: location.config.name,
           cloudId: location.config.cloudId,

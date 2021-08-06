@@ -135,7 +135,7 @@ function selectFromRoomList(sphereId:string, minutes: number) {
 function customRoom(sphereId: string, minutes: number) {
   core.eventBus.emit("showTextInputOverlay", {title: "How shall we call this dataset?", callback: async (label) => {
       // @ts-ignore
-      let pointsStored = await LocalizationLogger.classify(minutes * 60, { config: { name: label, uid: "custom"} });
+      let pointsStored = await LocalizationLogger.classify(minutes * 60, { config: { name: label, uid: `${label}_custom`} });
       setTimeout(() => {
         core.eventBus.emit("hideTextInputOverlaySuccess");
         Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])

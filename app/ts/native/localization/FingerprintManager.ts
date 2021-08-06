@@ -132,11 +132,13 @@ class FingerprintManagerClass {
     return stringifiedFingerprint.indexOf(".Maj:") !== -1;
   }
 
+
   transformFingerprint(stringifiedFingerprint) {
     let step1 = stringifiedFingerprint.replace(/(\.Maj:)/g,"_Maj:");
     let step2 = step1.replace(/(\.Min:)/g,"_Min:");
     return step2;
   }
+
 
 }
 
