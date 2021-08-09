@@ -38,3 +38,5 @@ If a command fails due to not being connected to a crownstone (anymore), throw t
 Added crash method to bridge
 
 Updated sentry config (Contact Alex for details.)
+
+install https://github.com/react-native-webrtc/react-native-webrtc

@@ -11,7 +11,7 @@ import SwiftyJSON
 
 import BluenetLib
 import BluenetShared
-import BluenetBasicLocalization
+import BluenetLocalization
 
 import WatchConnectivity
 

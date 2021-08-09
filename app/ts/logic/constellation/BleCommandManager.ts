@@ -214,7 +214,7 @@ export class BleCommandManagerClass {
         let command = this.queue.direct[handle][i];
         if (command.id === commandId) {
           if (error !== null) {
-            command.promise.reject(error)
+            command.promise.reject(new Error(error))
           }
           this.queue.direct[handle].splice(i,1);
           if (this.queue.direct[handle].length === 0) {
@@ -237,7 +237,7 @@ export class BleCommandManagerClass {
 
           // if this remove is called because of an error, reject all promises
           if (error !== null) {
-            meshCommand.promise.reject(error);
+            meshCommand.promise.reject(new Error(error));
           }
           else {
             meshCommand.promise.resolve();

@@ -12,6 +12,8 @@ import { tellSphere } from "../logic/constellation/Tellers";
 const REGISTER_TRIGGER_ID = "TrackingNumberManager";
 const HEARTBEAT_TRIGGER_ID = "HeartbeatHandler";
 
+const UPDATE_TRACKING_REGISTRATION_INTERVAL = 3600;
+const TRACKING_HEARTBEAT_INTERVAL = 170;
 
 class TrackingNumberManagerClass {
   initialized = false;
@@ -33,10 +35,10 @@ class TrackingNumberManagerClass {
     if (this.initialized === false) {
       this.initialized = true;
       // update the _requests token every hour.
-      Scheduler.setRepeatingTrigger(REGISTER_TRIGGER_ID, {repeatEveryNSeconds: 3600} );
+      Scheduler.setRepeatingTrigger(REGISTER_TRIGGER_ID, {repeatEveryNSeconds: UPDATE_TRACKING_REGISTRATION_INTERVAL} );
       Scheduler.loadOverwritableCallback( REGISTER_TRIGGER_ID, "REGISTRATION_UPDATE", this.updateMyDeviceTrackingRegistrationInActiveSphere.bind(this), false);
 
-      Scheduler.setRepeatingTrigger(HEARTBEAT_TRIGGER_ID, {repeatEveryNSeconds: 170} );
+      Scheduler.setRepeatingTrigger(HEARTBEAT_TRIGGER_ID, {repeatEveryNSeconds: TRACKING_HEARTBEAT_INTERVAL} );
       Scheduler.loadOverwritableCallback( HEARTBEAT_TRIGGER_ID, "TRACKED_DEVICES_HEARTBEAT", this.heartbeat.bind(this), false);
 
 

@@ -2,8 +2,8 @@ import { Alert, AppState } from "react-native";
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
-// import * as Sentry from "@sentry/react-native";
 import { core } from "../../Core";
+import Bugsnag from "@bugsnag/react-native";
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)
@@ -18,42 +18,33 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       for (let i = 1; i < arguments.length; i++) {
         bluenetArguments.push(arguments[i])
       }
-      // Sentry.addBreadcrumb({
-      //   category: 'ble',
-      //   data: {
-      //     functionCalled: functionName,
-      //     id: id,
-      //     arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
-      //     t: Date.now(),
-      //     state: 'started',
-      //   }
-      // });
+      Bugsnag.leaveBreadcrumb("BLE: Started Command",{
+        functionCalled: functionName,
+        id: id,
+        arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
+        t: Date.now(),
+        state: 'started',
+      }, "state");
       let promiseResolver = (result) => {
         if (result.error === true) {
           LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          // Sentry.addBreadcrumb({
-          //   category: 'ble',
-          //   data: {
-          //     functionCalled: functionName,
-          //     id: id,
-          //     t: Date.now(),
-          //     state: 'failed',
-          //     err: result.data
-          //   }
-          // });
+          Bugsnag.leaveBreadcrumb("BLE: Failed Command",{
+            functionCalled: functionName,
+            id: id,
+            t: Date.now(),
+            state: 'failed',
+            err: result.data
+          }, "state");
           reject(new Error(result.data));
         }
         else {
 			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          // Sentry.addBreadcrumb({
-          //   category: 'ble',
-          //   data: {
-          //     functionCalled: functionName,
-          //     id: id,
-          //     t: Date.now(),
-          //     state: 'success',
-          //   }
-          // });
+          Bugsnag.leaveBreadcrumb("BLE: Finished Command",{
+            functionCalled: functionName,
+            id: id,
+            t: Date.now(),
+            state: 'success',
+          }, "state");
           resolve(result.data);
         }
       };

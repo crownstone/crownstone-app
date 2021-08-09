@@ -268,7 +268,8 @@ export class SessionManagerClass {
     }
 
     if (this._timeoutHandlers[handle][commanderId] !== undefined) {
-      throw new Error("ALREADY_REQUESTED_TIMEOUT");
+      reject(new Error("ALREADY_REQUESTED_TIMEOUT"));
+      return;
     }
 
     this._timeoutHandlers[handle][commanderId] = {

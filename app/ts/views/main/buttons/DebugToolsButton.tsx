@@ -18,7 +18,7 @@ import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
 import { Util } from "../../../util/Util";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
-
+import { EMAIL_DATA_TYPE, shareData } from "../../settingsViews/dev/SettingsDeveloper";
 
 export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string}) {
   let state = core.store.getState();
@@ -54,7 +54,7 @@ export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: bool
       <HiddenFadeInView visible={props.arrangingRooms === false && props.inSphere} style={buttonStyle}>
         <TouchableOpacity onPress={() => {
           core.eventBus.emit("showPopup", {buttons: [
-            {close: false, text:"The last minute, I've been in ...",   callback: () => { selectRecentRoom(props.sphereId, 1); }},
+            {close: false, text:"The last minute, I've been in ...",     callback: () => { selectRecentRoom(props.sphereId, 1); }},
             {close: false, text:"The last 2 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 2); }},
             {close: false, text:"The last 5 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 5); }},
             {close: false, text:"The last 10 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 10); }},
@@ -96,7 +96,14 @@ function selectRecentRoom(sphereId: string, minutes: number) {
         text: "... in the " + locations[locationId].config.name, callback: async () => {
           let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
           setTimeout(() => {
-            Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
+            Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.",
+            [ {text: "Upload!", onPress: async () => {
+              await shareData(EMAIL_DATA_TYPE.localization);
+              Alert.alert("Done!", "Delete datasets?",[{text: "No"}, {text: "Delete", onPress: async () => {
+                await LocalizationLogger.clearDataFiles();
+                Alert.alert("Done!", "Let's do one more! :)",[{text: "Maybe later..."}]);
+              }}])
+              ,{text: lang("OK")} }}])
           }, 300);
         }
       })

@@ -35,12 +35,12 @@ import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLog
 import { LOGw } from "../../../logging/Log";
 
 const RNFS = require('react-native-fs');
-
+import Peer from 'react-native-peerjs';
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
 
-const EMAIL_DATA_TYPE = {
+export const EMAIL_DATA_TYPE = {
   allBuffers:           'All buffers',
   switchCraftBuffers:   'SwitchCraft buffers',
   measurementBuffers:   'Measurement buffers',
@@ -58,6 +58,9 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   unsubscribe : any = [];
   count = 0;
   lastCountTime = 0;
+
+  connection
+  peer
 
   constructor(props) {
     super(props);
@@ -77,10 +80,31 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         this.forceUpdate();
       }
     }));
+
+    // this.peer = new Peer();
+    // this.peer.on('error', (err) => { Alert.alert("RTC Peer Error", err.type)});
+    // this.peer.on('open', (remotePeerId) => {
+    //   console.log('Remote peer open with ID', remotePeerId);
+    //
+    //   this.connection = this.peer.connect("abcdefghijklmnopqrstuvwxyz");
+    //   this.connection.on('error', (err) => { Alert.alert("RTC Error:", JSON.stringify(err))});
+    //   this.connection.on('open', () => {
+    //     Alert.alert("RTC Connected!")
+    //     console.log('Remote peer has opened connection.');
+    //     console.log('conn', this.connection);
+    //     this.connection.on('data', (data) => {
+    //       Alert.alert("RTC Data received", data);
+    //       console.log('Received from local peer', data);
+    //     });
+    //   });
+    // });
   }
 
   componentWillUnmount() {
     this.unsubscribe.forEach((unsub) => { unsub() });
+
+    this.peer.disconnect();
+    this.peer.destroy();
   }
 
   _countSecret() {
@@ -108,7 +132,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
-
 
     items.push({label: "LOGGING", type: 'explanation', below: false});
     if (!dev.logging_enabled) {
@@ -196,6 +219,29 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       }})
 
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+
+    items.push({label: "WEB RTC EXPERIMENT", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({
+      label: "Send webRTC message",
+      type: 'button',
+      style: { color: colors.iosBlue.hex },
+      icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+      callback: async () => {
+        // let fingerprintPath = await LocalizationLogger.storeFingerprints();
+        // let blob = await RNFS.readFile(fingerprintPath, 'utf8')
+        // let blob = ''
+        // for (let i = 0; i < 40000; i++) {
+        //   blob += ' ' + i;
+        //   if (blob.length >= 180000) { break; }
+        // }
+        // console.log("HERE", blob.length)
+        this.connection.send({type:"Incoming"})
+        // this.connection.send(blob)
+        this.connection.send("Done")
+      }
+    })
+    items.push({type: 'spacer'});
+
 
     items.push({
       label: "View app uptime",
@@ -601,7 +647,7 @@ export function getDevAppItems() {
 }
 
 
-async function shareData(shareDataType) {
+export async function shareData(shareDataType) {
   let storagePath = FileUtil.getPath();
   let options = {};
   if (shareDataType === EMAIL_DATA_TYPE.logs) {
