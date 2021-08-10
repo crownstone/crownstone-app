@@ -373,7 +373,7 @@ export class BleCommandManagerClass {
 
 
 
-  cancelCommanderCommands(commanderId: string) {
+  cancelCommanderCommands(commanderId: string, errorMessage: string = "CANCELLED") {
     let directHandles = Object.keys(this.queue.direct);
     for (let handle of directHandles) {
       let commands = this.queue.direct[handle];
@@ -382,7 +382,7 @@ export class BleCommandManagerClass {
         let command = commands[i];
         if (command.commanderId === commanderId) {
           this.queue.direct[handle].splice(i,1);
-          command.promise.reject(new Error("CANCELLED"));
+          command.promise.reject(new Error(errorMessage));
 
           if (this.queue.direct[handle].length === 0) {
             delete this.queue.direct[handle];
@@ -400,7 +400,7 @@ export class BleCommandManagerClass {
         if (meshCommand.commanderId === commanderId) {
           this.queue.mesh[meshId].splice(i,1);
 
-          meshCommand.promise.reject(new Error("CANCELLED"));
+          meshCommand.promise.reject(new Error(errorMessage));
           if (this.queue.mesh[meshId].length === 0) {
             delete this.queue.mesh[meshId];
           }

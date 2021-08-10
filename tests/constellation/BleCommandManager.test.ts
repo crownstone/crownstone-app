@@ -174,7 +174,7 @@ test("BleCommandManager shared, perform and fail mesh command. An error in the p
   expect(BleCommandManager.queue.mesh[meshId]).toBeUndefined();
 
   await TestUtil.nextTick();
-  expect(promise.reject).toBeCalledWith("GenericError")
+  expect(promise.reject).toBeCalledWith(new Error("GenericError"))
 });
 
 

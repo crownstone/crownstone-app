@@ -51,6 +51,9 @@ mockExternalConfig();
 
 import { resetDataHelper } from "../helpers/data.helper";
 import { mockConstellationUtil } from "./constellationUtil.mock";
+import { TestHookCatcherClass } from "../helpers/hooks.helper";
+
+export const TestHookCatcher = new TestHookCatcherClass()
 
 export const mConstellationState = mockConstellationUtil()
 
@@ -64,6 +67,7 @@ export const resetMocks = function() {
   resetDataHelper();
   mConstellationState.reset();
   advanceTo(1e6);
+  TestHookCatcher.init()
 }
 
 export const mocks = {

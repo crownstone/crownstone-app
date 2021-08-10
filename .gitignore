@@ -82,3 +82,5 @@ __prototypes
 .jest/
 
 __errorReporting/
+
+coverage

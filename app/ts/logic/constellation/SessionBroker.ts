@@ -6,8 +6,9 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
-import { LOGd, LOGi, LOGw } from "../../logging/Log";
+import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { BleCommandManager } from "./BleCommandManager";
+import { Testing } from "../../util/Testing";
 
 export class SessionBroker {
 
@@ -44,19 +45,27 @@ export class SessionBroker {
    * If this is a direct connection, the first call is loadSession.
    *
    * All commands from the commander are passed through this.
+   *
+   * The commands are already loaded into the BleCommandManager, ready to be used by sessions.
+   * This method will request these sessions from the SessionManager.
    * @param commands
    */
   loadPendingCommands(commands: BleCommand[]) {
     for (let command of commands) {
       this.pendingCommands[command.id] = command;
-      // This then/catch will not halt the propagation of the error.
+      // This promise handler will not halt the propagation of the error.
       // This promise chain is parallel to the one that is returned by the commander.
+      // The one returned to the commander will be propagated to the user, this one is here to clean up the broker.
+      // This is not done via a .finally to ensure that any errors will be handled.
+      let handled = false;
       command.promise.promise
         .then(() => {
+          handled = true;
           this.cleanup([command.id]);
         })
         .catch((err) => {
-          this.cleanup([command.id]);
+          // If the cleanup throws an error in the .then, do not do it again.
+          if (!handled) { this.cleanup([command.id]); }
         })
     }
 
@@ -76,11 +85,18 @@ export class SessionBroker {
       }
     }
 
-    this.evaluateSessions();
+    this.evaluateSessions(false);
   }
 
 
-  evaluateSessions() {
+  /**
+   * This method will go through all pending commands and determine which Sessions are required to fulfill those commands.
+   * These sessions will be requested to the SessionManager.
+   *
+   * If commands have either finished or failed, this method will cancel any pending sessions that were requested to fulfill the finalized command.
+   * Since this method is also used as part of the cleanup process, the boolean requestNewSessions is used to avoid re-requesting sessions.
+   */
+  evaluateSessions(requestNewSessions = true) {
     let commandIds = Object.keys(this.pendingCommands);
     let requiredHandleMap = {};
 
@@ -89,21 +105,25 @@ export class SessionBroker {
       if (command.commandType === 'DIRECT') {
         let handle = command.commandTarget;
         requiredHandleMap[handle] = commandId;
-        LOGd.constellation("SessionBroker: requiring session", handle, "DIRECT for", this.options.commanderId);
-        this.requireSession(handle, command);
+        if (requestNewSessions) {
+          LOGd.constellation("SessionBroker: requiring session", handle, "DIRECT for commander", this.options.commanderId, "and command", command.command.type);
+          this.requireSession(handle, command);
+        }
       }
       else if (command.commandType === 'MESH') {
         let meshHandles = Collector.collectMesh(command.commandTarget, command.endTarget);
         for (let handle of meshHandles) {
           requiredHandleMap[handle] = commandId;
-          LOGd.constellation("SessionBroker: requiring session", handle, "for MESH", this.options.commanderId);
-          this.requireSession(handle, command);
+          if (requestNewSessions) {
+            LOGd.constellation("SessionBroker: requiring session", handle, "MESH for commander", this.options.commanderId, "and command", command.command.type);
+            this.requireSession(handle, command);
+          }
         }
       }
     }
 
-    let openHandles = Object.keys(this.pendingSessions);
-    for (let openHandle of openHandles) {
+    let openSessionHandles = Object.keys(this.pendingSessions);
+    for (let openHandle of openSessionHandles) {
       if (requiredHandleMap[openHandle] === undefined) {
         if (this.options.private === false) {
           LOGi.constellation("SessionBroker: Revoke session", openHandle, "for", this.options.commanderId);
@@ -117,7 +137,7 @@ export class SessionBroker {
 
   async requireSession(handle:string, command: BleCommand) {
     if (this.pendingSessions[handle] === undefined && this.connectedSessions[handle] === undefined) {
-      LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private);
+      LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private, "commandType", command.command.type);
       this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private, this.options.timeout)
         .then(() => {
           // if this request lands, we can remove this session from the pending list.
@@ -133,17 +153,21 @@ export class SessionBroker {
           if (err?.message === "SESSION_REQUEST_TIMEOUT") {
             BleCommandManager.removeCommand(handle, command.id, "SESSION_REQUEST_TIMEOUT");
           }
+          else if (err?.message === "ALREADY_REQUESTED_TIMEOUT") {
+            LOGe.constellation("SessionBroker: Require session has thrown an ALREADY_REQUESTED_TIMEOUT error.", err);
+            Testing.hook("ALREADY_REQUESTED_TIMEOUT", {handle, type: command.command.type} );
+          }
           else if (err?.message !== "REMOVED_FROM_QUEUE") {
             LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
             throw err;
-          }
-          else if (err?.message !== "ALREADY_REQUESTED_TIMEOUT") {
-            // ignore
           }
           else {
             LOGw.constellation("SessionBroker: Require session has thrown an unexpected error.", err);
           }
         })
+    }
+    else {
+      LOGd.constellation("SessionBroker: Session request to", handle, "for", this.options.commanderId, " is already pending... commandType", command.command.type);
     }
   }
 

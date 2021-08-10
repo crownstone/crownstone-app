@@ -53,7 +53,7 @@ test("Session manager registration and queue for shared connections.", async () 
   expect(p3).not.toBeCalled();
   expect(p1Err).not.toBeCalled();
   expect(p2Err).not.toBeCalled();
-  expect(p3Err).toBeCalledWith("ALREADY_REQUESTED");
+  expect(p3Err).toBeCalledWith(new Error("ALREADY_REQUESTED"));
 
   evt_ibeacon(-70);
 
@@ -104,7 +104,7 @@ test("Session manager registration and queue for private connections.", async ()
   expect(p3).not.toBeCalled();
   expect(p1Err).not.toBeCalled();
   expect(p2Err).not.toBeCalled();
-  expect(p3Err).toBeCalledWith("PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER");
+  expect(p3Err).toBeCalledWith(new Error("PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER"));
 
   // private connections are queued one by one.
   expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
@@ -158,7 +158,7 @@ test("Session manager failing shared connection.", async () => {
   await mScheduler.trigger()
 
   expect(p1).not.toBeCalled()
-  expect(p1Err).toBeCalledWith("SESSION_REQUEST_TIMEOUT");
+  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"));
 });
 
 test("Session manager failing private connection.", async () => {
@@ -190,7 +190,7 @@ test("Session manager failing private connection.", async () => {
   await mScheduler.trigger()
 
   expect(p1).not.toBeCalled()
-  expect(p1Err).toBeCalledWith("SESSION_REQUEST_TIMEOUT");
+  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"));
 
   // this mimics how the kill is done in the lib.
   await mBluenetPromise.cancelConnectionRequest(handle);
@@ -316,7 +316,7 @@ test("Session manager private connections cannot request the same session twice.
   await sessionManager.request(handle, id1, true)
     .catch((err) => {
       thrown = true;
-      expect(err).toBe('PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER')
+      expect(err).toStrictEqual(new Error('PRIVATE_SESSION_SHOULD_BE_REQUESTED_ONCE_PER_COMMANDER'))
     })
 
   expect(thrown).toBeTruthy();

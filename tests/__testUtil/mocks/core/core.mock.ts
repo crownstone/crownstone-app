@@ -1,7 +1,7 @@
 import { eventBus } from "../../../../app/ts/util/EventBus";
 import { createStore } from "redux";
-import { batchActions, enableBatching } from "../../../../app/ts/router/store/reducers/BatchReducer";
-import CrownstoneReducer                from '../../../../app/ts/router/store/reducer'
+import { batchActions, enableBatching } from "../../../../app/ts/database/reducers/BatchReducer";
+import CrownstoneReducer                from '../../../../app/ts/database/reducer'
 
 import { mockNativeBus } from "../nativeBus.mock";
 let nativeBus = mockNativeBus()

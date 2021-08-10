@@ -268,8 +268,8 @@ export class SessionManagerClass {
     }
 
     if (this._timeoutHandlers[handle][commanderId] !== undefined) {
-      reject(new Error("ALREADY_REQUESTED_TIMEOUT"));
-      return;
+      // This should never occur. We do not reject the promise here because this error should not be propagated to the requesting party.
+      throw new Error("ALREADY_REQUESTED_TIMEOUT")
     }
 
     this._timeoutHandlers[handle][commanderId] = {
@@ -284,9 +284,6 @@ export class SessionManagerClass {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
             this.closeSession(handle);
           }
-
-          // fail all commands owned by this commanderId
-          BleCommandManager.cancelCommanderCommands(commanderId);
         }
         else {
           if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
@@ -294,6 +291,11 @@ export class SessionManagerClass {
             this.closeSession(handle);
           }
         }
+
+        // fail all commands owned by this commanderId, since the timeout is a property of the commander. If one session request has
+        // reached this timeout, all commands from this commander will fail.
+        // A commander has a single timeout. This is not per command. Once the commander timeouts, all of it's commands will be timeout.
+        BleCommandManager.cancelCommanderCommands(commanderId, "SESSION_REQUEST_TIMEOUT");
       }, timeoutSeconds*1000)
     };
   }

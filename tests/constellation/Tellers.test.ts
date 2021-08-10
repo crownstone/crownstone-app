@@ -210,11 +210,11 @@ test("Timeout the request from the teller should also clean up the commands", as
   await mocks.mScheduler.trigger(5)
   await TestUtil.nextTick()
 
-  expect(caughtErrors[0]).toBe("TIME_OUT")
-  expect(caughtErrors[1]).toBe("TIME_OUT")
-  expect(caughtErrors[2]).toBe("TIME_OUT")
-  expect(caughtErrors[3]).toBe("TIME_OUT")
-  expect(caughtErrors[4]).toBe("TIME_OUT")
+  expect(caughtErrors[0]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
+  expect(caughtErrors[1]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
+  expect(caughtErrors[2]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
+  expect(caughtErrors[3]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
+  expect(caughtErrors[4]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
 });
 
 

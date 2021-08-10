@@ -1,4 +1,11 @@
-import { mBluenetPromise, mConstellationState, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import {
+  mBluenetPromise,
+  mConstellationState,
+  mocks,
+  mScheduler,
+  resetMocks,
+  TestHookCatcher
+} from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
@@ -52,7 +59,7 @@ test("SessionBroker finish mesh command", async () => {
 
   // sessions for all items in the mesh should be requested
   expect(Object.keys(SessionManager._sessions).length).toBe(5)
-  // trigger connects by faking ibeacons which are in range.
+  // trigger connects by faking iBeacons which are in range.
   evt_ibeacon(-70, handle2);
   evt_ibeacon(-70, handle3);
   evt_ibeacon(-70, handle4);
@@ -202,4 +209,24 @@ test("SessionBroker check the cleanup of closed public session", async () => {
   expect(SessionManager._sessions[handle1]).toBeUndefined();
 
   expect(api.broker.connectedSessions).toStrictEqual({});
+});
+
+test("SessionBroker do not re-request sessions on failure or finish of a single command", async () => {
+  StoneAvailabilityTracker.init();
+  let sphere = addSphere();
+  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], false));
+
+  let fwErr = null
+  let hwErr = null
+  api.getFirmwareVersion().catch((err) => { fwErr = err; })
+  api.getHardwareVersion().catch((err) => { hwErr = err; })
+
+  await mocks.mScheduler.trigger(1)
+  await TestUtil.nextTick()
+
+  expect(fwErr).toStrictEqual(new Error('SESSION_REQUEST_TIMEOUT'));
+  expect(hwErr).toStrictEqual(new Error('SESSION_REQUEST_TIMEOUT'));
+
+  expect(TestHookCatcher.wasHookFired('ALREADY_REQUESTED_TIMEOUT')).toBeFalsy();
 });

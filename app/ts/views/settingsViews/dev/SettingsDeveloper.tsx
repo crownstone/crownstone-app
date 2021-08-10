@@ -59,8 +59,8 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   count = 0;
   lastCountTime = 0;
 
-  connection
-  peer
+  // connection
+  // peer
 
   constructor(props) {
     super(props);
@@ -103,8 +103,8 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   componentWillUnmount() {
     this.unsubscribe.forEach((unsub) => { unsub() });
 
-    this.peer.disconnect();
-    this.peer.destroy();
+    // this.peer.disconnect();
+    // this.peer.destroy();
   }
 
   _countSecret() {
@@ -220,27 +220,27 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
-    items.push({label: "WEB RTC EXPERIMENT", type: 'explanation', below: false, alreadyPadded: true});
-    items.push({
-      label: "Send webRTC message",
-      type: 'button',
-      style: { color: colors.iosBlue.hex },
-      icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
-      callback: async () => {
-        // let fingerprintPath = await LocalizationLogger.storeFingerprints();
-        // let blob = await RNFS.readFile(fingerprintPath, 'utf8')
-        // let blob = ''
-        // for (let i = 0; i < 40000; i++) {
-        //   blob += ' ' + i;
-        //   if (blob.length >= 180000) { break; }
-        // }
-        // console.log("HERE", blob.length)
-        this.connection.send({type:"Incoming"})
-        // this.connection.send(blob)
-        this.connection.send("Done")
-      }
-    })
-    items.push({type: 'spacer'});
+    // items.push({label: "WEB RTC EXPERIMENT", type: 'explanation', below: false, alreadyPadded: true});
+    // items.push({
+    //   label: "Send webRTC message",
+    //   type: 'button',
+    //   style: { color: colors.iosBlue.hex },
+    //   icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+    //   callback: async () => {
+    //     // let fingerprintPath = await LocalizationLogger.storeFingerprints();
+    //     // let blob = await RNFS.readFile(fingerprintPath, 'utf8')
+    //     // let blob = ''
+    //     // for (let i = 0; i < 40000; i++) {
+    //     //   blob += ' ' + i;
+    //     //   if (blob.length >= 180000) { break; }
+    //     // }
+    //     // console.log("HERE", blob.length)
+    //     // this.connection.send({type:"Incoming"})
+    //     // this.connection.send(blob)
+    //     // this.connection.send("Done")
+    //   }
+    // })
+    // items.push({type: 'spacer'});
 
 
     items.push({
