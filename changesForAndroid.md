@@ -40,3 +40,6 @@ Added crash method to bridge
 Updated sentry config (Contact Alex for details.)
 
 install https://github.com/react-native-webrtc/react-native-webrtc
+
+updated react-native-image-picker to v4.0.6
+https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6

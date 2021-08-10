@@ -1263,6 +1263,8 @@ export default {
     Retry:                                  function() { return "Retry" },
     I_understand:                           function() { return "I understand" },
     OK:                                     function() { return "OK" },
+    Camera:                                 function() { return "Camera" },
+    Photo_Library:                          function() { return "Photo Library" },
   },
   PlaceFloatingCrownstonesInRoom:{
     __filename: "../../js/views/roomViews/PlaceFloatingCrownstonesInRoom.tsx",

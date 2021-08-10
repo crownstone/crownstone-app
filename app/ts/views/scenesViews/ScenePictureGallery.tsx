@@ -10,11 +10,10 @@ import { FlatList, Image, Platform, Text, View, TextStyle, TouchableHighlight, T
 import { colors, screenWidth, styles } from "../styles";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import ImagePicker from "react-native-image-picker";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Button } from "../components/Button";
 import { ErrorCode } from "react-native-image-picker/lib/typescript/types";
-import { ImageLibraryOptions } from "react-native-image-picker/src/types";
+import { SelectPicture } from "../components/PictureCircle";
 
 
 export const PICTURE_GALLERY_TYPES = {
@@ -274,33 +273,13 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
   }
 
   handleCustomImage = () => {
-    const options : ImageLibraryOptions = {
-      // title: lang("Select_Picture"),
-      // takePhotoButtonTitle: lang("Take_Photo___"),
-      // chooseFromLibraryButtonTitle: lang("Choose_from_Library___"),
-      // chooseWhichLibraryTitle: lang("Choose_which_Library___"),
-      // cancelButtonTitle: lang("CANCEL"),
-      // noData: true,
-      mediaType: "photo",
-      // storageOptions: {
-      //   waitUntilSaved: false,
-      //   cameraRoll: false,
-      //   privateDirectory:true,
-      //   skipBackup: true,
-      // },
-      // allowsEditing: true,
-    };
     NavigationUtil.dismissModal();
-    ImagePicker.launchImageLibrary(options, (response) => {
-      // console.log('Response = ', response);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorCode, response.errorMessage);
-      } else {
-        this.props.callback(response.uri, PICTURE_GALLERY_TYPES.CUSTOM);
-      }
-    });}
+    setTimeout(() => {
+      SelectPicture((uri) => {
+        this.props.callback(uri, PICTURE_GALLERY_TYPES.CUSTOM);
+      })
+    }, 200)
+  }
 
   renderStockImages = ({item, index, separators}) => {
     return (

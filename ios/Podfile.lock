@@ -256,7 +256,7 @@ PODS:
   - React-jsinspector (0.64.2)
   - react-native-blur (0.8.0):
     - React
-  - react-native-image-picker (3.3.2):
+  - react-native-image-picker (4.0.6):
     - React-Core
   - react-native-image-resizer (1.4.4):
     - React-Core
@@ -575,7 +575,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-image-picker: b42940647478bf106ad3c491d6f5d9d40916d865
+  react-native-image-picker: a6e56460d34905c849ada551db30897dc7f3d535
   react-native-image-resizer: 13ac4af788f88af36d0353a1324401ebabd04fe4
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
