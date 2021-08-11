@@ -98,7 +98,7 @@ function selectRecentRoom(sphereId: string, minutes: number) {
           let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
           await Scheduler.delay(300);
 
-          Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.",
+          Alert.alert("Stored!", pointsStored + " points have been saved in a dataset. Share it via the developer menu or press upload!",
           [ {text: "Upload now!", onPress: async () => {
             await shareDataViaRTC(SHARE_DATA_TYPE.localization);
           }}, {text: lang("OK")}])

@@ -199,7 +199,7 @@ class FileSender {
     let filePath = FileUtil.getPath();
     let name = this.path.split(filePath)[1];
     let state = core.store.getState();
-    let userName = `${state.user.firstName}_${state.user.lastName}`
+    let userName = `${state.user.firstName} ${state.user.lastName}`
 
     this.basePayload = {
       type: "fileTransfer",

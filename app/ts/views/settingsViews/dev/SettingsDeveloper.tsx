@@ -631,7 +631,6 @@ export async function shareData(shareDataType) {
 
 /**
  * Send files over webRTC. Only for localization at the moment.
- * On failure, escalate the error to the caller.
  * @param shareDataType
  */
 export async function shareDataViaRTC(shareDataType) {
