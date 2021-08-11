@@ -18,7 +18,8 @@ import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
 import { Util } from "../../../util/Util";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
-import { EMAIL_DATA_TYPE, shareData } from "../../settingsViews/dev/SettingsDeveloper";
+import { SHARE_DATA_TYPE, shareData, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
+import { Scheduler } from "../../../logic/Scheduler";
 
 export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string}) {
   let state = core.store.getState();
@@ -95,16 +96,12 @@ function selectRecentRoom(sphereId: string, minutes: number) {
       data.push({
         text: "... in the " + locations[locationId].config.name, callback: async () => {
           let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
-          setTimeout(() => {
-            Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.",
-            [ {text: "Upload!", onPress: async () => {
-              await shareData(EMAIL_DATA_TYPE.localization);
-              Alert.alert("Done!", "Delete datasets?",[{text: "No"}, {text: "Delete", onPress: async () => {
-                await LocalizationLogger.clearDataFiles();
-                Alert.alert("Done!", "Let's do one more! :)",[{text: "Maybe later..."}]);
-              }}])
-              ,{text: lang("OK")} }}])
-          }, 300);
+          await Scheduler.delay(300);
+
+          Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.",
+          [ {text: "Upload now!", onPress: async () => {
+            await shareDataViaRTC(SHARE_DATA_TYPE.localization);
+          }}, {text: lang("OK")}])
         }
       })
     }
@@ -129,9 +126,10 @@ function selectFromRoomList(sphereId:string, minutes: number) {
     data.push({
       text: "... in the " + locations[locationId].config.name, callback: async () => {
         let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
-        setTimeout(() => {
-          Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
-        }, 300);
+
+        await Scheduler.delay(300);
+
+        Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
       }
     })
   }
@@ -143,9 +141,10 @@ function customRoom(sphereId: string, minutes: number) {
   core.eventBus.emit("showTextInputOverlay", {title: "How shall we call this dataset?", callback: async (label) => {
       // @ts-ignore
       let pointsStored = await LocalizationLogger.classify(minutes * 60, { config: { name: label, uid: `${label}_custom`} });
-      setTimeout(() => {
-        core.eventBus.emit("hideTextInputOverlaySuccess");
-        Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
-      }, 300);
+
+      await Scheduler.delay(300);
+      core.eventBus.emit("hideTextInputOverlaySuccess");
+
+      Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
   }})
 }

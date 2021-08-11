@@ -36,11 +36,12 @@ import { LOGw } from "../../../logging/Log";
 
 const RNFS = require('react-native-fs');
 import Peer from 'react-native-peerjs';
+import { WebRtcClient } from "../../../logic/WebRtcClient";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
 
-export const EMAIL_DATA_TYPE = {
+export const SHARE_DATA_TYPE = {
   allBuffers:           'All buffers',
   switchCraftBuffers:   'SwitchCraft buffers',
   measurementBuffers:   'Measurement buffers',
@@ -59,8 +60,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   count = 0;
   lastCountTime = 0;
 
-  // connection
-  // peer
 
   constructor(props) {
     super(props);
@@ -81,30 +80,11 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       }
     }));
 
-    // this.peer = new Peer();
-    // this.peer.on('error', (err) => { Alert.alert("RTC Peer Error", err.type)});
-    // this.peer.on('open', (remotePeerId) => {
-    //   console.log('Remote peer open with ID', remotePeerId);
-    //
-    //   this.connection = this.peer.connect("abcdefghijklmnopqrstuvwxyz");
-    //   this.connection.on('error', (err) => { Alert.alert("RTC Error:", JSON.stringify(err))});
-    //   this.connection.on('open', () => {
-    //     Alert.alert("RTC Connected!")
-    //     console.log('Remote peer has opened connection.');
-    //     console.log('conn', this.connection);
-    //     this.connection.on('data', (data) => {
-    //       Alert.alert("RTC Data received", data);
-    //       console.log('Received from local peer', data);
-    //     });
-    //   });
-    // });
+
   }
 
   componentWillUnmount() {
     this.unsubscribe.forEach((unsub) => { unsub() });
-
-    // this.peer.disconnect();
-    // this.peer.destroy();
   }
 
   _countSecret() {
@@ -165,18 +145,31 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     }
 
     items.push({
+      label: "Set RTC upload token",
+      type: 'button',
+      style: { color: colors.iosBlue.hex },
+      icon: <IconButton name="ios-share" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.iosBlue.hex }}/>,
+      callback: () => {
+        Alert.prompt("Paste connection token", "If you don't know what this is, press cancel :)", (data) => {
+          core.store.dispatch({type:"CHANGE_DEV_SETTINGS", data: { debugRTCtoken: data }});
+          WebRtcClient.refreshConnectionToken();
+        })
+      }
+    })
+
+    items.push({
       label: "Share debug data",
       type: 'button',
       style: { color: colors.purple.hex },
       icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.purple.hex }}/>,
       callback: () => {
         core.eventBus.emit("showPopup", {buttons: [
-          {text: EMAIL_DATA_TYPE.logs              , callback: () => { shareData(EMAIL_DATA_TYPE.logs              ) }},
-          {text: EMAIL_DATA_TYPE.localization      , callback: () => { shareData(EMAIL_DATA_TYPE.localization      ) }},
-          {text: EMAIL_DATA_TYPE.allBuffers        , callback: () => { shareData(EMAIL_DATA_TYPE.allBuffers        ) }},
-          {text: EMAIL_DATA_TYPE.switchCraftBuffers, callback: () => { shareData(EMAIL_DATA_TYPE.switchCraftBuffers) }},
-          {text: EMAIL_DATA_TYPE.measurementBuffers, callback: () => { shareData(EMAIL_DATA_TYPE.measurementBuffers) }},
-          {text: EMAIL_DATA_TYPE.errorBuffers      , callback: () => { shareData(EMAIL_DATA_TYPE.errorBuffers      ) }},
+          {text: SHARE_DATA_TYPE.logs              , callback: () => { shareData(SHARE_DATA_TYPE.logs              ) }},
+          {text: SHARE_DATA_TYPE.localization      , callback: () => { shareDataViaRTC(SHARE_DATA_TYPE.localization) }},
+          {text: SHARE_DATA_TYPE.allBuffers        , callback: () => { shareData(SHARE_DATA_TYPE.allBuffers        ) }},
+          {text: SHARE_DATA_TYPE.switchCraftBuffers, callback: () => { shareData(SHARE_DATA_TYPE.switchCraftBuffers) }},
+          {text: SHARE_DATA_TYPE.measurementBuffers, callback: () => { shareData(SHARE_DATA_TYPE.measurementBuffers) }},
+          {text: SHARE_DATA_TYPE.errorBuffers      , callback: () => { shareData(SHARE_DATA_TYPE.errorBuffers      ) }},
         ]});
       }
     })
@@ -219,29 +212,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       }})
 
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
-
-    // items.push({label: "WEB RTC EXPERIMENT", type: 'explanation', below: false, alreadyPadded: true});
-    // items.push({
-    //   label: "Send webRTC message",
-    //   type: 'button',
-    //   style: { color: colors.iosBlue.hex },
-    //   icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
-    //   callback: async () => {
-    //     // let fingerprintPath = await LocalizationLogger.storeFingerprints();
-    //     // let blob = await RNFS.readFile(fingerprintPath, 'utf8')
-    //     // let blob = ''
-    //     // for (let i = 0; i < 40000; i++) {
-    //     //   blob += ' ' + i;
-    //     //   if (blob.length >= 180000) { break; }
-    //     // }
-    //     // console.log("HERE", blob.length)
-    //     // this.connection.send({type:"Incoming"})
-    //     // this.connection.send(blob)
-    //     // this.connection.send("Done")
-    //   }
-    // })
-    // items.push({type: 'spacer'});
-
 
     items.push({
       label: "View app uptime",
@@ -648,59 +618,120 @@ export function getDevAppItems() {
 
 
 export async function shareData(shareDataType) {
-  let storagePath = FileUtil.getPath();
-  let options = {};
-  if (shareDataType === EMAIL_DATA_TYPE.logs) {
-    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
-    options = {urls:[
-        "file://" + storagePath + "/" + filename,
-      ]}
-  }
-  else if (shareDataType === EMAIL_DATA_TYPE.localization) {
-    let fingerprintPath = await LocalizationLogger.storeFingerprints();
-    let logUrls = await LocalizationLogger.getURLS();
-    logUrls.push(fingerprintPath);
-    let urls = logUrls.map((a) => { return "file://" + a })
-    options = {urls: urls }
-  }
-  else if (shareDataType === EMAIL_DATA_TYPE.allBuffers) {
-    options = {urls:[
-        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-        "file://" + storagePath + '/power-samples-softFuseData.log',
-      ]}
-  }
-  else if (shareDataType ===  EMAIL_DATA_TYPE.switchCraftBuffers) {
-    options = {urls:[
-        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-      ]}
-  }
-  else if (shareDataType ===  EMAIL_DATA_TYPE.measurementBuffers) {
-    options = {urls:[
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-      ]}
-  }
-  else if (shareDataType ===  EMAIL_DATA_TYPE.errorBuffers) {
-    options = {urls:[
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-        "file://" + storagePath + '/power-samples-softFuseData.log',
-      ]}
-  }
-  console.log(options)
+  let urls = await getShareDataFileUrls(shareDataType);
   try {
-    let result = await Share.open(options)
+    let result = await Share.open({ urls:urls })
     console.log(result)
   }
   catch (err) {
     LOGw.info("Something went wrong while sharing data:",err)
   }
+}
+
+
+/**
+ * Send files over webRTC. Only for localization at the moment.
+ * On failure, escalate the error to the caller.
+ * @param shareDataType
+ */
+export async function shareDataViaRTC(shareDataType) {
+  if (shareDataType !== SHARE_DATA_TYPE.localization) { throw new Error("INVALID_SHARE_DATATYPE"); }
+  core.eventBus.emit("showLoading", "Collecting files...")
+  let urls = await getShareDataFileUrls(shareDataType);
+  core.eventBus.emit("showLoading", "Connecting to RTC...")
+  try {
+    await WebRtcClient.connect()
+    core.eventBus.emit("showLoading", `Connected. Sending ${urls.length} file${urls.length>1?'s':''}.`)
+    let fileCount = 0;
+
+    let getProgressCallback = function(fileIndex) {
+      return (progress) => {
+        core.eventBus.emit("showProgress", {progress: progress, progressDuration: 10, progressText: `Sending ${fileIndex} out of ${urls.length}....`})
+      }
+    }
+    for (let filePath of urls) {
+      fileCount += 1;
+      core.eventBus.emit("showProgress", {progress: 0, progressDuration: 10, progressText: `Preparing ${fileCount} out of ${urls.length}...`})
+      console.log("Sending", fileCount, )
+      await WebRtcClient.sendLocalizationFile(filePath, getProgressCallback(fileCount));
+    }
+    core.eventBus.emit("showLoading", `Closing connection...`)
+    WebRtcClient.destroy()
+    core.eventBus.emit("showLoading", `Transfer completed. Removing files from phone...`)
+    await LocalizationLogger.clearDataFiles();
+
+    await Scheduler.delay(1000)
+    core.eventBus.emit("showLoading", `Done!`)
+
+    await Scheduler.delay(1000)
+    core.eventBus.emit("hideLoading");
+  }
+  catch (err) {
+    if      (err?.message === "CANNOT_CONNECT")           { core.eventBus.emit("showLoading", "Could not connect. Trying different method...") }
+    else if (err?.message === "RECEIVED_INVALID")         { core.eventBus.emit("showLoading", "Transfer failed. Trying different method...") }
+    else if (err?.message === "TRANSFER_ABORTED_TIMEOUT") { core.eventBus.emit("showLoading", "Transfer failed due to timeout. Trying different method...") }
+    else {
+      core.eventBus.emit("showLoading", "Something went wrong.. Trying different method...")
+    }
+
+    await Scheduler.delay(1000)
+    core.eventBus.emit("hideLoading");
+
+    await shareData(shareDataType);
+    Alert.alert("Delete datasets now?", "I could not see if the sharing was successful...", [{ text: "No" }, {
+      text: "Delete", style:'destructive', onPress: async () => { await LocalizationLogger.clearDataFiles(); }
+    }])
+  }
+}
+
+
+export async function getShareDataFileUrls(shareDataType) : Promise<string[]> {
+  let storagePath = FileUtil.getPath();
+  let urls = [];
+  if (shareDataType === SHARE_DATA_TYPE.logs) {
+    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
+    urls = [
+      "file://" + storagePath + "/" + filename,
+    ]
+  }
+  else if (shareDataType === SHARE_DATA_TYPE.localization) {
+    let fingerprintPath = await LocalizationLogger.storeFingerprints();
+    let logUrls = await LocalizationLogger.getURLS();
+    logUrls.push(fingerprintPath);
+    urls = logUrls.map((a) => { return "file://" + a })
+  }
+  else if (shareDataType === SHARE_DATA_TYPE.allBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+      "file://" + storagePath + '/power-samples-softFuseData.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.switchCraftBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.measurementBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.errorBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+      "file://" + storagePath + '/power-samples-softFuseData.log',
+    ]
+  }
+
+  return urls
 }

@@ -30,7 +30,8 @@ export class Processing extends Component<any, any> {
         text: props.data,
         progress: undefined,
         progressText: undefined,
-        opacity: undefined
+        opacity: undefined,
+        progressDuration: 200
       };
     }
     else {
@@ -40,6 +41,7 @@ export class Processing extends Component<any, any> {
         progress: undefined,
         progressText: undefined,
         opacity: props.data.opacity === undefined ? null : props.data.opacity,
+        progressDuration: 200
       };
     }
 
@@ -66,33 +68,37 @@ export class Processing extends Component<any, any> {
 
     this.unsubscribe.push(core.eventBus.on('showProgress', (data) => {
       this.setState({
-        progress:     data.progress === undefined ? 0               : data.progress,
-        text:         data.text     === undefined ? this.state.text : data.text,
-        opacity:      data.opacity  === undefined ? null            : data.opacity,
-        progressText: data.progressText,
+        progress:         data.progress         === undefined ? 0               : data.progress,
+        text:             data.text             === undefined ? this.state.text : data.text,
+        opacity:          data.opacity          === undefined ? null            : data.opacity,
+        progressDuration: data.progressDuration === undefined ? 200             : data.progressDuration,
+        progressText:     data.progressText,
       })}));
     this.unsubscribe.push(core.eventBus.on('updateProgress', (data) => {
       this.setState({
-        progress:     data.progress     === undefined ? this.state.progress     : data.progress,
-        text:         data.text         === undefined ? this.state.text         : data.text,
-        progressText: data.progressText === undefined ? this.state.progressText : data.progressText,
-        opacity:      data.opacity      === undefined ? this.state.opacity      : data.opacity
+        progress:         data.progress         === undefined ? this.state.progress     : data.progress,
+        text:             data.text             === undefined ? this.state.text         : data.text,
+        progressDuration: data.progressDuration === undefined ? 200                     : data.progressDuration,
+        progressText:     data.progressText     === undefined ? this.state.progressText : data.progressText,
+        opacity:          data.opacity          === undefined ? this.state.opacity      : data.opacity
       })}));
     this.unsubscribe.push(core.eventBus.on('hideProgress', () => {
       this.setState({
-        visible:      false,
-        progress:     undefined,
-        text:         undefined,
-        progressText: undefined,
-        opacity:      null,
+        visible:          false,
+        progress:         undefined,
+        text:             undefined,
+        progressText:     undefined,
+        progressDuration: 200,
+        opacity:          null,
       }, () => {  NavigationUtil.closeOverlay(this.props.componentId); })}));
     this.unsubscribe.push(core.eventBus.on('hideLoading', () => {
       this.setState({
-        visible:      false,
-        progress:     undefined,
-        text:         undefined,
-        progressText: undefined,
-        opacity:      null,
+        visible:          false,
+        progress:         undefined,
+        text:             undefined,
+        progressText:     undefined,
+        progressDuration: 200,
+        opacity:          null,
       }, () => {  NavigationUtil.closeOverlay(this.props.componentId); })}));
   }
 
@@ -116,7 +122,7 @@ export class Processing extends Component<any, any> {
           <AnimatedLogo />
         </View>
         {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]}>{this.state.text}</Text> : undefined}
-        {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} /> : undefined}
+        {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} progressDuration={this.state.progressDuration} /> : undefined}
         {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
       </HiddenFadeInView>
     );

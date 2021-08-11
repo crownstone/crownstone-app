@@ -30,6 +30,8 @@ let defaultState = {
 
   devAppVisible: false,
 
+  debugRTCtoken: null,
+
   preview: false,
 };
 
@@ -65,6 +67,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_cloud =          update(action.data.log_cloud,          newState.log_cloud);
         newState.log_nav =            update(action.data.log_nav,            newState.log_nav);
         newState.preview =            update(action.data.preview,            newState.preview);
+        newState.debugRTCtoken =      update(action.data.debugRTCtoken,      newState.debugRTCtoken);
         newState.show_sync_button_in_behaviour = update(action.data.show_sync_button_in_behaviour, newState.show_sync_button_in_behaviour);
         newState.use_time_based_nonce =          update(action.data.use_time_based_nonce, newState.use_time_based_nonce);
         newState.nativeExtendedLogging =         update(action.data.nativeExtendedLogging,         newState.nativeExtendedLogging);

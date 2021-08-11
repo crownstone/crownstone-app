@@ -274,7 +274,7 @@ export class SessionManagerClass {
 
     this._timeoutHandlers[handle][commanderId] = {
       clearCallback: Scheduler.scheduleCallback(() => {
-        LOG.constellation("SessionManager: TIMEOUT! Timeout called for ", handle, commanderId)
+        LOG.constellation("SessionManager: SESSION_REQUEST_TIMEOUT Timeout called for ", handle, commanderId)
         reject(new Error("SESSION_REQUEST_TIMEOUT"));
         let session = this._sessions[handle];
 
