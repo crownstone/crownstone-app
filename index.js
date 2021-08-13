@@ -21,37 +21,9 @@ import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/Backgroun
 import DeviceInfo from 'react-native-device-info';
 import Bugsnag from "@bugsnag/react-native";
 
-Bugsnag.start();
 
 if (USE_ERROR_REPORTING) {
-  // let sentryConfig = {
-  //   dsn: null,
-  //   // deactivateStacktraceMerging: true,
-  //   autoBreadcrumbs: {
-  //     'xhr': false,      // XMLHttpRequest
-  //     'console': false,  // console logs
-  //   }
-  // }
-  //
-  // if (Platform.OS === 'android') {
-  //   if (config.android) {
-  //     sentryConfig.dsn = config.android;
-  //   }
-  // }
-  // else {
-  //   if (config.ios) {
-  //     sentryConfig.dsn = config.ios;
-  //   }
-  // }
-  //
-  // Sentry.init(sentryConfig)
-  //
-  // Sentry.addBreadcrumb({
-  //   category: 'AppState',
-  //   data: {
-  //     state: "started",
-  //   }
-  // });
+  Bugsnag.start();
 }
 
 loadRoutes();

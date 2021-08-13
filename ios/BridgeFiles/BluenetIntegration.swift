@@ -256,11 +256,13 @@ open class BluenetJS: RCTEventEmitter {
     @objc func cancelConnectionRequest(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let function_uuid = UUID().uuidString
         LOGGER.info("BluenetBridge: Called cancelConnectionRequest from handle \(handle) uuid:\(function_uuid)")
-        GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
-            .done{ crownstoneMode in successReply("cancelConnectionRequest", crownstoneMode, function_uuid, callback) }
-            .catch{err in
-                errReply("cancelConnectionRequest", err, function_uuid, callback)
-            }
+        do {
+            try GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
+            successReply("cancelConnectionRequest", nil, function_uuid, callback)
+        }
+        catch {
+            errReply("cancelConnectionRequest", error, function_uuid, callback)
+        }
     }
     
     @objc func phoneDisconnect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
@@ -1318,7 +1320,7 @@ func errReply(_ label: String, _ err: Any, _ function_uuid: String, _ callback: 
 }
 
 
-func successReply(_ label: String, _ data: Any, _ function_uuid: String, _ callback: @escaping RCTResponseSenderBlock) {
-    LOGGER.info("BluenetBridge: Finished \(label) withArgs: \(data) uuid:\(function_uuid)")
+func successReply(_ label: String, _ data: Any?, _ function_uuid: String, _ callback: @escaping RCTResponseSenderBlock) {
+    LOGGER.info("BluenetBridge: Finished \(label) withArgs: \(String(describing: data)) uuid:\(function_uuid)")
     callback([["error" : false, "data": data]])
 }

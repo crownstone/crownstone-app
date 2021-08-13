@@ -62,6 +62,10 @@ export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: bool
             {close: false, text:"The last 15 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 15); }},
             {close: false, text:"The last 30 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 30); }},
             {close: false, text:"The last hour, I've been in ...",       callback: () => { selectRecentRoom(props.sphereId, 60); }},
+            {text:"Reset collection!",                                   callback: () => {
+              LocalizationLogger.resetMeasurement();
+              Alert.alert("Cache reset successful","New measurements are coming in again... starting now!",[{text:"Nice!"}])
+            }},
           ]})
         }}>
           <View style={viewStyle}>
@@ -89,32 +93,44 @@ function selectRecentRoom(sphereId: string, minutes: number) {
   let state = core.store.getState();
   let locations = state.spheres[sphereId].locations;
   let data = [];
-  for (let classification of LocalizationLogger._lastClassifications) {
-    if (classification.region ===  sphereId) {
-      let locationId = classification.location;
+  let classificationOptions = LocalizationLogger.getClassificationOptions(minutes);
+  for (let classification of classificationOptions) {
+    if (classification.sphereId === sphereId) {
+      let locationId = classification.locationId;
       let location = locations[locationId];
       data.push({
-        text: "... in the " + locations[locationId].config.name, callback: async () => {
-          let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
-          await Scheduler.delay(300);
-
-          Alert.alert("Stored!", pointsStored + " points have been saved in a dataset. Share it via the developer menu or press upload!",
-          [ {text: "Upload now!", onPress: async () => {
-            await shareDataViaRTC(SHARE_DATA_TYPE.localization);
-          }}, {text: lang("OK")}])
-        }
+        text: "... in the " + locations[locationId].config.name,
+        callback: () => { annotate(minutes, location) }
       })
     }
   }
   if (data.length > 0) {
     data.push({close: false, text: "Somewhere else...", callback: () => { selectFromRoomList(sphereId, minutes); }})
-    data.push({text: "Custom label",   callback: () => { customRoom(sphereId, minutes); }})
+    data.push({text: "Custom label...",      callback: () => { customRoom(sphereId, minutes); }})
     core.eventBus.emit("UpdateOptionPopup", {buttons: data});
     return
   }
   else {
     return selectFromRoomList(sphereId, minutes);
   }
+}
+
+
+function annotate(minutes, location: LocationData) {
+  Alert.prompt(
+    "Please describe how this data was collected",
+    "This makes it easier to categorize the data later on.",
+    [
+      {text:"OK", onPress: async (annotation) => { store(minutes, location, annotation); }},
+    ]);
+}
+
+async function store(minutes, location, annotation?: string) {
+  let pointsStored = await LocalizationLogger.classify(minutes * 60, location, annotation);
+  await Scheduler.delay(300);
+  Alert.alert("Stored!",
+    pointsStored + " points have been saved in a dataset. Share it via the developer menu or press upload!",
+    [{text: "Later..."}, {text: "Upload now!", onPress: async () => { await shareDataViaRTC(SHARE_DATA_TYPE.localization); }}])
 }
 
 function selectFromRoomList(sphereId:string, minutes: number) {
@@ -124,27 +140,19 @@ function selectFromRoomList(sphereId:string, minutes: number) {
   for (let locationId in locations) {
     let location = locations[locationId];
     data.push({
-      text: "... in the " + locations[locationId].config.name, callback: async () => {
-        let pointsStored = await LocalizationLogger.classify(minutes * 60, location);
-
-        await Scheduler.delay(300);
-
-        Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
-      }
-    })
+      text: "... in the " + locations[locationId].config.name, callback: () => { annotate(minutes, location) }
+    });
   }
   data.sort((a,b) =>  { return a.text < b.text ? -1 : 1})
   core.eventBus.emit("UpdateOptionPopup", {buttons: data});
 }
 
 function customRoom(sphereId: string, minutes: number) {
-  core.eventBus.emit("showTextInputOverlay", {title: "How shall we call this dataset?", callback: async (label) => {
+  Alert.prompt(
+    "How shall we call this dataset?",
+    "Annotation comes after this step.",
+    async (label) => {
       // @ts-ignore
-      let pointsStored = await LocalizationLogger.classify(minutes * 60, { config: { name: label, uid: `${label}_custom`} });
-
-      await Scheduler.delay(300);
-      core.eventBus.emit("hideTextInputOverlaySuccess");
-
-      Alert.alert("Stored!", pointsStored + " points has been saved in a dataset. Share it via the developer menu.", [{text: lang("OK")}])
-  }})
+      annotate(minutes, { config: { name: label, uid: `${label}_custom`} });
+  });
 }

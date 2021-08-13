@@ -6,15 +6,12 @@ const RNFS = require('react-native-fs');
 export const LOG_PREFIX = 'CrownstoneAppLog';
 
 export function getLoggingFilename(timestamp, prefix, time: boolean = false) {
-  let monthNumber = new Date(timestamp).getMonth()+1;
-  let dayNumber = new Date(timestamp).getDate();
+  let month = new Date(timestamp).getMonth()+1;
+  let day = new Date(timestamp).getDate();
 
-  let month = monthNumber < 10 ? '0' + monthNumber : '' + monthNumber;
-  let day = dayNumber < 10 ? '0' + dayNumber : '' + dayNumber;
-
-  let dateStamp = new Date(timestamp).getFullYear() + "-" + month + "-" +day;
+  let dateStamp = new Date(timestamp).getFullYear() + "-" + padd(month) + "-" + padd(day);
   if (time) {
-    dateStamp += ` ${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}:${new Date(timestamp).getSeconds()}`
+    dateStamp += ` ${new Date(timestamp).getHours()}:${padd(new Date(timestamp).getMinutes())}:${padd(new Date(timestamp).getSeconds())}`
   }
   return prefix + dateStamp + '.log';
 }
@@ -135,3 +132,10 @@ export class FileLoggerClass {
   }
 }
 
+function padd(input: number | string) : string {
+  let str = String(input);
+  if (str.length < 2) {
+    return '0' + str;
+  }
+  return str;
+}

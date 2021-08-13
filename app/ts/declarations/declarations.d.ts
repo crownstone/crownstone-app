@@ -14,6 +14,12 @@ interface locationDataContainer {
   location: string,
 }
 
+interface classificationContainer {
+  timestamp:  number,
+  sphereId:   string,
+  locationId: string,
+}
+
 type map = { [proptype: string] : boolean } | {}
 type numberMap = { [proptype: string] : number } | {}
 type stringMap = { [proptype: string] : string } | {}

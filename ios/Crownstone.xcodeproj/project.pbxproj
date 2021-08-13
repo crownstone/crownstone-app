@@ -49,9 +49,9 @@
 		FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */; };
 		FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC42410144F00D7C858 /* libRNVectorIcons.a */; };
 		FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274ECA2410144F00D7C858 /* libYoga.a */; };
-		FA3DF883263AF7920037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */; };
-		FA3DF885263AF7A20037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */; };
-		FA3DF887263AF7A30037B29F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */; };
+		FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* BluenetLib */; };
+		FA3DF885263AF7A20037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF884263AF7A20037B29F /* BluenetLib */; };
+		FA3DF887263AF7A30037B29F /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF886263AF7A30037B29F /* BluenetShared */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
@@ -103,7 +103,7 @@
 		FADC2B3925F7B519000AE5A7 /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */; };
 		FADC2B3A25F7B519000AE5A7 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */; };
 		FADC2B3B25F7B519000AE5A7 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */; };
-		FAE29C5826C13FA600CE3D37 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FAE29C5726C13FA600CE3D37 /* SwiftPackageProductDependency */; };
+		FAE29C5826C13FA600CE3D37 /* BluenetLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAE29C5726C13FA600CE3D37 /* BluenetLocalization */; };
 		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
 /* End PBXBuildFile section */
 
@@ -679,12 +679,12 @@
 				FA274EEA2410171B00D7C858 /* libglog.a in Frameworks */,
 				FA274EED2410171B00D7C858 /* libRCTTypeSafety.a in Frameworks */,
 				FA274EEE2410171B00D7C858 /* libReact-Core.a in Frameworks */,
-				FA3DF885263AF7A20037B29F /* BuildFile in Frameworks */,
+				FA3DF885263AF7A20037B29F /* BluenetLib in Frameworks */,
 				FA274EEF2410171B00D7C858 /* libReact-CoreModules.a in Frameworks */,
 				FA274EF02410171B00D7C858 /* libReact-cxxreact.a in Frameworks */,
 				FA274EF12410171B00D7C858 /* libReact-jsi.a in Frameworks */,
 				FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */,
-				FA3DF887263AF7A30037B29F /* BuildFile in Frameworks */,
+				FA3DF887263AF7A30037B29F /* BluenetShared in Frameworks */,
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
 				FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */,
@@ -706,7 +706,7 @@
 				FA274F072410171B00D7C858 /* libRNDeviceInfo.a in Frameworks */,
 				FA274F082410171B00D7C858 /* libRNFS.a in Frameworks */,
 				FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */,
-				FAE29C5826C13FA600CE3D37 /* BuildFile in Frameworks */,
+				FAE29C5826C13FA600CE3D37 /* BluenetLocalization in Frameworks */,
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
@@ -727,7 +727,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3DF883263AF7920037B29F /* BuildFile in Frameworks */,
+				FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1120,9 +1120,9 @@
 			);
 			name = Crownstone;
 			packageProductDependencies = (
-				FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */,
-				FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */,
-				FAE29C5726C13FA600CE3D37 /* SwiftPackageProductDependency */,
+				FA3DF884263AF7A20037B29F /* BluenetLib */,
+				FA3DF886263AF7A30037B29F /* BluenetShared */,
+				FAE29C5726C13FA600CE3D37 /* BluenetLocalization */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1161,7 +1161,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */,
+				FA3DF882263AF7920037B29F /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1221,9 +1221,9 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */,
-				FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */,
-				FAE29C5626C13FA600CE3D37 /* RemoteSwiftPackageReference */,
+				FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
+				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
+				FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -2196,7 +2196,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
@@ -2238,7 +2238,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_BITCODE = NO;
@@ -2398,7 +2398,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2465,7 +2465,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2530,7 +2530,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2586,7 +2586,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2667,7 +2667,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */ = {
+		FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
@@ -2675,7 +2675,7 @@
 				kind = branch;
 			};
 		};
-		FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */ = {
+		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
 			requirement = {
@@ -2683,7 +2683,7 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		FAE29C5626C13FA600CE3D37 /* RemoteSwiftPackageReference */ = {
+		FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "file:///Users/alex/Dropbox/Crownstone/Projects/XCode/bluenet-localization";
 			requirement = {
@@ -2694,24 +2694,24 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FA3DF882263AF7920037B29F /* SwiftPackageProductDependency */ = {
+		FA3DF882263AF7920037B29F /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */;
+			package = FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
 			productName = BluenetLib;
 		};
-		FA3DF884263AF7A20037B29F /* SwiftPackageProductDependency */ = {
+		FA3DF884263AF7A20037B29F /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD7E2626FE57005492CA /* RemoteSwiftPackageReference */;
+			package = FAD5FD7E2626FE57005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
 			productName = BluenetLib;
 		};
-		FA3DF886263AF7A30037B29F /* SwiftPackageProductDependency */ = {
+		FA3DF886263AF7A30037B29F /* BluenetShared */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAD5FD8526270088005492CA /* RemoteSwiftPackageReference */;
+			package = FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
 			productName = BluenetShared;
 		};
-		FAE29C5726C13FA600CE3D37 /* SwiftPackageProductDependency */ = {
+		FAE29C5726C13FA600CE3D37 /* BluenetLocalization */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FAE29C5626C13FA600CE3D37 /* RemoteSwiftPackageReference */;
+			package = FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */;
 			productName = BluenetLocalization;
 		};
 /* End XCSwiftPackageProductDependency section */

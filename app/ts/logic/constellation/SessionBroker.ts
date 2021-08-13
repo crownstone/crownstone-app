@@ -157,12 +157,13 @@ export class SessionBroker {
             LOGe.constellation("SessionBroker: Require session has thrown an ALREADY_REQUESTED_TIMEOUT error.", err);
             Testing.hook("ALREADY_REQUESTED_TIMEOUT", {handle, type: command.command.type} );
           }
-          else if (err?.message !== "REMOVED_FROM_QUEUE") {
-            LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
-            throw err;
+          else if (err?.message === "REMOVED_FROM_QUEUE") {
+            LOGd.constellation("SessionBroker: Session removed from queue", handle, "for", this.options.commanderId);
+            // this will happen if a session is no longer required. This does not need to be escalated.
           }
           else {
-            LOGw.constellation("SessionBroker: Require session has thrown an unexpected error.", err);
+            LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
+            throw err;
           }
         })
     }

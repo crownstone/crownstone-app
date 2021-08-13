@@ -15,24 +15,49 @@ class LocalizationLoggerClass {
   _initialized : boolean = false;
   _unsubscribeListeners = [];
   _data = [];
-  _lastClassifications : locationDataContainer[] = [];
+  _lastClassifications : classificationContainer[] = [];
 
   init() {
     if (this._initialized === false) {
-      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,  (ibeaconData: ibeaconPackage[]) => { this._store(ibeaconData); }))
-      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom,(data : locationDataContainer) => {
+      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,
+        (ibeaconData: ibeaconPackage[]) => { this._store(ibeaconData); }))
+      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom,
+        (data : locationDataContainer) => {
         // no duplicates in this set.
         removeExistingClassifications(this._lastClassifications, data);
         // place the most recent one first.
-        this._lastClassifications.unshift(data);
+        this._lastClassifications.unshift({timestamp : Date.now(), sphereId: data.region, locationId: data.location});
 
-        // only need the last 5 unique ones.
-        if (this._lastClassifications.length > 5) {
+        // only need the last 10 unique ones.
+        if (this._lastClassifications.length > 10) {
           this._lastClassifications.pop();
         }
+
       })); // data = {region: sphereId, location: locationId}
     }
     this._initialized = true;
+  }
+
+
+  getClassificationOptions(minutesToLookBack: number) : classificationContainer[] {
+    let sinceDate = Date.now() - minutesToLookBack * 60000;
+    let collection = [];
+    for (let i = 0; i < this._lastClassifications.length; i++) {
+      if (this._lastClassifications[i].timestamp >= sinceDate) {
+        collection.push(this._lastClassifications[i]);
+      }
+    }
+
+    // if the last classification happened before you wanted to store, it is the most recent one.
+    if (collection.length === 0 && this._lastClassifications.length > 0) {
+      collection.push(this._lastClassifications[0]);
+    }
+
+    return collection
+  }
+
+  resetMeasurement() {
+    this._data = [];
   }
 
   _store(data: ibeaconPackage[]) {
@@ -53,8 +78,23 @@ class LocalizationLoggerClass {
   }
 
 
-  async classify(secondsToLookBack: number, location: LocationData) : Promise<number> {
-    let data = this._data.slice(this._data.length - secondsToLookBack);
+  async classify(secondsToLookBack: number, location: LocationData, annotation: string) : Promise<number> {
+    let lastTimestamp = Date.now() - secondsToLookBack*1000;
+    // find until where we need to get the data
+    // we start with the assumption of 1 sample per second and go from there.
+    let index = 0;
+
+    // never go below 0!
+    let initialSearchPoint = Math.max(0,this._data.length - secondsToLookBack - 1);
+    for (let i = initialSearchPoint; i < this._data.length; i++) {
+      // if this point is in the future, we're good!
+      if (this._data[i].timestamp >= lastTimestamp) {
+        index = i;
+        break;
+      }
+    }
+
+    let data = this._data.slice(index);
     let length = data.length;
     let name = Localization_LOG_PREFIX + location.config.name + "_" + location.config.uid + "_";
 
@@ -62,16 +102,19 @@ class LocalizationLoggerClass {
     let sphereId = state.app.activeSphere;
     let sphere = state.spheres[sphereId];
 
-    await writeLocalizationDataset(name, {
+    let dataset: AppDatasetFormat = {
       sphereCloudId: sphere.config.cloudId,
       sphere: sphere.config,
+      annotation: annotation,
       location: {
         name: location.config.name,
         uid: String(location.config.uid),
       },
       dataset: data
-    });
-    this._data = []
+    }
+
+    await writeLocalizationDataset(name, dataset);
+    this.resetMeasurement();
     return length;
   }
 
@@ -81,7 +124,8 @@ class LocalizationLoggerClass {
     this._unsubscribeListeners.forEach((unsub) => { unsub(); });
     this._unsubscribeListeners = [];
     this._initialized = false;
-    this._data = [];
+    this.resetMeasurement();
+    this._lastClassifications = [];
     this.clearDataFiles()
   }
 
@@ -95,14 +139,14 @@ class LocalizationLoggerClass {
 
   async storeFingerprints() : Promise<string> {
     let state = core.store.getState()
-    let data = {spheres:{}};
+    let data : AppFingerprintFormat = {spheres:{}};
     Object.keys(state.spheres).forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      data.spheres[sphere.config.cloudId] = {};
+      data.spheres[sphere.config.cloudId] = {sphere: sphere.config, fingerprints: {}};
+
       Object.keys(sphere.locations).forEach((locationId) => {
         let location = sphere.locations[locationId];
-        data.spheres[sphere.config.cloudId].sphere = sphere.config;
-        data.spheres[sphere.config.cloudId][location.config.uid] = {
+        data.spheres[sphere.config.cloudId].fingerprints[location.config.uid] = {
           name: location.config.name,
           cloudId: location.config.cloudId,
           fingerprint: location.config.fingerprintRaw
@@ -170,9 +214,9 @@ async function getDatasetUrls() {
   }
 }
 
-function removeExistingClassifications(set: locationDataContainer[], data: locationDataContainer) {
+function removeExistingClassifications(set: classificationContainer[], data: locationDataContainer) {
   for (let i = set.length-1; i >= 0; i--) {
-    if (set[i].region === data.region && set[i].location === data.location) {
+    if (set[i].sphereId === data.region && set[i].locationId === data.location) {
       set.splice(i, 1)
     }
   }
