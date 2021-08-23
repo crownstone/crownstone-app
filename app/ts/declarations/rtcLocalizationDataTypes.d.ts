@@ -29,10 +29,15 @@ interface AppDatasetFormat {
   sphereCloudId: string,
   sphere: SphereData,
   annotation: string,
+  device: {
+    name: string,
+    deviceType: string,
+    model: string,
+  },
   location: {
     name: string,
     uid: LocationId,
-  }
+  },
   dataset: FingerprintDatapoint[]
 }
 

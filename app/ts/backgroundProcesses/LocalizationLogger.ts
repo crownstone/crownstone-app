@@ -102,10 +102,17 @@ class LocalizationLoggerClass {
     let sphereId = state.app.activeSphere;
     let sphere = state.spheres[sphereId];
 
+    let device = DataUtil.getDevice(state);
+
     let dataset: AppDatasetFormat = {
       sphereCloudId: sphere.config.cloudId,
       sphere: sphere.config,
       annotation: annotation,
+      device: {
+        name: device?.name,
+        deviceType: device?.deviceType,
+        model: device?.model,
+      },
       location: {
         name: location.config.name,
         uid: String(location.config.uid),
