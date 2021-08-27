@@ -171,13 +171,15 @@ class FileSender {
 
   blob : string;
 
-  maxChunkSize = 150e3;
+  maxChunkSize = 100e3;
   sentSize = 0;
   successfulSentSize = 0;
   part = 0;
   sendMessage : (data: RtcMessageProtocol) => void;
 
   progressCallback : (progress) =>  void = () => {}
+
+  timeout = () => {}
 
   finished = false;
 
@@ -217,11 +219,14 @@ class FileSender {
   }
 
   cleanup() {
+    this.timeout();
     this.unsubscribe();
   }
 
   _handleIncomingData(data: RtcMessageProtocol) {
     if (!data?.type) { return }
+
+    this.timeout();
 
     if (data?.type === 'report') {
       switch (data.code) {
@@ -263,6 +268,10 @@ class FileSender {
     this.basePayload.part = this.part;
     this.sendMessage(this.basePayload)
     this.progressCallback(this.sentSize/this.basePayload.totalLength)
+    this.timeout();
+    this.timeout = Scheduler.setTimeout(() => {
+      this.fail(new Error("TRANSFER_ABORTED_TIMEOUT"))
+    }, 1000);
   }
 
   async send() {

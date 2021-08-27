@@ -30,10 +30,6 @@ export class UserLayer extends LiveComponent<any, any> {
   }
 
   _getPositionOffset(x , y, currentUserIndex, totalUsersInRoom, isAppUser) {
-    if (currentUserIndex > this.maxUsersShownOnRoom || currentUserIndex > totalUsersInRoom) {
-      return;
-    }
-
     let roomRadius = this.props.nodeRadius;
     let userDiameter = this.otherUserSize;
     let userRadius = 0.5 * userDiameter;
@@ -70,6 +66,10 @@ export class UserLayer extends LiveComponent<any, any> {
 
     if (isAppUser) {
       return basePositions['appUser'];
+    }
+
+    if (currentUserIndex > this.maxUsersShownOnRoom || currentUserIndex > totalUsersInRoom) {
+      return;
     }
     else {
       if (totalUsersInRoom > this.maxUsersShownOnRoom) {
@@ -153,6 +153,8 @@ export class UserLayer extends LiveComponent<any, any> {
           }
 
           let positionOnRoom = this._getPositionOffset(node.x, node.y, currentOtherUserIndex, totalOtherUsersInRoom, isAppUser);
+
+          if (!positionOnRoom) { return; }
 
           if (isAppUser) {
             let key = 'userLocationPicture' + user.id;

@@ -9,6 +9,7 @@ import { LOG, LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
+import Bugsnag from "@bugsnag/react-native";
 
 
 /**
@@ -382,6 +383,12 @@ export class BleCommandManagerClass {
         let command = commands[i];
         if (command.commanderId === commanderId) {
           this.queue.direct[handle].splice(i,1);
+          Bugsnag.leaveBreadcrumb("BleCommandManager: cancellingCommanderCommands",{
+            commandFailed: command.command.type,
+            t: Date.now(),
+            err: errorMessage
+          }, "error");
+
           command.promise.reject(new Error(errorMessage));
 
           if (this.queue.direct[handle].length === 0) {

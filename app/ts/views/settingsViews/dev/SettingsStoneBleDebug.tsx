@@ -176,7 +176,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
       }
     });
@@ -199,7 +199,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         }
         catch (err) {
           core.eventBus.emit("hideLoading");
-          Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
         }
       }
     });
@@ -225,7 +225,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -253,7 +253,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -279,7 +279,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -306,7 +306,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -332,7 +332,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -399,7 +399,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           })
           .catch((err) => {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+            Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
           })
 
       }
@@ -771,4 +771,13 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   }
 }
 
-
+function formatError(err) : string {
+  try {
+    if (typeof err === 'string') { return err; }
+    if (typeof err === 'object') { return JSON.stringify(err, undefined, 2); }
+    return String(err);
+  }
+  catch (issue) {
+    return "could not format error";
+  }
+}

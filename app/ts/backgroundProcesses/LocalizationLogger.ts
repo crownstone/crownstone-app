@@ -156,7 +156,7 @@ class LocalizationLoggerClass {
         data.spheres[sphere.config.cloudId].fingerprints[location.config.uid] = {
           name: location.config.name,
           cloudId: location.config.cloudId,
-          fingerprint: location.config.fingerprintRaw
+          fingerprint: JSON.parse(location.config.fingerprintRaw)
         };
       })
     })
