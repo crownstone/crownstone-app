@@ -37,6 +37,8 @@ import { LOGw } from "../../../logging/Log";
 const RNFS = require('react-native-fs');
 import Peer from 'react-native-peerjs';
 import { WebRtcClient } from "../../../logic/WebRtcClient";
+import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
@@ -534,8 +536,10 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     }});
 
     items.push({label: "CLOUD URL: " + CLOUD_ADDRESS, type: 'explanation'});
-    items.push({label: "Debug version loaded :" + base_core.sessionMemory.developmentEnvironment, type: 'explanation'});
-    items.push({type: 'spacer'});
+    items.push({label: "Debug version loaded: " + base_core.sessionMemory.developmentEnvironment, type: 'explanation'});
+    items.push({label: `Last time registered token via connection: ${ xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeRegistrationViaConnection)}`, type: 'explanation'});
+    items.push({label: `Last time registered token via broadcast: ${  xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeRegistrationViaBroadcast)}`, type: 'explanation'});
+    items.push({label: `Last time updated heartbeat via connection: ${xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeHeartbeat)}`, type: 'explanation'});
     items.push({type: 'spacer'});
 
 

@@ -64,9 +64,9 @@ export const xUtil = {
     }
     let date = new Date(timestamp);
 
-    let month = xUtil.pad(date.getMonth() + 1);
-    let day = xUtil.pad(date.getDate());
-    let hours = xUtil.pad(date.getHours());
+    let month   = xUtil.pad(date.getMonth() + 1);
+    let day     = xUtil.pad(date.getDate());
+    let hours   = xUtil.pad(date.getHours());
     let minutes = xUtil.pad(date.getMinutes());
     let seconds = xUtil.pad(date.getSeconds());
 

@@ -24,6 +24,10 @@ class TrackingNumberManagerClass {
   currentlyCyclingToken = false;
   _listeners = [];
 
+  _lastTimeRegistrationViaConnection = 0;
+  _lastTimeRegistrationViaBroadcast = 0;
+  _lastTimeHeartbeat = 0;
+
   constructor() {
     BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
       .then((result) => {
@@ -84,6 +88,9 @@ class TrackingNumberManagerClass {
           ttlMinutes: 120
         }
       )
+        .then(() => {
+          this._lastTimeHeartbeat = Date.now();
+        })
         .catch((err) => {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);
           if (err?.message === "ERR_NOT_FOUND") {
@@ -188,6 +195,7 @@ class TrackingNumberManagerClass {
         // No error! store the new registered token!
         let state = core.store.getState();
         core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: suggestedNewRandom}})
+        this._lastTimeRegistrationViaConnection = Date.now();
         this.lastTimeTokenWasCycled = Date.now();
         LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken!")
         this.currentlyCyclingToken = false;
@@ -208,20 +216,26 @@ class TrackingNumberManagerClass {
       })
   }
 
-  _broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom=null) {
+  async _broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom=null) {
     this.lastTimeTokenWasBumped = Date.now();
     let preferences = DataUtil.getDevicePreferences(sphereId);
-    BluenetPromiseWrapper.broadcastUpdateTrackedDevice(
-      sphereId,
-      preferences.trackingNumber,
-      BroadcastStateManager.getCurrentLocationUID(),
-      0,
-      preferences.rssiOffset,
-      preferences.ignoreForBehaviour,
-      preferences.tapToToggleEnabled,
-      suggestedNewRandom === null ? preferences.randomDeviceToken : suggestedNewRandom,
-      120
-    ).catch(()=>{})
+    try {
+      await BluenetPromiseWrapper.broadcastUpdateTrackedDevice(
+        sphereId,
+        preferences.trackingNumber,
+        BroadcastStateManager.getCurrentLocationUID(),
+        0,
+        preferences.rssiOffset,
+        preferences.ignoreForBehaviour,
+        preferences.tapToToggleEnabled,
+        suggestedNewRandom === null ? preferences.randomDeviceToken : suggestedNewRandom,
+        120
+      );
+      this._lastTimeRegistrationViaBroadcast = Date.now();
+    }
+    catch (err) {
+
+    }
   }
 
 
@@ -263,6 +277,7 @@ class TrackingNumberManagerClass {
             this._cycleMyDeviceTrackingToken(sphereId);
           }
         }
+        this._lastTimeRegistrationViaConnection = updateTime || this.lastTimeTokenWasBumped;
         this.lastTimeTokenWasBumped = updateTime || this.lastTimeTokenWasBumped;
       }
     }
