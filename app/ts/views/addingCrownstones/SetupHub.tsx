@@ -126,7 +126,7 @@ export class SetupHub extends LiveComponent<{
         this._interview.setLockedCard("problemBle");
         reject(new Error("NOT_FOUND"));
       }, 10000);
-    }).catch()
+    }).catch(() => {});
 
   }
 

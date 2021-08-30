@@ -57,7 +57,7 @@ class Logger {
   }
 
   notifications(...any) {
-    this._log('NOTIFCATION ', LOG_NOTIFICATIONS, LogProcessor.log_notifications, arguments);
+    this._log('NOTIFICATION ', LOG_NOTIFICATIONS, LogProcessor.log_notifications, arguments);
   }
 
   event(...any) {

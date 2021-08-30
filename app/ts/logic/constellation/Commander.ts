@@ -140,15 +140,13 @@ class CommandAPI_base {
     }
 
     let promiseContainer = xUtil.getPromiseContainer<any>()
-    setImmediate(() => {
-      LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
-      let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
-      // in case this command is broadcast instead of done via
-      if (commands) {
-        this.broker.loadPendingCommands(commands);
-        core.eventBus.emit(`CommandLoaded_${this.id}`)
-      }
-    })
+    LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
+    let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
+    // in case this command is broadcast instead of done via
+    if (commands) {
+      this.broker.loadPendingCommands(commands);
+      core.eventBus.emit(`CommandLoaded_${this.id}`)
+    }
     return promiseContainer.promise;
   }
 }

@@ -176,7 +176,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       this.setState({switchIsOn: true});
     }
 
-    tell(stone).multiSwitch(state).catch()
+    tell(stone).multiSwitch(state).catch((err) => { })
   }
 
   _planStoreAction() {

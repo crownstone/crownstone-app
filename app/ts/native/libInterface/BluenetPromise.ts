@@ -4,6 +4,7 @@ import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
 import { core } from "../../Core";
 import Bugsnag from "@bugsnag/react-native";
+import { BugReportUtil } from "../../util/BugReportUtil";
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)
@@ -18,7 +19,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       for (let i = 1; i < arguments.length; i++) {
         bluenetArguments.push(arguments[i])
       }
-      Bugsnag.leaveBreadcrumb("BLE: Started Command",{
+      BugReportUtil.breadcrumb("BLE: Started Command",{
         functionCalled: functionName,
         id: id,
         arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
@@ -28,7 +29,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       let promiseResolver = (result) => {
         if (result.error === true) {
           LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          Bugsnag.leaveBreadcrumb("BLE: Failed Command",{
+          BugReportUtil.breadcrumb("BLE: Failed Command",{
             functionCalled: functionName,
             id: id,
             t: Date.now(),
@@ -39,7 +40,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
         }
         else {
 			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          Bugsnag.leaveBreadcrumb("BLE: Finished Command",{
+          BugReportUtil.breadcrumb("BLE: Finished Command",{
             functionCalled: functionName,
             id: id,
             t: Date.now(),

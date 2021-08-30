@@ -10,6 +10,7 @@ import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise"
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
 import Bugsnag from "@bugsnag/react-native";
+import { BugReportUtil } from "../../util/BugReportUtil";
 
 
 /**
@@ -383,7 +384,7 @@ export class BleCommandManagerClass {
         let command = commands[i];
         if (command.commanderId === commanderId) {
           this.queue.direct[handle].splice(i,1);
-          Bugsnag.leaveBreadcrumb("BleCommandManager: cancellingCommanderCommands",{
+          BugReportUtil.breadcrumb("BleCommandManager: cancellingCommanderCommands",{
             commandFailed: command.command.type,
             t: Date.now(),
             err: errorMessage
