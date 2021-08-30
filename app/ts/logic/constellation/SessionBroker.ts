@@ -111,7 +111,7 @@ export class SessionBroker {
         }
       }
       else if (command.commandType === 'MESH') {
-        let meshHandles = Collector.collectMesh(command.commandTarget, command.endTarget);
+        let meshHandles = Collector.collectSphere(command.commandTarget, command.endTarget);
         for (let handle of meshHandles) {
           requiredHandleMap[handle] = commandId;
           if (requestNewSessions) {

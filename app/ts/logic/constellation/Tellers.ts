@@ -96,28 +96,28 @@ export function from(handle: string | StoneData, timeoutSeconds = 10) : CommandA
   return tell(handle, timeoutSeconds);
 }
 
-/**
- * @param meshId
- * @param minimalConnections
- */
-export function tellMesh(meshId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
-  LOGi.constellation("Telling the meshnetwork...", meshId, minConnections);
-  let stonesInMap = MapProvider.meshMap[meshId];
-  let stoneIds = Object.keys(stonesInMap);
-  if (stoneIds.length > 0) {
-    let item = stonesInMap[stoneIds[0]];
-    let sphereId = item.sphereId;
-    return new CommandAPI({
-      commanderId:    xUtil.getUUID(),
-      sphereId:       sphereId,
-      commandType:    "MESH",
-      commandTargets: [meshId],
-      private:        false,
-      minConnections: minConnections,
-      timeout:        timeoutSeconds
-    });
-  }
-}
+// /**
+//  * @param meshId
+//  * @param minimalConnections
+//  */
+// export function tellMesh(meshId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
+//   LOGi.constellation("Telling the meshnetwork...", meshId, minConnections);
+//   let stonesInMap = MapProvider.meshMap[meshId];
+//   let stoneIds = Object.keys(stonesInMap);
+//   if (stoneIds.length > 0) {
+//     let item = stonesInMap[stoneIds[0]];
+//     let sphereId = item.sphereId;
+//     return new CommandAPI({
+//       commanderId:    xUtil.getUUID(),
+//       sphereId:       sphereId,
+//       commandType:    "MESH",
+//       commandTargets: [meshId],
+//       private:        false,
+//       minConnections: minConnections,
+//       timeout:        timeoutSeconds
+//     });
+//   }
+// }
 
 
 /**
@@ -141,11 +141,9 @@ export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) :
     }
   }
 
-  // if there are no known mesh networks, assume that the phone just doenst know them and treat "null" as a mesh network.
-  // null is the default networkId if a stone has no mesh network.
-  if (meshNetworks.length == 0) {
-    meshNetworks.push(null);
-  }
+  // if a Crownstone is not in a meshnetwork the default network is "none". However, to make it uniquely identifiable per sphere,
+  // we do not use none but the sphereId. The commandLoader will take care of this inconsistency.
+  meshNetworks.push(sphereId);
 
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),

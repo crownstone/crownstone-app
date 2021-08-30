@@ -117,9 +117,8 @@ class CommandAPI_base {
     this.id = this.options.commanderId;
 
     LOGi.constellation("CommanderAPI Created for target", this.options.commandTargets, "id:", this.id);
-    this.broker = new SessionBroker(this.options)
+    this.broker = new SessionBroker(this.options);
   }
-
 
   /**
    * If via mesh is enabled, we will trigger a mesh connection request additionally to the direct one.

@@ -19,6 +19,7 @@ Object {
     "storeCrownstonesInCloud": false,
   },
   "development": Object {
+    "debugRTCtoken": null,
     "devAppVisible": false,
     "firmwareEarlyAccessLevel": 0,
     "log_advertisements": 50,
@@ -70,7 +71,7 @@ Object {
   },
   "installations": Object {},
   "spheres": Object {
-    "sphere_uuid2000-2001": Object {
+    "sphere_uuid2002-2003": Object {
       "config": Object {
         "aiName": null,
         "cloudId": null,
@@ -82,7 +83,7 @@ Object {
         "updatedAt": 1000000,
       },
       "hubs": Object {},
-      "id": "sphere_uuid2000-2001",
+      "id": "sphere_uuid2002-2003",
       "keys": Object {},
       "locations": Object {},
       "messages": Object {},
@@ -96,7 +97,7 @@ Object {
         "smartHomeEnabled": true,
       },
       "stones": Object {
-        "stone_uuid2002-2003": Object {
+        "stone_uuid2004-2005": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -131,7 +132,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
             "firmwareVersionSeenInOverview": null,
-            "handle": "handle_uuid2004",
+            "handle": "handle_uuid2006",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -141,7 +142,7 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_uuid2005",
+            "name": "stone_uuid2007",
             "type": "PLUG",
             "uid": undefined,
             "updatedAt": 1000000,
@@ -155,7 +156,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2002-2003",
+          "id": "stone_uuid2004-2005",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -176,7 +177,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "stone_uuid2006-2007": Object {
+        "stone_uuid2008-2009": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -211,7 +212,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
             "firmwareVersionSeenInOverview": null,
-            "handle": "handle_uuid2008",
+            "handle": "handle_uuid2010",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -221,7 +222,7 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_uuid2009",
+            "name": "stone_uuid2011",
             "type": "PLUG",
             "uid": undefined,
             "updatedAt": 1000000,
@@ -235,7 +236,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2006-2007",
+          "id": "stone_uuid2008-2009",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -256,7 +257,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "stone_uuid2010-2011": Object {
+        "stone_uuid2012-2013": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -291,7 +292,7 @@ Object {
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
             "firmwareVersionSeenInOverview": null,
-            "handle": "handle_uuid2012",
+            "handle": "handle_uuid2014",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -301,7 +302,7 @@ Object {
             "locked": false,
             "macAddress": undefined,
             "meshNetworkId": null,
-            "name": "stone_uuid2013",
+            "name": "stone_uuid2015",
             "type": "PLUG",
             "uid": undefined,
             "updatedAt": 1000000,
@@ -315,7 +316,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2010-2011",
+          "id": "stone_uuid2012-2013",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,

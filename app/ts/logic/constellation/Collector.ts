@@ -34,9 +34,15 @@ export const Collector = {
     return handles.map((a) => { return a.handle });
   },
 
-  collectSphere : function(sphereId : string) : string[] {
+  collectSphere : function(sphereId : string, ignoreHandle: string = null) : string[] {
     let sphereStones = this._getSphereStones(sphereId);
-    return sphereStones.map((a) => { return a.handle });
+    let handles = [];
+    for (let i = 0; i < sphereStones.length; i++) {
+      if (sphereStones[i].handle !== ignoreHandle) {
+        handles.push(sphereStones[i].handle);
+      }
+    }
+    return handles;
   },
 
   collectNearby : function(sphereId: string) : string[] {

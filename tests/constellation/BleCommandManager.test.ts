@@ -83,8 +83,8 @@ test("BleCommandManager shared, direct, meshRelay, 5 stones", async () => {
 
   BleCommandManager.generateAndLoad(options, new Command_TurnOn(), true, promise);
   expect(BleCommandManager.queue.direct[stone1.config.handle].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId][0].minConnections).toBe(3);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id][0].minConnections).toBe(3);
 });
 
 test("BleCommandManager shared, direct, meshRelay, 3 stones in mesh, see if the minimum connection count works", async () => {
@@ -100,8 +100,8 @@ test("BleCommandManager shared, direct, meshRelay, 3 stones in mesh, see if the 
 
   BleCommandManager.generateAndLoad(options, new Command_TurnOn(), true, promise);
   expect(BleCommandManager.queue.direct[stone1.config.handle].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId][0].minConnections).toBe(2);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id][0].minConnections).toBe(3);
 });
 
 
@@ -119,7 +119,7 @@ test("BleCommandManager shared, direct, check if there are commands available", 
   expect(BleCommandManager.areThereCommandsFor(stone1.config.handle)).toBeTruthy();
   expect(BleCommandManager.areThereCommandsFor(stone2.config.handle)).toBeTruthy();
   expect(BleCommandManager.areThereCommandsFor(stone3.config.handle)).toBeTruthy();
-  expect(BleCommandManager.areThereCommandsFor(stone4.config.handle)).toBeFalsy();
+  expect(BleCommandManager.areThereCommandsFor(stone4.config.handle)).toBeTruthy(); // the assumption is that the mesh is covering the entire sphere
 });
 
 
@@ -133,7 +133,7 @@ test("BleCommandManager shared, direct, check a command can be performed", async
   BleCommandManager.generateAndLoad(options, new Command_TurnOn(), true, promise);
 
   expect(BleCommandManager.queue.direct[stone1.config.handle].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
 
   expect(BleCommandManager.areThereCommandsFor(stone1.config.handle)).toBeTruthy();
   BleCommandManager.performCommand(stone1.config.handle);
@@ -143,7 +143,7 @@ test("BleCommandManager shared, direct, check a command can be performed", async
   await mBluenetPromise.for(stone1.config.handle).succeed.turnOnMesh();
 
   expect(BleCommandManager.queue.direct[stone1.config.handle]).toBeUndefined();
-  expect(BleCommandManager.queue.mesh[meshId]).toBeUndefined();
+  expect(BleCommandManager.queue.mesh[sphere.id]).toBeUndefined();
 });
 
 
@@ -161,17 +161,17 @@ test("BleCommandManager shared, perform and fail mesh command. An error in the p
   BleCommandManager.performCommand(stone2.config.handle);
   expect(mBluenetPromise.has(stone2.config.handle).called.turnOnMesh()).toBeTruthy();
   await mBluenetPromise.for(stone2.config.handle).succeed.turnOnMesh();
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
 
   BleCommandManager.performCommand(stone3.config.handle);
   expect(mBluenetPromise.has(stone3.config.handle).called.turnOnMesh()).toBeTruthy();
   await mBluenetPromise.for(stone3.config.handle).succeed.turnOnMesh();
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
 
   BleCommandManager.performCommand(stone4.config.handle);
   expect(mBluenetPromise.has(stone4.config.handle).called.turnOnMesh()).toBeTruthy();
   await mBluenetPromise.for(stone4.config.handle).fail.turnOnMesh();
-  expect(BleCommandManager.queue.mesh[meshId]).toBeUndefined();
+  expect(BleCommandManager.queue.mesh[sphere.id]).toBeUndefined();
 
   await TestUtil.nextTick();
   expect(promise.reject).toBeCalledWith(new Error("GenericError"))
@@ -225,8 +225,8 @@ test("BleCommandManager Multiple commands", async () => {
 
   expect(BleCommandManager.queue.direct[stone1.config.handle].length).toBe(1);
   expect(BleCommandManager.queue.direct[stone2.config.handle].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId].length).toBe(1);
-  expect(BleCommandManager.queue.mesh[meshId][0].minConnections).toBe(3);
+  expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
+  expect(BleCommandManager.queue.mesh[sphere.id][0].minConnections).toBe(3);
 });
 
 test("BleCommandManager clear commands from single commander", async () => {

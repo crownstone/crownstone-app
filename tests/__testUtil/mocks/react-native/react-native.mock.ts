@@ -28,3 +28,7 @@ export function mockReactNative() {
   mockRN.reset = () => { mockRN.appState = 'active' }
   return mockRN;
 }
+
+jest.mock("@bugsnag/react-native", () => {
+  return jest.fn()
+})
