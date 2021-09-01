@@ -809,6 +809,7 @@ export default {
     Encryption_is_not_enabled:              function() { return "Encryption is not enabled yet. Tap the button below to fix this!" },
     This_hub_does_not_exist_i:              function() { return "This hub does not exist in the cloud... Press the button below to fix this!" },
     The_hub_is_not_connected_:              function() { return "The hub is not connected to the internet. Please reconnect the hub to the internet." },
+    The_hub_did_not_report:                 function() { return "The hub has not reported to the cloud in over half an hour. Please reconnect the hub to the internet." },
     The_hub_is_reporting_an_e:              function() { return "The hub is reporting an error..." },
     Everything_is_looking_goo:              function() { return "Everything is looking good!\n\nThe address of this hub on your local network is:\n" },
     Everything_is_looking_good:             function() { return "Everything is looking good!" },

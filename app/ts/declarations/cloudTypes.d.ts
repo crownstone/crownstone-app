@@ -40,6 +40,7 @@ interface cloud_Hub {
   localIPAddress: string,
   linkedStoneId: string,
   locationId: string,
+  lastSeen: string,
   httpPort: number,
   httpsPort: number,
   externalIPAddress: string,

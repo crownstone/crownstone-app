@@ -68,7 +68,11 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     let state = core.store.getState();
 
-    this.state = { devAppVisible: state.development.devAppVisible && this.props.fromOverview !== true, showSharingSettings: false, sharingDataType: 'logs' }
+    this.state = {
+      devAppVisible: state.development.devAppVisible && this.props.fromOverview !== true,
+      showSharingSettings: false,
+      sharingDataType: 'logs'
+    }
   }
 
   componentDidMount() {

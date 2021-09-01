@@ -181,7 +181,6 @@ export const cloudApiBase = {
 
   // END USER API
   // These methods have all the endpoints embedded in them.
-
   setNetworkErrorHandler: function(handler)     : any  { this._networkErrorHandler = handler },
 
   __debugReject: function(reply, reject, debugOptions) {

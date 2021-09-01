@@ -7,6 +7,7 @@
 import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
 import { core } from "../../../../Core";
+import { KEY_TYPES } from "../../../../Enums";
 
 export class KeySyncer extends SyncingBase {
   userId : string;
@@ -33,6 +34,17 @@ export class KeySyncer extends SyncingBase {
 
       let state = store.getState();
       let sphere = state.spheres[localSphereId];
+
+      // the sphere authorization token is added/updated each sync operation. Add will update if the keyId is the same, which in this case, it is.
+      this.actions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN, data: {
+          key:       keySet.sphereAuthorizationToken,
+          keyType:   KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN,
+          createdAt: 0,
+          ttl:       0
+        }})
+
+
+      // if the sphere does not exist yet, it will be added in this sync cycle, and these keys will be added afterwards.
       if (!sphere) {
         let cloud_sphere_keys = keySet.sphereKeys;
         cloud_sphere_keys.forEach((cloud_sphere_key) => {

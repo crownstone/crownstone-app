@@ -35,6 +35,7 @@ import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
 import Timeout = NodeJS.Timeout;
 import { IconCircle } from "../IconCircle";
+import { CLOUD } from "../../../cloud/cloudAPI";
 
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
@@ -186,8 +187,16 @@ export class HubEntry extends Component<{
     let explanationText = this._getExplanationText(state, switchViewActive);
 
     let hubProblem = false;
+
     if (!hub) { hubProblem = true; }
     else {
+      // not seen for too long.
+      // TODO: this is ignored for now because we might not want to make the cloud mandatory...
+      // TODO: further discussion is required.
+      // if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800*1000) {
+      //   hubProblem = true;
+      // }
+
       hubProblem = hubProblem || !hub.state.uartAlive;
       hubProblem = hubProblem || !hub.state.uartAliveEncrypted;
       hubProblem = hubProblem || !hub.state.uartEncryptionRequiredByCrownstone && hub.state.uartAliveEncrypted;

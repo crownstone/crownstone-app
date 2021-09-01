@@ -45,7 +45,7 @@ async function processSyncResult(syncResult: SyncRequestResponse, actions = [], 
 
 
   if (syncResult.user) {
-    // TODO: sync user
+    // TODO: sync user via next sync
   }
 
   if (syncResult.spheres) {
@@ -57,15 +57,15 @@ async function processSyncResult(syncResult: SyncRequestResponse, actions = [], 
   }
 
   if (syncResult.firmwares) {
-    // TODO: sync firmwares
+    // TODO: sync firmwares via next sync
   }
 
   if (syncResult.bootloaders) {
-    // TODO: sync bootloaders
+    // TODO: sync bootloaders via next sync
   }
 
   if (syncResult.keys) {
-    // TODO: sync keys
+    // TODO: sync keys via next sync
   }
 
   // provide the requested data.

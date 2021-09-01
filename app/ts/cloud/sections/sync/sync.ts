@@ -30,6 +30,7 @@ export const sync = {
 
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
+  lastSyncTimestamp: 0,
 
   sync: function (background = true, skipPermissions = false) {
     if (CLOUD.__currentlySyncing) {
@@ -152,6 +153,8 @@ export const sync = {
               reloadTrackingRequired = true; break;
           }
         });
+
+        CLOUD.lastSyncTimestamp = Date.now();
 
         if (actions.length > 0) {
           core.store.batchDispatch(actions);

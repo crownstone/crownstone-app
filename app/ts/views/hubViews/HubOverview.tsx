@@ -48,6 +48,11 @@ import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
 import { CLOUD } from "../../cloud/cloudAPI";
 import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
+import { ScrollView } from "react-native";
+import { ListEditableItems } from "../components/ListEditableItems";
+import { IconButton } from "../components/IconButton";
+import { Bluenet } from "../../native/libInterface/Bluenet";
+import { WebRtcClient } from "../../logic/WebRtcClient";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -457,6 +462,16 @@ lang("_Something_went_wrong_____Plea_body"),
       );
     }
 
+    // TODO: this is ignored for now because we might not want to make the cloud mandatory...
+    // TODO: further discussion is required.
+    // if (CLOUD.lastSyncTimestamp > hub.data.config.lastSeenOnCloud && Date.now() - hub.data.config.lastSeenOnCloud > 1800*1000) {
+    //   return (
+    //     <View key={"HubDidNotReport"} style={{...styles.centered, flex:1, padding:15}}>
+    //       <Text style={textStyle}>{ lang("The_hub_did_not_report") }</Text>
+    //       <View style={{flex:1}}/>
+    //     </View>
+    //   );
+    // }
 
     if (hubState.hubHasInternet === false) {
       return (
@@ -570,14 +585,8 @@ lang("_Something_went_wrong_____Pleas_body"),
     }
   }
 
-
-  render() {
+  _getHubOverviewContent(sphere, stone) {
     const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) {
-      return <SphereDeleted/>
-    }
-    const stone = sphere.stones[this.props.stoneId];
     const hubs = DataUtil.getAllHubsWithStoneId(this.props.sphereId, this.props.stoneId);
     let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
     if (!hub) {
@@ -587,11 +596,12 @@ lang("_Something_went_wrong_____Pleas_body"),
       }
     }
 
-    let updateAvailable = stone && stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
-
+    let updateAvailable = stone &&
+                          stone.config.firmwareVersion &&
+                          ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (
-      <Background image={background.lightBlur}>
+      <View style={{height:availableScreenHeight, width: screenWidth}}>
         <View style={{flex:0.5}} />
 
         { this._getStoneIcon(stone, updateAvailable) }
@@ -602,7 +612,86 @@ lang("_Something_went_wrong_____Pleas_body"),
         {this.getStateEntries(stone, hub, hubs)}
 
         <View style={{flex:0.25}} />
-        { state.user.developer ? this._getDebugIcon(stone) : undefined }
+      </View>
+    )
+  }
+
+  _getDeveloperOptions() {
+    let devOptions = [];
+    devOptions.push({
+      label: "Enable dev controller",
+      type: 'button',
+      style: { color: colors.iosBlue.hex },
+      icon: <IconButton name="ios-cog" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csOrange.hex }}/>,
+      callback: () => {
+      }
+    });
+    devOptions.push({
+      label: "Enable log controller",
+      type: 'button',
+      style: { color: colors.iosBlue.hex },
+      icon: <IconButton name="ios-copy" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+      callback: () => {
+      }
+    });
+    devOptions.push({
+      label: "Get active options...",
+      type: 'button',
+      style: { color: colors.iosBlue.hex },
+      icon: <IconButton name="md-cloud-download" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.iosBlue.hex }}/>,
+      callback: () => {
+      }
+    });
+    devOptions.push({type:'explanation', label:"AVAILABLE OPTIONS"})
+    devOptions.push({
+      label: "Get active options first...",
+      type: 'info',
+      icon: <IconButton name="md-hand" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      callback: (newValue) => {
+
+      }
+    });
+    devOptions.push({
+      label: "Act on switch events",
+      value: true,
+      disabled: true,
+      type: 'switch',
+      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      callback: (newValue) => {
+
+      }
+    });
+
+    return (
+      <View style={{height:availableScreenHeight, width: screenWidth}}>
+        <View style={{flex:0.25}} />
+        <Text style={deviceStyles.header}>Developer options</Text>
+        <View style={{flex:0.1}} />
+        <ListEditableItems items={devOptions} separatorIndent={true}/>
+        <View style={{flex:0.1}} />
+        <View style={{flex:0.25}} />
+      </View>
+    );
+  }
+
+  render() {
+    const state = core.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) {
+      return <SphereDeleted/>
+    }
+    const stone = sphere.stones[this.props.stoneId];
+
+    return (
+      <Background image={background.lightBlur}>
+        { state.user.developer ? (
+          <ScrollView contentContainerStyle={{flexGrow:1}}>
+            { this._getHubOverviewContent(sphere, stone) }
+            { this._getDeveloperOptions() }
+          </ScrollView>
+          ) : this._getHubOverviewContent(sphere, stone)
+        }
+        { state.user.developer && this._getDebugIcon(stone) }
       </Background>
     )
   }

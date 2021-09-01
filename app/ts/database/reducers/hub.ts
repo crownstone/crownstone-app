@@ -7,14 +7,15 @@ import stonesReducer       from './stones'
 let defaultSettings : HubData = {
   id: undefined,
   config: {
-    name:          'Crownstone Hub',
-    cloudId:       null,
-    ipAddress:     null,
-    linkedStoneId: null,
-    locationId:    null,
-    httpPort:      80,
-    httpsPort:     443,
-    updatedAt:     1,
+    name:            'Crownstone Hub',
+    cloudId:         null,
+    ipAddress:       null,
+    linkedStoneId:   null,
+    locationId:      null,
+    httpPort:        80,
+    httpsPort:       443,
+    lastSeenOnCloud: 1,
+    updatedAt:       1,
   },
   state: {
     uartAlive                          : false,
@@ -60,6 +61,7 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.locationId    = update(action.data.locationId,    newState.locationId);
         newState.httpPort      = update(action.data.httpPort,      newState.httpPort);
         newState.httpsPort     = update(action.data.httpsPort,     newState.httpsPort);
+        newState.lastSeenOnCloud = update(action.data.lastSeenOnCloud, newState.lastSeenOnCloud);
         newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }

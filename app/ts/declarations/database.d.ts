@@ -36,14 +36,15 @@ interface SphereData {
 interface HubData {
   id: string,
   config: {
-    name: string,
-    cloudId:   string | null,
-    ipAddress: string | null,
-    linkedStoneId: string | null,
-    locationId: string | null,
-    httpPort: number,
-    httpsPort: number,
-    updatedAt: timestamp,
+    name:            string,
+    cloudId:         string | null,
+    ipAddress:       string | null,
+    linkedStoneId:   string | null,
+    locationId:      string | null,
+    httpPort:        number,
+    httpsPort:       number,
+    lastSeenOnCloud: timestamp,
+    updatedAt:       timestamp,
   },
   state: {
     uartAlive                          : boolean,

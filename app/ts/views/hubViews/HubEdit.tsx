@@ -138,8 +138,8 @@ export class HubEdit extends LiveComponent<any, any> {
                     core.eventBus.emit('hideLoading');
                 }}]);
             }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
-      }}
-      );
+        }
+      });
       items.push({label: lang("Removing_this_Hub_from_th"),  type:'explanation', below:true});
     }
 
