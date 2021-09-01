@@ -12,8 +12,8 @@ import { tellSphere } from "../logic/constellation/Tellers";
 const REGISTER_TRIGGER_ID = "TrackingNumberManager";
 const HEARTBEAT_TRIGGER_ID = "HeartbeatHandler";
 
-const UPDATE_TRACKING_REGISTRATION_INTERVAL = 3600;
-const TRACKING_HEARTBEAT_INTERVAL = 170;
+const UPDATE_TRACKING_REGISTRATION_INTERVAL = 120;
+const TRACKING_HEARTBEAT_INTERVAL = 60;
 
 class TrackingNumberManagerClass {
   initialized = false;

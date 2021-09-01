@@ -303,10 +303,10 @@ function DisabledBehaviourBanner(props) {
     <TouchableOpacity
       style={{height:65, width: screenWidth, backgroundColor: colors.blue.hex, justifyContent:'space-evenly', alignItems:'center', borderBottomWidth:2, borderColor: colors.white.hex}}
       onPress={() => {
-        BluenetPromiseWrapper.broadcastBehaviourSettings(this.props.sphereId, true).catch(() => {});
+        BluenetPromiseWrapper.broadcastBehaviourSettings(props.sphereId, true).catch(() => {});
         core.store.dispatch({
           type: "SET_SPHERE_SMART_HOME_STATE",
-          sphereId: this.props.sphereId,
+          sphereId: props.sphereId,
           data: { smartHomeEnabled: true }
         })
       }}

@@ -22,7 +22,6 @@ import ImagePicker, { launchImageLibrary } from "react-native-image-picker";
 import { CameraOptions } from "react-native-image-picker/src/types";
 import { core } from "../../Core";
 import { launchCamera } from "react-native-image-picker/src/index";
-import { PICTURE_GALLERY_TYPES } from "../scenesViews/ScenePictureGallery";
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {

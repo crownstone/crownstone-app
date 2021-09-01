@@ -4,18 +4,18 @@ import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 
 const SunCalc = require('suncalc');
 
-import { MeshUtil } from './MeshUtil'
-import { DataUtil } from './DataUtil'
-import {EventUtil} from "./EventUtil";
-import { FileUtil } from "./FileUtil";
-import { Scheduler } from "../logic/Scheduler";
+import { MeshUtil }    from './MeshUtil'
+import { DataUtil }    from './DataUtil'
+import { EventUtil }   from "./EventUtil";
+import { FileUtil }    from "./FileUtil";
+import { Scheduler }   from "../logic/Scheduler";
 import { Permissions } from "../backgroundProcesses/PermissionManager";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
-import { xUtil } from "./StandAloneUtil";
-import { core } from "../Core";
-import { LOGd } from "../logging/Log";
-import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/ScenePictureGallery";
+import { xUtil }       from "./StandAloneUtil";
+import { core }        from "../Core";
+import { LOGd }        from "../logging/Log";
 import { Platform } from "react-native";
+import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/constants/SceneConstants";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

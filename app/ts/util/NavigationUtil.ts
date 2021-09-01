@@ -1,4 +1,4 @@
-import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
+import { Navigation } from "react-native-navigation";
 // import * as Sentry from "@sentry/react-native";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
 import { core } from "../Core";

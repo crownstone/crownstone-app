@@ -3,8 +3,8 @@ import {LOGe} from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
-import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
 import { CodedError } from "../../util/Errors";
+import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/constants/SceneConstants";
 
 let fieldMap : fieldMap = [
   {local: 'name',          cloud: 'name'},

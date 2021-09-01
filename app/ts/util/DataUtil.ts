@@ -8,8 +8,8 @@ import { core } from "../Core";
 import { FileUtil } from "./FileUtil";
 
 import * as RNLocalize from "react-native-localize";
-import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/ScenePictureGallery";
 import { Get } from "./GetUtil";
+import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
 
 export const DataUtil = {
 

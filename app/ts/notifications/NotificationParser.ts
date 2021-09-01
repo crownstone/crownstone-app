@@ -1,22 +1,20 @@
-import { core } from "../Core";
-import { NavigationUtil } from "../util/NavigationUtil";
-import { Platform } from "react-native";
-import { CLOUD } from "../cloud/cloudAPI";
-import { LocalNotifications } from "./LocalNotifications";
-import { MessageCenter } from "../backgroundProcesses/MessageCenter";
+import { core }                  from "../Core";
+import { NavigationUtil }        from "../util/NavigationUtil";
+import { Platform }              from "react-native";
+import { CLOUD }                 from "../cloud/cloudAPI";
+import { LocalNotifications }    from "./LocalNotifications";
+import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
 import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
-import { MapProvider } from "../backgroundProcesses/MapProvider";
-import { SphereUserSyncer } from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
-import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
-import { StoneUtil } from "../util/StoneUtil";
-import { INTENTS } from "../native/libInterface/Constants";
-import { InviteCenter } from "../backgroundProcesses/InviteCenter";
-import { tell } from "../logic/constellation/Tellers";
+import { MapProvider }           from "../backgroundProcesses/MapProvider";
+import { SphereUserSyncer }      from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
+import { getGlobalIdMap }        from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import { INTENTS }               from "../native/libInterface/Constants";
+import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
+import { tell }                  from "../logic/constellation/Tellers";
 
 class NotificationParserClass {
 
   timekeeper = {};
-
 
   handle(notificationData) {
     if (notificationData && notificationData.command) {
@@ -205,13 +203,13 @@ class NotificationParserClass {
           break;
         case "TURN_ON":
           actionToPerform = true;
-          tell(stone).turnOn(true).catch();
+          tell(stone).turnOn(true).catch((err) => {});
           return;
         default:
           return;
       }
       actionToPerform = true;
-      tell(stone).multiSwitch(switchState,true).catch();
+      tell(stone).multiSwitch(switchState,true).catch((err) => {});
     });
   }
 }

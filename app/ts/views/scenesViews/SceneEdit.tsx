@@ -20,8 +20,8 @@ import { DataUtil } from "../../util/DataUtil";
 import { StoneSwitchStateRow } from "./SceneAdd";
 import { IconButton } from "../components/IconButton";
 import { background, colors } from "../styles";
-import { PICTURE_GALLERY_TYPES } from "./ScenePictureGallery";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { PICTURE_GALLERY_TYPES } from "./constants/SceneConstants";
 
 export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}, any> {
   static options(props) {

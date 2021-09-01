@@ -28,6 +28,40 @@ export function mockReactNative() {
   mockRN.reset = () => { mockRN.appState = 'active' }
   return mockRN;
 }
+jest.mock("react-native-navigation", () => {
+  return {
+    Navigation:{
+      events:jest.fn()
+    }}
+})
+
+jest.mock("react-native-extra-dimensions-android", () => {
+  return jest.fn()
+})
+
+jest.mock("react-native-device-info", () => {
+  return jest.fn()
+})
+
+jest.mock("react-native-image-resizer", () => {
+  return jest.fn()
+})
+
+jest.mock("../../../../app/ts/views/styles", () => {
+  return jest.fn()
+})
+
+jest.mock("react-native-localize", () => {
+  return jest.fn()
+})
+
+jest.mock("@react-native-async-storage/async-storage", () => {
+  return jest.fn()
+})
+
+jest.mock("react-native-fs", () => {
+  return jest.fn()
+})
 
 jest.mock("@bugsnag/react-native", () => {
   return jest.fn()

@@ -2,7 +2,7 @@ import { core } from "../Core";
 import { NativeBus } from "../native/libInterface/NativeBus";
 
 
-const NUMBER_OF_DATA_ELEMENTS = 60;
+export const CACHE_TIME = 80*1000 // 80 seconds
 
 class PowerUsageCacherClass {
 
@@ -59,17 +59,29 @@ class PowerUsageCacherClass {
 
     this.data[adv.referenceId][adv.handle].push({x: now, y: Math.max(0,adv.serviceData.powerUsageReal)})
 
-    if (this.data[adv.referenceId][adv.handle].length > NUMBER_OF_DATA_ELEMENTS) {
+    this.clean(adv);
+  }
+
+
+  // remove old data so we only keep a cache of CACHE_TIME length.
+  clean(adv) {
+    let now = Date.now();
+    if (now - this.data[adv.referenceId][adv.handle][0].x > CACHE_TIME) {
       this.data[adv.referenceId][adv.handle].shift();
+      this.clean(adv);
     }
   }
 
 
   getData(sphereId, handle) : GraphData[] {
-    if (this.data[sphereId] && this.data[sphereId][handle]) {
-      return this.data[sphereId][handle];
+    if (this.data[sphereId] === undefined) {
+      this.data[sphereId] = {};
     }
-    return [];
+    if (this.data[sphereId][handle] === undefined) {
+      this.data[sphereId][handle] = [];
+    }
+
+    return this.data[sphereId][handle];
   }
 
 

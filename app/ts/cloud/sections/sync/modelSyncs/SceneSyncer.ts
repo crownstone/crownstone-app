@@ -10,7 +10,7 @@ import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { transferScenes } from "../../../transferData/transferScenes";
 import { FileUtil } from "../../../../util/FileUtil";
-import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
+import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/constants/SceneConstants";
 
 export class SceneSyncer extends SyncingSphereItemBase {
 

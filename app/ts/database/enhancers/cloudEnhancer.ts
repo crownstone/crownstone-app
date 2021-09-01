@@ -11,12 +11,12 @@ import { transferLocations}            from "../../cloud/transferData/transferLo
 import { core }                        from "../../Core";
 import { BATCH }                       from "../reducers/BatchReducer";
 import { transferBehaviours }          from "../../cloud/transferData/transferBehaviours";
-import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/ScenePictureGallery";
 import { transferScenes }              from "../../cloud/transferData/transferScenes";
 import { StoneAbilitySyncer }          from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
 import { getGlobalIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
 import { StoneSyncer }                 from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
 import { HubSyncer }                   from "../../cloud/sections/newSync/syncers/HubSyncerNext";
+import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/constants/SceneConstants";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {

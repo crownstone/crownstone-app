@@ -3,6 +3,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { Get } from "../../util/GetUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
 import { LOGd, LOGi } from "../../logging/Log";
+import mesh from "../../database/reducers/stoneSubReducers/mesh";
 
 
 
@@ -26,10 +27,9 @@ export const BleCommandCleaner =  {
         if (command.commanderId === existing.commanderId && existing.private) {
           if (BleCommandCleaner.handleCommand(command, existing)) { continue; }
         }
-
       }
       else if (existing.private) {
-        // do not touch whats not yours! Shoo!
+        // do not touch what is not yours! Shoo!
       }
       else {
         // check if this is a duplicate
@@ -48,8 +48,8 @@ export const BleCommandCleaner =  {
    * @param existingCommand
    */
   handleCommand(command: BleCommand, existingCommand: BleCommand) : boolean {
-    if (BleCommandCleaner._isDuplicate(command.command, existingCommand.command) && BleCommandCleaner._canBeRemoved(existingCommand)) {
-      LOGi.constellation("BleCommandCleaner: Removed command due to duplicate", command.commandType, command.command)
+    if (BleCommandCleaner._isDuplicate(command, existingCommand) && BleCommandCleaner._canBeRemoved(existingCommand)) {
+      LOGi.constellation("BleCommandCleaner: Removed command due to duplicate", command.endTarget, existingCommand.endTarget, command.commandType, command.command)
       BleCommandCleaner._removeCommand(existingCommand);
       return true;
     }
@@ -83,8 +83,15 @@ export const BleCommandCleaner =  {
       if (meshCommands) {
         let cleanedCommandList = [];
         for (let meshCommand of meshCommands) {
-          if (BleCommandCleaner.handleCommand(command, meshCommand)) {
-            continue;
+          // if the new command is a meshRelay command, the endTarget is populated. If that is the case, only check for duplicates if that matches the
+          // exising mesh command.
+
+          // if the new command does not have an endtarget, the command is just a mesh command, like setTime or registerTrackedDevice
+          // in that case, we also only want to compare those who have no endTarget defines
+          if (command.endTarget === meshCommand.endTarget) {
+            if (BleCommandCleaner.handleCommand(command, meshCommand)) {
+              continue;
+            }
           }
           cleanedCommandList.push(meshCommand);
         }
@@ -105,8 +112,8 @@ export const BleCommandCleaner =  {
     return true;
   },
 
-  _isDuplicate(newCommand: CommandInterface, existingCommand: CommandInterface) : boolean {
-    return newCommand.isDuplicate(existingCommand)
+  _isDuplicate(newCommand: BleCommand, existingCommand: BleCommand) : boolean {
+    return newCommand.command.isDuplicate(existingCommand.command)
   },
 
 

@@ -60,17 +60,12 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
       if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
         let now = Date.now();
-        // throttling
+        // throttling; do not show repeated advertisements
         if (data.serviceData.uniqueElement === this.uniqueElement) {
           return;
         }
 
-        this.uniqueElement = data.serviceData.uniqueElement
-        this.data.push({x: now, y: Math.max(0,data.serviceData.powerUsageReal)})
-
-        if (this.data.length > 50) {
-          this.data.shift()
-        }
+        this.uniqueElement = data.serviceData.uniqueElement;
 
         this.hash = Math.random();
         this.forceUpdate();

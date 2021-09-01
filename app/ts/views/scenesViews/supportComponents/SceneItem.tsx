@@ -7,11 +7,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 import { default as React, useEffect, useState }          from "react";
 import { colors, screenWidth, styles }                    from "../../styles";
 import { ActivityIndicator, Alert, Image, Text, TextStyle, TouchableOpacity, View } from "react-native";
-import { SceneConstants }                                 from "../constants/SceneConstants";
+import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST, SceneConstants } from "../constants/SceneConstants";
 import { SlideSideFadeInView }                            from "../../components/animated/SlideFadeInView";
 import { Icon }                                           from "../../components/Icon";
 import { AlternatingContent }                             from "../../components/animated/AlternatingContent";
-import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../ScenePictureGallery";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../Core";

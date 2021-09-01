@@ -1,4 +1,4 @@
-import {LOG, LOGe}            from "../logging/Log";
+import { LOG, LOGe }          from "../logging/Log";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";

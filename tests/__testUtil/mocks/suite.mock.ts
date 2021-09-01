@@ -5,14 +5,29 @@ import { mockReactNative } from "./react-native/react-native.mock";
 let mockRN = mockReactNative();
 
 import { mockBluenet } from "./bluenet.mock";
-let mockedBluenet = mockBluenet()
+let mockedBluenet = mockBluenet();
+
+import { mockNavigationUtil } from "./navigationUtil.mock";
+mockNavigationUtil();
+
+import { mockLanguages } from "./languages.mock";
+mockLanguages()
+
+import { mockCloud } from "./cloud.mock";
+mockCloud()
+
+import { mockLocalNotifications } from "./localNotifications.mock";
+mockLocalNotifications()
+
+import { mockInviteCenter } from "./uiModules/InviteCenter.mock";
+mockInviteCenter()
 
 import { mockLogger } from "./logger.mock";
 let silenceMap = {
   info:           true,
   promiseManager: true,
   broadcast:      true,
-  constellation:  false,
+  constellation:  true,
   notifications:  true,
   event:          true,
   cloud:          true,
@@ -27,7 +42,7 @@ let silenceMap = {
   messages:       true,
   native:         true,
   nav:            true,
-}
+};
 let enabledMap = { v: false, d: true, i: true, w: true, e: true };
 mockLogger(enabledMap, silenceMap);
 

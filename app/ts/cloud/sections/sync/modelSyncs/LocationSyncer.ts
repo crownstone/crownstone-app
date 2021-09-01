@@ -12,7 +12,6 @@ import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {LOGe} from "../../../../logging/Log";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { FileUtil } from "../../../../util/FileUtil";
-import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   download() {

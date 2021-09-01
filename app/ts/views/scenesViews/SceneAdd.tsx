@@ -21,11 +21,11 @@ import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/Sli
 import Slider from "@react-native-community/slider";
 import { FileUtil } from "../../util/FileUtil";
 import { PictureGallerySelector } from "../components/PictureGallerySelector";
-import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./ScenePictureGallery";
 import { xUtil } from "../../util/StandAloneUtil";
 import { processImage, processStockCustomImage, removeStockCustomImage } from "../../util/Util";
 import { executeScene, getScenePictureSource } from "./supportComponents/SceneItem";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
+import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./constants/SceneConstants";
 
 const SCENE_ADD_CLASSNAME = "SceneAdd";
 

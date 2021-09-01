@@ -20,9 +20,9 @@ import { PresenceSyncer } from "./PresenceSyncer";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { DataUtil } from "../../../../util/DataUtil";
 import { FileUtil } from "../../../../util/FileUtil";
-import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
 import { SceneSyncer } from "./SceneSyncer";
 import { core } from "../../../../Core";
+import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/constants/SceneConstants";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
