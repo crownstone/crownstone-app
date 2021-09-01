@@ -51,7 +51,6 @@ export class AddCrownstone extends LiveComponent<any, any> {
         options: [
           {label: lang("Plug"),                       image: {source: require('../../../assets/images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: lang("A_Plug_it_is_")},
           {label: lang("Built_in_One"),               image: {source: require('../../../assets/images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: lang("Lets_add_a_Built_in_One_")},
-          {label: lang("Built_in_Zero"),              image: {source: require('../../../assets/images/addCrownstone/builtin-v1.png')}, nextCard: 'installingBuiltinZero_step1', response: lang("Lets_add_a_Built_in_Zero_")},
           {label: lang("Hub"),                        image: {source: require('../../../assets/images/addCrownstone/hub.png')},        nextCard: 'installingHub_step1' },
           {label: lang("Guidestone"),                 image: {source: require('../../../assets/images/addCrownstone/guidestone.png')}, nextCard: 'installingGuidestone',        response: lang("Lets_add_a_Guidestone_")},
           {label: lang("Crownstone_USB"),             image: {source: require('../../../assets/images/addCrownstone/crownstone_usb.png')}, nextCard: 'installingUSB',           response: lang("Lets_add_a_Crownstone_USB")},
@@ -110,15 +109,6 @@ export class AddCrownstone extends LiveComponent<any, any> {
         backgroundImage: require('../../../assets/images/backgrounds/plugBackground.jpg'),
         options: [
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
-        ]
-      },
-      installingBuiltinZero_step1: {
-        subHeader: lang("Is_the_Built_in_Zero_alre"),
-        backgroundImage: require('../../../assets/images/backgrounds/builtinZeroBackground.jpg'),
-        options: [
-          {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
-          {label: lang("Yes__at_a_ceiling_light_"), nextCard: "installingBuiltin_endLight"},
-          {label: lang("Not_yet_"),                 nextCard: "installingBuiltin_step2"},
         ]
       },
       installingBuiltinOne_step1: {

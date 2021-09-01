@@ -281,7 +281,7 @@ export class SetupHelper {
       }, false)
         .then(resolve)
         .catch((err) => {
-          if (err?.code === 422) {
+          if (err?.status === 422) {
             CLOUD.forSphere(sphereId).findStone(this.macAddress)
               .then((foundCrownstones) => {
                 if (foundCrownstones.length === 1) {

@@ -269,7 +269,7 @@ lang("_Something_went_wrong_____body"),
       CLOUD.deleteHub(hub.data.config.cloudId)
         .catch((err) => {
           return new Promise<void>((resolve, reject) => {
-            if (err && err?.code === 404) {
+            if (err && err?.status === 404) {
               resolve();
             }
           })
@@ -278,7 +278,7 @@ lang("_Something_went_wrong_____body"),
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise<void>((resolve, reject) => {
-          if (err && err?.code === 404) {
+          if (err && err?.status === 404) {
             resolve();
           }
           else {
@@ -306,7 +306,7 @@ lang("_Something_went_wrong_____body"),
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise<void>((resolve, reject) => {
-          if (err && err?.code === 404) {
+          if (err && err?.status === 404) {
             resolve();
           }
           else {
