@@ -24,41 +24,30 @@ export class HubRequestHandler {
     this.authorizationToken = DataUtil.getAuthorizationTokenFromSphere(sphere);
   }
 
-  async post(endpoint: string, options?: RequestOptions) {
+  async post<T>(endpoint: string, options?: RequestOptions) : Promise<T> {
     return this.request("POST", endpoint, options);
   }
 
-  async get(endpoint: string, options?: RequestOptions) {
+  async get<T>(endpoint: string, options?: RequestOptions) : Promise<T> {
     return this.request("GET", endpoint, options);
   }
 
-  async delete(endpoint: string, options?: RequestOptions) {
+  async delete<T>(endpoint: string, options?: RequestOptions) : Promise<T> {
     return this.request("DELETE", endpoint, options);
   }
 
-  async put(endpoint: string, options?: RequestOptions) {
+  async put<T>(endpoint: string, options?: RequestOptions) : Promise<T> {
     return this.request("PUT", endpoint, options);
   }
 
-  async request<T>(method : HTTPmethod, endpoint : string, options: RequestOptions = {}) : Promise<CloudResponse<T>> {
-    try {
-      let result = await this._request<T>(method, endpoint, options);
-      if (result.status === 200 || result.status === 204) {
-        return result;
-      }
-
-      // this result failed.
-      throw result;
+  async request<T>(method : HTTPmethod, endpoint : string, options: RequestOptions = {}) : Promise<T> {
+    let result = await this._request<T>(method, endpoint, options);
+    if (result.status === 200 || result.status === 204) {
+      return result.data;
     }
-    catch (err) {
-      if (err?.message === "REQUEST_TIMEOUT") {
-        // throw new Error({})
-      }
-      else if (err?. message === "HUB_UNREACHABLE") {
 
-      }
-
-    }
+    // this result failed.
+    throw result;
   }
 
   async _request<T>(method : HTTPmethod, endpoint : string, options: RequestOptions = {}) : Promise<CloudResponse<T>> {
@@ -84,7 +73,7 @@ export class HubRequestHandler {
 
       let requestInit : RequestInit = { method: method, headers: {...defaultHeaders, Authorization: this.authorizationToken}};
       if (options.body) {
-        requestInit.body = encodeURIComponent(JSON.stringify(options.body));
+        requestInit.body = JSON.stringify(options.body);
       }
 
       // attempt to fetch the url
