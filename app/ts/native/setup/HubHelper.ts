@@ -16,7 +16,7 @@ import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 import { Get } from "../../util/GetUtil";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
-import { CodedError, CodedTypedError } from "../../util/Errors";
+import { CodedTypedError, CodedError } from "../../util/Errors";
 
 
 const networkError = 'network_error';
@@ -111,7 +111,7 @@ export class HubHelper {
       if (tokenResult.type === 'error') {
         try { await CLOUD.deleteHub(hubCloudId); } catch (e) {}
         core.store.dispatch({type: "REMOVE_HUB", sphereId, hubId: hubId});
-        throw new CodedTypedError(15,tokenResult.errorType,"Something went wrong during the transferHubTokenAndCloudId");
+        throw new CodedTypedError(15, tokenResult.errorType,"Something went wrong during the transferHubTokenAndCloudId");
       }
       LOG.info("hubSetupProgress: token and sphereId has been transferrred");
     }
@@ -291,7 +291,7 @@ export class HubHelper {
       LOG.info("hubFactoryResetHubONLYProgress: Factory resetting hub only...");
       let result = await api.factoryResetHubOnly();
       if (result.type === 'error') {
-        throw new CodedTypedError(3,result.errorType,"Something went wrong while resetting hub only." );
+        throw new CodedTypedError(3, result.errorType,"Something went wrong while resetting hub only." );
       }
       await Scheduler.delay(2000, 'wait for hub to initialize');
     }

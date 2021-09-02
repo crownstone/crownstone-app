@@ -419,7 +419,7 @@ export class StoneEntity {
       let hub = DataUtil.getHubByStoneId(this.sphereId, this.stoneId);
       if (hub) {
         this.hubId = hub.id;
-        hubItem = hub.data;
+        hubItem = hub;
       }
     }
 

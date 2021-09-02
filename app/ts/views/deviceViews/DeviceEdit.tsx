@@ -265,8 +265,8 @@ lang("_Something_went_wrong_____body"),
   _removeCloudOnly()  {
     core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
     let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
-    if (hub && hub.data.config.cloudId) {
-      CLOUD.deleteHub(hub.data.config.cloudId)
+    if (hub && hub.config.cloudId) {
+      CLOUD.deleteHub(hub.config.cloudId)
         .catch((err) => {
           return new Promise<void>((resolve, reject) => {
             if (err && err?.status === 404) {

@@ -1,6 +1,5 @@
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOGe } from '../logging/Log'
-
 import { KEY_TYPES, STONE_TYPES } from "../Enums";
 
 import DeviceInfo from 'react-native-device-info';
@@ -82,6 +81,24 @@ export const DataUtil = {
   },
 
 
+  getSphereFromHub: function(hub: HubData) : SphereData | null {
+    let state = core.store.getState()
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      for (let hubId in sphere.hubs) {
+        if (hubId === hub.id) {
+          return sphere;
+        }
+      }
+    }
+    return null;
+  },
+
+  getAuthorizationTokenFromSphere: function(sphere: SphereData) : string | null {
+    return sphere.keys[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key ?? null;
+  },
+
+
   getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
       let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
@@ -112,7 +129,7 @@ export const DataUtil = {
     return stone || null;
   },
 
-  getHubByCloudId(sphereId, hubCloudId: string) : FoundHubResult | null {
+  getHubByCloudId(sphereId, hubCloudId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
@@ -122,13 +139,13 @@ export const DataUtil = {
     for (let i = 0; i < hubIds.length; i++) {
       let hub = sphere.hubs[hubIds[i]];
       if (hub.config.cloudId === hubCloudId) {
-        return {id: hubIds[i], data: hub};
+        return hub;
       }
     }
     return null;
   },
 
-  getHubByStoneId(sphereId, stoneId: string) : FoundHubResult | null {
+  getHubByStoneId(sphereId, stoneId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
@@ -138,13 +155,13 @@ export const DataUtil = {
     for (let i = 0; i < hubIds.length; i++) {
       let hub = sphere.hubs[hubIds[i]];
       if (hub.config.linkedStoneId === stoneId) {
-        return {id: hubIds[i], data: hub};
+        return hub;
       }
     }
     return null;
   },
 
-  getAllHubsWithStoneId(sphereId, stoneId: string) : FoundHubResult[] {
+  getAllHubsWithStoneId(sphereId, stoneId: string) : HubData[] {
     let results = [];
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -155,7 +172,7 @@ export const DataUtil = {
     for (let i = 0; i < hubIds.length; i++) {
       let hub = sphere.hubs[hubIds[i]];
       if (hub.config.linkedStoneId === stoneId) {
-        results.push({id: hubIds[i], data: hub});
+        results.push(hub);
       }
     }
     return results;

@@ -9,8 +9,9 @@ import { xUtil } from "../util/StandAloneUtil";
 import { FileUtil } from "../util/FileUtil";
 
 
+
+
 /**
- *
  * This method communicates with the cloud services.
  *
  * @param options        // { endPoint: '/users/', data: JSON, type:'body'/'query' }
@@ -20,13 +21,13 @@ import { FileUtil } from "../util/FileUtil";
  * @param accessToken
  * @param doNotStringify
  */
-export function request(
+export async function request(
   options : any,
   method : string,
   headers : HeaderObject = defaultHeaders,
   id : string,
   accessToken : string,
-  doNotStringify? : boolean) {
+  doNotStringify? : boolean) : Promise<CloudResponse<any>> {
   // append _accessToken, data that goes into the query and insert ids
   let { endPoint, body } = prepareEndpointAndBody(options, id, doNotStringify);
 
@@ -35,12 +36,74 @@ export function request(
   // setup the request configuration
   let requestConfig = { method, headers, body };
 
-  // two semi-global variables in this promise:
-  let STATUS = 0;
+  let logToken = xUtil.getToken();
 
-  // parse the reply
-  let handleInitialReply = (response) => {
-    STATUS = response.status;
+
+  let url = endPoint;
+  if (endPoint.substr(0,4) !== 'http') {
+    url = CLOUD_ADDRESS + endPoint;
+  }
+
+  LOG.cloud(method,"requesting from URL:", url, "config:", requestConfig, logToken);
+
+  // the actual request
+  return new Promise((resolve, reject) => {
+    // this will eliminate all cloud requests.
+    if (SILENCE_CLOUD === true) {
+      throw new Error("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");
+    }
+
+    let requestDidTimeout = false;
+    let finishedRequest = false;
+
+
+    // add a timeout for the fetching of data.
+    let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
+      requestDidTimeout = true;
+      if (finishedRequest !== true)
+        reject(new Error('Network request to ' + url + ' failed by timeout'))
+    }, NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
+
+
+    let responseHandler = new ResponseHandler()
+    fetch(url, requestConfig as any)
+      .catch((connectionError) => {
+        if (requestDidTimeout === false) {
+          reject(new Error('Network request to ' + url + ' failed'));
+        }
+      })
+      .then((response) => {
+        if (requestDidTimeout === false) {
+          cancelFallbackCallback();
+          return responseHandler.handle(response);
+        }
+      })
+      .catch((parseError) => {
+        // TODO: cleanly fix this
+        LOGe.cloud("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
+        return '';
+      })
+      .then((parsedResponse) => {
+        if (requestDidTimeout === false) {
+          LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: responseHandler.status, data: parsedResponse}, logToken);
+          finishedRequest = true;
+          resolve({status: responseHandler.status, data: parsedResponse});
+        }
+      })
+      .catch((err) => {
+        if (requestDidTimeout === false) {
+          finishedRequest = true;
+          reject(err);
+        }
+      })
+  });
+}
+
+export class ResponseHandler {
+  status = 0;
+
+  async handle(response) {
+    this.status = response.status;
     if (response &&
       response.headers &&
       response.headers.map &&
@@ -73,67 +136,9 @@ export function request(
       }
     }
     return response.text(); // this is a promise
-  };
-
-  let logToken = xUtil.getToken();
-
-  let url = endPoint;
-  if (endPoint.substr(0,4) !== 'http') {
-    url = CLOUD_ADDRESS + endPoint;
   }
-
-  LOG.cloud(method,"requesting from URL:", url, "config:", requestConfig, logToken);
-
-  // the actual request
-  return new Promise((resolve, reject) => {
-    // this will eliminate all cloud requests.
-    if (SILENCE_CLOUD === true) {
-      reject(new Error("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on."));
-    }
-    else {
-      let stopRequest = false;
-      let finishedRequest = false;
-      // add a timeout for the fetching of data.
-      let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
-          stopRequest = true;
-          if (finishedRequest !== true)
-            reject(new Error('Network request to ' + url + ' failed'))
-        },
-      NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
-
-      fetch(url, requestConfig as any)
-        .catch((connectionError) => {
-          if (stopRequest === false) {
-            reject(new Error('Network request to ' + url + ' failed'));
-          }
-        })
-        .then((response) => {
-          if (stopRequest === false) {
-            cancelFallbackCallback();
-            return handleInitialReply(response);
-          }
-        })
-        .catch((parseError) => {
-          // TODO: cleanly fix this
-          // LOGe.cloud("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
-          return '';
-        })
-        .then((parsedResponse) => {
-          if (stopRequest === false) {
-            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse}, logToken);
-            finishedRequest = true;
-            resolve({status: STATUS, data: parsedResponse});
-          }
-        })
-        .catch((err) => {
-          if (stopRequest === false) {
-            finishedRequest = true;
-            reject(err);
-          }
-        })
-    }
-  });
 }
+
 /**
  * 
  * @param options

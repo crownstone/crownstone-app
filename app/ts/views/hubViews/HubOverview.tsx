@@ -53,6 +53,7 @@ import { ListEditableItems } from "../components/ListEditableItems";
 import { IconButton } from "../components/IconButton";
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { WebRtcClient } from "../../logic/WebRtcClient";
+import { DebugIcon } from "../components/DebugIcon";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -161,27 +162,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   }
 
 
-  _getDebugIcon(stone) {
-    let wrapperStyle : ViewStyle = {
-      width: 35,
-      height: 35,
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      alignItems: 'center',
-      justifyContent: "center"
-    };
-    return (
-      <TouchableOpacity
-        onPress={() => { NavigationUtil.navigate( "SettingsStoneBleDebug",{sphereId: this.props.sphereId, stoneId: this.props.stoneId}) }}
-        style={wrapperStyle}>
-        <Icon name={"ios-bug"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
-      </TouchableOpacity>
-    );
-  }
-
-
-
   _getStoneIcon(stone, updateAvailable) {
     let iconColor = colors.white.rgba(1);
     let size = 0.25*availableScreenHeight;
@@ -219,11 +199,11 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
 
 
-  getStateEntries(stone: StoneData | null, hub: FoundHubResult | null, hubs: FoundHubResult[]) {
+  getStateEntries(stone: StoneData | null, hub: HubData | null, hubs: HubData[]) {
     let entries = [];
     let index = 5000;
     let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
-    let hubState = hub?.data?.state;
+    let hubState = hub?.state;
     let helper = new HubHelper();
 
     if (this.state.fixing) {
@@ -402,7 +382,7 @@ lang("_Something_went_wrong_____Ple_body"),
     }
 
 
-    if (!hub.data.config.cloudId) {
+    if (!hub.config.cloudId) {
       return (
         <View key={"HubCloudMissing"} style={{...styles.centered, flex:1, padding:15}}>
           <Text style={textStyle}>{ lang("This_hub_does_not_exist_i") }</Text>
@@ -451,9 +431,9 @@ lang("_Something_went_wrong_____Ple_body"),
               }
               catch(err) {
                 Alert.alert(
-lang("_Something_went_wrong_____Plea_header"),
-lang("_Something_went_wrong_____Plea_body"),
-[{text:lang("_Something_went_wrong_____Plea_left")}]);
+                  lang("_Something_went_wrong_____Plea_header"),
+                  lang("_Something_went_wrong_____Plea_body"),
+                  [{text:lang("_Something_went_wrong_____Plea_left")}]);
                 this.setState({fixing:false});
               }
             }}
@@ -462,16 +442,15 @@ lang("_Something_went_wrong_____Plea_body"),
       );
     }
 
-    // TODO: this is ignored for now because we might not want to make the cloud mandatory...
-    // TODO: further discussion is required.
-    // if (CLOUD.lastSyncTimestamp > hub.data.config.lastSeenOnCloud && Date.now() - hub.data.config.lastSeenOnCloud > 1800*1000) {
-    //   return (
-    //     <View key={"HubDidNotReport"} style={{...styles.centered, flex:1, padding:15}}>
-    //       <Text style={textStyle}>{ lang("The_hub_did_not_report") }</Text>
-    //       <View style={{flex:1}}/>
-    //     </View>
-    //   );
-    // }
+    // if the last time we synced is later than what we have stored as last seen on cloud, and it is more than 30 mins ago.
+    if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800*1000) {
+      return (
+        <View key={"HubDidNotReport"} style={{...styles.centered, flex:1, padding:15}}>
+          <Text style={textStyle}>{ lang("The_hub_did_not_report") }</Text>
+          <View style={{flex:1}}/>
+        </View>
+      );
+    }
 
     if (hubState.hubHasInternet === false) {
       return (
@@ -492,11 +471,11 @@ lang("_Something_went_wrong_____Plea_body"),
     }
 
     if (hubState.uartAlive && hubState.uartAliveEncrypted) {
-      if (hub.data.config.ipAddress) {
+      if (hub.config.ipAddress) {
         return (
           <View key={"HubIPAddress"} style={{...styles.centered, flex:1, padding:15}}>
             <Text style={textStyle}>{ lang("Everything_is_looking_goo") }</Text>
-            <Text style={{...textStyle, fontSize: 20}}>{hub.data.config.ipAddress}</Text>
+            <Text style={{...textStyle, fontSize: 20}}>{hub.config.ipAddress}</Text>
             <View style={{flex:1}}/>
           </View>
         )
@@ -559,9 +538,9 @@ lang("_Something_went_wrong_____Plea_body"),
         let requestCloudId = await helper.getCloudIdFromHub(this.props.sphereId, this.props.stoneId);
         let foundMatch = false
         for (let item of hubs) {
-          if (requestCloudId && item?.data?.config?.cloudId !== requestCloudId || foundMatch) {
-            if (item?.data?.config?.cloudId) {
-              try { await CLOUD.deleteHub(item.data.config.cloudId); } catch (e) { }
+          if (requestCloudId && item?.config?.cloudId !== requestCloudId || foundMatch) {
+            if (item?.config?.cloudId) {
+              try { await CLOUD.deleteHub(item.config.cloudId); } catch (e) { }
             }
             core.store.dispatch({type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: item.id});
           }
@@ -585,23 +564,30 @@ lang("_Something_went_wrong_____Pleas_body"),
     }
   }
 
-  _getHubOverviewContent(sphere, stone) {
+
+  render() {
     const state = core.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) {
+      return <SphereDeleted/>
+    }
+    const stone = sphere.stones[this.props.stoneId];
     const hubs = DataUtil.getAllHubsWithStoneId(this.props.sphereId, this.props.stoneId);
     let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
     if (!hub) {
       let directHub = DataUtil.getHubById(this.props.sphereId, this.props.hubId);
       if (directHub) {
-        hub = {id:this.props.hubId, data:directHub};
+        hub = directHub;
       }
     }
 
     let updateAvailable = stone &&
-                          stone.config.firmwareVersion &&
-                          ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+      stone.config.firmwareVersion &&
+      ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+
 
     return (
-      <View style={{height:availableScreenHeight, width: screenWidth}}>
+      <Background image={background.lightBlur}>
         <View style={{flex:0.5}} />
 
         { this._getStoneIcon(stone, updateAvailable) }
@@ -612,86 +598,7 @@ lang("_Something_went_wrong_____Pleas_body"),
         {this.getStateEntries(stone, hub, hubs)}
 
         <View style={{flex:0.25}} />
-      </View>
-    )
-  }
-
-  _getDeveloperOptions() {
-    let devOptions = [];
-    devOptions.push({
-      label: "Enable dev controller",
-      type: 'button',
-      style: { color: colors.iosBlue.hex },
-      icon: <IconButton name="ios-cog" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csOrange.hex }}/>,
-      callback: () => {
-      }
-    });
-    devOptions.push({
-      label: "Enable log controller",
-      type: 'button',
-      style: { color: colors.iosBlue.hex },
-      icon: <IconButton name="ios-copy" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.green.hex }}/>,
-      callback: () => {
-      }
-    });
-    devOptions.push({
-      label: "Get active options...",
-      type: 'button',
-      style: { color: colors.iosBlue.hex },
-      icon: <IconButton name="md-cloud-download" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.iosBlue.hex }}/>,
-      callback: () => {
-      }
-    });
-    devOptions.push({type:'explanation', label:"AVAILABLE OPTIONS"})
-    devOptions.push({
-      label: "Get active options first...",
-      type: 'info',
-      icon: <IconButton name="md-hand" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-      callback: (newValue) => {
-
-      }
-    });
-    devOptions.push({
-      label: "Act on switch events",
-      value: true,
-      disabled: true,
-      type: 'switch',
-      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-      callback: (newValue) => {
-
-      }
-    });
-
-    return (
-      <View style={{height:availableScreenHeight, width: screenWidth}}>
-        <View style={{flex:0.25}} />
-        <Text style={deviceStyles.header}>Developer options</Text>
-        <View style={{flex:0.1}} />
-        <ListEditableItems items={devOptions} separatorIndent={true}/>
-        <View style={{flex:0.1}} />
-        <View style={{flex:0.25}} />
-      </View>
-    );
-  }
-
-  render() {
-    const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) {
-      return <SphereDeleted/>
-    }
-    const stone = sphere.stones[this.props.stoneId];
-
-    return (
-      <Background image={background.lightBlur}>
-        { state.user.developer ? (
-          <ScrollView contentContainerStyle={{flexGrow:1}}>
-            { this._getHubOverviewContent(sphere, stone) }
-            { this._getDeveloperOptions() }
-          </ScrollView>
-          ) : this._getHubOverviewContent(sphere, stone)
-        }
-        { state.user.developer && this._getDebugIcon(stone) }
+        <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} customView={'SettingsDevHub'} />
       </Background>
     )
   }

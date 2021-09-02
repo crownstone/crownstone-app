@@ -168,7 +168,7 @@ export class HubEntry extends Component<{
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
-    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId)?.data || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
+    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId) || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
     let name = stone?.config?.name || hub?.config?.name;
 
     let WrapperElement : any = TouchableOpacity;
@@ -191,11 +191,9 @@ export class HubEntry extends Component<{
     if (!hub) { hubProblem = true; }
     else {
       // not seen for too long.
-      // TODO: this is ignored for now because we might not want to make the cloud mandatory...
-      // TODO: further discussion is required.
-      // if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800*1000) {
-      //   hubProblem = true;
-      // }
+      if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800*1000) {
+        hubProblem = true;
+      }
 
       hubProblem = hubProblem || !hub.state.uartAlive;
       hubProblem = hubProblem || !hub.state.uartAliveEncrypted;

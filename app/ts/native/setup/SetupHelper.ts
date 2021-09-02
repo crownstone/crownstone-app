@@ -209,7 +209,7 @@ export class SetupHelper {
       if (err?.message == "INVALID_SESSION_DATA" && silent === false) {
         Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
       }
-      else if (err?.message === networkError) {
+      else if (err?.code === networkError) {
         // do nothing, alert was already sent
       }
 

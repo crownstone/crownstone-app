@@ -1,3 +1,10 @@
+export class WebError extends Error {
+  status = null;
+  constructor(status, message?) {
+    super(message);
+    this.status = status;
+  }
+}
 
 export class CodedError extends Error {
   code = null;
@@ -8,12 +15,12 @@ export class CodedError extends Error {
 }
 
 export class CodedTypedError extends Error {
-  code = null;
+  status = null;
   type = null;
-  constructor(code, type, message?) {
+  constructor(status, type, message?) {
     super(message);
-    this.code = code;
-    this.type = code;
+    this.status = status;
+    this.type = type;
   }
 
 }

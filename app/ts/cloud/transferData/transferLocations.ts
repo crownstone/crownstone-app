@@ -3,7 +3,7 @@ import {LOGe} from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
-import { CodedError } from "../../util/Errors";
+import { WebError } from "../../util/Errors";
 
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
@@ -40,7 +40,7 @@ export const transferLocations = {
 
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
-      return Promise.reject(new CodedError(404,"Can not update in cloud, no cloudId available"));
+      return Promise.reject(new WebError(404,"Can not update in cloud, no cloudId available"));
     }
 
     let payload = {};
