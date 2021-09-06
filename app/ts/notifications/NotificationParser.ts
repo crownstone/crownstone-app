@@ -163,10 +163,10 @@ class NotificationParserClass {
       }
       let switchState = Math.min(100, notificationData.switchState);
       if (switchState === 100) {
-        tell(stone).turnOn(true).catch();
+        tell(stone).turnOn(true).catch(() => {});
       }
       else {
-        tell(stone).multiSwitch(switchState,true).catch();
+        tell(stone).multiSwitch(switchState,true).catch(() => {});
       }
     }
   }

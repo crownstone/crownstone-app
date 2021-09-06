@@ -236,6 +236,6 @@ export const executeScene = function(switchData, sphereId: string, sceneId: stri
   Object.keys(correctedList).forEach((stoneCID) => {
     action = true;
     let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-    tell(stoneData.stone).multiSwitch(correctedList[stoneCID]).catch();
+    tell(stoneData.stone).multiSwitch(correctedList[stoneCID]).catch(() => {});
   })
 }

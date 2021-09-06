@@ -227,7 +227,7 @@ export class DeviceEntry extends Component<{
 
 
   async _switch(stone, state) {
-    await StoneUtil.multiSwitch(stone, state,true, true).catch();
+    await StoneUtil.multiSwitch(stone, state,true, true).catch(() => {});
     this._planStoreAction(state);
   }
 
