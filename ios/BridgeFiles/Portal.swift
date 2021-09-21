@@ -11,7 +11,6 @@ import SwiftyJSON
 
 import BluenetLib
 import BluenetShared
-import BluenetLocalization
 
 import WatchConnectivity
 
@@ -24,10 +23,10 @@ class Portal : NSObject {
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
-  open var classifier : CrownstoneBasicClassifier!
 
   var watchStateManager: WatchStateManager!
   
+  var localization : Localization!
   
   open var devEnvironment = false
   var watchBridge : WatchBridge!
@@ -40,10 +39,11 @@ class Portal : NSObject {
     self.watchBridge = WatchBridge()
     self.watchStateManager = WatchStateManager()
     
+    self.localization = Localization()
+    
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
     
     BluenetLib.LOG.setTimestampPrinting(newState: true)
-    self.classifier = CrownstoneBasicClassifier()
         
     self.bluenet = Bluenet(backgroundEnabled: true)
     
@@ -51,9 +51,6 @@ class Portal : NSObject {
     // self.bluenetMotion = BluenetMotion()
     
     self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
-    
-    // insert the classifier that will be used for room-level localization.
-    self.bluenetLocalization.insertClassifier(classifier: self.classifier)
     
     self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
     
@@ -100,6 +97,10 @@ class Portal : NSObject {
   
   func bluenetLocalizationOn(_ topic: String, _ callback: @escaping eventCallback) {
     self.subscriptions.append(self.bluenetLocalization.on(topic, callback))
+  }
+  
+  func localizationOn(_ topic: String, _ callback: @escaping eventCallback) {
+    self.subscriptions.append(self.localization.eventBus.on(topic, callback))
   }
   
   open func applicationDidEnterBackground() {

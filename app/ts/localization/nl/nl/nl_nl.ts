@@ -1868,7 +1868,7 @@ export default {
       You_can_now_teach__when_y:             false,
     },
     The_Next_Step:                          function() { return "Volgende Stap"; },
-    Once_youre_ready__tap_one:              function() { return "Zodra je klaar bent, klik op één om de training te starten!"; },
+    Once_youre_ready__tap_one:              function() { return "Klik op een icoontje om de training van de kamer te starten!"; },
     You_can_now_teach__when_y:              function() { return "Je kunt me nu leren om je in bepaalde kamers te vinden. Dit nieuwe icoon geeft aan dat ik klaar ben om te leren hoe ik deze kamer kan identificeren!"; },
     __filename: "../js/views/overlays/LocalizationSetupStep2.tsx",
   },

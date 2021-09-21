@@ -6,25 +6,29 @@ import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 
 export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
 
-  cloudSphereId: string;
-  cloudId: string;
-  localSphereId: string;
-  localId: string;
-  actions: any[];
-  globalCloudIdMap : globalIdMap;
-  // globalLocalIdMap : globalIdMap;
+  cloudSphereId:    string;
+  cloudId:          string;
+  localSphereId:    string;
+  localId:          string;
+  actions:          any[];
+  transferPromises: Promise<any>[];
+  globalCloudIdMap: globalIdMap;
 
   constructor(options: SyncInterfaceOptions) {
     this.cloudSphereId    = options.cloudSphereId;
     this.cloudId          = options.cloudId;
-    this.globalCloudIdMap = options.globalCloudIdMap, // this is a map of cloudIds and the corresponding localIds that have been created or exist for them.
     this.actions          = options.actions;
+    this.transferPromises = options.transferPromises;
 
-    this.localSphereId = MapProvider.cloud2localMap.spheres[this.cloudSphereId];
-    this.localId       = this.getLocalId()
+    // this is a map of cloudIds and the corresponding localIds that have been created or exist for them.
+    this.globalCloudIdMap = options.globalCloudIdMap,
+
+    this.localSphereId    = MapProvider.cloud2localMap.spheres[this.cloudSphereId];
+    this.localId          = this.getLocalId()
   }
 
-  generateLocalId() : string {
+
+  _generateLocalId() : string {
     let localID = xUtil.getUUID();
     return localID;
   }
@@ -61,7 +65,7 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
     throw new Error("MUST_BE_IMPLEMENTED");
   }
 
-  setReplyWithData(reply: SyncRequestSphereData) {
+  setReplyWithData(reply: SyncRequestSphereData, cloudData: CloudDataFormat) {
     throw new Error("MUST_BE_IMPLEMENTED");
   }
 
@@ -90,7 +94,7 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
         this.removeFromLocal();
         break;
       case "VIEW":
-      // View is requested and plainly added.
+        // View is requested and plainly added.
       case "NEW_DATA_AVAILABLE":
         // Store provided sphere data in database, create if we don't have one yet..
         if (!this.localId) {
@@ -102,7 +106,7 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
         break;
       case "REQUEST_DATA":
         // Fill the reply phase with the sphere so we can update the cloud.
-        this.setReplyWithData(reply)
+        this.setReplyWithData(reply, response.data)
         break;
       default:
       // do nothing.

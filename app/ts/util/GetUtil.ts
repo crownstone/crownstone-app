@@ -26,6 +26,11 @@ export const Get = {
     return null;
   },
 
+  sphereUser(sphereId: string, userId: string) : SphereUserData | null {
+    let sphere = Get.sphere(sphereId);
+    return sphere?.users?.[userId] || null;
+  },
+
   hub(sphereId: string, hubId: string) : HubData | null {
     let sphere = Get.sphere(sphereId);
     return sphere?.hubs?.[hubId] || null;
@@ -39,5 +44,10 @@ export const Get = {
   location(sphereId: string, locationId: string) : LocationData | null {
     let sphere = Get.sphere(sphereId);
     return sphere?.locations?.[locationId] || null;
+  },
+
+  scene(sphereId: string, sceneId: string) : SceneData | null {
+    let sphere = Get.sphere(sphereId);
+    return sphere?.scenes?.[sceneId] || null;
   }
 }

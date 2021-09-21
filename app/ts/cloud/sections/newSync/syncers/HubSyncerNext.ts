@@ -63,7 +63,7 @@ export class HubSyncer extends SyncInterface<HubData, cloud_Hub, cloud_Hub_setta
   }
 
   createLocal(cloudData: cloud_Hub) {
-    let newId = this.generateLocalId();
+    let newId = this._generateLocalId();
     this.globalCloudIdMap.hubs[this.cloudId] = newId;
     this.actions.push({type:"ADD_HUB", sphereId: this.localSphereId, hubId: newId, data: this._mapCloudToLocal(cloudData) })
   }

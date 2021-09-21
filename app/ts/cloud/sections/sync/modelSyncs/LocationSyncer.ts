@@ -13,6 +13,7 @@ import {LOGe} from "../../../../logging/Log";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { FileUtil } from "../../../../util/FileUtil";
 
+
 export class LocationSyncer extends SyncingSphereItemBase {
   download() {
     return CLOUD.forSphere(this.cloudSphereId).getLocations();

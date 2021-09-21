@@ -156,3 +156,46 @@ interface LocationData {
     updatedAt: timestamp,
   }
 }
+
+interface SphereUserData {
+  id:          string,
+  firstName:   string,
+  lastName:    string,
+  email:       string,
+  invitationPending: boolean,
+  present:     boolean,
+  picture:     string,
+  pictureId:   string,
+  accessLevel: ACCESS_ROLE,
+  updatedAt:   number
+}
+
+interface SphereUserDataLocalSettable {
+  firstName?:   string,
+  lastName?:    string,
+  email?:       string,
+  invitationPending?: boolean,
+  language?:    string,
+  picture?:     string,
+  pictureId?:   string,
+  accessLevel?: ACCESS_ROLE,
+  updatedAt?:   number
+}
+
+
+interface UserData {
+  firstName: string,
+  lastName: string,
+  email: string,
+  accessToken: string,
+  passwordHash: string,
+  userId: string,
+  isNew: string,
+  language: string,
+  picture: string,
+  pictureId: string,
+  betaAccess: fstring,
+  uploadLocation: string,
+  uploadSwitchState: string,
+  uploadDeviceDetails: string,
+}

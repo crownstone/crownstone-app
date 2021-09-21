@@ -141,8 +141,6 @@ export class DeviceSyncer extends SyncingBase {
       this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id
       this.currentDeviceId = matchingSpecs.id;
     }
-
-
   }
 
 

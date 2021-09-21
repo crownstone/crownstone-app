@@ -5,4 +5,5 @@ type SyncInterfaceOptions = {
   cloudSphereId: string,
   globalCloudIdMap: globalCloudIdMap
   actions: any[],
+  transferPromises: Promise<any>[]
 }

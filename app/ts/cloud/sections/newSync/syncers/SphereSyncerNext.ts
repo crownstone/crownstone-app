@@ -54,7 +54,7 @@ export class SphereSyncer extends SyncInterface<SphereData, cloud_Sphere, cloud_
   }
 
   createLocal(cloudData: cloud_Sphere) {
-    let newSphereId = this.generateLocalId();
+    let newSphereId = this._generateLocalId();
     this.globalCloudIdMap.spheres[this.cloudId] = newSphereId;
     this.actions.push({type:"ADD_SPHERE", sphereId: newSphereId, data: this.mapCloudToLocal(cloudData) })
   }

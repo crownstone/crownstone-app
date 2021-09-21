@@ -1,14 +1,12 @@
-type SyncCategory = 'abilities'       |
-                    'behaviours'      |
-                    'bootloader'      |
+type SyncCategory = 'bootloader'      |
                     'features'        |
                     'firmware'        |
                     'hubs'            |
                     'keys'            |
                     'locations'       |
                     'messages'        |
-                    'properties'      |
                     'spheres'         |
+                    'sphereUsers'     |
                     'scenes'          |
                     'stones'          |
                     'trackingNumbers' |
@@ -90,8 +88,13 @@ interface SyncRequestSphereData {
     }
     toons?: {
       [toonId: string]: RequestItemCoreType
-    }
+    },
+    users?: SphereUsers
   }
+}
+
+interface SphereUsers {
+  [userId: string] : SphereUserData
 }
 
 interface SyncRequestStoneData {
@@ -193,9 +196,15 @@ interface SyncRequestResponse_Sphere {
       data: SyncResponseItemCore<cloud_Toon>
     }
   },
+  users?: {
+    [userId: string]: {
+      data: SyncResponseCustomItemCore<cloud_UserData>
+    }
+  }
 }
 
-interface SyncResponseItemCore<T extends Entity> {
+
+interface SyncResponseItemCore<T> {
   status: SyncState,
   data?: T,
   error?: SyncError

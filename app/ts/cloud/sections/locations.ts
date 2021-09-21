@@ -3,7 +3,7 @@ import { cloudApiBase } from "./cloudApiBase";
 
 export const locations = {
   getLocations: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":["sphereOverviewPosition","presentPeople"]}}});
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":["presentPeople"]}}});
   },
 
   createLocation: function (data, background = true) {
@@ -20,15 +20,6 @@ export const locations = {
     return cloudApiBase._setupRequest(
       'PUT',
       '/Spheres/{id}/ownedLocations/' + cloudLocationId,
-      {background: background, data: data},
-      'body'
-    );
-  },
-
-  updateLocationPosition: function (data, background = true) {
-    return cloudApiBase._setupRequest(
-      'POST',
-      '/Locations/{id}/sphereOverviewPosition/',
       {background: background, data: data},
       'body'
     );

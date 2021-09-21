@@ -151,7 +151,9 @@ class NavStateManager {
     return false;
   }
 
-  isViewNameAlreadyOpen(name) {
+  isViewNameAlreadyOpen(name) : boolean {
+    if (!this.activeTab) { return false; }
+
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
       if (this.views[this.activeTab][i].name === name) {
         return true;
@@ -160,7 +162,9 @@ class NavStateManager {
     return false;
   }
 
-  isViewIdAlreadyOpen(componentId) {
+  isViewIdAlreadyOpen(componentId) : boolean {
+    if (!this.activeTab) { return false; }
+
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
       if (this.views[this.activeTab][i].id === componentId) {
         return true;

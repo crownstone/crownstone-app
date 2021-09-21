@@ -129,7 +129,7 @@ export const spheres = {
    * @returns {*}
    */
   getSpheres: function (background = true) {
-    return CLOUD._setupRequest('GET', '/users/{id}/spheres', { data: {filter: {include:"floatingLocationPosition"}}, background: background });
+    return CLOUD._setupRequest('GET', '/users/{id}/spheres', { background: background });
   },
 
   getUsers: function (background = true) {
@@ -185,15 +185,6 @@ export const spheres = {
 
   changeUserAccess: function(email, accessLevel, background = false) {
     return CLOUD._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
-  },
-
-  updateFloatingLocationPosition: function (data, background = true) {
-    return CLOUD._setupRequest(
-      'POST',
-      '/Spheres/{id}/floatingLocationPosition/',
-      {background: background, data: data},
-      'body'
-    );
   },
 
   deleteUserFromSphere: function(userId) {

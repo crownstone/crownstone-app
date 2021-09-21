@@ -1,16 +1,20 @@
 type filter = string | number | RegExp
 
+type ACCESS_ROLE = 'admin' | 'member' | 'guest' | 'hub';
+
 interface cloud_UserData {
   id: string,
   firstName: string,
   lastName: string
   language: "en_us" | "nl_nl",
   email: string,
-
-  profilePicId?: string,
-  createdAt: string,
+  profilePicId?:  string,
+  invitePending?: boolean,
+  accessLevel?:   ACCESS_ROLE
   updatedAt: string,
 }
+
+
 interface cloud_Sphere {
   id: string,
   uid: number,
@@ -66,37 +70,37 @@ interface cloud_LoginReply {
 
 
 interface cloud_Stone {
-  id: string;
-  name: string;
-  address: string;
-  description: string;
-  type: string;
+  id: string,
+  name: string,
+  address: string,
+  description: string,
+  type: string,
   dimmingEnabled: false;
-  deviceType: string;
+  deviceType: string,
   major: number;
   minor: number;
   uid: number;
-  icon: string;
-  json: string;
+  icon: string,
+  json: string,
   touchToToggle: boolean;
   tapToToggle: boolean;
-  firmwareVersion: string;
-  bootloaderVersion: string;
-  hardwareVersion: string;
+  firmwareVersion: string,
+  bootloaderVersion: string,
+  hardwareVersion: string,
   onlyOnWhenDark: boolean;
   hidden: boolean;
   locked: boolean;
   switchCraft: boolean;
-  meshDeviceKey: string;
-  locationId: string;
-  sphereId: string;
-  createdAt: string;
-  updatedAt: string;
-  currentPowerUsageId: string;
-  currentEnergyUsageId: string;
-  applianceId: string;
+  meshDeviceKey: string,
+  locationId: string,
+  sphereId: string,
+  createdAt: string,
+  updatedAt: string,
+  currentPowerUsageId: string,
+  currentEnergyUsageId: string,
+  applianceId: string,
   currentSwitchState?: cloud_SwitchState,
-  currentSwitchStateId: string;
+  currentSwitchStateId: string,
   abilities?: cloud_Ability[];
 }
 
@@ -106,17 +110,17 @@ interface cloud_Ability {
   type: 'dimming' | 'switchcraft' | 'tapToToggle';
   enabled: boolean;
   syncedToCrownstone: boolean;
-  id: string;
-  stoneId: string;
-  sphereId: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string,
+  stoneId: string,
+  sphereId: string,
+  createdAt: string,
+  updatedAt: string,
   properties: any[];
 }
 
 
 interface SpherePresentPeople {
-  userId: string;
+  userId: string,
   locations: [];
 }
 
@@ -126,14 +130,21 @@ interface cloud_Location {
   uid: number,
   icon: string,
   id: string,
+  imageId?: string,
   sphereId:  string,
-  createdAt: string,
   updatedAt: string,
+  createdAt: string,
 }
 
-interface cloud_User {
 
+interface cloud_Location_settable {
+  name?: string,
+  uid?: number,
+  icon?: string,
+  updatedAt?: string,
 }
+
+
 
 interface UserLoginData { accessToken: string, ttl: number, userId: string }
 interface HubLoginData  { accessToken: string, ttl: number }
@@ -195,42 +206,50 @@ interface cloud_SphereFeature {
 
 interface cloud_Message {
   id: string,
-  triggerEvent: string;
-  content: string;
+  triggerEvent: string,
+  content: string,
   everyoneInSphere: boolean;
   everyoneInSphereIncludingOwner: boolean;
   deliveredAll: boolean;
-  triggerLocationId: string;
-  ownerId: string;
+  triggerLocationId: string,
+  ownerId: string,
   recipients: cloud_User[];
   delivered: cloud_MessageState[];
   read: cloud_MessageState[];
-  sphereId: string;
+  sphereId: string,
   createdAt: string,
   updatedAt: string,
 }
 
 interface cloud_Scene {
-  id: string,
-  name: string;
-  stockPicture: string;
-  customPictureId: string;
-  data: string;
-  sphereId: string;
-  createdAt: string,
-  updatedAt: string,
+  id:              string,
+  name:            string,
+  stockPicture:    string,
+  customPictureId: string,
+  data:            string,
+  sphereId:        string,
+  createdAt:       string,
+  updatedAt:       string,
+}
+
+interface cloud_Scene_settable {
+  name?:            string,
+  stockPicture?:    string,
+  customPictureId?: string,
+  data?:            string,
+  updatedAt?:       string | number
 }
 
 
 interface cloud_MessageState {
   id: string
-  timestamp: string;
-  enabled: string;
-  syncedToCrownstone: string;
-  messageDeliveredId: string;
-  messageReadId: string;
-  userId: string;
-  sphereId: string;
+  timestamp: string,
+  enabled: string,
+  syncedToCrownstone: string,
+  messageDeliveredId: string,
+  messageReadId: string,
+  userId: string,
+  sphereId: string,
   createdAt: string,
   updatedAt: string,
 }
@@ -238,26 +257,26 @@ interface cloud_MessageState {
 interface cloud_SphereTrackingNumber {
   id: string,
   trackingNumber: number;
-  trackingNumberId: string;
-  trackingNumberType: string;
-  sphereId: string;
+  trackingNumberId: string,
+  trackingNumberType: string,
+  sphereId: string,
   createdAt: string,
   updatedAt: string,
 }
 
 interface cloud_Toon {
   id: string,
-  toonAgreementId: string;
-  toonAddress: string;
-  refreshToken: string;
+  toonAgreementId: string,
+  toonAddress: string,
+  refreshToken: string,
   refreshTokenTTL: number;
   refreshTokenUpdatedAt: number;
   refreshTokenUpdatedFrom: number;
-  schedule: string;
+  schedule: string,
   updatedScheduleTime: number;
-  changedToProgram: string;
+  changedToProgram: string,
   changedProgramTime: number;
-  sphereId: string;
+  sphereId: string,
   createdAt: string,
   updatedAt: string,
 }
@@ -274,26 +293,26 @@ interface ActiveDays {
 
 interface cloud_Behaviour {
   id: string,
-  type: string;
-  data: string;
+  type: string,
+  data: string,
   syncedToCrownstone: boolean;
   idOnCrownstone: number;
   profileIndex: number;
   deleted: boolean;
   activeDays: ActiveDays;
-  sphereId: string;
-  stoneId: string;
+  sphereId: string,
+  stoneId: string,
   createdAt: string,
   updatedAt: string,
 }
 
 interface cloud_AbilityProperty {
   id: string,
-  type: string;
-  value: string;
-  abilityId: string;
-  sphereId: string;
-  stoneId: string;
+  type: string,
+  value: string,
+  abilityId: string,
+  sphereId: string,
+  stoneId: string,
   createdAt: string,
   updatedAt: string,
 }
