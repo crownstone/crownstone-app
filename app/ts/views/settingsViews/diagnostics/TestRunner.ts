@@ -253,7 +253,7 @@ class TestRunnerClass {
         }
       }
       // via mesh
-      else if (data.serviceData.crownstoneId === stone.config.crownstoneId) {
+      else if (data.serviceData.crownstoneId === stone.config.uid) {
         if (data.serviceData.stateOfExternalCrownstone === true) {
           this.tests[task.type + "_" + task.stoneId + "_advertisement_mesh"].result = true;
         }

@@ -41,6 +41,16 @@ export const Get = {
     return sphere?.stones?.[stoneId] || null;
   },
 
+  behaviour(sphereId: string, stoneId: string, behaviourId: string) : BehaviourData | null {
+    let stone = Get.stone(sphereId, stoneId);
+    return stone?.rules?.[behaviourId] || null;
+  },
+
+  ability(sphereId: string, stoneId: string, abilityId: string) : AbilityData | null {
+    let stone = Get.stone(sphereId, stoneId);
+    return stone?.abilities?.[abilityId] || null;
+  },
+
   location(sphereId: string, locationId: string) : LocationData | null {
     let sphere = Get.sphere(sphereId);
     return sphere?.locations?.[locationId] || null;

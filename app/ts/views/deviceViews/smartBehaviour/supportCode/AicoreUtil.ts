@@ -15,7 +15,7 @@ import { core } from "../../../../Core";
 import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviour } from "./AicoreBehaviour";
 import { AicoreTwilight } from "./AicoreTwilight";
-import { BEHAVIOUR_TYPES } from "../../../../database/reducers/stoneSubReducers/rules";
+import { BEHAVIOUR_TYPES } from "../../../../database/reducers/stoneSubReducers/behaviours";
 import { DAY_INDICES_MONDAY_START, DAY_INDICES_SUNDAY_START } from "../../../../Constants";
 import { Util } from "../../../../util/Util";
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";

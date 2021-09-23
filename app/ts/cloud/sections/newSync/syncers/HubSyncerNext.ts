@@ -12,7 +12,7 @@ export class HubSyncer extends SyncInterface<HubData, cloud_Hub, cloud_Hub_setta
   }
 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localSphereId: string, localId: string, localData: HubData) : cloud_Hub_settable | null {
+  static mapLocalToCloud(localData: HubData) : cloud_Hub_settable | null {
     let result : cloud_Hub_settable = {
       name:          localData.config.name,
       linkedStoneId: MapProvider.local2cloudMap.stones[localData.config.linkedStoneId] || localData.config.linkedStoneId || null,
@@ -81,7 +81,7 @@ export class HubSyncer extends SyncInterface<HubData, cloud_Hub, cloud_Hub_setta
     if (reply.hubs[this.cloudId] === undefined) {
       reply.hubs[this.cloudId] = {};
     }
-    reply.hubs[this.cloudId].data = HubSyncer.mapLocalToCloud(this.localSphereId, this.localId, hub)
+    reply.hubs[this.cloudId].data = HubSyncer.mapLocalToCloud(hub)
   }
 }
 

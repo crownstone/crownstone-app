@@ -13,8 +13,6 @@ type SyncCategory = 'bootloader'      |
                     'toons'
 
 interface SyncScopeMap {
-  abilities?:       boolean,
-  behaviours?:      boolean,
   bootloader?:      boolean,
   features?:        boolean,
   firmware?:        boolean,
@@ -25,6 +23,7 @@ interface SyncScopeMap {
   properties?:      boolean,
   scenes?:          boolean,
   spheres?:         boolean,
+  sphereUsers?:     boolean,
   stones?:          boolean,
   trackingNumbers?: boolean,
   toons?:           boolean,
@@ -89,7 +88,9 @@ interface SyncRequestSphereData {
     toons?: {
       [toonId: string]: RequestItemCoreType
     },
-    users?: SphereUsers
+    users?: {
+      [userId: string] : RequestItemCoreType
+    }
   }
 }
 

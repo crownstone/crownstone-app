@@ -28,7 +28,7 @@ import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
-import { BEHAVIOUR_TYPES } from "../../../database/reducers/stoneSubReducers/rules";
+import { BEHAVIOUR_TYPES } from "../../../database/reducers/stoneSubReducers/behaviours";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";

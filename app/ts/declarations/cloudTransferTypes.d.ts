@@ -81,18 +81,20 @@ interface keyMap {
 
 
 interface globalIdMap {
-  users: keyMap,
-  locations: keyMap,
-  behaviours: keyMap,
-  stones: keyMap,
-  scenes: keyMap,
+  users:       keyMap,
+  locations:   keyMap,
+  abilities:   keyMap,
+  abilityProperties:   keyMap,
+  behaviours:  keyMap,
+  stones:      keyMap,
+  scenes:      keyMap,
   sortedLists: keyMap,
-  messages: keyMap,
-  spheres: keyMap,
-  schedules: keyMap,
-  devices: keyMap,
-  toons: keyMap,
-  hubs: keyMap,
+  messages:    keyMap,
+  spheres:     keyMap,
+  schedules:   keyMap,
+  devices:     keyMap,
+  toons:       keyMap,
+  hubs:        keyMap,
   preferences: keyMap,
 }
 

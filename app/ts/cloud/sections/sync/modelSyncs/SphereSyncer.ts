@@ -120,12 +120,12 @@ export class SphereSyncer extends SyncingBase {
         LOG.info("SphereSync ",localId,": START presenceSyncer sync.");
         return presenceSyncer.sync(store);
       })
-      .then(() => {
-        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
-        LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
-        // sync stones
-        return stoneSyncer.sync(store);
-      })
+      // .then(() => {
+      //   LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
+      //   LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
+      //   // sync stones
+      //   return stoneSyncer.sync(store);
+      // })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");
         LOG.info("SphereSync ",localId,": START messageSyncer sync.");

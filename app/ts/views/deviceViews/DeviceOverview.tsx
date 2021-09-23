@@ -76,15 +76,6 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     this.storedSwitchState = stone.state.state;
 
     this.state = { switchIsOn: this.storedSwitchState > 0 }
-
-    if (stone.config.firmwareVersionSeenInOverview === null) {
-      core.store.dispatch({
-        type: "UPDATE_STONE_LOCAL_CONFIG",
-        sphereId: this.props.sphereId,
-        stoneId: this.props.stoneId,
-        data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
-      });
-    }
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -150,17 +141,6 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     // If there is no connection being kept open, this command will not do anything.
     const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
-    if (sphere) {
-      const stone = sphere.stones[this.props.stoneId];
-      if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
-        core.store.dispatch({
-          type: "UPDATE_STONE_LOCAL_CONFIG",
-          sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
-          data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
-        });
-      }
-    }
 
     if (this.storeSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);

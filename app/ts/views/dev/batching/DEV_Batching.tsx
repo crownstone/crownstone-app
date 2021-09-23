@@ -366,7 +366,7 @@ export class CrownstoneBatchEntry extends Component<{item: any, value: string, p
     }
 
     let hasType = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.deviceType !== 'undefined' || false;
-    let hasCid = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.crownstoneId || false;
+    let hasCid  = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.crownstoneId || false;
 
     let str = "";
     if (sphere !== null) {

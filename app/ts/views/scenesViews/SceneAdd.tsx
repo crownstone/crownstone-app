@@ -94,7 +94,7 @@ export class SceneAdd extends LiveComponent<any, any> {
 
     stoneIds.forEach((stoneId) => {
       let stone = state.spheres[sphereId].stones[stoneId];
-      let stoneCID = stone.config.crownstoneId;
+      let stoneCID = stone.config.uid;
       if (this.sceneData.data[stoneCID] === undefined) { return; }
 
       let locationId = stone.config.locationId;
@@ -489,7 +489,7 @@ export function getStoneSelectionList(sphereId, sceneData, forceUpdate) {
   stoneIds.forEach((stoneId) => {
     let stone = state.spheres[sphereId].stones[stoneId];
     let locationId = stone.config.locationId;
-    let stoneCID = stone.config.crownstoneId;
+    let stoneCID = stone.config.uid;
     let locationName = lang("Not_in_a_room___")
     if (locationId) {
       let location = DataUtil.getLocation(sphereId, locationId);

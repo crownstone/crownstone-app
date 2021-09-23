@@ -131,7 +131,7 @@ export const sync = {
         return preferenceSyncer.sync(state);
       })
       .then(() => {
-        return syncNext(['hubs'], actions, globalCloudIdMap);
+        return syncNext(['hubs','stones'], actions, globalCloudIdMap);
       })
       // FINISHED SYNCING
       .then(() => {

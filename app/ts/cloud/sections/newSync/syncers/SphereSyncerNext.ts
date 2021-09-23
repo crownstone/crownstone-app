@@ -5,14 +5,14 @@ import { Get } from "../../../../util/GetUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 
 
-export class SphereSyncer extends SyncInterface<SphereData, cloud_Sphere, cloud_Sphere_settable> {
+export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cloud_Sphere_settable> {
 
   getLocalId() {
     return this.globalCloudIdMap.spheres[this.cloudId] || MapProvider.cloud2localMap.spheres[this.cloudId] || this.cloudId;
   }
 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localSphereId: string, localId: string, localData: SphereData) : cloud_Sphere_settable | null {
+  static mapLocalToCloud(localData: SphereData) : cloud_Sphere_settable | null {
     return {
       name: localData.config.name,
       uid:  localData.config.uid,
@@ -20,16 +20,6 @@ export class SphereSyncer extends SyncInterface<SphereData, cloud_Sphere, cloud_
       aiName: localData.config.aiName,
       updatedAt: new Date(localData.config.updatedAt).toISOString(),
     }
-  }
-
-  _mapLocalToCloud(localItem?: SphereData) : cloud_Sphere_settable | null {
-    if (localItem) {
-      let localItem = Get.sphere(this.localSphereId);
-      if (!localItem) {
-        return null;
-      }
-    }
-    return SphereSyncer.mapLocalToCloud(this.localSphereId, this.localId, localItem);
   }
 
   mapCloudToLocal(cloudItem: cloud_Sphere) {

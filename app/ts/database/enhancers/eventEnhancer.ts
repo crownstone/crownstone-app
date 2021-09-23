@@ -301,17 +301,11 @@ function checkAction(action, affectedIds) {
     case "REMOVE_STONE_RULE":
       eventStatus['stoneChangeRules'] = affectedIds; break;
     case "REFRESH_ABILITIES":
-    case "UPDATE_ABILITY_DIMMER":
-    case "UPDATE_ABILITY_SWITCHCRAFT":
-    case "UPDATE_ABILITY_TAP_TO_TOGGLE":
+    case "UPDATE_ABILITY":
       eventStatus['stoneChangeAbilities'] = affectedIds; break;
 
-    case "MARK_ABILITY_DIMMER_AS_SYNCED":
-    case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
-    case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
-    case "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD":
-    case "UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD":
-    case "UPDATE_ABILITY_TAP_TO_TOGGLE_AS_SYNCED_FROM_CLOUD":
+    case "MARK_ABILITY_AS_SYNCED":
+    case "MARK_ABILITY_AS_SYNCED_FROM_CLOUD":
       eventStatus['stoneSyncedAbilities'] = affectedIds; break;
 
     case 'SET_NEW_FIRMWARE_VERSIONS':

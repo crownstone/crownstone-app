@@ -14,7 +14,7 @@ export class LocationSyncerNext extends SyncInterface<LocationData, cloud_Locati
   }
 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localSphereId: string, localId: string, localData: LocationData) : cloud_Location_settable | null {
+  static mapLocalToCloud(localData: LocationData) : cloud_Location_settable | null {
     let result : cloud_Location_settable = {
       name:      localData.config.name,
       uid:       localData.config.uid,
@@ -83,7 +83,7 @@ export class LocationSyncerNext extends SyncInterface<LocationData, cloud_Locati
     if (reply.locations[this.cloudId] === undefined) {
       reply.locations[this.cloudId] = {};
     }
-    reply.locations[this.cloudId].data = LocationSyncerNext.mapLocalToCloud(this.localSphereId, this.localId, location);
+    reply.locations[this.cloudId].data = LocationSyncerNext.mapLocalToCloud(location);
 
     if (location.config.pictureId !== cloudData.imageId) {
       if (!location.config.pictureId) {

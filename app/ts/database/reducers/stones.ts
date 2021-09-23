@@ -1,6 +1,6 @@
 import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
-import ruleReducer         from './stoneSubReducers/rules'
+import ruleReducer         from './stoneSubReducers/behaviours'
 import meshReducer         from './stoneSubReducers/mesh'
 import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer  from './stoneSubReducers/lastUpdated'
@@ -14,7 +14,6 @@ let defaultSettings : StoneData = {
     name: 'Crownstone Plug',
     description: '',
     icon: 'c2-pluginFilled',
-    crownstoneId: undefined,
     type: STONE_TYPES.plug,
     uid: undefined, // new field to generalize between sphere, location and stone uid.
     iBeaconMajor: undefined,
@@ -24,7 +23,6 @@ let defaultSettings : StoneData = {
     cloudId: null,
 
     firmwareVersion: null,
-    firmwareVersionSeenInOverview: null,
     bootloaderVersion: null,
     hardwareVersion: null,
 
@@ -59,9 +57,7 @@ let defaultSettings : StoneData = {
     // id: behaviourWrapper
   },
   abilities: {
-    dimming: {},
-    switchcraft: {},
-    tapToToggle: {},
+    // id: abilityBase
   },
   errors: {
     overCurrent: false,
@@ -115,7 +111,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_LOCAL_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.firmwareVersionSeenInOverview = update(action.data.firmwareVersionSeenInOverview, newState.firmwareVersionSeenInOverview);
         newState.cloudId                       = update(action.data.cloudId,          newState.cloudId);
         newState.dfuResetRequired              = update(action.data.dfuResetRequired, newState.dfuResetRequired);
         newState.meshNetworkId                 = update(action.data.meshNetworkId,    newState.meshNetworkId);
@@ -130,7 +125,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_CONFIG_TRANSIENT':
       if (action.data) {
         let newState = {...state};
-        newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
         newState.uid               = update(action.data.uid,               newState.uid);
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);

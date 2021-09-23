@@ -75,47 +75,65 @@ interface cloud_Stone {
   address: string,
   description: string,
   type: string,
-  dimmingEnabled: false;
-  deviceType: string,
   major: number;
   minor: number;
   uid: number;
   icon: string,
-  json: string,
-  touchToToggle: boolean;
-  tapToToggle: boolean;
   firmwareVersion: string,
   bootloaderVersion: string,
   hardwareVersion: string,
-  onlyOnWhenDark: boolean;
   hidden: boolean;
   locked: boolean;
   switchCraft: boolean;
-  meshDeviceKey: string,
   locationId: string,
   sphereId: string,
   createdAt: string,
   updatedAt: string,
-  currentPowerUsageId: string,
-  currentEnergyUsageId: string,
-  applianceId: string,
+
   currentSwitchState?: cloud_SwitchState,
   currentSwitchStateId: string,
   abilities?: cloud_Ability[];
+  behaviours?: cloud_Behaviour[];
 }
 
 
+interface cloud_Stone_settable {
+  name: string,
+  address: string,
+  description: string,
+  type: string,
+  major: number;
+  minor: number;
+  uid: number;
+  icon: string,
+  firmwareVersion: string,
+  bootloaderVersion: string,
+  hardwareVersion: string,
+  hidden: boolean;
+  locked: boolean;
+  locationId: string,
+  updatedAt: string,
+}
+
 
 interface cloud_Ability {
-  type: 'dimming' | 'switchcraft' | 'tapToToggle';
-  enabled: boolean;
+  type:       AbilityType,
+  enabled:    boolean;
   syncedToCrownstone: boolean;
-  id: string,
-  stoneId: string,
-  sphereId: string,
-  createdAt: string,
-  updatedAt: string,
+  id:         string,
+  stoneId:    string,
+  sphereId:   string,
+  updatedAt:  string,
+  createdAt:  string,
   properties: any[];
+}
+
+
+interface cloud_Ability_settable {
+  type:       AbilityType,
+  enabled:    boolean;
+  syncedToCrownstone: boolean;
+  updatedAt:  string,
 }
 
 
@@ -157,12 +175,12 @@ interface cloud_Keys {
 }
 
 type keyType = "ADMIN_KEY"            |
-  "MEMBER_KEY"           |
-  "BASIC_KEY"            |
-  "LOCALIZATION_KEY"     |
-  "SERVICE_DATA_KEY"     |
-  "MESH_APPLICATION_KEY" |
-  "MESH_NETWORK_KEY"
+               "MEMBER_KEY"           |
+               "BASIC_KEY"            |
+               "LOCALIZATION_KEY"     |
+               "SERVICE_DATA_KEY"     |
+               "MESH_APPLICATION_KEY" |
+               "MESH_NETWORK_KEY"
 
 
 interface cloud_SphereKey {
@@ -303,6 +321,17 @@ interface cloud_Behaviour {
   sphereId: string,
   stoneId: string,
   createdAt: string,
+  updatedAt: string,
+}
+
+interface cloud_Behaviour_settable {
+  type: string,
+  data: string,
+  syncedToCrownstone: boolean;
+  idOnCrownstone: number;
+  profileIndex: number;
+  deleted: boolean;
+  activeDays: ActiveDays;
   updatedAt: string,
 }
 

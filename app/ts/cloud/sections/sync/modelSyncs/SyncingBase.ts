@@ -146,6 +146,8 @@ export class SyncingStoneItemBase extends SyncingSphereItemBase {
 
 export function getGlobalIdMap() : globalIdMap {
   return {
+    abilities:  {},
+    abilityProperties:  {},
     behaviours:  {},
     devices:     {},
     locations:   {},

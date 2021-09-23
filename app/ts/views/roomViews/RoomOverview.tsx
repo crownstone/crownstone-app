@@ -335,7 +335,7 @@ lang("_Indoor_localization_is_c_body"),
     }
 
     // sort the order of things by crownstone Id
-    tempStoneDataArray.sort((a,b) => { return a.data.config.crownstoneId - b.data.config.crownstoneId });
+    tempStoneDataArray.sort((a,b) => { return a.data.config.uid - b.data.config.uid });
 
 
     for (let [hubId, hub] of Object.entries<HubData>(hubs)) {

@@ -5,13 +5,16 @@ import { LOGe } from "../../../logging/Log";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { getGlobalIdMap, SyncingBase } from "../sync/modelSyncs/SyncingBase";
-import { SphereSyncer } from "./syncers/SphereSyncerNext";
+import { SphereSyncerNext } from "./syncers/SphereSyncerNext";
 import { HubSyncer } from "./syncers/HubSyncerNext";
 import { mapLocalToCloud } from "./mapping/CloudMapper";
 import { LocationSyncerNext } from "./syncers/LocationSyncerNext";
 import { SyncInterface } from "./syncers/SyncInterface";
 import { SceneSyncerNext } from "./syncers/SceneSyncerNext";
 import { SphereUserSyncerNext } from "./syncers/SphereUserSyncerNext";
+import { StoneSyncerNext } from "./syncers/StoneSyncerNext";
+import { BehaviourSyncerNext } from "./syncers/BehaviourSyncerNext";
+import { AbilitySyncerNext } from "./syncers/AbilitySyncerNext";
 
 
 export async function syncNext(scopes : SyncCategory[] = [], actions: any[], globalCloudIdMap: globalIdMap) {
@@ -42,8 +45,8 @@ async function processSyncResult(syncResult: SyncRequestResponse, actions = [], 
   let reply : SyncRequest = {
     sync: {
       appVersion: DeviceInfo.getReadableVersion(),
-      type: "REPLY",
-      lastTime: 0
+      type:       "REPLY",
+      lastTime:   0
     }
   }
 
@@ -73,9 +76,9 @@ async function processSyncResult(syncResult: SyncRequestResponse, actions = [], 
   }
 
   // provide the requested data.
-  if (replyRequired) {
-    await CLOUD.syncNext(reply);
-  }
+  // if (replyRequired) {
+  //   await CLOUD.syncNext(reply);
+  // }
 }
 
 
@@ -87,18 +90,20 @@ async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRe
 
   let cloudSphereIds = Object.keys(sphereCloudResponses);
 
+
   let syncers = [];
   for (let i = 0; i < cloudSphereIds.length; i++) {
     let cloudSphereId = cloudSphereIds[i];
     let sphereCloudResponse = sphereCloudResponses[cloudSphereId];
+    let sphereSyncBase = {cloudSphereId, ...syncBase};
 
-    new SphereSyncer({cloudId: cloudSphereId, cloudSphereId: cloudSphereId, ...syncBase})
+    new SphereSyncerNext({cloudId: cloudSphereId, ...sphereSyncBase})
       .process(sphereCloudResponse.data, reply);
 
     if (sphereCloudResponse.hubs) {
       let moduleReply = {};
       for (let hubId in sphereCloudResponse.hubs) {
-        new HubSyncer({cloudId: hubId, cloudSphereId: cloudSphereId, ...syncBase})
+        new HubSyncer({cloudId: hubId, ...sphereSyncBase})
           .process(sphereCloudResponse.hubs[hubId].data, moduleReply);
       }
       mergeSphereReply(cloudSphereId, reply, moduleReply)
@@ -106,22 +111,32 @@ async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRe
     if (sphereCloudResponse.locations) {
       let moduleReply = {};
       for (let locationId in sphereCloudResponse.locations) {
-        new LocationSyncerNext({cloudId: locationId, cloudSphereId: cloudSphereId, ...syncBase})
-          .process(sphereCloudResponse.locations[locationId].data, moduleReply)
+        new LocationSyncerNext({cloudId: locationId, ...sphereSyncBase}).process(sphereCloudResponse.locations[locationId].data, moduleReply)
       }
       mergeSphereReply(cloudSphereId, reply, moduleReply)
     }
     if (sphereCloudResponse.scenes) {
       let moduleReply = {};
       for (let locationId in sphereCloudResponse.scenes) {
-        new SceneSyncerNext({cloudId: locationId, cloudSphereId: cloudSphereId, ...syncBase})
-          .process(sphereCloudResponse.scenes[locationId].data, moduleReply)
+        new SceneSyncerNext({cloudId: locationId, ...sphereSyncBase}).process(sphereCloudResponse.scenes[locationId].data, moduleReply)
       }
       mergeSphereReply(cloudSphereId, reply, moduleReply)
     }
 
     if (sphereCloudResponse.stones) {
       let moduleReply = {};
+      for (let stoneId in sphereCloudResponse.stones) {
+        let stoneResponse = sphereCloudResponse.stones[stoneId]
+        new StoneSyncerNext({cloudId: stoneId, ...sphereSyncBase}).process(stoneResponse.data, moduleReply);
+        for (let behaviourId in stoneResponse.behaviours) {
+          new BehaviourSyncerNext({cloudId: behaviourId, ...sphereSyncBase}, stoneId).process(stoneResponse.behaviours[behaviourId].data, moduleReply);
+        }
+        for (let abilityId in stoneResponse.abilities) {
+          let ability = stoneResponse.abilities[abilityId];
+          new AbilitySyncerNext({cloudId: abilityId, ...sphereSyncBase}, stoneId).process(ability.data, moduleReply);
+        }
+
+      }
       mergeSphereReply(cloudSphereId, reply, moduleReply)
     }
     if (sphereCloudResponse.toons) {
@@ -135,8 +150,7 @@ async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRe
     if (sphereCloudResponse.users) {
       let moduleReply = {};
       for (let userId in sphereCloudResponse.users) {
-        new SphereUserSyncerNext({cloudId: userId, cloudSphereId: cloudSphereId, ...syncBase})
-          .process(sphereCloudResponse.users[userId].data, moduleReply)
+        new SphereUserSyncerNext({cloudId: userId,  ...sphereSyncBase}).process(sphereCloudResponse.users[userId].data, moduleReply)
       }
       mergeSphereReply(cloudSphereId, reply, moduleReply)
     }
@@ -167,38 +181,99 @@ function composeState(state, scopeMap : SyncScopeMap) : SyncRequestSphereData {
 
   Object.keys(spheres).forEach((sphereId) => {
     let sphere = spheres[sphereId];
-    result[sphere.config.cloudId] = {};
+    let sphere_cloudId = sphere.config.cloudId;
+    result[sphere_cloudId] = {};
+
+    function gather(options?) {
+      return gatherRequestData(sphere, options)
+    }
+
+    if (scopeMap.spheres) {
+      result[sphere_cloudId] = {data: SphereSyncerNext.mapLocalToCloud(sphere)}
+    }
     if (scopeMap.hubs) {
-      result[sphere.config.cloudId].hubs = gatherRequestData(sphereId, sphere, 'hubs', 'hub')
+      result[sphere_cloudId].hubs = gather({key:'hubs', type:'hub'})
+    }
+    if (scopeMap.locations) {
+      result[sphere_cloudId].locations = gather({key:'locations', type:'location'})
+    }
+    if (scopeMap.stones || true) {
+      result[sphere_cloudId].stones = gather({key:'stones', type:'stone', children: [
+        {key:'rules',     type:'behaviour', cloudKey: 'behaviours'},
+        {key:'abilities', type:'ability'},
+      ]})
+    }
+    if (scopeMap.scenes) {
+      result[sphere_cloudId].scenes = gather({key:'scenes', type:'scene'})
+    }
+    if (scopeMap.sphereUsers) {
+      result[sphere_cloudId].users = gather({key:'users', type:'sphereUser', cloudIdGetter: (item) => { return item.id; }})
     }
   })
-
   return result;
 }
 
+interface GatherOptions {
+  key: string,
+  cloudKey?: string,
+  type: SupportedMappingType,
+  children?: GatherOptions[]
+  cloudIdGetter?:   (item: any) => string,
+  updatedAtGetter?: (item: any) => string,
+}
 
 /**
  * This method will parse all items under the sphere object that follow these conditions:
  * - have no children of their own. A stone has behaviour and abilities as children.
  * - are of the format sphere[key] = {[itemId:string] : item}
- * @param sphere
- * @param key
+ * @param source
+ * @param options
  */
-function gatherRequestData(sphereId, sphere, key: string, type: SupportedMappingType) : {[itemId:string]: RequestItemCoreType} {
+function gatherRequestData(
+  source,
+  options: GatherOptions
+) : {[itemId:string]: RequestItemCoreType} {
+
   let result = {};
-  let items = sphere[key];
-  let itemIds = Object.keys(items);
+  let items = source[options.key]; // this will get a object of items like sphere[stones]
+  let itemIds = Object.keys(items ?? {});
+
+  let cloudIdGetter   = options.cloudIdGetter   ?? getCloudId;
+  let updatedAtGetter = options.updatedAtGetter ?? getUpdatedAt;
+
   if (itemIds.length > 0) {
-    for (let i = 0; i < itemIds.length; i++) {
-      let itemId = itemIds[i];
+    for (let itemId of itemIds) {
       let item = items[itemId];
-      if (!item.config.cloudId) {
-        result[itemId] = {new: true, data: mapLocalToCloud(sphereId, itemId, item, type)};
+      if (!cloudIdGetter(item)) {
+        result[itemId] = {new: true, data: mapLocalToCloud(item, options.type)};
       }
       else {
-        result[item.config.cloudId || itemId] = {data: {updatedAt: item.config.updatedAt}};
+        result[cloudIdGetter(item) || itemId] = {data: {updatedAt: updatedAtGetter(item)}};
+      }
+
+      let resultItem = result[cloudIdGetter(item) || itemId];
+
+      let children = options.children ?? [];
+      for (let childOptions of children) {
+        resultItem[childOptions.cloudKey ?? childOptions.key] = gatherRequestData(item, childOptions);
       }
     }
   }
   return result;
 }
+
+function getCloudId(item: any) : string {
+  if (item.config === undefined) {
+    return item.cloudId;
+  }
+  return item.config.cloudId;
+}
+
+
+function getUpdatedAt(item: any) : string {
+  if (item.config === undefined) {
+    return item.updatedAt;
+  }
+  return item.config.updatedAt;
+}
+

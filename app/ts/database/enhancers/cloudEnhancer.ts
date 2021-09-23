@@ -165,9 +165,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
 
 
-    case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
-    case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
-    case "MARK_ABILITY_DIMMER_AS_SYNCED":
+    case "MARK_ABILITY_AS_SYNCED":
       handleAbilityUpdate(action, newState);
       break;
 
@@ -179,7 +177,7 @@ function handleHubUpdate(action, state) {
   if (!sphere) { return; }
   let hub = sphere.hubs[action.hubId] as HubData;
   if (hub && hub.config.cloudId) {
-    CLOUD.updateHub(hub.config.cloudId, HubSyncer.mapLocalToCloud(action.sphereId, action.hubId, hub))
+    CLOUD.updateHub(hub.config.cloudId, HubSyncer.mapLocalToCloud(hub))
       .then((updatedHub) => {
         if (
           hub.config.ipAddress !== updatedHub.localIPAddress ||

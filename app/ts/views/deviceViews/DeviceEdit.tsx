@@ -519,7 +519,7 @@ lang("_Something_went_wrong_____body"),
           <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId, lang("unknown")) }</Text>
+          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.uid, lang("unknown")) }</Text>
         </TouchableOpacity>
       );
     }

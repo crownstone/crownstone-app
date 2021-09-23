@@ -8,7 +8,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     hubMode                   : false,
     alternativeState          : false,
     setupMode                 : false,
-    crownstoneId              : stone.config.crownstoneId,
+    crownstoneId              : stone.config.uid,
     switchState               : 1,
     flagsBitmask              : 0,
     temperature               : 40,

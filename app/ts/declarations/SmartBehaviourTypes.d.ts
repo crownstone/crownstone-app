@@ -1,3 +1,5 @@
+type behaviourType = "BEHAVIOUR" | "TWILIGHT"
+
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
@@ -82,9 +84,10 @@ interface behaviourReply {
 }
 
 
+type BehaviourData = behaviourWrapper;
 interface behaviourWrapper {
   id: string,
-  type: "BEHAVIOUR" | "TWILIGHT"
+  type: behaviourType,
   data: string, // behaviour | twilight, // stringified
   activeDays: dayOfWeek,
 

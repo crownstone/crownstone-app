@@ -23,7 +23,6 @@ const ABILITY_PROPERTY_TYPE = {
 
 export class StoneAbilitySyncer extends SyncingStoneItemBase {
 
-
   sync(localAbilities, abilities_in_cloud) {
     let localAbilityTypes = Object.keys(localAbilities);
 
@@ -61,10 +60,10 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
               }
             }
           }
-          let softOnSpeedData = {softOnSpeed: Number(softOnSpeed)}
+          let softOnSpeedData = {softOnSpeed: Number(softOnSpeed)};
 
           if (ability_in_cloud.syncedToCrownstone) {
-            actionType = "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD"
+            actionType = "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD";
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabled: ability_in_cloud.syncedToCrownstone ? ability_in_cloud.enabled : undefined,
@@ -76,7 +75,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
         case ABILITY_TYPE.switchcraft:
           actionType = "UPDATE_ABILITY_SWITCHCRAFT";
           if (ability_in_cloud.syncedToCrownstone) {
-            actionType = "UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD"
+            actionType = "UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD";
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabled: ability_in_cloud.syncedToCrownstone ? ability_in_cloud.enabled : undefined,

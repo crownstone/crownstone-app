@@ -24,7 +24,7 @@ export class StoneMeshTracker {
     this.sphereId  = sphereId;
     this.stoneId = stoneId;
 
-    this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.crownstoneId;
+    this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.uid;
     this.timeLastSeen = 0;
 
     this.init();

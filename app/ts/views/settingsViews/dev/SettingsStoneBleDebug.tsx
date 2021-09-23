@@ -44,7 +44,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     let stone = sphere.stones[props.stoneId];
 
     this._ibeaconUuid  = sphere.config.iBeaconUUID;
-    this._crownstoneId = stone ? stone.config.crownstoneId : null;
+    this._crownstoneId = stone ? stone.config.uid : null;
     this._major        = stone ? stone.config.iBeaconMajor : null;
     this._minor        = stone ? stone.config.iBeaconMinor : null;
     this._handle       = stone ? stone.config.handle       : null;

@@ -116,7 +116,7 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
 
       let data = {
         id: stoneId,
-        cid: stoneConfig.crownstoneId,
+        cid: stoneConfig.uid,
         handle: stoneConfig.handle,
         name: stoneConfig.name,
         sphereId: sphereId,
@@ -151,7 +151,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
 
       let data : StoneMap = {
         id: stoneId,
-        cid: stoneConfig.crownstoneId,
+        cid: stoneConfig.uid,
         handle: stoneConfig.handle,
         name: stoneConfig.name,
         sphereId: sphereId,

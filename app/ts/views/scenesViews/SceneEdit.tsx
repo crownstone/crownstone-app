@@ -170,7 +170,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
 
     stoneIdsInScene.forEach((stoneId) => {
       let stone = state.spheres[this.props.sphereId].stones[stoneId];
-      let stoneCID = stone.config.crownstoneId;
+      let stoneCID = stone.config.uid;
       if (this.state.data[stoneCID] === undefined) { return; }
 
       let locationId = stone.config.locationId;

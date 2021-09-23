@@ -64,35 +64,7 @@ interface HubData {
 
 interface StoneData {
   id: string,
-  config: {
-    name: string,
-    description: string,
-    icon: string,
-    crownstoneId: number, // DEPRECATED
-    uid: number,          // new field to generalize between sphere, location and stone uid.
-    type: string,
-    iBeaconMajor: number,
-    iBeaconMinor: number,
-    handle: string,
-
-    cloudId: string | null,
-
-    firmwareVersion: string | null,
-    firmwareVersionSeenInOverview: string | null,
-    bootloaderVersion: string | null,
-    hardwareVersion: string | null,
-
-    dfuResetRequired: boolean,
-    locationId: string,
-
-    macAddress:    string,
-    meshNetworkId: string,
-
-    hidden: boolean,
-    locked: boolean,
-
-    updatedAt: timestamp,
-  },
+  config: StoneDataConfig,
   lastUpdated: {
     stoneTime: timestamp,
   },
@@ -109,11 +81,11 @@ interface StoneData {
   reachability: {
     lastSeen: timestamp,
   },
-  rules: any,
+  rules: {
+    [behaviourId: string] : behaviourWrapper
+  },
   abilities: {
-    dimming: any,
-    switchcraft: any,
-    tapToToggle: any,
+    [abilityId: string] : AbilityBaseData
   },
   errors: {
     overCurrent:       boolean,
@@ -129,6 +101,34 @@ interface StoneData {
   reachability: any,
   keys:         any,
 };
+
+interface StoneDataConfig {
+  name:         string,
+  description:  string,
+  icon:         string,
+  uid:          number,
+  type:         string,
+  iBeaconMajor: number,
+  iBeaconMinor: number,
+  handle:       string,
+
+  cloudId:      string | null,
+
+  firmwareVersion:    string | null,
+  bootloaderVersion:  string | null,
+  hardwareVersion:    string | null,
+
+  dfuResetRequired: boolean,
+  locationId:       string,
+
+  macAddress:    string,
+  meshNetworkId: string,
+
+  hidden: boolean,
+  locked: boolean,
+
+  updatedAt: timestamp,
+}
 
 
 interface LocationData {
@@ -199,3 +199,26 @@ interface UserData {
   uploadSwitchState: string,
   uploadDeviceDetails: string,
 }
+
+type AbilityType = 'dimming' | 'switchcraft' | 'tapToToggle';
+interface AbilityData {
+  enabled:            boolean | null,
+  enabledTarget:      boolean,
+  cloudId:            string,
+  type:               AbilityType,
+  syncedToCrownstone: boolean,
+  updatedAt:          number,
+  properties: {
+    [propertyId: string]: AbilityPropertyData
+  }
+};
+
+type AbilityPropertyType = "rssiOffset" | "softOnSpeed";
+interface AbilityPropertyData {
+  type:             AbilityPropertyType,
+  cloudId:          string,
+  value:            string | number,
+  valueTarget:      string | number,
+  syncedToCrownstone: boolean,
+  updatedAt:        number
+};

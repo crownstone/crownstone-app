@@ -32,7 +32,7 @@ class WatchStateManagerClass {
       Object.keys(sphere.stones).forEach((stoneId) => {
         let stone = sphere.stones[stoneId];
         let name = stone.config.name;
-        nameObject[sphereId][stone.config.crownstoneId] = name;
+        nameObject[sphereId][stone.config.uid] = name;
       });
     });
 

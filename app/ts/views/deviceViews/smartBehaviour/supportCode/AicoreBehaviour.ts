@@ -48,7 +48,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let timeStr = AicoreUtil.extractTimeString(this.rule);
     let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
 
-
     return {
       intention:       { label: intentionStr,       data: null },
       action:          { label: actionStr,          data: this.rule.action },

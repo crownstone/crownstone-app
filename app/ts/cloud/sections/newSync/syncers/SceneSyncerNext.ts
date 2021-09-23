@@ -14,7 +14,7 @@ export class SceneSyncerNext extends SyncInterface<SceneData, cloud_Scene, cloud
   }
 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localSphereId: string, localId: string, localData: SceneData) : cloud_Scene_settable | null {
+  static mapLocalToCloud(localData: SceneData) : cloud_Scene_settable | null {
     let result : cloud_Scene_settable = {
       name:      localData.name,
       data:      JSON.stringify(localData.data),
@@ -98,7 +98,7 @@ export class SceneSyncerNext extends SyncInterface<SceneData, cloud_Scene, cloud
     if (reply.scenes[this.cloudId] === undefined) {
       reply.scenes[this.cloudId] = {};
     }
-    reply.scenes[this.cloudId].data = SceneSyncerNext.mapLocalToCloud(this.localSphereId, this.localId, scene);
+    reply.scenes[this.cloudId].data = SceneSyncerNext.mapLocalToCloud(scene);
 
 
     if (scene.pictureSource === "STOCK" && cloudData.stockPicture === null) {
