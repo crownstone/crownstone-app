@@ -51,7 +51,6 @@ export class StoneSyncerNext extends SyncInterface<StoneData, cloud_Stone, cloud
       hardwareVersion:   cloudStone.hardwareVersion,
       locationId:        localLocationId ?? null,
       macAddress:        cloudStone.address,
-      hidden:            cloudStone.hidden,
       locked:            cloudStone.locked,
       updatedAt:         new Date(cloudStone.updatedAt).valueOf()
     };

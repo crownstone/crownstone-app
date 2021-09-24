@@ -5,6 +5,7 @@ import { SceneSyncerNext }      from "../syncers/SceneSyncerNext";
 import { SphereUserSyncerNext } from "../syncers/SphereUserSyncerNext";
 import { BehaviourSyncerNext }  from "../syncers/BehaviourSyncerNext";
 import { AbilitySyncerNext } from "../syncers/AbilitySyncerNext";
+import { AbilityPropertySyncerNext } from "../syncers/AbilityPropertySyncerNext";
 
 
 export function mapLocalToCloud(item: any, type: SupportedMappingType) {
@@ -21,8 +22,8 @@ export function mapLocalToCloud(item: any, type: SupportedMappingType) {
       return BehaviourSyncerNext.mapLocalToCloud(item as BehaviourData);
     case 'ability':
       return AbilitySyncerNext.mapLocalToCloud(item as AbilityData);
-    // case 'abilityProperty':
-    //   return AbilityPropertyNext.mapLocalToCloud(item as AbilityPropertyData);
+    case 'abilityProperty':
+      return AbilityPropertySyncerNext.mapLocalToCloud(item as AbilityPropertyData);
     default:
       throw new Error("NOT_SUPPORTED");
   }

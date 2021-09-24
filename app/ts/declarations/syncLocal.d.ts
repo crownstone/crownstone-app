@@ -1,4 +1,11 @@
-type SupportedMappingType = 'location' | 'scene' | 'sphereUser' | 'hub' | 'stone' | 'behaviour' | 'ability'
+type SupportedMappingType = 'location'        |
+                            'scene'           |
+                            'sphereUser'      |
+                            'hub'             |
+                            'stone'           |
+                            'behaviour'       |
+                            'ability'         |
+                            'abilityProperty'
 
 type SyncInterfaceOptions = {
   cloudId: string,

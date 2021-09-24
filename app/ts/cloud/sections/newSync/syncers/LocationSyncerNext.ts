@@ -97,7 +97,6 @@ export class LocationSyncerNext extends SyncInterface<LocationData, cloud_Locati
 
   _downloadLocationImage(cloudData: cloud_Location) {
     if (!cloudData.imageId) { return; }
-
     let toPath = FileUtil.getPath(this.localId + '.jpg');
     this.transferPromises.push(
       CLOUD.forLocation(cloudData.id).downloadLocationPicture(toPath)

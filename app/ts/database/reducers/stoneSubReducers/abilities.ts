@@ -24,46 +24,6 @@ let abilityPropertyFormat : AbilityPropertyData = {
 };
 
 
-let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
-  switch (action.type) {
-    case 'ADD_STONE':
-      if (action.data) {
-        let newState = {...state};
-        newState.updatedAt = getTime(action.data.updatedAt);
-        return newState;
-      }
-      return state;
-    case 'ADD_ABILITY_PROPERTY':
-    case 'UPDATE_ABILITY_PROPERTY':
-      if (action.data) {
-        let newState = {...state};
-        newState.type       = update(action.data.type,    newState.type);
-        newState.value      = update(action.data.value,   newState.value);
-        newState.cloudId    = update(action.data.cloudId, newState.cloudId);
-        newState.updatedAt  = getTime(action.data.updatedAt);
-        return newState;
-      }
-      return state;
-    case "UPDATE_ABILITY_PROPERTY_CLOUD_ID":
-      let newState = {...state};
-      newState.cloudId = update(action.data.cloudId,       newState.cloudId);
-      return newState;
-    case "MARK_ABILITY_PROPERTY_AS_SYNCED":
-      newState = {...state};
-      newState.syncedToCrownstone = true;
-      return newState;
-    case "REFRESH_ABILITIES":
-      newState = {...state};
-      newState.syncedToCrownstone = false;
-      return newState;
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, abilityPropertyFormat);
-    default:
-      return state;
-  }
-
-
-};
 let abilityReducer = (state = abilityFormat, action) => {
   switch (action.type) {
     case 'UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD':
@@ -110,6 +70,46 @@ let abilityReducer = (state = abilityFormat, action) => {
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, abilityFormat);
+    default:
+      return state;
+  }
+};
+
+
+let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
+  switch (action.type) {
+    case 'ADD_STONE':
+      if (action.data) {
+        let newState = {...state};
+        newState.updatedAt = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'ADD_ABILITY_PROPERTY':
+    case 'UPDATE_ABILITY_PROPERTY':
+      if (action.data) {
+        let newState = {...state};
+        newState.type       = update(action.data.type,    newState.type);
+        newState.value      = update(action.data.value,   newState.value);
+        newState.cloudId    = update(action.data.cloudId, newState.cloudId);
+        newState.updatedAt  = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case "UPDATE_ABILITY_PROPERTY_CLOUD_ID":
+      let newState = {...state};
+      newState.cloudId = update(action.data.cloudId,       newState.cloudId);
+      return newState;
+    case "MARK_ABILITY_PROPERTY_AS_SYNCED":
+      newState = {...state};
+      newState.syncedToCrownstone = true;
+      return newState;
+    case "REFRESH_ABILITIES":
+      newState = {...state};
+      newState.syncedToCrownstone = false;
+      return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, abilityPropertyFormat);
     default:
       return state;
   }

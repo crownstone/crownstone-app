@@ -23,7 +23,7 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
     // this is a map of cloudIds and the corresponding localIds that have been created or exist for them.
     this.globalCloudIdMap = options.globalCloudIdMap,
 
-    this.localSphereId    = MapProvider.cloud2localMap.spheres[this.cloudSphereId];
+    this.localSphereId = this.globalCloudIdMap.spheres[this.cloudSphereId] || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
   }
 
 
@@ -71,21 +71,21 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
     if (!response) { return; }
 
-    this.localId = this.getLocalId(response.data)
+    this.localId = this.getLocalId(response.data);
 
     switch (response.status) {
       case "ACCESS_DENIED":
-      // Do nothing. A guest or member tried to set something they do not have access to.
-      // Fall through:
+        // Do nothing. A guest or member tried to set something they do not have access to.
+        break;
       case "IN_SYNC":
-      // Do nothing, cloud has the same data.
-      // Fall through:
+        // Do nothing, cloud has the same data.
+        break;
       case "UPDATED_IN_CLOUD":
         // Do nothing. The cloud has updated it's model to match yours.
         break;
       case "CREATED_IN_CLOUD":
         // Store the cloudId: this is the id in the data field.
-        this.updateCloudId(response.data.id, response.data)
+        this.updateCloudId(response.data.id, response.data);
         break;
       case "ERROR":
         LOGe.info("Error in sync", response.error);

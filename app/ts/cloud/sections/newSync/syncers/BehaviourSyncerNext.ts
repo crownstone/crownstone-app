@@ -13,7 +13,7 @@ export class BehaviourSyncerNext extends SyncInterface<behaviourWrapper, cloud_B
   constructor(options: SyncInterfaceOptions, cloudStoneId: string) {
     super(options)
     this.cloudStoneId = cloudStoneId;
-    this.localStoneId = this.globalCloudIdMap.stones[this.cloudStoneId] || MapProvider.cloud2localMap.stones[this.cloudStoneId] || this.cloudStoneId;
+    this.localStoneId = this.globalCloudIdMap.stones[this.cloudStoneId] || MapProvider.cloud2localMap.stones[this.cloudStoneId];
   }
 
 

@@ -186,7 +186,6 @@ class MapProviderClass {
         getFromItem(sphere.stones[stoneId].abilities, this.cloud2localMap.abilities,  this.local2cloudMap.abilities);
         Object.keys(sphere.stones[stoneId].abilities).forEach((abilityId) => {
           getFromItem(sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
-
         })
       })
     });

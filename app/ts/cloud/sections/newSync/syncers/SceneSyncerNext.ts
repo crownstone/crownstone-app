@@ -38,7 +38,7 @@ export class SceneSyncerNext extends SyncInterface<SceneData, cloud_Scene, cloud
       pictureId:     cloudScene.customPictureId,
       pictureSource: cloudScene.stockPicture ? "STOCK" : "CUSTOM", // PICTURE_GALLERY_TYPES
       cloudId:       cloudScene.id,
-      data:          JSON.parse(cloudScene.data),
+      data:          typeof cloudScene.data === 'string' ? JSON.parse(cloudScene.data) : cloudScene.data,
       updatedAt:     new Date(cloudScene.updatedAt).valueOf()
     }
 

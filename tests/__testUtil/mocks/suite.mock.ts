@@ -22,6 +22,9 @@ mockLocalNotifications()
 import { mockInviteCenter } from "./uiModules/InviteCenter.mock";
 mockInviteCenter()
 
+import { mockFileUtil } from "./fileUtil.mock";
+mockFileUtil()
+
 import { mockLogger } from "./logger.mock";
 let silenceMap = {
   info:           true,

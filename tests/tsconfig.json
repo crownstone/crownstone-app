@@ -7,7 +7,6 @@
     "rootDirs": ["../app/ts","./"]
   },
   "include": [
-    "../app/ts/declarations/commandAPI.d.ts",
     "../app/ts/declarations/*",
     "../app/ts/**/*",
     "../tests/**/*"

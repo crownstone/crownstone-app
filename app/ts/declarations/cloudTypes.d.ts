@@ -21,7 +21,6 @@ interface cloud_Sphere {
   uuid: string,
   name: string,
   aiName: string,
-  exitDelay: number,
   gpsLocation?: {
     lat: number,
     lng: number,
@@ -43,7 +42,7 @@ interface cloud_Hub {
   sphereId: string,
   localIPAddress: string,
   linkedStoneId: string,
-  locationId: string,
+  locationId?: string,
   lastSeen: string,
   httpPort: number,
   httpsPort: number,
@@ -82,16 +81,14 @@ interface cloud_Stone {
   firmwareVersion: string,
   bootloaderVersion: string,
   hardwareVersion: string,
-  hidden: boolean;
   locked: boolean;
-  switchCraft: boolean;
-  locationId: string,
+  locationId?: string,
   sphereId: string,
   createdAt: string,
   updatedAt: string,
 
   currentSwitchState?: cloud_SwitchState,
-  currentSwitchStateId: string,
+  currentSwitchStateId?: string,
   abilities?: cloud_Ability[];
   behaviours?: cloud_Behaviour[];
 }
@@ -125,13 +122,33 @@ interface cloud_Ability {
   sphereId:   string,
   updatedAt:  string,
   createdAt:  string,
-  properties: any[];
+  properties?: any[];
 }
 
 
 interface cloud_Ability_settable {
   type:       AbilityType,
   enabled:    boolean;
+  syncedToCrownstone: boolean;
+  updatedAt:  string,
+}
+
+interface cloud_AbilityProperty {
+  type:       AbilityPropertyType,
+  value:      string;
+  syncedToCrownstone: boolean;
+  id:         string,
+  stoneId:    string,
+  sphereId:   string,
+  abilityId:  string,
+  updatedAt:  string,
+  createdAt:  string
+}
+
+
+interface cloud_AbilityProperty_settable {
+  type:       AbilityPropertyType,
+  value:      number | string;
   syncedToCrownstone: boolean;
   updatedAt:  string,
 }
@@ -144,11 +161,11 @@ interface SpherePresentPeople {
 
 
 interface cloud_Location {
-  name: string,
-  uid: number,
-  icon: string,
-  id: string,
-  imageId?: string,
+  name:      string,
+  uid:       number,
+  icon:      string,
+  id:        string,
+  imageId?:  string,
   sphereId:  string,
   updatedAt: string,
   createdAt: string,
@@ -157,7 +174,7 @@ interface cloud_Location {
 
 interface cloud_Location_settable {
   name?: string,
-  uid?: number,
+  uid?:  number,
   icon?: string,
   updatedAt?: string,
 }
@@ -242,9 +259,9 @@ interface cloud_Message {
 interface cloud_Scene {
   id:              string,
   name:            string,
-  stockPicture:    string,
-  customPictureId: string,
-  data:            string,
+  stockPicture?:    string,
+  customPictureId?: string,
+  data:            string | {[stoneUID: string]:number},
   sphereId:        string,
   createdAt:       string,
   updatedAt:       string,
@@ -325,31 +342,20 @@ interface cloud_Behaviour {
 }
 
 interface cloud_Behaviour_settable {
-  type: string,
-  data: string,
+  type:               string,
+  data:               string,
   syncedToCrownstone: boolean;
-  idOnCrownstone: number;
-  profileIndex: number;
-  deleted: boolean;
-  activeDays: ActiveDays;
-  updatedAt: string,
-}
-
-interface cloud_AbilityProperty {
-  id: string,
-  type: string,
-  value: string,
-  abilityId: string,
-  sphereId: string,
-  stoneId: string,
-  createdAt: string,
-  updatedAt: string,
+  idOnCrownstone:     number;
+  profileIndex:       number;
+  deleted:            boolean;
+  activeDays:         ActiveDays;
+  updatedAt:          string,
 }
 
 
 
 interface cloud_SwitchState {
-  timestamp: string,
+  timestamp:   string,
   switchState: number
 }
 interface cloud_SphereAuthorizationTokens {
@@ -357,28 +363,21 @@ interface cloud_SphereAuthorizationTokens {
 }
 
 interface cloud_UserLocation {
-  deviceId: string,
+  deviceId:   string,
   deviceName: string,
-  inSpheres: inSphereLocation[]
+  inSpheres:  inSphereLocation[]
 }
 
 interface inSphereLocation {
-  sphereId: string,
+  sphereId:   string,
   sphereName: string,
   inLocation: inSphereLocationData[]
 }
 
 interface inSphereLocationData {
-  locationId: string,
+  locationId:   string,
   locationName: string
 }
-
-interface cloud_sphereUserDataSet {
-  admins:  cloud_UserData[],
-  members: cloud_UserData[],
-  guests:  cloud_UserData[],
-}
-
 
 interface Count {
   count: number

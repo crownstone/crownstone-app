@@ -9,9 +9,8 @@ import { LOGe } from "../../../../logging/Log";
 
 export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_UserData, {}> {
 
-
   getLocalId() {
-    return this.globalCloudIdMap.users[this.cloudId] || MapProvider.cloud2localMap.users[this.cloudId] || this.cloudId;
+    return this.globalCloudIdMap.users[this.cloudSphereId + this.cloudId] || MapProvider.cloud2localMap.users[this.cloudSphereId + this.cloudId]
   }
 
 
@@ -39,7 +38,7 @@ export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_Us
 
   createLocal(cloudData: cloud_UserData) {
     let newId = this._generateLocalId();
-    this.globalCloudIdMap.users[this.cloudId] = newId;
+    this.globalCloudIdMap.users[this.cloudSphereId + this.cloudId] = newId;
     this.actions.push({type:"ADD_SPHERE_USER", sphereId: this.localSphereId, sphereUserId: newId, data: this._mapCloudToLocal(cloudData) })
 
     if (cloudData.profilePicId) {
@@ -52,6 +51,7 @@ export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_Us
 
     // check if we have to do things with the image
     let sphereUser = Get.sphereUser(this.localSphereId, this.localId);
+
     if (sphereUser.pictureId !== cloudData.profilePicId) {
       if (!cloudData.profilePicId) {
         this.transferPromises.push(FileUtil.safeDeleteFile(sphereUser.picture));

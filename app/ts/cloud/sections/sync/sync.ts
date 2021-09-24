@@ -15,9 +15,9 @@ import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { core } from "../../../Core";
 import { CloudPoller } from "../../../logic/CloudPoller";
-import { syncNext } from "../newSync/SyncNext";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { SyncNext } from "../newSync/SyncNext";
 
 
 
@@ -131,7 +131,7 @@ export const sync = {
         return preferenceSyncer.sync(state);
       })
       .then(() => {
-        return syncNext(['hubs','stones'], actions, globalCloudIdMap);
+        return SyncNext.sync(['hubs','stones'], actions, globalCloudIdMap);
       })
       // FINISHED SYNCING
       .then(() => {

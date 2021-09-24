@@ -1,5 +1,6 @@
 import * as ReactNative from "react-native";
 import { AppState } from "react-native";
+import { AsyncHookResult, PowerState } from "react-native-device-info/src/internal/types";
 
 export const Platform = {
   ...ReactNative.Platform,
@@ -40,7 +41,45 @@ jest.mock("react-native-extra-dimensions-android", () => {
 })
 
 jest.mock("react-native-device-info", () => {
-  return jest.fn()
+  return {
+    getApplicationName: jest.fn(),
+    getBrand: jest.fn(),
+    getBuildNumber: jest.fn(),
+    getBundleId: jest.fn(),
+    getDeviceId: jest.fn(),
+    getDeviceType: jest.fn(),
+    getManufacturer: jest.fn(),
+    getManufacturerSync: jest.fn(),
+    getModel: jest.fn(),
+    getPowerState: jest.fn(),
+    getPowerStateSync: jest.fn(),
+    getReadableVersion: jest.fn(),
+    getSystemName: jest.fn(),
+    getSystemVersion: jest.fn(),
+    getUniqueId: jest.fn(),
+    getVersion: jest.fn(),
+    hasNotch: jest.fn(),
+    hasSystemFeature:jest.fn(),
+    hasSystemFeatureSync: jest.fn(),
+    isLandscape:jest.fn(),
+    isLandscapeSync: jest.fn(),
+    isTablet: jest.fn(),
+    supported32BitAbis: jest.fn(),
+    supported32BitAbisSync: jest.fn(),
+    supported64BitAbis: jest.fn(),
+    supported64BitAbisSync: jest.fn(),
+    supportedAbis: jest.fn(),
+    supportedAbisSync: jest.fn(),
+    useBatteryLevel: jest.fn(),
+    useBatteryLevelIsLow: jest.fn(),
+    useDeviceName: jest.fn(),
+    useFirstInstallTime: jest.fn(),
+    useHasSystemFeature: jest.fn(),
+    useIsEmulator: jest.fn(),
+    usePowerState: jest.fn(),
+    useManufacturer: jest.fn(),
+    useIsHeadphonesConnected: jest.fn(),
+  }
 })
 
 jest.mock("react-native-image-resizer", () => {

@@ -136,6 +136,8 @@ export class SessionBroker {
 
 
   async requireSession(handle:string, command: BleCommand) {
+    if (!handle) { return; }
+
     if (this.pendingSessions[handle] === undefined && this.connectedSessions[handle] === undefined) {
       LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private, "commandType", command.command.type);
       this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private, this.options.timeout)

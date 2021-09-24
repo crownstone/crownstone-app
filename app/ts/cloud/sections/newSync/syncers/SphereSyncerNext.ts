@@ -8,7 +8,7 @@ import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cloud_Sphere_settable> {
 
   getLocalId() {
-    return this.globalCloudIdMap.spheres[this.cloudId] || MapProvider.cloud2localMap.spheres[this.cloudId] || this.cloudId;
+    return this.globalCloudIdMap.spheres[this.cloudId] || MapProvider.cloud2localMap.spheres[this.cloudId];
   }
 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
