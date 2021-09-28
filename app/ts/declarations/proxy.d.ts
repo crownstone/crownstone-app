@@ -40,6 +40,7 @@ interface BluenetPromiseWrapperProtocol {
     sunriseSecondsSinceMidnight: number,
     sunsetSecondsSinceMidnight: number,
     referenceId: string,
+    enableTimeBasedNonce: boolean
   )                                                                     : Promise< void >,
   meshSetTime(handle: string, time : number)                            : Promise< void >,
   getTime(handle: string)                                               : Promise< number >, // timestamp in seconds since epoch

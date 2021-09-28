@@ -28,6 +28,7 @@ import { SliderBar } from "../../../components/editComponents/SliderBar";
 import { DataUtil } from "../../../../util/DataUtil";
 import { SwitchBar } from "../../../components/editComponents/SwitchBar";
 import { xUtil } from "../../../../util/StandAloneUtil";
+import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -41,7 +42,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
     super(props);
     let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
     this.state = {
-      softOnSpeed: Number(stone.abilities.dimming.softOnSpeed)
+      softOnSpeed: Number(stone.abilities.dimming.properties.softOnSpeed.value)
     }
   }
 
@@ -62,7 +63,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
 
 
   disable() {
-    core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false }});
+    core.store.dispatch({type:"UPDATE_ABILITY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, data: { enabledTarget: false }});
     NavigationUtil.back();
   }
 
@@ -109,16 +110,16 @@ export class Ability_DimmerSettings extends Component<any, any> {
               if (!value) {
                 numericValue = 100;
               }
-              core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: numericValue }})
+              core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: numericValue }})
               this.setState({softOnSpeed: numericValue})
             }}
           />
-            { Number(stone.abilities.dimming.softOnSpeed) !== 0 && Number(stone.abilities.dimming.softOnSpeed) !== 100 && (
+            { Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 0 && Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 100 && (
               <SliderBar
                 centerAlignLabel={true}
                 label={ lang("Should_I_fade_slowly_or_q") }
                 callback={(value) => {
-                  core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { softOnSpeed: value }});
+                  core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: value }})
                   this.setState({softOnSpeed: value})
                 }}
                 min={1}

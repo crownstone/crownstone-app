@@ -10,7 +10,7 @@ import { LOGe } from "../../../../logging/Log";
 export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_UserData, {}> {
 
   getLocalId() {
-    return this.globalCloudIdMap.users[this.cloudSphereId + this.cloudId] || MapProvider.cloud2localMap.users[this.cloudSphereId + this.cloudId]
+    return this.globalCloudIdMap.users[this.localSphereId + this.cloudId] || MapProvider.cloud2localMap.users[this.localSphereId + this.cloudId]
   }
 
 
@@ -33,13 +33,13 @@ export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_Us
   }
 
   removeFromLocal() {
-    this.actions.push({type:"REMOVE_SPHERE_USER", sphereId: this.localSphereId, sphereUserId: this.localId });
+    this.actions.push({type:"REMOVE_SPHERE_USER", sphereId: this.localSphereId, userId: this.localId });
   }
 
   createLocal(cloudData: cloud_UserData) {
     let newId = this._generateLocalId();
-    this.globalCloudIdMap.users[this.cloudSphereId + this.cloudId] = newId;
-    this.actions.push({type:"ADD_SPHERE_USER", sphereId: this.localSphereId, sphereUserId: newId, data: this._mapCloudToLocal(cloudData) })
+    this.globalCloudIdMap.users[this.localSphereId + this.cloudId] = newId;
+    this.actions.push({type:"ADD_SPHERE_USER", sphereId: this.localSphereId, userId: newId, data: this._mapCloudToLocal(cloudData) })
 
     if (cloudData.profilePicId) {
       this._downloadSphereUserImage(cloudData);
@@ -47,7 +47,7 @@ export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_Us
   }
 
   updateLocal(cloudData: cloud_UserData) {
-    this.actions.push({type:"UPDATE_SPHERE_USER", sphereId: this.localSphereId, sphereUserId: this.localId, data: this._mapCloudToLocal(cloudData) })
+    this.actions.push({type:"UPDATE_SPHERE_USER", sphereId: this.localSphereId, userId: this.localId, data: this._mapCloudToLocal(cloudData) })
 
     // check if we have to do things with the image
     let sphereUser = Get.sphereUser(this.localSphereId, this.localId);

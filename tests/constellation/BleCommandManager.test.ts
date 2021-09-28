@@ -136,6 +136,8 @@ test("BleCommandManager shared, direct, check a command can be performed", async
   expect(BleCommandManager.queue.mesh[sphere.id].length).toBe(1);
 
   expect(BleCommandManager.areThereCommandsFor(stone1.config.handle)).toBeTruthy();
+  expect(BleCommandManager.areThereCommandsFor(stone2.config.handle)).toBeTruthy();
+
   BleCommandManager.performCommand(stone1.config.handle);
 
   expect(mBluenetPromise.has(stone1.config.handle).called.turnOnMesh()).toBeTruthy();

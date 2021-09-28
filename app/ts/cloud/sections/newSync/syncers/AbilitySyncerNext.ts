@@ -39,6 +39,7 @@ export class AbilitySyncerNext extends SyncInterface<AbilityData, cloud_Ability,
       cloudId:            cloudAbility.id,
       enabled:            cloudAbility.syncedToCrownstone ? cloudAbility.enabled : null,
       enabledTarget:      cloudAbility.enabled,
+      syncedToCrownstone: cloudAbility.syncedToCrownstone,
       updatedAt:          new Date(cloudAbility.updatedAt).valueOf()
     };
     return result;
@@ -56,6 +57,7 @@ export class AbilitySyncerNext extends SyncInterface<AbilityData, cloud_Ability,
 
   removeFromLocal() {
     // we do not remove abilities. They can be disabled, not removed.
+    this.actions.push({type: "REMOVE_ABILITY_CLOUD_ID", sphereId: this.localSphereId, stoneId: this.localStoneId, abilityId: this.localId});
   }
 
   createLocal(cloudData: cloud_Ability) {
@@ -64,7 +66,7 @@ export class AbilitySyncerNext extends SyncInterface<AbilityData, cloud_Ability,
 
   updateLocal(cloudData: cloud_Ability) {
     this.actions.push({
-      type:"UPDATE_ABILITY",
+      type: cloudData.syncedToCrownstone ? "UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD" : "UPDATE_ABILITY",
       sphereId: this.localSphereId,
       stoneId: this.localStoneId,
       abilityId: this.localId,

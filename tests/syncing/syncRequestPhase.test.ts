@@ -18,15 +18,23 @@ test("Using core in tests", async () => {
   let cloudIdMap = getGlobalIdMap();
   let actions = []
   await SyncNext.processSyncResult(reply1, actions, cloudIdMap)
-
-  for (let action of actions) {
-    console.log(action)
-  }
-
   expect(actions.length > 0).toBeTruthy()
+
+  core.store.batchDispatch(actions);
+
+  let state = core.store.getState();
+  for (let sphereId in state.spheres) {
+    let sphere = state.spheres[sphereId];
+    expect(Object.keys(sphere.users).length > 0).toBeTruthy()
+    for (let stoneId in sphere.stones) {
+      let stone = sphere.stones[stoneId];
+      for (let abilityType in stone.abilities) {
+        expect(stone.abilities[abilityType].syncedToCrownstone).toBeTruthy()
+      }
+    }
+  }
 })
 
 test("check mock", async () => {
-  console.log(CLOUD);
   CLOUD.forLocation(123).downloadLocationPicture(5).then((x) => { console.log(x) })
 })

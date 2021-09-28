@@ -918,15 +918,17 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false, "data": hasher.getMasterHash()]])
     }
     
-    @objc func setTimeViaBroadcast(_ time: NSNumber, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    @objc func setTimeViaBroadcast(_ time: NSNumber, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String, enableTimeBasedNonce: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
         wrapForBluenet("setTimeViaBroadcast", callback,
                        GLOBAL_BLUENET.bluenet.broadcast.setTime(
                         referenceId:                 referenceId,
                         time:                        time.uint32Value,
                         sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value,
-                        sunsetSecondsSinceMidnight:  sundownSecondsSinceMidnight.uint32Value
+                        sunsetSecondsSinceMidnight:  sundownSecondsSinceMidnight.uint32Value,
+                        customValidationNonce:       enableTimeBasedNonce.boolValue ? 0xCAFEBABE : nil
                        ))
     }
+    
     
     @objc func setSunTimes(_ sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String) {
         GLOBAL_BLUENET.bluenet.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value)

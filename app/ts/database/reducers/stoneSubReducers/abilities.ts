@@ -1,6 +1,16 @@
 import { combineReducers } from "redux";
 import { getTime, refreshDefaults, update } from "../reducerUtil";
 
+export const ABILITY_TYPE_ID = {
+  dimming:     'dimming',
+  switchcraft: 'switchcraft',
+  tapToToggle: 'tapToToggle'
+}
+export const ABILITY_PROPERTY_TYPE_ID = {
+  softOnSpeed: 'softOnSpeed',
+  rssiOffset:  'rssiOffset',
+}
+
 let abilityFormat : AbilityData = {
   type: null,
   enabled: false,
@@ -64,6 +74,10 @@ let abilityReducer = (state = abilityFormat, action) => {
       newState = {...state};
       newState.cloudId = update(action.data.cloudId, newState.cloudId);
       return newState;
+    case "REMOVE_ABILITY_CLOUD_ID":
+      newState = {...state};
+      newState.cloudId = null;
+      return newState;
     case "REFRESH_ABILITIES":
       newState = {...state};
       newState.syncedToCrownstone = false;
@@ -85,20 +99,37 @@ let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
         return newState;
       }
       return state;
+    case 'UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD':
+      if (action.data) {
+        let newState = {...state};
+        newState.value            = update(action.data.enabled,       newState.value);
+        newState.valueTarget      = update(action.data.enabledTarget, newState.valueTarget);
+        newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
+        newState.syncedToCrownstone = true;
+        newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'ADD_ABILITY_PROPERTY':
     case 'UPDATE_ABILITY_PROPERTY':
       if (action.data) {
         let newState = {...state};
-        newState.type       = update(action.data.type,    newState.type);
-        newState.value      = update(action.data.value,   newState.value);
-        newState.cloudId    = update(action.data.cloudId, newState.cloudId);
-        newState.updatedAt  = getTime(action.data.updatedAt);
+        newState.type        = update(action.data.type,        newState.type);
+        newState.value       = update(action.data.value,       newState.value);
+        newState.valueTarget = update(action.data.valueTarget, newState.valueTarget);
+        newState.syncedToCrownstone = false;
+        newState.cloudId     = update(action.data.cloudId,     newState.cloudId);
+        newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
     case "UPDATE_ABILITY_PROPERTY_CLOUD_ID":
       let newState = {...state};
       newState.cloudId = update(action.data.cloudId,       newState.cloudId);
+      return newState;
+    case "REMOVE_ABILITY_PROPERTY_CLOUD_ID":
+      newState = {...state};
+      newState.cloudId = null;
       return newState;
     case "MARK_ABILITY_PROPERTY_AS_SYNCED":
       newState = {...state};
@@ -151,6 +182,7 @@ export default (state = {}, action : any = {}) => {
       if (action.abilityId !== undefined) {
         if (state[action.abilityId] !== undefined || action.type === "ADD_ABILITY") {
           let abilityState        = abilityReducer(state[action.abilityId], action);
+
           abilityState.properties = abilityPropertyReducerHandler(abilityState.properties, action);
 
           return {

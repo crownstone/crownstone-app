@@ -20,6 +20,7 @@ import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
+import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -134,7 +135,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
           {
             label: lang("Yes__enable_dimming_"),
             onSelect: () => {
-              core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}});
+              core.store.dispatch({type:'UPDATE_ABILITY', sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, data: {enabledTarget: true}});
               return "twilight";
             }
           },

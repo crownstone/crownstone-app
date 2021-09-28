@@ -6,7 +6,8 @@ import { Bluenet } from "../native/libInterface/Bluenet";
 import { AppState, Platform } from "react-native";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { xUtil } from "../util/StandAloneUtil";
-import { tellSphere } from "../logic/constellation/Tellers";
+import { tell, tellSphere } from "../logic/constellation/Tellers";
+import { Get } from "../util/GetUtil";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
@@ -18,6 +19,7 @@ const TRIGGER_ID = "TIME_KEEPER";
 class TimeKeeperClass {
 
   initialized = false;
+  lastSetTimeBroadcastTimestamp = 0;
 
   constructor() {}
 
@@ -48,6 +50,10 @@ class TimeKeeperClass {
           this._setTime()
         }
       });
+      // broadcast on app open.
+      core.eventBus.on('TIME_IS_NOT_SET', ({sphereId, stone}) => {
+        this._setTimeForNewCrownstones(sphereId, stone)
+      });
 
 
       // initial broadcast.
@@ -57,11 +63,36 @@ class TimeKeeperClass {
     }
   }
 
+  /**
+   * In case a Crownstone has rebooted and it will not get the time from its neighbours, this will ensure the time will be set.
+   * @param sphereId
+   * @param stone
+   */
+  _setTimeForNewCrownstones(sphereId: string, stone: StoneData) {
+    let now = Date.now();
+    if (now - this.lastSetTimeBroadcastTimestamp < 3000) {
+      return;
+    }
+
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return; }
+
+    let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);
+
+    if (AppState.currentState === 'active' || Platform.OS === 'android') {
+      BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId, false).catch(() => {});
+    }
+    else {
+      tell(stone).setTime().catch((err) => {})
+    }
+  }
+
 
   _updateSunTimes(sphereId) {
     let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);
     Bluenet.setSunTimes(suntimes.sunrise, suntimes.sunset, sphereId)
   }
+
 
   _setTime() {
     let state = core.store.getState();
@@ -74,12 +105,12 @@ class TimeKeeperClass {
 
         if (AppState.currentState === 'active' || Platform.OS === 'android') {
           // broadcast
-          BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId).catch(() => {});
+          BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId, true).catch(() => {});
           return;
         }
         else {
-          tellSphere(sphereId).setTime();
-          tellSphere(sphereId).setSunTimesViaConnection(suntimes.sunrise, suntimes.sunset);
+          tellSphere(sphereId).setTime().catch((err) => {})
+          tellSphere(sphereId).setSunTimesViaConnection(suntimes.sunrise, suntimes.sunset).catch((err) => {})
         }
       }
     })

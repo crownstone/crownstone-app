@@ -18,10 +18,7 @@ Add cancelConnectionRequest(handle) bridge method which will fail the connection
 Move to the HERMES engine
 https://reactnative.dev/docs/hermes
 
-Presumably we'll be moving to RN 0.64.0
-
-- add a getBehaviourMasterHashCRC where we get the CRC hash instead of the fletcher hash.
-- This does not mean we will remove the other method.
+Updated to RN 0.64.2
 
 - remove setMeshChannel bridge method. this is from the old mesh.
 
@@ -43,3 +40,6 @@ install https://github.com/react-native-webrtc/react-native-webrtc
 
 updated react-native-image-picker to v4.0.6
 https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6
+
+Added setTimeViaBroadcast parameter enableTimeBasedNonce (boolean) to the end of the param list. False means use CAFEBABE instead of time as validation nonce.
+This sets a customValidationNonce of 0xCAFEBABE

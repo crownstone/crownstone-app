@@ -50,7 +50,7 @@ export function addStone(config? : any) {
     data:{
       handle: 'handle_' + xUtil.getShortUUID(),
       name: getToken('stone'),
-      crownstoneId: stoneCount,
+      uid: stoneCount,
       firmwareVersion:'5.4.0',
       ...config
     }

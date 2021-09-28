@@ -25,6 +25,7 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
 import ResponsiveText from "../../components/ResponsiveText";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
 
 
 
@@ -301,7 +302,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       subTextStyleOverride = {};
       overrideButton = (
         <TouchableOpacity style={{backgroundColor: colors.blue.hex, borderRadius: 15, padding:10}} onPress={() => {
-          core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId, data: {enabledTarget: true}})
+          core.store.dispatch({type:'UPDATE_ABILITY', sphereId: sphereId, stoneId: stoneId, abilityId: ABILITY_TYPE_ID.dimming, data: {enabledTarget: true}})
         }}>
           <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{ lang("Enable_nDimming") }</Text>
         </TouchableOpacity>

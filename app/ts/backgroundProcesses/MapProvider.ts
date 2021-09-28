@@ -159,33 +159,34 @@ class MapProviderClass {
       })
     };
 
-    let getFromConfig = (source, cloud2local, local2cloud) => {
+    let getFromConfig = (sphereId, source, cloud2local, local2cloud) => {
       fillMaps(source, (item, localId) => { return item.config.cloudId; }, cloud2local, local2cloud);
     };
-    let getFromId = (source, cloud2local, local2cloud) => {
-      fillMaps(source, (item, localId) => { return localId; }, cloud2local, local2cloud);
+    let getFromIdPerSphere = (sphereId, source, cloud2local, local2cloud) => {
+      fillMaps(source, (item, localId) => { return sphereId + localId; }, cloud2local, local2cloud);
     };
-    let getFromItem = (source, cloud2local, local2cloud) => {
+    let getFromItem = (sphereId, source, cloud2local, local2cloud) => {
       fillMaps(source, (item, localId) => { return item.cloudId; }, cloud2local, local2cloud);
     };
 
-    getFromConfig(state.spheres, this.cloud2localMap.spheres, this.local2cloudMap.spheres);
+    getFromConfig(null, state.spheres, this.cloud2localMap.spheres, this.local2cloudMap.spheres);
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig( sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
-      getFromConfig( sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
-      getFromConfig( sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
-      getFromConfig( sphere.hubs,             this.cloud2localMap.hubs,       this.local2cloudMap.hubs);
-      getFromItem(   sphere.scenes,           this.cloud2localMap.scenes,     this.local2cloudMap.scenes);
-      getFromItem(   sphere.thirdParty.toons, this.cloud2localMap.toons,      this.local2cloudMap.toons);
-      getFromId(     sphere.users,            this.cloud2localMap.users,      this.local2cloudMap.users);
+      getFromConfig( sphereId, sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromConfig( sphereId, sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
+      getFromConfig( sphereId, sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromConfig( sphereId, sphere.hubs,             this.cloud2localMap.hubs,       this.local2cloudMap.hubs);
+      getFromItem(   sphereId, sphere.scenes,           this.cloud2localMap.scenes,     this.local2cloudMap.scenes);
+      getFromItem(   sphereId, sphere.thirdParty.toons, this.cloud2localMap.toons,      this.local2cloudMap.toons);
+      getFromIdPerSphere(sphereId, sphere.users,            this.cloud2localMap.users,      this.local2cloudMap.users);
+
 
       Object.keys(sphere.stones).forEach((stoneId) => {
-        getFromItem(sphere.stones[stoneId].rules,     this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
-        getFromItem(sphere.stones[stoneId].abilities, this.cloud2localMap.abilities,  this.local2cloudMap.abilities);
+        getFromItem(sphereId, sphere.stones[stoneId].rules,     this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
+        getFromItem(sphereId, sphere.stones[stoneId].abilities, this.cloud2localMap.abilities,  this.local2cloudMap.abilities);
         Object.keys(sphere.stones[stoneId].abilities).forEach((abilityId) => {
-          getFromItem(sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
+          getFromItem(sphereId, sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
         })
       })
     });

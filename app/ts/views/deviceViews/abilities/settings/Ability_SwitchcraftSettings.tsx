@@ -24,6 +24,7 @@ import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
+import { ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 
 
 export class Ability_SwitchcraftSettings extends Component<any, any> {
@@ -32,7 +33,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
   }
 
   disable() {
-    core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false }});
+    core.store.dispatch({type:"UPDATE_ABILITY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.switchcraft, data: { enabledTarget: false }});
     NavigationUtil.back();
   }
 

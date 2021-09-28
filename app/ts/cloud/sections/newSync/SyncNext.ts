@@ -137,7 +137,7 @@ export const SyncNext = {
             new AbilitySyncerNext({cloudId: abilityId, ...sphereSyncBase}, stoneId).process(ability.data, moduleReply);
 
             for (let propertyId in ability.properties) {
-              new AbilityPropertySyncerNext({cloudId: abilityId, ...sphereSyncBase}, stoneId, abilityId).process(ability.properties[propertyId].data, moduleReply);
+              new AbilityPropertySyncerNext({cloudId: propertyId, ...sphereSyncBase}, stoneId, abilityId).process(ability.properties[propertyId].data, moduleReply);
             }
           }
 

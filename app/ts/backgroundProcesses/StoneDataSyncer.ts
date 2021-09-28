@@ -456,6 +456,9 @@ class StoneDataSyncerClass {
         return;
       }
 
+      // setTime while we're going to be connected anyway.
+      tell(stone).setTime().catch((err) => {})
+
       // SYNC!
       LOGi.behaviour("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId], "my rules are", ruleData);
       let rulesAccordingToCrownstone = await tell(stone).syncBehaviours(ruleData);

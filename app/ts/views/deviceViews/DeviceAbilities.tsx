@@ -27,6 +27,7 @@ import { STONE_TYPES } from "../../Enums";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
@@ -187,7 +188,7 @@ function getData(props, stone, active) {
         label: lang("Dimming"),
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY", sphereId: props.sphereId, stoneId: props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, data: { enabledTarget: true }}); },
         explanation: lang("Dimming_can_be_enabled_pe")
       }
     case 'switchcraft':
@@ -207,7 +208,7 @@ function getData(props, stone, active) {
         label: lang("Switchcraft"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY", sphereId: props.sphereId, stoneId: props.stoneId, abilityId: ABILITY_TYPE_ID.switchcraft, data: { enabledTarget: true }}); },
         explanation: lang("Use_modified_wall_switche")
       }
     case 'tapToToggle':
@@ -247,7 +248,7 @@ function getData(props, stone, active) {
         label: lang("Tap_to_toggle"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY", sphereId: props.sphereId, stoneId: props.stoneId, abilityId: ABILITY_TYPE_ID.tapToToggle, data: { enabledTarget: true }}); },
         explanation:  disabledLabel || typeLabel
       }
   }

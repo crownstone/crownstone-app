@@ -61,6 +61,12 @@ export class AbilityPropertySyncerNext extends SyncInterface<AbilityPropertyData
 
   removeFromLocal() {
     // we do not remove abilityProperties. They can be disabled, not removed.
+    this.actions.push({type: "REMOVE_ABILITY_PROPERTY_CLOUD_ID",
+      sphereId: this.localSphereId,
+      stoneId: this.localStoneId,
+      abilityId: this.localAbilityId,
+      propertyId: this.localId
+    });
   }
 
   createLocal(cloudData: cloud_AbilityProperty) {
@@ -69,7 +75,7 @@ export class AbilityPropertySyncerNext extends SyncInterface<AbilityPropertyData
 
   updateLocal(cloudData: cloud_AbilityProperty) {
     this.actions.push({
-      type:"UPDATE_ABILITY_PROPERTY",
+      type: cloudData.syncedToCrownstone ? "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD" : "UPDATE_ABILITY_PROPERTY",
       sphereId: this.localSphereId,
       stoneId: this.localStoneId,
       abilityId: this.localAbilityId,

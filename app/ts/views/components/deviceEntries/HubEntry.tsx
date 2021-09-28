@@ -122,19 +122,6 @@ export class HubEntry extends Component<{
   }
 
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if ( this.props.switchView !== prevProps.switchView ) {
-      let state = core.store.getState();
-      if (state.app.hasSeenSwitchView === false) {
-        let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-        let useSwitchView = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
-        if (useSwitchView && state.app.hasSeenSwitchView === false) {
-          core.store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { hasSeenSwitchView: true } });
-        }
-      }
-    }
-  }
-
   _basePressed(stone, hub) {
     NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: hub?.config?.linkedStoneId || this.props.stoneId, hubId: this.props.hubId, viewingRemotely: this.props.viewingRemotely})
   }
@@ -173,7 +160,7 @@ export class HubEntry extends Component<{
 
     let WrapperElement : any = TouchableOpacity;
     let IconWrapperElement : any = TouchableOpacity;
-    let switchViewActive = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
+    let switchViewActive = false;
     if (this.props.allowDeviceOverview === false) {
       WrapperElement = View
     }

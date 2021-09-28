@@ -11,6 +11,7 @@ import { core } from "../../Core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { CONDITION_MAP, STONE_TYPES } from "../../Enums";
+import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
@@ -398,6 +399,7 @@ export class StoneEntity {
       this.handleHubData(stone, advertisement);
     }
     else {
+      this.handleTime(stone, advertisement);
       this.handleConfig(stone, advertisement);
       this.handleAbilities(stone, advertisement);
       this.handleErrors(stone, advertisement);
@@ -495,6 +497,14 @@ export class StoneEntity {
     }
   }
 
+
+
+  handleTime(stone: StoneData, advertisment: crownstoneAdvertisement) {
+    if (advertisment.serviceData.timeSet === false) {
+      core.eventBus.emit("TIME_IS_NOT_SET", { sphereId: advertisment.referenceId, stone });
+    }
+  }
+
   /**
    * This will take any configuration from the Crownstone that we don't currently have up to date in the app and update it
    * This goes for:
@@ -529,31 +539,31 @@ export class StoneEntity {
     if (stone.abilities.dimming.syncedToCrownstone &&
         (stone.abilities.dimming.enabled !== stone.abilities.dimming.enabledTarget ||
           stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAllowed)) {
-      actions.push({ type: "UPDATE_ABILITY_DIMMER", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+      actions.push({ type: "UPDATE_ABILITY", sphereId : this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.dimming, data: {
         enabled:       advertisement.serviceData.dimmingAllowed,
         enabledTarget: advertisement.serviceData.dimmingAllowed,
       }});
-      actions.push({ type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+      actions.push({ type: "MARK_ABILITY_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.dimming});
     }
 
     if (stone.abilities.switchcraft.syncedToCrownstone &&
         (stone.abilities.switchcraft.enabled !== stone.abilities.switchcraft.enabledTarget ||
          stone.abilities.switchcraft.enabled !== advertisement.serviceData.switchCraftEnabled)) {
-      actions.push({ type: "UPDATE_ABILITY_SWITCHCRAFT", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+      actions.push({ type: "UPDATE_ABILITY", sphereId : this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.switchcraft, data: {
           enabled:       advertisement.serviceData.switchCraftEnabled,
           enabledTarget: advertisement.serviceData.switchCraftEnabled,
         }});
-      actions.push({ type: "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+      actions.push({ type: "MARK_ABILITY_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.switchcraft});
     }
 
     if (stone.abilities.tapToToggle.syncedToCrownstone &&
       (stone.abilities.tapToToggle.enabled !== stone.abilities.tapToToggle.enabledTarget ||
         stone.abilities.tapToToggle.enabled !== advertisement.serviceData.tapToToggleEnabled)) {
-      actions.push({ type: "UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+      actions.push({ type: "UPDATE_ABILITY", sphereId : this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.tapToToggle, data: {
           enabled:       advertisement.serviceData.tapToToggleEnabled,
           enabledTarget: advertisement.serviceData.tapToToggleEnabled,
         }});
-      actions.push({ type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+      actions.push({ type: "MARK_ABILITY_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId, abilityId: ABILITY_TYPE_ID.tapToToggle});
     }
 
     if (actions.length > 0) {

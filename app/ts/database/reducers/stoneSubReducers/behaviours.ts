@@ -43,7 +43,7 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
     case 'ADD_STONE_RULE':
     case 'UPDATE_STONE_RULE':
       if (action.data) {
-        newState = {...state};
+        let newState = {...state};
         if (action.type === 'ADD_STONE_RULE') {
           newState.id = action.ruleId;
         }

@@ -33,39 +33,39 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
   }
 
   getLocalId(cloudItem: CloudDataFormat) : string {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   static mapLocalToCloud(localData) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   _mapLocalToCloud(localItem?: LocalDataFormat) : CloudSettableFormat | null {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   mapCloudToLocal(cloudItem: CloudDataFormat) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   updateCloudId(cloudId: string, cloudItem: CloudDataFormat) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   removeFromLocal() {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   createLocal(cloudData: CloudDataFormat) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   updateLocal(cloudData: CloudDataFormat) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   setReplyWithData(reply: SyncRequestSphereData, cloudData: CloudDataFormat) {
-    throw new Error("MUST_BE_IMPLEMENTED");
+    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
@@ -92,8 +92,7 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
         break;
       case "NOT_AVAILABLE":
         // Delete sphere from the store since it does not exist on the cloud.
-        // TODO: restore the removal:
-        // this.removeFromLocal();
+        this.removeFromLocal();
         break;
       case "VIEW":
         // View is requested and plainly added.
@@ -114,5 +113,4 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
       // do nothing.
     }
   }
-
 }

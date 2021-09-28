@@ -118,7 +118,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   restartCrownstone:              (handle: string)     => { return BluenetPromise('restartCrownstone', handle); },
   clearFingerprintsPromise:       ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                        (handle: string, time) => { return BluenetPromise('setTime', handle, time); },
-  setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId); },
+  setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string, enableTimeBasedNonce: boolean) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId, enableTimeBasedNonce); },
   meshSetTime:                    (handle: string, time) => { return BluenetPromise('meshSetTime', handle, time); },
   getTime:                        (handle: string)     => { return BluenetPromise('getTime', handle); },
 

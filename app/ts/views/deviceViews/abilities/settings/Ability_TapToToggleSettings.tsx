@@ -24,6 +24,7 @@ import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { SliderBar } from "../../../components/editComponents/SliderBar";
 import { Explanation } from "../../../components/editComponents/Explanation";
+import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 
 
 export class Ability_TapToToggleSettings extends Component<any, any> {
@@ -35,12 +36,12 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
     super(props);
 
     let stone = core.store.getState().spheres[this.props.sphereId].stones[this.props.stoneId];
-    let rssiOffset = Number(stone.abilities.tapToToggle.rssiOffsetTarget);
+    let rssiOffset = Number(stone.abilities.tapToToggle.properties.rssiOffset.valueTarget);
     this.state = {rssiOffset: rssiOffset}
   }
 
   disable() {
-    core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false }});
+    core.store.dispatch({type:"UPDATE_ABILITY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.tapToToggle, data: { enabledTarget: false }});
     NavigationUtil.back();
   }
 
@@ -92,7 +93,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
                 sliderHidden={true}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
                 callback={(value) => {
-                  core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget: value }});
+                  core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.tapToToggle, propertyId: ABILITY_PROPERTY_TYPE_ID.rssiOffset, data: { valueTarget: value }});
                   this.setState({rssiOffset: value})
                 }}
                 min={-10}
