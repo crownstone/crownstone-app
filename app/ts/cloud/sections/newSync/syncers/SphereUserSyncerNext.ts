@@ -1,13 +1,13 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { SyncInterface } from "./SyncInterface";
 import { Get } from "../../../../util/GetUtil";
 import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
+import { SyncSphereInterface } from "./base/SyncSphereInterface";
 
 
-export class SphereUserSyncerNext extends SyncInterface<SphereUserData, cloud_UserData, {}> {
+export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, cloud_UserData, {}> {
 
   getLocalId() {
     return this.globalCloudIdMap.users[this.localSphereId + this.cloudId] || MapProvider.cloud2localMap.users[this.localSphereId + this.cloudId]

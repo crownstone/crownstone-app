@@ -64,5 +64,14 @@ export const Get = {
   scene(sphereId: string, sceneId: string) : SceneData | null {
     let sphere = Get.sphere(sphereId);
     return sphere?.scenes?.[sceneId] || null;
+  },
+
+  toon(sphereId: string, toonId: string) : ToonData | null {
+    let sphere = Get.sphere(sphereId);
+    return sphere?.thirdParty?.toon?.[toonId] || null;
+  },
+
+  user() : UserData | null {
+    return core.store.getState().user;
   }
 }

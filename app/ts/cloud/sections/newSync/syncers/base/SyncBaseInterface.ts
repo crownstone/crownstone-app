@@ -1,29 +1,24 @@
-import { LOGe } from "../../../../logging/Log";
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
+import { LOGe } from "../../../../../logging/Log";
+import { xUtil } from "../../../../../util/StandAloneUtil";
+import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 
 
 
-export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
+export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
 
-  cloudSphereId:    string;
   cloudId:          string;
-  localSphereId:    string;
   localId:          string;
   actions:          any[];
   transferPromises: Promise<any>[];
   globalCloudIdMap: globalIdMap;
 
-  constructor(options: SyncInterfaceOptions) {
-    this.cloudSphereId    = options.cloudSphereId;
+  constructor(options: SyncInterfaceBaseOptions) {
     this.cloudId          = options.cloudId;
     this.actions          = options.actions;
     this.transferPromises = options.transferPromises;
 
     // this is a map of cloudIds and the corresponding localIds that have been created or exist for them.
-    this.globalCloudIdMap = options.globalCloudIdMap,
-
-    this.localSphereId = this.globalCloudIdMap.spheres[this.cloudSphereId] || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
+    this.globalCloudIdMap = options.globalCloudIdMap;
   }
 
 
@@ -64,11 +59,11 @@ export class SyncInterface<LocalDataFormat, CloudDataFormat extends {id: string}
     throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
-  setReplyWithData(reply: SyncRequestSphereData, cloudData: CloudDataFormat) {
+  setReplyWithData(reply: SyncRequestSphereData | SyncRequest, cloudData: CloudDataFormat) {
     throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 
-  process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
+  process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData | SyncRequest) {
     if (!response) { return; }
 
     this.localId = this.getLocalId(response.data);

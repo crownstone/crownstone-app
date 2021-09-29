@@ -15,6 +15,32 @@ interface cloud_UserData {
 }
 
 
+interface cloud_User {
+  firstName:           string,
+  lastName:            string,
+  email:               string,
+  new:                 boolean,
+  profilePicId:        string,
+  id:                  string,
+  language:            string,
+  uploadLocation:      boolean,
+  uploadSwitchState:   boolean,
+  uploadDeviceDetails: boolean,
+  updatedAt:           string,
+}
+
+interface cloud_User_settable {
+  firstName:           string,
+  lastName:            string,
+  email:               string,
+  new:                 boolean,
+  language:            string,
+  uploadLocation:      boolean,
+  uploadSwitchState:   boolean,
+  uploadDeviceDetails: boolean,
+  updatedAt:           string,
+}
+
 interface cloud_Sphere {
   id: string,
   uid: number,
@@ -291,10 +317,10 @@ interface cloud_MessageState {
 
 interface cloud_SphereTrackingNumber {
   id: string,
-  trackingNumber: number;
-  trackingNumberId: string,
+  trackingNumber:     number;
+  trackingNumberId:   string,
   trackingNumberType: string,
-  sphereId: string,
+  sphereId:  string,
   createdAt: string,
   updatedAt: string,
 }
@@ -313,6 +339,12 @@ interface cloud_Toon {
   changedProgramTime: number;
   sphereId: string,
   createdAt: string,
+  updatedAt: string,
+}
+
+interface cloud_Toon_settable {
+  toonAgreementId: string,
+  toonAddress: string,
   updatedAt: string,
 }
 

@@ -1,11 +1,11 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { SyncInterface } from "./SyncInterface";
 import { Get } from "../../../../util/GetUtil";
+import { SyncSphereInterface } from "./base/SyncSphereInterface";
 
 
 
-export class StoneSyncerNext extends SyncInterface<StoneData, cloud_Stone, cloud_Stone_settable> {
+export class StoneSyncerNext extends SyncSphereInterface<StoneData, cloud_Stone, cloud_Stone_settable> {
 
   getLocalId() {
     return this.globalCloudIdMap.stones[this.cloudId] || MapProvider.cloud2localMap.stones[this.cloudId];

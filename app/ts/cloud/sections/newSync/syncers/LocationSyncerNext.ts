@@ -1,13 +1,13 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { SyncInterface } from "./SyncInterface";
 import { Get } from "../../../../util/GetUtil";
 import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
+import { SyncSphereInterface } from "./base/SyncSphereInterface";
 
 
-export class LocationSyncerNext extends SyncInterface<LocationData, cloud_Location, cloud_Location_settable> {
+export class LocationSyncerNext extends SyncSphereInterface<LocationData, cloud_Location, cloud_Location_settable> {
 
   getLocalId() {
     return this.globalCloudIdMap.locations[this.cloudId] || MapProvider.cloud2localMap.locations[this.cloudId];

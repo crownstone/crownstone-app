@@ -1,8 +1,8 @@
-import { SyncInterface } from "./SyncInterface";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { DataUtil } from "../../../../util/DataUtil";
 import { Get } from "../../../../util/GetUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
+import { SyncInterface } from "./base/SyncInterface";
 
 
 export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cloud_Sphere_settable> {
@@ -54,7 +54,7 @@ export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cl
   }
 
   setReplyWithData(reply: SyncRequestSphereData) {
-    let sphere = Get.sphere(this.localSphereId);
+    let sphere = Get.sphere(this.localId);
     if (!sphere) { return null; }
     if (reply[this.cloudId] === undefined) {
       reply[this.cloudId] = {};

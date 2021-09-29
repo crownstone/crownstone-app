@@ -184,20 +184,27 @@ interface SphereUserDataLocalSettable {
 
 
 interface UserData {
-  firstName: string,
-  lastName: string,
-  email: string,
-  accessToken: string,
-  passwordHash: string,
-  userId: string,
-  isNew: string,
-  language: string,
-  picture: string,
-  pictureId: string,
-  betaAccess: fstring,
-  uploadLocation: string,
-  uploadSwitchState: string,
-  uploadDeviceDetails: string,
+  firstName:                          string,
+  lastName:                           string,
+  email:                              string,
+  accessToken:                        string,
+  passwordHash:                       string,
+  userId:                             string,
+  isNew:                              boolean,
+  language:                           string,
+  picture:                            string,
+  pictureId:                          string,
+  firmwareVersionsAvailable:          FirmwareBootloaderList,
+  bootloaderVersionsAvailable:        FirmwareBootloaderList,
+  betaAccess:                         boolean,
+  seenTapToToggle:                    boolean,
+  seenTapToToggleDisabledDuringSetup: boolean,
+  appIdentifier:                      string,
+  developer:                          boolean,
+  uploadLocation:                     boolean,
+  uploadSwitchState:                  boolean,
+  uploadDeviceDetails:                boolean,
+  updatedAt:                          number,
 }
 
 type AbilityType = 'dimming' | 'switchcraft' | 'tapToToggle';
@@ -222,3 +229,17 @@ interface AbilityPropertyData {
   syncedToCrownstone: boolean,
   updatedAt:        number
 };
+
+
+interface ToonData {
+  id:                      string,
+  toonAgreementId:         string,
+  toonAddress:             string,
+  cloudId:                 string,
+  schedule:                string,
+  updatedScheduleTime:     number,
+  enabled:                 boolean,
+  cloudChangedProgram:     string,
+  cloudChangedProgramTime: number,
+  updatedAt:               number,
+}

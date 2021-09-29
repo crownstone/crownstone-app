@@ -1,11 +1,11 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { SyncInterface } from "./SyncInterface";
 import { Get } from "../../../../util/GetUtil";
+import { SyncSphereInterface } from "./base/SyncSphereInterface";
 
 
 
-export class HubSyncer extends SyncInterface<HubData, cloud_Hub, cloud_Hub_settable> {
+export class HubSyncer extends SyncSphereInterface<HubData, cloud_Hub, cloud_Hub_settable> {
 
   getLocalId() {
     return this.globalCloudIdMap.hubs[this.cloudId] || MapProvider.cloud2localMap.hubs[this.cloudId];

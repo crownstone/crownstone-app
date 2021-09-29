@@ -1,6 +1,6 @@
 import {getTime, refreshDefaults, update} from "../reducerUtil";
 
-let defaultSettings = {
+let defaultSettings : ToonData = {
   id: undefined,
   toonAgreementId: null,
   toonAddress: null,

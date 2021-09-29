@@ -17,7 +17,7 @@ let handle = 'TestHandle';
 test("Using core in tests", async () => {
   let cloudIdMap = getGlobalIdMap();
   let actions = []
-  await SyncNext.processSyncResult(reply1, actions, cloudIdMap)
+  await SyncNext.processSyncResponse(reply1, actions, cloudIdMap)
   expect(actions.length > 0).toBeTruthy()
 
   core.store.batchDispatch(actions);

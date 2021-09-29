@@ -1,7 +1,7 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { xUtil } from "../../util/StandAloneUtil";
 
-let defaultSettings = {
+let defaultSettings : UserData = {
   firstName: null,
   lastName: null,
   email: null,

@@ -1,16 +1,37 @@
-type SyncCategory = 'bootloader'      |
+type SyncCategory = 'bootloaders'     |
                     'features'        |
-                    'firmware'        |
+                    'firmwares'       |
                     'hubs'            |
                     'keys'            |
                     'locations'       |
                     'messages'        |
+                    'scenes'          |
                     'spheres'         |
                     'sphereUsers'     |
-                    'scenes'          |
                     'stones'          |
                     'trackingNumbers' |
-                    'toons'
+                    'toons'           |
+                    'user'
+
+type DataCategory = SyncCategory | 'abilities' | 'properties' | 'behaviours' | 'users'
+
+interface SyncIgnoreMap {
+  bootloader:      boolean,
+  features:        boolean,
+  firmware:        boolean,
+  hubs:            boolean,
+  keys:            boolean,
+  locations:       boolean,
+  messages:        boolean,
+  scenes:          boolean,
+  spheres:         boolean,
+  sphereUsers:     boolean,
+  stones:          boolean,
+  trackingNumbers: boolean,
+  toons:           boolean,
+  user:            boolean,
+}
+
 
 interface SyncScopeMap {
   bootloader?:      boolean,
@@ -20,7 +41,6 @@ interface SyncScopeMap {
   keys?:            boolean,
   locations?:       boolean,
   messages?:        boolean,
-  properties?:      boolean,
   scenes?:          boolean,
   spheres?:         boolean,
   sphereUsers?:     boolean,
@@ -30,34 +50,15 @@ interface SyncScopeMap {
   user?:            boolean,
 }
 
-interface SyncIgnoreMap {
-  abilities:       boolean,
-  behaviours:      boolean,
-  bootloader:      boolean,
-  features:        boolean,
-  firmware:        boolean,
-  hubs:            boolean,
-  keys:            boolean,
-  locations:       boolean,
-  messages:        boolean,
-  properties:      boolean,
-  scenes:          boolean,
-  spheres:         boolean,
-  stones:          boolean,
-  trackingNumbers: boolean,
-  toons:           boolean,
-  user:            boolean,
-}
-
 
 interface SyncRequest {
   sync: {
     appVersion?: string,
-    type: SyncType,
-    lastTime?: Date | string | number,
-    scope?: SyncCategory[]
+    type:        SyncType,
+    lastTime?:   Date | string | number,
+    scope?:      SyncCategory[]
   },
-  user?: UpdatedAt,
+  user?:    UpdatedAt,
   spheres?: SyncRequestSphereData
 }
 
@@ -145,16 +146,18 @@ interface SyncError {
   msg: string
 }
 
-
+interface FirmwareBootloaderList {
+  [hardwareVersion: string] : string
+}
 
 interface SyncRequestResponse {
   user?: SyncResponseItemCore<cloud_User>,
   spheres: {
     [sphereId: string]: SyncRequestResponse_Sphere
   },
-  firmwares?:   { status: SyncState, [hardwareVersion: string] : any },
-  bootloaders?: { status: SyncState, [hardwareVersion: string] : any },
-  keys?:        { },
+  firmwares?:   { status: SyncState, data: FirmwareBootloaderList},
+  bootloaders?: { status: SyncState, data: FirmwareBootloaderList},
+  keys?:        { status: SyncState, data: UserKeySet },
 }
 
 interface SyncRequestResponse_Sphere {

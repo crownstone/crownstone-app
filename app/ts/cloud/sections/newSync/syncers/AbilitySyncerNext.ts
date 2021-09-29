@@ -1,11 +1,11 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { SyncInterface } from "./SyncInterface";
 import { Get } from "../../../../util/GetUtil";
+import { SyncSphereInterface } from "./base/SyncSphereInterface";
 
 
 
-export class AbilitySyncerNext extends SyncInterface<AbilityData, cloud_Ability, any> {
+export class AbilitySyncerNext extends SyncSphereInterface<AbilityData, cloud_Ability, any> {
 
   cloudStoneId : string;
   localStoneId : string;

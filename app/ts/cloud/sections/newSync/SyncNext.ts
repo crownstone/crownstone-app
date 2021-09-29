@@ -9,13 +9,17 @@ import { SphereSyncerNext } from "./syncers/SphereSyncerNext";
 import { HubSyncer } from "./syncers/HubSyncerNext";
 import { mapLocalToCloud } from "./mapping/CloudMapper";
 import { LocationSyncerNext } from "./syncers/LocationSyncerNext";
-import { SyncInterface } from "./syncers/SyncInterface";
 import { SceneSyncerNext } from "./syncers/SceneSyncerNext";
 import { SphereUserSyncerNext } from "./syncers/SphereUserSyncerNext";
 import { StoneSyncerNext } from "./syncers/StoneSyncerNext";
 import { BehaviourSyncerNext } from "./syncers/BehaviourSyncerNext";
 import { AbilitySyncerNext } from "./syncers/AbilitySyncerNext";
 import { AbilityPropertySyncerNext } from "./syncers/AbilityPropertySyncerNext";
+import { FirmwareSyncerNext } from "./syncers/FirmwareSyncerNext";
+import { BootloaderSyncerNext } from "./syncers/BootloaderSyncerNext";
+import { KeySyncerNext } from "./syncers/KeySyncerNext";
+import { UserSyncerNext } from "./syncers/UserSyncerNext";
+import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
 
 
 
@@ -38,12 +42,17 @@ export const SyncNext = {
       spheres: {}
     };
 
+    if (state?.user?.updatedAt) {
+      syncRequest.user = { updatedAt: state?.user?.updatedAt };
+    }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
     let response = await CLOUD.syncNext(syncRequest);
-    await SyncNext.processSyncResult(response as SyncRequestResponse, actions, globalCloudIdMap);
+    await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
   },
 
-  processSyncResult: async function processSyncResult(syncResult: SyncRequestResponse, actions = [], globalCloudIdMap: globalIdMap) {
+  processSyncResponse: async function processSyncResult(syncResponse: SyncRequestResponse, actions = [], globalCloudIdMap: globalIdMap) {
+    let transferPromises : Promise<any>[] = []
+    let syncerOptions    : SyncInterfaceViewOptions = {actions, globalCloudIdMap, transferPromises}
     let replyRequired = false;
     let reply : SyncRequest = {
       sync: {
@@ -54,30 +63,33 @@ export const SyncNext = {
     }
 
 
-    if (syncResult.user) {
-      // TODO: sync user via next sync
+    if (syncResponse.user) {
+      new UserSyncerNext(syncerOptions).process(syncResponse.user, reply)
     }
 
-    if (syncResult.spheres) {
-      let result = await SyncNext.processSpheres(syncResult.spheres, actions, globalCloudIdMap);
+    if (syncResponse.spheres) {
+      let result = await SyncNext.processSpheres(syncResponse.spheres, actions, globalCloudIdMap);
       if (Object.keys(result).length > 0) {
         replyRequired = true;
         reply.spheres = result;
       }
     }
 
-    if (syncResult.firmwares) {
-      // TODO: sync firmwares via next sync
+    if (syncResponse.firmwares) {
+      new FirmwareSyncerNext(syncerOptions).process(syncResponse.firmwares);
     }
 
-    if (syncResult.bootloaders) {
-      // TODO: sync bootloaders via next sync
+    if (syncResponse.bootloaders) {
+      new BootloaderSyncerNext(syncerOptions).process(syncResponse.firmwares);
     }
 
-    if (syncResult.keys) {
-      // TODO: sync keys via next sync
+    if (syncResponse.keys) {
+      new KeySyncerNext(syncerOptions).process(syncResponse.keys);
     }
 
+
+    console.log("REPLYREQUIRED", replyRequired);
+    console.log("REPLY", reply)
     // provide the requested data.
     // if (replyRequired) {
     //   await CLOUD.syncNext(reply);
@@ -146,12 +158,15 @@ export const SyncNext = {
       }
       if (sphereCloudResponse.toons) {
         let moduleReply = {};
+        for (let toonId in sphereCloudResponse.toons) {
+          new ToonSyncerNext({ cloudId: toonId, ...sphereSyncBase }).process(sphereCloudResponse.toons[toonId].data, moduleReply)
+        }
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
       }
-      if (sphereCloudResponse.trackingNumbers) {
-        let moduleReply = {};
-        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
-      }
+      // if (sphereCloudResponse.trackingNumbers) {
+      //   let moduleReply = {};
+      //   SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
+      // }
       if (sphereCloudResponse.users) {
         let moduleReply = {};
         for (let userId in sphereCloudResponse.users) {
@@ -189,32 +204,37 @@ export const SyncNext = {
       let sphere_cloudId = sphere.config.cloudId;
       result[sphere_cloudId] = {};
 
-      function gather(options?) {
+      function gather(options : GatherOptions) {
         return gatherRequestData(sphere, options)
       }
 
       if (scopeMap.spheres) {
-        result[sphere_cloudId] = {data: SphereSyncerNext.mapLocalToCloud(sphere)}
+        result[sphere_cloudId] = {data: SphereSyncerNext.mapLocalToCloud(sphere)};
       }
       if (scopeMap.hubs) {
-        result[sphere_cloudId].hubs = gather({key:'hubs', type:'hub'})
+        result[sphere_cloudId].hubs = gather({key:'hubs', type:'hub'});
       }
       if (scopeMap.locations) {
-        result[sphere_cloudId].locations = gather({key:'locations', type:'location'})
+        result[sphere_cloudId].locations = gather({key:'locations', type:'location'});
       }
-      if (scopeMap.stones || true) {
-        result[sphere_cloudId].stones = gather({key:'stones', type:'stone', children: [
+      if (scopeMap.stones) {
+        result[sphere_cloudId].stones = gather({
+          key:'stones', type:'stone', children: [
             {key:'rules',     type:'behaviour', cloudKey: 'behaviours'},
             {key:'abilities', type:'ability', children: [
-                {key:'properties', type:'abilityProperty'},
-              ]},
-          ]})
+              {key:'properties', type:'abilityProperty'},
+            ]},
+          ]
+        });
       }
       if (scopeMap.scenes) {
-        result[sphere_cloudId].scenes = gather({key:'scenes', type:'scene'})
+        result[sphere_cloudId].scenes = gather({key:'scenes', type:'scene'});
       }
       if (scopeMap.sphereUsers) {
-        result[sphere_cloudId].users = gather({key:'users', type:'sphereUser', cloudIdGetter: (item) => { return item.id; }})
+        result[sphere_cloudId].users = gather({key:'users', type:'sphereUser', cloudIdGetter: (item) => { return item.id; }});
+      }
+      if (scopeMap.toons) {
+        result[sphere_cloudId].toons = gather({key:'toons', type:'toon'});
       }
     })
 
