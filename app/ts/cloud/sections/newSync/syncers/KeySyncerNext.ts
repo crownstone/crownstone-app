@@ -17,6 +17,8 @@ export class KeySyncerNext extends SyncViewInterface<UserKeySet> {
   handleData(data: UserKeySet) {
     let keysUpdated = false;
     let keyActions = [];
+
+
     let state = core.store.getState();
     data.forEach((keySet) => {
       let localSphereId = this.globalCloudIdMap.spheres[keySet.sphereId];
@@ -34,7 +36,7 @@ export class KeySyncerNext extends SyncViewInterface<UserKeySet> {
 
       // if the sphere does not exist yet, it will be added in this sync cycle, and these keys will be added afterwards.
       if (!sphere) {
-        let cloud_sphere_keys = keySet.sphereKeys;
+        let cloud_sphere_keys = keySet.sphereKeys ?? [];
         cloud_sphere_keys.forEach((cloud_sphere_key) => {
           this.actions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
               key:       cloud_sphere_key.key,
@@ -48,7 +50,7 @@ export class KeySyncerNext extends SyncViewInterface<UserKeySet> {
 
       // now lets sync the keys if the sphere already exists!
       let localSphereKeys = sphere.keys;
-      let cloud_sphere_keys = keySet.sphereKeys;
+      let cloud_sphere_keys = keySet.sphereKeys ?? [];
       let cloudKeyMap = {};
       cloud_sphere_keys.forEach((cloud_sphere_key) => {
         cloudKeyMap[cloud_sphere_key.id] = true;
