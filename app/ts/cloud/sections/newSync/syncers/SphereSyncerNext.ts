@@ -21,7 +21,7 @@ export class SphereSyncerNext extends SyncInterface<SphereData, SphereDataConfig
   createLocal(cloudData: cloud_Sphere) {
     let newData = SphereTransferNext.getCreateLocalAction(SphereTransferNext.mapCloudToLocal(cloudData))
     this.actions.push(newData.action)
-    this.globalCloudIdMap.hubs[this.cloudId] = newData.id;
+    this.globalCloudIdMap.spheres[this.cloudId] = newData.id;
   }
 
 

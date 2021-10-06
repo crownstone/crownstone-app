@@ -329,6 +329,9 @@ function checkAction(action, affectedIds) {
     case "REMOVE_ALL_HUBS":
     case "REMOVE_HUB":
       eventStatus['changeHubs'] = affectedIds; break;
+
+    case "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD":
+      break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

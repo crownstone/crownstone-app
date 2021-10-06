@@ -105,6 +105,21 @@ export const sync = {
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
         return sphereSyncer.sync(core.store);
       }))
+      .then(() => {
+        return SyncNext.sync([
+          'bootloaders',
+          'firmwares',
+          'hubs',
+          'locations',
+          'keys',
+          'sphereUsers',
+          'scenes',
+          // 'spheres',
+          'stones',
+          'toons',
+          'user',
+        ], actions, globalCloudIdMap);
+      })
       // .then(() => {
       //   LOG.info("Sync: START KeySyncer sync.");
       //   let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
@@ -128,21 +143,6 @@ export const sync = {
         LOG.info("Sync: START Preferences sync.");
         let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
         return preferenceSyncer.sync(state);
-      })
-      .then(() => {
-        return SyncNext.sync([
-          'bootloaders',
-          'firmwares',
-          'hubs',
-          'locations',
-          'keys',
-          'sphereUsers',
-          'scenes',
-          // 'spheres',
-          'stones',
-          'toons',
-          'user',
-        ], actions, globalCloudIdMap);
       })
       // FINISHED SYNCING
       .then(() => {

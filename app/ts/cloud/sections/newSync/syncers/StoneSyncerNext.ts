@@ -24,7 +24,7 @@ export class StoneSyncerNext extends SyncSphereInterface<StoneData, StoneDataCon
   }
 
   createLocal(cloudData: cloud_Stone) {
-    let newData = StoneTransferNext.getCreateLocalAction(this.localSphereId, StoneTransferNext.mapCloudToLocal(cloudData))
+    let newData = StoneTransferNext.getCreateLocalAction(this.localSphereId, this._mapCloudToLocal(cloudData))
     this.actions.push(newData.action)
     this.globalCloudIdMap.stones[this.cloudId] = newData.id;
   }

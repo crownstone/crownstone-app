@@ -15,6 +15,7 @@ export class AbilityPropertySyncerNext extends SyncAbilityInterface<AbilityPrope
   }
 
   getLocalId(cloudAbilityProperty: cloud_AbilityProperty) {
+
     return cloudAbilityProperty?.type ?? MapProvider.cloud2localMap.abilityProperties[this.cloudId];
   }
 

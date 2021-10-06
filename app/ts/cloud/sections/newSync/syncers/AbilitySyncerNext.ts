@@ -14,7 +14,11 @@ export class AbilitySyncerNext extends SyncStoneInterface<AbilityData, AbilityDa
 
 
   getLocalId(cloudAbility: cloud_Ability) {
-    return cloudAbility?.type ?? MapProvider.cloud2localMap.abilities[this.cloudId];
+    let id = cloudAbility?.type ?? MapProvider.cloud2localMap.abilities[this.cloudId];
+
+    // since we don't add abilities here, we use this call to update the globalCloudIdMap. This is used by the abilityProperties.
+    this.globalCloudIdMap.abilities[this.cloudId] = id;
+    return id;
   }
 
 

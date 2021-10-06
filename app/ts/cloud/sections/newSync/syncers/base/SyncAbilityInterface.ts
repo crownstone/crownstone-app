@@ -32,8 +32,8 @@ export class SyncAbilityInterface<LocalDataFormat, LocalDataSettableFormat, Clou
     this.cloudAbilityId = cloudAbilityId;
     this.cloudStoneId   = cloudStoneId;
     this.cloudSphereId  = options.cloudSphereId;
-    this.localStoneId   = this.globalCloudIdMap.stones[this.cloudStoneId]      || MapProvider.cloud2localMap.stones[this.cloudStoneId];
     this.localSphereId  = this.globalCloudIdMap.spheres[this.cloudSphereId]    || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
+    this.localStoneId   = this.globalCloudIdMap.stones[this.cloudStoneId]      || MapProvider.cloud2localMap.stones[this.cloudStoneId];
     this.localAbilityId = this.globalCloudIdMap.abilities[this.cloudAbilityId] || MapProvider.cloud2localMap.abilities[this.cloudAbilityId];
   }
 

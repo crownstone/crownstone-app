@@ -26,7 +26,7 @@ export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, Sp
   createLocal(cloudData: cloud_UserData) {
     let newData = SphereUserTransferNext.getCreateLocalAction(this.localSphereId, SphereUserTransferNext.mapCloudToLocal(cloudData))
     this.actions.push(newData.action)
-    this.globalCloudIdMap.locations[this.cloudId] = newData.id;
+    this.globalCloudIdMap.users[this.cloudId] = newData.id;
 
     if (cloudData.profilePicId) {
       this._downloadSphereUserImage(cloudData);
