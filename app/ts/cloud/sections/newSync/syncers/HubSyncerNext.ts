@@ -2,75 +2,43 @@ import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { HubTransferNext } from "../transferrers/HubTransferNext";
+import { LocationTransferNext } from "../transferrers/LocationTransferNext";
+import { SyncNext } from "../SyncNext";
 
 
 
-export class HubSyncer extends SyncSphereInterface<HubData, cloud_Hub, cloud_Hub_settable> {
+export class HubSyncer extends SyncSphereInterface<HubData, HubDataConfig, cloud_Hub, cloud_Hub_settable> {
+
+  constructor(options: SyncInterfaceOptions) {
+    super(HubTransferNext, options)
+  }
 
   getLocalId() {
     return this.globalCloudIdMap.hubs[this.cloudId] || MapProvider.cloud2localMap.hubs[this.cloudId];
   }
 
-  // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localData: HubData) : cloud_Hub_settable | null {
-    let result : cloud_Hub_settable = {
-      name:          localData.config.name,
-      linkedStoneId: MapProvider.local2cloudMap.stones[localData.config.linkedStoneId] || localData.config.linkedStoneId || null,
-      locationId:    MapProvider.local2cloudMap.locations[localData.config.locationId] || localData.config.locationId    || null,
-      updatedAt:     new Date(localData.config.updatedAt).toISOString(),
-    };
-    return result;
-  }
-
-
-  static mapCloudToLocal(cloudHub: cloud_Hub, localStoneId?: string, localLocationId?: string) {
-    let result : any = {};
-    localStoneId    = localStoneId    ?? MapProvider.cloud2localMap.stones[cloudHub.linkedStoneId] ?? cloudHub.linkedStoneId;
-    localLocationId = localLocationId ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
-
-    if (localStoneId) {
-      result.linkedStoneId = localStoneId;
-    }
-
-    if (localLocationId) {
-      result.locationId = localLocationId;
-    }
-
-    result.name            = cloudHub.name;
-    result.ipAddress       = cloudHub.localIPAddress;
-    result.httpPort        = cloudHub.httpPort  || 80;
-    result.httpsPort       = cloudHub.httpsPort || 443;
-    result.cloudId         = cloudHub.id;
-    result.lastSeenOnCloud = new Date(cloudHub.lastSeen).valueOf();;
-    result.updatedAt       = new Date(cloudHub.updatedAt).valueOf();
-
-    return result;
-  }
 
   _mapCloudToLocal(cloudHub: cloud_Hub) {
     let localLocationId = this.globalCloudIdMap.locations[cloudHub.locationId] ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
     let localStoneId    = this.globalCloudIdMap.stones[cloudHub.linkedStoneId] ?? MapProvider.cloud2localMap.stones[cloudHub.linkedStoneId] ?? cloudHub.linkedStoneId;
 
-    return HubSyncer.mapCloudToLocal(cloudHub, localStoneId, localLocationId);
+    return HubTransferNext.mapCloudToLocal(cloudHub, localStoneId, localLocationId);
   }
 
-  updateCloudId(cloudId) {
-    this.actions.push({type:"UPDATE_HUB_CLOUD_ID", sphereId: this.localSphereId, hubId: this.localId, data: {cloudId}});
-  }
-
-  removeFromLocal() {
-    this.actions.push({type:"REMOVE_HUB", sphereId: this.localSphereId, hubId: this.localId });
-  }
 
   createLocal(cloudData: cloud_Hub) {
-    let newId = this._generateLocalId();
-    this.globalCloudIdMap.hubs[this.cloudId] = newId;
-    this.actions.push({type:"ADD_HUB", sphereId: this.localSphereId, hubId: newId, data: this._mapCloudToLocal(cloudData) })
+    let newData = LocationTransferNext.getCreateLocalAction(this.localSphereId, this._mapCloudToLocal(cloudData))
+    this.actions.push(newData.action)
+    this.globalCloudIdMap.hubs[this.cloudId] = newData.id;
   }
 
+
   updateLocal(cloudData: cloud_Hub) {
-    this.actions.push({type:"UPDATE_HUB_CONFIG", sphereId: this.localSphereId, hubId: this.localId, data: this._mapCloudToLocal(cloudData) })
+    this.actions.push(LocationTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, this._mapCloudToLocal(cloudData)));
   }
+
 
   setReplyWithData(reply: SyncRequestSphereData) {
     let hub = Get.hub(this.localSphereId, this.localId);
@@ -81,7 +49,11 @@ export class HubSyncer extends SyncSphereInterface<HubData, cloud_Hub, cloud_Hub
     if (reply.hubs[this.cloudId] === undefined) {
       reply.hubs[this.cloudId] = {};
     }
-    reply.hubs[this.cloudId].data = HubSyncer.mapLocalToCloud(hub)
+    reply.hubs[this.cloudId].data = HubTransferNext.mapLocalToCloud(hub)
+  }
+
+  static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {
+    return SyncNext.gatherRequestData(sphere,{key:'hubs', type:'hub'});
   }
 }
 

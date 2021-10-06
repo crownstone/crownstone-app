@@ -33,6 +33,7 @@ import { DataUtil } from "../../../util/DataUtil";
 import Slider from "@react-native-community/slider";
 import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
+import { LOGe } from "../../../logging/Log";
 
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
@@ -155,7 +156,7 @@ export class DeviceEntry extends Component<{
       }
     }
     catch (err) {
-      console.log("ERROR", err)
+      LOGe.info("DeviceEntry: Failed to switch", err);
       this.setState({pendingCommand:false});
     }
   }

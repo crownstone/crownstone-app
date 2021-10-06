@@ -8,21 +8,17 @@ import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
 import {getGlobalIdMap, SyncingBase} from "./SyncingBase";
-import { transferSpheres }    from "../../../transferData/transferSpheres";
-import { SphereUserSyncer }   from "./SphereUserSyncer";
-import { LocationSyncer }     from "./LocationSyncer";
-import { StoneSyncer }        from "./StoneSyncer";
 import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
-import {ToonSyncer} from "./thirdParty/ToonSyncer";
 import { PresenceSyncer } from "./PresenceSyncer";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { DataUtil } from "../../../../util/DataUtil";
 import { FileUtil } from "../../../../util/FileUtil";
-import { SceneSyncer } from "./SceneSyncer";
 import { core } from "../../../../Core";
 import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/constants/SceneConstants";
+import { SphereTransferNext } from "../../newSync/transferrers/SphereTransferNext";
+import { Sphere } from "../../../../views/main/Sphere";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -77,12 +73,9 @@ export class SphereSyncer extends SyncingBase {
       else {
         // the sphere does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = xUtil.getUUID();
-        cloudIdMap[sphere_from_cloud.id] = localId;
-        transferSpheres.createLocal(this.actions, {
-          localId: localId,
-          cloudData: sphere_from_cloud
-        });
+        let creationData = SphereTransferNext.getCreateLocalAction(SphereTransferNext.mapCloudToLocal(sphere_from_cloud));
+        this.actions.push(creationData.action);
+        cloudIdMap[sphere_from_cloud.id] = creationData.id;
       }
 
       this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
@@ -236,27 +229,17 @@ export class SphereSyncer extends SyncingBase {
 
     if (shouldUpdateInCloud(sphereInState.config, sphere_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(localId).canUploadSpheres) { return }
-
       this.transferPromises.push(
-        transferSpheres.updateOnCloud({
-          localData: sphereInState,
-          cloudId:   sphere_from_cloud.id,
-        })
-        .catch(() => {})
+        SphereTransferNext.updateOnCloud(sphereInState)
+          .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud) || corruptData) {
-      transferSpheres.updateLocal(this.actions, {
-        localId:   localId,
-        cloudData: sphere_from_cloud
-      })
+      this.actions.push(SphereTransferNext.getUpdateLocalAction(localId, SphereTransferNext.mapCloudToLocal(sphere_from_cloud)))
     }
     // this is a repair method to ensure that the new field is synced to the local store.
     else if (sphereInState.config.uid === null || sphereInState.config.uid === undefined) {
-      transferSpheres.updateLocal(this.actions, {
-        localId:   localId,
-        cloudData: sphere_from_cloud
-      })
+      this.actions.push(SphereTransferNext.getUpdateLocalAction(localId, SphereTransferNext.mapCloudToLocal(sphere_from_cloud)))
     }
 
     if (!sphereInState.config.cloudId) {

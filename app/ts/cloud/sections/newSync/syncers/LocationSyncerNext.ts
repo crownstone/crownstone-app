@@ -5,54 +5,25 @@ import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { LocationTransferNext } from "../transferrers/LocationTransferNext";
+import { SyncNext } from "../SyncNext";
 
 
-export class LocationSyncerNext extends SyncSphereInterface<LocationData, cloud_Location, cloud_Location_settable> {
+export class LocationSyncerNext extends SyncSphereInterface<LocationData, LocationDataConfig, cloud_Location, cloud_Location_settable> {
+
+  constructor(options: SyncInterfaceOptions) {
+    super(LocationTransferNext, options)
+  }
 
   getLocalId() {
     return this.globalCloudIdMap.locations[this.cloudId] || MapProvider.cloud2localMap.locations[this.cloudId];
   }
 
-  // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localData: LocationData) : cloud_Location_settable | null {
-    let result : cloud_Location_settable = {
-      name:      localData.config.name,
-      uid:       localData.config.uid,
-      icon:      localData.config.icon,
-      updatedAt: new Date(localData.config.updatedAt).toISOString(),
-    };
-    return result;
-  }
-
-
-  static mapCloudToLocal(cloudLocation: cloud_Location, localLocationId?: string) {
-    return {
-      name:         cloudLocation.name,
-      icon:         cloudLocation.icon,
-      uid:          cloudLocation.uid,
-      cloudId:      cloudLocation.id,
-      updatedAt:    new Date(cloudLocation.updatedAt).valueOf()
-    }
-  }
-
-  _mapCloudToLocal(cloudLocation: cloud_Location) {
-    let localLocationId = this.globalCloudIdMap.locations[cloudLocation.id] ?? MapProvider.cloud2localMap.locations[cloudLocation.id] ?? cloudLocation.id;
-
-    return LocationSyncerNext.mapCloudToLocal(cloudLocation, localLocationId);
-  }
-
-  updateCloudId(cloudId) {
-    this.actions.push({type:"UPDATE_LOCATION_CLOUD_ID", sphereId: this.localSphereId, locationId: this.localId, data: {cloudId}});
-  }
-
-  removeFromLocal() {
-    this.actions.push({type:"REMOVE_LOCATION", sphereId: this.localSphereId, locationId: this.localId });
-  }
-
   createLocal(cloudData: cloud_Location) {
-    let newId = this._generateLocalId();
-    this.globalCloudIdMap.locations[this.cloudId] = newId;
-    this.actions.push({type:"ADD_LOCATION", sphereId: this.localSphereId, locationId: newId, data: this._mapCloudToLocal(cloudData) })
+    let newData = LocationTransferNext.getCreateLocalAction(this.localSphereId, LocationTransferNext.mapCloudToLocal(cloudData))
+    this.actions.push(newData.action)
+    this.globalCloudIdMap.locations[this.cloudId] = newData.id;
 
     if (cloudData.imageId) {
       this._downloadLocationImage(cloudData);
@@ -60,7 +31,9 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, cloud_
   }
 
   updateLocal(cloudData: cloud_Location) {
-    this.actions.push({type:"UPDATE_LOCATION_CONFIG", sphereId: this.localSphereId, locationId: this.localId, data: this._mapCloudToLocal(cloudData) })
+    this.actions.push(
+      LocationTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, LocationTransferNext.mapCloudToLocal(cloudData))
+    );
 
     // check if we have to do things with the image
     let location = Get.location(this.localSphereId, this.localId);
@@ -83,7 +56,7 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, cloud_
     if (reply.locations[this.cloudId] === undefined) {
       reply.locations[this.cloudId] = {};
     }
-    reply.locations[this.cloudId].data = LocationSyncerNext.mapLocalToCloud(location);
+    reply.locations[this.cloudId].data = LocationTransferNext.mapLocalToCloud(location);
 
     if (location.config.pictureId !== cloudData.imageId) {
       if (!location.config.pictureId) {
@@ -107,6 +80,11 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, cloud_
       })
       .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
     );
+  }
+
+
+  static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {
+    return SyncNext.gatherRequestData(sphere,{key:'locations', type:'location'});
   }
 }
 

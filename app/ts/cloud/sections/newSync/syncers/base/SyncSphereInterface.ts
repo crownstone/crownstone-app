@@ -2,65 +2,49 @@ import { LOGe } from "../../../../../logging/Log";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 import { SyncBaseInterface } from "./SyncBaseInterface";
+import { LocationTransferNext } from "../../transferrers/LocationTransferNext";
+import { ToonTransferNext } from "../../transferrers/ToonTransferNext";
+import { SyncNext } from "../../SyncNext";
 
 
 
-export class SyncSphereInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat>
+export class SyncSphereInterface<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat extends {id: string}, CloudSettableFormat>
   extends SyncBaseInterface<LocalDataFormat, CloudDataFormat, CloudSettableFormat> {
 
   cloudSphereId:    string;
   localSphereId:    string;
 
-  constructor(options: SyncInterfaceOptions) {
+  transferrer : TransferSphereTool<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat, CloudSettableFormat>;
+
+  constructor(
+    transferrer: TransferSphereTool<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat, CloudSettableFormat>,
+    options:     SyncInterfaceOptions
+  ) {
     super(options);
-    this.cloudSphereId    = options.cloudSphereId;
+    this.transferrer   = transferrer;
+    this.cloudSphereId = options.cloudSphereId;
     this.localSphereId = this.globalCloudIdMap.spheres[this.cloudSphereId] || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
+  }
+
+  updateLocal(cloudData: CloudDataFormat) {
+    this.actions.push(this.transferrer.getUpdateLocalAction(this.localSphereId, this.localId, this.transferrer.mapCloudToLocal(cloudData)));
+  }
+
+  updateCloudId(cloudId, data) {
+    this.actions.push(this.transferrer.getUpdateLocalCloudIdAction(this.localSphereId, this.localId, cloudId));
+  }
+
+  removeFromLocal() {
+    this.actions.push(this.transferrer.getRemoveFromLocalAction(this.localSphereId, this.localId));
   }
 
 
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
-    if (!response) { return; }
-
-    this.localId = this.getLocalId(response.data);
-
-    switch (response.status) {
-      case "ACCESS_DENIED":
-        // Do nothing. A guest or member tried to set something they do not have access to.
-        break;
-      case "IN_SYNC":
-        // Do nothing, cloud has the same data.
-        break;
-      case "UPDATED_IN_CLOUD":
-        // Do nothing. The cloud has updated it's model to match yours.
-        break;
-      case "CREATED_IN_CLOUD":
-        // Store the cloudId: this is the id in the data field.
-        this.updateCloudId(response.data.id, response.data);
-        break;
-      case "ERROR":
-        LOGe.info("Error in sync", response.error);
-        break;
-      case "NOT_AVAILABLE":
-        // Delete sphere from the store since it does not exist on the cloud.
-        this.removeFromLocal();
-        break;
-      case "VIEW":
-        // View is requested and plainly added.
-      case "NEW_DATA_AVAILABLE":
-        // Store provided sphere data in database, create if we don't have one yet..
-        if (!this.localId) {
-          this.createLocal(response.data)
-        }
-        else {
-          this.updateLocal(response.data);
-        }
-        break;
-      case "REQUEST_DATA":
-        // Fill the reply phase with the sphere so we can update the cloud.
-        this.setReplyWithData(reply, response.data)
-        break;
-      default:
-      // do nothing.
-    }
+    super.process(response, reply);
   }
+
+  static prepare(sphereRequest) {
+    throw "MUST_BE_IMPLEMENTED"
+  }
+
 }

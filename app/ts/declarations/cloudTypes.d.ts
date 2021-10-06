@@ -59,6 +59,10 @@ interface cloud_Sphere_settable {
   uuid?: string,
   name?: string,
   aiName?: string,
+  gpsLocation?: {
+    lat?: localData.config.latitude,
+    lng?: localData.config.longitude,
+  },
   updatedAt: string,
 }
 

@@ -7,11 +7,11 @@ import { Permissions } from "./PermissionManager";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LOGd, LOGe, LOGi } from "../logging/Log";
 import { CLOUD } from "../cloud/cloudAPI";
-import { StoneBehaviourSyncer } from "../cloud/sections/sync/modelSyncs/StoneBehaviourSyncer";
 import { MapProvider } from "./MapProvider";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { Scheduler } from "../logic/Scheduler";
 import { tell } from "../logic/constellation/Tellers";
+import { SyncNext } from "../cloud/sections/newSync/SyncNext";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -570,47 +570,21 @@ class StoneDataSyncerClass {
         LOGe.behaviour("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
       throw err;
     }
-
   }
-
-
 }
 
 
 async function downloadBehavioursFromCloud(sphereId, stone) {
-  let actions = [];
   let stoneId = stone.id;
   if (stone.config.cloudId) {
     try {
-      let cloudBehaviours = await CLOUD.forStone(stoneId).getBehaviours()
-      let behaviourCloudSyncer = new StoneBehaviourSyncer(
-        actions,
-        [],
-        stoneId,
-        stone.config.cloudId,
-        sphereId,
-        MapProvider.local2cloudMap.spheres[sphereId],
-        getGlobalIdMap(),
-        getGlobalIdMap()
-      );
-
-      await behaviourCloudSyncer.sync(stone.rules, cloudBehaviours)
-      if (actions.length > 0) {
-        core.store.batchDispatch(actions);
-      }
+      await SyncNext.partialStoneSync(stoneId, "BEHAVIOURS")
     }
     catch (err) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error downloading behaviours.", err)
     }
   }
 }
-
-
-
-
-
-
-
 
 
 

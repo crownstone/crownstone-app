@@ -3,7 +3,6 @@ import { xUtil } from "../../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 
 
-
 export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
 
   cloudId:          string;
@@ -22,24 +21,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
   }
 
 
-  _generateLocalId() : string {
-    let localID = xUtil.getUUID();
-    return localID;
-  }
-
   getLocalId(cloudItem: CloudDataFormat) : string {
-    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
-  }
-
-  static mapLocalToCloud(localData) {
-    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
-  }
-
-  _mapLocalToCloud(localItem?: LocalDataFormat) : CloudSettableFormat | null {
-    throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
-  }
-
-  mapCloudToLocal(cloudItem: CloudDataFormat) {
     throw new Error("MUST_BE_IMPLEMENTED_BY_CHILD_CLASS");
   }
 

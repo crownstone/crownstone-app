@@ -10,7 +10,8 @@ import { CLOUD } from "../cloud/cloudAPI";
 import {LOGe} from '../logging/Log'
 import { core } from "../Core";
 import { xUtil } from "./StandAloneUtil";
-import { transferLocations } from "../cloud/transferData/transferLocations";
+import { LocationTransferNext } from "../cloud/sections/newSync/transferrers/LocationTransferNext";
+import { Get } from "./GetUtil";
 
 export const createNewSphere = function(name) {
   core.eventBus.emit('showLoading', lang("Creating_Sphere___"));
@@ -63,22 +64,9 @@ export const createNewSphere = function(name) {
 };
 
 
-export const createNewLocation = function(name, icon, localSphereId, cloudSphereId) {
-  let localId = xUtil.getUUID();
-  let actions = [];
-  actions.push({type:'ADD_LOCATION', sphereId: localSphereId, locationId: localId, data:{name: name, icon: icon}});
-  return transferLocations.createOnCloud(actions, {
-    localId: localId,
-    localData: {
-      config: {
-        name: name,
-        icon: icon,
-      },
-    },
-    localSphereId: localSphereId,
-    cloudSphereId: cloudSphereId
-  })
-    .then(() => {
-      core.store.batchDispatch(actions);
-    })
+export const createNewLocation = async function(name, icon, localSphereId, cloudSphereId) : Promise<void> {
+  let locationData = {name: name, icon: icon};
+  let newId = LocationTransferNext.createLocal(localSphereId, locationData)
+  let location = Get.location(localSphereId, newId);
+  await LocationTransferNext.createOnCloud(localSphereId, location);
 };

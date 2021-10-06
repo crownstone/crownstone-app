@@ -17,7 +17,6 @@ import { getLocationNamesInSphere} from '../../util/DataUtil'
 
 import { availableModalHeight, colors, screenHeight, styles } from "../styles";
 import { processImage, Util } from "../../util/Util";
-import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 import {getRandomRoomIcon} from "./RoomIconSelection";
@@ -27,6 +26,8 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
+import { Get } from "../../util/GetUtil";
+import { LocationTransferNext } from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
 
 
 export class RoomAddCore extends LiveComponent<any, any> {
@@ -268,20 +269,8 @@ lang("_Max_amount_of_rooms_reac_body"),
         })
     }
 
-    let actions = [];
-    transferLocations.createOnCloud(actions, {
-      localId: localId,
-      localData: {
-        config: {
-          name: this.newRoomData.name,
-          icon: this.newRoomData.icon,
-        },
-      },
-      localSphereId: this.props.sphereId,
-      cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
-    })
-      .then(() => { core.store.batchDispatch(actions); })
-      .catch(() => {});
+    let location = Get.location(this.props.sphereId, localId);
+    LocationTransferNext.createOnCloud(this.props.sphereId, location).catch((err) => {});
 
     if (this.props.isModal !== true) {
       NavigationUtil.back();

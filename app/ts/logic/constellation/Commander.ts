@@ -86,7 +86,7 @@ import {
   Command_UpdateBehaviour
 } from "./commandClasses";
 import { SessionBroker } from "./SessionBroker";
-import { LOGd, LOGi } from "../../logging/Log";
+import { LOGd, LOGe, LOGi } from "../../logging/Log";
 import { Scheduler } from "../Scheduler";
 
 /**
@@ -126,27 +126,34 @@ class CommandAPI_base {
    * @param viaMesh
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
-    // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
-    let validHandleToPerformAction = false;
-    for (let target of this.options.commandTargets) {
-      if (target) {
-        validHandleToPerformAction = true;
+    try {
+      LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
+      // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
+      let validHandleToPerformAction = false;
+      for (let target of this.options.commandTargets) {
+        if (target) {
+          validHandleToPerformAction = true;
+        }
       }
-    }
 
-    if (!validHandleToPerformAction) {
-      throw new Error("INVALID_HANDLE");
-    }
+      if (!validHandleToPerformAction) {
+        throw new Error("INVALID_HANDLE");
+      }
 
-    let promiseContainer = xUtil.getPromiseContainer<any>()
-    LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
-    let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
-    // in case this command is broadcast instead of done via
-    if (commands) {
-      this.broker.loadPendingCommands(commands);
-      core.eventBus.emit(`CommandLoaded_${this.id}`)
+      let promiseContainer = xUtil.getPromiseContainer<any>()
+      LOGd.constellation("Commander: Generating command for", command.type, command.info(), allowMeshRelays);
+      let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
+      // in case this command is broadcast instead of done via
+      if (commands) {
+        this.broker.loadPendingCommands(commands);
+        core.eventBus.emit(`CommandLoaded_${this.id}`)
+      }
+      return promiseContainer.promise;
     }
-    return promiseContainer.promise;
+    catch (err) {
+      LOGe.constellation("Commander: Failed to load command", err);
+      throw err;
+    }
   }
 }
 

@@ -115,6 +115,11 @@ export const xUtil = {
   },
 
 
+  generateLocalId() : string {
+    let localID = xUtil.getUUID();
+    return localID;
+  },
+
   mixin: function(base, section, context) {
     for (let key in section) {
       if (section.hasOwnProperty(key)) {

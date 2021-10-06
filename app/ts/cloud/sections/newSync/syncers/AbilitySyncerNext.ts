@@ -1,19 +1,15 @@
 import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
-import { SyncSphereInterface } from "./base/SyncSphereInterface";
+import { AbilityTransferNext } from "../transferrers/AbilityTransferNext";
+import { SyncStoneInterface } from "./base/SyncStoneInterface";
 
 
 
-export class AbilitySyncerNext extends SyncSphereInterface<AbilityData, cloud_Ability, any> {
-
-  cloudStoneId : string;
-  localStoneId : string;
+export class AbilitySyncerNext extends SyncStoneInterface<AbilityData, AbilityData, cloud_Ability, any> {
 
   constructor(options: SyncInterfaceOptions, cloudStoneId: string) {
-    super(options)
-    this.cloudStoneId = cloudStoneId;
-    this.localStoneId = this.globalCloudIdMap.stones[this.cloudStoneId] || MapProvider.cloud2localMap.stones[this.cloudStoneId];
+    super(AbilityTransferNext, options, cloudStoneId)
   }
 
 
@@ -21,58 +17,16 @@ export class AbilitySyncerNext extends SyncSphereInterface<AbilityData, cloud_Ab
     return cloudAbility?.type ?? MapProvider.cloud2localMap.abilities[this.cloudId];
   }
 
-  // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localData: AbilityData) : cloud_Ability_settable | null {
-    let result : cloud_Ability_settable = {
-      type:               localData.type,
-      enabled:            localData.enabledTarget,
-      syncedToCrownstone: localData.enabledTarget == localData.enabled,
-      updatedAt:          new Date(localData.updatedAt).toISOString(),
-    };
-    return result;
-  }
-
-
-  static mapCloudToLocal(cloudAbility: cloud_Ability) : Partial<AbilityData> {
-    let result : Partial<AbilityData> = {
-      type:               cloudAbility.type,
-      cloudId:            cloudAbility.id,
-      enabled:            cloudAbility.syncedToCrownstone ? cloudAbility.enabled : null,
-      enabledTarget:      cloudAbility.enabled,
-      syncedToCrownstone: cloudAbility.syncedToCrownstone,
-      updatedAt:          new Date(cloudAbility.updatedAt).valueOf()
-    };
-    return result;
-  }
-
-
-  updateCloudId(cloudId, data: cloud_Ability) {
-    this.actions.push({type:"UPDATE_ABILITY_CLOUD_ID",
-      sphereId: this.localSphereId,
-      stoneId: this.localStoneId,
-      abilityId: this.localId,
-      data: {cloudId}
-    });
-  }
 
   removeFromLocal() {
     // we do not remove abilities. They can be disabled, not removed.
-    this.actions.push({type: "REMOVE_ABILITY_CLOUD_ID", sphereId: this.localSphereId, stoneId: this.localStoneId, abilityId: this.localId});
   }
+
 
   createLocal(cloudData: cloud_Ability) {
     // we do not create abilities. Each stone has their abilities, we only update them if needed.
   }
 
-  updateLocal(cloudData: cloud_Ability) {
-    this.actions.push({
-      type: cloudData.syncedToCrownstone ? "UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD" : "UPDATE_ABILITY",
-      sphereId: this.localSphereId,
-      stoneId: this.localStoneId,
-      abilityId: this.localId,
-      data: AbilitySyncerNext.mapCloudToLocal(cloudData)
-    });
-  }
 
   setReplyWithData(reply: SyncRequestSphereData) {
     let ability = Get.ability(this.localSphereId, this.localStoneId, this.localId);
@@ -83,7 +37,7 @@ export class AbilitySyncerNext extends SyncSphereInterface<AbilityData, cloud_Ab
     if (reply.abilitys[this.cloudId] === undefined) {
       reply.abilitys[this.cloudId] = {};
     }
-    reply.abilitys[this.cloudId].data = AbilitySyncerNext.mapLocalToCloud(ability)
+    reply.abilitys[this.cloudId].data = AbilityTransferNext.mapLocalToCloud(ability)
   }
 }
 

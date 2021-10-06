@@ -1,5 +1,4 @@
 
-import {transferSpheres} from "../transferData/transferSpheres";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
@@ -9,6 +8,8 @@ import { stones } from "./stones";
 import { locations } from "./locations";
 import { core } from "../../Core";
 import { CLOUD } from "../cloudAPI";
+import { SphereTransferNext } from "./newSync/transferrers/SphereTransferNext";
+import { Sphere } from "../../views/main/Sphere";
 
 export const spheres = {
 
@@ -28,13 +29,13 @@ export const spheres = {
     if (latitude && longitude) {
       payload['gpsLocation'] = {lat:latitude, lng: longitude}
     }
-    let localId = xUtil.getUUID();
+    let localId;
     let sphereCloudId = null;
     return CLOUD.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
         sphereCloudId = response.id;
         // add the sphere to the database once it had been added in the cloud.
-        return transferSpheres.createLocal(creationActions, {localId: localId, cloudData: response})
+        localId = SphereTransferNext.createLocal(SphereTransferNext.mapCloudToLocal(response))
       })
       .then(() => {
         creationActions.push({type:'USER_UPDATE', data: { new: false }});
@@ -72,8 +73,8 @@ export const spheres = {
             })
           });
 
-          core.eventBus.emit('sphereCreated');
           core.store.batchDispatch(creationActions);
+          core.eventBus.emit('sphereCreated');
 
           return {localId: localId, cloudId: sphereCloudId};
         }
@@ -192,49 +193,7 @@ export const spheres = {
     return CLOUD._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
   },
 
-  deleteSphere: function() {
-    let sphereId = TokenStore.sphereId;
-
-    let promises      = [];
-    let stoneData     = [];
-    let locationData  = [];
-
-    promises.push(
-      stones.getStonesInSphere()
-        .then((stones : any) => {
-          stoneData = stones;
-        }).catch((err) => {})
-    );
-
-
-    // for every sphere, we get the locations
-    promises.push(
-      locations.getLocations()
-        .then((locations : any) => {
-          locationData = locations;
-        }).catch((err) => {})
-    );
-
-    return Promise.all(promises)
-      .then(() => {
-        let deletePromises = [];
-
-        stoneData.forEach((stone) => {
-          deletePromises.push(CLOUD.forSphere(sphereId).deleteStone(stone.id));
-        });
-
-        locationData.forEach((location) => {
-          deletePromises.push(CLOUD.forSphere(sphereId).deleteLocation(location.id));
-        });
-
-        return Promise.all(deletePromises);
-      })
-      .then(() => {
-        return this._deleteSphere(sphereId);
-      })
-  },
-
-  _deleteSphere: function(localSphereId) {
+  deleteSphere: function(localSphereId) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     if (cloudSphereId) {
       return CLOUD._setupRequest(

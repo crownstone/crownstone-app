@@ -27,3 +27,12 @@ type SyncInterfaceViewOptions = {
   actions: any[],
   transferPromises: Promise<any>[]
 }
+
+interface GatherOptions {
+  key:        string,
+  cloudKey?:  string,
+  type:       SupportedMappingType,
+  children?:  GatherOptions[]
+  cloudIdGetter?:   (item: any) => string,
+  updatedAtGetter?: (item: any) => string,
+}

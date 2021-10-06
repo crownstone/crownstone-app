@@ -3,55 +3,27 @@ import { DataUtil } from "../../../../util/DataUtil";
 import { Get } from "../../../../util/GetUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { SyncInterface } from "./base/SyncInterface";
+import { SphereTransferNext } from "../transferrers/SphereTransferNext";
 
 
-export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cloud_Sphere_settable> {
+export class SphereSyncerNext extends SyncInterface<SphereData, SphereDataConfig, cloud_Sphere, cloud_Sphere_settable> {
+
+  constructor(options: SyncInterfaceBaseOptions) {
+    super(SphereTransferNext, options);
+  }
+
 
   getLocalId() {
     return this.globalCloudIdMap.spheres[this.cloudId] || MapProvider.cloud2localMap.spheres[this.cloudId];
   }
 
-  // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localData: SphereData) : cloud_Sphere_settable | null {
-    return {
-      name: localData.config.name,
-      uid:  localData.config.uid,
-      uuid: localData.config.iBeaconUUID,
-      aiName: localData.config.aiName,
-      updatedAt: new Date(localData.config.updatedAt).toISOString(),
-    }
-  }
-
-  mapCloudToLocal(cloudItem: cloud_Sphere) {
-    return {
-      name:              cloudItem.name,
-      iBeaconUUID:       cloudItem.uuid, // ibeacon uuid
-      uid:               cloudItem.uid,
-      cloudId:           cloudItem.id,
-      aiName:            cloudItem.aiName,
-      latitude:          cloudItem.gpsLocation?.lat || undefined,
-      longitude:         cloudItem.gpsLocation?.lng || undefined,
-      updatedAt:         new Date(cloudItem.updatedAt).valueOf(),
-    }
-  }
-
-  updateCloudId(cloudId) {
-    this.actions.push({type:"UPDATE_SPHERE_CLOUD_ID", sphereId: this.localId, data: {cloudId}});
-  }
-
-  removeFromLocal() {
-    this.actions.push({type:"REMOVE_SPHERE", sphereId: this.localId });
-  }
 
   createLocal(cloudData: cloud_Sphere) {
-    let newSphereId = this._generateLocalId();
-    this.globalCloudIdMap.spheres[this.cloudId] = newSphereId;
-    this.actions.push({type:"ADD_SPHERE", sphereId: newSphereId, data: this.mapCloudToLocal(cloudData) })
+    let newData = SphereTransferNext.getCreateLocalAction(SphereTransferNext.mapCloudToLocal(cloudData))
+    this.actions.push(newData.action)
+    this.globalCloudIdMap.hubs[this.cloudId] = newData.id;
   }
 
-  updateLocal(cloudData: cloud_Sphere) {
-    this.actions.push({type:"UPDATE_SPHERE_CONFIG", sphereId: this.localId, data: this.mapCloudToLocal(cloudData) })
-  }
 
   setReplyWithData(reply: SyncRequestSphereData) {
     let sphere = Get.sphere(this.localId);
@@ -59,7 +31,7 @@ export class SphereSyncerNext extends SyncInterface<SphereData, cloud_Sphere, cl
     if (reply[this.cloudId] === undefined) {
       reply[this.cloudId] = {};
     }
-    reply[this.cloudId].data = this._mapLocalToCloud();
+    reply[this.cloudId].data = SphereTransferNext.mapLocalToCloud(sphere);
   }
 }
 

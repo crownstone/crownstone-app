@@ -5,68 +5,27 @@ import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { SceneTransferNext } from "../transferrers/SceneTransferNext";
+import { SyncNext } from "../SyncNext";
 
 
-export class SceneSyncerNext extends SyncSphereInterface<SceneData, cloud_Scene, cloud_Scene_settable> {
+export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, cloud_Scene, cloud_Scene_settable> {
+
+  constructor(options: SyncInterfaceOptions) {
+    super(SceneTransferNext, options);
+  }
+
 
   getLocalId() {
     return this.globalCloudIdMap.scenes[this.cloudId] || MapProvider.cloud2localMap.scenes[this.cloudId];
   }
 
-  // this will be used for NEW data and REQUESTED data in the v2 sync process.
-  static mapLocalToCloud(localData: SceneData) : cloud_Scene_settable | null {
-    let result : cloud_Scene_settable = {
-      name:      localData.name,
-      data:      JSON.stringify(localData.data),
-      updatedAt: localData.updatedAt
-    };
-
-    if (localData.pictureSource === "STOCK") {
-      result.stockPicture = localData.picture;
-    }
-    else {
-      result.customPictureId = localData.pictureId;
-    }
-
-    return result;
-  }
-
-
-  static mapCloudToLocal(cloudScene: cloud_Scene, localSceneId?: string) {
-    let result : Partial<SceneData> = {
-      name:          cloudScene.name,
-      pictureId:     cloudScene.customPictureId,
-      pictureSource: cloudScene.stockPicture ? "STOCK" : "CUSTOM", // PICTURE_GALLERY_TYPES
-      cloudId:       cloudScene.id,
-      data:          typeof cloudScene.data === 'string' ? JSON.parse(cloudScene.data) : cloudScene.data,
-      updatedAt:     new Date(cloudScene.updatedAt).valueOf()
-    }
-
-    if (cloudScene.stockPicture === "STOCK") {
-      result.picture = cloudScene.stockPicture;
-    }
-
-    return result;
-  }
-
-  _mapCloudToLocal(cloudScene: cloud_Scene) {
-    let localSceneId = this.globalCloudIdMap.scenes[cloudScene.id] ?? MapProvider.cloud2localMap.scenes[cloudScene.id] ?? cloudScene.id;
-
-    return SceneSyncerNext.mapCloudToLocal(cloudScene, localSceneId);
-  }
-
-  updateCloudId(cloudId) {
-    this.actions.push({type:"UPDATE_SCENE_CLOUD_ID", sphereId: this.localSphereId, sceneId: this.localId, data: {cloudId}});
-  }
-
-  removeFromLocal() {
-    this.actions.push({type:"REMOVE_SCENE", sphereId: this.localSphereId, sceneId: this.localId });
-  }
 
   createLocal(cloudData: cloud_Scene) {
-    let newId = this._generateLocalId();
-    this.globalCloudIdMap.scenes[this.cloudId] = newId;
-    this.actions.push({type:"ADD_SCENE", sphereId: this.localSphereId, sceneId: newId, data: this._mapCloudToLocal(cloudData) })
+    let newData = SceneTransferNext.getCreateLocalAction(this.localSphereId, SceneTransferNext.mapCloudToLocal(cloudData))
+    this.actions.push(newData.action)
+    this.globalCloudIdMap.scenes[this.cloudId] = newData.id;
 
     if (cloudData.customPictureId) {
       this._downloadSceneImage(cloudData);
@@ -74,8 +33,9 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, cloud_Scene,
   }
 
   updateLocal(cloudData: cloud_Scene) {
-    this.actions.push({type:"UPDATE_SCENE", sphereId: this.localSphereId, sceneId: this.localId, data: this._mapCloudToLocal(cloudData) })
-
+    this.actions.push(
+      SceneTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, SceneTransferNext.mapCloudToLocal(cloudData))
+    );
     // check if we have to do things with the image
     let scene = Get.scene(this.localSphereId, this.localId);
     // if there is no image on the cloud, but we expect a custom image, delete our custom image
@@ -98,7 +58,7 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, cloud_Scene,
     if (reply.scenes[this.cloudId] === undefined) {
       reply.scenes[this.cloudId] = {};
     }
-    reply.scenes[this.cloudId].data = SceneSyncerNext.mapLocalToCloud(scene);
+    reply.scenes[this.cloudId].data = SceneTransferNext.mapLocalToCloud(scene);
 
 
     if (scene.pictureSource === "STOCK" && cloudData.stockPicture === null) {
@@ -119,6 +79,11 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, cloud_Scene,
         })
         .catch((err) => { LOGe.cloud("SceneSyncer: Could not download scene picture to ", toPath, ' err:', err); })
     );
+  }
+
+
+  static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {
+    return SyncNext.gatherRequestData(sphere,{key:'scenes', type:'scene'});
   }
 }
 

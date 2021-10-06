@@ -3,12 +3,9 @@ import {LOG, LOGe, LOGw} from '../../../logging/Log'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { syncEvents }               from "./syncEvents";
 import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
-import { UserSyncer }               from "./modelSyncs/UserSyncer";
 import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
 import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
-import { FirmwareBootloaderSyncer } from "./modelSyncs/FirmwareBootloaderSyncer";
 import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
-import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";

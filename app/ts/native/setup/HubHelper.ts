@@ -17,6 +17,7 @@ import { Get } from "../../util/GetUtil";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
 import { CodedTypedError, CodedError } from "../../util/Errors";
+import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
 
 
 const networkError = 'network_error';
@@ -231,7 +232,7 @@ export class HubHelper {
         if (hubData.sphereId === (MapProvider.local2cloudMap.spheres[sphereId] || sphereId)) {
           core.store.dispatch({
             type, sphereId, hubId,
-            data: type === "ADD_HUB" ? HubSyncer.mapCloudToLocal(hubData) : {
+            data: type === "ADD_HUB" ? HubTransferNext.mapCloudToLocal(hubData) : {
               cloudId: hubCloudId,
               linkedStoneId: stoneId
             }

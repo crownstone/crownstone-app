@@ -54,6 +54,7 @@ import { IconButton } from "../components/IconButton";
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { WebRtcClient } from "../../logic/WebRtcClient";
 import { DebugIcon } from "../components/DebugIcon";
+import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -387,7 +388,7 @@ lang("_Something_went_wrong_____Ple_body"),
                   // we have it in the cloud, store locally
                   core.store.batchDispatch([
                     {type:"REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id},
-                    {type:"ADD_HUB", sphereId: this.props.sphereId, hubId: xUtil.getUUID(), data: HubSyncer.mapCloudToLocal(hubCloudData, this.props.stoneId, stone.config.locationId)},
+                    {type:"ADD_HUB", sphereId: this.props.sphereId, hubId: xUtil.getUUID(), data: HubTransferNext.mapCloudToLocal(hubCloudData, this.props.stoneId, stone.config.locationId)},
                   ]);
                 }
                 catch (err) {

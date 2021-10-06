@@ -34,3 +34,27 @@ interface EncryptionKeyData {
   createdAt: number,
   ttl: number
 }
+
+type ACTION_TYPE = string
+
+interface DatabaseAction {
+  type: ACTION_TYPE,
+  sphereId?    : string,
+  locationId?  : string,
+  sceneId?     : string,
+  stoneId?     : string,
+  hubId?       : string,
+  ruleId?      : string,
+  abilityId?   : string,
+  propertyId?  : string,
+  userId?      : string,
+  toonId?      : string,
+  data?
+}
+
+
+
+
+
+
+

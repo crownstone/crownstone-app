@@ -2,19 +2,7 @@ type timestamp = number;
 
 interface SphereData {
   id: string,
-  config: {
-    name: string,
-    iBeaconUUID: string, // ibeacon uuid
-    uid: number,
-    cloudId: string,
-
-    aiName: string,
-
-    latitude: number | null,
-    longitude: number | null,
-
-    updatedAt: timestamp,
-  },
+  config: SphereDataConfig,
   state: {
     lastPresentTime: number,
     reachable: boolean,
@@ -33,19 +21,23 @@ interface SphereData {
   keys:        any,
 }
 
+interface SphereDataConfig {
+  name: string,
+  iBeaconUUID: string, // ibeacon uuid
+  uid: number,
+  cloudId: string,
+
+  aiName: string,
+
+  latitude: number | null,
+  longitude: number | null,
+
+  updatedAt: timestamp,
+}
+
 interface HubData {
   id: string,
-  config: {
-    name:            string,
-    cloudId:         string | null,
-    ipAddress:       string | null,
-    linkedStoneId:   string | null,
-    locationId:      string | null,
-    httpPort:        number,
-    httpsPort:       number,
-    lastSeenOnCloud: timestamp,
-    updatedAt:       timestamp,
-  },
+  config: HubDataConfig,
   state: {
     uartAlive                          : boolean,
     uartAliveEncrypted                 : boolean,
@@ -61,6 +53,17 @@ interface HubData {
   },
 };
 
+interface HubDataConfig {
+  name:            string,
+  cloudId:         string | null,
+  ipAddress:       string | null,
+  linkedStoneId:   string | null,
+  locationId:      string | null,
+  httpPort:        number,
+  httpsPort:       number,
+  lastSeenOnCloud: timestamp,
+  updatedAt:       timestamp,
+}
 
 interface StoneData {
   id: string,
@@ -133,21 +136,7 @@ interface StoneDataConfig {
 
 interface LocationData {
   id: string,
-  config: {
-    name:         string,
-    icon:         string,
-    uid:          number,
-    picture:      string,
-    pictureTaken: timestamp,
-    pictureId:    string | null,
-    cloudId:      string | null,
-    updatedAt:    timestamp,
-
-    fingerprintCloudId:   string | null,
-    fingerprintRaw:       string | null,
-    fingerprintParsed:    string | null,
-    fingerprintUpdatedAt: timestamp,
-  }
+  config: LocationDataConfig
   presentUsers: [],
   layout: {
     x: number,
@@ -155,6 +144,22 @@ interface LocationData {
     setOnThisDevice: boolean,
     updatedAt: timestamp,
   }
+}
+
+interface LocationDataConfig {
+  name:         string,
+  icon:         string,
+  uid:          number,
+  picture:      string,
+  pictureTaken: timestamp,
+  pictureId:    string | null,
+  cloudId:      string | null,
+  updatedAt:    timestamp,
+
+  fingerprintCloudId:   string | null,
+  fingerprintRaw:       string | null,
+  fingerprintParsed:    string | null,
+  fingerprintUpdatedAt: timestamp,
 }
 
 interface SphereUserData {

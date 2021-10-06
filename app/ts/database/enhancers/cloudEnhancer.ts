@@ -1,22 +1,22 @@
 import { CLOUD }                       from '../../cloud/cloudAPI'
 import { Util }                        from '../../util/Util'
 import { LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
-import { transferUser}                 from "../../cloud/transferData/transferUser";
-import { transferStones}               from "../../cloud/transferData/transferStones";
-import { transferSpheres}              from "../../cloud/transferData/transferSpheres";
 import { Permissions}                  from "../../backgroundProcesses/PermissionManager";
 import { LOG_LEVEL}                    from "../../logging/LogLevels";
 import { MapProvider}                  from "../../backgroundProcesses/MapProvider";
-import { transferLocations}            from "../../cloud/transferData/transferLocations";
 import { core }                        from "../../Core";
 import { BATCH }                       from "../reducers/BatchReducer";
-import { transferBehaviours }          from "../../cloud/transferData/transferBehaviours";
-import { transferScenes }              from "../../cloud/transferData/transferScenes";
-import { StoneAbilitySyncer }          from "../../cloud/sections/sync/modelSyncs/StoneAbilitySyncer";
 import { getGlobalIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
-import { StoneSyncer }                 from "../../cloud/sections/sync/modelSyncs/StoneSyncer";
 import { HubSyncer }                   from "../../cloud/sections/newSync/syncers/HubSyncerNext";
-import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/constants/SceneConstants";
+import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/constants/SceneConstants";
+import { LocationTransferNext }        from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
+import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
+import { BehaviourTransferNext } from "../../cloud/sections/newSync/transferrers/BehaviourTransferNext";
+import { SceneTransferNext } from "../../cloud/sections/newSync/transferrers/SceneTransferNext";
+import { SphereTransferNext } from "../../cloud/sections/newSync/transferrers/SphereTransferNext";
+import { UserTransferNext } from "../../cloud/sections/newSync/transferrers/UserTransferNext";
+import { StoneTransferNext } from "../../cloud/sections/newSync/transferrers/StoneTransferNext";
+import { SyncNext } from "../../cloud/sections/newSync/SyncNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -177,7 +177,7 @@ function handleHubUpdate(action, state) {
   if (!sphere) { return; }
   let hub = sphere.hubs[action.hubId] as HubData;
   if (hub && hub.config.cloudId) {
-    CLOUD.updateHub(hub.config.cloudId, HubSyncer.mapLocalToCloud(hub))
+    CLOUD.updateHub(hub.config.cloudId, HubTransferNext.mapLocalToCloud(hub))
       .then((updatedHub) => {
         if (
           hub.config.ipAddress !== updatedHub.localIPAddress ||
@@ -206,26 +206,7 @@ function handleAbilityUpdate(action, state) {
   if (!sphere) { return; }
   let stone = sphere.stones[action.stoneId];
   if (stone && stone.config.cloudId) {
-    let actions = [];
-    let abilitySyncer = new StoneAbilitySyncer(
-      actions,
-      [],
-      action.stoneId,
-      stone.config.cloudId,
-      action.sphereId,
-      sphere.config.cloudId,
-      getGlobalIdMap(),
-      getGlobalIdMap()
-    );
-    CLOUD.forStone(action.stoneId).getStoneAbilities()
-      .then((abilities) => {
-        return abilitySyncer.sync(stone.abilities, abilities)
-      })
-      .then((r) => {
-        if (actions.length > 0) {
-          core.store.batchDispatch(actions);
-        }
-      })
+    SyncNext.partialStoneSync(action.stoneId, "ABILITIES")
       .catch((err) => {})
   }
 }
@@ -252,7 +233,7 @@ function handleUserInCloud(action, state) {
     });
   }
 
-  transferUser.updateOnCloud({localData: state.user, cloudId: state.user.userId})
+  UserTransferNext.updateOnCloud(state.user).catch(() => {});
 }
 
 
@@ -267,18 +248,8 @@ function _handleStone(action, state) {
   let sphere = state.spheres[action.sphereId];
   let stone  = sphere.stones[action.stoneId];
 
-  let localDataForCloud = {...stone};
-
-  if (stone.config.locationId)  { localDataForCloud.config['cloudLocationId']  = MapProvider.local2cloudMap.locations[stone.config.locationId]   || stone.config.locationId;  }
-  else                          { localDataForCloud.config['cloudLocationId'] = null; }
-
-  transferStones.updateOnCloud({
-    localId:       action.stoneId,
-    localData:     localDataForCloud,
-    localSphereId: action.sphereId,
-    cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
-    cloudId:       stone.config.cloudId  || action.stoneId,
-  }).catch(() => {});
+  StoneTransferNext.updateOnCloud(action.sphereId, stone)
+    .catch(() => {});
 }
 
 function handleStoneLocationUpdateInCloud(action, state, oldState) {
@@ -327,15 +298,8 @@ function handleLocationInCloud(action, state) {
   let sphere   = state.spheres[action.sphereId];
   let location = sphere.locations[action.locationId];
 
-
-
-  transferLocations.updateOnCloud({
-    localId:       action.stoneId,
-    localData:     location,
-    localSphereId: action.sphereId,
-    cloudSphereId: sphere.config.cloudId    || action.sphereId, // we used to have the same ids locally and in the cloud.
-    cloudId:       location.config.cloudId  || action.locationId,
-  }).catch(() => {});
+  LocationTransferNext.updateOnCloud(action.sphereId, location)
+    .catch(() => {});
 }
 
 
@@ -385,19 +349,10 @@ function handleSceneInCloud(action, newState, oldState) {
   }
 
 
+  let scene = newSphere.scenes[action.sceneId];
+
   if (action.type === "ADD_SCENE") {
-    let actions = [];
-    transferScenes.createOnCloud(actions, {
-      localId: action.sceneId,
-      localData: action.data,
-      localSphereId: action.sphereId,
-      cloudSphereId: existingSphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
-    })
-      .then(() => {
-        if (actions.length > 0) {
-          core.store.batchDispatch(actions);
-        }
-      })
+    SceneTransferNext.createOnCloud(action.sphereId, scene)
       .then(() => {
         let newState = core.store.getState();
         let sphere = newState.spheres[action.sphereId];
@@ -418,15 +373,8 @@ function handleSceneInCloud(action, newState, oldState) {
       .catch(() => {});
   }
   else {
-    let scene = newSphere.scenes[action.sceneId];
-    transferScenes.updateOnCloud({
-      localId: action.sceneId,
-      localData: scene,
-      localSphereId: action.sphereId,
-      cloudSphereId: newSphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
-      cloudId: scene.cloudId || action.sceneId,
-    }).catch(() => {
-    });
+    SceneTransferNext.updateOnCloud(action.sphereId, scene)
+      .catch(() => { });
   }
 }
 
@@ -451,10 +399,8 @@ function removeSceneInCloud(action, state, oldState) {
 function handleSphereInCloud(action, state) {
   let sphere = state.spheres[action.sphereId];
 
-  transferSpheres.updateOnCloud({
-    localData: sphere,
-    cloudId:   sphere.config.cloudId || action.sphereId,
-  }).catch(() => {})
+  SphereTransferNext.updateOnCloud(sphere)
+    .catch(() => {})
 }
 
 function handleSphereUserInCloud(action, state) {
@@ -550,31 +496,13 @@ function handleBehaviourInCloud(action, state) {
   if (!rule) { return }
 
   if (rule.cloudId !== null) {
-    transferBehaviours.updateOnCloud({
-      localId: ruleId,
-      localData: rule,
-      cloudStoneId: stone.config.cloudId,
-      cloudSphereId: sphere.config.cloudId,
-      cloudId: rule.cloudId
-    })
+    BehaviourTransferNext.updateOnCloud(stoneId, rule)
+      .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
   }
   else {
     if (action.type === "ADD_STONE_RULE") {
-      let actions = [];
-      transferBehaviours.createOnCloud(actions, {
-        localId: ruleId,
-        localData: rule,
-        localSphereId: sphereId,
-        localStoneId: stoneId,
-        cloudStoneId: stone.config.cloudId,
-        cloudSphereId: sphere.config.cloudId,
-      })
-        .then(() => {
-          core.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          console.log("Error handleBehaviourInCloud",err)
-        })
+      BehaviourTransferNext.createOnCloud(sphereId, stoneId, rule)
+        .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
     }
   }
 }

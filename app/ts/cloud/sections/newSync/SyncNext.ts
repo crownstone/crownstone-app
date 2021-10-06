@@ -20,28 +20,70 @@ import { BootloaderSyncerNext } from "./syncers/BootloaderSyncerNext";
 import { KeySyncerNext } from "./syncers/KeySyncerNext";
 import { UserSyncerNext } from "./syncers/UserSyncerNext";
 import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
-
+import { SphereTransferNext } from "./transferrers/SphereTransferNext";
+import { SphereUserTransferNext } from "./transferrers/SphereUserTransferNext";
+import { Get } from "../../../util/GetUtil";
 
 
 export const SyncNext = {
+
+  partialSphereSync: async function(localSphereId: string, type: "SPHERE_USERS") {
+    let scopes : SyncCategory[] = [];
+    let sphere = Get.sphere(localSphereId);
+    if (!sphere) { return; }
+
+    let actions = [];
+    let globalCloudIdMap = getGlobalIdMap();
+
+    switch (type) {
+      case "SPHERE_USERS":
+        scopes = ["sphereUsers"]
+        let syncRequest = getRequestBase(scopes);
+        syncRequest.spheres[sphere.config.cloudId].users = SphereUserSyncerNext.prepare(sphere);
+        let response = await CLOUD.syncNextSphere(localSphereId, syncRequest);
+        await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
+    }
+
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions)
+    }
+  },
+
+  partialStoneSync: async function(localStoneId: string, type: "ABILITIES" | "BEHAVIOURS") {
+    let scopes : SyncCategory[] = [];
+    let sphereId = Get.sphereId(localStoneId);
+    if (!sphereId) { return; }
+    let sphere   = Get.sphere(sphereId);
+    if (!sphere) { return; }
+
+    let actions = [];
+    let globalCloudIdMap = getGlobalIdMap();
+
+    switch (type) {
+      case "ABILITIES":
+      case "BEHAVIOURS":
+        scopes = ["stones"]
+        let syncRequest = getRequestBase(scopes);
+        syncRequest.spheres[sphere.config.cloudId].stones = StoneSyncerNext.prepare(sphere);
+        let response = await CLOUD.syncNextStone(localStoneId, syncRequest);
+        await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
+        break;
+    }
+
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions)
+    }
+  },
+
   sync: async function syncNext(scopes : SyncCategory[] = [], actions: any[], globalCloudIdMap: globalIdMap) {
     let scopeMap : SyncScopeMap = {};
     for (let i = 0; i < scopes.length; i++) {
       scopeMap[scopes[i]] = true;
     }
 
+    let syncRequest = getRequestBase(scopes);
+
     let state = core.store.getState()
-
-    let syncRequest : SyncRequest = {
-      sync: {
-        appVersion: DeviceInfo.getReadableVersion(),
-        type: "REQUEST",
-        lastTime: 0,   // this is not used yet.
-        scope: scopes
-      },
-      spheres: {}
-    };
-
     if (state?.user?.updatedAt) {
       syncRequest.user = { updatedAt: state?.user?.updatedAt };
     }
@@ -91,9 +133,9 @@ export const SyncNext = {
     console.log("REPLYREQUIRED", replyRequired);
     console.log("REPLY", reply)
     // provide the requested data.
-    // if (replyRequired) {
-    //   await CLOUD.syncNext(reply);
-    // }
+    if (replyRequired) {
+      await CLOUD.syncNext(reply);
+    }
   },
 
 
@@ -205,95 +247,97 @@ export const SyncNext = {
       result[sphere_cloudId] = {};
 
       function gather(options : GatherOptions) {
-        return gatherRequestData(sphere, options)
+        return SyncNext.gatherRequestData(sphere, options)
       }
 
       if (scopeMap.spheres) {
-        result[sphere_cloudId] = {data: SphereSyncerNext.mapLocalToCloud(sphere)};
+        result[sphere_cloudId] = {data: SphereTransferNext.mapLocalToCloud(sphere)};
       }
       if (scopeMap.hubs) {
-        result[sphere_cloudId].hubs = gather({key:'hubs', type:'hub'});
+        result[sphere_cloudId].hubs = HubSyncer.prepare(sphere)
       }
       if (scopeMap.locations) {
-        result[sphere_cloudId].locations = gather({key:'locations', type:'location'});
+        result[sphere_cloudId].locations = LocationSyncerNext.prepare(sphere);
       }
       if (scopeMap.stones) {
-        result[sphere_cloudId].stones = gather({
-          key:'stones', type:'stone', children: [
-            {key:'rules',     type:'behaviour', cloudKey: 'behaviours'},
-            {key:'abilities', type:'ability', children: [
-              {key:'properties', type:'abilityProperty'},
-            ]},
-          ]
-        });
+        result[sphere_cloudId].stones = StoneSyncerNext.prepare(sphere);
       }
       if (scopeMap.scenes) {
-        result[sphere_cloudId].scenes = gather({key:'scenes', type:'scene'});
+        result[sphere_cloudId].scenes = SceneSyncerNext.prepare(sphere);
       }
       if (scopeMap.sphereUsers) {
-        result[sphere_cloudId].users = gather({key:'users', type:'sphereUser', cloudIdGetter: (item) => { return item.id; }});
+        result[sphere_cloudId].users = SphereUserSyncerNext.prepare(sphere);
       }
       if (scopeMap.toons) {
-        result[sphere_cloudId].toons = gather({key:'toons', type:'toon'});
+        result[sphere_cloudId].toons = ToonSyncerNext.prepare(sphere);
       }
     })
 
     return result;
-  }
-}
+  },
 
 
+  /**
+   * This method will parse all items under the sphere object that follow these conditions:
+   * - have no children of their own. A stone has behaviour and abilities as children.
+   * - are of the format sphere[key] = {[itemId:string] : item}
+   * @param source    | This is the parent model of the item. Sphere for Locations etc.
+   * @param options
+   */
+  gatherRequestData: function gatherRequestData(
+      source,
+      options: GatherOptions
+  ) : {[itemId:string]: RequestItemCoreType} {
 
+    let result = {};
+    let items = source[options.key]; // this will get a object of items like sphere[stones]
+    let itemIds = Object.keys(items ?? {});
 
-interface GatherOptions {
-  key:        string,
-  cloudKey?:  string,
-  type:       SupportedMappingType,
-  children?:  GatherOptions[]
-  cloudIdGetter?:   (item: any) => string,
-  updatedAtGetter?: (item: any) => string,
-}
+    let cloudIdGetter   = options.cloudIdGetter   ?? getCloudId;
+    let updatedAtGetter = options.updatedAtGetter ?? getUpdatedAt;
 
+    if (itemIds.length > 0) {
+      for (let itemId of itemIds) {
+        let item = items[itemId];
+        if (!cloudIdGetter(item)) {
+          let dataForCloud = mapLocalToCloud(item, options.type);
+          if (!dataForCloud) {
+            dataForCloud = {updatedAt: updatedAtGetter(item)}
+          }
+          result[itemId] = {new: true, data: dataForCloud};
+        }
+        else {
+          result[cloudIdGetter(item) || itemId] = {data: {updatedAt: updatedAtGetter(item)}};
+        }
 
-/**
- * This method will parse all items under the sphere object that follow these conditions:
- * - have no children of their own. A stone has behaviour and abilities as children.
- * - are of the format sphere[key] = {[itemId:string] : item}
- * @param source
- * @param options
- */
-function gatherRequestData(
-  source,
-  options: GatherOptions
-) : {[itemId:string]: RequestItemCoreType} {
+        let resultItem = result[cloudIdGetter(item) || itemId];
 
-  let result = {};
-  let items = source[options.key]; // this will get a object of items like sphere[stones]
-  let itemIds = Object.keys(items ?? {});
-
-  let cloudIdGetter   = options.cloudIdGetter   ?? getCloudId;
-  let updatedAtGetter = options.updatedAtGetter ?? getUpdatedAt;
-
-  if (itemIds.length > 0) {
-    for (let itemId of itemIds) {
-      let item = items[itemId];
-      if (!cloudIdGetter(item)) {
-        result[itemId] = {new: true, data: mapLocalToCloud(item, options.type)};
-      }
-      else {
-        result[cloudIdGetter(item) || itemId] = {data: {updatedAt: updatedAtGetter(item)}};
-      }
-
-      let resultItem = result[cloudIdGetter(item) || itemId];
-
-      let children = options.children ?? [];
-      for (let childOptions of children) {
-        resultItem[childOptions.cloudKey ?? childOptions.key] = gatherRequestData(item, childOptions);
+        let children = options.children ?? [];
+        for (let childOptions of children) {
+          resultItem[childOptions.cloudKey ?? childOptions.key] = gatherRequestData(item, childOptions);
+        }
       }
     }
-  }
-  return result;
+    return result;
+  },
 }
+
+
+
+function getRequestBase(scopes: SyncCategory[]) : SyncRequest {
+  return {
+    sync: {
+      appVersion: DeviceInfo.getReadableVersion(),
+      type: "REQUEST",
+      lastTime: 0,   // this is not used yet.
+      scope: scopes
+    },
+    spheres: {}
+  };
+}
+
+
+
 
 
 function getCloudId(item: any) : string {

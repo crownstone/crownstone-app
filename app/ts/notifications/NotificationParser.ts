@@ -6,11 +6,11 @@ import { LocalNotifications }    from "./LocalNotifications";
 import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
 import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
 import { MapProvider }           from "../backgroundProcesses/MapProvider";
-import { SphereUserSyncer }      from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 import { getGlobalIdMap }        from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { INTENTS }               from "../native/libInterface/Constants";
 import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
 import { tell }                  from "../logic/constellation/Tellers";
+import { SyncNext } from "../cloud/sections/newSync/SyncNext";
 
 class NotificationParserClass {
 
@@ -127,8 +127,7 @@ class NotificationParserClass {
       let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
       if (localSphereId) {
         let actions = [];
-        let sphereUserSyncer = new SphereUserSyncer(actions, [], localSphereId, notificationData.sphereId, MapProvider.cloud2localMap, getGlobalIdMap());
-        sphereUserSyncer.sync(core.store)
+        SyncNext.partialSphereSync(localSphereId, "SPHERE_USERS")
           .then(() => {
             if (actions.length > 0) {
               core.store.batchDispatch(actions);
@@ -138,7 +137,7 @@ class NotificationParserClass {
             LOGe.notifications("NotifcationParser: Failed to update sphere users.", err);
           })
       }
-    }
+    } 
   }
 
   _handleSetSwitchStateRemotely(notificationData, state) {
