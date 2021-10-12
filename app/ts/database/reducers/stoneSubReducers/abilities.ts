@@ -58,6 +58,7 @@ let abilityReducer = (state = abilityFormat, action) => {
     case 'UPDATE_ABILITY':
       if (action.data) {
         let newState = {...state};
+        newState.type               = update(action.data.type,          newState.type);
         newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
         newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
@@ -83,6 +84,9 @@ let abilityReducer = (state = abilityFormat, action) => {
       newState.syncedToCrownstone = false;
       return newState;
     case 'REFRESH_DEFAULTS':
+      if (state.properties === undefined) {
+        state.properties = {};
+      }
       return refreshDefaults(state, abilityFormat);
     default:
       return state;

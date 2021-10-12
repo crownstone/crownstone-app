@@ -3,17 +3,24 @@ import { clean_upTo4_0 } from "./steps/upToV4_0";
 import { upTo4_3 } from "./steps/upToV4_3";
 import { StoreManager } from "../../database/storeManager";
 import { clean_upTo4_4, upTo4_4 } from "./steps/upToV4_4";
-import { clean_upTo4_5, upTo4_5 } from "./steps/upToV4_5";
+import { clean_upTo4_6, upTo4_6 } from "./steps/upToV4_5";
+import { core } from "../../Core";
+import DeviceInfo from "react-native-device-info";
 
 export function migrate() {
-  upTo3_0();
-  upTo4_3();
-  upTo4_4();
-  upTo4_5();
+  let state = core.store.getState();
+  let appVersion = DeviceInfo.getReadableVersion();
+  let lastMigrationVersion = state.app.migratedDataToVersion;
+
+
+  upTo3_0(lastMigrationVersion, appVersion);
+  upTo4_3(lastMigrationVersion, appVersion);
+  upTo4_4(lastMigrationVersion, appVersion);
+  upTo4_6(lastMigrationVersion, appVersion);
 }
 
 export async function migrateBeforeInitialization() : Promise<void> {
   await clean_upTo4_0();
   await clean_upTo4_4();
-  await clean_upTo4_5();
+  await clean_upTo4_6();
 }

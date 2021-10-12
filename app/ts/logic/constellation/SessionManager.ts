@@ -199,6 +199,7 @@ export class SessionManagerClass {
 
       // IF the session does NOT exist yet, we can create the session.
       if (!session) {
+        LOGd.constellation("SessionManager: Create new session by request.", commanderId, privateId);
         this._createSession(handle, commanderId, privateSessionRequest);
         // the request will be added to pending below;
       }

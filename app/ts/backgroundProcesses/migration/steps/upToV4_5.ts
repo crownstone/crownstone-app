@@ -3,14 +3,12 @@ import { core } from "../../../Core";
 import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
 
-export const clean_upTo4_5 = function() {
+export const clean_upTo4_6 = function() {
 
 }
 
-export const upTo4_5 = function() {
-  let state = core.store.getState();
-  let appVersion = DeviceInfo.getReadableVersion();
-  if (xUtil.versions.isLower(state.app.migratedDataToVersion, appVersion) || !state.app.migratedDataToVersion) {
+export const upTo4_6 = function(lastMigrationVersion, appVersion) {
+  if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {
     resetAbilities();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});
   }

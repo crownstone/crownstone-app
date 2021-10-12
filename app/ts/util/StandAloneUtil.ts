@@ -215,7 +215,7 @@ export const xUtil = {
   },
 
   versions: {
-    isHigher: function(version, compareWithVersion) {
+    isHigher: function(version, compareWithVersion, semverSize = 3) {
       if (!version || !compareWithVersion) {
         return false;
       }
@@ -223,38 +223,57 @@ export const xUtil = {
       let [versionClean, versionRc] = getRC(version);
       let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
 
-      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+      if (checkSemVer(versionClean, semverSize) === false || checkSemVer(compareWithVersionClean, semverSize) === false) {
         return false;
       }
 
       let A = versionClean.split('.');
       let B = compareWithVersionClean.split('.');
 
-      if (A[0] < B[0]) return false;
-      else if (A[0] > B[0]) return true;
-      else { // A[0] == B[0]
-        if (A[1] < B[1]) return false;
-        else if (A[1] > B[1]) return true;
-        else { // A[1] == B[1]
-          if (A[2] < B[2]) return false;
-          else if (A[2] > B[2]) return true;
-          else { // A[2] == B[2]
-            if (versionRc === null && compareWithVersionRc === null) {
-              return false;
-            }
-            else if (versionRc !== null && compareWithVersionRc !== null) {
-              return (versionRc > compareWithVersionRc);
-            }
-            else if (versionRc !== null) {
-              // 2.0.0.rc0 is smaller than 2.0.0
-              return false;
-            }
-            else {
-              return true;
-            }
-          }
-        }
+      for (let i = 0; i < semverSize; i++) {
+        if (A[i] < B[i]) { return false; }
+        if (A[i] > B[i]) { return true;  }
       }
+      if (versionRc === null && compareWithVersionRc === null) {
+        return false;
+      }
+      else if (versionRc !== null && compareWithVersionRc !== null) {
+        return (versionRc > compareWithVersionRc);
+      }
+      else if (versionRc !== null) {
+        // 2.0.0.rc0 is smaller than 2.0.0
+        return false;
+      }
+      else {
+        return true;
+      }
+
+
+      // if (A[0] < B[0]) return false;
+      // else if (A[0] > B[0]) return true;
+      // else { // A[0] == B[0]
+      //   if (A[1] < B[1]) return false;
+      //   else if (A[1] > B[1]) return true;
+      //   else { // A[1] == B[1]
+      //     if (A[2] < B[2]) return false;
+      //     else if (A[2] > B[2]) return true;
+      //     else { // A[2] == B[2]
+      //       if (versionRc === null && compareWithVersionRc === null) {
+      //         return false;
+      //       }
+      //       else if (versionRc !== null && compareWithVersionRc !== null) {
+      //         return (versionRc > compareWithVersionRc);
+      //       }
+      //       else if (versionRc !== null) {
+      //         // 2.0.0.rc0 is smaller than 2.0.0
+      //         return false;
+      //       }
+      //       else {
+      //         return true;
+      //       }
+      //     }
+      //   }
+      // }
     },
 
 
@@ -278,7 +297,7 @@ export const xUtil = {
       return xUtil.versions.isHigherOrEqual(myVersionClean, minimumRequiredVersionClean);
     },
 
-    isHigherOrEqual: function(version, compareWithVersion) {
+    isHigherOrEqual: function(version, compareWithVersion, semverSize = 3) {
       if (!version || !compareWithVersion) {
         return false;
       }
@@ -286,7 +305,7 @@ export const xUtil = {
       let [versionClean, versionRc] = getRC(version);
       let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
 
-      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+      if (checkSemVer(versionClean, semverSize) === false || checkSemVer(compareWithVersionClean, semverSize) === false) {
         return false;
       }
 
@@ -301,7 +320,7 @@ export const xUtil = {
       return xUtil.versions.isHigher(version, compareWithVersion);
     },
 
-    isLower: function(version, compareWithVersion) {
+    isLower: function(version, compareWithVersion, semverSize = 3) {
       if (!version || !compareWithVersion) {
         return false;
       }
@@ -309,17 +328,17 @@ export const xUtil = {
       let [versionClean, versionRc] = getRC(version);
       let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
 
-      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+      if (checkSemVer(versionClean, semverSize) === false || checkSemVer(compareWithVersionClean, semverSize) === false) {
         return false;
       }
 
       // Do not allow compareWithVersion to be semver
-      if (compareWithVersionClean.split(".").length !== 3) {
+      if (compareWithVersionClean.split(".").length !== semverSize) {
         return false;
       }
 
       // if version is NOT semver, is higher will be false so is lower is true.
-      return !xUtil.versions.isHigherOrEqual(version, compareWithVersion);
+      return !xUtil.versions.isHigherOrEqual(version, compareWithVersion, semverSize);
     },
   },
 
@@ -531,18 +550,18 @@ function getRC(version) {
   return [lowerCaseRC_split[0], RC];
 }
 
-let checkSemVer = (str) => {
+let checkSemVer = (str, semverSize = 3) => {
   if (!str) { return false; }
 
-  // a git commit hash is longer than 12, we pick 12 so 123.122.1234 is the max semver length.
-  if (str.length > 12) {
+  // max 3 length items, with size-1 dots in between
+  if (str.length > semverSize*3+(semverSize-1)) {
     return false;
   }
 
   let A = str.split('.');
 
   // further ensure only semver is compared
-  if (A.length !== 3) {
+  if (A.length !== semverSize) {
     return false;
   }
 

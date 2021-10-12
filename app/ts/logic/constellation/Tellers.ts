@@ -76,6 +76,9 @@ export function tell(handle: string | StoneData, timeoutSeconds = 10) : CommandA
   // we do not check for handle and sphere here, this is done when the first command is loaded. This makes it so that the
   // error can be caught in the promise chain instead of before that.
 
+  if (!handle) { throw new Error("No handle yet."); }
+
+
   LOG.constellation("Tellers: Planning to tell", handle);
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),

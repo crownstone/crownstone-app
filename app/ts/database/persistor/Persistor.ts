@@ -517,7 +517,12 @@ export class Persistor {
 
       if (state.spheres[sphereId].stones) {
         let stoneIds = Object.keys(state.spheres[sphereId].stones);
-        stoneIds.forEach((stoneId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
+        stoneIds.forEach((stoneId) => {
+          refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});
+          for (let abilityId in state.spheres[sphereId].stones[stoneId].abilities) {
+            refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId, abilityId: abilityId});
+          }
+        });
       }
       if (state.spheres[sphereId].locations) {
         let locationIds = Object.keys(state.spheres[sphereId].locations);

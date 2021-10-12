@@ -54,10 +54,8 @@ function clearHardwareVersions() {
 }
 
 
-export const upTo3_0 = function() {
-  let state = core.store.getState();
-  let appVersion = DeviceInfo.getReadableVersion();
-  if (xUtil.versions.isLower(state.app.migratedDataToVersion, appVersion) || !state.app.migratedDataToVersion) {
+export const upTo3_0 = function(lastMigrationVersion, appVersion) {
+  if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {
     moveKeysInDatabase();
     clearHardwareVersions();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});

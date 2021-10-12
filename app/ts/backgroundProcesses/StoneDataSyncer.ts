@@ -35,6 +35,7 @@ class StoneDataSyncerClass {
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (
+          change.changeStoneHandle ||
           change.changeSphereState ||
           change.stoneChangeRules  ||
           change.stoneChangeAbilities
@@ -63,6 +64,9 @@ class StoneDataSyncerClass {
         let stoneIds = Object.keys(sphere.stones);
         for (let j = 0; j < stoneIds.length; j++) {
           let stoneId = stoneIds[j];
+          let stone = sphere.stones[stoneId];
+          if (!stone.config.handle) { continue; }
+
           let initialAbilities = sphere.stones[stoneId].abilities;
 
           // update the list with this stone.
