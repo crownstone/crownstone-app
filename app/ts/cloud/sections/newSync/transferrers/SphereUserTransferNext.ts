@@ -26,8 +26,8 @@ export const SphereUserTransferNext : TransferSphereTool<SphereUserData, SphereU
   },
 
 
-  getCreateLocalAction(localSphereId: string, data: Partial<SphereUserDataLocalSettable>) : {id: string, action: DatabaseAction } {
-    let newId = xUtil.generateLocalId();
+  getCreateLocalAction(localSphereId: string, data: Partial<SphereUserDataLocalSettable>, idOverride?: string) : {id: string, action: DatabaseAction } {
+    let newId = idOverride || xUtil.generateLocalId();
     let action : DatabaseAction = {type:"ADD_SPHERE_USER", sphereId: localSphereId, userId: newId, data: data };
     return {id: newId, action};
   },

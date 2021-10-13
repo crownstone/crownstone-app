@@ -4,7 +4,7 @@ interface TransferSphereTool<LocalData,LocalDataSettable,CloudData,CloudDataSett
 
   mapCloudToLocal(cloudLocation: CloudData, ...args) : Partial<LocalDataSettable>
 
-  getCreateLocalAction(localSphereId: string, data: Partial<LocalDataSettable>) : {id: string, action: DatabaseAction }
+  getCreateLocalAction(localSphereId: string, data: Partial<LocalDataSettable>, idOverride?: string) : {id: string, action: DatabaseAction }
 
   createLocal(localSphereId: string, data: Partial<LocalDataSettable>) : string
 
