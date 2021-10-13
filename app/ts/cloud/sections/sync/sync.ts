@@ -210,6 +210,7 @@ export const sync = {
         if (reloadTrackingRequired) {
           core.eventBus.emit("CloudSyncComplete_spheresChanged");
         }
+        console.log("SYNC COMPLETE!")
 
       })
       .catch((err) => {

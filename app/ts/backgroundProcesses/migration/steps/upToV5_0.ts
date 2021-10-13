@@ -3,11 +3,11 @@ import { core } from "../../../Core";
 import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
 
-export const clean_upTo4_6 = function() {
+export const clean_upTo5_0 = function() {
 
 }
 
-export const upTo4_6 = function(lastMigrationVersion, appVersion) {
+export const upTo5_0 = function(lastMigrationVersion, appVersion) {
   if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {
     resetAbilities();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});

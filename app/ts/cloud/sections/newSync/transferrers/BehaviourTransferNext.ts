@@ -47,7 +47,7 @@ export const BehaviourTransferNext : TransferStoneTool<BehaviourData, BehaviourD
 
   getCreateLocalAction(localSphereId: string, localStoneId: string, data: Partial<BehaviourData>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_RULE", sphereId: localSphereId, stoneId: localStoneId, ruleId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_STONE_RULE", sphereId: localSphereId, stoneId: localStoneId, ruleId: newId, data: data };
     return {id: newId, action};
   },
 
@@ -58,12 +58,12 @@ export const BehaviourTransferNext : TransferStoneTool<BehaviourData, BehaviourD
 
 
   getUpdateLocalAction(localSphereId: string, localStoneId: string, localItemId: string, data: Partial<BehaviourData>) : DatabaseAction {
-    return {type:"UPDATE_RULE_CONFIG", sphereId: localSphereId, stoneId: localStoneId, ruleId: localItemId, data: data }
+    return {type:"UPDATE_STONE_RULE", sphereId: localSphereId, stoneId: localStoneId, ruleId: localItemId, data: data }
   },
 
 
   getRemoveFromLocalAction(localSphereId: string, localStoneId: string, localItemId: string) : DatabaseAction {
-    return {type:"REMOVE_RULE", sphereId: localSphereId, stoneId: localStoneId, ruleId: localItemId };
+    return {type:"REMOVE_STONE_RULE", sphereId: localSphereId, stoneId: localStoneId, ruleId: localItemId };
   },
 
 

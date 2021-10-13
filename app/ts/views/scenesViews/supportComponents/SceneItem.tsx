@@ -188,6 +188,9 @@ export const getScenePictureSource = function(scene) {
   }
   else if (scene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
     // custom
+    if (scene.picture === null) {
+      return undefined;
+    }
     return { uri: xUtil.preparePictureURI(scene.picture) };
   }
   else {

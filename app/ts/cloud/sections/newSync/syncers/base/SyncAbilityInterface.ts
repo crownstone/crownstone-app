@@ -40,4 +40,5 @@ export class SyncAbilityInterface<LocalDataFormat, LocalDataSettableFormat, Clou
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
     super.process(response, reply);
   }
+
 }

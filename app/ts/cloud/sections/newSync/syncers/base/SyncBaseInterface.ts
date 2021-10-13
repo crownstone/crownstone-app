@@ -61,6 +61,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
         // Do nothing. The cloud has updated it's model to match yours.
         break;
       case "CREATED_IN_CLOUD":
+      case "ALREADY_IN_CLOUD":
         // Store the cloudId: this is the id in the data field.
         this.updateCloudId(response.data.id, response.data);
         break;

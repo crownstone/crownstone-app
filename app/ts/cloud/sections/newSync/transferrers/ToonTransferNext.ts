@@ -36,7 +36,7 @@ export const ToonTransferNext : TransferSphereTool<ToonData, ToonData, cloud_Too
 
   getCreateLocalAction(localSphereId: string, data: Partial<ToonData>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_TOON", sphereId: localSphereId, toonId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_TOON", sphereId: localSphereId, toonId: newId, data: data };
     return {id: newId, action};
   },
 

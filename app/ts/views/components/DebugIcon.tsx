@@ -1,4 +1,4 @@
-import { TouchableOpacity, ViewStyle } from "react-native";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Icon } from "./Icon";
 import { colors } from "../styles";
@@ -8,7 +8,7 @@ import { core } from "../../Core";
 
 export function DebugIcon(props : {sphereId: string, stoneId: string, customView?: string}) {
   let state = core.store.getState()
-  if (!state.user.developer) { return }
+  if (!state.user.developer) { return <View />; }
   let wrapperStyle : ViewStyle = {
     width: 35,
     height: 35,

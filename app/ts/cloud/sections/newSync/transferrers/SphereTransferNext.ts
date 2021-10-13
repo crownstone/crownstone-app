@@ -38,7 +38,7 @@ export const SphereTransferNext : TransferTool<SphereData, SphereDataConfig, clo
 
   getCreateLocalAction(data: Partial<SphereDataConfig>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_SPHERE", sphereId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_SPHERE", sphereId: newId, data: data };
     return {id: newId, action};
   },
 

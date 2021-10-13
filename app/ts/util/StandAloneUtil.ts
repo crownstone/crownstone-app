@@ -332,7 +332,7 @@ export const xUtil = {
         return false;
       }
 
-      // Do not allow compareWithVersion to be semver
+      // Require both versions to be semver with this size
       if (compareWithVersionClean.split(".").length !== semverSize) {
         return false;
       }

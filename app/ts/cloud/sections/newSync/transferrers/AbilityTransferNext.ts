@@ -35,7 +35,7 @@ export const AbilityTransferNext : TransferStoneTool<AbilityData, AbilityData, c
 
   getCreateLocalAction(localSphereId: string, localStoneId: string, data: Partial<AbilityData>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_ABILITY", sphereId: localSphereId, stoneId: localStoneId, abilityId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_ABILITY", sphereId: localSphereId, stoneId: localStoneId, abilityId: newId, data: data };
     return {id: newId, action};
   },
 
@@ -57,7 +57,7 @@ export const AbilityTransferNext : TransferStoneTool<AbilityData, AbilityData, c
 
 
   getRemoveFromLocalAction(localSphereId: string, localStoneId: string, localItemId: string) : DatabaseAction {
-    return {type:"REMOVE_ABILITY", sphereId: localSphereId, stoneId: localStoneId, abilityId: localItemId };
+    throw new Error("UNUSED");
   },
 
 

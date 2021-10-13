@@ -31,6 +31,8 @@ export class AbilityPropertySyncerNext extends SyncAbilityInterface<AbilityPrope
 
   removeFromLocal() {
     // we do not remove abilityProperties. They can be disabled, not removed.
+    // if they are removed from the cloud completely, remove the cloud id
+    this.actions.push(this.transferrer.getUpdateLocalCloudIdAction(this.localSphereId, this.localStoneId, this.localId, this.localAbilityId, null));
   }
 
   createLocal(cloudData: cloud_AbilityProperty) {

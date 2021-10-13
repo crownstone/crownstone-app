@@ -77,6 +77,7 @@ export const SyncNext = {
 
   sync: async function syncNext(scopes : SyncCategory[] = [], actions: any[], globalCloudIdMap: globalIdMap) {
     let scopeMap : SyncScopeMap = {};
+    let nextActions = [];
     for (let i = 0; i < scopes.length; i++) {
       scopeMap[scopes[i]] = true;
     }
@@ -88,8 +89,14 @@ export const SyncNext = {
       syncRequest.user = { updatedAt: state?.user?.updatedAt };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
+    console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
-    await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
+    console.log("SYNC response", JSON.stringify(response))
+    await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
+    console.log("SYNC ACTIONS", JSON.stringify(nextActions))
+    for (let an of nextActions) {
+      actions.push(an);
+    }
   },
 
   processSyncResponse: async function processSyncResult(syncResponse: SyncRequestResponse, actions = [], globalCloudIdMap: globalIdMap) {

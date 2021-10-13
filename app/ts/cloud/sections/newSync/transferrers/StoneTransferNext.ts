@@ -57,7 +57,7 @@ export const StoneTransferNext : TransferSphereTool<StoneData, StoneDataConfig, 
 
   getCreateLocalAction(localSphereId: string, data: Partial<StoneDataConfig>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_STONE", sphereId: localSphereId, stoneId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_STONE", sphereId: localSphereId, stoneId: newId, data: data };
     return {id: newId, action};
   },
 

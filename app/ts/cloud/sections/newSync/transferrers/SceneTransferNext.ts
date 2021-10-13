@@ -15,7 +15,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
       updatedAt: localData.updatedAt
     };
 
-    if (localData.pictureSource === "STOCK") {
+    if (localData.pictureSource) {
       result.stockPicture = localData.picture;
     }
     else {
@@ -36,7 +36,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
       updatedAt:     new Date(cloudScene.updatedAt).valueOf()
     }
 
-    if (cloudScene.stockPicture === "STOCK") {
+    if (cloudScene.stockPicture) {
       result.picture = cloudScene.stockPicture;
     }
 
@@ -46,7 +46,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
 
   getCreateLocalAction(localSphereId: string, data: Partial<SceneData>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_SCENE", sphereId: localSphereId, sceneId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_SCENE", sphereId: localSphereId, sceneId: newId, data: data };
     return {id: newId, action};
   },
 
@@ -57,7 +57,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
 
 
   getUpdateLocalAction(localSphereId: string, localItemId: string, data: Partial<SceneData>) : DatabaseAction {
-    return {type:"UPDATE_SCENE_CONFIG", sphereId: localSphereId, sceneId: localItemId, data: data }
+    return {type:"UPDATE_SCENE", sphereId: localSphereId, sceneId: localItemId, data: data }
   },
 
 

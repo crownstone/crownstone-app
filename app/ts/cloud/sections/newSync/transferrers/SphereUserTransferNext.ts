@@ -28,13 +28,13 @@ export const SphereUserTransferNext : TransferSphereTool<SphereUserData, SphereU
 
   getCreateLocalAction(localSphereId: string, data: Partial<SphereUserDataLocalSettable>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_SPHERE_USER", sphereId: localSphereId, userId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_SPHERE_USER", sphereId: localSphereId, userId: newId, data: data };
     return {id: newId, action};
   },
 
 
   getUpdateLocalCloudIdAction(localSphereId: string, localItemId: string, cloudId: string) : DatabaseAction {
-    return {type:"NOT_AVAILABLE"};
+    return {type:"NOT_REQUIRED"};
   },
 
 

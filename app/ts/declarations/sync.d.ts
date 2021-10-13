@@ -137,6 +137,7 @@ type SyncState = "NOT_AVAILABLE" |  // this entity does not exist on the cloud o
                   "REQUEST_DATA" |  // you have newer data, please give to cloud.
               "UPDATED_IN_CLOUD" |  // the cloud has been updated with your model
               "CREATED_IN_CLOUD" |  // the cloud has an additional id other than what you requested
+              "ALREADY_IN_CLOUD" |  // the cloud has an additional id other than what you requested, validation gave an alternative to creating a new one.
                  "ACCESS_DENIED" |  // user has no permission to create/delete something.
                           "VIEW"    // you have requested data, here it is. No syncing information. (HAS DATA)
 

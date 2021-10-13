@@ -31,7 +31,7 @@ export const LocationTransferNext : TransferSphereTool<LocationData, LocationDat
 
   getCreateLocalAction(localSphereId: string, data: Partial<LocationDataConfig>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_LOCATION", sphereId: localSphereId, locationId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_LOCATION", sphereId: localSphereId, locationId: newId, data: data };
     return {id: newId, action};
   },
 

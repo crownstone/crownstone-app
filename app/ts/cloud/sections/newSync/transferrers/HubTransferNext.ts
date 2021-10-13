@@ -46,7 +46,7 @@ export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_
 
   getCreateLocalAction(localSphereId: string, data: Partial<HubDataConfig>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
-    let action = {type:"ADD_HUB", sphereId: localSphereId, hubId: newId, data: data };
+    let action : DatabaseAction = {type:"ADD_HUB", sphereId: localSphereId, hubId: newId, data: data };
     return {id: newId, action};
   },
 

@@ -29,14 +29,14 @@ export class HubSyncer extends SyncSphereInterface<HubData, HubDataConfig, cloud
 
 
   createLocal(cloudData: cloud_Hub) {
-    let newData = LocationTransferNext.getCreateLocalAction(this.localSphereId, this._mapCloudToLocal(cloudData))
+    let newData = HubTransferNext.getCreateLocalAction(this.localSphereId, this._mapCloudToLocal(cloudData))
     this.actions.push(newData.action)
     this.globalCloudIdMap.hubs[this.cloudId] = newData.id;
   }
 
 
   updateLocal(cloudData: cloud_Hub) {
-    this.actions.push(LocationTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, this._mapCloudToLocal(cloudData)));
+    this.actions.push(HubTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, this._mapCloudToLocal(cloudData)));
   }
 
 
