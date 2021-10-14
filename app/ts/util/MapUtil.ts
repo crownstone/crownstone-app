@@ -80,7 +80,7 @@ export const getMapOfCrownstonesBySphereByHandle = function(state) {
     }
  */
 export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
-  return _getMap(state, 'crownstoneId', true);
+  return _getMap(state, 'uid', true);
 };
 
 /**

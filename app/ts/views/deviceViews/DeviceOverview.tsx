@@ -160,6 +160,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     tell(stone).multiSwitch(state).catch((err) => { })
   }
 
+
   _planStoreAction() {
     this.storeSwitchState = true;
     clearTimeout(this.storeSwitchStateTimeout);
@@ -205,7 +206,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
           stone={stone}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
-          unlockCrownstone={  () => { return tell(stone).lockSwitch(false); }}
+          unlockCrownstone={  () => { return tell(stone).lockSwitch(false) }}
           unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
         />
       );
