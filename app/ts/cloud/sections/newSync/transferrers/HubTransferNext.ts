@@ -29,7 +29,7 @@ export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_
     }
   
     if (localLocationId) {
-      result.hubId = localLocationId;
+      result.locationId = localLocationId;
     }
   
     result.name            = cloudHub.name;

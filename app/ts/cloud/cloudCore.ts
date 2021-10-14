@@ -9,7 +9,7 @@ import { xUtil } from "../util/StandAloneUtil";
 import { FileUtil } from "../util/FileUtil";
 
 
-
+let downloadIndex = 0;
 
 /**
  * This method communicates with the cloud services.
@@ -160,14 +160,17 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
   return downloadFile(CLOUD_ADDRESS + endPoint, toPath, headers, {begin: beginCallback, progress: progressCallback, success: successCallback});
 }
 
-export function downloadFile(url, targetPath, headers : HeaderObject, callbacks) {
-  return new Promise((resolve, reject) => {
+export async function downloadFile(url, targetPath, headers : HeaderObject, callbacks) {
+  return new Promise(async (resolve, reject) => {
     // get a temp path
-    let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36);
+    let downloadSessionId = downloadIndex++ + "_DOWNLOAD_TEMP_FILE"
     let tempFilename = downloadSessionId + '.tmp';
     let tempPath = FileUtil.getPath(tempFilename);
     tempPath = 'file://' + tempPath.replace("file://","");
     targetPath = 'file://' + targetPath.replace("file://","");
+
+    // ensure the tempfile does not exist
+    await FileUtil.safeDeleteFile(tempPath);
 
     LOGi.cloud('CloudCore:DownloadFile: ',downloadSessionId,'download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
 

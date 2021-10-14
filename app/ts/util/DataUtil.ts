@@ -273,7 +273,9 @@ export const DataUtil = {
         if (!hub.config.locationId && hub.config.linkedStoneId) {
           let pairedStone = Get.stone(sphereId, hub.config.linkedStoneId);
           if (pairedStone.config.locationId) {
-            core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hubId, data: {locationId: pairedStone.config.locationId}})
+            // self-repair
+            core.store.dispatch({type:"UPDATE_HUB_LOCATION", sphereId: sphereId, hubId: hubId, data: {locationId: pairedStone.config.locationId}});
+            hub.config.locationId = pairedStone.config.locationId;
           }
         }
         if (hub.config.locationId === locationId || locationId === undefined) {

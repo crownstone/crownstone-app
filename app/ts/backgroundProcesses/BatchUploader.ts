@@ -33,7 +33,6 @@ class BatchUploadClass {
         energy: {},
       };
     }
-    this._batchPowerData();
   }
 
   /**
@@ -55,50 +54,6 @@ class BatchUploadClass {
     this.queue.power[key].data.push(data);
   }
 
-  _batchPowerData() {
-    let powerKeys = Object.keys(this.queue.power);
-    let successfulUploads = 0;
-    let actions = [];
-    xUtil.promiseBatchPerformer(powerKeys, (key) => {
-      let stoneId = this.queue.power[key].stoneId;
-      let sphereId = this.queue.power[key].sphereId;
-      let dateId = this.queue.power[key].dateId;
-
-      let data = this.queue.power[key].data;
-      let indices = this.queue.power[key].indices;
-
-      this.queue.power[key] = undefined;
-      delete this.queue.power[key];
-
-      return CLOUD.forStone(stoneId).updateBatchPowerUsage(data, true)
-        .then(() => {
-          LOGd.info("BatchUploader: Updated Batch Usage for indices", indices);
-          actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: indices }});
-          successfulUploads++;
-        })
-        .catch((err) => {
-          // put the data back in the queue
-          if (this.queue.power[key] === undefined) {
-            this.queue.power[key] = { dateId: dateId, stoneId: stoneId, sphereId: sphereId, indices:[], data:[] };
-          }
-          this.queue.power[key].data = this.queue.power[key].data.concat(data);
-          this.queue.power[key].indices = this.queue.power[key].indices.concat(indices);
-          LOGe.cloud("BatchUploader: Could not upload samples:", indices, " because of: ", err);
-        })
-    })
-    .then(() => {
-      // if everything was uploaded
-      if (powerKeys.length === successfulUploads) {
-        Scheduler.pauseTrigger(TRIGGER_ID);
-      }
-
-      // set the sync states
-      core.store.batchDispatch(actions);
-    })
-    .catch((err) => {
-      LOGe.cloud("BatchUploader: Error during upload session", err);
-    });
-  }
 }
 
 export const BatchUploader = new BatchUploadClass();

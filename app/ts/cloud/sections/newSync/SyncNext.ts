@@ -162,14 +162,6 @@ export const SyncNext = {
       new SphereSyncerNext({cloudId: cloudSphereId, ...sphereSyncBase})
         .process(sphereCloudResponse.data, reply);
 
-      if (sphereCloudResponse.hubs) {
-        let moduleReply = {};
-        for (let hubId in sphereCloudResponse.hubs) {
-          new HubSyncer({cloudId: hubId, ...sphereSyncBase})
-            .process(sphereCloudResponse.hubs[hubId].data, moduleReply);
-        }
-        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
-      }
       if (sphereCloudResponse.locations) {
         let moduleReply = {};
         for (let locationId in sphereCloudResponse.locations) {
@@ -205,6 +197,17 @@ export const SyncNext = {
         }
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
       }
+
+      if (sphereCloudResponse.hubs) {
+        let moduleReply = {};
+        for (let hubId in sphereCloudResponse.hubs) {
+          new HubSyncer({cloudId: hubId, ...sphereSyncBase})
+            .process(sphereCloudResponse.hubs[hubId].data, moduleReply);
+        }
+        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
+      }
+
+      // this order is important. The hub has dependencies on stones and locations
       if (sphereCloudResponse.toons) {
         let moduleReply = {};
         for (let toonId in sphereCloudResponse.toons) {

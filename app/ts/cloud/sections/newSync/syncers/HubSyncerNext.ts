@@ -21,9 +21,8 @@ export class HubSyncer extends SyncSphereInterface<HubData, HubDataConfig, cloud
 
 
   _mapCloudToLocal(cloudHub: cloud_Hub) {
-    let localLocationId = this.globalCloudIdMap.locations[cloudHub.locationId] ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
     let localStoneId    = this.globalCloudIdMap.stones[cloudHub.linkedStoneId] ?? MapProvider.cloud2localMap.stones[cloudHub.linkedStoneId] ?? cloudHub.linkedStoneId;
-
+    let localLocationId = this.globalCloudIdMap.locations[cloudHub.locationId] ?? MapProvider.cloud2localMap.locations[cloudHub.locationId] ?? cloudHub.locationId;
     return HubTransferNext.mapCloudToLocal(cloudHub, localStoneId, localLocationId);
   }
 

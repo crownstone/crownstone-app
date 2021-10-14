@@ -93,9 +93,6 @@ export class RoomLayer extends LiveComponent<any, any> {
       if (node.support === false && node.id !== null) {
         actions.push({type:"SET_LOCATION_POSITIONS", sphereId: this.props.sphereId, locationId: nodeId, data:{ x: node.x, y: node.y, setOnThisDevice: true}})
       }
-      else if (node.id === null) {
-        actions.push({type:"SET_FLOATING_LAYOUT_LOCATION", sphereId: this.props.sphereId, data:{ x: node.x, y: node.y, setOnThisDevice: true}})
-      }
     });
     if (actions.length > 0) {
       core.store.batchDispatch(actions);

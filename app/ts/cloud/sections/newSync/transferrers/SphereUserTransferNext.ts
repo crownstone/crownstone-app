@@ -63,6 +63,7 @@ export const SphereUserTransferNext : TransferSphereTool<SphereUserData, SphereU
     await CLOUD.forSphere(cloudSphereId).deleteUserFromSphere(localId);
   },
 
+
   ...GenerateSphereTransferFunctions(this)
 }
 

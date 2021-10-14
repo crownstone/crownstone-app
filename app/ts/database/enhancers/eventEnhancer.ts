@@ -55,7 +55,7 @@ export function EventEnhancer({ getState }) {
   }
 }
 
-function checkAction(action, affectedIds) {
+function checkAction(action : DatabaseAction, affectedIds) {
   let eventStatus = {};
 
   if (action.locationId)     { affectedIds.locationIds[action.locationId]       = true; }
@@ -71,10 +71,6 @@ function checkAction(action, affectedIds) {
       eventStatus['updateActiveSphere'] = affectedIds; break;
     case 'UPDATE_APP_STATE':
       eventStatus['updateAppState'] = affectedIds; break;
-    case 'ADD_LINKED_DEVICES':
-    case 'UPDATE_LINKED_DEVICES':
-    case 'REMOVE_LINKED_DEVICES':
-      break;
     case 'USER_ENTER_LOCATION':
     case 'USER_EXIT_LOCATION':
       eventStatus['userPositionUpdate'] = affectedIds;
@@ -95,7 +91,6 @@ function checkAction(action, affectedIds) {
       eventStatus['removeLocation'] = affectedIds;
       eventStatus['changeLocations'] = affectedIds;
       eventStatus['updateLocationConfig'] = affectedIds; break;
-    case 'SET_FLOATING_LAYOUT_LOCATION':
     case 'SET_LOCATION_POSITIONS':
       eventStatus['changeLocationPositions'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
@@ -146,20 +141,16 @@ function checkAction(action, affectedIds) {
       eventStatus['updateStoneSwitchState'] = affectedIds;
     case 'UPDATE_STONE_STATE':
     case 'CLEAR_STONE_USAGE':
-    case 'REMOVE_ALL_POWER_USAGE':
-    case 'REMOVE_POWER_USAGE_DATE':
       eventStatus['updateStoneState'] = affectedIds;
       eventStatus['powerUsageUpdated'] = affectedIds;
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
-    case 'UPDATE_STONE_REMOTE_TIME':
-      eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'REMOVE_STONE':
       eventStatus['removeStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'USER_LOG_IN':
       eventStatus['userLogin'] = affectedIds; break;
-    case 'USER_SEEN_TAP_TO_TOGGLE':
+    case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'USER_UPDATE':
     case "USER_UPDATE_PICTURE":
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
@@ -205,17 +196,12 @@ function checkAction(action, affectedIds) {
     case 'RESET_SPHERE_PRESENCE_STATE':
     case 'SET_APP_IDENTIFIER':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
-    case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_STONE_DFU_RESET':
     case 'ADD_INSTALLATION':
     case 'UPDATE_INSTALLATION_CONFIG':
     case 'UPDATED_STONE_TIME':
     case 'SET_NOTIFICATION_TOKEN':
-    case 'SET_BATCH_SYNC_POWER_USAGE':
-    case 'SET_DAY_SYNC_POWER_USAGE':
-    case 'ADD_POWER_USAGE':
-    case 'ADD_BATCH_POWER_USAGE':
       break;
     case 'UPDATE_APP_SETTINGS':
       eventStatus['changeAppSettings'] = affectedIds; break;
@@ -267,6 +253,8 @@ function checkAction(action, affectedIds) {
     case "SPHERE_USER_REPAIR_PICTURE":
     case "SPHERE_SCENE_REPAIR_PICTURE":
     case "UPDATE_SORTED_LIST":
+    case "INJECT_IDS":
+    case "ADD_SORTED_LIST":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -282,7 +270,6 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
     case "UPDATE_STONE_REACHABILITY":
-    case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
@@ -295,17 +282,19 @@ function checkAction(action, affectedIds) {
     case "ADD_STONE_RULE":
     case "UPDATE_STONE_RULE":
     case "MARK_STONE_RULE_FOR_DELETION":
-    case "REFRESH_RULES":
     case "REFRESH_BEHAVIOURS":
     case "MARK_STONE_RULE_AS_SYNCED":
     case "REMOVE_STONE_RULE":
       eventStatus['stoneChangeRules'] = affectedIds; break;
+    case "REMOVE_ALL_ABILITIES":
+    case "ADD_ABILITY_PROPERTY":
+    case "ADD_ABILITY":
     case "REFRESH_ABILITIES":
     case "UPDATE_ABILITY":
       eventStatus['stoneChangeAbilities'] = affectedIds; break;
 
     case "MARK_ABILITY_AS_SYNCED":
-    case "MARK_ABILITY_AS_SYNCED_FROM_CLOUD":
+    case "UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD":
       eventStatus['stoneSyncedAbilities'] = affectedIds; break;
 
     case 'SET_NEW_FIRMWARE_VERSIONS':
