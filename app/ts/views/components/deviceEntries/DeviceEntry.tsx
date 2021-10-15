@@ -59,7 +59,6 @@ export class DeviceEntry extends Component<{
 }, any> {
 
   _panResponder;
-  baseHeight : number;
   unsubscribe = [];
   animating = false;
   id = xUtil.getUUID();
@@ -183,7 +182,7 @@ export class DeviceEntry extends Component<{
     }
 
 
-    let wrapperStyle : ViewStyle = {height: this.baseHeight, width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'};
+    let wrapperStyle : ViewStyle = {width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'};
     if (action) {
       return (
         <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
@@ -272,8 +271,8 @@ export class DeviceEntry extends Component<{
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
-        <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <IconWrapperElement style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+        <View style={{flexDirection: 'row', paddingRight: 0, paddingLeft: 0, flex: 1}}>
+          <IconWrapperElement style={{justifyContent: 'center'}} onPress={() => {
             if (this.props.allowSwitchView === false) {
               return this._basePressed();
             }
@@ -296,7 +295,7 @@ export class DeviceEntry extends Component<{
           </IconWrapperElement>
           <WrapperElement
             activeOpacity={ switchViewActive ? 1 : 0.2 }
-            style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
+            style={{flex: 1, justifyContent: 'center'}}
             onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
           >
             <View style={{justifyContent:'center'}}>

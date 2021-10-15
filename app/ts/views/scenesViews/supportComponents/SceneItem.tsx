@@ -43,8 +43,10 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
 
   return (
     <View style={{
-      flexDirection:'row', borderRadius: SceneConstants.roundness, overflow:'hidden',
-      backgroundColor: "transparent",
+      flexDirection:'row',
+      borderRadius: SceneConstants.roundness,
+      overflow:'hidden',
+      backgroundColor: 'transparent',
       width: screenWidth - 2*SceneConstants.padding,
       height: SceneConstants.sceneHeight,
       alignItems:'center', marginBottom: 15
