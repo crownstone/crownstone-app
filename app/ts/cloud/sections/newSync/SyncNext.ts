@@ -75,9 +75,9 @@ export const SyncNext = {
     }
   },
 
-  sync: async function syncNext(scopes : SyncCategory[] = [], actions: any[], globalCloudIdMap: globalIdMap) {
+  sync: async function syncNext(scopes : SyncCategory[] = [], actions: DatabaseAction[], globalCloudIdMap: globalIdMap) {
     let scopeMap : SyncScopeMap = {};
-    let nextActions = [];
+    let nextActions : DatabaseAction[] = [];
     for (let i = 0; i < scopes.length; i++) {
       scopeMap[scopes[i]] = true;
     }

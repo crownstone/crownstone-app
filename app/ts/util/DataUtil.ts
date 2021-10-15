@@ -546,7 +546,6 @@ export const DataUtil = {
       });
     })
 
-
     FileUtil.index()
       .then((items) => {
         let itemsMap = {};
@@ -557,8 +556,8 @@ export const DataUtil = {
             actions.push(pictureData.actionToClean);
           }
         })
-
         if (actions.length > 0) {
+          console.log("DISPATCHING CLEAN ACTIONS", actions)
           core.store.batchDispatch(actions);
         }
       })

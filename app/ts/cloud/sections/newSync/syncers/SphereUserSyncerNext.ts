@@ -60,11 +60,12 @@ export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, Sp
   _downloadSphereUserImage(cloudData: cloud_UserData) {
     if (!cloudData.profilePicId) { return; }
 
-    let toPath = FileUtil.getPath(this.localId + '.jpg');
+    let localId = this.getLocalId();
+    let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
       CLOUD.getUserPicture(this.cloudSphereId, cloudData.email, cloudData.id)
         .then((picturePath) => {
-          this.actions.push({type:'UPDATE_SPHERE_USER', sphereId: this.localSphereId, sphereUserId: this.localId, data:
+          this.actions.push({type:'UPDATE_SPHERE_USER', sphereId: this.localSphereId, userId: localId, data:
               { picture: picturePath, pictureId: cloudData.profilePicId }
           });
         })

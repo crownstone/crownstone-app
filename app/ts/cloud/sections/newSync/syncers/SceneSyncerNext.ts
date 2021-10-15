@@ -69,11 +69,12 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
   _downloadSceneImage(cloudData: cloud_Scene) {
     if (!cloudData.customPictureId) { return; }
 
-    let toPath = FileUtil.getPath(this.localId + '.jpg');
+    let localId = this.getLocalId();
+    let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
       CLOUD.forScene(cloudData.id).downloadSceneCustomPicture(toPath)
         .then((picturePath) => {
-          this.actions.push({type:'UPDATE_SCENE', sphereId: this.localSphereId, sceneId: this.localId, data:
+          this.actions.push({type:'UPDATE_SCENE', sphereId: this.localSphereId, sceneId: localId, data:
               { picture: picturePath, pictureId: cloudData.customPictureId, pictureSource: "CUSTOM" }
           });
         })

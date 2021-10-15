@@ -7,7 +7,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
 
   cloudId:          string;
   localId:          string;
-  actions:          any[];
+  actions:          DatabaseAction[];
   transferPromises: Promise<any>[];
   globalCloudIdMap: globalIdMap;
 

@@ -70,11 +70,13 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
 
   _downloadLocationImage(cloudData: cloud_Location) {
     if (!cloudData.imageId) { return; }
-    let toPath = FileUtil.getPath(this.localId + '.jpg');
+
+    let localId = this.getLocalId();
+    let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
       CLOUD.forLocation(cloudData.id).downloadLocationPicture(toPath)
       .then((picturePath) => {
-        this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: this.localId, data:
+        this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:
             { picture: picturePath, pictureId: cloudData.imageId, pictureTaken: Date.now() }
         });
       })

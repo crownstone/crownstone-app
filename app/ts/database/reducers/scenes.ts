@@ -47,6 +47,7 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
       newState.picture    = null;
       newState.pictureId  = null;
       newState.pictureSource = null;
+      newState.updatedAt  = 0;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);

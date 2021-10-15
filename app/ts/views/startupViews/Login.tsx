@@ -82,16 +82,16 @@ export class Login extends Component<any, any> {
         base_core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
         Alert.alert(
-lang("_An_email_was_sent_to_____header",this.state.email.toLowerCase()),
-lang("_An_email_was_sent_to_____body"),
-[{text:lang("_An_email_was_sent_to_____left")}]);
+          lang("_An_email_was_sent_to_____header",this.state.email.toLowerCase()),
+          lang("_An_email_was_sent_to_____body"),
+          [{text:lang("_An_email_was_sent_to_____left")}]);
       })
       .catch((reply) => {
         core.eventBus.emit('hideLoading');
         Alert.alert(
-lang("_Cannot_Send_Email_argume_header"),
-lang("_Cannot_Send_Email_argume_body",reply.data),
-[{text: lang("_Cannot_Send_Email_argume_left")}]);
+          lang("_Cannot_Send_Email_argume_header"),
+          lang("_Cannot_Send_Email_argume_body",reply.data),
+          [{text: lang("_Cannot_Send_Email_argume_left")}]);
       });
   }
 
@@ -102,9 +102,9 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
         base_core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
         Alert.alert(
-lang("_An_email_was_sent_to______header",this.state.email.toLowerCase()),
-lang("_An_email_was_sent_to______body"),
-[{text:lang("_An_email_was_sent_to______left")}]);
+          lang("_An_email_was_sent_to______header",this.state.email.toLowerCase()),
+          lang("_An_email_was_sent_to______body"),
+          [{text:lang("_An_email_was_sent_to______left")}]);
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -123,18 +123,18 @@ lang("_An_email_was_sent_to______body"),
         core.eventBus.emit('hideLoading');
         if (validationLink) {
           Alert.alert(
-lang("_Your_email_address_has_n_header"),
-lang("_Your_email_address_has_n_body"),
-[{text: lang("_Your_email_address_has_n_left"), style:'cancel', onPress: () => this.requestVerificationEmail()},
+            lang("_Your_email_address_has_n_header"),
+            lang("_Your_email_address_has_n_body"),
+            [{text: lang("_Your_email_address_has_n_left"), style:'cancel', onPress: () => this.requestVerificationEmail()},
             {
-text: lang("_Your_email_address_has_n_right")}
+            text: lang("_Your_email_address_has_n_right")}
           ]);
         }
         else {
           Alert.alert(
-lang("arguments___arguments___O_header",title),
-lang("arguments___arguments___O_body",content),
-[{text: lang("arguments___arguments___O_left")}]);
+            lang("arguments___arguments___O_header",title),
+            lang("arguments___arguments___O_body",content),
+            [{text: lang("arguments___arguments___O_left")}]);
         }
       });
   }
