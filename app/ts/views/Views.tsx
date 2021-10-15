@@ -124,6 +124,7 @@ import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
+import { RoomOverview2 } from "./roomViews/RoomOverview2";
 
 
 export const Views = {

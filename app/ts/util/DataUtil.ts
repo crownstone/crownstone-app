@@ -252,7 +252,7 @@ export const DataUtil = {
   },
 
 
-  getStonesInLocation: function(state : any, sphereId : string, locationId?) : object {
+  getStonesInLocation: function(state : any, sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
     let filteredStones = {};
     if (sphereId !== undefined) {
       let stones = state.spheres[sphereId].stones;
@@ -266,7 +266,7 @@ export const DataUtil = {
     return filteredStones;
   },
 
-  getHubsInLocation: function(state : any, sphereId : string, locationId?) : object {
+  getHubsInLocation: function(state : any, sphereId : string, locationId?) : {[hubId: string]: HubData} {
     let filteredHubs = {};
     if (sphereId !== undefined) {
       for (let [hubId, hub] of Object.entries<HubData>(state.spheres[sphereId].hubs)) {
