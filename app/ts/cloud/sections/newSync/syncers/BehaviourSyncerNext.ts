@@ -5,6 +5,7 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { BehaviourTransferNext } from "../transferrers/BehaviourTransferNext";
 import { SyncStoneInterface } from "./base/SyncStoneInterface";
 import { ToonTransferNext } from "../transferrers/ToonTransferNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 
@@ -34,13 +35,12 @@ export class BehaviourSyncerNext extends SyncStoneInterface<behaviourWrapper, be
   setReplyWithData(reply: SyncRequestSphereData) {
     let behaviour = Get.behaviour(this.localSphereId, this.localStoneId, this.localId);
     if (!behaviour) { return null; }
-    if (reply.behaviours === undefined) {
-      reply.behaviours = {};
-    }
-    if (reply.behaviours[this.cloudId] === undefined) {
-      reply.behaviours[this.cloudId] = {};
-    }
-    reply.behaviours[this.cloudId].data = BehaviourTransferNext.mapLocalToCloud(behaviour)
+
+    SyncUtil.constructReply(
+      reply,
+      ['stones', this.cloudStoneId, 'behaviours', this.cloudId],
+      BehaviourTransferNext.mapLocalToCloud(behaviour)
+    );
   }
 }
 

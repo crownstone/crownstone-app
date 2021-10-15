@@ -8,6 +8,7 @@ import { SyncSphereInterface } from "./base/SyncSphereInterface";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { SceneTransferNext } from "../transferrers/SceneTransferNext";
 import { SyncNext } from "../SyncNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, cloud_Scene, cloud_Scene_settable> {
@@ -52,14 +53,9 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
   setReplyWithData(reply: SyncRequestSphereData, cloudData: cloud_Scene) {
     let scene = Get.scene(this.localSphereId, this.localId);
     if (!scene) { return null; }
-    if (reply.scenes === undefined) {
-      reply.scenes = {};
-    }
-    if (reply.scenes[this.cloudId] === undefined) {
-      reply.scenes[this.cloudId] = {};
-    }
-    reply.scenes[this.cloudId].data = SceneTransferNext.mapLocalToCloud(scene);
-
+    SyncUtil.constructReply(reply,['scenes', this.cloudId],
+      SceneTransferNext.mapLocalToCloud(scene)
+    );
 
     if (scene.pictureSource === "STOCK" && cloudData.stockPicture === null) {
       this.transferPromises.push(CLOUD.forScene(this.localId).downloadSceneCustomPicture().catch((err) => {}))

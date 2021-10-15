@@ -6,6 +6,8 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { HubTransferNext } from "../transferrers/HubTransferNext";
 import { LocationTransferNext } from "../transferrers/LocationTransferNext";
 import { SyncNext } from "../SyncNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
+import { StoneTransferNext } from "../transferrers/StoneTransferNext";
 
 
 
@@ -42,13 +44,9 @@ export class HubSyncer extends SyncSphereInterface<HubData, HubDataConfig, cloud
   setReplyWithData(reply: SyncRequestSphereData) {
     let hub = Get.hub(this.localSphereId, this.localId);
     if (!hub) { return null; }
-    if (reply.hubs === undefined) {
-      reply.hubs = {};
-    }
-    if (reply.hubs[this.cloudId] === undefined) {
-      reply.hubs[this.cloudId] = {};
-    }
-    reply.hubs[this.cloudId].data = HubTransferNext.mapLocalToCloud(hub)
+    SyncUtil.constructReply(reply,['hubs', this.cloudId],
+      HubTransferNext.mapLocalToCloud(hub)
+    );
   }
 
   static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {

@@ -8,6 +8,7 @@ import { SyncSphereInterface } from "./base/SyncSphereInterface";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { LocationTransferNext } from "../transferrers/LocationTransferNext";
 import { SyncNext } from "../SyncNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 export class LocationSyncerNext extends SyncSphereInterface<LocationData, LocationDataConfig, cloud_Location, cloud_Location_settable> {
@@ -50,13 +51,10 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
   setReplyWithData(reply: SyncRequestSphereData, cloudData: cloud_Location) {
     let location = Get.location(this.localSphereId, this.localId);
     if (!location) { return null; }
-    if (reply.locations === undefined) {
-      reply.locations = {};
-    }
-    if (reply.locations[this.cloudId] === undefined) {
-      reply.locations[this.cloudId] = {};
-    }
-    reply.locations[this.cloudId].data = LocationTransferNext.mapLocalToCloud(location);
+
+    SyncUtil.constructReply(reply,['locations', this.cloudId],
+      LocationTransferNext.mapLocalToCloud(location)
+    );
 
     if (location.config.pictureId !== cloudData.imageId) {
       if (!location.config.pictureId) {

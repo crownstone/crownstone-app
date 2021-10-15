@@ -137,8 +137,8 @@ export const SyncNext = {
     }
 
 
-    console.log("REPLYREQUIRED", replyRequired);
-    console.log("REPLY", reply)
+    // console.log("REPLYREQUIRED", replyRequired);
+    // console.log("REPLY", JSON.stringify(reply));
     // provide the requested data.
     if (replyRequired) {
       await CLOUD.syncNext(reply);

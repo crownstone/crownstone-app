@@ -163,8 +163,6 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       break;
 
 
-
-
     case "MARK_ABILITY_AS_SYNCED":
       handleAbilityUpdate(action, newState);
       break;

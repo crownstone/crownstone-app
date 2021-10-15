@@ -3,6 +3,8 @@ import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { AbilityTransferNext } from "../transferrers/AbilityTransferNext";
 import { SyncStoneInterface } from "./base/SyncStoneInterface";
+import { SyncUtil } from "../../../../util/SyncUtil";
+import { AbilityPropertyTransferNext } from "../transferrers/AbilityPropertyTransferNext";
 
 
 
@@ -37,13 +39,12 @@ export class AbilitySyncerNext extends SyncStoneInterface<AbilityData, AbilityDa
   setReplyWithData(reply: SyncRequestSphereData) {
     let ability = Get.ability(this.localSphereId, this.localStoneId, this.localId);
     if (!ability) { return null; }
-    if (reply.abilitys === undefined) {
-      reply.abilitys = {};
-    }
-    if (reply.abilitys[this.cloudId] === undefined) {
-      reply.abilitys[this.cloudId] = {};
-    }
-    reply.abilitys[this.cloudId].data = AbilityTransferNext.mapLocalToCloud(ability)
+
+    SyncUtil.constructReply(
+      reply,
+      ['stones', this.cloudStoneId, 'abilities', this.cloudId],
+      AbilityTransferNext.mapLocalToCloud(ability)
+    );
   }
 }
 

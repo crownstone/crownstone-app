@@ -5,6 +5,7 @@ import { SyncSphereInterface } from "./base/SyncSphereInterface";
 import { SyncStoneInterface } from "./base/SyncStoneInterface";
 import { AbilityPropertyTransferNext } from "../transferrers/AbilityPropertyTransferNext";
 import { SyncAbilityInterface } from "./base/SyncAbilityInterface";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 
@@ -50,15 +51,14 @@ export class AbilityPropertySyncerNext extends SyncAbilityInterface<AbilityPrope
   }
 
   setReplyWithData(reply: SyncRequestSphereData) {
-    let ability = Get.abilityProperty(this.localSphereId, this.localStoneId, this.localAbilityId, this.localId);
-    if (!ability) { return null; }
-    if (reply.abilitys === undefined) {
-      reply.abilitys = {};
-    }
-    if (reply.abilitys[this.cloudId] === undefined) {
-      reply.abilitys[this.cloudId] = {};
-    }
-    reply.abilitys[this.cloudId].data = AbilityPropertyTransferNext.mapLocalToCloud(ability)
+    let abilityProperty = Get.abilityProperty(this.localSphereId, this.localStoneId, this.localAbilityId, this.localId);
+    if (!abilityProperty) { return null; }
+
+    SyncUtil.constructReply(
+      reply,
+      ['stones', this.cloudStoneId, 'abilities', this.cloudAbilityId, 'properties', this.cloudId],
+      AbilityPropertyTransferNext.mapLocalToCloud(abilityProperty)
+    );
   }
 }
 

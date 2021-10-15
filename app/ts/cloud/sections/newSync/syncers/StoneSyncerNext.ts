@@ -5,7 +5,7 @@ import { SyncSphereInterface } from "./base/SyncSphereInterface";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { StoneTransferNext } from "../transferrers/StoneTransferNext";
 import { SyncNext } from "../SyncNext";
-
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 export class StoneSyncerNext extends SyncSphereInterface<StoneData, StoneDataConfig, cloud_Stone, cloud_Stone_settable> {
@@ -32,13 +32,9 @@ export class StoneSyncerNext extends SyncSphereInterface<StoneData, StoneDataCon
   setReplyWithData(reply: SyncRequestSphereData) {
     let stone = Get.stone(this.localSphereId, this.localId);
     if (!stone) { return null; }
-    if (reply.stones === undefined) {
-      reply.stones = {};
-    }
-    if (reply.stones[this.cloudId] === undefined) {
-      reply.stones[this.cloudId] = {};
-    }
-    reply.stones[this.cloudId].data = StoneTransferNext.mapLocalToCloud(stone)
+    SyncUtil.constructReply(reply,['stones', this.cloudId],
+      StoneTransferNext.mapLocalToCloud(stone)
+    );
   }
 
   static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {

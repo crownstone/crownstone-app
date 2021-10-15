@@ -5,6 +5,7 @@ import { SyncNext } from "../../app/ts/cloud/sections/newSync/SyncNext";
 import { getGlobalIdMap } from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
 import { reply1 } from "./replyMocks/reply1";
 import { CLOUD } from "../../app/ts/cloud/cloudAPI";
+import { SyncUtil } from "../../app/ts/util/SyncUtil";
 
 beforeEach(async () => {
   resetMocks()
@@ -12,6 +13,15 @@ beforeEach(async () => {
 beforeAll(async () => {})
 afterEach(async () => { })
 afterAll(async () => {})
+
+test("Using SyncUtil", async () => {
+  let myReply = {}
+  SyncUtil.constructReply(myReply,['item', 'id'],{ myData:'awesome' });
+  expect(myReply).toStrictEqual({item:{id:{data:{myData:'awesome'}}}})
+  let myReply2 = {}
+  SyncUtil.constructReply(myReply2,['item'],{ myData:'awesome' });
+  expect(myReply2).toStrictEqual({item:{data:{myData:'awesome'}}})
+})
 
 // let handle = 'TestHandle';
 // test("Using core in tests", async () => {

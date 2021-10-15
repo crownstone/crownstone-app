@@ -6,6 +6,7 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { ToonTransferNext } from "../transferrers/ToonTransferNext";
 import { StoneTransferNext } from "../transferrers/StoneTransferNext";
 import { SyncNext } from "../SyncNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 
@@ -28,13 +29,9 @@ export class ToonSyncerNext extends SyncSphereInterface<ToonData, ToonData, clou
   setReplyWithData(reply: SyncRequestSphereData) {
     let toon = Get.toon(this.localSphereId, this.localId);
     if (!toon) { return null; }
-    if (reply.toons === undefined) {
-      reply.toons = {};
-    }
-    if (reply.toons[this.cloudId] === undefined) {
-      reply.toons[this.cloudId] = {};
-    }
-    reply.toons[this.cloudId].data = ToonTransferNext.mapLocalToCloud(toon)
+    SyncUtil.constructReply(reply,['toons', this.cloudId],
+      ToonTransferNext.mapLocalToCloud(toon)
+    );
   }
 
   static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {

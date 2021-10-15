@@ -46,4 +46,5 @@ export class SyncStoneInterface<LocalDataFormat, LocalDataSettableFormat, CloudD
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {
     super.process(response, reply);
   }
+
 }

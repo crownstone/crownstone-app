@@ -4,6 +4,7 @@ import { Get } from "../../../../util/GetUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { SyncInterface } from "./base/SyncInterface";
 import { SphereTransferNext } from "../transferrers/SphereTransferNext";
+import { SyncUtil } from "../../../../util/SyncUtil";
 
 
 export class SphereSyncerNext extends SyncInterface<SphereData, SphereDataConfig, cloud_Sphere, cloud_Sphere_settable> {
@@ -28,10 +29,9 @@ export class SphereSyncerNext extends SyncInterface<SphereData, SphereDataConfig
   setReplyWithData(reply: SyncRequestSphereData) {
     let sphere = Get.sphere(this.localId);
     if (!sphere) { return null; }
-    if (reply[this.cloudId] === undefined) {
-      reply[this.cloudId] = {};
-    }
-    reply[this.cloudId].data = SphereTransferNext.mapLocalToCloud(sphere);
+    SyncUtil.constructReply(reply,[this.cloudId],
+      SphereTransferNext.mapLocalToCloud(sphere)
+    );
   }
 }
 
