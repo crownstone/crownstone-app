@@ -124,7 +124,10 @@ import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
-import { RoomOverview2 } from "./roomViews/RoomOverview2";
+
+// DEMOS
+import { RoomOverview_dragDemo }              from "./roomViews/RoomOverview_dragDemo";
+import { RoomOverview_dimDemo } from "./roomViews/RoomOverview_dimDemo";
 
 
 export const Views = {
@@ -178,6 +181,8 @@ export const Views = {
   RoomEdit:                          RoomEdit,
   RoomIconSelection:                 RoomIconSelection,
   RoomOverview:                      RoomOverview,
+  RoomOverview_dimDemo:                    RoomOverview_dimDemo,
+  RoomOverview_dragDemo:                   RoomOverview_dragDemo,
   RoomTraining:                      RoomTraining,
   RoomTraining_roomSize:             RoomTraining_roomSize,
   SelectFromList:                    SelectFromList,

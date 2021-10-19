@@ -18,7 +18,6 @@ export class Initializer extends Component<any, any> {
 
   constructor(props) {
     super(props);
-
     // initialize the views to tell android lib we are starting the UI.
     Bluenet.viewsInitialized();
   }

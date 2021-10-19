@@ -61,7 +61,7 @@ export const Stacks = {
     //           children: [
     //             // { component: {name: "SettingsApp"} },
     //             // { component: {name: "SetupHub"} },
-    //             { component: {name: "HubOverview", passProps: {"sphereId": "1e35534b-73ef-3695-df55-db27218dcb98", "stoneId": "5fc654eae2b8ba0004e3f5b3",} }},
+    //             { component: {name: "RoomOverview_dragDemo"}}
     //           ],
     //           options: {
     //             bottomTab: {
@@ -74,7 +74,8 @@ export const Stacks = {
     //       {
     //         stack: {
     //           children: [
-    //             { component: {name: "SettingsOverview"} },
+    //             { component: {name: "RoomOverview_dimDemo"}}
+    //             // { component: {name: "SettingsOverview"} },
     //           ],
     //           options: {
     //             bottomTab: {
