@@ -55,6 +55,17 @@ let abilityReducer = (state = abilityFormat, action) => {
       }
       return state;
     case 'ADD_ABILITY':
+      if (action.data) {
+        let newState = {...state};
+        newState.type               = update(action.data.type,               newState.type);
+        newState.enabled            = update(action.data.enabled,            newState.enabled);
+        newState.enabledTarget      = update(action.data.enabledTarget,      newState.enabledTarget);
+        newState.cloudId            = update(action.data.cloudId,            newState.cloudId);
+        newState.syncedToCrownstone = update(action.data.syncedToCrownstone, newState.syncedToCrownstone);
+        newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'UPDATE_ABILITY':
       if (action.data) {
         let newState = {...state};
@@ -106,8 +117,8 @@ let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
     case 'UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD':
       if (action.data) {
         let newState = {...state};
-        newState.value            = update(action.data.enabled,       newState.value);
-        newState.valueTarget      = update(action.data.enabledTarget, newState.valueTarget);
+        newState.value              = update(action.data.enabled,       newState.value);
+        newState.valueTarget        = update(action.data.enabledTarget, newState.valueTarget);
         newState.cloudId            = update(action.data.cloudId,       newState.cloudId);
         newState.syncedToCrownstone = true;
         newState.updatedAt          = getTime(action.data.updatedAt);
@@ -115,6 +126,17 @@ let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
       }
       return state;
     case 'ADD_ABILITY_PROPERTY':
+      if (action.data) {
+        let newState = {...state};
+        newState.type        = update(action.data.type,        newState.type);
+        newState.value       = update(action.data.value,       newState.value);
+        newState.valueTarget = update(action.data.valueTarget, newState.valueTarget);
+        newState.syncedToCrownstone = update(action.data.syncedToCrownstone, newState.syncedToCrownstone);
+        newState.cloudId     = update(action.data.cloudId,     newState.cloudId);
+        newState.updatedAt   = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'UPDATE_ABILITY_PROPERTY':
       if (action.data) {
         let newState = {...state};
