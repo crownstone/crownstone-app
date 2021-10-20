@@ -393,7 +393,7 @@ export class SessionManagerClass {
     }
   }
 
-  checkIfSessionIsStillRequired(handle) {
+  checkIfSessionIsStillRequired(handle) : string | false {
     // if it was a shared session, it could have been an error or it had nothing to do.
     if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
       LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);

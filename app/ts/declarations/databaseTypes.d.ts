@@ -42,6 +42,7 @@ interface DatabaseAction {
   sceneId?     : string,
   messageId?   : string,
   stoneId?     : string,
+  keyId?       : string,
   hubId?       : string,
   ruleId?      : string,
   abilityId?   : string,
@@ -303,6 +304,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'REMOVE_SPHERE'                           |
                       'SET_DEVELOPER_MODE'                      |
                       'SET_BETA_ACCESS'                         |
+                      'SET_NEW_BOOTLOADER_VERSIONS'             |
                       'SET_NEW_FIRMWARE_VERSIONS'               |
                       'CREATE_APP_IDENTIFIER'                   |
                       'SET_APP_IDENTIFIER'                      |

@@ -6,7 +6,7 @@ import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 
 export class SyncViewInterface<CloudDataFormat> {
 
-  actions:          any[];
+  actions:          DatabaseAction[];
   transferPromises: Promise<any>[];
   globalCloudIdMap: globalIdMap;
 

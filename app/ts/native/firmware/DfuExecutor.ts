@@ -338,11 +338,15 @@ export class DfuExecutor {
       throw err;
     }
     finally {
+      LOGi.dfu("Wrapping up.");
       if (this.claimedCommander) {
+        LOGi.dfu("Ending commander.");
         await this.claimedCommander.end();
+        LOGi.dfu("Ended.");
         this.claimedCommander = null;
       }
 
+      LOGi.dfu("Release block.");
       SessionManager.releaseBlock();
     }
 
@@ -710,7 +714,6 @@ export class DfuExecutor {
       };
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement) => {
-        console.log("Got a scan advertisement", advertisement)
         if (advertisement.handle === this.stone.config.handle) {
           rssiResolver(advertisement, false, false);
         }
@@ -720,7 +723,6 @@ export class DfuExecutor {
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
-        console.log("Got a scan setupAdvertisement", setupAdvertisement)
         if (setupAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
@@ -730,7 +732,6 @@ export class DfuExecutor {
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
-        console.log("Got a scan dfuAdvertisement", dfuAdvertisement)
         if (dfuAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(dfuAdvertisement, false, true);
         }

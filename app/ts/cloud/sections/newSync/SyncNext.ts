@@ -129,7 +129,7 @@ export const SyncNext = {
     }
 
     if (syncResponse.bootloaders) {
-      new BootloaderSyncerNext(syncerOptions).process(syncResponse.firmwares);
+      new BootloaderSyncerNext(syncerOptions).process(syncResponse.bootloaders);
     }
 
     if (syncResponse.keys) {
@@ -153,7 +153,6 @@ export const SyncNext = {
     let syncBase = {globalCloudIdMap, actions, transferPromises};
 
     let cloudSphereIds = Object.keys(sphereCloudResponses);
-
     let syncers = [];
     for (let i = 0; i < cloudSphereIds.length; i++) {
       let cloudSphereId = cloudSphereIds[i];

@@ -11,8 +11,8 @@ export class BootloaderSyncerNext extends SyncViewInterface<FirmwareBootloaderLi
 
   handleData(data: FirmwareBootloaderList) {
     let user = core.store.getState().user;
-    if (user &&  data && xUtil.stringify(user.firmwareVersionsAvailable) !== xUtil.stringify(data)) {
-      this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {bootloaderVersionsAvailable: data}})
+    if (user &&  data && xUtil.stringify(user.bootloaderVersionsAvailable) !== xUtil.stringify(data)) {
+      this.actions.push({type:'SET_NEW_BOOTLOADER_VERSIONS', data: {bootloaderVersionsAvailable: data}})
     }
   }
 }

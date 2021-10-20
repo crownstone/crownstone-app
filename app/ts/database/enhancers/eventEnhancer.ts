@@ -297,6 +297,7 @@ function checkAction(action : DatabaseAction, affectedIds) {
     case "UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD":
       eventStatus['stoneSyncedAbilities'] = affectedIds; break;
 
+    case 'SET_NEW_BOOTLOADER_VERSIONS':
     case 'SET_NEW_FIRMWARE_VERSIONS':
       eventStatus['firmwareVersionsAvailable'] = affectedIds; break;
 
