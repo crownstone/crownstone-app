@@ -44,7 +44,7 @@ export const FileUtil = {
       RNFS.exists(uri)
         .then((fileExists) => {
           if (fileExists) {
-            return RNFS.unlink(uri)
+            return RNFS.unlink(uri);
           }
         })
         .then(() => {

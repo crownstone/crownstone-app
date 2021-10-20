@@ -386,7 +386,7 @@ export class SessionManagerClass {
           // shorter timeout than the one that is still required. Once the required one times out, the checkIfRequired will fail this loop
           // will resolve. Until then however, retry this.
           if (err?.message === "SESSION_REQUEST_TIMEOUT") {
-            await this._endSession(handle);
+            await this._endSession(handle).catch(() => {});
           }
         }
       }
