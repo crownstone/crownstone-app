@@ -6,8 +6,9 @@ import { Bluenet } from "../native/libInterface/Bluenet";
 import { AppState, Platform } from "react-native";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { xUtil } from "../util/StandAloneUtil";
-import { tell, tellSphere } from "../logic/constellation/Tellers";
+import { broadcast, tell, tellSphere } from "../logic/constellation/Tellers";
 import { Get } from "../util/GetUtil";
+import { SessionManager } from "../logic/constellation/SessionManager";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
@@ -80,7 +81,12 @@ class TimeKeeperClass {
     let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);
 
     if (AppState.currentState === 'active' || Platform.OS === 'android') {
-      BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId, false).catch(() => {});
+      tell(stone).setTimeViaBroadcast(
+        xUtil.nowToCrownstoneTime(),
+        suntimes.sunrise,
+        suntimes.sunset,
+        false
+      ).catch(() => {});
     }
     else {
       tell(stone).setTime().catch((err) => {})
@@ -102,10 +108,9 @@ class TimeKeeperClass {
       let sphere = spheres[sphereId];
       let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);
       if (sphere.state.present === true) {
-
         if (AppState.currentState === 'active' || Platform.OS === 'android') {
           // broadcast
-          BluenetPromiseWrapper.setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, sphereId, true).catch(() => {});
+          broadcast(sphereId).setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, true).catch(() => {});
           return;
         }
         else {

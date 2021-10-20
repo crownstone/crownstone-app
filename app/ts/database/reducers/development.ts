@@ -16,7 +16,7 @@ let defaultState = {
   log_ble:            LOG_LEVEL.error,
   log_bch:            LOG_LEVEL.info,
   log_dfu:            LOG_LEVEL.error,
-  log_events:         LOG_LEVEL.info,
+  log_events:         LOG_LEVEL.error,
   log_store:          LOG_LEVEL.info,
   log_cloud:          LOG_LEVEL.info,
   log_nav:            LOG_LEVEL.info,

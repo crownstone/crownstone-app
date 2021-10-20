@@ -13,7 +13,7 @@ import {
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
 import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { claimBluetooth, connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
+import { broadcast, claimBluetooth, connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
 import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
 import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
 
@@ -219,3 +219,43 @@ test("Timeout the request from the teller should also clean up the commands", as
 
 
 
+
+test("Check if the broadcast method respects block", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let caughtErrors = [];
+  let p1 = jest.fn()
+  let p1Err = jest.fn();
+  await SessionManager.intiateBlock()
+
+  broadcast(db.sphere.id).setTimeViaBroadcast(1,1,1,true)
+    .then(p1).catch(p1Err);
+
+  await TestUtil.nextTick()
+
+  expect(p1Err).toBeCalledWith(new Error('SESSION_MANAGER_IS_CLAIMED'))
+});
+
+
+
+
+test("Check if the broadcast method works", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+  eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
+
+  let caughtErrors = [];
+  let p1 = jest.fn()
+  let p1Err = jest.fn();
+  broadcast(db.sphere.id).setTimeViaBroadcast(1,1,1,true)
+    .then(p1).catch(p1Err);
+
+  await TestUtil.nextTick()
+  await mBluenetPromise.succeed().setTimeViaBroadcast();
+  // this trigger is required since broadcasts end in 120ms
+  await mocks.mScheduler.trigger(1)
+
+  expect(p1).toBeCalled()
+});

@@ -64,6 +64,7 @@ type BridgeCommandType = "addBehaviour"                     |
                          "setTapToToggle"                   |
                          "setTapToToggleThresholdOffset"    |
                          "setTime"                          |
+                         "setTimeViaBroadcast"              |
                          "setUartKey"                       |
                          "setUartState"                     |
                          "setVoltageMultiplier"             |

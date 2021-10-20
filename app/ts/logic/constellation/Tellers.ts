@@ -2,7 +2,7 @@ import { LOG, LOGi } from "../../logging/Log";
 import { xUtil } from "../../util/StandAloneUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { SessionManager } from "./SessionManager";
-import { CommandAPI } from "./Commander";
+import { CommandAPI, CommandBroadcastAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
 
 export async function connectTo(handle, timeoutSeconds = 20) : Promise<CommandAPI> {
@@ -156,4 +156,13 @@ export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) :
     minConnections: minConnections,
     timeout:        timeoutSeconds
   });
+}
+
+export function broadcast(sphereId) : CommandBroadcastAPI {
+  return new CommandBroadcastAPI({
+    commanderId:    xUtil.getUUID(),
+    sphereId:       sphereId,
+    commandType:    "BROADCAST",
+    commandTargets: ["BROADCAST"],
+  })
 }

@@ -44,6 +44,31 @@ export class BleCommandManagerClass {
     let usedOptions = {...options};
     delete usedOptions.commandTargets;
 
+    if (options.commandType === "BROADCAST") {
+      if (command.canBroadcast !== true) {
+        promise.reject(new Error("TRIED_TO_BROADCAST_INVALID_COMMAND"))
+        return;
+      }
+
+      let bleCommand : BleCommand = {
+        id: commandId,
+        minConnections: options.minConnections,
+        ...usedOptions,
+        commandTarget: "BROADCAST",
+        command,
+        startTime: new Date().valueOf(),
+        linkedId:  null,
+        executedBy:   [],
+        attemptingBy: [],
+        promise
+      };
+      BroadcastCommandManager.broadcast(bleCommand as BleCommand<BroadcastInterface>)
+
+      return;
+    }
+
+
+
     let targets = options.commandTargets;
 
     let commandsToLoad = [];

@@ -1,6 +1,6 @@
 type ConnectionState = "INITIALIZING" | "CONNECTING" | "CONNECTED" | "DISCONNECTING" | "DISCONNECTED" | "WAITING_FOR_COMMANDS" | "PERFORMING_COMMAND"
 
-type CommandType = "DIRECT" | "MESH"
+type CommandType = "DIRECT" | "MESH" | "BROADCAST"
 
 interface commandOptions {
   commanderId?:   string,

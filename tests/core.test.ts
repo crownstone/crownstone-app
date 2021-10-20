@@ -24,7 +24,7 @@ test("Using core in tests", async () => {
 test("isLower", async () => {
   expect(xUtil.versions.isLower('4.2.1-rc1','4.2.1')).toBeTruthy()
   expect(xUtil.versions.isLower('4.2.1','4.3.1')).toBeTruthy()
-  expect(xUtil.versions.isLower('4.6.2.10','4.6.3.1')).toBeTruthy()
+  expect(xUtil.versions.isLower('4.6.2.10','4.6.3.1', 4)).toBeTruthy()
 })
 
 test("abilities", async () => {

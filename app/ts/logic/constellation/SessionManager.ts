@@ -32,6 +32,7 @@ export class SessionManagerClass {
   _blocked = false;
 
   reset() {
+    this._blocked = false;
     this._sessions = {};
     this._activeSessions = {};
     this._pendingPrivateSessionRequests = {};
@@ -39,6 +40,10 @@ export class SessionManagerClass {
     this._timeoutHandlers = {};
   }
 
+
+  isBlocked() : boolean {
+    return this._blocked;
+  }
 
   /**
    * This will resolve once the session is connected

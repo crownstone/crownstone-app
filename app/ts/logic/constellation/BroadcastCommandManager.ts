@@ -10,6 +10,7 @@ import { CONDITION_MAP } from "../../Enums";
 import { Command_MultiSwitch, Command_TurnOn } from "../constellation/commandClasses";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { EventUtil } from "../../util/EventUtil";
+import { SessionManager } from "./SessionManager";
 
 
 export class BroadcastCommandManagerClass {
@@ -34,6 +35,12 @@ export class BroadcastCommandManagerClass {
   }
 
   broadcast(bleCommand : BleCommand<BroadcastInterface>, ignoreDuplicates = false) {
+    if (SessionManager.isBlocked()) {
+      bleCommand.promise.reject(new Error("SESSION_MANAGER_IS_CLAIMED"));
+      return;
+    }
+
+
     if (!ignoreDuplicates) { this._checkforDuplicates(bleCommand); }
 
     // double check here, this api should be able to be used
@@ -87,12 +94,14 @@ export class BroadcastCommandManagerClass {
     Scheduler.scheduleCallback(() => { bleCommand.promise.resolve(); }, 120, "auto resolve broadcast promise" );
 
     let stoneSummary  = MapProvider.stoneHandleMap[bleCommand.commandTarget];
-    let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
-
-    // ignore old states for a while
-    // even though the broadcast is still awaiting execution, this is milliseconds, whereas this takes 2 seconds.
-    core.eventBus.emit(EventUtil.getIgnoreTopic(stoneSummary.id), {timeoutMs: 2000, conditions: [{type: CONDITION_MAP.SWITCH_STATE, expectedValue: 1}]});
-
+    if (stoneSummary) {
+      // ignore old states for a while
+      // even though the broadcast is still awaiting execution, this is milliseconds, whereas this takes 2 seconds.
+      core.eventBus.emit(EventUtil.getIgnoreTopic(stoneSummary.id), {
+        timeoutMs: 2000,
+        conditions: [{ type: CONDITION_MAP.SWITCH_STATE, expectedValue: 1 }]
+      });
+    }
     // broadcast
     bleCommand.command.broadcast(bleCommand)
       .then(() => {

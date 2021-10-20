@@ -88,6 +88,7 @@ import {
 import { SessionBroker } from "./SessionBroker";
 import { LOGd, LOGe, LOGi } from "../../logging/Log";
 import { Scheduler } from "../Scheduler";
+import { Command_SetTimeViaBroadcast } from "./commandClasses/Command_SetTimeViaBroadcast";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -157,7 +158,24 @@ class CommandAPI_base {
   }
 }
 
-class CommandMeshAPI extends CommandAPI_base {
+export class CommandBroadcastAPI extends CommandAPI_base {
+
+  async setTimeViaBroadcast(
+    time: number,
+    sunriseTime: number,
+    sunsetTime: number,
+    enableTimeBasedNonce: boolean
+  ) : Promise< void > {
+    // timestamp in seconds since epoch
+    return this._load(new Command_SetTimeViaBroadcast(time, sunriseTime, sunsetTime, enableTimeBasedNonce));
+  }
+
+}
+
+
+
+
+class CommandMeshAPI extends CommandBroadcastAPI {
 
   async setSunTimesViaConnection(
     sunriseSecondsSinceMidnight : number,

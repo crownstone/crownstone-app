@@ -44,9 +44,17 @@ class LibContainer {
       }
     }
     this.targetedActions = {};
+
+    for (let [commandName, handleObj] of Object.entries(this.genericActions)) {
+      for (let [handle, promise] of Object.entries(handleObj)) {
+        promise.reject("CLEAR")
+      }
+    }
+    this.genericActions = {};
   }
 
   loadGeneric(commandName, resolve: (data?: any) => void, reject: (err: any) => void, args: any) {
+    console.log("Generic Promise received", commandName, args)
     if (this.genericActions[commandName] === undefined) {
       this.genericActions[commandName] = []
     }
@@ -58,7 +66,7 @@ class LibContainer {
       this.targetedActions[commandName] = {};
     }
 
-    // console.log("Promise received", commandName, handle, args)
+    console.log("Targeted Promise received", commandName, handle, args)
     if (this.targetedActions[commandName][handle] === undefined) {
       this.targetedActions[commandName][handle] = {resolve, reject, args}
     }
@@ -168,7 +176,6 @@ class LibContainer {
     let res = {};
     for (let method of genericMethods) {
       res[method] = async (data?: any) => {
-
         this._resolveGeneric(method, data);
         await skipTurn();
       }
