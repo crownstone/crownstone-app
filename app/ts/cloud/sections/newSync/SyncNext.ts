@@ -89,11 +89,11 @@ export const SyncNext = {
       syncRequest.user = { updatedAt: state?.user?.updatedAt };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
-    console.log("SYNC REQUEST", JSON.stringify(syncRequest))
+    // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
-    console.log("SYNC response", JSON.stringify(response))
+    // console.log("SYNC response", JSON.stringify(response))
     await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
-    console.log("SYNC ACTIONS", JSON.stringify(nextActions))
+    // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
     for (let an of nextActions) {
       actions.push(an);
     }

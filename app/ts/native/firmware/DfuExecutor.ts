@@ -110,7 +110,7 @@ export class DfuExecutor {
    * Stop DFU and clean up.
    */
   abort() {
-    LOGi.dfu("Executor: Abort has been called.");
+    LOGi.dfu("DfuExecutor: Abort has been called.");
     this.stopDFU = true;
     this.dfuHelper.abortedDFU = true;
     this._searchCleanup();
@@ -127,7 +127,7 @@ export class DfuExecutor {
    * @private
    */
   _setProgress(phase, step, progress, info) {
-    LOGd.dfu("Executor: progressUpdate", phase, step, progress, info);
+    LOGd.dfu("DfuExecutor: progressUpdate", phase, step, progress, info);
     this.updateCallback({
       totalSteps: 1 + this.amountOfBootloaders + this.amountOfFirmwares, // the +1 is the preparation and the setup, but we only start counting after setup.
       amountOfBootloaders: this.amountOfBootloaders,
@@ -148,7 +148,7 @@ export class DfuExecutor {
    * @private
    */
   _handleError(err, phase, info) {
-    LOGe.dfu("Executor: Error", err, phase, info);
+    LOGe.dfu("DfuExecutor: Error", err, phase, info);
 
     if (this.stopDFU)    { throw new Error(DFU_CANCELLED); }
     if (this.shownError) { throw err; }
@@ -196,10 +196,10 @@ export class DfuExecutor {
     if (this.runningDfuProcess) { return; }
     this.runningDfuProcess = true;
 
-    LOGi.dfu("Executor: Dfu process started.",      this.stoneId);
-    LOGi.dfu("Executor: Stone hw version:",         this.hardwareVersion);
-    LOGi.dfu("Executor: Stone allowed Bootloader:", this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion.substr(0,11)]);
-    LOGi.dfu("Executor: Stone allowed Firmware:",   this.userConfig.firmwareVersionsAvailable[this.hardwareVersion.substr(0,11)]);
+    LOGi.dfu("DfuExecutor: Dfu process started.",      this.stoneId);
+    LOGi.dfu("DfuExecutor: Stone hw version:",         this.hardwareVersion);
+    LOGi.dfu("DfuExecutor: Stone allowed Bootloader:", this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion.substr(0,11)]);
+    LOGi.dfu("DfuExecutor: Stone allowed Firmware:",   this.userConfig.firmwareVersionsAvailable[this.hardwareVersion.substr(0,11)]);
 
     DfuStateHandler._dfuInProgress = true;
 
@@ -219,14 +219,14 @@ export class DfuExecutor {
     cloudPromises.push(
       DfuUtil.getBootloaderInformation(this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion.substr(0,11)], this.hardwareVersion)
         .then((bootloader) => {
-          LOGi.dfu("Executor: Cloud bootloader Data received.", bootloader);
+          LOGi.dfu("DfuExecutor: Cloud bootloader Data received.", bootloader);
           newestBootloader = bootloader;
         })
     );
     cloudPromises.push(
       DfuUtil.getFirmwareInformation(this.userConfig.firmwareVersionsAvailable[this.hardwareVersion.substr(0,11)], this.hardwareVersion)
         .then((firmware) => {
-          LOGi.dfu("Executor: Cloud firmware Data received.", firmware);
+          LOGi.dfu("DfuExecutor: Cloud firmware Data received.", firmware);
           newestFirmware = firmware;
         })
     );
@@ -236,7 +236,7 @@ export class DfuExecutor {
       // Waiting for get information from the cloud to do the DFU
       await Promise.all(cloudPromises).catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.DOWNLOAD_FAILED); })
       if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
-      LOGi.dfu("Executor: cloud preperation step 1 finished.");
+      LOGi.dfu("DfuExecutor: cloud preperation step 1 finished.");
 
       // check the version of the firmware and bootload from the Crownstone via BLE
       this._setProgress(DfuPhases.SEACHING_FOR_CROWNSTONE, this.currentStep, 0.1, DfuExecutionInformation.OBTAINED_INFORMATION_CLOUD);
@@ -248,7 +248,7 @@ export class DfuExecutor {
         await blockToFinish;
 
         // now the block is set, claim bluetooth for this commander.
-        this.claimedCommander = await claimBluetooth(this.handle)
+        this.claimedCommander = await claimBluetooth(this.handle);
 
         this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.2, DfuExecutionInformation.CROWNSTONE_FOUND);
         await this._prepareAndGetVersions(crownstoneMode);
@@ -261,7 +261,7 @@ export class DfuExecutor {
       try {
         // Assuming we could not get the bootloader version before, first put it in dfu.
         if (this.currentBootloaderVersion === null) {
-          LOGi.dfu("Executor: getting the bootloader from DFU....");
+          LOGi.dfu("DfuExecutor: preparing to get the bootloader from DFU mode....");
           this._setProgress(DfuPhases.PUT_IN_DFU_MODE, this.currentStep, 0.7, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
           await this._getBootloaderVersionFromDFU();
         }
@@ -275,14 +275,14 @@ export class DfuExecutor {
         if (this.stopDFU) {
           throw new Error(DFU_CANCELLED);
         }
-        LOGi.dfu("Executor: ble preperation finished.");
+        LOGi.dfu("DfuExecutor: ble preperation finished.");
         this._setProgress(DfuPhases.PREPARING_BOOTLOADER_STEPS, this.currentStep, 0.8, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
         await this._checkBootloaderOperations(newestBootloader);
 
         if (this.stopDFU) {
           throw new Error(DFU_CANCELLED);
         }
-        LOGi.dfu("Executor: cloud bootloader step count finished.");
+        LOGi.dfu("DfuExecutor: cloud bootloader step count finished.");
         this._setProgress(DfuPhases.PREPARING_FIRMWARE_STEPS, this.currentStep, 0.9, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
         await this._checkFirmwareOperations(newestFirmware);
       }
@@ -292,7 +292,7 @@ export class DfuExecutor {
 
       // The DFU phase starts here.
       if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
-      LOGi.dfu("Executor: cloud firmware step count finished.");
+      LOGi.dfu("DfuExecutor: cloud firmware step count finished.");
 
       // debugging overrides
         if (this._debugExtraBootloader()) { this.amountOfBootloaders = FORCE_MINIMAL_BOOTLOADER_LAYERS; }
@@ -303,33 +303,33 @@ export class DfuExecutor {
       await this._handleBootloader(newestBootloader).catch((err) => { this._handleError(err, DfuPhases.BOOTLOADER, DfuExecutionInformation.UPDATE_FAILED); })
 
       if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
-      LOGi.dfu("Executor: bootloader has been finished.");
+      LOGi.dfu("DfuExecutor: bootloader has been finished.");
       await this._handleFirmware(newestFirmware).catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.UPDATE_FAILED); })
 
 
       // Setup phase starts here
       try {
-        LOGi.dfu("Executor: firmware has been finished.");
+        LOGi.dfu("DfuExecutor: firmware has been finished.");
         this._setProgress(DfuPhases.SETUP, this.currentStep, 0, DfuExecutionInformation.SETUP_START);
         let crownstoneMode = await this._searchForCrownstone();
 
-        LOGi.dfu("Executor: Starting final setup...");
+        LOGi.dfu("DfuExecutor: Starting final setup...");
         await this.dfuHelper.setup(crownstoneMode, this._getUpdateCallback(DfuPhases.SETUP, this.currentStep, true))
       }
       catch (err) {
         this._handleError(err, DfuPhases.SETUP, DfuExecutionInformation.SETUP_FAILED);
       }
 
-      LOGi.dfu("Executor: setup has been finished.");
+      LOGi.dfu("DfuExecutor: setup has been finished.");
       this._setProgress(DfuPhases.SETUP, this.currentStep++, 1, DfuExecutionInformation.SETUP_SUCCESS);
       DfuStateHandler._dfuInProgress = false;
       this.runningDfuProcess = false;
-      LOGi.dfu("Executor: DFU finshed.");
+      LOGi.dfu("DfuExecutor: DFU finshed.");
     }
     catch (err) {
       DfuStateHandler._dfuInProgress = false;
       this.runningDfuProcess = false;
-      LOGi.dfu("Executor: DFU failed.");
+      LOGi.dfu("DfuExecutor: DFU failed.");
       if (this.claimedCommander) {
         await this.claimedCommander.bootloaderToNormalMode().catch(() => {
           throw err;
@@ -338,15 +338,15 @@ export class DfuExecutor {
       throw err;
     }
     finally {
-      LOGi.dfu("Wrapping up.");
+      LOGi.dfu("DfuExecutor: Wrapping up.");
       if (this.claimedCommander) {
-        LOGi.dfu("Ending commander.");
+        LOGi.dfu("DfuExecutor: Ending commander.");
         await this.claimedCommander.end();
-        LOGi.dfu("Ended.");
+        LOGi.dfu("DfuExecutor: Ended.");
         this.claimedCommander = null;
       }
 
-      LOGi.dfu("Release block.");
+      LOGi.dfu("DfuExecutor: Release block.");
       SessionManager.releaseBlock();
     }
 
@@ -355,6 +355,7 @@ export class DfuExecutor {
 
   async _prepareAndGetVersions(crownstoneMode) {
     if (crownstoneMode.dfuMode === true) {
+      LOGi.dfu("DfuExecutor: Crownstone is in dfu mode while getting versions...")
       await this._getVersionsInBootloaderMode()
       await this.claimedCommander.bootloaderToNormalMode()
       let crownstoneMode = await this._searchForCrownstone()
@@ -371,13 +372,17 @@ export class DfuExecutor {
   async _getVersions() {
     // get Bootloader from Crownstone.
     this._setProgress(DfuPhases.GETTING_BOOTLOADER_VERSION, this.currentStep, 0.3, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
+    LOGi.dfu("DfuExecutor: Getting bootloader version...")
     let bootloaderVersion = await this.claimedCommander.getBootloaderVersion();
+    LOGi.dfu("DfuExecutor: Got bootloader version", bootloaderVersion);
     this.__storeBootloaderVersion(bootloaderVersion);
 
 
     // get Firmware from Crownstone.
     this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.4, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
+    LOGi.dfu("DfuExecutor: Getting firmware version...")
     let firmwareVersion = await this.claimedCommander.getFirmwareVersion();
+    LOGi.dfu("DfuExecutor: Got firmware version", firmwareVersion);
     this.__storeFirmwareVersion(firmwareVersion);
 
     this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.5, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
@@ -385,7 +390,9 @@ export class DfuExecutor {
 
   async _getVersionsInBootloaderMode() {
     // get FW/BL from Crownstone.
+    LOGi.dfu("DfuExecutor: Getting bootloader version in DFU...");
     let bootloaderVersion = await this.claimedCommander.getBootloaderVersion();
+    LOGi.dfu("DfuExecutor: Got bootloader version in DFU", bootloaderVersion);
     this.__storeBootloaderVersion(bootloaderVersion);
   }
 
@@ -393,25 +400,16 @@ export class DfuExecutor {
   async _getBootloaderVersionFromDFU() {
     let crownstoneMode = await this._searchForCrownstone();
     await this.claimedCommander.putInDFU()
-    crownstoneMode = await this._searchForCrownstone();
-    let bootloaderVersion = await this.claimedCommander.getBootloaderVersion();
-    if (!bootloaderVersion) {
+    crownstoneMode = await this._searchForCrownstone("DFU");
+    await this._getVersionsInBootloaderMode()
+    if (!this.currentBootloaderVersion) {
       throw new Error("Failed to get Bootloader!")
     }
-    this.currentBootloaderVersion = bootloaderVersion;
-    LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
-    core.store.dispatch({
-      type: "UPDATE_STONE_CONFIG",
-      stoneId: this.stoneId,
-      sphereId: this.sphereId,
-      data: {
-        bootloaderVersion: bootloaderVersion,
-      }
-    });
   }
 
 
   __storeBootloaderVersion(bootloaderVersion) {
+    LOGi.dfu("DfuExecutor: Stone bootloader version received.", bootloaderVersion);
     if (!bootloaderVersion) {
       this.currentBootloaderVersion = null;
       return;
@@ -420,7 +418,6 @@ export class DfuExecutor {
       this.currentBootloaderVersion = bootloaderVersion;
     }
 
-    LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
     core.store.dispatch({
       type: "UPDATE_STONE_CONFIG",
       stoneId: this.stoneId,
@@ -443,7 +440,7 @@ export class DfuExecutor {
 
   __storeFirmwareVersion(firmwareVersion) {
     this.currentFirmwareVersion = firmwareVersion;
-    LOGi.dfu("Executor: Stone firmware version received.", this.currentFirmwareVersion);
+    LOGi.dfu("DfuExecutor: Stone firmware version received.", this.currentFirmwareVersion);
     core.store.dispatch({
       type: "UPDATE_STONE_CONFIG",
       stoneId: this.stoneId,
@@ -464,7 +461,7 @@ export class DfuExecutor {
     if (xUtil.versions.isLower(this.currentBootloaderVersion, bootloaderCandidate.dependsOnBootloaderVersion)) {
       this.amountOfBootloaders += 1;
 
-      LOGi.dfu("Executor: Extra bootloader step required.");
+      LOGi.dfu("DfuExecutor: Extra bootloader step required.");
       // we need to download the old BL first.
       return DfuUtil.getBootloaderInformation(bootloaderCandidate.dependsOnBootloaderVersion, this.hardwareVersion)
         .then((previousBootloader) => {
@@ -486,7 +483,7 @@ export class DfuExecutor {
     // console.log("_checkFirmwareOperations", firmwareCandidate, this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion)
     let addFirmwareOperation = () => {
       this.amountOfFirmwares += 1;
-      LOGi.dfu("Executor: Extra firmware step required.");
+      LOGi.dfu("DfuExecutor: Extra firmware step required.");
       // we need to download the old BL first.
       return DfuUtil.getFirmwareInformation(firmwareCandidate.dependsOnFirmwareVersion, this.hardwareVersion)
         .then((previousFirmware) => {
@@ -517,7 +514,7 @@ export class DfuExecutor {
     if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
 
     if (xUtil.versions.isHigherOrEqual(this.currentBootloaderVersion, bootloaderCandidate.version) && !this._debugRepeatBootloader()) {
-      LOGi.dfu("Executor: bootloader is up-to-date!");
+      LOGi.dfu("DfuExecutor: bootloader is up-to-date!");
       this._setProgress(DfuPhases.BOOTLOADER, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
       return Promise.resolve();
     }
@@ -534,35 +531,35 @@ export class DfuExecutor {
         })
     }
     else {
-      LOGi.dfu("Executor: start bootloader update from", this.currentBootloaderVersion, 'to', bootloaderCandidate.version);
+      LOGi.dfu("DfuExecutor: start bootloader update from", this.currentBootloaderVersion, 'to', bootloaderCandidate.version);
       // we can do the DFU now.
       let downloadedBootloaderPath = null;;
       this._setProgress(DfuPhases.BOOTLOADER, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
       return DfuUtil.downloadBootloader(bootloaderCandidate)
         .catch((err) => { this._handleError(err, DfuPhases.BOOTLOADER, DfuExecutionInformation.DOWNLOAD_FAILED); })
         .then((downloadPath) => {
-          LOGi.dfu("Executor: bootloader download complete.");
+          LOGi.dfu("DfuExecutor: bootloader download complete.");
 
           this._setProgress(DfuPhases.BOOTLOADER, this.currentStep, 0.1, DfuExecutionInformation.DOWNLOAD_SUCCESS);
           downloadedBootloaderPath = downloadPath;
           return this._searchForCrownstone();
         })
         .then((crownstoneMode) => {
-          LOGi.dfu("Executor: crownstone located.", crownstoneMode);
+          LOGi.dfu("DfuExecutor: crownstone located.", crownstoneMode);
           this._setProgress(DfuPhases.BOOTLOADER, this.currentStep, 0.2, DfuExecutionInformation.UPDATE_PUT_IN_DFU_MODE);
           return this.dfuHelper.putInDFU(this.claimedCommander, crownstoneMode);
         })
         .then(() => {
-          LOGi.dfu("Executor: crownstone put in dfu mode.");
+          LOGi.dfu("DfuExecutor: crownstone put in dfu mode.");
           return this._searchForCrownstone();
         })
         .then((crownstoneMode) => {
-          LOGi.dfu("Executor: dfu crownstone located. Update starting...");
+          LOGi.dfu("DfuExecutor: dfu crownstone located. Update starting...");
           this._setProgress(DfuPhases.BOOTLOADER, this.currentStep, 0.3, DfuExecutionInformation.UPDATE_START);
           return this.dfuHelper.updateBootloader(crownstoneMode, downloadedBootloaderPath, this._getUpdateCallback(DfuPhases.BOOTLOADER, this.currentStep));
         })
         .then(() => {
-          LOGi.dfu("Executor: bootloader updated to", bootloaderCandidate.version);
+          LOGi.dfu("DfuExecutor: bootloader updated to", bootloaderCandidate.version);
           this.currentBootloaderVersion = bootloaderCandidate.version;
           core.store.dispatch({
             type: "UPDATE_STONE_CONFIG",
@@ -587,7 +584,7 @@ export class DfuExecutor {
   _handleFirmware(firmwareCandidate) {
     if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
     if (xUtil.versions.isHigherOrEqual(this.currentFirmwareVersion, firmwareCandidate.version) && !this._debugRepeatFirmware()) {
-      LOGi.dfu("Executor: Firmware is up-to-date!");
+      LOGi.dfu("DfuExecutor: Firmware is up-to-date!");
       this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
       return Promise.resolve();
     }
@@ -614,7 +611,7 @@ export class DfuExecutor {
       .then((previousFirmware) => {
         // if the bootloader version of this firmware version is lower than the one we have, we probably already have this firmware version.
         if (xUtil.versions.isLower(previousFirmware.dependsOnBootloaderVersion, this.currentBootloaderVersion)) {
-          LOGi.dfu("Executor: bootloader of previous version is older than what we have. Not required to backtrack further!");
+          LOGi.dfu("DfuExecutor: bootloader of previous version is older than what we have. Not required to backtrack further!");
           return this._performFirmwareUpdate(firmwareCandidate);
         }
         else {
@@ -628,35 +625,35 @@ export class DfuExecutor {
 
 
   _performFirmwareUpdate(firmwareCandidate) {
-    LOGi.dfu("Executor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
+    LOGi.dfu("DfuExecutor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
     let downloadedFirmwarePath = null;;
     this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
     return DfuUtil.downloadFirmware(firmwareCandidate)
       .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })
       .then((downloadPath) => {
-        LOGi.dfu("Executor: firmware download complete.");
+        LOGi.dfu("DfuExecutor: firmware download complete.");
 
         this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.1, DfuExecutionInformation.DOWNLOAD_SUCCESS);
         downloadedFirmwarePath = downloadPath;
         return this._searchForCrownstone();
       })
       .then((crownstoneMode) => {
-        LOGi.dfu("Executor: crownstone located.", crownstoneMode);
+        LOGi.dfu("DfuExecutor: crownstone located.", crownstoneMode);
 
         this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.2, DfuExecutionInformation.UPDATE_PUT_IN_DFU_MODE);
         return this.dfuHelper.putInDFU(this.claimedCommander, crownstoneMode);
       })
       .then(() => {
-        LOGi.dfu("Executor: crownstone put in dfu mode.");
+        LOGi.dfu("DfuExecutor: crownstone put in dfu mode.");
         return this._searchForCrownstone();
       })
       .then((crownstoneMode) => {
-        LOGi.dfu("Executor: dfu crownstone located. Update starting...");
+        LOGi.dfu("DfuExecutor: dfu crownstone located. Update starting...");
         this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0.3, DfuExecutionInformation.UPDATE_START);
         return this.dfuHelper.updateFirmware(crownstoneMode, downloadedFirmwarePath, this._getUpdateCallback(DfuPhases.FIRMWARE, this.currentStep));
       })
       .then(() => {
-        LOGi.dfu("Executor: Firmware updated to", firmwareCandidate.version);
+        LOGi.dfu("DfuExecutor: Firmware updated to", firmwareCandidate.version);
         this.currentFirmwareVersion = firmwareCandidate.version;
         core.store.dispatch({
           type: "UPDATE_STONE_CONFIG",
@@ -677,11 +674,11 @@ export class DfuExecutor {
   }
 
 
-  _searchForCrownstone() : Promise<crownstoneModes> {
+  _searchForCrownstone(expectedMode : "SETUP" | "OPERATION" | "DFU" | null = null) : Promise<crownstoneModes> {
     if (this.stopDFU === true) { throw new Error(DFU_CANCELLED); }
 
     // we need high frequency scanning to get duplicates of the DFU crownstone.
-    LOG.dfu("DfuOverlay: Start HF Scanning for all Crownstones");
+    LOGi.dfu("DfuExecutor: Start HF Scanning for all Crownstones");
     BleUtil.startHighFrequencyScanning(this.sessionUUID, true);
 
     return new Promise((resolve, reject) => {
@@ -699,13 +696,13 @@ export class DfuExecutor {
       let rssiResolver = (data, setupMode, dfuMode) => {
         clearSearchTimeout();
 
-        LOGd.dfu("DfuOverlay: Found match:", data);
+        LOGd.dfu("DfuExecutor: Found match:", data);
         // if ((setupMode && data.rssi < -99) || (data.rssi < -80)) {
         //   core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         // }
         
         // no need to HF scan any more
-        LOG.dfu("DfuOverlay: Stop HF Scanning for all Crownstones");
+        LOGi.dfu("DfuExecutor: Stop HF Scanning for all Crownstones");
         BleUtil.stopHighFrequencyScanning(this.sessionUUID);
         this.stopScanning = null;
 
@@ -713,32 +710,40 @@ export class DfuExecutor {
         resolve({setupMode, dfuMode});
       };
 
-      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement) => {
-        if (advertisement.handle === this.stone.config.handle) {
-          rssiResolver(advertisement, false, false);
-        }
-        else {
-          LOGv.dfu("DFUExecutor: Other advertisment received while looking for", this.stone.config.handle, advertisement);
-        }
-      }));
 
-      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
-        if (setupAdvertisement.handle === this.stone.config.handle) {
-          rssiResolver(setupAdvertisement, true, false);
-        }
-        else {
-          LOGv.dfu("DFUExecutor: Other setupAdvertisement received while looking for", this.stone.config.handle, setupAdvertisement);
-        }
-      }));
+      if (!expectedMode || expectedMode === "OPERATION") {
+        this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement) => {
+          if (advertisement.handle === this.stone.config.handle) {
+            rssiResolver(advertisement, false, false);
+          }
+          else {
+            LOGv.dfu("DfuExecutor: Other advertisment received while looking for", this.stone.config.handle, advertisement);
+          }
+        }));
+      }
 
-      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
-        if (dfuAdvertisement.handle === this.stone.config.handle) {
-          rssiResolver(dfuAdvertisement, false, true);
-        }
-        else {
-          LOGv.dfu("DFUExecutor: Other dfuAdvertisement received while looking for", this.stone.config.handle, dfuAdvertisement);
-        }
-      }))
+      if (!expectedMode || expectedMode === "SETUP") {
+        this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+          if (setupAdvertisement.handle === this.stone.config.handle) {
+            rssiResolver(setupAdvertisement, true, false);
+          }
+          else {
+            LOGv.dfu("DfuExecutor: Other setupAdvertisement received while looking for", this.stone.config.handle, setupAdvertisement);
+          }
+        }));
+      }
+
+
+      if (!expectedMode || expectedMode === "DFU") {
+        this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
+          if (dfuAdvertisement.handle === this.stone.config.handle) {
+            rssiResolver(dfuAdvertisement, false, true);
+          }
+          else {
+            LOGv.dfu("DfuExecutor: Other dfuAdvertisement received while looking for", this.stone.config.handle, dfuAdvertisement);
+          }
+        }))
+      }
     });
   }
 

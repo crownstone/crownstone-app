@@ -273,8 +273,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({label: "Put your Crownstone back in setup mode.", type: 'explanation', below: true, color: explanationColor});
-    }
-    else if (FocusManager.crownstoneMode === 'unverified') {
+
       items.push({
         label: "Recover",
         type: 'button',
@@ -621,7 +620,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     let backgroundImage = background.light;
     let explanationColor = colors.black.rgba(0.9);
 
-    switch (FocusManager.crownstoneMode ) {
+    switch (FocusManager.crownstoneMode) {
       case "setup":
         explanationColor = colors.white.hex;
         backgroundImage = require('../../../../assets/images/backgrounds/blueBackground2.jpg');

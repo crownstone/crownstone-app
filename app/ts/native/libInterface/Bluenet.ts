@@ -191,7 +191,12 @@ else if (NativeModules.BluenetJS) {
             bluenetArguments.push(arguments[i])
           }
         }
-        LOGi.info("BLUENET CALL:", key, bluenetArguments);
+        if (key === "loadFingerprint") {
+          LOGi.info("BLUENET CALL:", key, '<redacted>');
+        }
+        else {
+          LOGi.info("BLUENET CALL:", key, bluenetArguments);
+        }
         return NativeModules.BluenetJS[key].apply(this, bluenetArguments);
       }
     })

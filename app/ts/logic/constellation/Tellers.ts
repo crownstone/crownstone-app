@@ -4,16 +4,24 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { SessionManager } from "./SessionManager";
 import { CommandAPI, CommandBroadcastAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
+import { TemporaryHandleMap } from "./TemporaryHandleMap";
 
-export async function connectTo(handle, timeoutSeconds = 20) : Promise<CommandAPI> {
+export async function connectTo(handle, sphereId: string | null = null, timeoutSeconds = 20) : Promise<CommandAPI> {
   LOGi.constellation("Tellers: Starting a direct connection.", handle);
 
-  let privateId = xUtil.getUUID();
-  let stoneData = MapProvider.stoneHandleMap[handle];
-  let sphereId = null;
-  if (stoneData) {
-    sphereId = stoneData.sphereId;
+  if (sphereId) {
+    TemporaryHandleMap.load(handle, sphereId);
   }
+
+  let privateId = xUtil.getUUID();
+  if (!sphereId) {
+    let stoneData = MapProvider.stoneHandleMap[handle];
+    if (stoneData) {
+      sphereId = stoneData.sphereId;
+    }
+  }
+
+
 
   try {
     await SessionManager.request(handle, privateId, true, timeoutSeconds);
@@ -69,7 +77,7 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.
  */
-export function tell(handle: string | StoneData, timeoutSeconds = 10) : CommandAPI {
+export function tell(handle: string | StoneData, timeoutSeconds = 10, label: string = "UNKNOWN") : CommandAPI {
   if (typeof handle != 'string') { handle = handle.config.handle; }
   let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId || null;
 
@@ -77,8 +85,7 @@ export function tell(handle: string | StoneData, timeoutSeconds = 10) : CommandA
   // error can be caught in the promise chain instead of before that.
   // if (!handle) { throw new Error("No handle yet."); }
 
-
-  LOG.constellation("Tellers: Planning to tell", handle);
+  LOG.constellation("Tellers: Planning to tell", handle, label);
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),
     sphereId:       sphereId,

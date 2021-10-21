@@ -112,6 +112,8 @@ class CommandAPI_base {
 
   broker : SessionBroker;
 
+  _ended = false;
+
   constructor(commandOptions: commandOptions) {
     this.options = commandOptions;
     this.options.commanderId ??= xUtil.getUUID();
@@ -128,7 +130,9 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     try {
-      LOGd.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
+      if (this._ended) { throw new Error("Commander has been ended."); }
+
+      LOGi.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
       // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
       let validHandleToPerformAction = false;
       for (let target of this.options.commandTargets) {
@@ -491,6 +495,8 @@ export class CommandAPI extends CommandMeshAPI {
   }
 
   async end() {
+    this._ended = true;
+    BleCommandManager.cancelCommanderCommands(this.id);
     await this.broker.killConnectedSessions();
   }
 }

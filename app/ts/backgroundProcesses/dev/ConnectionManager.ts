@@ -3,6 +3,7 @@ import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
 import { MapProvider } from "../MapProvider";
 import { TESTING_SPHERE_ID } from "./DevAppState";
+import { FocusManager } from "./FocusManager";
 
 class ConnectionManagerClass {
   bleConnectionTimeout = null;
@@ -38,11 +39,16 @@ class ConnectionManagerClass {
       }
     }
 
+    let activeSphereId = null;
+    if (FocusManager.crownstoneMode === 'verified') {
+      activeSphereId = sphereId;
+    }
+
     if (this.api !== null) {
       return this.api;
     }
     this.handle = handle;
-    this.api = await connectTo(handle);
+    this.api = await connectTo(handle, activeSphereId);
     return this.api;
   }
 

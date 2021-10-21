@@ -70,6 +70,7 @@ export class SessionManagerClass {
     return new Promise<void>((resolve, reject) => {
       this._addToPending(handle, commanderId, true, timeoutSeconds, resolve, reject);
       this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, true, true));
+      this._sessions[handle].recoverFromDisconnect = true;
     });
   }
 

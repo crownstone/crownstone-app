@@ -35,6 +35,7 @@ import { CommandAPI } from "../../logic/constellation/Commander";
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
   sphereId: string,
+  unownedVerfiedSphereId?: string,
   setupItem: any,
   componentId: any,
   unownedVerified: boolean
@@ -98,9 +99,14 @@ export class SetupCrownstone extends LiveComponent<{
     if (this.props.unownedVerified) {
       let api: CommandAPI;
       try {
-        api = await connectTo(this.props.setupItem.handle);
+        api = await connectTo(this.props.setupItem.handle, this.props.unownedVerfiedSphereId);
         await api.commandFactoryReset();
-      } finally {
+      }
+      catch(err) {
+        this._interview.setLockedCard("problem");
+        return;
+      }
+      finally {
         if (api) { await api.end(); }
       }
       await Scheduler.delay(2000);

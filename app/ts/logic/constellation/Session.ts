@@ -17,6 +17,7 @@ import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
 import { act } from "@testing-library/react-native";
 import { Scheduler } from "../Scheduler";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { TemporaryHandleMap } from "./TemporaryHandleMap";
 
 const CONNECTION_THRESHOLD_MIN  = Platform.OS === 'ios' ? -73 : -73;
 const CONNECTION_THRESHOLD_STEP = Platform.OS === 'ios' ? -3  : -3;
@@ -44,23 +45,28 @@ export class Session {
   crownstoneMode : CrownstoneMode;
   interactionModule: SessionInteractionModule;
 
-  _cleanupPrivateBackup = null;
-
   _weakRSSImeasurements = 0;
+
+  recoverFromDisconnect = false;
 
   constructor(handle: string, privateId: string | null, interactionModule : SessionInteractionModule) {
     this.handle = handle;
     this.interactionModule = interactionModule;
     this.privateId = privateId || null;
-    let reference  = MapProvider.stoneHandleMap[handle];
-    this.sphereId  = reference?.sphereId || null;
+    this.sphereId  = MapProvider.stoneHandleMap[handle]?.sphereId || TemporaryHandleMap.get(handle) || null;
 
     LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 
-    this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
-      LOGi.constellation("Session: Disconnected from Crownstone, ending session...")
-      this.sessionHasEnded();   });
+      this.state = "DISCONNECTED";
+      if (this.recoverFromDisconnect && !this._sessionIsKilled) {
+        LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...");
+      }
+      else {
+        LOGi.constellation("Session: Disconnected from Crownstone, ending session...")
+        this.sessionHasEnded();
+      }
+    });
 
     this.initializeBootstrapper();
 
@@ -75,6 +81,12 @@ export class Session {
 
     if (this.privateId) {
       this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, async () => {
+        if (this.state === "DISCONNECTED" && this.recoverFromDisconnect && !this._sessionIsKilled) {
+          this.initializeBootstrapper();
+          this.tryToActivate();
+          return;
+        }
+
         if (this.state === "WAITING_FOR_COMMANDS") {
           // we do this next tick to ensure all the loading processes are finished.
           // I don't want it to matter too much when the commandloaded is called compared to when the actual command
@@ -88,18 +100,8 @@ export class Session {
   }
 
 
-  reActivate() {
-    if (this._cleanupPrivateBackup !== null) {
-      this._cleanupPrivateBackup();
-      this._cleanupPrivateBackup = null;
-      this.interactionModule.isDeactivated();
-      this.initializeBootstrapper();
-    }
-  }
-
-
   initializeBootstrapper() {
-    LOGv.constellation("Session: Initializing bootstrapper", this.handle, this.identifier);
+    LOGi.constellation("Session: Initializing bootstrapper", this.handle, this.identifier);
     this.state = "INITIALIZING";
     this._sessionIsActivated = false;
     this._weakRSSImeasurements = 0;
@@ -228,6 +230,12 @@ export class Session {
     LOGd.constellation("Session: performing available command...", this.handle, this.identifier);
     await BleCommandManager.performCommand(this.handle, this.privateId);
     LOGd.constellation("Session: Finished available command...", this.handle, this.identifier);
+
+    // @ts-ignore
+    if (this.state !== "PERFORMING_COMMAND") {
+      LOGd.constellation("Session: Session interrupted", this.handle, this.identifier);
+      return;
+    }
     this.state = "CONNECTED";
 
     if (this._sessionIsKilled) {
@@ -324,7 +332,6 @@ export class Session {
     this._sessionHasEnded = true;
     LOGi.constellation("Session: Session has ended..", this.handle, this.identifier);
 
-    this.state = "DISCONNECTED";
     this._clearBootstrapper();
 
     for (let unsubscribeListener of this.listeners) { unsubscribeListener(); }

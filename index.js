@@ -21,6 +21,7 @@ import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/Backgroun
 import DeviceInfo from 'react-native-device-info';
 import Bugsnag from "@bugsnag/react-native";
 
+console.log("...\n\n\n\n-------------------- APP STARTING UP --------------------\n\n\n\n...");
 
 if (USE_ERROR_REPORTING) {
   Bugsnag.start();
