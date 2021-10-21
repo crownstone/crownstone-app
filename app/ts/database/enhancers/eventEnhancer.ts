@@ -26,14 +26,22 @@ import { LOGw }  from "../../logging/Log";
  */
 export function EventEnhancer({ getState }) {
   return (next) => (action) => {
+
+    // required for some of the actions
+    let oldState = getState();
+
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
+
+    // state after update
+    let newState = getState();
+
     let eventData = {};
     let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, messageIds:{} , scheduleIds:{}, toonIds:{}, hubIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         if (action.__noEvents !== true) {
-          let {data, ids} = checkAction(action, affectedIds);
+          let {data, ids} = checkAction(action, affectedIds, oldState, newState);
           affectedIds = ids;
           eventData = {...eventData, ...data}; 
         }
@@ -41,7 +49,7 @@ export function EventEnhancer({ getState }) {
     }
     else {
       if (action.__noEvents !== true) {
-        let {data, ids} = checkAction(action, affectedIds);
+        let {data, ids} = checkAction(action, affectedIds, oldState, newState);
         affectedIds = ids;
         eventData = {...eventData, ...data};
       }
@@ -55,7 +63,7 @@ export function EventEnhancer({ getState }) {
   }
 }
 
-function checkAction(action : DatabaseAction, affectedIds) {
+function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
   let eventStatus = {};
 
   if (action.locationId)     { affectedIds.locationIds[action.locationId]       = true; }
@@ -129,6 +137,14 @@ function checkAction(action : DatabaseAction, affectedIds) {
       eventStatus['changeStones'] = affectedIds;
     case 'UPDATE_STONE_LOCAL_CONFIG':
     case 'UPDATE_STONE_CONFIG':
+      let oldStoneConfig = oldState?.spheres?.[action.sphereId]?.stones?.[action.stoneId]?.config ?? null;
+      let newStoneConfig = newState?.spheres?.[action.sphereId]?.stones?.[action.stoneId]?.config ?? null;
+      if (
+        oldStoneConfig &&
+        newStoneConfig &&
+        (oldStoneConfig.name !== newStoneConfig.name || oldStoneConfig.uid !== newStoneConfig.uid)) {
+        eventStatus['updateStoneIdentificationConfig'] = affectedIds;
+      }
       eventStatus['updateStoneCoreConfig'] = affectedIds;
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':

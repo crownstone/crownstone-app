@@ -149,7 +149,7 @@ export class SessionManagerClass {
 
   /**
    * This will check all registered sessions to see if they're required.
-   * It will query the BleCommandManager for all outstanding sessions. If the shared ones have no commands, they're cancelled.
+   * It will query the BleCommandManager for all outstanding commands. If the shared ones have no commands, they're cancelled.
    */
   evaluateSessionNecessity() {
     LOGd.constellation("SessionManager: evaluateSessionNecessity now")
@@ -402,12 +402,12 @@ export class SessionManagerClass {
     // if it was a shared session, it could have been an error or it had nothing to do.
     if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
       LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);
-      return xUtil.getUUID();
+      return "stillRequired"+xUtil.getUUID();
     }
     else if (BleCommandManager.areThereCommandsFor(handle)) {
       // there are still shared commands, so the session will be retried.
       LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle);
-      return xUtil.getUUID();
+      return "stillRequired"+xUtil.getUUID();
     }
     return false;
   }

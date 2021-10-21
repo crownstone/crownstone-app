@@ -142,9 +142,9 @@ export class SessionBroker {
       LOGi.constellation("SessionBroker: actually requesting session", handle, "for", this.options.commanderId, "private", command.private, "commandType", command.command.type);
       this.pendingSessions[handle] = SessionManager.request(handle, this.options.commanderId, command.private, this.options.timeout)
         .then(() => {
+          LOGi.constellation("SessionBroker: Session has connected to", handle, "for", this.options.commanderId);
           // if this request lands, we can remove this session from the pending list.
-          // //This means that the session won't be closed automatically
-          // after command completion if its connected.
+          // This means that the session won't be closed automatically after command completion if its connected.
           delete this.pendingSessions[handle];
           this.connectedSessions[handle] = {id: command.id, private: command.private};
 
@@ -153,6 +153,7 @@ export class SessionBroker {
         .catch((err) => {
           delete this.pendingSessions[handle];
           if (err?.message === "SESSION_REQUEST_TIMEOUT") {
+            LOGi.constellation("SessionBroker: Session failed to connect: SESSION_REQUEST_TIMEOUT", handle, "for", this.options.commanderId);
             BleCommandManager.removeCommand(handle, command.id, "SESSION_REQUEST_TIMEOUT");
           }
           else if (err?.message === "ALREADY_REQUESTED_TIMEOUT") {
@@ -160,7 +161,7 @@ export class SessionBroker {
             Testing.hook("ALREADY_REQUESTED_TIMEOUT", {handle, type: command.command.type} );
           }
           else if (err?.message === "REMOVED_FROM_QUEUE") {
-            LOGd.constellation("SessionBroker: Session removed from queue", handle, "for", this.options.commanderId);
+            LOGi.constellation("SessionBroker: Session removed from queue", handle, "for", this.options.commanderId);
             // this will happen if a session is no longer required. This does not need to be escalated.
           }
           else {

@@ -11,6 +11,8 @@ import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
 import Bugsnag from "@bugsnag/react-native";
 import { BugReportUtil } from "../../util/BugReportUtil";
+import { err } from "react-native-svg/lib/typescript/xml";
+import { TimeKeeper } from "../../backgroundProcesses/TimeKeeper";
 
 
 /**
@@ -67,10 +69,7 @@ export class BleCommandManagerClass {
       return;
     }
 
-
-
     let targets = options.commandTargets;
-
     let commandsToLoad = [];
 
     for (let targetId of targets) {
@@ -174,6 +173,8 @@ export class BleCommandManagerClass {
   _load(command: BleCommand) {
     this._removeDuplicates(command);
 
+    LOGi.constellation("BleCommandManager: Loading command", JSON.stringify(command));
+
     let targetId = command.commandTarget;
     switch (command.commandType) {
       case "MESH":
@@ -246,43 +247,27 @@ export class BleCommandManagerClass {
   }
 
 
-  removeCommand(handle: string, commandId: string, error = null) {
+
+
+  removeCommand(handle: string, commandId: string, errorMessage = null) {
     if (this.queue.direct[handle]) {
       for (let i = 0; i < this.queue.direct[handle].length; i++) {
         let command = this.queue.direct[handle][i];
         if (command.id === commandId) {
-          if (error !== null) {
-            command.promise.reject(new Error(error))
-          }
-          this.queue.direct[handle].splice(i,1);
-          if (this.queue.direct[handle].length === 0) {
-            delete this.queue.direct[handle];
-          }
+          this._removeDirectCommand(handle, i, errorMessage);
           break;
         }
       }
     }
 
 
-    let meshIds = Object.keys(this.queue.mesh);
-    for (let meshId of meshIds) {
+    for (let meshId in this.queue.mesh) {
       let meshCommands = this.queue.mesh[meshId];
       // reverse iterate to be able to remove items from the array while iterating over it.
       for (let i = meshCommands.length-1; i >= 0; i--) {
         let meshCommand = meshCommands[i];
         if (meshCommand.id === commandId || meshCommand.linkedId === commandId) {
-          this.queue.mesh[meshId].splice(i,1);
-
-          // if this remove is called because of an error, reject all promises
-          if (error !== null) {
-            meshCommand.promise.reject(new Error(error));
-          }
-          else {
-            meshCommand.promise.resolve();
-          }
-          if (this.queue.mesh[meshId].length === 0) {
-            delete this.queue.mesh[meshId];
-          }
+          this._removeMeshCommand(meshId, i, errorMessage);
         }
       }
     }
@@ -421,35 +406,18 @@ export class BleCommandManagerClass {
       for (let i = commands.length-1; i >= 0; i--) {
         let command = commands[i];
         if (command.commanderId === commanderId) {
-          this.queue.direct[handle].splice(i,1);
-          BugReportUtil.breadcrumb("BleCommandManager: cancellingCommanderCommands",{
-            commandFailed: command.command.type,
-            t: Date.now(),
-            err: errorMessage
-          }, "error");
-
-          command.promise.reject(new Error(errorMessage));
-
-          if (this.queue.direct[handle].length === 0) {
-            delete this.queue.direct[handle];
-          }
+          this._removeDirectCommand(handle, i, errorMessage);
         }
       }
     }
 
-    let meshIds = Object.keys(this.queue.mesh);
-    for (let meshId of meshIds) {
+    for (let meshId in this.queue.mesh) {
       let meshCommands = this.queue.mesh[meshId];
       // reverse iterate to be able to remove items from the array while iterating over it.
       for (let i = meshCommands.length-1; i >= 0; i--) {
         let meshCommand = meshCommands[i];
         if (meshCommand.commanderId === commanderId) {
-          this.queue.mesh[meshId].splice(i,1);
-
-          meshCommand.promise.reject(new Error(errorMessage));
-          if (this.queue.mesh[meshId].length === 0) {
-            delete this.queue.mesh[meshId];
-          }
+          this._removeMeshCommand(meshId, i, errorMessage);
         }
       }
     }
@@ -462,15 +430,55 @@ export class BleCommandManagerClass {
     // Use the crownstone mode to determine if the disconnect command should be used.
     if (crownstoneMode === "operation") {
       if (privateId === null) {
-        // TODO: check if we have to set the time.
-        //  This will be done through checking with the TimeKeeper class.
-        //  Work on this will be done after the TimeKeeper is using the Constellation API instead of the stoneUtil.
+        if (Date.now() - TimeKeeper.lastTimeSet > 3600000) {
+          await BluenetPromiseWrapper.setTime(handle, xUtil.nowToCrownstoneTime())
+            .then(() => { TimeKeeper.lastTimeSet = Date.now(); })
+            .catch((err) => {})
+        }
       }
 
       // tell the crownstone to disconnect from the phone.
       await BluenetPromiseWrapper.disconnectCommand(handle);
     }
   }
+
+
+
+
+  // Util methods
+
+  _removeDirectCommand(handle : string, index: number, errorMessage : string | null = null) {
+    let command = this.queue.direct[handle][index];
+    this.queue.direct[handle].splice(index,1);
+    LOGi.constellation("BleCommandManager: Removing command", handle, command.id, errorMessage);
+
+    if (errorMessage !== null) {
+      command.promise.reject(new Error(errorMessage))
+    }
+    if (this.queue.direct[handle].length === 0) {
+      delete this.queue.direct[handle];
+    }
+  }
+
+  _removeMeshCommand(meshId: string, index: number, errorMessage: string | null = null) {
+    let meshCommand = this.queue.mesh[meshId][index];
+    this.queue.mesh[meshId].splice(index,1);
+
+    LOGi.constellation("BleCommandManager: Removing mesh command", meshId, meshCommand.id, errorMessage);
+
+    // if this remove is called because of an error, reject all promises
+    if (errorMessage !== null) {
+      meshCommand.promise.reject(new Error(errorMessage));
+    }
+    else {
+      // if it is not called because of an error, expect the command to have been successful.
+      meshCommand.promise.resolve();
+    }
+    if (this.queue.mesh[meshId].length === 0) {
+      delete this.queue.mesh[meshId];
+    }
+  }
+
 }
 
 export const BleCommandManager = new BleCommandManagerClass();

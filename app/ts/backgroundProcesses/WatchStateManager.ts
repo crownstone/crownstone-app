@@ -11,7 +11,7 @@ class WatchStateManagerClass {
         // listen to events that might change the name of the stones, or added and removed stones.
         core.eventBus.on("databaseChange", (data) => {
           let change = data.change;
-          if (change.changeStones || change.updateStoneCoreConfig) {
+          if (change.changeStones || change.updateStoneIdentificationConfig) {
             this._updateNames();
           }
         });

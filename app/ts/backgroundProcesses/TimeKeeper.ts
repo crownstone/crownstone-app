@@ -22,6 +22,8 @@ class TimeKeeperClass {
   initialized = false;
   lastSetTimeBroadcastTimestamp = 0;
 
+  lastTimeSet = 0;
+
   constructor() {}
 
   init() {
@@ -101,6 +103,7 @@ class TimeKeeperClass {
 
 
   _setTime() {
+    this.lastTimeSet = Date.now();
     let state = core.store.getState();
     let spheres = state.spheres;
 
@@ -111,10 +114,9 @@ class TimeKeeperClass {
         if (AppState.currentState === 'active' || Platform.OS === 'android') {
           // broadcast
           broadcast(sphereId).setTimeViaBroadcast(xUtil.nowToCrownstoneTime(), suntimes.sunrise, suntimes.sunset, true).catch(() => {});
-          return;
         }
         else {
-          tellSphere(sphereId).setTime().catch((err) => {})
+          tellSphere(sphereId).setTime().catch((err) => { this.lastTimeSet = 0; })
           tellSphere(sphereId).setSunTimesViaConnection(suntimes.sunrise, suntimes.sunset).catch((err) => {})
         }
       }

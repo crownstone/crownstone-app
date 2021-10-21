@@ -55,7 +55,7 @@ export class Session {
     let reference  = MapProvider.stoneHandleMap[handle];
     this.sphereId  = reference?.sphereId || null;
 
-    LOGd.constellation("Session: Creating session", this.handle, this.identifier);
+    LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.connectedToPeripheral,      () => { this.state = "CONNECTED"; })
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
@@ -172,7 +172,7 @@ export class Session {
 
 
   async connect() {
-    LOGd.constellation("Session: Start connecting to", this.handle, this.identifier);
+    LOGi.constellation("Session: Start connecting to", this.handle, this.identifier);
     // remove the listener for ibeacons from this device.
     this._clearBootstrapper()
 
@@ -250,7 +250,7 @@ export class Session {
     // kill already in progress. resolve on end.
     if (this._sessionIsKilled) { return new Promise((resolve, reject) => { this._pendingForClose.push(resolve) }); }
 
-    LOGd.constellation("Session: killing session requested...",this.state, this.handle, this.identifier);
+    LOGi.constellation("Session: killing session requested...",this.state, this.handle, this.identifier);
     this._sessionIsKilled = true;
     switch (this.state) {
       case "INITIALIZING":
@@ -291,6 +291,7 @@ export class Session {
 
 
   async disconnect() {
+    LOGi.constellation("Session: disconnecting", this.handle, this.identifier);
     this.state = "DISCONNECTING";
     try {
       await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode);
@@ -298,7 +299,9 @@ export class Session {
     catch (e) {
       LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e?.message);
     }
+    LOGi.constellation("Session: closing commands performed", this.handle, this.identifier);
     await BluenetPromiseWrapper.phoneDisconnect(this.handle);
+    LOGi.constellation("Session: phoneDisconnect done", this.handle, this.identifier);
   }
 
 
@@ -319,7 +322,7 @@ export class Session {
     if (this._sessionHasEnded) { return; }
 
     this._sessionHasEnded = true;
-    LOGd.constellation("Session: Session has ended..", this.handle, this.identifier);
+    LOGi.constellation("Session: Session has ended..", this.handle, this.identifier);
 
     this.state = "DISCONNECTED";
     this._clearBootstrapper();
