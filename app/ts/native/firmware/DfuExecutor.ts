@@ -330,11 +330,11 @@ export class DfuExecutor {
       DfuStateHandler._dfuInProgress = false;
       this.runningDfuProcess = false;
       LOGi.dfu("DfuExecutor: DFU failed.");
-      if (this.claimedCommander) {
-        await this.claimedCommander.bootloaderToNormalMode().catch(() => {
-          throw err;
-        });
-      }
+      // if (this.claimedCommander) {
+      //   await this.claimedCommander.bootloaderToNormalMode().catch(() => {
+      //     throw err;
+      //   });
+      // }
       throw err;
     }
     finally {
@@ -465,7 +465,7 @@ export class DfuExecutor {
       // we need to download the old BL first.
       return DfuUtil.getBootloaderInformation(bootloaderCandidate.dependsOnBootloaderVersion, this.hardwareVersion)
         .then((previousBootloader) => {
-          return this._checkBootloaderOperations(previousBootloader)
+          return this._checkBootloaderOperations(previousBootloader);
         })
     }
     else {

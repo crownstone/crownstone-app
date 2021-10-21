@@ -218,8 +218,6 @@ test("Timeout the request from the teller should also clean up the commands", as
 });
 
 
-
-
 test("Check if the broadcast method respects block", async () => {
   let db = createMockDatabase(meshId, secondMeshId);
   let handle = db.stones[0].handle;

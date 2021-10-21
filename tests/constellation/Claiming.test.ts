@@ -30,7 +30,7 @@ const meshId       = "meshNetwork";
 const secondMeshId = "secondMeshId";
 
 
-test("Check claiming Bluetooth", async () => {
+test("Check claiming Bluetooth to handle session with connect / disconnect", async () => {
   let db = createMockDatabase(meshId, secondMeshId);
   let handle = db.stones[0].handle;
 
@@ -71,5 +71,6 @@ test("Check claiming Bluetooth", async () => {
   await TestUtil.nextTick();
 
   expect(SessionManager._sessions[handle]).toBeUndefined();
-
+  expect(SessionManager._activeSessions[handle]).toBeUndefined();
 });
+

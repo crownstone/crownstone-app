@@ -271,6 +271,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "UPDATE_SORTED_LIST":
     case "INJECT_IDS":
     case "ADD_SORTED_LIST":
+    case "UPDATE_ABILITY_CLOUD_ID":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":

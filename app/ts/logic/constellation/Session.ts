@@ -291,6 +291,9 @@ export class Session {
       case "DISCONNECTING":
         // the session will be cleared by the disconnected event listener
         break;
+      case "DISCONNECTED":
+        this.sessionHasEnded()
+        break;
     }
 
 

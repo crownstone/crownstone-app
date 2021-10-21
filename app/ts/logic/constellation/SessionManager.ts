@@ -281,7 +281,10 @@ export class SessionManagerClass {
 
     this._timeoutHandlers[handle][commanderId] = {
       clearCallback: Scheduler.scheduleCallback(() => {
-        LOG.constellation("SessionManager: SESSION_REQUEST_TIMEOUT Timeout called for ", handle, commanderId)
+        // remove the handler after it is fired.
+        delete this._timeoutHandlers[handle][commanderId]
+
+        LOG.constellation("SessionManager: SESSION_REQUEST_TIMEOUT Timeout called for ", handle, commanderId);
         reject(new Error("SESSION_REQUEST_TIMEOUT"));
         let session = this._sessions[handle];
 
@@ -443,7 +446,6 @@ export class SessionManagerClass {
       LOGd.constellation("IntiatingBlock: privateSessionsPresent", privateSessionsPresent, timeWaitedMs);
       if (privateSessionsPresent != false) {
         await Scheduler.delay(stepMs);
-        console.log("waiting for delay to finish ")
       }
       timeWaitedMs += stepMs;
     }

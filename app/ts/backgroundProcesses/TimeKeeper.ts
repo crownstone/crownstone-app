@@ -55,7 +55,7 @@ class TimeKeeperClass {
       });
       // broadcast on app open.
       core.eventBus.on('TIME_IS_NOT_SET', ({sphereId, stone}) => {
-        this._setTimeForNewCrownstones(sphereId, stone)
+        this._setTimeForNewCrownstones(sphereId, stone);
       });
 
 
@@ -73,9 +73,10 @@ class TimeKeeperClass {
    */
   _setTimeForNewCrownstones(sphereId: string, stone: StoneData) {
     let now = Date.now();
-    if (now - this.lastSetTimeBroadcastTimestamp < 3000) {
+    if (now - this.lastSetTimeBroadcastTimestamp < 20000) {
       return;
     }
+    this.lastSetTimeBroadcastTimestamp = Date.now();
 
     let sphere = Get.sphere(sphereId);
     if (!sphere) { return; }

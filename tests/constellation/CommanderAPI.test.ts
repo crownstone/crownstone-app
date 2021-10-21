@@ -1,4 +1,4 @@
-import { mBluenetPromise, resetMocks } from "../__testUtil/mocks/suite.mock";
+import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
 import { BleCommandManagerClass } from "../../app/ts/logic/constellation/BleCommandManager";
@@ -41,4 +41,27 @@ test("Check the CommanderAPI multiswitch queueing", async () => {
   stone2.multiSwitch(1, true);
   stone3.multiSwitch(1, true);
   stone4.multiSwitch(1, true);
+});
+
+
+test("Check the CommanderAPI handling multiple session timeouts", async () => {
+  let db = createMockDatabase(meshId);
+
+  let commander = new CommandAPI(getCommandOptions(db.sphere.id, [db.stones[0].handle]));
+
+  let p1Err = jest.fn();
+  commander.getBootloaderVersion().catch(p1Err);
+
+  await mScheduler.trigger()
+  await TestUtil.nextTick()
+  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"))
+
+  let p2Err = jest.fn();
+  commander.getBootloaderVersion().catch(p2Err);
+
+  await mScheduler.trigger()
+  await TestUtil.nextTick()
+  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"))
+
+
 });
