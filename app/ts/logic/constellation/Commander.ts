@@ -119,7 +119,7 @@ class CommandAPI_base {
     this.options.commanderId ??= xUtil.getUUID();
     this.id = this.options.commanderId;
 
-    LOGi.constellation("CommanderAPI Created for target", this.options.commandTargets, "id:", this.id);
+    LOGi.constellation("Commander: Created for target", this.options.commandTargets, "id:", this.id);
     this.broker = new SessionBroker(this.options);
   }
 
@@ -130,9 +130,11 @@ class CommandAPI_base {
    */
   async _load(command : CommandInterface, allowMeshRelays: boolean = false) : Promise<any> {
     try {
-      if (this._ended) { throw new Error("Commander has been ended."); }
+      if (this._ended) {
+        throw new Error("COMMANDER_HAS_ENDED");
+      }
 
-      LOGi.constellation("Commander: Loading command", command.type, command.info(), allowMeshRelays);
+      LOGi.constellation("Commander: Loading command", command.type, allowMeshRelays,"id:", this.id);
       // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
       let validHandleToPerformAction = false;
       for (let target of this.options.commandTargets) {
@@ -146,7 +148,7 @@ class CommandAPI_base {
       }
 
       let promiseContainer = xUtil.getPromiseContainer<any>()
-      LOGd.constellation("Commander: Generating command for", command.type, command.info(), allowMeshRelays);
+      LOGd.constellation("Commander: Generating command for", command.type, allowMeshRelays,"id:", this.id);
       let commands = BleCommandManager.generateAndLoad(this.options, command, allowMeshRelays, promiseContainer);
       // in case this command is broadcast instead of done via
       if (commands) {
@@ -156,7 +158,7 @@ class CommandAPI_base {
       return promiseContainer.promise;
     }
     catch (err) {
-      LOGe.constellation("Commander: Failed to load command", err);
+      LOGe.constellation("Commander: Failed to load command", err?.message, "id:", this.id);
       throw err;
     }
   }

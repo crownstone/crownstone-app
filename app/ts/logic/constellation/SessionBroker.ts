@@ -157,7 +157,7 @@ export class SessionBroker {
             BleCommandManager.removeCommand(handle, command.id, "SESSION_REQUEST_TIMEOUT");
           }
           else if (err?.message === "ALREADY_REQUESTED_TIMEOUT") {
-            LOGe.constellation("SessionBroker: Require session has thrown an ALREADY_REQUESTED_TIMEOUT error.", err);
+            LOGe.constellation("SessionBroker: Require session has thrown an ALREADY_REQUESTED_TIMEOUT error.", handle, this.options.commanderId);
             Testing.hook("ALREADY_REQUESTED_TIMEOUT", {handle, type: command.command.type} );
           }
           else if (err?.message === "REMOVED_FROM_QUEUE") {

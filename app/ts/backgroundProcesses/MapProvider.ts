@@ -7,7 +7,7 @@ import {
   getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/MapUtil";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
-import { LOG } from "../logging/Log";
+import { LOG, LOGi, LOGw } from "../logging/Log";
 import { core } from "../Core";
 
 /**
@@ -72,14 +72,17 @@ class MapProviderClass {
           this.refreshAll();
         }
 
-        if (
-          change.meshIdUpdated
-        ) {
+        if (change.changeStones) {
+          this.logMap()
+        }
+
+        if (change.meshIdUpdated) {
           this.refreshMeshMap()
         }
       });
 
       this.refreshAll();
+      this.logMap();
     }
   }
 
@@ -139,6 +142,11 @@ class MapProviderClass {
     });
 
     return uidMap;
+  }
+
+
+  logMap() {
+    LOGi.info("MapProvider: logMap", JSON.stringify(Object.values(this.stoneSummaryMap)))
   }
 
 

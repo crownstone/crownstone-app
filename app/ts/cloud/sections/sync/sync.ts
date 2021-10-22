@@ -15,6 +15,7 @@ import { CloudPoller } from "../../../logic/CloudPoller";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { SyncNext } from "../newSync/SyncNext";
+import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 
 
 
@@ -165,6 +166,11 @@ export const sync = {
           }
         });
 
+
+        // log a map for the debugging process.
+        if (new Date(CLOUD.lastSyncTimestamp).getDate() !== new Date().getDate() || CLOUD.lastSyncTimestamp === 0) {
+          MapProvider.logMap();
+        }
         CLOUD.lastSyncTimestamp = Date.now();
 
         if (actions.length > 0) {

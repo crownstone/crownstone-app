@@ -313,7 +313,7 @@ export class BleCommandManagerClass {
       }
     }
     catch (err) {
-      LOGw.constellation("BleCommandManager: Something went wrong while performing", command.command.type, handle, err, command.id);
+      LOGw.constellation("BleCommandManager: Something went wrong while performing", command.command.type, handle, err?.message, command.id);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
       if (attemptingIndex !== -1 && command.executedBy.indexOf(handle) === -1) {
         command.attemptingBy.splice(attemptingIndex, 1);
@@ -321,7 +321,7 @@ export class BleCommandManagerClass {
 
       if (command.commandType === 'DIRECT') {
         command.promise.reject(err);
-        LOGw.constellation("BleCommandManager: Failing the direct command", command.command.type, handle, err, command.id);
+        LOGw.constellation("BleCommandManager: Failing the direct command", command.command.type, handle, err?.message, command.id);
         this.removeCommand(handle, command.id);
         commandRemoved = true;
       }
@@ -329,10 +329,10 @@ export class BleCommandManagerClass {
         // if the error is not connected,
         if (err?.message !== "NOT_CONNECTED") {
           command.promise.reject(err);
-          LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err, command.id);
+          LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err?.message, command.id);
           // if this is a mesh relay, we have to fail the initial promise. The handle of the endTarget will handle the direct command.
           if (command.endTarget) {
-            LOGw.constellation("BleCommandManager: Failing the original direct command", command.command.type,  handle, err, command.id, "Source:", command.endTarget, command.linkedId);
+            LOGw.constellation("BleCommandManager: Failing the original direct command", command.command.type,  handle, err?.message, command.id, "Source:", command.endTarget, command.linkedId);
             this.removeCommand(command.endTarget, command.linkedId, err);
           }
           // we always have to remove the mesh commands.

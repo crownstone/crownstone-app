@@ -60,10 +60,10 @@ export class Session {
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
       this.state = "DISCONNECTED";
       if (this.recoverFromDisconnect && !this._sessionIsKilled) {
-        LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...");
+        LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
       }
       else {
-        LOGi.constellation("Session: Disconnected from Crownstone, ending session...")
+        LOGi.constellation("Session: Disconnected from Crownstone, ending session...", this.handle, this.identifier)
         this.sessionHasEnded();
       }
     });
@@ -227,13 +227,13 @@ export class Session {
       }
     }
     this.state = "PERFORMING_COMMAND";
-    LOGd.constellation("Session: performing available command...", this.handle, this.identifier);
+    LOGi.constellation("Session: performing available command...", this.handle, this.identifier);
     await BleCommandManager.performCommand(this.handle, this.privateId);
-    LOGd.constellation("Session: Finished available command...", this.handle, this.identifier);
+    LOGi.constellation("Session: Finished available command.", this.handle, this.identifier);
 
     // @ts-ignore
     if (this.state !== "PERFORMING_COMMAND") {
-      LOGd.constellation("Session: Session interrupted", this.handle, this.identifier);
+      LOGi.constellation("Session: Session interrupted", this.handle, this.identifier);
       return;
     }
     this.state = "CONNECTED";
@@ -297,7 +297,7 @@ export class Session {
     }
 
 
-    LOGd.constellation("Session: killing session completed", this.handle, this.identifier);
+    LOGi.constellation("Session: killing session completed", this.handle, this.identifier);
   }
 
 
