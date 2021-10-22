@@ -270,6 +270,7 @@ export class DfuExecutor {
         this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.VERSION_OBTAINING_FAILED);
       }
 
+      let disconnectWaiter = this.claimedCommander.disconnect();
 
       try {
         if (this.stopDFU) {
@@ -293,6 +294,8 @@ export class DfuExecutor {
       // The DFU phase starts here.
       if (this.stopDFU) { throw new Error(DFU_CANCELLED); }
       LOGi.dfu("DfuExecutor: cloud firmware step count finished.");
+
+      await disconnectWaiter;
 
       // debugging overrides
         if (this._debugExtraBootloader()) { this.amountOfBootloaders = FORCE_MINIMAL_BOOTLOADER_LAYERS; }
@@ -358,6 +361,7 @@ export class DfuExecutor {
       LOGi.dfu("DfuExecutor: Crownstone is in dfu mode while getting versions...")
       await this._getVersionsInBootloaderMode()
       await this.claimedCommander.bootloaderToNormalMode()
+      await this.claimedCommander.disconnect()
       let crownstoneMode = await this._searchForCrownstone()
       if (crownstoneMode.dfuMode === true) {
         // we conclude the firmware is not functional.
@@ -399,7 +403,7 @@ export class DfuExecutor {
 
   async _getBootloaderVersionFromDFU() {
     let crownstoneMode = await this._searchForCrownstone();
-    await this.claimedCommander.putInDFU()
+    await this.dfuHelper.putInDFU(this.claimedCommander, crownstoneMode);
     crownstoneMode = await this._searchForCrownstone("DFU");
     await this._getVersionsInBootloaderMode()
     if (!this.currentBootloaderVersion) {

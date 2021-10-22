@@ -494,6 +494,10 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_FactoryResetHubOnly());
   }
 
+  async disconnect() {
+    await this.broker.disconnectSession();
+  }
+
   async end() {
     this._ended = true;
     BleCommandManager.cancelCommanderCommands(this.id);

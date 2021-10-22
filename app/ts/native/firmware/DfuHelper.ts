@@ -39,13 +39,13 @@ export class DfuHelper {
         await commander.putInDFU();
       }
       LOG.info("DfuHelper: DFU progress: Placed in DFU mode.");
-      await commander.end();
+      await commander.disconnect();
 
       await Scheduler.delay(3000)
     }
     catch (err) {
       LOGe.info("DfuHelper: Error during putInDFU.", err);
-      commander.end();
+      commander.disconnect();
       throw err;
     }
   }

@@ -194,4 +194,12 @@ export class SessionBroker {
     this._unsubscribeListeners = [];
   }
 
+  async disconnectSession() {
+    let connectedSessions = Object.keys(this.connectedSessions);
+    for (let sessionHandle of connectedSessions) {
+      LOGi.constellation("SessionBroker: Disconnecting session to", sessionHandle, "for", this.options.commanderId);
+      await SessionManager.disconnectSession(sessionHandle, this.options.commanderId);
+    }
+  }
+
 }

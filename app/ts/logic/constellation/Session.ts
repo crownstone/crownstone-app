@@ -302,7 +302,7 @@ export class Session {
 
 
   async disconnect() {
-    LOGi.constellation("Session: disconnecting", this.handle, this.identifier);
+    LOGi.constellation("Session: performing closing commands...", this.handle, this.identifier);
     this.state = "DISCONNECTING";
     try {
       await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode);
@@ -310,9 +310,20 @@ export class Session {
     catch (e) {
       LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e?.message);
     }
-    LOGi.constellation("Session: closing commands performed", this.handle, this.identifier);
-    await BluenetPromiseWrapper.phoneDisconnect(this.handle);
-    LOGi.constellation("Session: phoneDisconnect done", this.handle, this.identifier);
+
+    LOGi.constellation("Session: closing commands done.", this.handle, this.identifier);
+    if (this.crownstoneMode === "operation") {
+      // tell the crownstone to disconnect from the phone.
+      LOGi.constellation("Session: telling the Crownstone to disconnect...", this.handle, this.identifier);
+      await BluenetPromiseWrapper.disconnectCommand(this.handle);
+    }
+    else {
+      LOGi.constellation("Session: disconnecting from phone...", this.handle, this.identifier);
+      await BluenetPromiseWrapper.phoneDisconnect(this.handle);
+
+    }
+
+    LOGi.constellation("Session: disconnect done", this.handle, this.identifier);
   }
 
 

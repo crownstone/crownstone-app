@@ -359,6 +359,19 @@ export class SessionManagerClass {
     }
   }
 
+
+  /**
+   * If the session is claimed via claimSession, we might want to disconnect it. This methods does this.
+   * @param handle
+   * @param commanderId
+   */
+  async disconnectSession(handle: string, commanderId: string) {
+    let session = this._sessions[handle];
+    if (session && session.isPrivate() && session.privateId === commanderId && session.state !== "DISCONNECTING" && session.state !== "DISCONNECTED") {
+      await session.disconnect();
+    }
+  }
+
   /**
    * The end of a session means it has disconnected after being connected once, or it has been killed.
    *

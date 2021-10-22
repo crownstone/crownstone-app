@@ -436,9 +436,6 @@ export class BleCommandManagerClass {
             .catch((err) => {})
         }
       }
-
-      // tell the crownstone to disconnect from the phone.
-      await BluenetPromiseWrapper.disconnectCommand(handle);
     }
   }
 
