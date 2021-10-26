@@ -77,48 +77,53 @@ class NotificationParserClass {
     }
 
     let state = core.store.getState();
-    switch(notificationData.command) {
-      case 'multiSwitch':
-        this._handleMultiswitch(notificationData, state); break;
-      case 'setSwitchStateRemotely':
-        this._handleSetSwitchStateRemotely(notificationData, state); break;
-      case 'newMessage':
-        if (notificationData.id) {
-          CLOUD.getMessage(notificationData.id)
-            .then((result) => {
-              state = core.store.getState();
-              let notified = LocalNotifications._handleNewMessage(notificationData, state);
-              if (notified) {
-                MessageCenter.storeMessage(result);
-              }
-            })
-            .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err)})
-        }
-        break;
-      case "sphereUsersUpdated":
-        this._updateSphereUsers(notificationData);
-        break;
-      case "sphereUserRemoved":
-        if (notificationData.sphereId) {
-          if (notificationData.removedUserId === state.user.userId) {
-            CLOUD.sync(core.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err); });
+    try {
+      switch(notificationData.command) {
+        case 'multiSwitch':
+          this._handleMultiswitch(notificationData, state); break;
+        case 'setSwitchStateRemotely':
+          this._handleSetSwitchStateRemotely(notificationData, state); break;
+        case 'newMessage':
+          if (notificationData.id) {
+            CLOUD.getMessage(notificationData.id)
+              .then((result) => {
+                state = core.store.getState();
+                let notified = LocalNotifications._handleNewMessage(notificationData, state);
+                if (notified) {
+                  MessageCenter.storeMessage(result);
+                }
+              })
+              .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err)})
           }
-          else {
-            this._updateSphereUsers(notificationData);
+          break;
+        case "sphereUsersUpdated":
+          this._updateSphereUsers(notificationData);
+          break;
+        case "sphereUserRemoved":
+          if (notificationData.sphereId) {
+            if (notificationData.removedUserId === state.user.userId) {
+              CLOUD.sync(core.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err); });
+            }
+            else {
+              this._updateSphereUsers(notificationData);
+            }
           }
-        }
-        break;
-      case "userEnterSphere":
-      case "userExitSphere":
-      case "userExitLocation":
-      case "userEnterLocation":
-        if (notificationData.sphereId) {
-          CLOUD.syncUsers(notificationData.sphereId);
-        }
-        break;
-      case "InvitationReceived":
-        InviteCenter.checkForInvites();
-        break;
+          break;
+        case "userEnterSphere":
+        case "userExitSphere":
+        case "userExitLocation":
+        case "userEnterLocation":
+          if (notificationData.sphereId) {
+            CLOUD.syncUsers(notificationData.sphereId);
+          }
+          break;
+        case "InvitationReceived":
+          InviteCenter.checkForInvites();
+          break;
+      }
+    }
+    catch (err) {
+      LOGe.notifications("NotificationParser: Error during remote notificaiton handling", err?.message);
     }
   }
 
@@ -145,8 +150,14 @@ class NotificationParserClass {
       return;
     }
 
-    if (notificationData.event && typeof notificationData.event === 'object' && Object.keys(notificationData.event).length > 0) {
-      return this._handleMultiswitch(notificationData, state);
+    if (notificationData.event) {
+      try {
+        return this._handleMultiswitch(notificationData, state);
+      }
+      catch (err) {
+        // invalid payload. ignore. use setSwitchStateRemotely as fallback.
+        LOGw.notifications("NotificationParser: Multiswitch handling failed", err?.message, "reverting to setSwitchStateRemotely");
+      }
     }
 
     let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
@@ -172,17 +183,26 @@ class NotificationParserClass {
 
   _handleMultiswitch(notificationData, state) {
     let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
-    if (!switchEventData) { return; };
+    if (!switchEventData) { throw new Error("NO_EVENT_DATA"); };
+    try {
+      if (typeof switchEventData === "string") {
+        switchEventData = JSON.parse(switchEventData);
+      }
+    }
+    catch (err) {
+      // invalid payload. ignore.
+      throw new Error("COULD_NOT_PARSE_EVENT_DATA");
+    }
 
     let cloudSphereId = switchEventData.sphere?.id;
-    if (!cloudSphereId) { return; };
+    if (!cloudSphereId) { throw new Error("NO_CLOUD_SPHERE_ID_PROVIDED"); };
     let sphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId
 
     let sphere = state.spheres[sphereId];
-    if (!sphere) { return; }
+    if (!sphere) { throw new Error("CAN_NOT_FIND_SPHERE"); }
 
     let switchDataArr = switchEventData.switchData;
-    if (!switchDataArr || !Array.isArray(switchDataArr)) { return; };
+    if (!switchDataArr || !Array.isArray(switchDataArr)) { throw new Error("SWITCH_DATA_IS_NOT_AN_ARRAY"); ; };
 
 
     let actionToPerform = false;
