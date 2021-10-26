@@ -146,10 +146,23 @@ class NotificationParserClass {
   _handleSetSwitchStateRemotely(notificationData, state) {
     if (!notificationData.sphereId || !notificationData.stoneId) {
       return;
-    }
+    } 
 
-    if (notificationData.event && typeof notificationData.event === 'object' && Object.keys(notificationData.event).length > 0) {
-      return this._handleMultiswitch(notificationData, state);
+    if (notificationData.event) {
+      let switchEventData = notificationData.event;
+      try {
+        if (typeof switchEventData === "string") {
+          LOG.notifications("Parsing switchEventData..");
+          switchEventData = JSON.parse(switchEventData);
+          LOG.notifications("Parsed switchEventData", switchEventData);
+        }
+        if ( Object.keys(switchEventData).length > 0) {
+          return this._handleMultiswitch(notificationData, state);
+        }
+      }
+      catch (err) { 
+        LOG.notifications("Failed to parse, using fallback.");
+      }
     }
 
     let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
@@ -193,30 +206,58 @@ class NotificationParserClass {
 
   _handleMultiswitch(notificationData, state) {
     let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
-    if (!switchEventData) { return; };
+    if (!switchEventData) {
+      LOG.notifications("No switchEventData:", switchEventData);
+      return;
+    };
+    LOG.notifications("switchEventData:", switchEventData);
+
+    if (typeof switchEventData === "string") {
+      try {
+        LOG.notifications("Parsing switchEventData..");
+        switchEventData = JSON.parse(switchEventData);
+        LOG.notifications("Parsed switchEventData", switchEventData);
+      }
+      catch (err) {
+        LOG.notifications("Failed to parse switchEventData");
+        return;
+      }
+    }
 
     let cloudSphereId = switchEventData.sphere?.id;
-    if (!cloudSphereId) { return; };
+    if (!cloudSphereId) {
+      LOG.notifications("No cloudSphereId:", cloudSphereId);
+      return;
+    };
     let sphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId
 
     let sphere = state.spheres[sphereId];
-    if (!sphere) { return; }
+    if (!sphere) {
+      LOG.notifications("No sphere:", sphere);
+      return;
+    }
 
     let switchDataArr = switchEventData.switchData;
-    if (!switchDataArr || !Array.isArray(switchDataArr)) { return; };
+    if (!switchDataArr || !Array.isArray(switchDataArr)) {
+      LOG.notifications("No switchDataArr:", switchDataArr);
+      return;
+    };
 
 
     let actionToPerform = false;
     switchDataArr.forEach((switchData) => {
       let stoneId = MapProvider.cloud2localMap.stones[switchData.id] || switchData.id;
       let stone = sphere.stones[stoneId];
-      if (!stone) { return; }
+      if (!stone) {
+        LOG.notifications("No stone:", stone);
+        return;
+      }
 
-      let switchState = switchData.percentage;
+      let switchState = 0;
       switch (switchData.type) {
         case "PERCENTAGE":
           if (switchData.percentage === undefined || switchData.percentage === null) { return };
-          switchState = switchData.percentage;
+          switchState = Number(switchData.percentage);
           break;
         case "TURN_OFF":
           switchState = 0;
