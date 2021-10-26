@@ -4,7 +4,7 @@ import { Platform } from "react-native";
 import { CLOUD } from "../cloud/cloudAPI";
 import { LocalNotifications } from "./LocalNotifications";
 import { MessageCenter } from "../backgroundProcesses/MessageCenter";
-import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
+import { LOG, LOGe, LOGi, LOGd, LOGw } from "../logging/Log";
 import { MapProvider } from "../backgroundProcesses/MapProvider";
 import { SphereUserSyncer } from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
@@ -146,22 +146,22 @@ class NotificationParserClass {
   _handleSetSwitchStateRemotely(notificationData, state) {
     if (!notificationData.sphereId || !notificationData.stoneId) {
       return;
-    } 
+    }
 
     if (notificationData.event) {
       let switchEventData = notificationData.event;
       try {
         if (typeof switchEventData === "string") {
-          LOG.notifications("Parsing switchEventData..");
+          LOGd.notifications("NotificationParser: Parsing switchEventData..");
           switchEventData = JSON.parse(switchEventData);
-          LOG.notifications("Parsed switchEventData", switchEventData);
+          LOGd.notifications("NotificationParser: Parsed switchEventData", switchEventData);
         }
         if ( Object.keys(switchEventData).length > 0) {
           return this._handleMultiswitch(notificationData, state);
         }
       }
       catch (err) { 
-        LOG.notifications("Failed to parse, using fallback.");
+        LOGw.notifications("NotificationParser: Failed to parse, using fallback.");
       }
     }
 
@@ -170,7 +170,7 @@ class NotificationParserClass {
     if (!localSphereId || !localStoneId) { return; }
 
     if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
-      LOG.notifications("NotificationParser: switching based on notification", notificationData);
+      LOGi.notifications("NotificationParser: switching based on notification", notificationData);
       // remap existing 0..1 range from cloud to 0..100
       if (notificationData.switchState > 0 && notificationData.switchState <= 1) {
         notificationData.switchState = 100*notificationData.switchState;
@@ -207,39 +207,39 @@ class NotificationParserClass {
   _handleMultiswitch(notificationData, state) {
     let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
     if (!switchEventData) {
-      LOG.notifications("No switchEventData:", switchEventData);
+      LOGw.notifications("NotificationParser: No switchEventData:", switchEventData);
       return;
     };
-    LOG.notifications("switchEventData:", switchEventData);
+    LOGi.notifications("NotificationParser: switchEventData:", switchEventData);
 
     if (typeof switchEventData === "string") {
       try {
-        LOG.notifications("Parsing switchEventData..");
+        LOGd.notifications("NotificationParser: Parsing switchEventData..");
         switchEventData = JSON.parse(switchEventData);
-        LOG.notifications("Parsed switchEventData", switchEventData);
+        LOGd.notifications("NotificationParser: Parsed switchEventData", switchEventData);
       }
       catch (err) {
-        LOG.notifications("Failed to parse switchEventData");
+        LOGw.notifications("NotificationParser: Failed to parse switchEventData");
         return;
       }
     }
 
     let cloudSphereId = switchEventData.sphere?.id;
     if (!cloudSphereId) {
-      LOG.notifications("No cloudSphereId:", cloudSphereId);
+      LOGw.notifications("NotificationParser: No cloudSphereId:", cloudSphereId);
       return;
     };
     let sphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId
 
     let sphere = state.spheres[sphereId];
     if (!sphere) {
-      LOG.notifications("No sphere:", sphere);
+      LOGw.notifications("NotificationParser: No sphere:", sphere);
       return;
     }
 
     let switchDataArr = switchEventData.switchData;
     if (!switchDataArr || !Array.isArray(switchDataArr)) {
-      LOG.notifications("No switchDataArr:", switchDataArr);
+      LOGw.notifications("NotificationParser: No switchDataArr:", switchDataArr);
       return;
     };
 
@@ -249,14 +249,17 @@ class NotificationParserClass {
       let stoneId = MapProvider.cloud2localMap.stones[switchData.id] || switchData.id;
       let stone = sphere.stones[stoneId];
       if (!stone) {
-        LOG.notifications("No stone:", stone);
+        LOGw.notifications("NotificationParser: No stone:", stone);
         return;
       }
 
       let switchState = 0;
       switch (switchData.type) {
         case "PERCENTAGE":
-          if (switchData.percentage === undefined || switchData.percentage === null) { return };
+          if (switchData.percentage === undefined || switchData.percentage === null) {
+            LOGw.notifications("NotificationParser: no percentage")
+            return
+          };
           switchState = Number(switchData.percentage);
           break;
         case "TURN_OFF":
@@ -267,6 +270,7 @@ class NotificationParserClass {
           BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {commandName:"turnOn"}, {autoExecute: false}).catch()
           return;
         default:
+          LOGw.notifications("NotificationParser: Unknown type:", switchData.type)
           return;
       }
       actionToPerform = true;
