@@ -210,9 +210,9 @@ export class Session {
 
 
   async handleCommands() {
-    let commandsAvailable = BleCommandManager.areThereCommandsFor(this.handle, this.privateId);
+    let availableCommandId = BleCommandManager.areThereCommandsFor(this.handle, this.privateId);
 
-    if (commandsAvailable === false) {
+    if (availableCommandId === null) {
       // there is no task for us to do. If we're a private connection, we'll wait patiently for a new command
       if (this.isPrivate()) {
         // Tasks here CAN include connections.
@@ -227,9 +227,9 @@ export class Session {
       }
     }
     this.state = "PERFORMING_COMMAND";
-    LOGi.constellation("Session: performing available command...", this.handle, this.identifier);
-    await BleCommandManager.performCommand(this.handle, this.privateId);
-    LOGi.constellation("Session: Finished available command.", this.handle, this.identifier);
+    LOGi.constellation("Session: performing available command...", availableCommandId, this.handle, this.identifier);
+    let performedCommandId = await BleCommandManager.performCommand(this.handle, this.privateId);
+    LOGi.constellation("Session: Finished available command.", performedCommandId, this.handle, this.identifier);
 
     // @ts-ignore
     if (this.state !== "PERFORMING_COMMAND") {

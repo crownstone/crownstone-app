@@ -16,7 +16,7 @@ export class StoneStoreManager {
     Scheduler.loadCallback(TRIGGER_ID, () => { this._updateStore(); });
   }
 
-  loadAction(stoneId, type, action) {
+  loadAction(stoneId, type, action: DatabaseAction) {
     if (!this.actionsPerCrownstone[stoneId]) {
       this.actionsPerCrownstone[stoneId] = {};
     }

@@ -25,7 +25,6 @@ import { LOG, LOGe, LOGw }       from "../logging/Log";
 import { LogProcessor }          from "../logging/LogProcessor";
 import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
-import { MeshUtil }              from "../util/MeshUtil";
 // import * as Sentry from "@sentry/react-native";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";

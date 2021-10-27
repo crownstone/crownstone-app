@@ -50,7 +50,7 @@ import { SettingsFAQ }                        from "../views/settingsViews/Setti
 import { SettingsLocalizationDebug }          from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                    from "../views/settingsViews/dev/SettingsLogging";
 import { SettingsMeshOverview }               from '../views/settingsViews/SettingsMeshOverview'
-import { SettingsMeshTopology}                from '../views/settingsViews/SettingsMeshTopology'
+// import { SettingsMeshTopology}                from '../views/settingsViews/SettingsMeshTopology'
 import { SettingsMeshTopologyHelp }           from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsOverview }                   from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }                    from '../views/settingsViews/SettingsProfile'
@@ -194,7 +194,7 @@ export const Views = {
   SettingsLocalizationDebug:         SettingsLocalizationDebug,
   SettingsLogging:                   SettingsLogging,
   SettingsMeshOverview:              SettingsMeshOverview,
-  SettingsMeshTopology:              SettingsMeshTopology,
+  // SettingsMeshTopology:              SettingsMeshTopology,
   SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,
   SettingsOverview:                  SettingsOverview,
   SettingsPrivacy:                   SettingsPrivacy,

@@ -279,7 +279,6 @@ let combinedStoneReducer = combineReducers({
   abilities:    abilityReducer,
   rules:        ruleReducer,
   errors:       stoneErrorsReducer,
-  mesh:         meshReducer,
   lastUpdated:  lastUpdatedReducer,
   reachability: reachabilityReducer,
   keys:         stoneKeyReducer,

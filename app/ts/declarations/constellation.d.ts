@@ -82,3 +82,5 @@ interface RegisterPayload {
   tapToToggleEnabled:boolean,
   ttlMinutes:number
 }
+
+type PowersampleDataType = "triggeredSwitchcraft" | "missedSwitchcraft" | "filteredBuffer" | "unfilteredBuffer" | "softFuse"

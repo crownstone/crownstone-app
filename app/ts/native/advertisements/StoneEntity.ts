@@ -4,7 +4,6 @@ import {  FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
-import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneStoreManager } from "./StoneStoreManager";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
@@ -34,7 +33,6 @@ export class StoneEntity {
   sphereId;
   store;
   storeManager : StoneStoreManager;
-  meshTracker : StoneMeshTracker;
 
   hubId;
 
@@ -56,8 +54,6 @@ export class StoneEntity {
     this.storeManager = storeManager;
     this.sphereId = sphereId;
     this.stoneId = stoneId;
-
-    this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
     // core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
@@ -143,7 +139,6 @@ export class StoneEntity {
   destroy() {
     this.storeManager.clearActions(this.stoneId);
     this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
-    this.meshTracker.destroy();
   }
 
 
@@ -202,95 +197,6 @@ export class StoneEntity {
   }
 
 
-  _updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, rssi ) {
-    if (stone.mesh[externalId] && stone.mesh[externalId].rssi === rssi) {
-      // this is the same value as before, ignore
-      return;
-    }
-
-    // invalid measurement
-    if (rssi > 0) { return; }
-
-    const BAD_CONNECTION = -150;
-
-    if (rssi === 0) {
-      // One of the Crownstones says there is no connection. We check if the other one says there IS one, if not, we delete the links
-      if (externalStone.mesh[stoneId]) {
-        // the external stone thinks its connected to this stone
-        if (externalStone.mesh[stoneId].rssi === BAD_CONNECTION) {
-          // the connection from the external stone is bad, as is this one. Clear them both.
-          let actions = [];
-          actions.push({
-            type: 'REMOVE_MESH_LINK',
-            sphereId: this.sphereId,
-            stoneId: this.stoneId,
-            nodeId: externalId,
-            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-          });
-          actions.push({
-            type: 'REMOVE_MESH_LINK',
-            sphereId: this.sphereId,
-            stoneId: externalId,
-            nodeId: this.stoneId,
-            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-          });
-          this.store.batchDispatch(actions);
-        }
-        else {
-          // the connection from the external stone is OK, this one is bad. Store it as a bad connection
-          this.store.dispatch({
-            type: 'SET_MESH_INDICATOR',
-            sphereId: this.sphereId,
-            stoneId: this.stoneId,
-            nodeId: externalId,
-            data: {rssi: BAD_CONNECTION},
-            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-          });
-        }
-      }
-      else if (stone.mesh[externalId]) {
-        // the crownstone currently has a link in the store
-
-        // its already bad, clean it up.
-        if (stone.mesh[externalId].rssi === BAD_CONNECTION) {
-          this.store.dispatch({
-            type: 'REMOVE_MESH_LINK',
-            sphereId: this.sphereId,
-            stoneId: this.stoneId,
-            nodeId: externalId,
-            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-          })
-        }
-        else {
-          // there is an existing link which is not bad, what do we do here?
-          this.store.dispatch({
-            type: 'SET_MESH_INDICATOR',
-            sphereId: this.sphereId,
-            stoneId: this.stoneId,
-            nodeId: externalId,
-            data: {rssi: BAD_CONNECTION},
-            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-          });
-        }
-      }
-      else {
-        // the external stone is not connected to this stone, nor is this stone connected to the external one.
-        // this means we do not have to do anything.
-      }
-    }
-    else {
-      this.store.dispatch({
-        type: 'SET_MESH_INDICATOR',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        nodeId: externalId,
-        data: {rssi: rssi},
-        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-      });
-    }
-  }
-
-
   /**
    * This stone entity has sent an advertisement containing the state of ANOTHER crownstone. Handle this.
    * @param stoneId
@@ -307,9 +213,6 @@ export class StoneEntity {
    */
   handleAdvertisementOfExternalCrownstone(stoneId: string, stone, externalId: string, externalStone, advertisement : crownstoneAdvertisement) {
     this._updateStoneLastSeen(stone);
-
-    // if this crownstone was disabled, change this since we saw it directly
-    this._updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, advertisement.serviceData.rssiOfExternalCrownstone);
 
     /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi); // emit
@@ -519,7 +422,6 @@ export class StoneEntity {
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         data: { locked: advertisement.serviceData.switchLocked },
-        updatedAt: Date.now(),
       });
     }
   }
@@ -646,7 +548,6 @@ export class StoneEntity {
     let serviceData = advertisement.serviceData;
     let measuredUsage = Math.floor(serviceData.powerUsageReal);
     let powerFactor = serviceData.powerFactor;
-    let currentTime = Date.now();
 
     let switchState = Math.min(100,serviceData.switchState);
 
@@ -693,8 +594,7 @@ export class StoneEntity {
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         data: changeData,
-        updatedAt: currentTime,
-        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+        // __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
 
@@ -707,8 +607,8 @@ export class StoneEntity {
    */
   _updateStoneLastSeen(stone) {
     let now = Date.now();
-    // only update if the difference is more than 3 seconds.
-    if (now - stone.reachability.lastSeen > 3000) {
+    // only update if the difference is more than 10 seconds.
+    if (now - stone.reachability.lastSeen > 10000) {
       this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN, {
         type: 'UPDATE_STONE_REACHABILITY',
         sphereId: this.sphereId,
@@ -716,7 +616,7 @@ export class StoneEntity {
         data: {
           lastSeen: Date.now(),
         },
-        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+        // __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
   }

@@ -105,29 +105,6 @@ export function from(handle: string | StoneData, timeoutSeconds = 10) : CommandA
   return tell(handle, timeoutSeconds);
 }
 
-// /**
-//  * @param meshId
-//  * @param minimalConnections
-//  */
-// export function tellMesh(meshId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
-//   LOGi.constellation("Telling the meshnetwork...", meshId, minConnections);
-//   let stonesInMap = MapProvider.meshMap[meshId];
-//   let stoneIds = Object.keys(stonesInMap);
-//   if (stoneIds.length > 0) {
-//     let item = stonesInMap[stoneIds[0]];
-//     let sphereId = item.sphereId;
-//     return new CommandAPI({
-//       commanderId:    xUtil.getUUID(),
-//       sphereId:       sphereId,
-//       commandType:    "MESH",
-//       commandTargets: [meshId],
-//       private:        false,
-//       minConnections: minConnections,
-//       timeout:        timeoutSeconds
-//     });
-//   }
-// }
-
 
 /**
  * TellSphere will notify all Meshes in the Sphere
@@ -139,26 +116,12 @@ export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) :
   let sphere = Get.sphere(sphereId);
   if (!sphere) { throw new Error("INVALID_SPHERE_ID"); }
 
-  let stoneIds = Object.keys(sphere.stones)
-  let meshNetworks = [];
-  for (let stoneId of stoneIds) {
-    let meshId = sphere.stones[stoneId].config.meshNetworkId;
-    if (meshId) {
-      if (meshNetworks.indexOf(meshId) === -1) {
-        meshNetworks.push(meshId);
-      }
-    }
-  }
-
-  // if a Crownstone is not in a meshnetwork the default network is "none". However, to make it uniquely identifiable per sphere,
-  // we do not use none but the sphereId. The commandLoader will take care of this inconsistency.
-  meshNetworks.push(sphereId);
 
   return new CommandAPI({
     commanderId:    xUtil.getUUID(),
     sphereId:       sphereId,
     commandType:    "MESH",
-    commandTargets: meshNetworks,
+    commandTargets: [sphereId],
     private:        false,
     minConnections: minConnections,
     timeout:        timeoutSeconds

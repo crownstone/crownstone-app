@@ -104,11 +104,8 @@ export class BleCommandManagerClass {
 
         // possibly load extra mesh relays
         if (allowMeshRelay) {
-
-        // The depending on the mesh id is temporariliy removed. The phone does not accurately know the topology.
-        // - we will generate an additional command for each mesh network in the sphere.
-        // - let meshId = MapProvider.handleMeshMap[handle];
-        // - if (meshId) {
+          // The depending on the mesh id is removed. The phone does not accurately know the topology.
+          // - we will generate an additional command for each mesh network in the sphere.
           if (stoneData) {
             let sphere = Get.sphere(options.sphereId);
             if (sphere) {
@@ -116,10 +113,7 @@ export class BleCommandManagerClass {
               let amountOfStonesInMesh = 0;
               for (let stoneId of stoneIdsInSphere) {
                 if (sphere.stones[stoneId].config.handle === targetId) { continue; }
-                // The depending on the mesh id is temporariliy removed. The phone does not accurately know the topology.
-                // - if (sphere.stones[stoneId].config.meshNetworkId === meshId) {
-                  amountOfStonesInMesh++;
-                // - }
+                amountOfStonesInMesh++;
               }
 
               let relayBleCommand : BleCommand = {
@@ -136,20 +130,15 @@ export class BleCommandManagerClass {
               commandsToLoad.push(relayBleCommand);
             }
           }
-          // - }
         }
       }
       else if (options.commandType === "MESH") {
-        // target is the meshId
         let sphere = Get.sphere(options.sphereId);
         if (sphere) {
           let stoneIdsInSphere = Object.keys(sphere.stones);
           let amountOfStonesInMesh = 0;
           for (let stoneId of stoneIdsInSphere) {
-            // The depending on the mesh id is temporariliy removed. The phone does not accurately know the topology.
-            // - if (sphere.stones[stoneId].config.meshNetworkId === targetId) {
               amountOfStonesInMesh++;
-            // - }
           }
 
           let command : BleCommand = { ...sharedItems, promise };
@@ -192,61 +181,23 @@ export class BleCommandManagerClass {
   /**
    * This will check all non-private commands and return if there are remaining commands for the requested handle.
    * If the private key is provided, only check commands corresponding to the private key.
+   *
+   * It will return either false or the commandId of the command that can be performed.
    * @param handle
    */
-  areThereCommandsFor(handle: string, privateKey: string | null = null) : boolean {
-    let meshId   = MapProvider.handleMeshMap[handle];
-    let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
-
-    LOGv.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} checking meshId ${meshId} and sphereId ${sphereId}`);
-
-    if (privateKey) {
-      if (this.queue.direct[handle]) {
-        let commands = this.queue.direct[handle];
-        for (let command of commands) {
-          if (command.private && command.commanderId) {
-            LOGd.constellation(`BleCommandManager.areThereCommandsFor private ${handle} ${privateKey} is TRUE: ${command.command.type}`);
-            return true;
-          }
-        }
-      }
+  areThereCommandsFor(handle: string, privateKey: string | null = null) : string | false {
+    let command = this.getCommandFor(handle, privateKey);
+    if (command) {
+      return command.id;
     }
-    else {
-      let meshCommands = this._getMeshCommands(meshId, sphereId);
-
-      if (this.queue.direct[handle]) {
-        let commands = this.queue.direct[handle];
-        for (let command of commands) {
-          if (command.private === false) {
-            LOGd.constellation(`BleCommandManager.areThereCommandsFor public ${handle} ${privateKey} is TRUE: ${command.command.type}`);
-            return true;
-          }
-        }
-      }
-      else if (meshCommands.length > 0) {
-        for (let command of meshCommands) {
-          if (command.executedBy.indexOf(handle) === -1 && command.attemptingBy.indexOf(handle) === -1) {
-            LOGd.constellation(`BleCommandManager.areThereCommandsFor mesh ${handle} ${privateKey} is TRUE: ${command.command.type}`);
-            return true;
-          }
-        }
-      }
-    }
-
-    LOGd.constellation(`BleCommandManager.areThereCommandsFor ${handle} ${privateKey} is FALSE`);
     return false;
   }
 
 
-  _getMeshCommands(meshId, sphereId) {
-    let commandsSpecific = this.queue.mesh[meshId]   || [];
+  _getMeshCommands(sphereId) {
     let commandsSphereId = this.queue.mesh[sphereId] || [];
-
-    let commands = commandsSpecific.concat(commandsSpecific, commandsSphereId);
-    return commands;
+    return commandsSphereId;
   }
-
-
 
 
   removeCommand(handle: string, commandId: string, errorMessage = null) {
@@ -273,7 +224,7 @@ export class BleCommandManagerClass {
     }
   }
 
-  async _performCommand(handle: string, command: BleCommand) {
+  async _performCommand(handle: string, command: BleCommand) : Promise<string> {
     // After running:
     //   1 - Move the attemptingBy for this handle to executedBy on success, clear the attemptingBy on failure.
     //   2 - Check all executedBy and match this against the minConnections requirement
@@ -347,7 +298,48 @@ export class BleCommandManagerClass {
       SessionManager.evaluateSessionNecessity()
     }
 
+    return command.id;
   }
+
+  getCommandFor(handle: string, privateId: string | null = null) : BleCommand | null {
+    let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
+
+    LOGv.constellation(`BleCommandManager.getCommandFor ${handle} ${privateId} checking sphereId ${sphereId}`);
+
+    if (privateId) {
+      if (this.queue.direct[handle]) {
+        let commands = this.queue.direct[handle];
+        for (let command of commands) {
+          if (command.private && command.commanderId) {
+            return command;
+          }
+        }
+      }
+    }
+    else {
+      let meshCommands = this._getMeshCommands(sphereId);
+
+      if (this.queue.direct[handle]) {
+        let commands = this.queue.direct[handle];
+        for (let command of commands) {
+          if (command.private === false) {
+            return command;
+          }
+        }
+      }
+      else if (meshCommands.length > 0) {
+        for (let command of meshCommands) {
+          if (command.executedBy.indexOf(handle) === -1 && command.attemptingBy.indexOf(handle) === -1) {
+            return command;
+          }
+        }
+      }
+    }
+
+    LOGd.constellation(`BleCommandManager.getCommandFor ${handle} ${privateId} is FALSE`);
+    return null;
+  }
+
 
   /**
    * A Session will ask for a task that it could perform on this handle. The private key is used to ensure we only get appropriate
@@ -357,43 +349,12 @@ export class BleCommandManagerClass {
    * @param handle
    * @param privateId
    */
-  async performCommand(handle: string, privateId: string | null = null) : Promise<void> {
-    let meshId   = MapProvider.handleMeshMap[handle];
-    let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId;
-
-    if (privateId) {
-      if (this.queue.direct[handle]) {
-        let commands = this.queue.direct[handle];
-        for (let command of commands) {
-          if (command.private && command.commanderId === privateId) {
-            await this._performCommand(handle, command);
-            break;
-          }
-        }
-      }
+  async performCommand(handle: string, privateId: string | null = null) : Promise<string> {
+    let command = this.getCommandFor(handle, privateId);
+    if (command) {
+      return await this._performCommand(handle, command);
     }
-    else {
-      let meshCommands = this._getMeshCommands(meshId, sphereId);
-
-      // this is a shared connection
-      if (this.queue.direct[handle]) {
-        let commands = this.queue.direct[handle];
-        for (let command of commands) {
-          if (command.private === false) {
-            await this._performCommand(handle, command);
-            break;
-          }
-        }
-      }
-      else if (meshCommands.length > 0) {
-        for (let command of meshCommands) {
-          if (command.executedBy.indexOf(handle) === -1 && command.attemptingBy.indexOf(handle) === -1) {
-            await this._performCommand(handle, command);
-            break;
-          }
-        }
-      }
-    }
+    return "NO_COMMAND_TO_PERFORM";
   }
 
 

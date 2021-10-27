@@ -16,7 +16,6 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Scheduler } from "../../../logic/Scheduler";
 import { Util } from "../../../util/Util";
-import { MeshUtil } from "../../../util/MeshUtil";
 import { CLOUD_ADDRESS } from "../../../ExternalConfig";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { topBarStyle } from "../../components/topbar/TopbarStyles";
@@ -366,37 +365,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       icon: <IconButton name="ios-calculator" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
-      }});
-    items.push({
-      label: "Reset networks",
-      type:  'button',
-      style: {color: colors.black.hex},
-      icon:  <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-      callback:() => {
-        Alert.alert(
-"Are you sure?",
-"This will reset all mesh networks in the current Sphere.",
-[{text:"Do it.", onPress: () => {
-              const store = core.store;
-              const state = store.getState();
-              let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
-              MeshUtil.clearMeshNetworkIds(store, sphereId);
-              MeshUtil.clearTopology(store, sphereId);
-              Alert.alert(
-"Reset Done",
-"Rediscovery will start automatically.",
-[{text:"OK"}]);
-            }},{text: "Cancel"}
-          ]
-        )
-      }
-    });
-    items.push({
-      label: "Mesh Topology",
-      type: 'navigation',
-      icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
-      callback:() => {
-        NavigationUtil.navigate( "SettingsMeshTopology");
       }});
 
     // if (user.betaAccess) {

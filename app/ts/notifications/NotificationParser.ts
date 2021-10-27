@@ -32,7 +32,6 @@ class NotificationParserClass {
     switch (messageData.type) {
       case 'newMessage':
         NavigationUtil.navigate( "MessageInbox");
-
         break;
     }
   }
@@ -168,10 +167,12 @@ class NotificationParserClass {
     if (stone) {
       LOG.notifications("NotificationParser: switching based on notification", notificationData);
       // remap existing 0..1 range from cloud to 0..100
-      if (notificationData.switchState > 0 && notificationData.switchState <= 1) {
-        notificationData.switchState = 100*notificationData.switchState;
+      let switchState = Number(notificationData.switchState);
+
+      if (switchState > 0 && switchState <= 1) {
+        switchState = 100*switchState;
       }
-      let switchState = Math.min(100, notificationData.switchState);
+      switchState = Math.min(100, Math.max(0,switchState));
       if (switchState === 100) {
         tell(stone).turnOn(true).catch(() => {});
       }
@@ -211,11 +212,11 @@ class NotificationParserClass {
       let stone = sphere.stones[stoneId];
       if (!stone) { return; }
 
-      let switchState = switchData.percentage;
+      let switchState = 0;
       switch (switchData.type) {
         case "PERCENTAGE":
           if (switchData.percentage === undefined || switchData.percentage === null) { return };
-          switchState = switchData.percentage;
+          switchState = Math.min(100, Math.max(0,Number(switchData.percentage)));
           break;
         case "TURN_OFF":
           switchState = 0;

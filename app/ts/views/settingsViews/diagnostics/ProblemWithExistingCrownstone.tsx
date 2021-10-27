@@ -21,7 +21,6 @@ import {
   DiagYesNo,
   TestResult,
   nameFromSummary,
-  DiagSingleButtonMeshTopology,
   DiagWaiting, DiagListOfStones
 } from "./DiagnosticUtil";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
@@ -495,78 +494,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
   }
 
-  _handleNotInMesh() {
-    if (this.state.canSeeCrownstoneBeacon === false && this.state.canSeeCrownstoneDirectly === false && this.state.canSeeCrownstoneViaMesh === false) {
-      return this._handleNotInRange();
-    }
-    else if (this.state.canSeeCrownstoneViaMesh === false && this.state.canSeeThisCrownstoneMesh === false) {
-      // good but not in mesh
-      let inMesh = this.state.problemStoneSummary.stoneConfig.meshNetworkId !== null;
-
-      let explanation = null;
-      if (this.state.amountOfIBeacons <= 1) {
-        if (inMesh) {
-          explanation =  lang("I_cant_hear_it_via_the_me");
-        }
-        else {
-          explanation =  lang("I_cant_hear_it_via_the_mes");
-        }
-      }
-      else {
-        explanation =  lang("I_cant_hear_it_via_the_mesh");
-      }
-      explanation +=  lang("You_can_try_moving_it_clo");
-      if (Platform.OS === 'android') {
-        explanation +=  lang("Sidebar_");
-      }
-      else {
-          explanation +=  lang("Settings_");
-      }
-
-      return (
-        <DiagSingleButtonMeshTopology
-          visible={this.state.visible}
-          header={ lang("I_see_what_you_mean__")}
-          explanation={explanation}
-        />
-      );
-    }
-    else if (this.state.canSeeCrownstoneViaMesh === true) {
-      // everything is perfect
-      let explanation =  lang("It_is_in_the_mesh__You_ca");
-      if (Platform.OS === 'android') {
-        explanation +=  lang("Sidebar_");
-      }
-      else {
-        explanation +=  lang("Settings_");
-      }
-      return (
-        <DiagSingleButtonMeshTopology
-          visible={this.state.visible}
-          header={ lang("I_can_hear_other_Crownsto")}
-          explanation={explanation}
-        />
-      );
-    }
-    else if (this.state.canSeeThisCrownstoneMesh === true) {
-      // everything is perfect
-      let explanation =  lang("It_is_in_the_mesh__You_can");
-      if (Platform.OS === 'android') {
-        explanation +=  lang("Sidebar_");
-      }
-      else {
-        explanation +=  lang("Settings_");
-      }
-      return (
-        <DiagSingleButtonMeshTopology
-          visible={this.state.visible}
-          header={ lang("I_can_hear_this_Crownston")}
-          explanation={explanation}
-        />
-      );
-    }
-  }
-
   _handleOnlySwitchesWhenNear() {
     let inMesh = this.state.problemStoneSummary.stoneConfig.meshNetworkId !== null;
     if (inMesh) {
@@ -891,7 +818,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           pressHandlers={[
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'searching'      }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'never_switches' }); }); },
-            // () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'only_switches_when_near' }); }); },
             () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'behaviour_is_weird' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'other' }); }); },
@@ -908,9 +834,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.crownstoneProblemType === 'never_switches') {
       return this._handleNeverSwitches();
-    }
-    else if (this.state.crownstoneProblemType === 'not_in_mesh') {
-      return this._handleNotInMesh();
     }
     else if (this.state.crownstoneProblemType === 'only_switches_when_near') {
       return this._handleOnlySwitchesWhenNear();

@@ -23,3 +23,9 @@ test("Using core in tests", async () => {
   expect(xUtil.deepCompare(a, b)).toBeFalsy()
   expect(xUtil.deepCompare(behaviour1, behaviour2)).toBeFalsy()
 })
+
+test("stringification", async () => {
+  let data = {a:2, b:2, c:{hello:'world'}};
+
+  console.log(JSON.stringify(data, ['a','b']))
+})

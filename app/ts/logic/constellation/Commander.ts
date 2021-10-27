@@ -119,7 +119,7 @@ class CommandAPI_base {
     this.options.commanderId ??= xUtil.getUUID();
     this.id = this.options.commanderId;
 
-    LOGi.constellation("Commander: Created for target", this.options.commandTargets, "id:", this.id);
+    LOGi.constellation("Commander: Created for target", this.options.commandTargets, "options:", JSON.stringify(this.options));
     this.broker = new SessionBroker(this.options);
   }
 

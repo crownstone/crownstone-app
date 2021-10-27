@@ -20,20 +20,6 @@ export const Collector = {
    * @param meshId
    * @param ignoreHandle
    */
-  collectMesh : function(meshId : string, ignoreHandle: string = null) : string[] {
-    let handles = [];
-    let meshData = MapProvider.meshMap[meshId];
-    let stoneIds = Object.keys(meshData);
-    for (let stoneId of stoneIds) {
-      let stoneData = meshData[stoneId];
-      if (stoneData.handle !== ignoreHandle) {
-        handles.push({ handle: stoneData.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId) });
-      }
-    };
-    handles.sort((a,b) => { return b.rssi - a.rssi });
-    return handles.map((a) => { return a.handle });
-  },
-
   collectSphere : function(sphereId : string, ignoreHandle: string = null) : string[] {
     let sphereStones = this._getSphereStones(sphereId);
     let handles = [];

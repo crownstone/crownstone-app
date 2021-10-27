@@ -208,26 +208,6 @@ export class DiagOptionsItem extends Component<{visible: boolean, delay?: number
 }
 
 
-export class DiagSingleButtonMeshTopology extends Component<{
-  visible:      boolean,
-  explanation?: string,
-  header:       string
-}, any> {
-
-  render() {
-    return (
-      <DiagSingleButton
-        visible={this.props.visible}
-        header={ this.props.header }
-        explanation={ this.props.explanation }
-        label={ lang("To_Mesh_Topology")}
-        onPress={() => { NavigationUtil.navigate( "SettingsMeshTopology"); }}
-      />
-    );
-  }
-}
-
-
 
 export class DiagSingleButtonGoBack extends Component<{
   visible:      boolean,

@@ -128,10 +128,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'REMOVE_ALL_ABILITY_PROPERTIES'           |
                       'ADD_STONE'                               |
                       'REMOVE_ALL_ABILITIES'                    |
-                      'SET_MESH_INDICATOR'                      |
                       'REFRESH_DEFAULTS'                        |
-                      'CLEAR_MESH_TOPOLOGY'                     |
-                      'REMOVE_MESH_LINK'                        |
                       'REFRESH_ABILITIES'                       |
                       'REFRESH_DEFAULTS'                        |
                       'REFRESH_ABILITIES'                       |

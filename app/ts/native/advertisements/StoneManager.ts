@@ -262,8 +262,6 @@ class StoneManagerClass {
     let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
     if (serviceData.stateOfExternalCrownstone === true) {
-      this._resolveMeshNetworkIds(sphereId, stoneFromServiceData, referenceByCrownstoneId.id, stoneFromAdvertisement, referenceByHandle.id);
-
       this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);
       this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(advertisement.referenceId, stoneFromAdvertisement, referenceByCrownstoneId.id, stoneFromServiceData, advertisement);
     }
@@ -278,57 +276,6 @@ class StoneManagerClass {
       }
 
       this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);
-    }
-  }
-
-
-  _resolveMeshNetworkIds(sphereId, stoneFromServiceData, stoneFromServiceDataId, stoneFromAdvertisement, stoneFromAdvertisementId) {
-    let meshNetworkId_external   = stoneFromServiceData.config.meshNetworkId;
-    let meshNetworkId_advertiser = stoneFromAdvertisement.config.meshNetworkId;
-
-    // initially it does not matter which we select.
-    let meshNetworkId = meshNetworkId_advertiser;
-
-    // if these stones are not known to be in a mesh network, they are in the same, new, network.
-    if (meshNetworkId_external === null && meshNetworkId_advertiser === null) {
-      meshNetworkId = Math.round(Math.random()*1e6).toString(36);
-      LOGi.mesh("StoneManager: Found new mesh network:", meshNetworkId);
-      let actions = [];
-      actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
-      actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
-      core.store.batchDispatch(actions);
-    }
-    // if they are in a different mesh network, place them in the same one.
-    else if (meshNetworkId_external !== meshNetworkId_advertiser) {
-      LOGi.mesh("StoneManager: Updating mesh networks!");
-      if (meshNetworkId_external === null) {
-        // copy mesh id from stoneFromAdvertisement to stoneFromServiceData
-        meshNetworkId = meshNetworkId_advertiser;
-        LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromServiceDataId, meshNetworkId);
-        core.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
-      }
-      else if (meshNetworkId_advertiser === null) {
-        // copy mesh id from stoneFromServiceData to stoneFromAdvertisement
-        meshNetworkId = meshNetworkId_external;
-        LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromAdvertisementId, meshNetworkId);
-        core.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
-      }
-      else {
-        // copy the mesh id from the largest mesh to the smallest mesh
-        let state = core.store.getState();
-        let stonesInNetwork_external = Util.mesh.getStonesInNetwork(state, sphereId, meshNetworkId_external);
-        let stonesInNetwork_advertiser = Util.mesh.getStonesInNetwork(state, sphereId, meshNetworkId_advertiser);
-
-        if (stonesInNetwork_external.length > stonesInNetwork_advertiser.length) {
-          meshNetworkId = meshNetworkId_external;
-          Util.mesh.setNetworkId(core.store, sphereId, stonesInNetwork_advertiser, meshNetworkId);
-        }
-        else {
-          meshNetworkId = meshNetworkId_advertiser;
-          Util.mesh.setNetworkId(core.store, sphereId, stonesInNetwork_external, meshNetworkId);
-        }
-        LOGi.mesh("StoneManager: Merging networks:", meshNetworkId_advertiser, meshNetworkId_external, " into ", meshNetworkId);
-      }
     }
   }
 }

@@ -4,7 +4,6 @@ import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 
 const SunCalc = require('suncalc');
 
-import { MeshUtil }    from './MeshUtil'
 import { DataUtil }    from './DataUtil'
 import { EventUtil }   from "./EventUtil";
 import { FileUtil }    from "./FileUtil";
@@ -123,7 +122,6 @@ export const delay = function(ms, performAfterDelay = null) : Promise<void>  {
 };
 
 export const Util = {
-  mesh: MeshUtil,
   data: DataUtil,
   events: EventUtil,
 
