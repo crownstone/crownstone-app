@@ -145,8 +145,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 //        missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 109
-        versionName"4.4.0"
+        versionCode 110
+        versionName"4.4.1"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
 //        }
