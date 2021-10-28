@@ -183,17 +183,6 @@ export class StoneEntity {
       sphereId: this.sphereId,
       rssi: rssi,
     });
-
-    if (stone.config.meshNetworkId) {
-      core.eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
-        handle: stone.config.handle,
-        stoneId: this.stoneId,
-        stone: stone,
-        sphereId: this.sphereId,
-        meshNetworkId: stone.config.meshNetworkId,
-        rssi: rssi,
-      });
-    }
   }
 
 
@@ -241,11 +230,6 @@ export class StoneEntity {
    * @param {crownstoneAdvertisement} advertisement
    */
   handleContentViaMesh(stone, advertisement : crownstoneAdvertisement) {
-    core.eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
-      id: this.stoneId,
-      serviceData: advertisement.serviceData
-    });
-
     // update the state entity
     this._handleAdvertisementContent(stone, advertisement);
   }

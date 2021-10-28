@@ -104,8 +104,6 @@ test("Check basic tell for cleanup of session", async () => {
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   await TestUtil.nextTick();
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect()
-  await TestUtil.nextTick();
   evt_disconnected(handle);
   expect(valueReturned).toBeTruthy()
 });

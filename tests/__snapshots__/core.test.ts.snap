@@ -160,7 +160,6 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "meshNetworkId": null,
             "name": "stone_uuid2007",
             "type": "PLUG",
             "uid": 1,
@@ -180,7 +179,6 @@ Object {
           "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "mesh": Object {},
           "reachability": Object {
             "lastSeen": null,
           },
@@ -259,7 +257,6 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "meshNetworkId": null,
             "name": "stone_uuid2011",
             "type": "PLUG",
             "uid": 2,
@@ -279,7 +276,6 @@ Object {
           "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "mesh": Object {},
           "reachability": Object {
             "lastSeen": null,
           },
@@ -358,7 +354,6 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "meshNetworkId": null,
             "name": "stone_uuid2015",
             "type": "PLUG",
             "uid": 3,
@@ -378,7 +373,6 @@ Object {
           "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "mesh": Object {},
           "reachability": Object {
             "lastSeen": null,
           },

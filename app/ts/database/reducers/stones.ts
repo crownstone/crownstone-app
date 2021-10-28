@@ -30,7 +30,6 @@ let defaultSettings : StoneData = {
     locationId: null,
 
     macAddress: undefined,
-    meshNetworkId: null,
 
     hidden: false,
     locked: false,
@@ -86,13 +85,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'UPDATE_MESH_NETWORK_ID':
-      if (action.data) {
-        let newState = {...state};
-        newState.meshNetworkId   = update(action.data.meshNetworkId, newState.meshNetworkId);
-        return newState;
-      }
-      return state;
     case 'UPDATE_STONE_HANDLE':
       if (action.data) {
         let newState = {...state};
@@ -113,7 +105,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.cloudId                       = update(action.data.cloudId,          newState.cloudId);
         newState.dfuResetRequired              = update(action.data.dfuResetRequired, newState.dfuResetRequired);
-        newState.meshNetworkId                 = update(action.data.meshNetworkId,    newState.meshNetworkId);
         newState.handle                        = update(action.data.handle,           newState.handle);
         newState.hidden                        = update(action.data.hidden,           newState.hidden);
         newState.locked                        = update(action.data.locked,           newState.locked);
@@ -139,7 +130,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.locationId        = update(action.data.locationId,        newState.locationId);
         newState.locked            = update(action.data.locked,            newState.locked);
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
-        newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);
         newState.description       = update(action.data.description,       newState.description);
         newState.type              = update(action.data.type,              newState.type);

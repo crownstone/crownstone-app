@@ -401,16 +401,13 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.canSeeCrownstoneBeacon === true && this.state.canSeeCrownstoneDirectly === true && this.state.canSeeCrownstoneViaMesh === false && this.state.canSeeThisCrownstoneMesh === true) {
       // good but not in mesh
-      let inMesh = this.state.problemStoneSummary.stoneConfig.meshNetworkId !== null;
 
       let explanation = null;
-      if (inMesh === true) {
-        explanation =  lang("I_didnt_hear_it_via_the_o")}
+      if (this.state.amountOfIBeacons <= 1) {
+        explanation =  lang("I_didnt_hear_it_via_the_m")
+      }
       else {
-        if (this.state.amountOfIBeacons <= 1) {
-          explanation =  lang("I_didnt_hear_it_via_the_m")}
-        else {
-          explanation =  lang("I_didnt_hear_it_via_the_me")}
+        explanation =  lang("I_didnt_hear_it_via_the_me")
       }
 
       return (
@@ -423,16 +420,13 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.canSeeCrownstoneBeacon === true && this.state.canSeeCrownstoneDirectly === true && this.state.canSeeCrownstoneViaMesh === false) {
       // good but not in mesh
-      let inMesh = this.state.problemStoneSummary.stoneConfig.meshNetworkId !== null;
 
       let explanation = null;
-      if (inMesh === true) {
-        explanation =  lang("I_didnt_hear_it_via_the_mes")}
+      if (this.state.amountOfIBeacons <= 1) {
+        explanation =  lang("I_didnt_hear_it_via_the_mesh");
+      }
       else {
-        if (this.state.amountOfIBeacons <= 1) {
-          explanation =  lang("I_didnt_hear_it_via_the_mesh")}
-        else {
-          explanation =  lang("I_didnt_hear_it_via_the_mesh_")}
+        explanation =  lang("I_didnt_hear_it_via_the_mesh_");
       }
 
       return (
@@ -495,25 +489,13 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   }
 
   _handleOnlySwitchesWhenNear() {
-    let inMesh = this.state.problemStoneSummary.stoneConfig.meshNetworkId !== null;
-    if (inMesh) {
-      return (
-        <DiagSingleButtonGoBack
-          visible={this.state.visible}
-          header={ lang("This_is_usually_because_t")}
-          explanation={lang("It_can_happen_that_messag")}
-        />
-      );
-    }
-    else {
-      return (
-        <DiagSingleButtonGoBack
-          visible={this.state.visible}
-          header={lang("Youre_probably_out_of_ran")}
-          explanation={lang("A_Crownstone_does_not_swi")}
-        />
-      );
-    }
+    return (
+      <DiagSingleButtonGoBack
+        visible={this.state.visible}
+        header={lang("Youre_probably_out_of_ran")}
+        explanation={lang("A_Crownstone_does_not_swi")}
+      />
+    );
   }
 
   async _tryToSwitchCrownstone() {

@@ -116,7 +116,6 @@ test("SessionBroker direct command finishes mesh commands", async () => {
 
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle1).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
   evt_disconnected(handle1);
 
   await TestUtil.nextTick();
@@ -165,9 +164,9 @@ test("SessionBroker check the cleanup of closed private session", async () => {
 
   api.end();
 
+  await TestUtil.nextTick();
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
   await mBluenetPromise.for(handle1).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
   await TestUtil.nextTick();
@@ -202,7 +201,6 @@ test("SessionBroker check the cleanup of closed public session", async () => {
 
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
   await mBluenetPromise.for(handle1).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle1).succeed.phoneDisconnect();
 
   evt_disconnected(handle1);
   await TestUtil.nextTick();

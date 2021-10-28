@@ -185,12 +185,12 @@ export class BleCommandManagerClass {
    * It will return either false or the commandId of the command that can be performed.
    * @param handle
    */
-  areThereCommandsFor(handle: string, privateKey: string | null = null) : string | false {
+  areThereCommandsFor(handle: string, privateKey: string | null = null) : string | null {
     let command = this.getCommandFor(handle, privateKey);
     if (command) {
       return command.id;
     }
-    return false;
+    return null;
   }
 
 
@@ -336,7 +336,7 @@ export class BleCommandManagerClass {
       }
     }
 
-    LOGd.constellation(`BleCommandManager.getCommandFor ${handle} ${privateId} is FALSE`);
+    LOGd.constellation(`BleCommandManager: no command available for ${handle},${privateId}`);
     return null;
   }
 

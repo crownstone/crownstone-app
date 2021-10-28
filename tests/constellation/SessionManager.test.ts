@@ -68,7 +68,6 @@ test("Session manager registration and queue for shared connections.", async () 
 
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected();
   await TestUtil.nextTick();
 
@@ -114,9 +113,9 @@ test("Session manager registration and queue for private connections.", async ()
 
   sessionManager.closeSession(handle);
 
+  await TestUtil.nextTick()
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   evt_disconnected();
 
   await TestUtil.nextTick();
@@ -251,7 +250,6 @@ test("Session manager request and revoke shared requests in different states.", 
   sessionManager.revokeRequest(handle, id3)
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   // this event triggers the cleanup.
   evt_disconnected();
   await TestUtil.nextTick();
@@ -293,7 +291,6 @@ test("Session manager request and revoke private requests in different states.",
   sessionManager.revokeRequest(handle, id2)
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
   // this event triggers the cleanup.
   evt_disconnected();
   await TestUtil.nextTick();
@@ -395,8 +392,8 @@ test("Session manager being paused with public connections. These should be clos
   sessionManager.intiateBlock().then(() => { pauseFinished = true; })
 
   expect(pauseFinished).toBeFalsy();
+  await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.disconnectCommand()
-  await mBluenetPromise.for(handle).succeed.phoneDisconnect()
 
   evt_disconnected(handle);
 

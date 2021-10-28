@@ -112,36 +112,18 @@ export class SphereSyncer extends SyncingBase {
       //   return locationSyncer.sync(store);
       // })
       .then(() => {
-        LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
+        // LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
         LOG.info("SphereSync ",localId,": START presenceSyncer sync.");
         return presenceSyncer.sync(store);
       })
-      // .then(() => {
-      //   LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
-      //   LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
-      //   // sync stones
-      //   return stoneSyncer.sync(store);
-      // })
       .then(() => {
-        LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");
+        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
         LOG.info("SphereSync ",localId,": START messageSyncer sync.");
         // sync messages
         return messageSyncer.sync(store);
       })
-      // .then(() => {
-      //   LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
-      //   LOG.info("SphereSync ",localId,": START sceneSyncer sync.");
-      //   // sync messages
-      //   return sceneSyncer.sync(store);
-      // })
-      // .then(() => {
-      //   LOG.info("SphereSync ",localId,": DONE sceneSyncer sync.");
-      //   LOG.info("SphereSync ",localId,": START ToonSyncer sync.");
-      //   // sync messages
-      //   return toonSyncer.sync(store);
-      // })
       .then(() => {
-        LOG.info("SphereSync ",localId,": DONE ToonSyncer sync.");
+        LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
       })
     );
   }

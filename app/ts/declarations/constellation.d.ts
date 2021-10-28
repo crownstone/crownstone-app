@@ -21,8 +21,8 @@ interface SessionInteractionModule {
 }
 
 interface CommandQueueMap {
-  direct: {[handle: string]        : BleCommand[]}
-  mesh:   {[meshNetworkId: string] : BleCommand[]}
+  direct: {[handle: string]   : BleCommand[]}
+  mesh:   {[sphereId: string] : BleCommand[]}
 }
 interface PromiseContainer<T> {
   promise: Promise<T>,

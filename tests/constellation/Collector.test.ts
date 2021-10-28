@@ -42,12 +42,6 @@ test("Collect handles", async () => {
   evt_ibeacon(-80, stone2.config.handle, sphere2.id, stone2.id);
   evt_ibeacon(-50, stone3.config.handle, sphere2.id, stone3.id);
 
-  let mesh1Handles = Collector.collectMesh(meshId);
-  expect(mesh1Handles.length).toBe(3);
-  expect(mesh1Handles[0]).toBe(stone3.config.handle);
-  expect(mesh1Handles[1]).toBe(stone1.config.handle);
-  expect(mesh1Handles[2]).toBe(stone2.config.handle);
-
   let sphere1Handles = Collector.collectSphere(sphere1.id);
   expect(sphere1Handles.length).toBe(0);
 

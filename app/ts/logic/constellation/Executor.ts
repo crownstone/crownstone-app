@@ -14,7 +14,6 @@ export const Executor = {
     let stoneSummary  = MapProvider.stoneHandleMap[connectedHandle];
     let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
     let stoneId       = bleCommand.sphereId;
-    let baseMeshId    = stoneSummary.stoneConfig.meshNetworkId;
     let sphereId      = stoneSummary.sphereId;
 
     let packets = [];
@@ -35,8 +34,8 @@ export const Executor = {
 
     // loop over all commands that are shared and in this sphere, get the ones with the TURN_ON command
     // We only check mesh commands, since anything that is direct and allowed to be relayed via the mesh is loaded there.
-    for (let meshId in queue.mesh) {
-      for (let command of queue.mesh[meshId]) {
+    for (let sphereId in queue.mesh) {
+      for (let command of queue.mesh[sphereId]) {
         // as long as we're in the same sphere, we might as well try to add it.
         if (command.sphereId === sphereId) {
           if (command.command.type === bleCommand.command.type && command.endTarget && command.endTarget !== connectedHandle) {
@@ -47,7 +46,7 @@ export const Executor = {
 
               // if this is in the same mesh as the connected Crownstone, allow this to be added to the attempting-by, if it's not already done
               if (
-                baseMeshId === meshId &&
+                stoneSummary.sphereId === sphereId &&
                 bleCommand.attemptingBy.indexOf(connectedHandle) === -1 &&
                 bleCommand.executedBy.indexOf(connectedHandle)   === -1
               ) {

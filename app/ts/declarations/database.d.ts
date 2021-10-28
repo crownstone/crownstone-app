@@ -125,7 +125,6 @@ interface StoneDataConfig {
   locationId:       string,
 
   macAddress:    string,
-  meshNetworkId: string,
 
   hidden: boolean,
   locked: boolean,

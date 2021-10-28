@@ -156,7 +156,7 @@ export class SessionManagerClass {
     LOGd.constellation("SessionManager: evaluateSessionNecessity now")
     for (let handle in this._sessions) {
       if (this._sessions[handle].privateId === null) {
-        if (BleCommandManager.areThereCommandsFor(handle) === false && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
+        if (BleCommandManager.areThereCommandsFor(handle) === null && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
           LOGi.constellation("SessionManager: Killing session", handle)
           this._sessions[handle].kill();
         }
