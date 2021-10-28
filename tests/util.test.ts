@@ -27,5 +27,4 @@ test("Using core in tests", async () => {
 test("stringification", async () => {
   let data = {a:2, b:2, c:{hello:'world'}};
 
-  console.log(JSON.stringify(data, ['a','b']))
 })

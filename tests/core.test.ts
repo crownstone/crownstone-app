@@ -86,5 +86,4 @@ test("abilities", async () => {
 
   core.store.batchDispatch(actions);
   state = core.store.getState();
-  console.log(JSON.stringify(state, null, 2))
 })
