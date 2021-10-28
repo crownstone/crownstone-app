@@ -756,7 +756,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       })
       .catch((err) => {
         core.eventBus.emit("hideLoading");
-        Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+        Alert.alert("Something went wrong", err?.message, [{text:"Damn."}]);
       })
   }
 

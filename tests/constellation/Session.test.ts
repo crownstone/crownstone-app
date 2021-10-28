@@ -251,6 +251,44 @@ test("Session should cleanup its listeners", async () => {
 });
 
 
+
+test("Session disconnects before it is connected. This is a racecondition due to the multiple stages in the connect process.", async() => {
+  let interactionModule = getInteractionModule()
+  let session = new Session(handle,null, interactionModule);
+  evt_ibeacon(-70);
+  // connecting.....
+  expect(interactionModule.willActivate).toBeCalled();
+
+  evt_disconnected(handle);
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  expect(interactionModule.isConnected).not.toBeCalled();
+  expect(session.state).toBe('DISCONNECTED');
+  expect(session._isSessionActive()).toBeFalsy();
+})
+
+test("Claimed Session disconnects before it is connected. This is a racecondition due to the multiple stages in the connect process. Should recover.", async() => {
+  let interactionModule = getInteractionModule(1)
+  let session = new Session(handle,'test', interactionModule);
+  session.recoverFromDisconnect = true;
+  evt_ibeacon(-70);
+  // connecting.....
+  expect(interactionModule.willActivate).toBeCalled();
+
+  evt_disconnected(handle);
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  expect(interactionModule.isConnected).not.toBeCalled();
+  expect(session.state).toBe('CONNECTING');
+  expect(session._isSessionActive()).toBeTruthy();
+  expect(interactionModule.willActivate).toBeCalled();
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy()
+})
+
+
+
 function getInteractionModule(canActivateFailCount: number = 0) {
   let counter = 0;
   return {

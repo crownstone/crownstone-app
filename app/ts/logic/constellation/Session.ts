@@ -59,7 +59,7 @@ export class Session {
 
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
       this.state = "DISCONNECTED";
-      if (this.recoverFromDisconnect && !this._sessionIsKilled) {
+      if (this.recoverFromDisconnect && this._isSessionActive() ) {
         LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
       }
       else {
@@ -81,7 +81,7 @@ export class Session {
 
     if (this.privateId) {
       this.listeners.push(core.eventBus.on(`CommandLoaded_${this.privateId}`, async () => {
-        if (this.state === "DISCONNECTED" && this.recoverFromDisconnect && !this._sessionIsKilled) {
+        if (this.state === "DISCONNECTED" && this.recoverFromDisconnect && this._isSessionActive()) {
           this.initializeBootstrapper();
           this.tryToActivate();
           return;
@@ -185,8 +185,8 @@ export class Session {
       this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId);
     }
     catch (err) {
-      LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled);
-      if (this._sessionIsKilled) {
+      LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      if (!this._isSessionActive()) {
         // the session will be ended once the cancelConnectionRequest has finished.
         return;
       }
@@ -195,6 +195,21 @@ export class Session {
       LOGi.constellation("Session: Reinitializing the bootstrapper to reactivate the session", this.handle, this. identifier);
       this.interactionModule.isDeactivated();
       this.initializeBootstrapper();
+      return;
+    }
+
+    // Setting up the connection is a multi-stage process. It connects, gets the services, gets the session nonce etc.
+    // It can happen that a disconnect event is thrown during this process. At that point, the connection process for this session failed.
+    // @ts-ignore
+    if (this.state === "DISCONNECTED") {
+      LOGi.constellation("Session: Disconnected before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      // if this is a claimed session, we expected this to connect and will retry immediately.
+      if (this.recoverFromDisconnect && this._isSessionActive()) {
+        this.initializeBootstrapper();
+        this.tryToActivate();
+        return;
+      }
+      // If this is not a claimed session, the disconnect event has ended the session. This means it will be destroyed and we should stop here.
       return;
     }
 
@@ -228,9 +243,20 @@ export class Session {
     }
     this.state = "PERFORMING_COMMAND";
     LOGi.constellation("Session: performing available command...", availableCommandId, this.handle, this.identifier);
-    let performedCommandId = await BleCommandManager.performCommand(this.handle, this.privateId);
-    LOGi.constellation("Session: Finished available command.", performedCommandId, this.handle, this.identifier);
 
+    try {
+      let performedCommandId = await BleCommandManager.performCommand(this.handle, this.privateId);
+      LOGi.constellation("Session: Finished available command.", performedCommandId, this.handle, this.identifier);
+    }
+    catch(err) {
+      LOGi.constellation("Session: Failed to perform command.", availableCommandId, this.handle, this.identifier, err?.message);
+      if (err?.message === "NOT_CONNECTED") {
+        // there is a mismatch between the lib and session state. If this was a claimed session, we can reconnect later on a new command.
+        // if it was a public session, the session was already ended and this cycle should be broken right here.
+        this.state = "DISCONNECTED";
+        return;
+      }
+    }
     // @ts-ignore
     if (this.state !== "PERFORMING_COMMAND") {
       LOGi.constellation("Session: Session interrupted", this.handle, this.identifier);
@@ -266,13 +292,7 @@ export class Session {
         break;
       case "CONNECTING":
         await BluenetPromiseWrapper.cancelConnectionRequest(this.handle).catch((err) => {
-          if (err?.message === "CANCEL_PENDING_CONNECTION_TIMEOUT") {
-            // assume this has cancelled the connection request but did not enter the did disconnect
-            // this can be ignored. Other errors will be treated as bugs.
-          }
-          else {
-            LOGe.constellation("Session: Error when cancellingConnectionRequest", err);
-          }
+          LOGe.constellation("Session: Error when cancellingConnectionRequest", err);
         })
         LOGd.constellation("Session: cancelConnectionRequest finished, ending session", this.handle, this.identifier);
         this.sessionHasEnded();
@@ -359,6 +379,10 @@ export class Session {
     }
     this._pendingForClose = [];
     core.eventBus.emit(`SessionClosed_${this.handle}`, this.privateId);
+  }
+
+  _isSessionActive() {
+    return !this._sessionHasEnded && !this._sessionIsKilled;
   }
 }
 
