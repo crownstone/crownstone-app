@@ -6,7 +6,7 @@
     "start": "tsc --watch",
     "build": "tsc",
     "react": "react-native start --reset-cache",
-    "test": "jest --useStderr --clearMocks",
+    "test": "jest",
     "cleanTest": "jest --useStderr --no-cache --clearMocks",
     "maintainTranslations": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js",
     "maintainTranslationsDelete": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js --deleteLines true",
