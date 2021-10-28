@@ -254,3 +254,7 @@ test("Check if the broadcast method works", async () => {
 
   expect(p1).toBeCalled()
 });
+
+test("Test github action", async () => {
+  expect(1).toBe(2)
+});
