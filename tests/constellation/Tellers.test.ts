@@ -204,7 +204,6 @@ test("Timeout the request from the teller should also clean up the commands", as
   tell(handle).getTime().catch((err) => { caughtErrors.push(err); })
   tell(handle).getAdcChannelSwaps().catch((err) => { caughtErrors.push(err); })
 
-  console.log(mocks.mScheduler._callbacks)
   await mocks.mScheduler.trigger(5)
   await TestUtil.nextTick()
 

@@ -30,7 +30,7 @@ export function mockCore() {
     }
   }
 
-  jest.mock("../../../../app/ts/core", () => {
+  jest.mock("../../../../app/ts/Core", () => {
     return { core: mockedCore };
   })
 

@@ -1,6 +1,6 @@
 import { resetMocks } from "../__testUtil/mocks/suite.mock";
 import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
-import { core } from "../../app/ts/core";
+import { core } from "../../app/ts/Core";
 import { SyncNext } from "../../app/ts/cloud/sections/newSync/SyncNext";
 import { getGlobalIdMap } from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
 import { reply1 } from "./replyMocks/reply1";

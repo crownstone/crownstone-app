@@ -2,7 +2,7 @@ import { mBluenetPromise, resetMocks } from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { Session } from "../../app/ts/logic/constellation/Session";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { core } from "../../app/ts/core";
+import { core } from "../../app/ts/Core";
 import { NativeBusMockClass } from "../__testUtil/mocks/nativeBus.mock";
 
 

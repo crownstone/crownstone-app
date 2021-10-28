@@ -1,6 +1,6 @@
 import { resetMocks } from "./__testUtil/mocks/suite.mock";
 import { addSphere, addStone } from "./__testUtil/helpers/data.helper";
-import { core } from "../app/ts/core";
+import { core } from "../app/ts/Core";
 import { xUtil } from "../app/ts/util/StandAloneUtil";
 
 beforeEach(async () => {

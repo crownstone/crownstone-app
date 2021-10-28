@@ -1,4 +1,4 @@
-import { core } from "../../../app/ts/core";
+import { core } from "../../../app/ts/Core";
 import { NativeBus } from "../../../app/ts/native/libInterface/NativeBus";
 
 
