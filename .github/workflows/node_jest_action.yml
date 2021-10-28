@@ -26,4 +26,4 @@ jobs:
       run: yarn
 
     - name: Test
-      run: jest
+      run: yarn test
