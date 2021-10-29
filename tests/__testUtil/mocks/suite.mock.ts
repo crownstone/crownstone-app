@@ -19,8 +19,8 @@ mockNavigationUtil();
 import { mockLanguages } from "./languages.mock";
 mockLanguages()
 
-// import { mockCloud } from "./cloud.mock";
-// mockCloud()
+import { mockCloud } from "./cloud.mock";
+mockCloud()
 
 import { mockLocalNotifications } from "./localNotifications.mock";
 mockLocalNotifications()
