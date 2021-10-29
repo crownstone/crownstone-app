@@ -15,6 +15,7 @@ export class SyncSphereInterface<LocalDataFormat, LocalDataSettableFormat, Cloud
   localSphereId:    string;
 
   transferrer : TransferSphereTool<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat, CloudSettableFormat>;
+  sphereIdMap: syncIdMap
 
   constructor(
     transferrer: TransferSphereTool<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat, CloudSettableFormat>,
@@ -23,6 +24,7 @@ export class SyncSphereInterface<LocalDataFormat, LocalDataSettableFormat, Cloud
     super(options);
     this.transferrer   = transferrer;
     this.cloudSphereId = options.cloudSphereId;
+    this.sphereIdMap = options.sphereIdMap;
     this.localSphereId = this.globalCloudIdMap.spheres[this.cloudSphereId] || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
   }
 

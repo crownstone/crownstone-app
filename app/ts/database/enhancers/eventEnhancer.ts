@@ -332,6 +332,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "REMOVE_HUB":
       eventStatus['changeHubs'] = affectedIds; break;
 
+    case "UPDATE_ABILITY_PROPERTY":
     case "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD":
       break;
     default:

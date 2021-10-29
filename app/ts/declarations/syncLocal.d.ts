@@ -9,10 +9,11 @@ type SupportedMappingType = 'ability'         |
                             'toon'
 
 type SyncInterfaceOptions = {
-  cloudId: string,
-  cloudSphereId: string,
-  globalCloudIdMap: globalCloudIdMap
-  actions: any[],
+  cloudId:          string,
+  cloudSphereId:    string,
+  globalCloudIdMap: syncIdMap
+  sphereIdMap:      syncIdMap,
+  actions:          DatabaseAction[],
   transferPromises: Promise<any>[]
 }
 

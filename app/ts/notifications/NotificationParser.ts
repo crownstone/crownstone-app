@@ -6,7 +6,6 @@ import { LocalNotifications }    from "./LocalNotifications";
 import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
 import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
 import { MapProvider }           from "../backgroundProcesses/MapProvider";
-import { getGlobalIdMap }        from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { INTENTS }               from "../native/libInterface/Constants";
 import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
 import { tell }                  from "../logic/constellation/Tellers";

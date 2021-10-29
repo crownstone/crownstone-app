@@ -6,7 +6,7 @@ import { LOG_LEVEL}                    from "../../logging/LogLevels";
 import { MapProvider}                  from "../../backgroundProcesses/MapProvider";
 import { core }                        from "../../Core";
 import { BATCH }                       from "../reducers/BatchReducer";
-import { getGlobalIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
+import { getSyncIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
 import { HubSyncer }                   from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/constants/SceneConstants";
 import { LocationTransferNext }        from "../../cloud/sections/newSync/transferrers/LocationTransferNext";

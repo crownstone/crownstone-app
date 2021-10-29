@@ -56,6 +56,10 @@ class MockSchedulerClass {
     }
   }
 
+  scheduleBackgroundCallback(cb, millies) {
+    return () => {};
+  }
+
   async triggerDelay(count = 1) {
     for (let i = 0; i < count; i++) {
       if (this.delayPromises.length > 0) {

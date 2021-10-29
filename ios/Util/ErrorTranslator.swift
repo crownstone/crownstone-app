@@ -39,8 +39,6 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "TIMEOUT"
     case .DISCONNECT_TIMEOUT:
       return "DISCONNECT_TIMEOUT"
-    case .CANCEL_PENDING_CONNECTION_TIMEOUT:
-      return "CANCEL_PENDING_CONNECTION_TIMEOUT"
     case .CONNECT_TIMEOUT:
       return "CONNECT_TIMEOUT"
     case .GET_SERVICES_TIMEOUT:

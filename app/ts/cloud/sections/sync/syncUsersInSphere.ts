@@ -1,6 +1,6 @@
 import {LOGe} from "../../../logging/Log";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
-import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
+import {getSyncIdMap} from "./modelSyncs/SyncingBase";
 import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
 import { core } from "../../../Core";
 
@@ -40,7 +40,7 @@ export const syncUsersInSphere = {
 
       let actions = [];
       syncingUsersInSpheres[localSphereId] = true;
-      let presenceSyncer = new PresenceSyncer(actions, [], localSphereId, sphere.config.cloudId || resolvedCloudSphereId, MapProvider.cloud2localMap, getGlobalIdMap());
+      let presenceSyncer = new PresenceSyncer(actions, [], localSphereId, sphere.config.cloudId || resolvedCloudSphereId, MapProvider.cloud2localMap);
       presenceSyncer.sync(core.store)
         .then(() => {
           if (actions.length > 0) {

@@ -65,7 +65,7 @@ export async function request(
     }, NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
 
-    let responseHandler = new ResponseHandler()
+    let responseHandler = new ResponseHandler();
     fetch(url, requestConfig as any)
       .catch((connectionError) => {
         if (requestDidTimeout === false) {

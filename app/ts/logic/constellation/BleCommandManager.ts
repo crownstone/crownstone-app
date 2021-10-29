@@ -295,10 +295,6 @@ export class BleCommandManagerClass {
       }
     }
 
-    if (commandRemoved) {
-      SessionManager.evaluateSessionNecessity()
-    }
-
     // escalate this error to the caller.
     if (errorDuringCommand) {
       throw errorDuringCommand;

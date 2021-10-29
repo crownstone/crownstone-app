@@ -8,7 +8,7 @@ export class SyncViewInterface<CloudDataFormat> {
 
   actions:          DatabaseAction[];
   transferPromises: Promise<any>[];
-  globalCloudIdMap: globalIdMap;
+  globalCloudIdMap: syncIdMap;
 
   constructor(options: SyncInterfaceViewOptions) {
     this.actions          = options.actions;

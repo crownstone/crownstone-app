@@ -6,7 +6,7 @@ import {
   getMapOfCrownstonesInAllSpheresByIBeacon,
   getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/MapUtil";
-import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import { getSyncIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { LOG, LOGi, LOGw } from "../logging/Log";
 import { core } from "../Core";
 
@@ -39,8 +39,8 @@ class MapProviderClass {
   stoneCIDMap     : StoneCIDMap = {};
   locationUIDMap  : locationUIDMap = {};
   stoneIBeaconMap : StoneIBeaconMap = {};
-  cloud2localMap  : globalIdMap = getGlobalIdMap();
-  local2cloudMap  : globalIdMap = getGlobalIdMap();
+  cloud2localMap  : syncIdMap = getSyncIdMap();
+  local2cloudMap  : syncIdMap = getSyncIdMap();
 
   init() {
     if (this._initialized === false) {
@@ -136,8 +136,8 @@ class MapProviderClass {
   _updateCloudIdMap() {
     LOG.info("MapProvider: Refreshing CloudIdMap.");
     let state = core.store.getState();
-    this.cloud2localMap = getGlobalIdMap();
-    this.local2cloudMap = getGlobalIdMap();
+    this.cloud2localMap = getSyncIdMap();
+    this.local2cloudMap = getSyncIdMap();
 
     let fillMaps = (source, getCloudIdFromItem, cloud2local, local2cloud) => {
       let sourceIds = Object.keys(source);

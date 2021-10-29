@@ -5,7 +5,7 @@ import { syncEvents }               from "./syncEvents";
 import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
 import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
 import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
-import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
+import { getSyncIdMap }           from "./modelSyncs/SyncingBase";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";
@@ -67,43 +67,28 @@ export const sync = {
     // });
 
     let reloadOfTrackingRequired = false;
-    let globalCloudIdMap = getGlobalIdMap();
-    let globalSphereMap = {};
+    let globalCloudIdMap = getSyncIdMap();
+    let syncSphereIdMap = {};
 
     let initialPermissionLevels = Permissions.getLevels(state)
 
     let actions = [];
-    LOG.info("Sync: START Sync Events.");
+    LOG.info("Sync: START syncEvents.");
     return syncEvents(core.store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
       .catch(getUserIdCheckError(state, core.store, () => {
-        LOG.info("Sync: RETRY Sync Events.");
+        LOG.info("Sync: RETRY syncEvents.");
         return syncEvents(core.store);
       }))
-      // .then(() => {
-      //   LOG.info("Sync: DONE Sync Events.");
-      //   LOG.info("Sync: START userSyncer sync.");
-      //   return userSyncer.sync(core.store)
-      // })
-      // .catch(getUserIdCheckError(state, core.store, () => {
-      //   LOG.info("Sync: RETRY userSyncer Sync.");
-      //   return userSyncer.sync(core.store)
-      // }))
-      // .then(() => {
-      //   LOG.info("Sync: DONE userSyncer sync.");
-      //   LOG.info("Sync: START FirmwareBootloader sync.");
-      //   let firmwareBootloaderSyncer = new FirmwareBootloaderSyncer(actions, [], globalCloudIdMap);
-      //   return firmwareBootloaderSyncer.sync(core.store);
-      // })
       .then(() => {
-        LOG.info("Sync: DONE FirmwareBootloader sync.");
+        LOG.info("Sync: DONE syncEvents.");
         LOG.info("Sync: START SphereSyncer sync.");
-        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
+        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
         return sphereSyncer.sync(core.store);
       })
       .catch(getUserIdCheckError(state, core.store, () => {
         LOG.info("Sync: RETRY userSyncer Sync.");
-        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
+        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
         return sphereSyncer.sync(core.store);
       }))
       .then(() => {
@@ -121,13 +106,9 @@ export const sync = {
           'user',
         ], actions, globalCloudIdMap);
       })
-      // .then(() => {
-      //   LOG.info("Sync: START KeySyncer sync.");
-      //   let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
-      //   return keySyncer.sync(core.store);
-      // })
-      .then(() => {
-        LOG.info("Sync: DONE SphereSyncer sync.");
+      .then((sphereIdMap) => {
+        syncSphereIdMap = sphereIdMap;
+        LOG.info("Sync: DONE Next sync.");
         LOG.info("Sync: START DeviceSyncer sync.");
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
@@ -135,7 +116,7 @@ export const sync = {
       .then(() => {
         LOG.info("Sync: DONE DeviceSyncer sync.");
         LOG.info("Sync: START Fingerprint sync.");
-        let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, globalSphereMap);
+        let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, syncSphereIdMap);
         return fingerprintSyncer.sync(state);
       })
       .then((reloadOfTrackingRequiredResult) => {

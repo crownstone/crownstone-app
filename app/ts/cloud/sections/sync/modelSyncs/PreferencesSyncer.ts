@@ -14,7 +14,7 @@ export class PreferenceSyncer extends SyncingBase {
   constructor(
     actions: any[],
     transferPromises : any[],
-    globalCloudIdMap? : globalIdMap,
+    globalCloudIdMap? : syncIdMap,
   ) {
     super(actions, transferPromises, globalCloudIdMap);
   }

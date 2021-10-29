@@ -25,6 +25,7 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
     let newData = LocationTransferNext.getCreateLocalAction(this.localSphereId, LocationTransferNext.mapCloudToLocal(cloudData))
     this.actions.push(newData.action)
     this.globalCloudIdMap.locations[this.cloudId] = newData.id;
+    this.sphereIdMap.locations[this.cloudId] = newData.id;
 
     if (cloudData.imageId) {
       this._downloadLocationImage(cloudData);

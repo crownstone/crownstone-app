@@ -30,12 +30,13 @@ interface locationCoverageMap {
 export class FingerprintSyncer extends SyncingBase {
   userId: string;
 
-  globalSphereMap;
   reinitializeTracking = false;
 
-  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap, globalSphereMap : globalSphereMap) {
+  sphereIdMap: sphereIdMap;
+
+  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: syncIdMap, syncSphereIdMap: sphereIdMap) {
     super(actions, transferPromises, globalCloudIdMap);
-    this.globalSphereMap = globalSphereMap
+    this.sphereIdMap = syncSphereIdMap;
   }
 
   sync(state) {
@@ -113,14 +114,13 @@ export class FingerprintSyncer extends SyncingBase {
 
 
     // for all the rooms that will be added to our database after this sync, ask the cloud for fingerprints.
-    let newSphereIds = Object.keys(this.globalSphereMap);
-    for (let i = 0; i < newSphereIds.length; i++) {
-      let newLocationsData = this.globalSphereMap[newSphereIds[i]].locations;
+    for (let sphereId in this.sphereIdMap) {
+      let newLocationsData = this.sphereIdMap[sphereId].locations;
       let newLocationCloudIds = Object.keys(newLocationsData);
       for (let j = 0; j < newLocationCloudIds.length; j++) {
         let localId = newLocationsData[newLocationCloudIds[j]];
         if (existingLocations[localId] === undefined) {
-          missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, sphereId: newSphereIds[i]};
+          missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, sphereId: sphereId};
         }
       }
     }

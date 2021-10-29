@@ -58,6 +58,14 @@ export class Session {
     LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
+      // if we're attempting to setup a connection and disconnect before the connect promise is resolved, the connect promise should fail.
+      // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
+      if (this.state === "CONNECTING") {
+        LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+        return;
+      }
+
+
       this.state = "DISCONNECTED";
       if (this.recoverFromDisconnect && this._isSessionActive() ) {
         LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
@@ -199,17 +207,10 @@ export class Session {
     }
 
     // Setting up the connection is a multi-stage process. It connects, gets the services, gets the session nonce etc.
-    // It can happen that a disconnect event is thrown during this process. At that point, the connection process for this session failed.
+    // It should not happen that a disconnect event is thrown during this process. At that point, the connection process for this session failed.
     // @ts-ignore
     if (this.state === "DISCONNECTED") {
-      LOGi.constellation("Session: Disconnected before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
-      // if this is a claimed session, we expected this to connect and will retry immediately.
-      if (this.recoverFromDisconnect && this._isSessionActive()) {
-        this.initializeBootstrapper();
-        this.tryToActivate();
-        return;
-      }
-      // If this is not a claimed session, the disconnect event has ended the session. This means it will be destroyed and we should stop here.
+      LOGe.constellation("Session: Disconnected before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
       return;
     }
 
@@ -251,6 +252,7 @@ export class Session {
     catch(err) {
       LOGi.constellation("Session: Failed to perform command.", availableCommandId, this.handle, this.identifier, err?.message);
       if (err?.message === "NOT_CONNECTED") {
+        LOGe.constellation("Session: Race condition detected while performing command.", availableCommandId, this.handle, this.identifier, err?.message);
         // there is a mismatch between the lib and session state. If this was a claimed session, we can reconnect later on a new command.
         // if it was a public session, the session was already ended and this cycle should be broken right here.
         this.state = "DISCONNECTED";
@@ -349,7 +351,7 @@ export class Session {
 
   deactivate() {
     if (this.isPrivate() || this.isClosing()) { return; }
-    if (this._sessionIsActivated === false)    { return; }
+    if (this._sessionIsActivated === false)   { return; }
     if (this.state === "CONNECTED")           { return; }
     if (this.state === "CONNECTING") {
       BluenetPromiseWrapper.cancelConnectionRequest(this.handle);

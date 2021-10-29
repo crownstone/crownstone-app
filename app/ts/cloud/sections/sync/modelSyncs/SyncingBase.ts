@@ -1,12 +1,12 @@
 export class SyncingBase {
   actions: any[];
   transferPromises : any[];
-  globalCloudIdMap : globalIdMap;
-  globalLocalIdMap : globalIdMap;
+  globalCloudIdMap : syncIdMap;
+  globalLocalIdMap : syncIdMap;
 
-  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap) {
+  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: syncIdMap) {
     if (!globalCloudIdMap) {
-      globalCloudIdMap = getGlobalIdMap();
+      globalCloudIdMap = getSyncIdMap();
     }
 
     this.globalCloudIdMap = globalCloudIdMap;
@@ -15,7 +15,7 @@ export class SyncingBase {
   }
 
   _constructLocalIdMap() {
-    this.globalLocalIdMap = getGlobalIdMap();
+    this.globalLocalIdMap = getSyncIdMap();
     let globalKeys = Object.keys(this.globalCloudIdMap);
     globalKeys.forEach((key) => {
       this.globalLocalIdMap[key] = {};
@@ -25,7 +25,7 @@ export class SyncingBase {
         let localId = this.globalCloudIdMap[key][cloudId];
         this.globalLocalIdMap[key][localId] = cloudId;
       })
-    })
+    });
   }
 
   _getLocalData(store) {}
@@ -106,45 +106,22 @@ export class SyncingBase {
 export class SyncingSphereItemBase extends SyncingBase {
   localSphereId   : string;
   cloudSphereId   : string;
-  globalSphereMap : globalIdMap;
 
   constructor(
     actions : any[],
     transferPromises: any[],
     localSphereId: string,
     cloudSphereId: string,
-    globalCloudIdMap: globalIdMap,
-    globalSphereMap: globalIdMap
+    globalCloudIdMap: syncIdMap
   ) {
     super(actions, transferPromises, globalCloudIdMap);
     this.localSphereId = localSphereId;
     this.cloudSphereId = cloudSphereId;
-    this.globalSphereMap = globalSphereMap;
-  }
-}
-
-export class SyncingStoneItemBase extends SyncingSphereItemBase {
-  localStoneId   : string;
-  cloudStoneId   : string;
-
-  constructor(
-    actions : any[],
-    transferPromises: any[],
-    localStoneId: string,
-    cloudStoneId: string,
-    localSphereId: string,
-    cloudSphereId: string,
-    globalCloudIdMap: globalIdMap,
-    globalSphereMap: globalIdMap
-  ) {
-    super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap, globalSphereMap);
-    this.localStoneId = localStoneId;
-    this.cloudStoneId = cloudStoneId;
   }
 }
 
 
-export function getGlobalIdMap() : globalIdMap {
+export function getSyncIdMap() : syncIdMap {
   return {
     abilities:  {},
     abilityProperties:  {},

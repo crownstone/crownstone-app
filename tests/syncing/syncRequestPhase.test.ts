@@ -2,7 +2,7 @@ import { resetMocks } from "../__testUtil/mocks/suite.mock";
 import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
 import { core } from "../../app/ts/Core";
 import { SyncNext } from "../../app/ts/cloud/sections/newSync/SyncNext";
-import { getGlobalIdMap } from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
+import { getSyncIdMap } from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
 import { reply1 } from "./replyMocks/reply1";
 import { CLOUD } from "../../app/ts/cloud/cloudAPI";
 import { SyncUtil } from "../../app/ts/util/SyncUtil";
@@ -25,7 +25,7 @@ test("Using SyncUtil", async () => {
 
 // let handle = 'TestHandle';
 // test("Using core in tests", async () => {
-//   let cloudIdMap = getGlobalIdMap();
+//   let cloudIdMap = getSyncIdMap();
 //   let actions = []
 //   await SyncNext.processSyncResponse(reply1, actions, cloudIdMap)
 //   expect(actions.length > 0).toBeTruthy()
@@ -51,8 +51,8 @@ test("Using SyncUtil", async () => {
 
 // test ("Handle Sync Reply", async () => {
 //   let actions = [];
-//   let globalIdMap = getGlobalIdMap()
-//   await SyncNext.processSyncResponse(reply2 as any, actions, globalIdMap)
-//   console.log("globalIdMap", globalIdMap)
+//   let syncIdMap = getSyncIdMap()
+//   await SyncNext.processSyncResponse(reply2 as any, actions, syncIdMap)
+//   console.log("syncIdMap", syncIdMap)
 //   console.log("actions", actions)
 // })

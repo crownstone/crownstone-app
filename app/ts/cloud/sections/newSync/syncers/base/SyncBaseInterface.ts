@@ -9,7 +9,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
   localId:          string;
   actions:          DatabaseAction[];
   transferPromises: Promise<any>[];
-  globalCloudIdMap: globalIdMap;
+  globalCloudIdMap: syncIdMap;
 
   constructor(options: SyncInterfaceBaseOptions) {
     this.cloudId          = options.cloudId;

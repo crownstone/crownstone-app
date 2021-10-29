@@ -17,6 +17,7 @@ function getToken(prefix: string) {
 export function resetDataHelper() {
   lastUsedSphereId = null;
   lastUsedStoneId = null;
+  hubCount = 0;
   stoneCount = 0;
   locationCount = 0;
 }
@@ -24,6 +25,7 @@ export function resetDataHelper() {
 
 let lastUsedSphereId = null;
 let lastUsedStoneId = null;
+let hubCount = 0;
 let stoneCount = 0;
 let locationCount = 0;
 export function addSphere(config? : any) {
@@ -60,6 +62,24 @@ export function addStone(config? : any) {
 
   let stone = Get.stone(lastUsedSphereId, stoneId);
   return { stone, handle: stone.config.handle };
+}
+export function addHub(config? : any) {
+  let hubId = 'hub_' + xUtil.getUUID();
+  hubCount++;
+  if (!config) { config = {}; }
+  core.store.dispatch({
+    type:"ADD_HUB",
+    sphereId: lastUsedSphereId,
+    hubId: hubId,
+    data:{
+      name: getToken('hub'),
+      cloudId: hubCount,
+      ...config
+    }
+  });
+  MapProvider.refreshAll();
+
+  return Get.hub(lastUsedSphereId, hubId);
 }
 export function addLocation(config? : any) {
   let locationId = 'location_' + xUtil.getUUID();

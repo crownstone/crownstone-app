@@ -4,7 +4,7 @@ import { CLOUD } from "../../cloudAPI";
 import { LOGe } from "../../../logging/Log";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { getGlobalIdMap, SyncingBase } from "../sync/modelSyncs/SyncingBase";
+import { getSyncIdMap, SyncingBase } from "../sync/modelSyncs/SyncingBase";
 import { SphereSyncerNext } from "./syncers/SphereSyncerNext";
 import { HubSyncer } from "./syncers/HubSyncerNext";
 import { mapLocalToCloud } from "./mapping/CloudMapper";
@@ -33,7 +33,7 @@ export const SyncNext = {
     if (!sphere) { return; }
 
     let actions = [];
-    let globalCloudIdMap = getGlobalIdMap();
+    let globalCloudIdMap = getSyncIdMap();
 
     switch (type) {
       case "SPHERE_USERS":
@@ -57,7 +57,7 @@ export const SyncNext = {
     if (!sphere) { return; }
 
     let actions = [];
-    let globalCloudIdMap = getGlobalIdMap();
+    let globalCloudIdMap = getSyncIdMap();
 
     switch (type) {
       case "ABILITIES":
@@ -75,7 +75,7 @@ export const SyncNext = {
     }
   },
 
-  sync: async function syncNext(scopes : SyncCategory[] = [], actions: DatabaseAction[], globalCloudIdMap: globalIdMap) {
+  sync: async function syncNext(scopes : SyncCategory[] = [], actions: DatabaseAction[], globalCloudIdMap: syncIdMap) : Promise<sphereIdMap> {
     let scopeMap : SyncScopeMap = {};
     let nextActions : DatabaseAction[] = [];
     for (let i = 0; i < scopes.length; i++) {
@@ -92,14 +92,16 @@ export const SyncNext = {
     // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
     // console.log("SYNC response", JSON.stringify(response))
-    await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
+    let sphereIdMap = await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
     // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
     for (let an of nextActions) {
       actions.push(an);
     }
+
+    return sphereIdMap;
   },
 
-  processSyncResponse: async function processSyncResult(syncResponse: SyncRequestResponse, actions = [], globalCloudIdMap: globalIdMap) {
+  processSyncResponse: async function processSyncResult(syncResponse: SyncRequestResponse, actions = [], globalCloudIdMap: syncIdMap) : Promise<sphereIdMap> {
     let transferPromises : Promise<any>[] = []
     let syncerOptions    : SyncInterfaceViewOptions = {actions, globalCloudIdMap, transferPromises}
     let replyRequired = false;
@@ -111,13 +113,15 @@ export const SyncNext = {
       }
     }
 
+    let sphereIdMap = {}
+
 
     if (syncResponse.user) {
       new UserSyncerNext(syncerOptions).process(syncResponse.user, reply)
     }
 
     if (syncResponse.spheres) {
-      let result = await SyncNext.processSpheres(syncResponse.spheres, actions, globalCloudIdMap);
+      let result = await SyncNext.processSpheres(syncResponse.spheres, actions, globalCloudIdMap, sphereIdMap);
       if (Object.keys(result).length > 0) {
         replyRequired = true;
         reply.spheres = result;
@@ -143,10 +147,12 @@ export const SyncNext = {
     if (replyRequired) {
       await CLOUD.syncNext(reply);
     }
+
+    return sphereIdMap;
   },
 
 
-  processSpheres: async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRequestResponse_Sphere }, actions: any[], globalCloudIdMap: globalIdMap) : Promise<SyncRequestSphereData> {
+  processSpheres: async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRequestResponse_Sphere }, actions: any[], globalCloudIdMap: syncIdMap, sphereIdMap: sphereIdMap) : Promise<SyncRequestSphereData> {
     let reply : SyncRequestSphereData = {};
     let state = core.store.getState();
     let transferPromises : Promise<any>[] = []
@@ -155,9 +161,12 @@ export const SyncNext = {
     let cloudSphereIds = Object.keys(sphereCloudResponses);
     let syncers = [];
     for (let i = 0; i < cloudSphereIds.length; i++) {
+
+      sphereIdMap[cloudSphereIds[i]] = getSyncIdMap();
+
       let cloudSphereId = cloudSphereIds[i];
       let sphereCloudResponse = sphereCloudResponses[cloudSphereId];
-      let sphereSyncBase = {cloudSphereId, ...syncBase};
+      let sphereSyncBase = {cloudSphereId, sphereIdMap: sphereIdMap[cloudSphereIds[i]], ...syncBase};
       new SphereSyncerNext({cloudId: cloudSphereId, ...sphereSyncBase})
         .process(sphereCloudResponse.data, reply);
 

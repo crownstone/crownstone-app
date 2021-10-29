@@ -80,7 +80,7 @@ interface keyMap {
 }
 
 
-interface globalIdMap {
+interface syncIdMap {
   users:       keyMap,
   locations:   keyMap,
   abilities:   keyMap,
@@ -99,6 +99,6 @@ interface globalIdMap {
 }
 
 
-interface globalSphereMap {
-  [key: string]: globalIdMap
+interface sphereIdMap {
+  [key: string]: syncIdMap
 }

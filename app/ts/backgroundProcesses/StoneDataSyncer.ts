@@ -8,7 +8,7 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LOGd, LOGe, LOGi } from "../logging/Log";
 import { CLOUD } from "../cloud/cloudAPI";
 import { MapProvider } from "./MapProvider";
-import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import { getSyncIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { Scheduler } from "../logic/Scheduler";
 import { tell } from "../logic/constellation/Tellers";
 import { SyncNext } from "../cloud/sections/newSync/SyncNext";

@@ -63,6 +63,7 @@ export class SessionManagerClass {
    * @param commanderId
    */
   async claimSession(handle: string, commanderId: string, timeoutSeconds: number) {
+    LOGi.constellation("SessionManager: Claiming session", handle, commanderId)
     if (this._blocked !== true) {
       throw new Error("SESSION_MANAGER_IS_NOT_BLOCKED");
     }
@@ -142,23 +143,6 @@ export class SessionManagerClass {
               }
             }
           }
-        }
-      }
-    }
-  }
-
-
-  /**
-   * This will check all registered sessions to see if they're required.
-   * It will query the BleCommandManager for all outstanding commands. If the shared ones have no commands, they're cancelled.
-   */
-  evaluateSessionNecessity() {
-    LOGd.constellation("SessionManager: evaluateSessionNecessity now")
-    for (let handle in this._sessions) {
-      if (this._sessions[handle].privateId === null) {
-        if (BleCommandManager.areThereCommandsFor(handle) === null && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
-          LOGi.constellation("SessionManager: Killing session", handle)
-          this._sessions[handle].kill();
         }
       }
     }
@@ -296,7 +280,7 @@ export class SessionManagerClass {
           }
         }
         else {
-          if (session && session.isPrivate() === false && this._pendingSessionRequests[handle] === undefined) {
+          if (session && session.isPrivate() === false) {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
             this.closeSession(handle);
           }

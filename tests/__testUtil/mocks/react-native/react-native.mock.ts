@@ -105,3 +105,4 @@ jest.mock("react-native-fs", () => {
 jest.mock("@bugsnag/react-native", () => {
   return jest.fn()
 })
+

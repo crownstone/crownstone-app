@@ -1,6 +1,12 @@
 import { advanceBy, advanceTo, clear } from 'jest-date-mock';
 advanceTo(1e6); // reset to timestamp = 1.000.000
 
+import { mockAppUtil } from "./appUtil.mock";
+mockAppUtil();
+
+import { mockNotificationHandler } from "./notificationHandler.mock";
+mockNotificationHandler();
+
 import { mockReactNative } from "./react-native/react-native.mock";
 let mockRN = mockReactNative();
 
@@ -13,8 +19,8 @@ mockNavigationUtil();
 import { mockLanguages } from "./languages.mock";
 mockLanguages()
 
-import { mockCloud } from "./cloud.mock";
-mockCloud()
+// import { mockCloud } from "./cloud.mock";
+// mockCloud()
 
 import { mockLocalNotifications } from "./localNotifications.mock";
 mockLocalNotifications()

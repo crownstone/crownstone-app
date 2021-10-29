@@ -243,7 +243,7 @@ export class Login extends Component<any, any> {
                 placeholderTextColor='#888'
                 value={this.state.email}
                 callback={(newValue) => { this.setState({email:newValue});}}
-                endCallback={() => { this.passwordInputRef.focus() }}
+                endCallback={() => { if (!this.state.password) {this.passwordInputRef.focus() }}}
               />
             </View>
             <View style={{height:10, width:screenWidth}} />
