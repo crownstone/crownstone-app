@@ -178,7 +178,16 @@ export class Session {
 
   isPrivate()   : boolean { return this.privateId !== null;        }
   isClosing()   : boolean { return this.state === "DISCONNECTING"; }
-  isConnected() : boolean { return this.state === "CONNECTED";     }
+  isConnected() : boolean {
+    // these are all states where the Session is available for commands and connected.
+    switch (this.state) {
+      case "CONNECTED":
+      case "WAITING_FOR_COMMANDS":
+      case "PERFORMING_COMMAND":
+        return true;
+    }
+    return false;
+  }
 
 
   async connect() {

@@ -125,7 +125,6 @@ test("Create location without add", async () => {
       }
     ]
   }])
-  console.log(core.store.getState())
 })
 
 

@@ -53,6 +53,7 @@ export class SessionManagerClass {
    */
   async _createSession(handle: string, commanderId: string, privateSession: boolean) {
     let privateId = privateSession ? commanderId : null;
+    LOGd.constellation("SessionManager: Create new session by request.", commanderId, privateId);
     this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, privateSession));
   }
 
@@ -189,7 +190,6 @@ export class SessionManagerClass {
 
       // IF the session does NOT exist yet, we can create the session.
       if (!session) {
-        LOGd.constellation("SessionManager: Create new session by request.", commanderId, privateId);
         this._createSession(handle, commanderId, privateSessionRequest);
         // the request will be added to pending below;
       }
@@ -282,7 +282,12 @@ export class SessionManagerClass {
         else {
           if (session && session.isPrivate() === false) {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
-            this.closeSession(handle);
+            if (this._pendingSessionRequests[handle] !== undefined) {
+              LOGi.constellation("SessionManager: Keep session open for other requests after timeout.");
+            }
+            else {
+              this.closeSession(handle);
+            }
           }
         }
 
@@ -313,7 +318,7 @@ export class SessionManagerClass {
           await this.closeSession(handle);
         }
         else {
-          LOGd.constellation("SessionManager: Keep session open for other requests", handle);
+          LOGi.constellation("SessionManager: Keep session open for other requests after revoke.", handle);
         }
       }
     }
@@ -366,7 +371,7 @@ export class SessionManagerClass {
    * @param handle
    */
   async _endSession(handle) {
-    LOGd.constellation("SessionManager: Ending session in manager", handle)
+    LOGi.constellation("SessionManager: Ending session in manager", handle)
     let session = this._sessions[handle];
 
     delete this._sessions[handle];
@@ -384,17 +389,7 @@ export class SessionManagerClass {
     else {
       let newRequest = this.checkIfSessionIsStillRequired(handle);
       if (newRequest !== false) {
-        try {
-          await this.request(handle, newRequest, false)
-        }
-        catch (err) {
-          // if there is still a requirement for this session but we've timed out that means that the request called here has a
-          // shorter timeout than the one that is still required. Once the required one times out, the checkIfRequired will fail this loop
-          // will resolve. Until then however, retry this.
-          if (err?.message === "SESSION_REQUEST_TIMEOUT") {
-            await this._endSession(handle).catch(() => {});
-          }
-        }
+        this._createSession(handle, newRequest, false);
       }
     }
   }
@@ -402,16 +397,40 @@ export class SessionManagerClass {
   checkIfSessionIsStillRequired(handle) : string | false {
     // if it was a shared session, it could have been an error or it had nothing to do.
     if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
-      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle]);
-      return "stillRequired"+xUtil.getUUID();
+      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle]);
+      return this._pendingSessionRequests[handle][0].commanderId;
     }
-    else if (BleCommandManager.areThereCommandsFor(handle)) {
-      // there are still shared commands, so the session will be retried.
-      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle);
-      return "stillRequired"+xUtil.getUUID();
+    else {
+      let pendingCommandId = BleCommandManager.areThereCommandsFor(handle);
+      if (pendingCommandId !== null) {
+        // there are still shared commands, so the session will be retried.
+        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle, pendingCommandId);
+        return "stillRequiredForCommand_" + pendingCommandId;
+      }
     }
+
+    LOGi.constellation("SessionManager: Session is not required anymore", handle)
     return false;
   }
+
+
+  /**
+   * This will check all registered sessions to see if they're required.
+   * It will query the BleCommandManager for all outstanding commands. If the shared ones have no commands, they're cancelled.
+   */
+  evaluateSessionNecessity() {
+    LOGd.constellation("SessionManager: evaluateSessionNecessity now")
+    for (let handle in this._sessions) {
+      if (this._sessions[handle].privateId === null) {
+        if (BleCommandManager.areThereCommandsFor(handle) === null && (this._pendingSessionRequests[handle] === undefined || this._pendingSessionRequests[handle].length == 0)) {
+          LOGi.constellation("SessionManager: Killing session", handle)
+          this._sessions[handle].kill();
+        }
+      }
+    }
+  }
+
+
 
 
   async removeFromQueue(handle, commanderId) {
@@ -529,5 +548,4 @@ function removeFromQueueList(map, handle, commanderId) {
 }
 
 
-export const SessionManager = new SessionManagerClass()
-
+export const SessionManager = new SessionManagerClass();

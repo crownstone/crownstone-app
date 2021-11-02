@@ -10,6 +10,7 @@ import {
   Command_GetHardwareVersion,
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
+import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
 
 
 beforeEach(async () => {
@@ -404,6 +405,58 @@ test("Session manager being paused with public connections. These should be clos
   await TestUtil.nextTick();
   expect(pauseFinished).toBeTruthy();
 });
+
+
+
+
+test("Check usage of re-requesting by sessionManager", async () => {
+  let db = createMockDatabase(meshId);
+  let handle = db.stones[0].handle;
+  let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle], true));
+
+  let p1Err = jest.fn();
+  let c2Success = jest.fn();
+  commander1.getBootloaderVersion().catch(p1Err);
+
+  // expect the session to attempt a connect
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+
+  let commander2 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
+  commander2.getFirmwareVersion().then(c2Success);
+
+  // trigger the timeout of the first session requested by the 1st commander
+  await mScheduler.trigger();
+  await TestUtil.nextTick();
+  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"));
+
+  await mBluenetPromise.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenetPromise.for(handle).succeed.cancelConnectionRequest();
+
+  await TestUtil.nextTick();
+
+  evt_ibeacon(-70, handle);
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+  await TestUtil.nextTick()
+
+  let commander3 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
+  commander3.getHardwareVersion().then(c2Success)
+
+  expect(mBluenetPromise.has(handle).called.getFirmwareVersion()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.getFirmwareVersion('1.2.3')
+
+  await TestUtil.nextTick()
+  expect(mBluenetPromise.has(handle).called.getHardwareVersion()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.getHardwareVersion('ACRO')
+
+  await TestUtil.nextTick()
+  expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
+  evt_disconnected(handle);
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
+});
+
+
 
 
 
