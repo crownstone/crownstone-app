@@ -118,18 +118,27 @@ class MapProviderClass {
 
 
   logMap() {
-    let printApprovedKeys = [
-      'id',
-      'cid',
-      'handle',
-      'name',
-      // 'sphereId',
-      // 'stone',
-      // 'stoneConfig',
-      'locationName',
-      'locationId',
-    ];
-    LOGi.info("MapProvider: logMap", JSON.stringify(Object.values(this.stoneSummaryMap), printApprovedKeys))
+    let state = core.store.getState();
+    let stoneIdMap = {};
+    let stoneHandleMap = {};
+    let locationIdMap = {};
+    let sphereIdMap = {};
+
+    for (let sphereId in state.spheres) {
+      let sphere : SphereData = state.spheres[sphereId];
+      sphereIdMap[sphereId] = {name: sphere.config.name, uuid: sphere.config.iBeaconUUID, cloudId: sphere.config.cloudId, uid: sphere.config.uid};
+      for (let locationId in sphere.locations) {
+        let location = sphere.locations[locationId]
+        locationIdMap[locationId] = {uid: location.config.uid, name: location.config.name, cloudId: location.config.cloudId}
+      }
+      for (let stoneId in sphere.stones) {
+        let stone = sphere.stones[stoneId];
+        stoneIdMap[stoneId] = {uid: stone.config.uid, handle:stone.config.handle, name: stone.config.name, locationId: stone.config.locationId, cloudId: stone.config.cloudId};
+        stoneHandleMap[stone.config.handle] = stoneId;
+      }
+    }
+
+    LOGi.info("MapProvider: nameMap", JSON.stringify({sphereIdMap, locationIdMap, stoneIdMap, stoneHandleMap}))
   }
 
 

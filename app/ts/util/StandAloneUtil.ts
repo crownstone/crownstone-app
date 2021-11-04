@@ -531,6 +531,80 @@ export const xUtil = {
   },
 
 
+  /**
+   CALL STACK [
+   "getCallStack",
+   "CommandAPI_base",
+   "construct",
+   "_createSuperInternal",
+   "CommandBroadcastAPI",
+   "construct",
+   "_createSuperInternal",
+   "CommandMeshAPI",
+   "construct",
+   "_createSuperInternal",
+   "CommandAPI",
+   "tellSphere",
+   "_callee2$",
+   "tryCatch",
+   "invoke",
+   "",
+   "tryCallTwo",
+   "doResolve",
+   "Promise",
+   "",
+   "updateMyDeviceTrackingRegistration",
+   "",
+   "emit",
+   "enterSphere",
+   "",
+   "emit",
+   "__callFunction",
+   "",
+   "__guard",
+   "callFunctionReturnFlushedQueue",
+   "callFunctionReturnFlushedQueue"
+   ]
+
+   */
+  getCallStack: function(ignoreList = {}) : string[] {
+    var err = new Error();
+
+    let stackArray = err.stack.split("\n");
+    // remove code position
+    let functionArray = stackArray.map((v) => { return v.split("@")[0]})
+
+    let cleanedArray = [];
+    for (let fn of functionArray) {
+      switch (fn) {
+        case "getCallStack":
+        case "construct":
+        case "_createSuperInternal":
+        case "tryCatch":
+        case "invoke":
+        case "tryCallTwo":
+        case "callFunctionReturnFlushedQueue":
+        case "__callFunction":
+        case "doResolve":
+        case "Promise":
+        case "":
+        case "emit":
+        case "__guard":
+          break;
+        default:
+          if (fn.substr(0,7) == "_callee") {
+            break;
+          }
+          else if (ignoreList[fn] === undefined) {
+            cleanedArray.push(fn);
+          }
+      }
+    }
+
+    console.log("CALL STACK", JSON.stringify(cleanedArray,undefined,2))
+    return cleanedArray
+  }
+
 };
 
 

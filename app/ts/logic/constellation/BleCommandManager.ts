@@ -9,7 +9,6 @@ import { LOG, LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
-import Bugsnag from "@bugsnag/react-native";
 import { BugReportUtil } from "../../util/BugReportUtil";
 import { err } from "react-native-svg/lib/typescript/xml";
 import { TimeKeeper } from "../../backgroundProcesses/TimeKeeper";

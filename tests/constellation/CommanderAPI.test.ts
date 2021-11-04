@@ -65,8 +65,6 @@ test("Check the CommanderAPI handling multiple session timeouts", async () => {
 });
 
 
-
-
 test("Check multiple commanders requiring the same session", async () => {
   let db = createMockDatabase(meshId);
   let handle = db.stones[0].handle
@@ -101,4 +99,28 @@ test("Check multiple commanders requiring the same session", async () => {
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
   evt_disconnected(handle);
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
+});
+
+
+test("Check the recover command handling.", async () => {
+  let db = createMockDatabase(meshId);
+  let handle = db.stones[0].handle
+  let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle], false));
+
+  let success = jest.fn();
+  let err     = jest.fn();
+  commander1.recover().then(success).catch(err)
+
+  // fire ibeacon event to trigger the connect request
+  evt_ibeacon(-70, handle);
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+
+  await TestUtil.nextTick()
+  expect(mBluenetPromise.has(handle).called.recover()).toBeTruthy();
+  evt_disconnected(handle);
+
+  await mBluenetPromise.for(handle).succeed.recover();
+  expect(success).toBeCalled()
+  expect(err).not.toBeCalled()
 });

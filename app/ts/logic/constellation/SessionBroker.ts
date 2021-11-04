@@ -60,6 +60,7 @@ export class SessionBroker {
       let handled = false;
       command.promise.promise
         .then(() => {
+          LOGi.constellation("SessionBroker: Command finished.", command.id, this.options.commanderId);
           handled = true;
           this.cleanup([command.id]);
         })

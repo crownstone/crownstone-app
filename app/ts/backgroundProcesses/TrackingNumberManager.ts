@@ -132,12 +132,19 @@ class TrackingNumberManagerClass {
   // }
 
 
-  updateMyDeviceTrackingRegistrationInActiveSphere() {
+  updateMyDeviceTrackingRegistrationInActiveSphere(){
     LOGi.info("TrackingNumberManager: Update my device tracking _requests for active sphere.");
     // do not do this too often.
     if (Date.now() - this.lastTimeTokenWasBumped < 1800000) { // 30 minuteus
       return;
     }
+
+    let state = core.store.getState();
+    if (DataUtil.getPresentSphereIds(state).length === 0) {
+      LOGi.info("TrackingNumberManager: We're not in any sphere, aborting the update tracking registration.");
+      return;
+    }
+
     if (BroadcastStateManager.getSphereInLocationState() !== null) {
       this.updateMyDeviceTrackingRegistration(BroadcastStateManager.getSphereInLocationState());
     }

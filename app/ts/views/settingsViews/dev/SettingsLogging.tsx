@@ -18,8 +18,6 @@ import { LOGe } from "../../../logging/Log";
 
 
 
-
-
 export class SettingsLogging extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  "Logging"});
@@ -60,7 +58,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
       log_advertisements: { label: "Advertisements",  explanation: ''},
       log_behaviour:      { label: "Behaviour",       explanation: ''},
       log_mesh:           { label: "Mesh",            explanation: ''},
-      log_broadcast:      { label: "Broadcast",       explanation: ''},
       log_notifications:  { label: "Notifications",   explanation: ''},
       log_scheduler:      { label: "Scheduler",       explanation: ''},
       log_ble:            { label: "BLE",             explanation: ''},

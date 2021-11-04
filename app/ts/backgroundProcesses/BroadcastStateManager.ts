@@ -189,7 +189,7 @@ class BroadcastStateManagerClass {
     let activeSphereData = SphereUtil.getActiveSphere(state);
 
     if (amountOfPresentSpheres === 0) {
-      LOGi.info("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
+      LOGi.info("BroadcastStateManager: Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
       this._updateLocationState(activeSphereData.sphereId);
       return this._stopAdvertising();
     }
@@ -267,10 +267,10 @@ class BroadcastStateManagerClass {
       locationUID  = location ? location.config.uid : 0;
       sphereUID    = sphere.config.uid;
 
-      LOGi.info("Setting Sphere As Present:", sphere.config.name);
+      LOGi.info("BroadcastStateManager: Setting Sphere As Present:", sphere.config.name);
     }
     else {
-      LOGi.info("Setting Custom Sphere As Present");
+      LOGi.info("BroadcastStateManager: Setting Custom Sphere As Present");
     }
     this._sphereIdInLocationState = sphereId;
     this._locationUidInLocationState = locationUID;
@@ -287,7 +287,7 @@ class BroadcastStateManagerClass {
   _startAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        LOGi.info("Bluenet.startAdvertising()");
+        LOGi.info("BroadcastStateManager: Bluenet.startAdvertising()");
         this._advertising = true;
         Bluenet.startAdvertising();
       });
@@ -296,7 +296,7 @@ class BroadcastStateManagerClass {
   _stopAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        LOGi.info("Bluenet.stopAdvertising()");
+        LOGi.info("BroadcastStateManager: Bluenet.stopAdvertising()");
         this._sphereIdInLocationState = null;
         this._advertising = false;
         Bluenet.stopAdvertising();
@@ -306,7 +306,7 @@ class BroadcastStateManagerClass {
 
   _reloadDevicePreferences() {
     let preferences = DataUtil.getDevicePreferences();
-    LOGi.info("Bluenet.setDevicePreferences", preferences.rssiOffset, preferences.tapToToggleEnabled, preferences.ignoreForBehaviour, preferences.randomDeviceToken, preferences.activeRandomDeviceToken, preferences.useTimeBasedNonce, AppState.currentState);
+    LOGi.info("BroadcastStateManager: Bluenet.setDevicePreferences", preferences.rssiOffset, preferences.tapToToggleEnabled, preferences.ignoreForBehaviour, preferences.randomDeviceToken, preferences.activeRandomDeviceToken, preferences.useTimeBasedNonce, AppState.currentState);
 
 
     // if the active token is not the same as the random token and we have the possibility to change it (app is active (on screen))

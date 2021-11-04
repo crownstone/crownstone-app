@@ -328,6 +328,12 @@ export class SessionManagerClass {
       removeFromQueueList(this._pendingPrivateSessionRequests, handle, commanderId);
     }
 
+    // remove the timeout
+    if (this._timeoutHandlers[handle][commanderId] !== undefined) {
+      this._timeoutHandlers[handle][commanderId].clearCallback();
+      delete this._timeoutHandlers[handle][commanderId];
+    }
+
     // if the session is private, the revocation must close it.
     if (session && session.isPrivate() === true && session.privateId === commanderId) {
       await this.closeSession(handle);

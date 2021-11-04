@@ -84,16 +84,15 @@ import { Platform } from "react-native";
    */
   export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
   export let LOG_PROMISE_MANAGER = LOG_LEVEL.ERROR;    // enabling LOG.promiseManager commands to be shown.
-  export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation commands to be shown.
+  export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation  commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
   export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
   export let LOG_ERRORS          = LOG_LEVEL.ERROR;    // enabling LOG.error          commands to be shown.
   export let LOG_MESH            = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES        = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
-  export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
-  export let LOG_BROADCAST       = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
-  export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav commands to be shown.
+  export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu            commands to be shown.
+  export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav            commands to be shown.
   export let LOG_BEHAVIOUR       = LOG_LEVEL.ERROR;    // enabling LOG.behaviour      commands to be shown.
 
 
@@ -106,7 +105,7 @@ import { Platform } from "react-native";
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
   export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
-  export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
+  export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native     commands to be shown.
 
 
   export let LOG_TIMESTAMPS     = false;    // add timestamps to logs.

@@ -11,7 +11,7 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST, LOG_PROMISE_MANAGER, LOG_NAVIGATION
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_PROMISE_MANAGER, LOG_NAVIGATION
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { LOG_LEVEL } from "./LogLevels";
@@ -50,10 +50,6 @@ class Logger {
 
   constellation(...any) {
     this._log('CONSTELLATION', LOG_CONSTELLATION, LogProcessor.log_constellation, arguments);
-  }
-
-  broadcast(...any) {
-    this._log('BROADCAST --', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
   }
 
   notifications(...any) {

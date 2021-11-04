@@ -182,7 +182,7 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data : locationDataContainer) {
-    LOG.info('LocationHandler: USER_ENTER_LOCATION.', data);
+    LOG.info('LocationHandler: USER_ENTER_LOCATION.', data.region, data.location);
     let sphereId = data.region;
     let locationId = data.location;
     let state = core.store.getState();

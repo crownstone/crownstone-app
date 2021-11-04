@@ -95,7 +95,6 @@ import { Platform } from "react-native";
   export let LOG_MESSAGES        = LOG_LEVEL.ERROR;   // enabling LOG.mesh          commands to be shown.
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;   // enabling LOG.advertisement commands to be shown.
   export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
-  export let LOG_BROADCAST       = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
   export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav commands to be shown.
   export let LOG_BEHAVIOUR       = LOG_LEVEL.ERROR;    // enabling LOG.behaviour      commands to be shown.
 

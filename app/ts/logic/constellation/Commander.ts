@@ -158,7 +158,7 @@ class CommandAPI_base {
       return promiseContainer.promise;
     }
     catch (err) {
-      LOGe.constellation("Commander: Failed to load command", err?.message, "id:", this.id);
+      LOGe.constellation("Commander: Failed to load command", err?.message || 'unknown_error', "id:", this.id);
       throw err;
     }
   }

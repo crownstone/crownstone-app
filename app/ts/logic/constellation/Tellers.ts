@@ -21,8 +21,6 @@ export async function connectTo(handle, sphereId: string | null = null, timeoutS
     }
   }
 
-
-
   try {
     await SessionManager.request(handle, privateId, true, timeoutSeconds);
   }

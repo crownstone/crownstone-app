@@ -35,8 +35,11 @@ export class BroadcastCommandManagerClass {
   }
 
   broadcast(bleCommand : BleCommand<BroadcastInterface>, ignoreDuplicates = false) {
+    LOGi.constellation("BroadcastCommandManager: Loading command for broadcast", JSON.stringify(bleCommand));
+    
     if (SessionManager.isBlocked()) {
       bleCommand.promise.reject(new Error("SESSION_MANAGER_IS_CLAIMED"));
+      LOGi.constellation("BroadcastCommandManager: Can not execute command because sessionManager is blocked", bleCommand.id);
       return;
     }
 
@@ -45,7 +48,9 @@ export class BroadcastCommandManagerClass {
 
     // double check here, this api should be able to be used
     let throttling = this.handleThrottling(bleCommand);
-    if (throttling) { return; }
+    if (throttling) {
+      return;
+    }
 
     this._broadcast(bleCommand);
   }
@@ -90,7 +95,7 @@ export class BroadcastCommandManagerClass {
   _broadcast(bleCommand: BleCommand<BroadcastInterface>) {
     let itemId = this._prepareForExecution(bleCommand);
     let type = bleCommand.command.type;
-    LOGi.broadcast(bleCommand.command.type, " via broadcast");
+    LOGi.constellation("BroadcastCommandManager: broadcasting", bleCommand.command.type, bleCommand.id);
     Scheduler.scheduleCallback(() => { bleCommand.promise.resolve(); }, 120, "auto resolve broadcast promise" );
 
     let stoneSummary  = MapProvider.stoneHandleMap[bleCommand.commandTarget];
@@ -106,11 +111,11 @@ export class BroadcastCommandManagerClass {
     bleCommand.command.broadcast(bleCommand)
       .then(() => {
         delete this.itemsWaitingForExecute[itemId];
-        LOGi.broadcast("Success broadcast ", );
+        LOGi.constellation("BroadcastCommandManager: Successfully broadcast", bleCommand.command.type, bleCommand.id);
       })
       .catch((err) => {
         delete this.itemsWaitingForExecute[itemId];
-        LOGi.broadcast("ERROR broadcast turn On");
+        LOGi.constellation("BroadcastCommandManager: Error broadcasting", bleCommand.command.type, bleCommand.id);
       })
 
     this.bumpExecutionChecker();
@@ -140,7 +145,7 @@ export class BroadcastCommandManagerClass {
 
   handleThrottling(bleCommand : BleCommand<BroadcastInterface>) : boolean {
     if (this.shouldWaitForBroadcast()) {
-      LOGd.broadcast("Scheduling broadcast for later");
+      LOGi.constellation("BroadcastCommandManager: Scheduling broadcast for later.", bleCommand.command.type, bleCommand.id);
       // if already a pending command check scheduled, we do not need to schedule another.
       this._setPendingCommandCheck();
       this.queue.push(bleCommand);
@@ -154,7 +159,7 @@ export class BroadcastCommandManagerClass {
       // only most recent command of any type will be broadcast
       if (commandSummary.commandTarget === this.queue[i].commandTarget) {
         if (commandSummary.command.isDuplicate(this.queue[i].command)) {
-          LOGd.broadcast("Remove item from duplicate queue",i, this.queue[i].command.type)
+          LOGi.constellation("BroadcastCommandManager: Remove item from duplicate queue",i, this.queue[i].command.type, this.queue[i].id);
           // fail the pending item
           this.queue[i].promise.reject(new Error("BROADCAST_REMOVED_AS_DUPLICATE"));
           // remove from queue
