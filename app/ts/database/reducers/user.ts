@@ -43,7 +43,6 @@ export default (state = defaultSettings, action : any = {}) => {
       }
       return state;
     case 'SET_NEW_BOOTLOADER_VERSIONS':
-      return state;
       if (action.data) {
         let newState = {...state};
         newState.bootloaderVersionsAvailable = update(action.data.bootloaderVersionsAvailable, newState.bootloaderVersionsAvailable);
@@ -56,6 +55,7 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.firmwareVersionsAvailable = update(action.data.firmwareVersionsAvailable, newState.firmwareVersionsAvailable);
         return newState;
       }
+      return state;
     case 'CREATE_APP_IDENTIFIER':
       if (state.appIdentifier === null) {
         let newState = {...state};

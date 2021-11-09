@@ -456,7 +456,7 @@ class StoneDataSyncerClass {
     try {
       let masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(ruleData)
       if (!force || this.masterHashTracker[sphereId][stoneId] === masterHash) {
-        LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour DONE Syncing! NOT REQUIRED!");
+        LOGi.info("StoneDataSyncer: checkAndSyncBehaviour DONE Syncing! NOT REQUIRED!");
         return;
       }
 
@@ -464,23 +464,23 @@ class StoneDataSyncerClass {
       tell(stone).setTime().catch((err) => {})
 
       // SYNC!
-      LOGi.behaviour("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId], "my rules are", ruleData);
+      LOGi.info("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId], "my rules are", ruleData);
       let rulesAccordingToCrownstone = await tell(stone).syncBehaviours(ruleData);
 
-      LOGi.behaviour("StoneDataSyncer: rulesAccordingToCrownstone", rulesAccordingToCrownstone)
+      LOGi.info("StoneDataSyncer: rulesAccordingToCrownstone", rulesAccordingToCrownstone)
 
       // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
       // the behaviour comparing locally.
       await downloadBehavioursFromCloud(sphereId, stone);
 
-      LOGd.behaviour("StoneDataSyncer: checkAndSyncBehaviour Starting the compare analysis.");
+      LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Starting the compare analysis.");
 
       // get the rules from the db again since the cloudsync may have added a few.
       transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
       let actions = [];
 
-      LOGd.behaviour("StoneDataSyncer: Rules according to Crownstone", rulesAccordingToCrownstone);
-      LOGd.behaviour("StoneDataSyncer: Transfer rules", transferRules);
+      LOGd.info("StoneDataSyncer: Rules according to Crownstone", rulesAccordingToCrownstone);
+      LOGd.info("StoneDataSyncer: Transfer rules", transferRules);
       if (rulesAccordingToCrownstone) {
         // From this, we get all behaviours that SHOULD be on our phone.
         // (the ones not synced yet (which should be already synced by here, but still) are also in this list).
@@ -493,21 +493,21 @@ class StoneDataSyncerClass {
             // once we have decided on a match, a behaviour cannot be used for matching again.
             if (indicesThatMatched[i]) { continue; }
 
-            LOGd.behaviour("StoneDataSyncer: checkAndSyncBehaviour Comparing", stoneBehaviour, transferRules[i].behaviour);
+            LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Comparing", stoneBehaviour, transferRules[i].behaviour);
             if (xUtil.deepCompare(stoneBehaviour, transferRules[i].behaviour)) {
               indicesThatMatched[i] = true;
               foundMatch = true;
-              LOGd.behaviour("StoneDataSyncer: checkAndSyncBehaviour Compare is a MATCH.");
+              LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Compare is a MATCH.");
               // great! this is already in the list. We do not have to do anything here.
               break
             }
             else {
-              LOGd.behaviour("StoneDataSyncer: checkAndSyncBehaviour Compare was not a match.");
+              LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Compare was not a match.");
             }
           }
 
           if (!foundMatch) {
-            LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
+            LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
             // this is a new rule!
             let newRuleId = xUtil.getUUID();
             actions.push({
@@ -543,7 +543,7 @@ class StoneDataSyncerClass {
           }
 
           if (!foundMatch) {
-            LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour Behaviour should be deleted");
+            LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Behaviour should be deleted");
             actions.push({
               type: "REMOVE_STONE_RULE",
               sphereId: sphereId,
@@ -554,7 +554,7 @@ class StoneDataSyncerClass {
         });
       }
       else {
-          LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
+          LOGi.info("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
           actions.push({
             type: "REMOVE_ALL_RULES_OF_STONE",
             sphereId: sphereId,
@@ -563,15 +563,15 @@ class StoneDataSyncerClass {
       }
 
       if (actions.length > 0) {
-        LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour required sync actions!", actions);
+        LOGi.info("StoneDataSyncer: checkAndSyncBehaviour required sync actions!", actions);
         core.store.batchDispatch(actions);
       }
       else {
-        LOGi.behaviour("StoneDataSyncer: checkAndSyncBehaviour Crownstone and app are in sync!");
+        LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Crownstone and app are in sync!");
       }
     }
     catch (err) {
-        LOGe.behaviour("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
+        LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
       throw err;
     }
   }

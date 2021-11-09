@@ -83,7 +83,6 @@ import { Platform } from "react-native";
    * These will override developer settings only if true but they are currently on by default in developer settings.
    */
   export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
-  export let LOG_PROMISE_MANAGER = LOG_LEVEL.ERROR;    // enabling LOG.promiseManager commands to be shown.
   export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation  commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
   export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
@@ -93,7 +92,6 @@ import { Platform } from "react-native";
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
   export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu            commands to be shown.
   export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav            commands to be shown.
-  export let LOG_BEHAVIOUR       = LOG_LEVEL.ERROR;    // enabling LOG.behaviour      commands to be shown.
 
 
   /**

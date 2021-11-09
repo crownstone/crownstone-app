@@ -6,12 +6,11 @@ import {
   LOG_BLE,
   LOG_MESH,
   LOG_CONSTELLATION,
-  LOG_BEHAVIOUR,
   LOG_STORE,
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_PROMISE_MANAGER, LOG_NAVIGATION
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_NAVIGATION
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { LOG_LEVEL } from "./LogLevels";
@@ -78,10 +77,6 @@ class Logger {
 
   dfu(...any) {
     this._log('DFU --------', LOG_DFU,     LogProcessor.log_dfu, arguments);
-  }
-
-  behaviour(...any) {
-    this._log('Behaviour --', LOG_BEHAVIOUR ,LogProcessor.log_behaviour, arguments);
   }
 
   scheduler(...any) {

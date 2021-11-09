@@ -115,7 +115,7 @@ export class BroadcastCommandManagerClass {
       })
       .catch((err) => {
         delete this.itemsWaitingForExecute[itemId];
-        LOGi.constellation("BroadcastCommandManager: Error broadcasting", bleCommand.command.type, bleCommand.id);
+        LOGi.constellation("BroadcastCommandManager: Error broadcasting", bleCommand.command.type, bleCommand.id, err?.message);
       })
 
     this.bumpExecutionChecker();

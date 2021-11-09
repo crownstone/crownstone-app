@@ -18,7 +18,7 @@ import {LOGe} from "../../../../logging/Log";
 import abilities from "../../../../database/reducers/stoneSubReducers/abilities";
 
 interface locationSummary {
-  [key: string]: { locationConfig: any, localLocationId: string, sphereId: string}
+  [key: string]: { locationConfig?: LocationDataConfig, localLocationId: string, localSphereId: string}
 }
 
 interface locationCoverageMap {
@@ -80,9 +80,9 @@ export class FingerprintSyncer extends SyncingBase {
 
 
   _getLocationIds(state) : locationCoverageMap {
-    let newFingerprints = {};
-    let existingFingerprints = {};
-    let missingFingerprints = {};
+    let newFingerprints      : locationSummary = {};
+    let existingFingerprints : locationSummary = {};
+    let missingFingerprints  : locationSummary = {};
 
     let existingLocations = {};
 
@@ -96,7 +96,7 @@ export class FingerprintSyncer extends SyncingBase {
         existingLocations[locationIds[j]] = true;
 
         let location = sphere.locations[locationIds[j]];
-        let payload = {locationConfig: location.config, localLocationId: locationIds[j], sphereId: sphereIds[i]};
+        let payload = {locationConfig: location.config, localLocationId: locationIds[j], localSphereId: sphereIds[i]};
         // rooms without fingerprints.
         if (location.config.fingerprintRaw === null) {
           missingFingerprints[location.config.cloudId] = payload;
@@ -120,7 +120,8 @@ export class FingerprintSyncer extends SyncingBase {
       for (let j = 0; j < newLocationCloudIds.length; j++) {
         let localId = newLocationsData[newLocationCloudIds[j]];
         if (existingLocations[localId] === undefined) {
-          missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, sphereId: sphereId};
+          let localSphereId = this.globalCloudIdMap.spheres[sphereId];
+          missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, localSphereId: localSphereId};
         }
       }
     }
@@ -139,7 +140,7 @@ export class FingerprintSyncer extends SyncingBase {
           .then((fingerprint) => {
             this.actions.push({
               type:'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID',
-                sphereId: locationData.sphereId,
+                sphereId: locationData.localSphereId,
                 locationId: locationData.localLocationId,
                 data:{ fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
             })
@@ -284,7 +285,7 @@ export class FingerprintSyncer extends SyncingBase {
           this.reinitializeTracking = true;
           this.actions.push({
             type:'UPDATE_LOCATION_FINGERPRINT',
-            sphereId: dataInfo.sphereId,
+            sphereId: dataInfo.localSphereId,
             locationId: dataInfo.localLocationId,
             data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
           });
@@ -302,7 +303,7 @@ export class FingerprintSyncer extends SyncingBase {
           let dataInfo = locationIdsRequiringFingerprints[fingerprint.locationId];
           pendingActions.push({
             type:'UPDATE_LOCATION_FINGERPRINT',
-            sphereId: dataInfo.sphereId,
+            sphereId: dataInfo.localSphereId,
             locationId: dataInfo.localLocationId,
             data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
           });

@@ -531,42 +531,6 @@ export const xUtil = {
   },
 
 
-  /**
-   CALL STACK [
-   "getCallStack",
-   "CommandAPI_base",
-   "construct",
-   "_createSuperInternal",
-   "CommandBroadcastAPI",
-   "construct",
-   "_createSuperInternal",
-   "CommandMeshAPI",
-   "construct",
-   "_createSuperInternal",
-   "CommandAPI",
-   "tellSphere",
-   "_callee2$",
-   "tryCatch",
-   "invoke",
-   "",
-   "tryCallTwo",
-   "doResolve",
-   "Promise",
-   "",
-   "updateMyDeviceTrackingRegistration",
-   "",
-   "emit",
-   "enterSphere",
-   "",
-   "emit",
-   "__callFunction",
-   "",
-   "__guard",
-   "callFunctionReturnFlushedQueue",
-   "callFunctionReturnFlushedQueue"
-   ]
-
-   */
   getCallStack: function(ignoreList = {}) : string[] {
     var err = new Error();
 

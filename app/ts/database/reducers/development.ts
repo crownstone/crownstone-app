@@ -9,13 +9,11 @@ let defaultState = {
   log_native:         LOG_LEVEL.error,
   log_mesh:           LOG_LEVEL.error,
   log_advertisements: LOG_LEVEL.error,
-  log_broadcast:      LOG_LEVEL.error,
-  log_behaviour:      LOG_LEVEL.error,
   log_notifications:  LOG_LEVEL.error,
   log_scheduler:      LOG_LEVEL.error,
   log_ble:            LOG_LEVEL.error,
   log_bch:            LOG_LEVEL.info,
-  log_dfu:            LOG_LEVEL.error,
+  log_dfu:            LOG_LEVEL.info,
   log_events:         LOG_LEVEL.error,
   log_store:          LOG_LEVEL.info,
   log_cloud:          LOG_LEVEL.info,
@@ -55,8 +53,6 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_constellation =  update(action.data.log_constellation, newState.log_constellation);
         newState.log_mesh =           update(action.data.log_mesh,           newState.log_mesh);
         newState.log_advertisements = update(action.data.log_advertisements, newState.log_advertisements);
-        newState.log_broadcast =      update(action.data.log_broadcast,      newState.log_broadcast);
-        newState.log_behaviour =      update(action.data.log_behaviour,      newState.log_behaviour);
         newState.log_native =         update(action.data.log_native,         newState.log_native);
         newState.log_scheduler =      update(action.data.log_scheduler,      newState.log_scheduler);
         newState.log_notifications =  update(action.data.log_notifications,  newState.log_notifications);
