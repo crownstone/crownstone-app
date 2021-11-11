@@ -65,9 +65,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   isPeripheralReady:   () => { return BluenetPromise('isPeripheralReady');    },
-  connect:             (handle, referenceId, highPriority = true) => {
+  connect:             (handle, referenceId) => {
     // tell the app that something is connecting.
-    core.eventBus.emit("connecting", handle, " with priority:", highPriority);
+    core.eventBus.emit("connecting", handle);
 
     // connect
     if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") };
@@ -104,7 +104,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   getFirmwareVersion:             (handle: string) => { return BluenetPromise('getFirmwareVersion', handle); },
   getBootloaderVersion:           (handle: string) => { return BluenetPromise('getBootloaderVersion', handle); },
-  setupFactoryReset:              (handle: string) => { return BluenetPromise('setupFactoryReset', handle); },
   putInDFU:                       (handle: string) => { return BluenetPromise('putInDFU', handle); },
   performDFU:                     (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 
