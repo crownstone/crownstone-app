@@ -1,4 +1,4 @@
-import { AppState } from 'react-native'
+import {AppState, Platform} from 'react-native'
 import {LOG, LOGe, LOGw} from '../logging/Log'
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
@@ -51,9 +51,11 @@ class SchedulerClass {
   init() {
     if (this._initialized === false) {
       core.nativeBus.on(core.nativeBus.topics.exitSphere, this.flushAll.bind(this));
-      core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, () => {
-        this.tick();
-      });
+      let topic = core.nativeBus.topics.iBeaconAdvertisement;
+      if (Platform.OS === 'android') {
+        topic = core.nativeBus.topics.tick;
+      }
+      core.nativeBus.on(topic, () => { this.tick(); });
 
       this.schedule();
       this._initialized = true;

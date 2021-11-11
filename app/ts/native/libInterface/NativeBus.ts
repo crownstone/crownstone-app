@@ -42,6 +42,7 @@ export class NativeBusClass {
       nearest:              "nearestCrownstone",                // data type = nearestStone // Any stone, validated or not, any operation mode.
       nearestSetup:         "nearestSetupCrownstone",           // data type = nearestStone
 
+      tick:                 "tick",                             // data type = ibeaconPackage[]
       iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = ibeaconPackage[]
       enterSphere:          "enterSphere",                      // data type = string (sphereId)
       exitSphere:           "exitSphere",                       // data type = string (sphereId)

@@ -11,7 +11,6 @@ import { background, colors, screenWidth } from "../../styles";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 import { Localization_LOG_PREFIX, LocalizationMonitor } from "../../../backgroundProcesses/LocalizationMonitor";
-import { string } from "prop-types";
 
 const RNFS = require('react-native-fs');
 
