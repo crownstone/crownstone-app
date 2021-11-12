@@ -13,7 +13,7 @@ export class Command_Connect extends CommandBase implements CommandBaseInterface
 
 
   async execute(connectedHandle: string, options: ExecutionOptions) : Promise<CrownstoneMode> {
-    return BluenetPromiseWrapper.connect(connectedHandle, this.referenceId, true);
+    return BluenetPromiseWrapper.connect(connectedHandle, this.referenceId);
   }
   
 }

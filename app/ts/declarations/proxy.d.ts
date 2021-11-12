@@ -1,20 +1,77 @@
 type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu"
 
+/**
+ * All methods which will send a command to a Crownstone and fail due to there not being a connection will throw error "NOT_CONNECTED"
+ *
+ * All methods which broadcast and are overwritten by the library (due to duplicate handling, or other reasons) will throw "BROADCAST_ABORTED"
+ * Broadcasts are given 1.5s airtime total, each 0.25s, the broadcast payload updates to cycle packets that want to be broadcasted.
+ * When the broadcast has had it's 1.5s airtime, the promise will resolve.
+ */
+
 interface BluenetPromiseWrapperProtocol {
+  /**
+   * Stop tracking ibeacons
+   */
   clearTrackedBeacons()                                                 : Promise< void >,
+
+  /**
+   * This method assumes there is a connection to this Crownstone, it performs a factory reset via command
+   * It leaves the Crownstone disconnected.
+   * It can throw an error COULD_NOT_FACTORY_RESET if the return code is not success
+   */
   commandFactoryReset(handle: string)                                   : Promise< void >,
-  connect(handle: string, referenceId: string, highPriority?: boolean)  : Promise< CrownstoneMode >,
+
+  /**
+   * This will connect to the Crownstone and return the mode. Possible modes are typed in CrownstoneMode.
+   * If the connection is cancelled by the cancelConnectionRequest method, the error "CONNECTION_CANCELLED" is thrown
+   * Other errors will be treated as bugs to solve (for now).
+   *
+   * @param handle
+   * @param referenceId
+   * @param highPriority
+   */
+  connect(handle: string, referenceId: string)  : Promise< CrownstoneMode >,
+
+  /**
+   * Cancels a connection request to the handle. Will return immediately and will not throw errors.
+   * @param handle
+   */
   cancelConnectionRequest(handle: string)                               : Promise< void >,
+
+  /**
+   * This sends the disconnect command to the Crownstone and performs a phoneDisconnect afterwards.
+   * Leaves the Crownstone disconnected. Will not throw errors.
+   * @param handle
+   */
   disconnectCommand(handle: string)                                     : Promise< void >,
+
   getMACAddress(handle: string)                                         : Promise< string >,
   getFirmwareVersion(handle: string)                                    : Promise< string >,
   getBootloaderVersion(handle: string)                                  : Promise< string >,
   getHardwareVersion(handle: string)                                    : Promise< string >,
+
   finalizeFingerprint(sphereId: string, locationId: string)             : Promise< void >,
+
+  /**
+   * Returns when the BLE central has initialized (ready to scan/perform connections after boot)
+   */
   isReady()                                                             : Promise< void >,
   isPeripheralReady()                                                   : Promise< void >,
+
+  /**
+   * Disconnect from the Crownstone from the phone's side. Used for Crownstones that are not in operation mode. Will not throw errors.
+   * @param handle
+   */
   phoneDisconnect(handle: string)                                       : Promise< void >,
+
+
   toggleSwitchState(handle: string, stateForOn)                         : Promise< number >,
+
+  /**
+   * Setups a Crownstone. Will leave the Crownstone disconnected and setupped.
+   * @param handle
+   * @param dataObject
+   */
   setupCrownstone(handle: string, dataObject: setupData)                : Promise< void >,
   requestLocation()                                                     : Promise< locationType >,
   recover(handle: string)                                               : Promise< void >,
@@ -25,10 +82,23 @@ interface BluenetPromiseWrapperProtocol {
   multiSwitch(handle: string, arrayOfStoneSwitchPackets: any[])         : Promise< void >,
 
   // DFU
+  /**
+   * Will write the command to put in DFU mode. Will not directly disconnect from the Crownstone
+   * @param handle
+   */
   putInDFU(handle: string)                                              : Promise< void >,
+  /**
+   * Same as putInDFU
+   * @param handle
+   */
   setupPutInDFU(handle: string)                                         : Promise< void >,
   performDFU(handle : string, uri: string )                             : Promise< void >,
-  setupFactoryReset(handle: string)                                     : Promise< void >,
+
+  /**
+   * This will connect to the Crownstone, resolve if the Crownstone is NOT in dfu mode, try to start it in normal mode and leave disconnected.
+   * Does not check if the new mode is operation mode.
+   * @param handle
+   */
   bootloaderToNormalMode( handle : string )                             : Promise< void >,
 
   // new
@@ -77,6 +147,10 @@ interface BluenetPromiseWrapperProtocol {
   getBehaviourMasterHash(behaviours: behaviourTransfer[])               : Promise<number>,
   getBehaviourMasterHashCRC(behaviours: behaviourTransfer[])            : Promise<number>,
 
+  /**
+   * If this returns true, we will not use the registerDevice/trackingNumbers/heartbeats but expect that the
+   * device will broadcast its location changes in the background. This payload needs to be updated in the background as well.
+   */
   canUseDynamicBackgroundBroadcasts()                                   : Promise<boolean>,
 
   // dev

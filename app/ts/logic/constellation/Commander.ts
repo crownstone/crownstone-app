@@ -71,7 +71,6 @@ import {
   Command_SetUartKey,
   Command_SetUartState,
   Command_SetupCrownstone,
-  Command_SetupFactoryReset,
   Command_SetupPulse,
   Command_SetupPutInDFU,
   Command_SetVoltageMultiplier,
@@ -329,9 +328,6 @@ export class CommandAPI extends CommandMeshAPI {
   }
   async performDFU(uri: string) : Promise< void > {
     return this._load(new Command_PerformDFU(uri));
-  }
-  async setupFactoryReset() : Promise< void > {
-    return this._load(new Command_SetupFactoryReset());
   }
   async bootloaderToNormalMode() : Promise< void > {
     return this._load(new Command_BootloaderToNormalMode());

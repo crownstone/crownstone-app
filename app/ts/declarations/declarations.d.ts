@@ -99,6 +99,7 @@ interface NativeBusTopics {
   nearest:                         string,
   nearestSetup:                    string,
 
+  tick:                            string,
   iBeaconAdvertisement:            string,
   enterSphere:                     string,
   exitSphere:                      string,
