@@ -26,8 +26,8 @@ interface BluenetPromiseWrapperProtocol {
    * If the connection is cancelled by the cancelConnectionRequest method, the error "CONNECTION_CANCELLED" is thrown
    * Other errors will be treated as bugs to solve (for now).
    *
-   * @param handle
-   * @param referenceId
+   * @param handle           Handle or MAC address.
+   * @param referenceId      The sphere ID.
    * @param highPriority
    */
   connect(handle: string, referenceId: string)  : Promise< CrownstoneMode >,
@@ -101,10 +101,19 @@ interface BluenetPromiseWrapperProtocol {
    */
   bootloaderToNormalMode( handle : string )                             : Promise< void >,
 
-  // new
   clearErrors(handle: string, clearErrorJSON : clearErrorData)          : Promise< void >,
   restartCrownstone(handle: string)                                     : Promise< void >,
   setTime(handle: string, time : number)                                : Promise< void >,
+
+  /**
+   * Set time via broadcast.
+   * 
+   * @param time
+   * @param sunriseSecondsSinceMidnight
+   * @param sunsetSecondsSinceMidnight
+   * @param referenceId                     The sphere ID.
+   * @param enableTimeBasedNonce
+   */
   setTimeViaBroadcast(
     time : number,
     sunriseSecondsSinceMidnight: number,
@@ -129,7 +138,22 @@ interface BluenetPromiseWrapperProtocol {
   setupPulse(handle: string)                                            : Promise< void >,
   checkBroadcastAuthorization()                                         : Promise< string >,
 
+  /**
+   * Broadcast switch.
+   * 
+   * @param referenceId                     The sphere ID.
+   * @param stoneId
+   * @param switchState
+   * @param autoExecute
+   */
   broadcastSwitch(referenceId, stoneId, switchState, autoExecute)       : Promise< void >,
+
+  /**
+   * Broadcast behaviour settings.
+   * 
+   * @param referenceId                     The sphere ID.
+   * @param enabled
+   */
   broadcastBehaviourSettings(referenceId, enabled:boolean)              : Promise< void >,
 
   addBehaviour(handle: string, behaviour: behaviourTransfer)            : Promise<behaviourReply>,
@@ -181,6 +205,14 @@ interface BluenetPromiseWrapperProtocol {
   getBehaviourDebugInformation(handle: string)                          : Promise< behaviourDebug >,
 
   turnOnMesh(handle: string, arrayOfStoneIds: number[])                 : Promise< void >,
+
+  /**
+   * Broadcast turn on.
+   * 
+   * @param referenceId                     The sphere ID.
+   * @param stoneId
+   * @param autoExecute
+   */
   turnOnBroadcast(referenceId, stoneId, autoExecute)                    : Promise< void >,
   setSunTimesViaConnection(handle: string, sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 
@@ -202,6 +234,11 @@ interface BluenetPromiseWrapperProtocol {
     deviceToken:number,
     ttlMinutes:number)                                                  : Promise< void >,
 
+  /**
+   * Broadcast update tracked device.
+   * 
+   * @param referenceId                     The sphere ID.
+   */
   broadcastUpdateTrackedDevice(
     referenceId: string,
     trackingNumber:number,
@@ -361,7 +398,7 @@ interface crownstoneAdvertisement {
   handle              : string,
   name                : string,
   rssi                : number,
-  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode
+  referenceId         : string, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
   isInDFUMode         : boolean,
   serviceData         : crownstoneServiceData // must always be present
 }
@@ -371,7 +408,7 @@ interface crownstoneBaseAdvertisement {
   handle              : string,
   name                : string,
   rssi                : number,
-  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode
+  referenceId         : string, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
   isInDFUMode         : boolean,
 }
 
@@ -382,7 +419,7 @@ interface ibeaconPackage {
   major : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   minor : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   rssi  : number,
-  referenceId  : string,
+  referenceId  : string, // The sphere ID, as given in trackIBeacon().
 }
 
 
@@ -433,7 +470,7 @@ interface keySet  {
   basicKey:        string,
   localizationKey: string,
   serviceDataKey:  string,
-  referenceId:     string,
+  referenceId:     string, // The sphere ID.
   iBeaconUuid:     string,
 }
 
