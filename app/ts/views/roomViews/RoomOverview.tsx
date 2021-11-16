@@ -82,8 +82,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     };
 
     this.viewingRemotelyInitial = this.viewingRemotely;
-
-    this._updateNavBar();
   }
 
   navigationButtonPressed({ buttonId }) {

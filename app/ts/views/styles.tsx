@@ -9,6 +9,8 @@ import { LOG } from "../logging/Log";
 export const deviceModel = DeviceInfo.getModel();
 export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 1') !== -1;
 
+
+
 export let topBarMargin    = 0
 export let tabBarMargin    = isModernIosModel ? 34 : 0 ; // Status bar in iOS is 20 high
 export let tabBarHeight    = isModernIosModel ? 49 + 34: 49;

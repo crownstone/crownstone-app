@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 import { Background } from './../components/Background'
-import { background, colors, screenWidth, tabBarMargin } from "./../styles";
+import {background, colors, deviceModel, screenWidth, tabBarMargin} from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
@@ -33,7 +33,7 @@ let versionStyle : TextStyle = {
 export class LoginSplash extends Component<any, any> {
 
   render() {
-    console.log("LoginSplash render")
+    console.log("LoginSplash render", deviceModel)
     let factor = 0.25;
 
     return (

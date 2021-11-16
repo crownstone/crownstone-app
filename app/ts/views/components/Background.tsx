@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 import {
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, StatusBar,
   View
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
@@ -62,6 +62,7 @@ export class Background extends Component<{
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }}>
+        <StatusBar barStyle={"light-content"} />
         <KeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
           { this.props.topImage ? <View style={[styles.fullscreen, {height:backgroundHeight, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
