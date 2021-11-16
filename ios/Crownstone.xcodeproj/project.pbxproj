@@ -18,8 +18,8 @@
 		FA39A49B2743DAEB00A63C79 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA39A49A2743DAEB00A63C79 /* BluenetLib */; };
 		FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FA39A49C2743DAF100A63C79 /* BluenetShared */; };
 		FA39A49F2743DAF500A63C79 /* BluenetLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FA39A49E2743DAF500A63C79 /* BluenetLocalization */; };
-		FA39A5112743E14500A63C79 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A50F2743E14500A63C79 /* AppDelegate.m */; };
-		FA39A5122743E14500A63C79 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A5102743E14500A63C79 /* main.m */; };
+		FA39A5502744037700A63C79 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54D2744037700A63C79 /* main.m */; };
+		FA39A5512744037700A63C79 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54F2744037700A63C79 /* AppDelegate.m */; };
 		FA3DF883263AF7920037B29F /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA3DF882263AF7920037B29F /* BluenetLib */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
@@ -48,7 +48,6 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
-		FAC979EE26B2FAD3008BB51D /* bugsnag.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAC979EC26B2F5B1008BB51D /* bugsnag.plist */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -192,13 +191,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 2B17A71888AA28CEFEC37B72F2A68A91;
 			remoteInfo = "react-native-slider";
-		};
-		FA274EA12410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F6B923B5A106791D9D52196A67E572B3;
-			remoteInfo = "react-native-splash-screen";
 		};
 		FA274EA52410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -503,9 +495,9 @@
 		FA0DD9CC21DFCCED00824ABF /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FA12B79322450C84003B017E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA274E4A2410144E00D7C858 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
-		FA39A4D92743E14500A63C79 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "../../../Dropbox/Crownstone/Projects/crownstone-app/ios/AppDelegate.h"; sourceTree = "<group>"; };
-		FA39A50F2743E14500A63C79 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = "../../../Dropbox/Crownstone/Projects/crownstone-app/ios/AppDelegate.m"; sourceTree = "<group>"; tabWidth = 2; };
-		FA39A5102743E14500A63C79 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "../../../Dropbox/Crownstone/Projects/crownstone-app/ios/main.m"; sourceTree = "<group>"; };
+		FA39A54D2744037700A63C79 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FA39A54E2744037700A63C79 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FA39A54F2744037700A63C79 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
 		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
@@ -540,7 +532,6 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
-		FAC979EC26B2F5B1008BB51D /* bugsnag.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = bugsnag.plist; sourceTree = "<group>"; };
 		FAD98BAD2614C59C00E46E1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../app/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../app/assets/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
@@ -624,9 +615,9 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
-				FA39A4D92743E14500A63C79 /* AppDelegate.h */,
-				FA39A50F2743E14500A63C79 /* AppDelegate.m */,
-				FA39A5102743E14500A63C79 /* main.m */,
+				FA39A54E2744037700A63C79 /* AppDelegate.h */,
+				FA39A54F2744037700A63C79 /* AppDelegate.m */,
+				FA39A54D2744037700A63C79 /* main.m */,
 				FAF4F802256D1FC900320825 /* HubProtocol */,
 				FA0177D91FC46563001C8FD6 /* BridgeObjCFiles */,
 				FA0177D21FC46338001C8FD6 /* BridgeFiles */,
@@ -636,7 +627,6 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA59A6A4224CE5D300D58C9F /* AppDelegate_old.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				FAC979EC26B2F5B1008BB51D /* bugsnag.plist */,
 				FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */,
 			);
 			indentWidth = 4;
@@ -795,7 +785,6 @@
 				FA274E9C2410144F00D7C858 /* react-native-keep-awake */,
 				FA274E9E2410144F00D7C858 /* react-native-maps */,
 				FA274EA02410144F00D7C858 /* react-native-slider */,
-				FA274EA22410144F00D7C858 /* react-native-splash-screen */,
 				FACF166E26160CB500A9163F /* React-perflogger */,
 				FA274EA62410144F00D7C858 /* React-RCTAnimation */,
 				FA274EA82410144F00D7C858 /* React-RCTBlob */,
@@ -1232,14 +1221,6 @@
 			remoteRef = FA274E9F2410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA274EA22410144F00D7C858 /* react-native-splash-screen */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = "react-native-splash-screen";
-			path = "libreact-native-splash-screen.a";
-			remoteRef = FA274EA12410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274EA62410144F00D7C858 /* React-RCTAnimation */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1494,7 +1475,6 @@
 				FADC2B3025F7B519000AE5A7 /* Roboto-Light.ttf in Resources */,
 				FADC2B3825F7B519000AE5A7 /* Roboto-ThinItalic.ttf in Resources */,
 				FADC2B2E25F7B519000AE5A7 /* CustomIcons.ttf in Resources */,
-				FAC979EE26B2FAD3008BB51D /* bugsnag.plist in Resources */,
 				FADC2B3925F7B519000AE5A7 /* flaticon_essentials.ttf in Resources */,
 				FADC2B3325F7B519000AE5A7 /* Roboto-Italic.ttf in Resources */,
 				FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */,
@@ -1724,15 +1704,15 @@
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
 				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
-				FA39A5112743E14500A63C79 /* AppDelegate.m in Sources */,
 				FA59A6A5224CE5D300D58C9F /* AppDelegate_old.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,
 				FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */,
-				FA39A5122743E14500A63C79 /* main.m in Sources */,
 				FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */,
 				FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */,
 				FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */,
+				FA39A5502744037700A63C79 /* main.m in Sources */,
 				FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */,
+				FA39A5512744037700A63C79 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

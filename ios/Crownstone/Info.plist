@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>948eaede21917addd2315fde2a9c834d</string>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -44,13 +49,13 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We'd like to use your camera so you can take a picture for your profile!</string>
+	<string>We&apos;d like to use your camera so you can take a picture for your profile!</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We require "Always" permissions to be able to monitor for Crownstones and switch them for you when you move around the house with your phone in your pocket. Only "When in use" permissions do not allow us to communicate with the Crownstones. For more information, see www.crownstone.rocks/background.</string>
+	<string>We require &quot;Always&quot; permissions to be able to monitor for Crownstones and switch them for you when you move around the house with your phone in your pocket. Only &quot;When in use&quot; permissions do not allow us to communicate with the Crownstones. For more information, see www.crownstone.rocks/background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your background location to switch your Crownstones when you move around the house. To do this without you having to get your phone, we use the background location service.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>iBeacon can only be used with "Always" permission. This is required to use the Crownstone App.</string>
+	<string>iBeacon can only be used with &quot;Always&quot; permission. This is required to use the Crownstone App.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Crownstone would like to access your camera roll so we can let you select a profile picture from your camera roll.</string>
 	<key>UIAppFonts</key>
