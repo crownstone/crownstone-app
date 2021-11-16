@@ -52,7 +52,7 @@ import { ScrollView } from "react-native";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { IconButton } from "../components/IconButton";
 import { Bluenet } from "../../native/libInterface/Bluenet";
-import { WebRtcClient } from "../../logic/WebRtcClient";
+// import { WebRtcClient } from "../../logic/WebRtcClient";
 import { DebugIcon } from "../components/DebugIcon";
 import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
 

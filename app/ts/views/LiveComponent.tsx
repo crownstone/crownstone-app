@@ -29,7 +29,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
     })
 
     let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
-      Navigation.mergeOptions(props.componentId,{passProps:{}})
+      Navigation.mergeOptions(props.componentId, {});
       this.forceUpdate();
     });
 

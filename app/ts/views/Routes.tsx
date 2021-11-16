@@ -1,6 +1,5 @@
 import { Navigation, Options, OptionsModalPresentationStyle } from "react-native-navigation";
 import { Views } from "./Views";
-import SplashScreen from "react-native-splash-screen";
 import { Platform } from "react-native";
 import { Stacks } from "./Stacks";
 import { colors } from "../views/styles";
@@ -49,10 +48,6 @@ export const loadRoutes = function() {
 };
 
 Navigation.events().registerAppLaunchedListener(() => {
-  if (Platform.OS === 'ios') {
-    SplashScreen.hide();
-  }
-
   let defaultOptions : Options = {
     topBar: {
       background: { color: colors.csBlueDarker.hex },

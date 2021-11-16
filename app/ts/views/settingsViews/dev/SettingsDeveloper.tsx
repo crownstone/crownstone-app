@@ -35,7 +35,7 @@ import { LOGw } from "../../../logging/Log";
 
 const RNFS = require('react-native-fs');
 import Peer from 'react-native-peerjs';
-import { WebRtcClient } from "../../../logic/WebRtcClient";
+// import { WebRtcClient } from "../../../logic/WebRtcClient";
 import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 
@@ -157,7 +157,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       callback: () => {
         Alert.prompt("Paste connection token", "If you don't know what this is, press cancel :)", (data) => {
           core.store.dispatch({type:"CHANGE_DEV_SETTINGS", data: { debugRTCtoken: data }});
-          WebRtcClient.refreshConnectionToken();
+          // WebRtcClient.refreshConnectionToken();
         })
       }
     })
@@ -614,40 +614,40 @@ export async function shareDataViaRTC(shareDataType) {
   core.eventBus.emit("showLoading", "Collecting files...")
   let urls = await getShareDataFileUrls(shareDataType);
   core.eventBus.emit("showLoading", "Connecting to RTC...")
-  try {
-    await WebRtcClient.connect()
-    core.eventBus.emit("showLoading", `Connected. Sending ${urls.length} file${urls.length>1?'s':''}.`)
-    let fileCount = 0;
-
-    let getProgressCallback = function(fileIndex) {
-      return (progress) => {
-        core.eventBus.emit("showProgress", {progress: progress, progressDuration: 10, progressText: `Sending ${fileIndex} out of ${urls.length}....`})
-      }
-    }
-    for (let filePath of urls) {
-      fileCount += 1;
-      core.eventBus.emit("showProgress", {progress: 0, progressDuration: 10, progressText: `Preparing ${fileCount} out of ${urls.length}...`})
-      console.log("Sending", fileCount, )
-      await WebRtcClient.sendLocalizationFile(filePath, getProgressCallback(fileCount));
-    }
-    core.eventBus.emit("showLoading", `Closing connection...`)
-    WebRtcClient.destroy()
-    core.eventBus.emit("showLoading", `Transfer completed. Removing files from phone...`)
-    await LocalizationLogger.clearDataFiles();
-
-    await Scheduler.delay(1000)
-    core.eventBus.emit("showLoading", `Done!`)
-
-    await Scheduler.delay(1000)
-    core.eventBus.emit("hideLoading");
-  }
-  catch (err) {
-    if      (err?.message === "CANNOT_CONNECT")           { core.eventBus.emit("showLoading", "Could not connect. Trying different method...") }
-    else if (err?.message === "RECEIVED_INVALID")         { core.eventBus.emit("showLoading", "Transfer failed. Trying different method...") }
-    else if (err?.message === "TRANSFER_ABORTED_TIMEOUT") { core.eventBus.emit("showLoading", "Transfer failed due to timeout. Trying different method...") }
-    else {
+  // // try {
+  // //   await WebRtcClient.connect()
+  // //   core.eventBus.emit("showLoading", `Connected. Sending ${urls.length} file${urls.length>1?'s':''}.`)
+  // //   let fileCount = 0;
+  // //
+  // //   let getProgressCallback = function(fileIndex) {
+  // //     return (progress) => {
+  // //       core.eventBus.emit("showProgress", {progress: progress, progressDuration: 10, progressText: `Sending ${fileIndex} out of ${urls.length}....`})
+  // //     }
+  // //   }
+  // //   for (let filePath of urls) {
+  // //     fileCount += 1;
+  // //     core.eventBus.emit("showProgress", {progress: 0, progressDuration: 10, progressText: `Preparing ${fileCount} out of ${urls.length}...`})
+  // //     console.log("Sending", fileCount, )
+  // //     await WebRtcClient.sendLocalizationFile(filePath, getProgressCallback(fileCount));
+  // //   }
+  // //   core.eventBus.emit("showLoading", `Closing connection...`)
+  // //   WebRtcClient.destroy()
+  // //   core.eventBus.emit("showLoading", `Transfer completed. Removing files from phone...`)
+  // //   await LocalizationLogger.clearDataFiles();
+  // //
+  // //   await Scheduler.delay(1000)
+  // //   core.eventBus.emit("showLoading", `Done!`)
+  // //
+  // //   await Scheduler.delay(1000)
+  // //   core.eventBus.emit("hideLoading");
+  // // }
+  // // catch (err) {
+  //   if      (err?.message === "CANNOT_CONNECT")           { core.eventBus.emit("showLoading", "Could not connect. Trying different method...") }
+  //   else if (err?.message === "RECEIVED_INVALID")         { core.eventBus.emit("showLoading", "Transfer failed. Trying different method...") }
+  //   else if (err?.message === "TRANSFER_ABORTED_TIMEOUT") { core.eventBus.emit("showLoading", "Transfer failed due to timeout. Trying different method...") }
+  //   else {
       core.eventBus.emit("showLoading", "Something went wrong.. Trying different method...")
-    }
+    // }
 
     await Scheduler.delay(1000)
     core.eventBus.emit("hideLoading");
@@ -656,7 +656,7 @@ export async function shareDataViaRTC(shareDataType) {
     Alert.alert("Delete datasets now?", "I could not see if the sharing was successful...", [{ text: "No" }, {
       text: "Delete", style:'destructive', onPress: async () => { await LocalizationLogger.clearDataFiles(); }
     }])
-  }
+  // }
 }
 
 

@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import { StoreManager }             from '../../database/storeManager'
 import { BackgroundProcessHandler } from '../../backgroundProcesses/BackgroundProcessHandler'
-import SplashScreen                 from 'react-native-splash-screen'
 import { Splash }                   from "./Splash";
 import { core }                     from "../../Core";
 import { NavigationUtil }           from "../../util/NavigationUtil";
@@ -26,7 +25,6 @@ export class Initializer extends Component<any, any> {
   componentDidMount() {
     let startUp = () => {
       if (Platform.OS === "android") {
-        SplashScreen.hide();
         stylesUpdateConstants();
       }
 

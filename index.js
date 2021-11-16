@@ -11,14 +11,9 @@ YellowBox.ignoreWarnings([
   'Module RCTImagePickerManager requires main queue setup since it overrides `init`',
 ])
 
-// import 'react-native-console-time-polyfill';
-import { Platform } from 'react-native';
-// import * as Sentry from "@sentry/react-native";
-import { config } from './sentrySettings'
 import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";
 import { loadRoutes } from "./app/js/views/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";
-import DeviceInfo from 'react-native-device-info';
 import Bugsnag from "@bugsnag/react-native";
 
 console.log("...\n\n\n\n-------------------- APP STARTING UP --------------------\n\n\n\n...");
