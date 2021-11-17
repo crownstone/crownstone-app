@@ -280,6 +280,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun initLogger() {
 		initBluenetPromise.success {
 			handler.post {
+//				enableLoggingToFile(true)
+//				enableExtendedLogging(true)
 				val logLevel = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
 				val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
 				bluenet.setLogLevel(logLevel)
@@ -586,12 +588,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		private val TAG = this.javaClass.simpleName
 		private var done = false
 
-		override fun onLocationChanged(location: Location?) {
+		override fun onLocationChanged(location: Location) {
 			Log.i(TAG, "onLocationChanged location=$location")
-			if (location == null) {
-				rejectCallback("no location available")
-				return
-			}
+//			if (location == null) {
+//				rejectCallback("no location available")
+//				return
+//			}
 			resolveCallback(location)
 		}
 
@@ -599,11 +601,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			Log.i(TAG, "onStatusChanged provider=$provider status=$status")
 		}
 
-		override fun onProviderEnabled(provider: String?) {
+		override fun onProviderEnabled(provider: String) {
 			Log.i(TAG, "onProviderEnabled provider=$provider")
 		}
 
-		override fun onProviderDisabled(provider: String?) {
+		override fun onProviderDisabled(provider: String) {
 			Log.i(TAG, "onProviderDisabled provider=$provider")
 		}
 
@@ -711,6 +713,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun enableLoggingToFile(enable: Boolean) {
 		Log.i(TAG, "enableLoggingToFile $enable")
+//		if (!enable) { return }
 		if (enable) {
 			appLogLevel = AppLogLevel.BASIC
 			bluenet.initFileLogging(reactContext.currentActivity)
@@ -725,6 +728,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun enableExtendedLogging(enable: Boolean) {
 		Log.i(TAG, "enableExtendedLogging $enable")
+//		if (!enable) { return }
 		when (enable) {
 			true -> {
 				appLogLevel = AppLogLevel.EXTENDED
