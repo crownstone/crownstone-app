@@ -104,7 +104,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
 
     let state = core.store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getPresentSphereId();
     let sphere = state.spheres[sphereId];
     let stoneId = this.state.problemStoneSummary.id;
     TestRunner.prepare();
@@ -768,7 +768,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   _getResults() {
     let state = core.store.getState();
     if (this.state.userInputProblemCrownstoneId === null) {
-      let sphereId = Util.data.getPresentSphereId(state);
+      let sphereId = Util.data.getPresentSphereId();
       let stones = state.spheres[sphereId].stones;
       return (
         <DiagListOfStones
@@ -880,6 +880,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         { this._getResults() }
       </View>
     )
-  } 
+  }
 
 }

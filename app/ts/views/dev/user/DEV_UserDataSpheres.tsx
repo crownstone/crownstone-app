@@ -70,7 +70,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
   render() {
     let state = core.store.getState();
     return (
-      <Background image={background.light} keyboardAvoid={true} hideNotifications={true}>
+      <Background image={background.main} keyboardAvoid={true} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />

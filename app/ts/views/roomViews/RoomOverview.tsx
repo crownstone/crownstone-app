@@ -388,7 +388,7 @@ lang("_Indoor_localization_is_c_body"),
       explanation = lang("No_Crownstones_in_reach__")
     }
     return (
-      <Background image={background.lightBlur}>
+      <Background image={background.main}>
         <View>
           { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
           <LocationFlavourImage location={location} />

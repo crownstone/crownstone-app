@@ -68,15 +68,21 @@ class TrackingNumberManagerClass {
   heartbeat() {
     if (Platform.OS !== 'ios') { return }
 
-    let activeSphereId = BroadcastStateManager.getSphereInLocationState();
+    let broadcastSphereId = BroadcastStateManager.getSphereInLocationState();
+    if (DataUtil.getPresentSphereId() === null) {
+      LOGi.info("TrackingNumberManager: Not present in any sphere. Will not perform heartbeat.");
+      return;
+    }
+
+
     // this means we're broadcasting in an active sphere.
-    if (activeSphereId !== null) {
-      let preferences = DataUtil.getDevicePreferences(activeSphereId);
+    if (broadcastSphereId !== null) {
+      let preferences = DataUtil.getDevicePreferences(broadcastSphereId);
 
       // we used to register the activeRandomDeviceToken since this one is ALWAYS the same as the one we broadcast on the background.
       // if the connections for heartbeat or register give errors, we cannot recover this while in the background. To be able to recover, we always register and track the randomDeviceToken.
       // this can mean that our broadcasted deviceToken might mismatch the token we use with connection. Worst case we have a ghost in a room for 2 hours.
-      tellSphere(activeSphereId, 300).trackedDeviceHeartbeat(
+      tellSphere(broadcastSphereId, 300).trackedDeviceHeartbeat(
         preferences.trackingNumber,
         () => { return BroadcastStateManager.getCurrentLocationUID(); },
         preferences.randomDeviceToken,
@@ -95,7 +101,7 @@ class TrackingNumberManagerClass {
         .catch((err) => {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);
           if (err?.message === "ERR_NOT_FOUND") {
-            return this._updateMyDeviceTrackingRegistration(activeSphereId);
+            return this._updateMyDeviceTrackingRegistration(broadcastSphereId);
           }
         })
     }
@@ -139,8 +145,7 @@ class TrackingNumberManagerClass {
       return;
     }
 
-    let state = core.store.getState();
-    if (DataUtil.getPresentSphereIds(state).length === 0) {
+    if (DataUtil.getPresentSphereIds().length === 0) {
       LOGi.info("TrackingNumberManager: We're not in any sphere, aborting the update tracking registration.");
       return;
     }

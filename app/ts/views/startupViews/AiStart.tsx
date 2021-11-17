@@ -60,7 +60,7 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hasNavBar={false} keyboardAvoid={true} image={background.light}>
+      <Background hasNavBar={false} keyboardAvoid={true} image={background.main}>
         <View style={[styles.centered, {flex:1, paddingTop:30, paddingBottom:30}]}>
           <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
           <View style={{flex:1}} />

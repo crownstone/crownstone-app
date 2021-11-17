@@ -80,7 +80,7 @@ export class Interview extends Component<{
     }
 
     this.activeCardIndex = 0;
-    this.transitioningToCardId = undefined;
+    this.transitioningToCardId = null;
 
     this.selectedOptions = [];
     this.responseHeaders = {};
@@ -89,7 +89,7 @@ export class Interview extends Component<{
 
   isActiveCard(cardId) {
     if (this.transitioningToCardId !== null && this.transitioningToCardId !== cardId) {
-      return false
+      return false;
     }
 
     return this.state.cardIds[this.activeCardIndex] === cardId ;
@@ -172,7 +172,7 @@ export class Interview extends Component<{
     let cards = this.props.getCards();
     let activeCard = cards[this.state.cardIds[this.activeCardIndex]];
     let backgroundImage = null;
-    if (this.transitioningToCardId !== undefined) {
+    if (this.transitioningToCardId !== null) {
       backgroundImage = cards[this.transitioningToCardId].backgroundImage;
     }
     else if (activeCard.backgroundImage !== undefined) {
@@ -242,7 +242,7 @@ export class Interview extends Component<{
           }
         }}
         onSnapToItem={(index) => {
-          this.transitioningToCardId = undefined;
+          this.transitioningToCardId = null;
           this.activeCardIndex = index;
           this.checkStyleUpdates();
 
@@ -259,7 +259,7 @@ export class Interview extends Component<{
             this._carousel.snapToItem(0, false, false)
             this.setState({ cardIds: [this.state.cardIds[this.activeCardIndex]]}, () => {
               this.activeCardIndex = 0;
-              this.transitioningToCardId = undefined;
+              this.transitioningToCardId = null;
             });
           }
         }}

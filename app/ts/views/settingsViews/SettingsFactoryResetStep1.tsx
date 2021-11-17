@@ -28,7 +28,7 @@ export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
   render() {
     let imageSize = 0.40;
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.light}>
+      <BackgroundNoNotification hasNavBar={false} image={background.main}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text]}>{ lang("If_youre_physically_next_") }</Text>
           <View style={setupStyle.lineDistance} />

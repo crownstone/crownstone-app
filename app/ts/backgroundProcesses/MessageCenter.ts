@@ -295,7 +295,7 @@ class MessageCenterClass {
    */
   checkForMessages() : Promise<void> {
     let state = core.store.getState();
-    let presentSphereId = Util.data.getPresentSphereId(state);
+    let presentSphereId = Util.data.getPresentSphereId();
 
     if (presentSphereId) {
       let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);

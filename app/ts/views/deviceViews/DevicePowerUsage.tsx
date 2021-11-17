@@ -108,7 +108,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={background.lightBlur} hasNavBar={false}>
+      <Background image={background.main} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={deviceStyles.header}>{header}</Text>

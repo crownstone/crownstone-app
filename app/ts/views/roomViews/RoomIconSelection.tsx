@@ -393,7 +393,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
     ];
 
     return (
-      <Background hasNavBar={false} image={background.light}>
+      <Background hasNavBar={false} image={background.main}>
         <ScrollView>
           <IconSelection
             categories={categories}

@@ -126,12 +126,7 @@ open class BluenetJS: RCTEventEmitter {
                 self.sendEvent(withName: "connectedToPeripheral", body: castData)
             }
         })
-        
-        GLOBAL_BLUENET.bluenetOn("connectedToPeripheralFailed", {data -> Void in
-            if let castData = data as? String {
-                self.sendEvent(withName: "connectedToPeripheralFailed", body: castData)
-            }
-        })
+    
         
         GLOBAL_BLUENET.bluenetOn("disconnectedFromPeripheral", {data -> Void in
             if let castData = data as? String {

@@ -61,7 +61,6 @@ export class NativeBusClass {
       localizationPausedState: "localizationPausedState",       // data type = string (url)
 
       connectedToPeripheral:       "connectedToPeripheral",       // date type = string (handle)
-      connectedToPeripheralFailed: "connectedToPeripheralFailed", // date type = string (handle)
       disconnectedFromPeripheral:  "disconnectedFromPeripheral",  // date type = string (handle)
     };
 

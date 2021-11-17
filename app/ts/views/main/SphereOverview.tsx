@@ -257,7 +257,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
-      backgroundOverride = background.lightBlur;
+      backgroundOverride = background.main;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
@@ -266,7 +266,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={background.lightBlur}>
+            <Background hideNotifications={true} image={background.main}>
               <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )

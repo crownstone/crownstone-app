@@ -172,7 +172,7 @@ export class DEV_DFU extends LiveComponent<{
   }
 
   render() {
-    let backgroundImage = background.light;
+    let backgroundImage = background.main;
     let explanationColor = colors.black.rgba(0.9);
 
     switch (FocusManager.crownstoneMode ) {
@@ -181,7 +181,7 @@ export class DEV_DFU extends LiveComponent<{
         backgroundImage = require('../../../../assets/images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = background.light;
+        backgroundImage = background.main;
         break;
       case "unverified":
         backgroundImage = background.menu;

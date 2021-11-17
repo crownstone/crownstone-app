@@ -45,7 +45,7 @@ class BatterySavingClass {
     //  - not all handles are known
 
     let appInForeground = AppState.currentState === 'active';
-    let inSphereId = Util.data.getPresentSphereId(state) || sphereId;
+    let inSphereId = Util.data.getPresentSphereId() || sphereId;
     let inSphere = inSphereId !== null;
     let notAllHandlesAreKnown = null;
     if (inSphere) {
@@ -95,7 +95,7 @@ class BatterySavingClass {
     //  - user not in a sphere
 
     let appNotInForeground = AppState.currentState !== 'active';
-    let inSphereId = Util.data.getPresentSphereId(state);
+    let inSphereId = Util.data.getPresentSphereId();
     if (forceNotInSphere === true) {
       inSphereId = null;
     }

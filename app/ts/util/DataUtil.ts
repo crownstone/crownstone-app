@@ -209,7 +209,8 @@ export const DataUtil = {
   },
 
 
-  getPresentSphereId: function(state) : string {
+  getPresentSphereId: function() : string {
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
       if (state.spheres[sphereIds[i]].state.present === true) {
@@ -219,7 +220,8 @@ export const DataUtil = {
     return null;
   },
 
-  getPresentSphereIds: function(state) : string[] {
+  getPresentSphereIds: function() : string[] {
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let result = [];
     for (let i = 0; i < sphereIds.length; i++ ) {
@@ -229,6 +231,8 @@ export const DataUtil = {
     }
     return result;
   },
+
+
 
 
   getReferenceId: function(state) : string {
