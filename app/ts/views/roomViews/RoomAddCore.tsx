@@ -284,6 +284,7 @@ lang("_Max_amount_of_rooms_reac_body"),
   render() {
     return (
       <Interview
+        backButtonName={"roomAddCore"}
         ref={     (i) => { this._interview = i; }}
         getCards={ () => { return this.getCards();}}
         update={   () => { this.forceUpdate() }}

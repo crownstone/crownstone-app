@@ -46,10 +46,11 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  
-  _getItems(user) {
+
+  _getItems() {
     const store = core.store;
     let state = store.getState();
+    let user = state.user;
     let items = [];
 
 
@@ -152,14 +153,10 @@ lang("_Whoops___We_could_not_re_body"),
   }
 
   render() {
-    const store = core.store;
-    const state = store.getState();
-    let user = state.user;
-
     return (
       <BackgroundNoNotification image={background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </BackgroundNoNotification>
     );

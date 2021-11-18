@@ -109,6 +109,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
           style={{backgroundColor:'transparent', paddingTop:0}}
         />
         <Interview
+          backButtonName={"dfuIntroduction"}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return (this.state.inSphere ?  this.getCards() : this.getNotInSphereCard() ); }}
           update={   () => { this.forceUpdate() }}

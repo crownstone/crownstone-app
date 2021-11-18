@@ -142,6 +142,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true}>
         <Interview
+          backButtonName={"permissionIntroduction"}
           height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}

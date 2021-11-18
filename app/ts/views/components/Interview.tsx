@@ -20,6 +20,8 @@ import { ScaledImage } from "./ScaledImage";
 import ResponsiveText from "./ResponsiveText";
 import { SlideInFromBottomView } from "./animated/SlideInFromBottomView";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
+import {BackButton} from "../dev/user/DEV_UserDataSpheres";
+import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -49,13 +51,11 @@ let explanationStyle : TextStyle = {
 
 export class Interview extends Component<{
   getCards() : interviewCards,
+  backButtonName?: string,
   height? : number,
   scrollEnabled? : boolean,
-  update?() : void
+  update?() : void,
 }, any> {
-
-  interviewState;
-  interviewData;
 
   _carousel;
   responseHeaders : any;
@@ -86,6 +86,20 @@ export class Interview extends Component<{
     this.responseHeaders = {};
   }
 
+
+  componentDidMount() {
+    if (this.props.backButtonName) {
+      BackButtonHandler.override(this.props.backButtonName, () => {
+        return this.back();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.backButtonName) {
+      BackButtonHandler.clearOverride(this.props.backButtonName)
+    }
+  }
 
   isActiveCard(cardId) {
     if (this.transitioningToCardId !== null && this.transitioningToCardId !== cardId) {

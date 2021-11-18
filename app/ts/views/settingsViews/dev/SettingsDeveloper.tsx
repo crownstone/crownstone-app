@@ -38,6 +38,7 @@ import Peer from 'react-native-peerjs';
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
 import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
@@ -134,6 +135,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             data: {logging_enabled: newValue}
           });
           Bluenet.enableLoggingToFile(newValue);
+          MapProvider.logMap()
         }
       });
     }

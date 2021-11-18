@@ -83,6 +83,7 @@ lang("_Select_at_least_one______body"),
           }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
+          backButtonName={"sceneSelectCrownstones"}
           scrollEnabled={false}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
