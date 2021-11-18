@@ -28,7 +28,7 @@ export class Splash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideOrangeLine={false} hideNotifications={true}>
+      <Background fullScreen={true} image={background.main} dimStatusBar={false}  hideOrangeLine={true} hideNotifications={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.csBlueDarker.hex}}/>

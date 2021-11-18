@@ -1,11 +1,9 @@
-import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { xUtil } from "../../../../util/StandAloneUtil";
 import { SceneTransferNext } from "../transferrers/SceneTransferNext";
 import { SyncNext } from "../SyncNext";
 import { SyncUtil } from "../../../../util/SyncUtil";
@@ -44,7 +42,7 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
     if (!cloudData.customPictureId && scene.pictureSource === "CUSTOM") {
       this.transferPromises.push(FileUtil.safeDeleteFile(scene.picture));
     }
-    else if (cloudData.customPictureId && cloudData.customPictureId !== scene.pictureId) {
+    else if (cloudData.customPictureId !== scene.pictureId || cloudData.customPictureId && !scene.picture) {
       // if there IS a custom image, but its not the same id as we have, download the new one
       this._downloadSceneImage(cloudData)
     }

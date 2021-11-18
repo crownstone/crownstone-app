@@ -1,13 +1,10 @@
-import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { xUtil } from "../../../../util/StandAloneUtil";
 import { SphereUserTransferNext } from "../transferrers/SphereUserTransferNext";
-import { LocationTransferNext } from "../transferrers/LocationTransferNext";
 import { SyncNext } from "../SyncNext";
 
 
@@ -41,7 +38,7 @@ export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, Sp
     // check if we have to do things with the image
     let sphereUser = Get.sphereUser(this.localSphereId, this.localId);
 
-    if (sphereUser.pictureId !== cloudData.profilePicId) {
+    if (sphereUser.pictureId !== cloudData.profilePicId || cloudData.profilePicId && !sphereUser.picture) {
       if (!cloudData.profilePicId) {
         this.transferPromises.push(FileUtil.safeDeleteFile(sphereUser.picture));
       }

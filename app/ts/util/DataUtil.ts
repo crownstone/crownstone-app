@@ -525,26 +525,28 @@ export const DataUtil = {
   verifyPicturesInDatabase(state) {
     let spheres = state.spheres;
     let pictures = [];
-    if (state.user.picture) {
+    if (state.user.picture || !state.user.picture && state.user.pictureId) {
       pictures.push({picturePath: state.user.picture, actionToClean: {type:"USER_REPAIR_PICTURE"}});
     }
     Object.keys(spheres).forEach((sphereId) => {
-      let locations = spheres[sphereId].locations;
-      let scenes = spheres[sphereId].scenes;
+      let locations   = spheres[sphereId].locations;
+      let scenes      = spheres[sphereId].scenes;
       let sphereUsers = spheres[sphereId].users;
 
       Object.keys(locations).forEach((locationId) => {
-        if (locations[locationId].config.picture) {
+        if (locations[locationId].config.picture || !locations[locationId].config.picture && locations[locationId].config.pictureId) {
           pictures.push({picturePath: locations[locationId].config.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
         }
       });
       Object.keys(sphereUsers).forEach((userId) => {
-        if (sphereUsers[userId].picture) {
+        if (sphereUsers[userId].picture || !sphereUsers[userId].picture && sphereUsers[userId].pictureId) {
           pictures.push({picturePath: sphereUsers[userId].picture, actionToClean: {type:"SPHERE_USER_REPAIR_PICTURE", sphereId: sphereId, userId: userId}})
         }
       });
       Object.keys(scenes).forEach((sceneId) => {
-        if (scenes[sceneId].picture && scenes[sceneId].pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+        if (
+          scenes[sceneId].pictureSource === PICTURE_GALLERY_TYPES.CUSTOM || !scenes[sceneId].picture && scenes[sceneId].pictureId
+        ) {
           pictures.push({picturePath: scenes[sceneId].picture, actionToClean: {type:"SPHERE_SCENE_REPAIR_PICTURE", sphereId: sphereId, sceneId: sceneId}})
         }
       });
