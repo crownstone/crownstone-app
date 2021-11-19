@@ -1,3 +1,10 @@
+type sphereId     = string;
+type locationId   = string;
+type stoneId      = string;
+type sceneId      = string;
+type sphereUserId = string;
+
+
 interface SyncEvent {
   id: string,
   localId: string,

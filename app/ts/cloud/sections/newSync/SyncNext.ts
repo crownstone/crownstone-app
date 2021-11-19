@@ -154,12 +154,10 @@ export const SyncNext = {
 
   processSpheres: async function processSpheres(sphereCloudResponses: {[sphereId: string] : SyncRequestResponse_Sphere }, actions: any[], globalCloudIdMap: syncIdMap, sphereIdMap: sphereIdMap) : Promise<SyncRequestSphereData> {
     let reply : SyncRequestSphereData = {};
-    let state = core.store.getState();
     let transferPromises : Promise<any>[] = []
     let syncBase = {globalCloudIdMap, actions, transferPromises};
 
     let cloudSphereIds = Object.keys(sphereCloudResponses);
-    let syncers = [];
     for (let i = 0; i < cloudSphereIds.length; i++) {
 
       sphereIdMap[cloudSphereIds[i]] = getSyncIdMap();

@@ -10,6 +10,8 @@ import * as RNLocalize from "react-native-localize";
 import { Get } from "./GetUtil";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
 
+
+
 export const DataUtil = {
 
   /**
@@ -331,15 +333,14 @@ export const DataUtil = {
   },
 
 
-  getUserLocations(state, userId) {
+
+  getUserLocations(state, userId) : {[sphereId: string]: locationId[]} {
     let presentSphereMap = {};
 
     // first we determine in which sphere we are:
-    let sphereIds = Object.keys(state.spheres);
-
-    for (let i = 0; i < sphereIds.length; i++) {
-      if (state.spheres[sphereIds[i]].state.present === true) {
-        presentSphereMap[sphereIds[i]] = DataUtil.getUserLocationIdInSphere(state, sphereIds[i], userId);
+    for (let sphereId in state.spheres) {
+      if (state.spheres[sphereId].state.present === true) {
+        presentSphereMap[sphereId] = DataUtil.getUserLocationIdInSphere(state, sphereId, userId);
       }
     }
 

@@ -1,3 +1,6 @@
+import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
+import {xUtil} from "../../../../util/StandAloneUtil";
+
 export class SyncingBase {
   actions: any[];
   transferPromises : any[];
@@ -15,10 +18,11 @@ export class SyncingBase {
   }
 
   _constructLocalIdMap() {
-    this.globalLocalIdMap = getSyncIdMap();
+    this.globalLocalIdMap = xUtil.deepExtend({}, MapProvider.local2cloudMap);
     let globalKeys = Object.keys(this.globalCloudIdMap);
+
     globalKeys.forEach((key) => {
-      this.globalLocalIdMap[key] = {};
+      this.globalLocalIdMap[key] = this.globalLocalIdMap[key] ?? {};
 
       let cloudIds = Object.keys(this.globalCloudIdMap[key]);
       cloudIds.forEach((cloudId) => {

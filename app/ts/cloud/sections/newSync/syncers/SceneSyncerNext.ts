@@ -22,8 +22,8 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
 
 
   createLocal(cloudData: cloud_Scene) {
-    let newData = SceneTransferNext.getCreateLocalAction(this.localSphereId, SceneTransferNext.mapCloudToLocal(cloudData))
-    this.actions.push(newData.action)
+    let newData = SceneTransferNext.getCreateLocalAction(this.localSphereId, SceneTransferNext.mapCloudToLocal(cloudData));
+    this.actions.push(newData.action);
     this.globalCloudIdMap.scenes[this.cloudId] = newData.id;
 
     if (cloudData.customPictureId) {
@@ -56,7 +56,7 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
     );
 
     if (scene.pictureSource === "STOCK" && cloudData.stockPicture === null) {
-      this.transferPromises.push(CLOUD.forScene(this.localId).downloadSceneCustomPicture().catch((err) => {}))
+      this.transferPromises.push(CLOUD.forScene(this.localId).downloadSceneCustomPicture().catch((err) => {}));
     }
   }
 

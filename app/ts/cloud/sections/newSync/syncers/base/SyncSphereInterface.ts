@@ -1,10 +1,5 @@
-import { LOGe } from "../../../../../logging/Log";
-import { xUtil } from "../../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 import { SyncBaseInterface } from "./SyncBaseInterface";
-import { LocationTransferNext } from "../../transferrers/LocationTransferNext";
-import { ToonTransferNext } from "../../transferrers/ToonTransferNext";
-import { SyncNext } from "../../SyncNext";
 
 
 
