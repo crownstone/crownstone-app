@@ -248,7 +248,12 @@ export const styles = StyleSheet.create({
   shadedStatusBar:{
     backgroundColor:'rgba(0,0,0,0.2)',
     height: statusBarHeight,
-    width:screenWidth,
+    width: screenWidth,
+  },
+  statusBarPadding:{
+    backgroundColor:'rgba(0,0,0,0.0)',
+    height: statusBarHeight,
+    width: screenWidth,
   },
   button: {
     width:0.9*screenWidth,

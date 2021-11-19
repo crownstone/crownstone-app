@@ -15,7 +15,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
       updatedAt: localData.updatedAt
     };
 
-    if (localData.pictureSource) {
+    if (localData.pictureSource === "STOCK") {
       result.stockPicture = localData.picture;
     }
     else {
@@ -30,7 +30,7 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
     let result : Partial<SceneData> = {
       name:          cloudScene.name,
       pictureId:     cloudScene.customPictureId,
-      pictureSource: cloudScene.stockPicture ? "STOCK" : "CUSTOM", // PICTURE_GALLERY_TYPES
+      pictureSource: cloudScene.customPictureId ? "CUSTOM" : "STOCK", // PICTURE_GALLERY_TYPES
       cloudId:       cloudScene.id,
       data:          typeof cloudScene.data === 'string' ? JSON.parse(cloudScene.data) : cloudScene.data,
       updatedAt:     new Date(cloudScene.updatedAt).valueOf()
