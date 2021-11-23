@@ -15,7 +15,7 @@ export function DeviceEntryIcon({stone, stoneId, state, overrideStoneState}) {
 
   let size = 60;
 
-  let color = colors.darkGray.hex;
+  let color = colors.csBlueDarkerDesat.hex;
   if (StoneAvailabilityTracker.isDisabled(stoneId) !== true) {
     if (overrideStoneState !== undefined) {
       color = (overrideStoneState > 0 ? colors.green.hex : colors.menuBackground.hex)

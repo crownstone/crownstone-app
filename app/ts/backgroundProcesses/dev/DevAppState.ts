@@ -56,7 +56,7 @@ class DevAppStateClass {
 
       let originalMethod = BroadcastStateManager._updateLocationState;
 
-      BroadcastStateManager._updateLocationState = function(sphereId, locationId = null) {
+      BroadcastStateManager._updateLocationState = async function(sphereId, locationId = null) {
         if (sphereId === TESTING_SPHERE_ID) {
           Bluenet.setLocationState(1, 0, 0, Math.floor(Math.random()*255 ), TESTING_SPHERE_ID);
         }

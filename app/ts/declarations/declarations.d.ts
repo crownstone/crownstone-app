@@ -41,6 +41,7 @@ interface colorInterface {
   csBlue:        color,
   csBlueDark:    color,
   csBlueDarker:  color,
+  csBlueDarkerDesat:  color,
   csBlueLight:   color,
   csBlueLighter: color,
   csBlueLightDesat:   color,

@@ -1038,7 +1038,7 @@ open class BluenetJS: RCTEventEmitter {
             return
         }
 
-        wrapForBluenet("setUartKey", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getPowerSamples(type: typeEnum), function_uuid)
+        wrapForBluenet("getPowerSamples", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getPowerSamples(type: typeEnum), function_uuid)
     }
     
     @objc func setUartKey(_ handle: String, uartKey: String, callback: @escaping RCTResponseSenderBlock) {

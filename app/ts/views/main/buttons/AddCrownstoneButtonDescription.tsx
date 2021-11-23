@@ -12,7 +12,6 @@ import {
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
-import { xUtil } from "../../../util/StandAloneUtil";
 import { Util } from "../../../util/Util";
 
 

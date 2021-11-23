@@ -8,7 +8,7 @@ import * as React from 'react';
 import {
   Platform, View
 } from "react-native";
-import { colors, screenWidth, styles } from "../styles";
+import {background, colors, screenHeight, screenWidth, styles} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
@@ -43,7 +43,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         subHeader:lang("Would_you_like_to_retry_"),
         optionsBottom: true,
         textColor: colors.white.hex,
-        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed.jpg'),
+        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed_2.jpg'),
         options: [
           {label: lang("Not_right_now___"), onSelect: () => { this.close(); }},
           {label: lang("Yes_"),     onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
@@ -60,13 +60,12 @@ export class DfuFinished extends LiveComponent<any, any> {
         header:lang("Crownstones_successfully_"),
         subHeader: amountOfStones == 1 ? lang("There_is_just___left_to_g") : lang("There_are_just__left_to_g", amountOfStones),
         optionsBottom: true,
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View style={{...styles.centered, flex:1}}>
-              <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.hex} />
-            </View>
-          </View>
-        ),
+        image: {
+          source: require("../../../assets/images/builtinLevelUpDone.png"),
+          sourceWidth: 450,
+          sourceHeight: 440,
+          height: 0.25 * screenHeight,
+        },
         options: [
           {label: lang("Thats_enough_for_now___"), onSelect: () => { this.close(); }},
           {label: lang("Lets_do_the_rest_of_them_"), onSelect: () => {  NavigationUtil.backTo("DfuScanning") }},
@@ -81,13 +80,12 @@ export class DfuFinished extends LiveComponent<any, any> {
         header:lang("Crownstones_successfully_u"),
         subHeader:lang("All_your_Crownstones_are_"),
         optionsBottom: true,
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View style={{...styles.centered, flex:1}}>
-              <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.hex} />
-            </View>
-          </View>
-        ),
+        image: {
+          source: require("../../../assets/images/builtinLevelUpDone.png"),
+          sourceWidth: 450,
+          sourceHeight: 440,
+          height: 0.25 * screenHeight,
+        },
         options: [
           {label: lang("Great_"), onSelect: () => { this.close(); }},
         ]
@@ -102,7 +100,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         subHeader:lang("Please_check_if_youre_con"),
         optionsBottom: true,
         textColor: colors.white.hex,
-        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed.jpg'),
+        backgroundImage:  require('../../../assets/images/backgrounds/upgradeBackgroundFailed_2.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
@@ -133,7 +131,7 @@ export class DfuFinished extends LiveComponent<any, any> {
     }
 
     let cards = getCardsCallback();
-    let backgroundImage = cards.start.backgroundImage || require('../../../assets/images/backgrounds/upgradeBackgroundSoft.jpg');
+    let backgroundImage = cards.start.backgroundImage || background.main;
     let textColor = cards.start.textColor || colors.black.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
