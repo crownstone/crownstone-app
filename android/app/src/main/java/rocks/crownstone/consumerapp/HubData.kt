@@ -7,6 +7,7 @@ import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.packets.ByteArrayPacket
 import rocks.crownstone.bluenet.packets.EmptyPacket
 import rocks.crownstone.bluenet.packets.HubDataPacket
+import rocks.crownstone.bluenet.structs.DeviceAddress
 import rocks.crownstone.bluenet.structs.Errors
 import rocks.crownstone.bluenet.structs.Uint32
 import rocks.crownstone.bluenet.util.Conversion
@@ -18,9 +19,10 @@ import rocks.crownstone.consumerapp.hubdata.HubDataRequestPacket
 import rocks.crownstone.consumerapp.hubdata.request.RequestDataPacket
 import rocks.crownstone.consumerapp.hubdata.request.SetupPacket
 
-class HubData(bluenet: Bluenet) {
+class HubData(bluenet: Bluenet, address: DeviceAddress) {
 	private val TAG = this.javaClass.simpleName
 	private val bluenet = bluenet
+	private val address = address
 
 	fun setup(hubToken: String, cloudId: String): Promise<HubDataReplyPacket, Exception> {
 		val reqPacket = HubDataRequestPacket(HubDataRequestPacket.HubDataRequestType.SETUP, SetupPacket(hubToken, cloudId))
@@ -54,7 +56,7 @@ class HubData(bluenet: Bluenet) {
 
 	internal fun sendHubDataCommand(reqPacket: HubDataRequestPacket): Promise<HubDataReplyPacket, Exception> {
 		val deferred = deferred<HubDataReplyPacket, Exception>()
-		bluenet.control.hubData(HubDataPacket(HubDataPacket.EncryptType.NOT_ENCRYPTED, reqPacket))
+		bluenet.control(address).hubData(HubDataPacket(HubDataPacket.EncryptType.NOT_ENCRYPTED, reqPacket))
 				.success {
 					// TODO: maybe control.hubData() should return HubDataReplyPacket ?
 					val replyPacket = HubDataReplyPacket()

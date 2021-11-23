@@ -13,7 +13,7 @@ Connect bridge method now returns the Crownstone's operation mode:
 "dfu"
 --> why?
 
-[v] Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED". If this fails due to timeout, throw error "CANCEL_PENDING_CONNECTION_TIMEOUT". Other errors will be treated as bugs to solve (for now).
+[v] Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED".
 
 Move to the HERMES engine
 https://reactnative.dev/docs/hermes
