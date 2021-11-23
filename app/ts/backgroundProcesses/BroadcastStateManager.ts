@@ -22,7 +22,7 @@ class BroadcastStateManagerClass {
 
   _presentLocationInSphere = {};
 
-  init() {
+  async init() {
     // set event listener on:
     // - the tap to toggle change
     // - rssi offset change
@@ -31,7 +31,7 @@ class BroadcastStateManagerClass {
     // We need to start advertising when the peripheral is ready.
     if (this._initialized === false) {
       // console.log("INITIALIZING BroadcastStateManagerClass");
-      this._listeners.push(core.eventBus.on("databaseChange", (data) => {
+      this._listeners.push(core.eventBus.on("databaseChange", async (data) => {
         let change = data.change;
         let reloadActiveSphereUpdate = false;
         let reloadDevicePreferences  = false;
@@ -42,7 +42,7 @@ class BroadcastStateManagerClass {
         if (change.changeDeveloperData) {
           reloadDevicePreferences  = true;
           reloadActiveSphereUpdate = true;
-          this._reloadAdvertisingState();
+          await this._reloadAdvertisingState();
         }
 
         if (change.updateActiveSphere) {
@@ -91,16 +91,16 @@ class BroadcastStateManagerClass {
 
       Bluenet.initBroadcasting();
 
-      this._reloadAdvertisingState();
-      this._handleActiveSphereUpdate();
+      await this._reloadAdvertisingState();
+      await this._handleActiveSphereUpdate();
       this._reloadDevicePreferences();
       this._initialized = true;
     }
   }
 
-  destroy() {
+  async destroy() {
     this._listeners.forEach((unsub) => { unsub() })
-    this._stopAdvertising();
+    await this._stopAdvertising();
   }
 
 
@@ -108,7 +108,7 @@ class BroadcastStateManagerClass {
    * We navigated to a sphere in the overview.
    * @private
    */
-  _handleActiveSphereUpdate() {
+  async _handleActiveSphereUpdate() : Promise<void> {
     let state = core.store.getState();
 
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
@@ -125,10 +125,11 @@ class BroadcastStateManagerClass {
       }
       return this._stopAdvertising();
     }
-    else if (amountOfPresentSpheres === 1) {
+
+    if (amountOfPresentSpheres === 1) {
       if (presentSphere.sphereId) {
         let locationId = this._presentLocationInSphere[presentSphere.sphereId] || null;
-        this._updateLocationState(presentSphere.sphereId, locationId);
+        return this._updateLocationState(presentSphere.sphereId, locationId);
       }
     }
     else {
@@ -138,7 +139,7 @@ class BroadcastStateManagerClass {
       else {
         // the sphere we navigated to is present, and there are more than 1 present spheres:
         let locationId = this._presentLocationInSphere[activeSphereData.sphereId] || null;
-        this._updateLocationState(activeSphereData.sphereId, locationId);
+        return this._updateLocationState(activeSphereData.sphereId, locationId);
       }
     }
   }
@@ -169,11 +170,11 @@ class BroadcastStateManagerClass {
         return this._updateLocationState(activeSphereData.sphereId, locationId);
       }
       // if the sphere that is active is also present, we set the locationState to that one.
-      this._updateLocationState(activeSphereData.sphereId);
+      return this._updateLocationState(activeSphereData.sphereId);
     }
     else {
       // if the sphere we are focusing on is not present, we set the locationState for the newly entered sphere
-      this._updateLocationState(sphereId, locationId);
+      return this._updateLocationState(sphereId, locationId);
     }
   }
 
@@ -183,7 +184,7 @@ class BroadcastStateManagerClass {
    * @param sphereId
    * @private
    */
-  _handleExitSphere(sphereId) {
+  async _handleExitSphere(sphereId) {
     let state = core.store.getState();
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
     let activeSphereData = SphereUtil.getActiveSphere(state);
@@ -198,14 +199,13 @@ class BroadcastStateManagerClass {
       // we are broadcasting the sphere that we are leaving, change it to another present sphere, preferably the active one.
       if (activeSphereData.sphere.state.present) {
         // if the sphere that is active is also present, we set the locationState to that one.
-        this._updateLocationState(activeSphereData.sphereId);
+        return this._updateLocationState(activeSphereData.sphereId);
       }
-      else {
-        let presentSphereData = SphereUtil.getPresentSphere(state);
-        if (presentSphereData.sphereId) {
-          // set another sphere that we're present in as our target.
-          this._updateLocationState(presentSphereData.sphereId);
-        }
+
+      let presentSphereData = SphereUtil.getPresentSphere(state);
+      if (presentSphereData.sphereId) {
+        // set another sphere that we're present in as our target.
+        return this._updateLocationState(presentSphereData.sphereId);
       }
     }
   }
@@ -248,9 +248,9 @@ class BroadcastStateManagerClass {
     return (userIndex % 32) + ((deviceUID % 4) << 5);
   }
 
-  _updateLocationState(sphereId, locationId = null) {
+  async _updateLocationState(sphereId, locationId = null) {
     if (this._advertising === false) {
-      this._startAdvertising();
+      await this._startAdvertising();
     }
 
     let state = core.store.getState();
@@ -281,11 +281,11 @@ class BroadcastStateManagerClass {
 
 
   _reloadAdvertisingState() {
-    this._startAdvertising();
+    return this._startAdvertising();
   }
 
   _startAdvertising() {
-    BluenetPromiseWrapper.isPeripheralReady()
+    return BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
         LOGi.info("BroadcastStateManager: Bluenet.startAdvertising()");
         this._advertising = true;
@@ -294,7 +294,7 @@ class BroadcastStateManagerClass {
   }
 
   _stopAdvertising() {
-    BluenetPromiseWrapper.isPeripheralReady()
+    return BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
         LOGi.info("BroadcastStateManager: Bluenet.stopAdvertising()");
         this._sphereIdInLocationState = null;

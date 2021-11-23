@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Picker,
   Platform,
   TouchableHighlight,
   TouchableOpacity,
@@ -16,6 +15,7 @@ import {
 
 import { SlideFadeInView }  from '../animated/SlideFadeInView'
 import { styles, colors, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
+import { Picker } from "@react-native-community/picker";
 
 
 export class Dropdown extends Component<any, any> {

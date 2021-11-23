@@ -158,7 +158,7 @@ class LocationHandlerClass {
     let state = core.store.getState();
 
     if (state.spheres[sphereId] && state.spheres[sphereId].state.present === true) {
-      LOG.info('Applying EXIT SPHERE');
+      LOG.info('LocationHandler: Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
 
