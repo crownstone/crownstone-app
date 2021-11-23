@@ -92,14 +92,14 @@ interface BluenetPromiseWrapperProtocol {
    * @param handle
    */
   setupPutInDFU(handle: string)                                         : Promise< void >,
-  performDFU(handle : string, uri: string )                             : Promise< void >,
+  performDFU(handle: string, uri: string)                               : Promise< void >,
 
   /**
    * This will connect to the Crownstone, resolve if the Crownstone is NOT in dfu mode, try to start it in normal mode and leave disconnected.
    * Does not check if the new mode is operation mode.
    * @param handle
    */
-  bootloaderToNormalMode( handle : string )                             : Promise< void >,
+  bootloaderToNormalMode(handle: string)                                : Promise< void >,
 
   clearErrors(handle: string, clearErrorJSON : clearErrorData)          : Promise< void >,
   restartCrownstone(handle: string)                                     : Promise< void >,
