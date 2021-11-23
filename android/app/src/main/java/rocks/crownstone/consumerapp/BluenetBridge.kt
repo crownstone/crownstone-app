@@ -1177,11 +1177,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
 				.success {
-					Log.i(TAG, "connected")
-					resolveCallback(callback)
+					Log.i(TAG, "connected to $address")
+					val mode: String = when (bluenet.getOperationMode(address)) {
+						CrownstoneMode.NORMAL -> "operation"
+						CrownstoneMode.SETUP -> "setup"
+						CrownstoneMode.DFU -> "dfu"
+						CrownstoneMode.UNKNOWN -> "unknown"
+					}
+					resolveCallback(callback, mode)
 				}
 				.fail {
-					Log.w(TAG, "failed to connect: ${it.message}")
+					Log.w(TAG, "failed to connect to $address: ${it.message}")
 					when (it) {
 						is Errors.Aborted -> rejectCallback(callback, "CONNECTION_CANCELLED")
 						else ->              rejectCallback(callback, it.message)
@@ -1204,11 +1210,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "disconnectCommand $address")
 		bluenet.control(address).disconnect()
 				.success {
-					Log.i(TAG, "disconnected via command")
+					Log.i(TAG, "disconnected from $address via command")
 					resolveCallback(callback)
 				}
 				.fail {
-					Log.w(TAG, "failed to disconnect via command: ${it.message}")
+					Log.w(TAG, "failed to disconnect from $address via command: ${it.message}")
 					rejectCallback(callback, it.message)
 				}
 	}
@@ -1219,11 +1225,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "phoneDisconnect $address")
 		bluenet.disconnect(address, false)
 				.success {
-					Log.i(TAG, "disconnected")
+					Log.i(TAG, "disconnected from $address")
 					resolveCallback(callback)
 				}
 				.fail {
-					Log.w(TAG, "failed to disconnect: ${it.message}")
+					Log.w(TAG, "failed to disconnect from $address: ${it.message}")
 					rejectCallback(callback, it.message)
 				}
 	}
