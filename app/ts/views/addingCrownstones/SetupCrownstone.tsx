@@ -540,6 +540,7 @@ export class SetupCrownstone extends LiveComponent<{
       <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true}>
         <KeepAwake />
         <Interview
+          backButtonName={"setupCrownstone"}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

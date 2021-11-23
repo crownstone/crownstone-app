@@ -31,7 +31,7 @@ export class RoomAdd extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background fullScreen={true} image={background.lightBlur} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
+      <Background fullScreen={true} image={background.main} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: colors.black.hex}}
           left={Platform.OS === 'android' ? null : lang("Back")}

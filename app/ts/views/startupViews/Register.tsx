@@ -217,7 +217,7 @@ export class Register extends LiveComponent<any, any> {
                 onBlur={() => {
                   if (this.leavingView === false) {
                     if (this._interview.isActiveCard("email")) {
-                      this.focussingIndex = 1; this.forceUpdate();
+                      this.focussingIndex = 2; this.forceUpdate();
                     }
                   }
                 }}
@@ -227,7 +227,7 @@ export class Register extends LiveComponent<any, any> {
                 autoCapitalize={'none'}
                 placeholder={lang("Password")}
                 keyboardType={ "ascii-capable" }
-                focussed={this.focussingIndex === 1 || undefined}
+                focussed={this.focussingIndex === 2 || undefined}
                 value={state && state.password || this.user.password}
                 callback={(newValue) => {
                   let newState = {};
@@ -353,7 +353,8 @@ export class Register extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = background.light;
+    let backgroundImage = background.main;
+
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
@@ -361,7 +362,7 @@ export class Register extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={false} hideNotifications={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -373,6 +374,7 @@ export class Register extends LiveComponent<any, any> {
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
+          backButtonName={"Register"}
         />
       </AnimatedBackground>
     );

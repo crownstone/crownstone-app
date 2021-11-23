@@ -85,7 +85,7 @@ export class ProblemWithLocalization extends Component<any, any> {
 
   _getLocalizationInfo() {
     let state = core.store.getState();
-    let presentSphereId = Util.data.getPresentSphereId(state);
+    let presentSphereId = Util.data.getPresentSphereId();
     let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, presentSphereId);
     let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, presentSphereId);
     let requiresFingerprints = requireMoreFingerprints(state, presentSphereId);
@@ -250,7 +250,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
 
     let state = core.store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getPresentSphereId();
     let stones = state.spheres[sphereId].stones;
 
     if (this.state.userInputProblemCrownstoneId === null) {
@@ -335,7 +335,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
 
     let state = core.store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getPresentSphereId();
     let stones = state.spheres[sphereId].stones;
 
     if (this.state.userInputProblemCrownstoneId === null) {
@@ -495,6 +495,6 @@ export class ProblemWithLocalization extends Component<any, any> {
         { this._getResults() }
       </View>
     )
-  } 
+  }
 
 }

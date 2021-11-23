@@ -8,7 +8,7 @@ import {
   LOG_CONSTELLATION,
   LOG_STORE,
   LOG_SCHEDULER,
-  RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
+  LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
   LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_NAVIGATION
 } from "../ExternalConfig";
@@ -19,11 +19,15 @@ import { FileLoggerClass } from "./LogUtil";
 
 let lastLogTime = 0;
 
-const FileLogger = new FileLoggerClass()
+export const LOG_file = new FileLoggerClass();
 
 class Logger {
   level : number;
   levelPrefix : string;
+
+  queue = [];
+
+  blocked = false;
 
   constructor(level) {
     this.level = level;
@@ -119,7 +123,7 @@ class Logger {
 
       if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
         // @ts-ignore
-        FileLogger.log(args);
+        LOG_file.log(args);
       }
 
       if (base_core.sessionMemory.developmentEnvironment) {
@@ -127,6 +131,10 @@ class Logger {
         console.log.apply(this, args);
       }
     }
+  }
+
+  async removeLogs() {
+
   }
 }
 

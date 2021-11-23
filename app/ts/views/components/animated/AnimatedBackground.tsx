@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated, Platform, SafeAreaView,
+  Animated, Platform, SafeAreaView, StatusBar,
   View
 } from "react-native";
 
@@ -29,9 +29,11 @@ export class AnimatedBackground extends Component<{
   hideOrangeLine?:           boolean,
   orangeLineAboveStatusBar?: boolean,
   hasNavBar?:                boolean,
+  darkStatusBar?:            boolean,
 
   duration?:          number,
   dimStatusBar?:      boolean,
+  paddStatusBar?:     boolean,
   fullScreen?:        boolean,
   hasTopBar?:         boolean,
   image?:             any,
@@ -92,6 +94,7 @@ export class AnimatedBackground extends Component<{
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }}>
+        <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
             <BackgroundImage height={backgroundHeight} image={this.staticImage} />
@@ -101,6 +104,7 @@ export class AnimatedBackground extends Component<{
           </Animated.View>
           { this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
           { this.props.dimStatusBar             && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
+          { this.props.paddStatusBar            && Platform.OS !== 'android' ? <View style={styles.statusBarPadding} /> : undefined }
           <NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />
           <View style={{flex:1, overflow:"hidden"}}>
             { this.props.children }

@@ -167,7 +167,11 @@ const BluenetAPI = {
   getAdcChannelSwaps:                  () => { console.log("BluenetBridgeCall: getAdcChannelSwaps"); },
   setSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: setSoftOnSpeed"); },
   getSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: getSoftOnSpeed"); },
+
+
   getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
+  addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
+  removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
 };
 

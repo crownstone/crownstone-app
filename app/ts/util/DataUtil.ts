@@ -10,6 +10,8 @@ import * as RNLocalize from "react-native-localize";
 import { Get } from "./GetUtil";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
 
+
+
 export const DataUtil = {
 
   /**
@@ -209,7 +211,8 @@ export const DataUtil = {
   },
 
 
-  getPresentSphereId: function(state) : string {
+  getPresentSphereId: function() : string {
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
       if (state.spheres[sphereIds[i]].state.present === true) {
@@ -219,7 +222,8 @@ export const DataUtil = {
     return null;
   },
 
-  getPresentSphereIds: function(state) : string[] {
+  getPresentSphereIds: function() : string[] {
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let result = [];
     for (let i = 0; i < sphereIds.length; i++ ) {
@@ -229,6 +233,8 @@ export const DataUtil = {
     }
     return result;
   },
+
+
 
 
   getReferenceId: function(state) : string {
@@ -327,15 +333,14 @@ export const DataUtil = {
   },
 
 
-  getUserLocations(state, userId) {
+
+  getUserLocations(state, userId) : {[sphereId: string]: locationId[]} {
     let presentSphereMap = {};
 
     // first we determine in which sphere we are:
-    let sphereIds = Object.keys(state.spheres);
-
-    for (let i = 0; i < sphereIds.length; i++) {
-      if (state.spheres[sphereIds[i]].state.present === true) {
-        presentSphereMap[sphereIds[i]] = DataUtil.getUserLocationIdInSphere(state, sphereIds[i], userId);
+    for (let sphereId in state.spheres) {
+      if (state.spheres[sphereId].state.present === true) {
+        presentSphereMap[sphereId] = DataUtil.getUserLocationIdInSphere(state, sphereId, userId);
       }
     }
 
@@ -521,26 +526,28 @@ export const DataUtil = {
   verifyPicturesInDatabase(state) {
     let spheres = state.spheres;
     let pictures = [];
-    if (state.user.picture) {
+    if (state.user.picture || !state.user.picture && state.user.pictureId) {
       pictures.push({picturePath: state.user.picture, actionToClean: {type:"USER_REPAIR_PICTURE"}});
     }
     Object.keys(spheres).forEach((sphereId) => {
-      let locations = spheres[sphereId].locations;
-      let scenes = spheres[sphereId].scenes;
+      let locations   = spheres[sphereId].locations;
+      let scenes      = spheres[sphereId].scenes;
       let sphereUsers = spheres[sphereId].users;
 
       Object.keys(locations).forEach((locationId) => {
-        if (locations[locationId].config.picture) {
+        if (locations[locationId].config.picture || !locations[locationId].config.picture && locations[locationId].config.pictureId) {
           pictures.push({picturePath: locations[locationId].config.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
         }
       });
       Object.keys(sphereUsers).forEach((userId) => {
-        if (sphereUsers[userId].picture) {
+        if (sphereUsers[userId].picture || !sphereUsers[userId].picture && sphereUsers[userId].pictureId) {
           pictures.push({picturePath: sphereUsers[userId].picture, actionToClean: {type:"SPHERE_USER_REPAIR_PICTURE", sphereId: sphereId, userId: userId}})
         }
       });
       Object.keys(scenes).forEach((sceneId) => {
-        if (scenes[sceneId].picture && scenes[sceneId].pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+        if (
+          scenes[sceneId].pictureSource === PICTURE_GALLERY_TYPES.CUSTOM || !scenes[sceneId].picture && scenes[sceneId].pictureId
+        ) {
           pictures.push({picturePath: scenes[sceneId].picture, actionToClean: {type:"SPHERE_SCENE_REPAIR_PICTURE", sphereId: sphereId, sceneId: sceneId}})
         }
       });

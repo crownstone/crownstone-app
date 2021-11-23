@@ -26,7 +26,7 @@ let versionStyle : TextStyle = {
   bottom:3,
   right:3,
   backgroundColor:"transparent",
-  color: colors.white.rgba(0.4),
+  color: colors.csBlueDarker.rgba(0.4),
   fontSize: 10,
 };
 
@@ -37,10 +37,10 @@ export class LoginSplash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={background.mainDark} dimStatusBar={true}  hideOrangeLine={true} hideNotifications={true}>
+      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideNotifications={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
           <View style={{flex:0.5}} />
-          <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
+          <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.csBlueDarker.hex}}/>
           <View style={{flex:2}} />
           <View style={loginStyles.loginButtonContainer}>
             <View style={{flexDirection:'row'}}>
@@ -69,7 +69,7 @@ export class LoginSplash extends Component<any, any> {
             <Text style={{
               fontSize: 14,
               fontWeight: 'bold',
-              color: colors.white.hex,
+              color: colors.csOrange.hex,
               fontStyle:'italic',
               textDecorationLine: 'underline',
               backgroundColor:'transparent'

@@ -20,6 +20,8 @@ import { ScaledImage } from "./ScaledImage";
 import ResponsiveText from "./ResponsiveText";
 import { SlideInFromBottomView } from "./animated/SlideInFromBottomView";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
+import {BackButton} from "../dev/user/DEV_UserDataSpheres";
+import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -49,13 +51,11 @@ let explanationStyle : TextStyle = {
 
 export class Interview extends Component<{
   getCards() : interviewCards,
+  backButtonName?: string,
   height? : number,
   scrollEnabled? : boolean,
-  update?() : void
+  update?() : void,
 }, any> {
-
-  interviewState;
-  interviewData;
 
   _carousel;
   responseHeaders : any;
@@ -80,16 +80,30 @@ export class Interview extends Component<{
     }
 
     this.activeCardIndex = 0;
-    this.transitioningToCardId = undefined;
+    this.transitioningToCardId = null;
 
     this.selectedOptions = [];
     this.responseHeaders = {};
   }
 
 
+  componentDidMount() {
+    if (this.props.backButtonName) {
+      BackButtonHandler.override(this.props.backButtonName, () => {
+        return this.back();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.backButtonName) {
+      BackButtonHandler.clearOverride(this.props.backButtonName)
+    }
+  }
+
   isActiveCard(cardId) {
     if (this.transitioningToCardId !== null && this.transitioningToCardId !== cardId) {
-      return false
+      return false;
     }
 
     return this.state.cardIds[this.activeCardIndex] === cardId ;
@@ -172,7 +186,7 @@ export class Interview extends Component<{
     let cards = this.props.getCards();
     let activeCard = cards[this.state.cardIds[this.activeCardIndex]];
     let backgroundImage = null;
-    if (this.transitioningToCardId !== undefined) {
+    if (this.transitioningToCardId !== null) {
       backgroundImage = cards[this.transitioningToCardId].backgroundImage;
     }
     else if (activeCard.backgroundImage !== undefined) {
@@ -242,7 +256,7 @@ export class Interview extends Component<{
           }
         }}
         onSnapToItem={(index) => {
-          this.transitioningToCardId = undefined;
+          this.transitioningToCardId = null;
           this.activeCardIndex = index;
           this.checkStyleUpdates();
 
@@ -259,7 +273,7 @@ export class Interview extends Component<{
             this._carousel.snapToItem(0, false, false)
             this.setState({ cardIds: [this.state.cardIds[this.activeCardIndex]]}, () => {
               this.activeCardIndex = 0;
-              this.transitioningToCardId = undefined;
+              this.transitioningToCardId = null;
             });
           }
         }}

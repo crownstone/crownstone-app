@@ -46,22 +46,25 @@ export const DfuUtil = {
     return _download(bootloaderCandidate,'bootloader');
   },
 
-  getReleaseNotes: function(sphereId, userConfig) {
+  getReleaseNotes: function(sphereId, userConfig : UserData) {
     let updateData = DfuUtil.getUpdatableStones(sphereId);
 
-    let hightestFirmwareVersion = Object.keys(updateData.versionsObj).sort((a,b) => { return a > b ? -1 : 1 })[0]
-    let hardwareVersion = updateData.versionsObj[hightestFirmwareVersion];
+    let highestFirmwareVersion = Object.keys(updateData.versionsObj).sort((a,b) => { return a > b ? -1 : 1 })[0]
+    let hardwareVersion        = updateData.versionsObj[highestFirmwareVersion];
 
-    return DfuUtil.getFirmwareInformation(hightestFirmwareVersion, hardwareVersion)
+    return DfuUtil.getFirmwareInformation(highestFirmwareVersion, hardwareVersion)
       .then((newFirmwareDetails) => {
         let releaseNotes = newFirmwareDetails.releaseNotes;
         if (typeof releaseNotes === 'object') {
           // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
-          releaseNotes = releaseNotes['en'] || releaseNotes['en'] || releaseNotes[Object.keys(releaseNotes)[0]];
+          releaseNotes = releaseNotes[userConfig.language.split("_")[0]] ||
+                         releaseNotes['en'] ||
+                         releaseNotes[Object.keys(releaseNotes)[0]];
         }
         // final fallback, release notes not available.
-        releaseNotes = releaseNotes || RELEASE_NOTES_NA;
-        return releaseNotes;
+        releaseNotes = releaseNotes ||
+                       RELEASE_NOTES_NA;
+        return {notes:releaseNotes, version: highestFirmwareVersion};
       })
       .catch((err) => {
         LOGe.info("DFU UTIL: Could not download release notes...", err);
@@ -73,7 +76,7 @@ export const DfuUtil = {
           errorMessage += "\nNo bootloader available form hardwareVersion: " + hardwareVersion + "\n"
         }
 
-        return errorMessage;
+        return {notes:errorMessage, version: null};
       })
   },
 

@@ -214,6 +214,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
+          backButtonName={"BehaviourTypeSelector"}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

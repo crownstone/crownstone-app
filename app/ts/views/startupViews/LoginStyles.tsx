@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import { StyleSheet } from 'react-native'
-import { screenWidth} from '../styles'
+import {colors, screenWidth} from '../styles'
 
 export default StyleSheet.create({
   spacer: {
@@ -42,14 +42,14 @@ export default StyleSheet.create({
     backgroundColor:'transparent',
     height: 110,
     width:  110,
-    borderRadius: 55,
-    borderWidth:2,
+    // borderRadius: 55,
+    // borderWidth:2,
     borderColor:'white',
     alignItems:'center',
     justifyContent:'center',
   },
   loginText: {
-    color:'white',
+    color: colors.csBlueDarker.hex,
     fontSize:21,
     fontWeight:'400',
   }

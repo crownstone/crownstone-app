@@ -225,12 +225,12 @@ export class Login extends Component<any, any> {
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={background.mainDark} dimStatusBar={true} hideNotifications={true} hideOrangeLine={true} keyboardAvoid={true}>
-        <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
+      <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true}>
+        <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
-            <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
+            <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.csBlueDark.hex}}/>
             <View style={{flex:3, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
@@ -265,7 +265,7 @@ export class Login extends Component<any, any> {
               </TouchableOpacity>
             </View>
             <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-            <Text style={{color: '#93cfff'}}>{ lang("Forgot_Password_") }</Text></TouchableHighlight>
+            <Text style={{color: colors.csOrange.hex}}>{ lang("Forgot_Password_") }</Text></TouchableHighlight>
             <LoginButton loginCallback={() => {this.attemptLogin()}} />
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>

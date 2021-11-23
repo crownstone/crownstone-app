@@ -421,7 +421,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (
-      <Background image={background.lightBlur}>
+      <Background image={background.main}>
         { stoneCanSwitch && this._getMenuIcons(stone) }
         <View style={{flex:2}} />
 

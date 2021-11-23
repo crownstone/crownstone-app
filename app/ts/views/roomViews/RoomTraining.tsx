@@ -250,7 +250,7 @@ export class RoomTraining extends LiveComponent<any, any> {
     }
 
     return (
-      <Background hasNavBar={false} image={background.light}>
+      <Background hasNavBar={false} image={background.main}>
         <KeepAwake />
         {content}
       </Background>

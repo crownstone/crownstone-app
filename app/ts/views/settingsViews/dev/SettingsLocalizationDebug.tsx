@@ -77,7 +77,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     // get initial location
     const store = core.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getPresentSphereId();
     if (sphereId) {
       const sphere = state.spheres[sphereId];
       const locationIds = Object.keys(sphere.locations);

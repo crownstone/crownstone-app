@@ -126,7 +126,7 @@
 //     networkKeys = Object.keys(networks);
 //
 //     return (
-//       <BackgroundNoNotification image={background.light}>
+//       <BackgroundNoNotification image={background.main}>
 //         <ScrollView>
 //           <Text style={{
 //             backgroundColor:'transparent',

@@ -31,13 +31,14 @@ import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../Base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
-import { LOGw } from "../../../logging/Log";
+import {LOG, LOG_file, LOGw} from "../../../logging/Log";
 
 const RNFS = require('react-native-fs');
 import Peer from 'react-native-peerjs';
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
 import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
@@ -111,12 +112,14 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   _getItems() {
     const store = core.store;
-    let state = store.getState();
-    let user = state.user;
-    let dev = state.development;
+    let state   = store.getState();
+    let dev     = state.development;
 
     let items = [];
-    let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
+    let clearAllLogs = async () => {
+      await LOG_file.clearLogFiles();
+      Bluenet.clearLogs();
+    };
 
     items.push({label: "LOGGING", type: 'explanation', below: false});
     if (!dev.logging_enabled) {
@@ -134,6 +137,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             data: {logging_enabled: newValue}
           });
           Bluenet.enableLoggingToFile(newValue);
+          MapProvider.logMap()
         }
       });
     }
@@ -192,8 +196,9 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
                   "Clear all Logs?",
                   "Press OK to clear logs.",
                   [{ text: "Cancel", style: 'cancel' }, {
-                    text: "OK", onPress: () => {
-                      clearAllLogs();
+                    text: "OK", onPress: async () => {
+                      await clearAllLogs();
+                      MapProvider.logMap();
                     }
                   }])
             }},

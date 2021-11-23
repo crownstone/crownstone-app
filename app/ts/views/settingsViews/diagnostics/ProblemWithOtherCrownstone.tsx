@@ -182,7 +182,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
           else if (nearest.rssi > -85) {
             noun =  lang("not_that")}
           let state = core.store.getState();
-          let sphereId = Util.data.getPresentSphereId(state);
+          let sphereId = Util.data.getPresentSphereId();
           let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
           if (nearest.setupMode) {
             return (

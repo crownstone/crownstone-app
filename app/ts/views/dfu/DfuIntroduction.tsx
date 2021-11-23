@@ -8,7 +8,7 @@ import * as React from 'react';
 import {
   Platform, View
 } from "react-native";
-import { colors, screenWidth, styles } from "../styles";
+import {background, colors, screenHeight, screenWidth, styles} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
@@ -21,7 +21,7 @@ import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
-    topBar: { visible: false, height:0 }
+    topBar: { visible: false, height:0, title: {text: lang("DFU_Introduction")} }
   };
 
   interviewData;
@@ -29,7 +29,12 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    let stateData = { releaseNotes: lang("Downloading___"), inSphere: false }
+    let stateData = {
+      releaseNotes: lang("Downloading___"),
+      inSphere:     false,
+      version:      null,
+    };
+
     this.interviewData = {};
 
     let state = core.store.getState();
@@ -43,8 +48,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     this.state = stateData;
 
     DfuUtil.getReleaseNotes(sphereId, state.user)
-      .then((notes) => {
-        this.setState({ releaseNotes: notes });
+      .then((result) => {
+        this.setState({ releaseNotes: result.notes, version: result.version });
       })
   }
 
@@ -54,6 +59,12 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         header:lang("There_is_an_update_availa"),
         subHeader:lang("This_process_can_take_a_f"),
         optionsBottom: true,
+        image: {
+          source: require("../../../assets/images/builtinLevelUp.png"),
+          sourceWidth: 450,
+          sourceHeight: 440,
+          height: 0.25 * screenHeight,
+        },
         options: [
           {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.dismissModal(); }},
           {label: lang("Lets_do_it_"), nextCard: 'updateInformation'},
@@ -61,7 +72,14 @@ export class DfuIntroduction extends LiveComponent<any, any> {
       },
       updateInformation: {
         header:lang("Heres_whats_new_"),
-        subHeader: this.state.releaseNotes,
+        subHeader: this.state.version ? lang("Version", this.state.version) : this.state.releaseNotes,
+        explanation: this.state.version ? this.state.releaseNotes : undefined,
+        image: {
+          source: require("../../../assets/images/builtinLevelUp.png"),
+          sourceWidth: 450,
+          sourceHeight: 440,
+          height: 0.25 * screenHeight,
+        },
         optionsBottom: true,
         options: [
           {label: lang("Start_the_update_"), onSelect: () => { NavigationUtil.navigate("DfuScanning", {sphereId: this.props.sphereId})}},
@@ -92,7 +110,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
 
 
   render() {
-    let backgroundImage = require('../../../assets/images/backgrounds/upgradeBackgroundSoft.jpg');
+    let backgroundImage = background.main;
     let textColor = colors.black.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
@@ -100,7 +118,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={false} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -109,6 +127,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
           style={{backgroundColor:'transparent', paddingTop:0}}
         />
         <Interview
+          backButtonName={"dfuIntroduction"}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return (this.state.inSphere ?  this.getCards() : this.getNotInSphereCard() ); }}
           update={   () => { this.forceUpdate() }}

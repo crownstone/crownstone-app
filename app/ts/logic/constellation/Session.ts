@@ -208,7 +208,7 @@ export class Session {
         return;
       }
 
-      // a failed connection will automatically retry untill the session is ended.
+      // a failed connection will automatically retry until the session is ended.
       LOGi.constellation("Session: Reinitializing the bootstrapper to reactivate the session", this.handle, this. identifier);
       this.interactionModule.isDeactivated();
       this.initializeBootstrapper();

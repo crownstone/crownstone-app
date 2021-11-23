@@ -117,7 +117,6 @@ interface NativeBusTopics {
   callbackUrlInvoked:              string,
   localizationPausedState:         string,
   connectedToPeripheral:           string,
-  connectedToPeripheralFailed:     string,
   disconnectedFromPeripheral:      string,
 }
 

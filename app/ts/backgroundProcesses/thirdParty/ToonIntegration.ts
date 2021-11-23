@@ -28,7 +28,7 @@ class ToonIntegrationClass {
   _evaluateSchedule() {
     // find in which Sphere we are present
     let state = core.store.getState();
-    let presentSphereId = Util.data.getPresentSphereId(state);
+    let presentSphereId = Util.data.getPresentSphereId();
 
     if (presentSphereId === null) { return; }
 

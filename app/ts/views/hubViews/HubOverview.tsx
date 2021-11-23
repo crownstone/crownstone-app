@@ -562,7 +562,7 @@ lang("_Something_went_wrong_____Pleas_body"),
 
 
     return (
-      <Background image={background.lightBlur}>
+      <Background image={background.main}>
         <View style={{flex:0.5}} />
 
         { this._getStoneIcon(stone, updateAvailable) }

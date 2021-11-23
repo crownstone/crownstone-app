@@ -22,7 +22,7 @@ import { background, colors } from "../styles";
 let listOfIcons = {
   ceilingLights: [
     "fiCS1-bar",
-    "fiCS1-chandelier", 
+    "fiCS1-chandelier",
     "fiCS1-chandelier-1",
     "fiCS1-chandeliers",
     "fiCS1-flame",
@@ -31,25 +31,25 @@ let listOfIcons = {
     "fiCS1-furniture-and-household-13",
     "fiCS1-furniture-and-household-14",
     "fiCS1-furniture-and-household-15",
-    "fiCS1-invention", 
-    "fiCS1-indoor", 
+    "fiCS1-invention",
+    "fiCS1-indoor",
     "fiCS1-lamp-16",
     "fiCS1-lamp-17",
     "fiCS1-lamp-18",
     "fiCS1-lamp-19",
     "fiCS1-lamp-20",
     "fiCS1-lamp-21",
-    "fiCS1-light-6", 
-    "fiCS1-spotlight", 
-    "fiCS1-spotlight-1", 
-    "fiCS1-spotlight-2", 
+    "fiCS1-light-6",
+    "fiCS1-spotlight",
+    "fiCS1-spotlight-1",
+    "fiCS1-spotlight-2",
     "fiCS1-stage",
-    "c1-lamp2", 
+    "c1-lamp2",
     "c1-christmasLights",
-    "fiHS-lights", 
+    "fiHS-lights",
     "fiCS1-furniture-and-household-9",
-    "fiCS1-lamp-2", 
-    "fiHS-chandelier", 
+    "fiCS1-lamp-2",
+    "fiHS-chandelier",
     "fiHS-lamp-4",
     "c1-lamp7"
   ],
@@ -537,7 +537,7 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
     ];
 
     return (
-      <Background hasNavBar={false} image={background.light}>
+      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
         <ScrollView>
           <IconSelection
             categories={categories}

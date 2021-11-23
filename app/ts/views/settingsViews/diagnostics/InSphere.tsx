@@ -140,7 +140,7 @@ export class InSphere extends Component<any, any> {
     }
     else if (this.state.userInputProblemType === 'inviting') {
       let state = core.store.getState();
-      let presentSphereId = Util.data.getPresentSphereId(state);
+      let presentSphereId = Util.data.getPresentSphereId();
 
       if (Permissions.inSphere(presentSphereId).inviteGuestToSphere === false) {
         return (

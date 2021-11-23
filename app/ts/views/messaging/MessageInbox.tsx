@@ -261,7 +261,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <BackgroundNoNotification image={background.lightBlur}>
+          <BackgroundNoNotification image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
           </BackgroundNoNotification>
@@ -269,7 +269,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       }
       else {
         return (
-          <BackgroundNoNotification image={background.lightBlur}>
+          <BackgroundNoNotification image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
@@ -280,7 +280,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     }
     else {
       return (
-        <BackgroundNoNotification image={background.lightBlur}>
+        <BackgroundNoNotification image={background.main}>
           <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>

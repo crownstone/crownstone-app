@@ -264,7 +264,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.light}>
+      <BackgroundNoNotification hasNavBar={false} image={background.main}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />

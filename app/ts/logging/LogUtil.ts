@@ -16,14 +16,14 @@ export function getLoggingFilename(timestamp, prefix, time: boolean = false) {
   return prefix + dateStamp + '.log';
 }
 
-export function cleanLogs() {
+export async function cleanLogs() {
   // create a path you want to write to
   let logPath = FileUtil.getPath();
 
-  _cleanLogs(logPath);
+  await _cleanLogs(logPath);
 }
 
-function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
+async function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
   let allowedLogFiles = {};
   for (let i = 0; i < amountOfDaysStored; i++) {
     let timestamp = Date.now() - i*86400000;
@@ -31,26 +31,30 @@ function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
   }
 
   let flagForRemoval = [];
-  RNFS.readdir(logPath)
-    .then((files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].substr(0,LOG_PREFIX.length) === LOG_PREFIX && allowedLogFiles[files[i]] !== true) {
-          flagForRemoval.push(files[i]);
-        }
+  try {
+    let files = await RNFS.readdir(logPath)
+
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].substr(0, LOG_PREFIX.length) === LOG_PREFIX && allowedLogFiles[files[i]] !== true) {
+        flagForRemoval.push(files[i]);
       }
-      for (let i = 0; i < flagForRemoval.length; i++) {
-        FileUtil.safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch(()=>{});
-      }
-    })
-    .catch((err) => {
-    });
+    }
+
+    for (let i = 0; i < flagForRemoval.length; i++) {
+      await FileUtil.safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch((err) => {
+      });
+    }
+  }
+  catch (err) {
+    console.log("Failed to clean logs", amountOfDaysStored);
+  }
 }
 
-export function clearLogs() {
+export async function clearLogs() {
   // create a path you want to write to
   let logPath = FileUtil.getPath();
 
-  _cleanLogs(logPath,0);
+  await _cleanLogs(logPath,0);
 }
 
 
@@ -63,11 +67,15 @@ export class FileLoggerClass {
   _writeQueue = [];
   _writing = false;
 
+  blocked = false;
+
   constructor() {
     this._logPath = FileUtil.getPath();
   }
 
   log(args: any[]) {
+    if (this.blocked) { return; }
+
     // generate filename based on current date.
     let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
 
@@ -129,6 +137,12 @@ export class FileLoggerClass {
     this._writeQueue.splice(0,count);
 
     return [filename, str];
+  }
+
+  async clearLogFiles() {
+    this.blocked = true;
+    await clearLogs().catch(()=>{});
+    this.blocked = false;
   }
 }
 

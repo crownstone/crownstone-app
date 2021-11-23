@@ -248,7 +248,12 @@ export const styles = StyleSheet.create({
   shadedStatusBar:{
     backgroundColor:'rgba(0,0,0,0.2)',
     height: statusBarHeight,
-    width:screenWidth,
+    width: screenWidth,
+  },
+  statusBarPadding:{
+    backgroundColor:'rgba(0,0,0,0.0)',
+    height: statusBarHeight,
+    width: screenWidth,
   },
   button: {
     width:0.9*screenWidth,
@@ -430,13 +435,8 @@ export const overviewStyles = StyleSheet.create({
 
 
 export const background = {
-  main                   : require('../../assets/images/backgrounds/mainBackgroundLight.jpg'),
+  main                   : require('../../assets/images/backgrounds/lightBackground2_blur.jpg'),
   menu                   : require('../../assets/images/backgrounds/menuBackground.jpg'),
-  mainRemoteNotConnected : require('../../assets/images/backgrounds/mainBackgroundLightNotConnected.jpg'),
-  mainDarkLogo           : require('../../assets/images/backgrounds/backgroundWLogo.jpg'),
-  mainDark               : require('../../assets/images/backgrounds/background.jpg'),
-  light                  : require('../../assets/images/backgrounds/lightBackground2_blur.jpg'),
-  lightBlur              : require('../../assets/images/backgrounds/lightBackground2_blur.jpg'),
   lightBlurLighter       : require('../../assets/images/backgrounds/lightBackground2_blur_lighter.jpg'),
   lightBlurBW            : require('../../assets/images/backgrounds/lightBackground2_blur_bw.jpg'),
   detailsDark            : require('../../assets/images/backgrounds/darkBackground4.jpg'),

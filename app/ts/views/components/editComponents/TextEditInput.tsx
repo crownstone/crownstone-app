@@ -127,7 +127,7 @@ export class TextEditInput extends Component<any, any> {
         returnKeyType={this.props.returnKeyType}
         style={[{flex:1, fontSize:16}, this.props.style]}
         secureTextEntry={this.props.secureTextEntry}
-        defaultValue={this.props.value}
+        defaultValue={this.props.value ?? ""}
         // value={this.props.value}
       />
     );

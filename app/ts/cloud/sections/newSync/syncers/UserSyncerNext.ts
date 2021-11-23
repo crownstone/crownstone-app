@@ -37,7 +37,7 @@ export class UserSyncerNext extends SyncInterface<UserData, UserData, cloud_User
 
     // check if we have to do things with the image
     let user = Get.user();
-    if (user.pictureId !== cloudData.profilePicId) {
+    if (user.pictureId !== cloudData.profilePicId || cloudData.profilePicId && !user.picture) {
       if (!cloudData.profilePicId) {
         this.transferPromises.push(FileUtil.safeDeleteFile(user.picture));
       }

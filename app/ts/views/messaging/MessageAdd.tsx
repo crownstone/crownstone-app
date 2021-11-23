@@ -324,7 +324,7 @@ lang("_No_recipients____I_cant__body"),
 
   render() {
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.lightBlur} >
+      <BackgroundNoNotification hasNavBar={false} image={background.main} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
