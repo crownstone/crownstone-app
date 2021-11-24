@@ -169,6 +169,11 @@ export const Util = {
       }
 
       let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+
+      if (xUtil.versions.isValidSemver(stone.config.firmwareVersion) === false) {
+        return false;
+      }
+
       return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion.substr(0,11)]);
     }
     return false;

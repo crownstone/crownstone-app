@@ -340,6 +340,10 @@ export const xUtil = {
       // if version is NOT semver, is higher will be false so is lower is true.
       return !xUtil.versions.isHigherOrEqual(version, compareWithVersion, semverSize);
     },
+
+    isValidSemver(version, semverSize = 3) {
+      return checkSemVer(version, semverSize);
+    }
   },
 
 
@@ -591,7 +595,7 @@ function getRC(version) {
 let checkSemVer = (str, semverSize = 3) => {
   if (!str) { return false; }
 
-  // max 3 length items, with size-1 dots in between
+  // max ${semverSize} length items, with size-1 dots in between
   if (str.length > semverSize*3+(semverSize-1)) {
     return false;
   }
