@@ -36,16 +36,11 @@ import rocks.crownstone.bluenet.behaviour.BehaviourSyncerFromCrownstone
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.encryption.MeshKeySet
 import rocks.crownstone.bluenet.packets.behaviour.*
-import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
-import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
-import rocks.crownstone.bluenet.packets.keepAlive.MultiKeepAlivePacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchPacket
 import rocks.crownstone.bluenet.packets.powerSamples.PowerSamplesType
-import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
-import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
 import rocks.crownstone.bluenet.scanhandling.NearestDeviceListEntry
 import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
@@ -116,8 +111,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 	private var appLogLevel = AppLogLevel.NONE
 
-	init {
+	private val tickRunnable = Runnable {
+		onTick()
+	}
 
+	init {
+		handler.postDelayed(tickRunnable, 1000)
 	}
 
 	fun destroy() {
@@ -1177,14 +1176,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
 				.success {
-					Log.i(TAG, "connected")
-					resolveCallback(callback)
+					Log.i(TAG, "connected to $address")
+					val mode: String = when (bluenet.getOperationMode(address)) {
+						CrownstoneMode.NORMAL -> "operation"
+						CrownstoneMode.SETUP -> "setup"
+						CrownstoneMode.DFU -> "dfu"
+						CrownstoneMode.UNKNOWN -> "unknown"
+					}
+					resolveCallback(callback, mode)
 				}
 				.fail {
-					Log.w(TAG, "failed to connect: ${it.message}")
+					Log.w(TAG, "failed to connect to $address: ${it.message}")
 					when (it) {
 						is Errors.Aborted -> rejectCallback(callback, "CONNECTION_CANCELLED")
-						else ->              rejectCallback(callback, it.message)
+						else ->              rejectCallback(callback, it)
 					}
 				}
 	}
@@ -1195,7 +1200,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "cancelConnectionRequest $address")
 		bluenet.abort(address)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1204,12 +1209,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "disconnectCommand $address")
 		bluenet.control(address).disconnect()
 				.success {
-					Log.i(TAG, "disconnected via command")
+					Log.i(TAG, "disconnected from $address via command")
 					resolveCallback(callback)
 				}
 				.fail {
-					Log.w(TAG, "failed to disconnect via command: ${it.message}")
-					rejectCallback(callback, it.message)
+					Log.w(TAG, "failed to disconnect from $address via command: ${it.message}")
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1219,12 +1224,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "phoneDisconnect $address")
 		bluenet.disconnect(address, false)
 				.success {
-					Log.i(TAG, "disconnected")
+					Log.i(TAG, "disconnected from $address")
 					resolveCallback(callback)
 				}
 				.fail {
-					Log.w(TAG, "failed to disconnect: ${it.message}")
-					rejectCallback(callback, it.message)
+					Log.w(TAG, "failed to disconnect from $address: ${it.message}")
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1236,7 +1241,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "factoryReset $address")
 		bluenet.control(address).factoryReset()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1245,7 +1250,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setupFactoryReset")
 		bluenet.control(address).factoryReset()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1260,7 +1265,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					Log.w(TAG, "recovery failed: ${it.message}")
 					when (it) {
 						is Errors.RecoveryRebootRequired -> rejectCallback(callback, "NOT_IN_RECOVERY_MODE")
-						else -> rejectCallback(callback, it.message)
+						else -> rejectCallback(callback, it)
 					}
 				}
 	}
@@ -1332,7 +1337,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				}
 				.fail {
 					sendEvent("setupProgress", 0) // TODO: is this required?
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 				.always { bluenet.unsubscribe(subId) }
 	}
@@ -1353,7 +1358,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.then { bluenet.waitPromise(1000) }.unwrap()
 				.then { bluenet.control(address).setSwitch(0U) }.unwrap()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1369,7 +1374,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.fail {
 					bluenet.disconnect(address, true)
 							.always {
-								rejectCallback(callback, it.message)
+								rejectCallback(callback, it)
 							}
 				}
 	}
@@ -1380,7 +1385,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "restartCrownstone")
 		bluenet.control(address).reset()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1389,7 +1394,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "putInDFU")
 		bluenet.control(address).goToDfu()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1398,7 +1403,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setupPutInDFU")
 		bluenet.control(address).goToDfu()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 
@@ -1410,7 +1415,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.dfu(address).startDfu(fileString, DfuService::class.java)
 				.then { bluenet.disconnect(address,true) }
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1421,7 +1426,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		bluenet.setup(address).getAddress()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1430,7 +1435,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "sendNoOp")
 		bluenet.control(address).noop()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1439,7 +1444,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "sendMeshNoOp")
 		bluenet.mesh(address).noop()
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1450,7 +1455,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success {
 					resolveCallback(callback, convertSwitchState(it))
 				}
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1459,7 +1464,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setSwitchState $switchValDouble")
 		bluenet.control(address).setSwitch(convertSwitchVal(switchValDouble))
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1469,7 +1474,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val valueOn = convertSwitchVal(valueOnDouble)
 		bluenet.control(address).toggleSwitchReturnValueSet(valueOn)
 				.success { resolveCallback(callback, convertSwitchVal(it)) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1483,7 +1488,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		bluenet.control(address).multiSwitch(listPacket)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1496,7 +1501,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		bluenet.control(address).multiSwitch(listPacket)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	private fun parseMultiSwitchLegacy(switchItems: ReadableArray): MultiSwitchLegacyPacket? {
@@ -1528,7 +1533,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getFirmwareVersion")
 		bluenet.deviceInfo(address).getFirmwareVersion()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1537,7 +1542,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getHardwareVersion")
 		bluenet.deviceInfo(address).getHardwareVersion()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1553,7 +1558,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 							Log.i(TAG, "Not in DFU mode: resolve with empty string")
 							resolveCallback(callback, "")
 						}
-						else -> rejectCallback(callback, it.message)
+						else -> rejectCallback(callback, it)
 					}
 				}
 	}
@@ -1575,7 +1580,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		errorState.calcBitMask()
 		bluenet.control(address).resetErrors(errorState)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 
@@ -1586,7 +1591,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "lockSwitch $enable")
 		bluenet.control(address).lockSwitch(enable)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1595,7 +1600,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "allowDimming $enable")
 		bluenet.control(address).allowDimming(enable)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1604,7 +1609,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setSwitchCraft $enable")
 		bluenet.config(address).setSwitchCraftEnabled(enable)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1614,7 +1619,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val timestamp = timestampDouble.toLong()
 		bluenet.control(address).setTime(timestamp.toUint32())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1624,7 +1629,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val timestamp = timestampDouble.toLong()
 		bluenet.mesh(address).setTime(timestamp.toUint32())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1633,7 +1638,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setSunTimesViaConnection sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
 		bluenet.config(address).setSunTime(sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1644,7 +1649,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success {
 					resolveCallback(callback, it.toDouble()) // No long in react-native
 				}
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 //endregion
 
@@ -1660,7 +1665,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val switchVal = convertSwitchVal(switchValDouble)
 		bluenet.broadCast.switch(referenceId, stoneId, switchVal, autoExecute)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1670,16 +1675,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val stoneId = Conversion.toUint8(stoneIdInt)
 		bluenet.broadCast.switchOn(referenceId, stoneId, autoExecute)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun setTimeViaBroadcast(timestampDouble: Double, sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, referenceId: String, callback: Callback) {
-		Log.i(TAG, "setTimeViaBroadcast referenceId=$referenceId timestampDouble=$timestampDouble sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
-		bluenet.broadCast.setTime(referenceId, timestampDouble.toUint32(), sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+	fun setTimeViaBroadcast(timestampDouble: Double, sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, referenceId: String, timeBasedValidation: Boolean, callback: Callback) {
+		Log.i(TAG, "setTimeViaBroadcast referenceId=$referenceId timestampDouble=$timestampDouble sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight timeBasedValidation=$timeBasedValidation")
+		bluenet.broadCast.setTime(referenceId, timestampDouble.toUint32(), sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32(), useTimeBasedValidation = timeBasedValidation)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1692,7 +1697,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		bluenet.broadCast.setBehaviourSettings(referenceId, mode)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -1713,7 +1718,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "addBehaviour")
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
-			rejectCallback(callback, Errors.ValueWrong().message)
+			rejectCallback(callback, Errors.ValueWrong())
 			return
 		}
 		Log.i(TAG, "hash = ${BehaviourHashGen.getHash(indexedBehaviourPacket.behaviour)}")
@@ -1721,14 +1726,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success {
 					val retVal = genBehaviourReply(it)
 					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong().message)
+						rejectCallback(callback, Errors.ValueWrong())
 					}
 					else {
 						resolveCallback(callback, retVal)
 					}
 				}
 				.fail {
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1738,21 +1743,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "updateBehaviour")
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
-			rejectCallback(callback, Errors.ValueWrong().message)
+			rejectCallback(callback, Errors.ValueWrong())
 			return
 		}
 		bluenet.control(address).replaceBehaviour(indexedBehaviourPacket.index, indexedBehaviourPacket.behaviour)
 				.success {
 					val retVal = genBehaviourReply(it)
 					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong().message)
+						rejectCallback(callback, Errors.ValueWrong())
 					}
 					else {
 						resolveCallback(callback, retVal)
 					}
 				}
 				.fail {
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1765,14 +1770,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success {
 					val retVal = genBehaviourReply(it)
 					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong().message)
+						rejectCallback(callback, Errors.ValueWrong())
 					}
 					else {
 						resolveCallback(callback, retVal)
 					}
 				}
 				.fail {
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1785,14 +1790,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success {
 					val retVal = genBehaviour(it)
 					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong().message)
+						rejectCallback(callback, Errors.ValueWrong())
 					}
 					else {
 						resolveCallback(callback, retVal)
 					}
 				}
 				.fail {
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1818,7 +1823,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					resolveCallback(callback, behaviourArray)
 				}
 				.fail {
-					rejectCallback(callback, it.message)
+					rejectCallback(callback, it)
 				}
 	}
 
@@ -1887,7 +1892,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					}
 					resolveCallback(callback, map)
 				}
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	/**
@@ -2320,7 +2325,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setTapToToggle $value")
 		bluenet.config(address).setTapToToggleEnabled(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2329,7 +2334,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setTapToToggleThresholdOffset $value")
 		bluenet.config(address).setTapToToggleRssiThresholdOffset(value.toByte())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2338,7 +2343,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getTapToToggleThresholdOffset")
 		bluenet.config(address).getTapToToggleRssiThresholdOffset()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2347,7 +2352,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setSoftOnSpeed $value")
 		bluenet.config(address).setSoftOnSpeed(value.toUint8())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2356,7 +2361,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getSoftOnSpeed")
 		bluenet.config(address).getSoftOnSpeed()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2365,12 +2370,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setUartKey $uartKeyString")
 		val uartKey = Conversion.getKeyFromString(uartKeyString)
 		if (uartKey == null) {
-			rejectCallback(callback, Errors.SizeWrong().toString())
+			rejectCallback(callback, Errors.SizeWrong())
 			return
 		}
 		bluenet.config(address).setUartKey(uartKey)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 //endregion
@@ -2491,7 +2496,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "switchRelay")
 		bluenet.control(address).setRelay(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2500,7 +2505,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "switchDimmer")
 		bluenet.control(address).setDimmer(convertSwitchVal(value))
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2509,7 +2514,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setUartState")
 		bluenet.config(address).setUartEnabled(UartMode.fromNum(Conversion.toUint8(value)))
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2518,7 +2523,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getResetCounter")
 		bluenet.state(address).getResetCount()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2527,7 +2532,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getSwitchcraftThreshold")
 		bluenet.config(address).getSwitchCraftThreshold()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2536,7 +2541,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setSwitchcraftThreshold")
 		bluenet.config(address).setSwitchCraftThreshold(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2545,7 +2550,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getMaxChipTemp")
 		bluenet.config(address).getMaxChipTemp()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2554,7 +2559,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setMaxChipTemp")
 		bluenet.config(address).setMaxChipTemp(value.toByte())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2563,7 +2568,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getDimmerCurrentThreshold")
 		bluenet.config(address).getCurrentThresholdDimmer()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2572,7 +2577,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setDimmerCurrentThreshold")
 		bluenet.config(address).setCurrentThresholdDimmer(Conversion.toUint16(value))
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2581,7 +2586,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getDimmerTempUpThreshold")
 		bluenet.config(address).getDimmerTempUpThreshold()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2590,7 +2595,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setDimmerTempUpThreshold")
 		bluenet.config(address).setDimmerTempUpThreshold(value.toFloat())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2599,7 +2604,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getDimmerTempDownThreshold")
 		bluenet.config(address).getDimmerTempDownThreshold()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2608,7 +2613,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setDimmerTempDownThreshold")
 		bluenet.config(address).setDimmerTempDownThreshold(value.toFloat())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2617,7 +2622,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getVoltageZero")
 		bluenet.config(address).getVoltageZero()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2626,7 +2631,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setVoltageZero")
 		bluenet.config(address).setVoltageZero(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2635,7 +2640,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getCurrentZero")
 		bluenet.config(address).getCurrentZero()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2644,7 +2649,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setCurrentZero")
 		bluenet.config(address).setCurrentZero(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2653,7 +2658,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getPowerZero")
 		bluenet.config(address).getPowerZero()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2662,7 +2667,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setPowerZero")
 		bluenet.config(address).setPowerZero(value)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2671,7 +2676,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getVoltageMultiplier")
 		bluenet.config(address).getVoltageMultiplier()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2680,7 +2685,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setVoltageMultiplier")
 		bluenet.config(address).setVoltageMultiplier(value.toFloat())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2689,7 +2694,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getCurrentMultiplier")
 		bluenet.config(address).getCurrentMultiplier()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2698,7 +2703,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "setCurrentMultiplier")
 		bluenet.config(address).setCurrentMultiplier(value.toFloat())
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2707,7 +2712,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getCrownstoneUptime")
 		bluenet.debugData(address).getUptime()
 				.success { resolveCallback(callback, it.toDouble()) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2720,7 +2725,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					retVal.putDouble("restartCount", it.count.toDouble())
 					retVal.putDouble("timestamp", it.lastTimestamp.toDouble())
 					resolveCallback(callback, retVal) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2743,7 +2748,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						retVal.pushMap(itemMap)
 					}
 					resolveCallback(callback, retVal) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2780,7 +2785,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						retVal.pushMap(itemMap)
 					}
 					resolveCallback(callback, retVal) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2789,7 +2794,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "getMinSchedulerFreeSpace")
 		bluenet.debugData(address).getSchedulerMinFree()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2810,7 +2815,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					retVal.putBoolean("nfc",            isBitSet(it, 19))
 					resolveCallback(callback, retVal)
 				}
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2833,7 +2838,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					}
 					resolveCallback(callback, retVal)
 				}
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 	@ReactMethod
@@ -2846,7 +2851,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					retVal.putDouble("swapCount", it.count.toDouble())
 					retVal.putDouble("timestamp", it.lastTimestamp.toDouble())
 					resolveCallback(callback, retVal) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail { rejectCallback(callback, it) }
 	}
 
 
@@ -3055,12 +3060,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		sendEvent("dfuProgress", map)
 	}
 
+	private fun onTick() {
+		Log.i(TAG, "onTick")
+		handler.postDelayed(tickRunnable, 1000)
+		sendEvent("tick")
+	}
+
 	@Synchronized
 	private fun onScan(device: ScannedDevice) {
 //		Log.d(TAG, "onScan: $device")
 		if (device.isStone()) {
 			if (sendUnverifiedAdvertisements) {
-				sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+				val advertisementMap = exportAdvertisementData(device, null)
+				sendEvent("crownstoneAdvertisementReceived", advertisementMap) // Any advertisement, verified and unverified from crownstones.
 			}
 		}
 
@@ -3261,6 +3273,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 
+	private fun rejectCallback(callback: Callback, error: Exception) {
+		when (error) {
+			is Errors.NotConnected -> rejectCallback(callback, "NOT_CONNECTED")
+			else ->                   rejectCallback(callback, error.message)
+		}
+	}
+
 	private fun rejectCallback(callback: Callback, error: String?) {
 		Log.w(TAG, "reject $callback $error")
 		val retVal = Arguments.createMap()
@@ -3365,6 +3384,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 
+	private fun sendEvent(eventName: String) {
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, null)
+	}
 
 	private fun sendEvent(eventName: String, params: WritableMap?) {
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
