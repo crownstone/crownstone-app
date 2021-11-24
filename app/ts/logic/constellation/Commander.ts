@@ -88,6 +88,7 @@ import { SessionBroker } from "./SessionBroker";
 import { LOGd, LOGe, LOGi } from "../../logging/Log";
 import { Scheduler } from "../Scheduler";
 import { Command_SetTimeViaBroadcast } from "./commandClasses/Command_SetTimeViaBroadcast";
+import {Command_GetUICR} from "./commandClasses/Command_GetUICR";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -260,6 +261,10 @@ export class CommandAPI extends CommandMeshAPI {
 
   async getHardwareVersion() : Promise<string> {
     return this._load(new Command_GetHardwareVersion());
+  }
+
+  async getUICR() : Promise<UICRData> {
+    return this._load(new Command_GetUICR());
   }
 
   async addBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply> {

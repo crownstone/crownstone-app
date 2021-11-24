@@ -108,6 +108,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   performDFU:                     (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 
   getHardwareVersion:             (handle: string) => { return BluenetPromise('getHardwareVersion', handle); },
+  getUICR:                        (handle: string) => { return BluenetPromise('getUICR', handle); },
   setupPutInDFU:                  (handle: string) => { return BluenetPromise('setupPutInDFU', handle); },
   toggleSwitchState:              (handle: string, stateForOn: number) => { return BluenetPromise('toggleSwitchState', handle, stateForOn); }, // stateForOn is a number between 0 and 100. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
   bootloaderToNormalMode:         (handle: string, ) => { return BluenetPromise('bootloaderToNormalMode', handle); },

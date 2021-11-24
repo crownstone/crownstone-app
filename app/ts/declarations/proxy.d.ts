@@ -259,6 +259,8 @@ interface BluenetPromiseWrapperProtocol {
   getSwitchHistory(handle: string)                                      : Promise<SwitchHistory[]>,
   getPowerSamples(handle: string, type : PowersampleDataType)           : Promise<PowerSamples[]>,
 
+  getUICR(handle: string)                                               : Promise<UICRData>
+  
   setUartKey(handle: string, uartKey: string)                           : Promise<void>,
 
   // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
@@ -266,6 +268,24 @@ interface BluenetPromiseWrapperProtocol {
   requestCloudId(handle: string)                                        : Promise<HubDataReply>,
   factoryResetHub(handle: string)                                       : Promise<HubDataReply>,
   factoryResetHubOnly(handle: string)                                   : Promise<HubDataReply>,
+}
+
+interface UICRData {
+  board          : number, 
+  productType    : number, 
+  region         : number, 
+  productFamily  : number, 
+  reserved1      : number, 
+
+  hardwarePatch  : number, 
+  hardwareMinor  : number, 
+  hardwareMajor  : number, 
+  reserved2      : number, 
+
+  productHousing : number, 
+  productionWeek : number, 
+  producitonYear : number, 
+  reserved3      : number, 
 }
 
 interface GPREGRET {
