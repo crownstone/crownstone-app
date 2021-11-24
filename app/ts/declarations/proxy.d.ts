@@ -368,6 +368,9 @@ interface crownstoneServiceData {
   tapToToggleEnabled        : boolean,
   behaviourOverridden       : boolean,
 
+  // alternative state items
+  assetFiltersCRC           : number,
+  assetFiltersMasterVersion : number,
   behaviourEnabled          : boolean,
   behaviourMasterHash       : number,
 
@@ -386,6 +389,8 @@ interface crownstoneServiceData {
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
   uniqueElement             : number // Partial timestamp, counter, etc. Is this required?
+
+
 }
 
 interface crownstoneAdvertisementSummary {

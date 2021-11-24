@@ -32,6 +32,7 @@ type SyncInterfaceViewOptions = {
 interface GatherOptions {
   key:        string,
   cloudKey?:  string,
+  onlyIds?:   string[],
   type:       SupportedMappingType,
   children?:  GatherOptions[]
   cloudIdGetter?:   (item: any) => string,

@@ -1,8 +1,6 @@
-import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { xUtil } from "../../../../util/StandAloneUtil";
 import { StoneTransferNext } from "../transferrers/StoneTransferNext";
 import { SyncNext } from "../SyncNext";
 import { SyncUtil } from "../../../../util/SyncUtil";
@@ -37,15 +35,19 @@ export class StoneSyncerNext extends SyncSphereInterface<StoneData, StoneDataCon
     );
   }
 
-  static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {
-    return SyncNext.gatherRequestData(sphere,{
+  static prepare(sphere: SphereData, localStoneId?: string) : {[itemId:string]: RequestItemCoreType} {
+    let options : GatherOptions = {
       key:'stones', type:'stone', children: [
         {key:'rules',     type:'behaviour', cloudKey: 'behaviours'},
         {key:'abilities', type:'ability', children: [
             {key:'properties', type:'abilityProperty'},
           ]},
       ]
-    });
+    };
+    if (localStoneId) {
+      options.onlyIds = [localStoneId];
+    }
+    return SyncNext.gatherRequestData(sphere, options);
   }
 }
 
