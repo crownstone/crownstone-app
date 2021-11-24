@@ -36,16 +36,11 @@ import rocks.crownstone.bluenet.behaviour.BehaviourSyncerFromCrownstone
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.encryption.MeshKeySet
 import rocks.crownstone.bluenet.packets.behaviour.*
-import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
-import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
-import rocks.crownstone.bluenet.packets.keepAlive.MultiKeepAlivePacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchLegacyPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchPacket
 import rocks.crownstone.bluenet.packets.powerSamples.PowerSamplesType
-import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
-import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
 import rocks.crownstone.bluenet.scanhandling.NearestDeviceListEntry
 import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
@@ -116,8 +111,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 	private var appLogLevel = AppLogLevel.NONE
 
-	init {
+	private val tickRunnable = Runnable {
+		onTick()
+	}
 
+	init {
+		handler.postDelayed(tickRunnable, 1000)
 	}
 
 	fun destroy() {
@@ -3061,6 +3060,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		sendEvent("dfuProgress", map)
 	}
 
+	private fun onTick() {
+		Log.i(TAG, "onTick")
+		handler.postDelayed(tickRunnable, 1000)
+		sendEvent("tick")
+	}
+
 	@Synchronized
 	private fun onScan(device: ScannedDevice) {
 //		Log.d(TAG, "onScan: $device")
@@ -3379,6 +3384,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 
+	private fun sendEvent(eventName: String) {
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, null)
+	}
 
 	private fun sendEvent(eventName: String, params: WritableMap?) {
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)

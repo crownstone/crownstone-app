@@ -44,4 +44,4 @@ https://github.com/react-native-image-picker/react-native-image-picker/releases/
 [v] Added setTimeViaBroadcast parameter enableTimeBasedNonce (boolean) to the end of the param list. False means use CAFEBABE instead of time as validation nonce.
     This sets a customValidationNonce of 0xCAFEBABE
 
-Add a tick event for the native bus. This event does not need data but should be approx. every second. The scheduler runs off this.
+[v] Add a tick event for the native bus. This event does not need data but should be approx. every second. The scheduler runs off this.
