@@ -22,6 +22,7 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import {Get} from "../../util/GetUtil";
 
 
 let buttonTextStyle : TextStyle = {
@@ -60,8 +61,8 @@ let textContainerStyle : ViewStyle = {
 
 export class RoomTraining_roomSize extends LiveComponent<any, any> {
   static options(props) {
-    let ai = Util.data.getAiName(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai), closeModal: true});
+    let location = Get.location(props.sphereId, props.locationId)
+    return TopBarUtil.getOptions({title:  lang("Teaching_",location.config.name), closeModal: true});
   }
 
   _getButton(sampleSize, iconSize, text, roomSize) {
