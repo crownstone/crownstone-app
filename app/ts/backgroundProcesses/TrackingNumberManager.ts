@@ -1,6 +1,5 @@
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { AppState, Platform } from "react-native";
-import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
+import { AppState } from "react-native";
 import { DataUtil } from "../util/DataUtil";
 import { BroadcastStateManager } from "./BroadcastStateManager";
 import { core } from "../Core";
@@ -65,8 +64,8 @@ class TrackingNumberManagerClass {
     }
   }
 
-  heartbeat() {
-    if (this.canUseDynamicBackgroundBroadcasts === true) { return; }
+  async heartbeat() {
+    if (await this._checkBackgroundBroadcasts() === true) { return; }
 
     let broadcastSphereId = BroadcastStateManager.getSphereInLocationState();
     if (DataUtil.getPresentSphereId() === null) {
@@ -155,18 +154,16 @@ class TrackingNumberManagerClass {
     }
   }
 
-
-  updateMyDeviceTrackingRegistration(sphereId) {
-    LOGi.info("TrackingNumberManager: Update my device tracking _requests for sphere:", sphereId);
+  async _checkBackgroundBroadcasts() : Promise<boolean> {
     if (this.canUseDynamicBackgroundBroadcasts === null) {
-      BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
-        .then((canUse) => {
-          this.canUseDynamicBackgroundBroadcasts = canUse;
-          if (this.canUseDynamicBackgroundBroadcasts) { return; }
-          this._updateMyDeviceTrackingRegistration(sphereId);
-        })
+      this.canUseDynamicBackgroundBroadcasts = await BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
     }
-    else if (this.canUseDynamicBackgroundBroadcasts === false) {
+    return this.canUseDynamicBackgroundBroadcasts
+  }
+
+  async updateMyDeviceTrackingRegistration(sphereId) {
+    LOGi.info("TrackingNumberManager: Update my device tracking _requests for sphere:", sphereId);
+    if (await this._checkBackgroundBroadcasts() === false) {
       this._updateMyDeviceTrackingRegistration(sphereId);
     }
   }
