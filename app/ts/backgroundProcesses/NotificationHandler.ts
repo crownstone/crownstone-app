@@ -89,11 +89,8 @@ class NotificationHandlerClass {
         // fallback
         this.notificationPermissionGranted = true;
         LOG.info("NotificationHandler: Received notification", notification);
-        if (Platform.OS === 'android') {
-          NotificationParser.handle(notification)
-        }
-        else {
-          NotificationParser.handle(notification.data)
+        NotificationParser.handle(notification.data)
+        if (Platform.OS === 'ios') {
           notification.finish(PushNotificationIOS.FetchResult.NoData)
         }
       },
