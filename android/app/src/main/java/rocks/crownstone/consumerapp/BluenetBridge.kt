@@ -116,7 +116,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	init {
-		handler.postDelayed(tickRunnable, 1000)
 	}
 
 	fun destroy() {
@@ -255,6 +254,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet = Bluenet(looper)
 		handler = Handler(looper)
 		behaviourSyncer = BehaviourSyncerFromCrownstone(bluenet)
+		handler.postDelayed(tickRunnable, 1000)
 
 //		// Main thread
 //		bluenet = Bluenet(Looper.getMainLooper())
