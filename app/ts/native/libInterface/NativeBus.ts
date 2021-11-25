@@ -60,8 +60,8 @@ export class NativeBusClass {
       callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
       localizationPausedState: "localizationPausedState",       // data type = string (url)
 
-      connectedToPeripheral:       "connectedToPeripheral",       // date type = string (handle)
-      disconnectedFromPeripheral:  "disconnectedFromPeripheral",  // date type = string (handle)
+      connectedToPeripheral:       "connectedToPeripheral",       // date type = string (handle). Sent immediately after connect, before service discovery.
+      disconnectedFromPeripheral:  "disconnectedFromPeripheral",  // date type = string (handle). Sent after disconnect cleanup. Can be called multiple times.
     };
 
     this.refMap = {};
