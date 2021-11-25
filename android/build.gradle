@@ -12,9 +12,9 @@ buildscript {
         supportLibVersion = "28.0.0" // Used by bluenet
 
         RNNKotlinVersion = ext.kotlin_version  // Used by react-native-navigation
-        RNNKotlinStdlib = "kotlin-stdlib-jdk8" // Used by react-native-navigation
-        firebaseIidVersion = "19.0.1" // Used by react-native-device-info
-        firebaseVersion = "19.0.1" // Used by react-native-push-notification
+//        RNNKotlinStdlib = "kotlin-stdlib-jdk8" // Used by react-native-navigation
+        firebaseIidVersion = "21.1.0" // Used by react-native-device-info
+        firebaseMessagingVersion = "21.1.0" // Used by react-native-push-notification
         googlePlayServicesVersion = "17.0.0" // Used by react-native-push-notification
         googlePlayServicesVisionVersion = "17.0.2" // Used by camera module
         androidMapsUtilsVersion = "0.5+"

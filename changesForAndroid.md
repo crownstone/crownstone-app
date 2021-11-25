@@ -1,4 +1,4 @@
-@react-native-community/slider updated
+[v] @react-native-community/slider updated
 
 [v] Added handles to most bridge methods.
 
@@ -15,8 +15,8 @@ Added nativeEvents:
 
 [v] Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED".
 
-Move to the HERMES engine
-https://reactnative.dev/docs/hermes
+[v] Move to the HERMES engine
+    https://reactnative.dev/docs/hermes
 
 [v] Updated to RN 0.64.2
 
@@ -38,8 +38,8 @@ Updated sentry config (Contact Alex for details.)
 
 install https://github.com/react-native-webrtc/react-native-webrtc
 
-updated react-native-image-picker to v4.0.6
-https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6
+[v] updated react-native-image-picker to v4.0.6
+    https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6
 
 [v] Added setTimeViaBroadcast parameter enableTimeBasedNonce (boolean) to the end of the param list. False means use CAFEBABE instead of time as validation nonce.
     This sets a customValidationNonce of 0xCAFEBABE
