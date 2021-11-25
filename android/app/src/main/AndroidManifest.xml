@@ -74,13 +74,40 @@
 		<!-- required for react-native-push-notification -->
 		<!-- =========================================== -->
 
+		<!-- Change the value to true to enable pop-up for in foreground on receiving remote notifications (for prevent duplicating while showing local notifications set this to false) -->
+		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
+			android:value="false"/>
+		<!-- Change the resource name to your App's accent color - or any other color you want -->
+		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
+			android:resource="@android:color/white"/> <!-- or @android:color/{name} to use a standard color -->
+
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
+				<action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+			</intent-filter>
+		</receiver>
+
+		<service
+			android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+			android:exported="false" >
+			<intent-filter>
+				<action android:name="com.google.firebase.MESSAGING_EVENT" />
+			</intent-filter>
+		</service>
+
+		<!-- Are these still needed? -->
 		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
 			android:value="rocks.crownstone.consumerapp"/>
 		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
 			android:value="Crownstone"/>
-		<!-- Change the resource name to your App's accent color - or any other color you want -->
-		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
-			android:resource="@android:color/white"/>
+
+		<!-- ===================================== -->
+		<!-- end of react-native-push-notification -->
+		<!-- ===================================== -->
 
 		<!-- required for react-native-maps -->
 		<meta-data android:name="com.google.android.geo.API_KEY"
@@ -89,46 +116,6 @@
 		<!-- Bugsnag -->
 		<meta-data android:name="com.bugsnag.android.API_KEY"
 			android:value="948eaede21917addd2315fde2a9c834d"/>
-
-		<!-- < Only if you're using GCM or localNotificationSchedule() > -->
-		<receiver
-			android:name="com.google.android.gms.gcm.GcmReceiver"
-			android:exported="true"
-			android:permission="com.google.android.c2dm.permission.SEND" >
-			<intent-filter>
-				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-				<category android:name="${applicationId}" />
-			</intent-filter>
-		</receiver>
-		<!-- < Only if you're using GCM or localNotificationSchedule() > -->
-
-		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
-			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-			</intent-filter>
-		</receiver>
-		<service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
-
-		<!-- < Only if you're using GCM or localNotificationSchedule() > -->
-		<service
-			android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerServiceGcm"
-			android:exported="false" >
-			<intent-filter>
-				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-			</intent-filter>
-		</service>
-		<!-- </ Only if you're using GCM or localNotificationSchedule() > -->
-
-		<!-- < Else > -->
-		<service
-			android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-			android:exported="false" >
-			<intent-filter>
-				<action android:name="com.google.firebase.MESSAGING_EVENT" />
-			</intent-filter>
-		</service>
-		<!-- </Else> -->
 
 	</application>
 
