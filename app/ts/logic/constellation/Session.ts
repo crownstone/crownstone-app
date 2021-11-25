@@ -14,7 +14,6 @@ import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
-import { act } from "@testing-library/react-native";
 import { Scheduler } from "../Scheduler";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TemporaryHandleMap } from "./TemporaryHandleMap";
@@ -84,7 +83,7 @@ export class Session {
           // we do this next tick to ensure all the loading processes are finished.
           // I don't want it to matter too much when the commandloaded is called compared to when the actual command
           // is loaded. This solves that issue.
-          await xUtil.nextTick()
+          await xUtil.nextTick();
           await this.handleCommands();
         }
       }));
@@ -328,7 +327,7 @@ export class Session {
         // the session will be cleared by the disconnected event listener
         break;
       case "DISCONNECTED":
-        this.sessionHasEnded()
+        this.sessionHasEnded();
         break;
     }
 
