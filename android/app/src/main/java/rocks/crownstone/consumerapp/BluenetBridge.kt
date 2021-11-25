@@ -713,13 +713,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun forceClearActiveRegion() {
-		Log.i(TAG, "forceClearActiveRegion")
-		// Forces not being in an ibeacon region (not needed for android as far as I know)
-	}
-
-	@ReactMethod
-	@Synchronized
 	fun enableLoggingToFile(enable: Boolean) {
 		Log.i(TAG, "enableLoggingToFile $enable")
 //		if (!enable) { return }
@@ -1641,16 +1634,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.fail { rejectCallback(callback, it) }
 	}
 
-	@ReactMethod
-	@Synchronized
-	fun getTime(address: String, callback: Callback) {
-		Log.i(TAG, "getTime")
-		bluenet.state(address).getTime()
-				.success {
-					resolveCallback(callback, it.toDouble()) // No long in react-native
-				}
-				.fail { rejectCallback(callback, it) }
-	}
+//	@ReactMethod
+//	@Synchronized
+//	fun getTime(address: String, callback: Callback) {
+//		Log.i(TAG, "getTime")
+//		bluenet.state(address).getTime()
+//				.success {
+//					resolveCallback(callback, it.toDouble()) // No long in react-native
+//				}
+//				.fail { rejectCallback(callback, it) }
+//	}
 //endregion
 
 //##################################################################################################
@@ -2277,6 +2270,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun registerTrackedDevice(
+			address: String,
 			deviceId: Int,
 			locationId: Int,
 			profileId: Int,
@@ -2295,8 +2289,24 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun trackedDeviceHeartbeat(
+			address: String,
+			deviceId: Int,
+			locationId: Int,
+			deviceToken: Double,
+			ttlMinutes: Int,
+			callback: Callback) {
+		Log.i(TAG, "trackedDeviceHeartbeat")
+		// Since android can broadcast any payload that can be changed at any time,
+		// this function won't be needed.
+		Log.w(TAG, "Not implemented")
+		resolveCallback(callback)
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun broadcastUpdateTrackedDevice(
-			referenceId: String,
+			sphereId: String,
 			deviceId: Int,
 			locationId: Int,
 			profileId: Int,
@@ -2886,6 +2896,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //##################################################################################################
 //region           Events
 //##################################################################################################
+
+	@ReactMethod
+	private fun addListener(eventName: String) {
+		Log.i(TAG, "addListener $eventName")
+	}
+
+	@ReactMethod
+	private fun removeListeners(count: Double) {
+		Log.i(TAG, "removeListeners $count")
+	}
 
 	@Synchronized
 	private fun onLocationStatus(event: BluenetEvent) {
