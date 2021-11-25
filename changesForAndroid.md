@@ -2,9 +2,9 @@
 
 [v] Added handles to most bridge methods.
 
-Added nativeEvents:
-"connectedToPeripheral"       // dataType: string --> handle of Crownstone
-"disconnectedFromPeripheral"  // dataType: string --> handle of Crownstone
+[v] Added nativeEvents:
+    "connectedToPeripheral"       // dataType: string --> handle of Crownstone
+    "disconnectedFromPeripheral"  // dataType: string --> handle of Crownstone
 
 [v] Connect bridge method now returns the Crownstone's operation mode:
     "unknown"
@@ -47,4 +47,4 @@ install https://github.com/react-native-webrtc/react-native-webrtc
 [v] Add a tick event for the native bus. This event does not need data but should be approx. every second. The scheduler runs off this.
 
 
-Add getUICR bridge method which returns UICRData (see proxy.d.ts)
+[v] Add getUICR bridge method which returns UICRData (see proxy.d.ts)

@@ -308,6 +308,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //				bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
 				bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
 				bluenet.subscribe(BluenetEvent.SCAN_FAILURE, { data: Any? -> onScanFailure(data as ScanStartFailure) })
+				bluenet.subscribe(BluenetEvent.CORE_CONNECTED, { data: Any? -> onConnect(data as DeviceAddress) })
+				bluenet.subscribe(BluenetEvent.CORE_DISCONNECTED, { data: Any? -> onDisconnect(data as DeviceAddress) })
 			}
 		}
 	}
@@ -1167,7 +1169,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun connect(address: String, referenceId: String?, callback: Callback) {
 		Log.i(TAG, "connect $address")
-		bluenet.connect(address)
+		bluenet.connect(address, true, 300*1000, 0)
 				.success {
 					Log.i(TAG, "connected to $address")
 					val mode: String = when (bluenet.getOperationMode(address)) {
@@ -2853,6 +2855,30 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun getUICR(address: String, callback: Callback) {
+		Log.i(TAG, "getUICR $address")
+		bluenet.deviceInfo(address).getUicrData()
+				.success {
+					val retVal = Arguments.createMap()
+					retVal.putDouble("board",       it.board.toDouble())
+					retVal.putInt("productType",    it.productType.toInt())
+					retVal.putInt("region",         it.region.toInt())
+					retVal.putInt("productFamily",  it.productFamily.toInt())
+					retVal.putInt("reserved1",      it.reserved1.toInt())
+					retVal.putInt("hardwarePatch",  it.hardwarePatch.toInt())
+					retVal.putInt("hardwareMinor",  it.hardwareMinor.toInt())
+					retVal.putInt("hardwareMajor",  it.hardwareMajor.toInt())
+					retVal.putInt("reserved2",      it.reserved2.toInt())
+					retVal.putInt("productHousing", it.housing.toInt())
+					retVal.putInt("productionWeek", it.productionWeek.toInt())
+					retVal.putInt("producitonYear", it.productionYear.toInt())
+					retVal.putInt("reserved3",      it.reserved3.toInt())
+					resolveCallback(callback, retVal) }
+				.fail { rejectCallback(callback, it) }
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun getAdcChannelSwaps(address: String, callback: Callback) {
 		Log.i(TAG, "getAdcChannelSwaps")
 		bluenet.debugData(address).getAdcChannelSwaps()
@@ -2905,6 +2931,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	private fun removeListeners(count: Double) {
 		Log.i(TAG, "removeListeners $count")
+	}
+
+	@Synchronized
+	private fun onConnect(address: DeviceAddress) {
+		Log.i(TAG, "onConnect $address")
+		sendEvent("connectedToPeripheral", address)
+	}
+
+	@Synchronized
+	private fun onDisconnect(address: DeviceAddress) {
+		Log.i(TAG, "onDisconnect $address")
+		sendEvent("disconnectedFromPeripheral", address)
 	}
 
 	@Synchronized
