@@ -10,7 +10,6 @@
  *
  * The slot manager will determine when to terminate a slot based on how many users a slot has.
  */
-import { xUtil } from "../../util/StandAloneUtil";
 import { BleCommandManager } from "./BleCommandManager";
 import { Session } from "./Session";
 import { Scheduler } from "../Scheduler";
@@ -19,7 +18,7 @@ import { Platform } from "react-native";
 
 export class SessionManagerClass {
 
-  _maxActiveSessions = Platform.OS === 'ios' ? 20 : 20;
+  _maxActiveSessions = Platform.OS === 'ios' ? 20 : 10;
 
   _sessions: {[handle: string] : Session} = {};
   _activeSessions: {[handle:string] : { connected: boolean }} = {};
