@@ -2,7 +2,10 @@
 export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertisement {
 
   let serviceData : crownstoneServiceData = {
-    behaviourOverridden: false, tapToToggleEnabled: false,
+    assetFiltersCRC           : 0,
+    assetFiltersMasterVersion : 0,
+    behaviourOverridden       : false,
+    tapToToggleEnabled        : false,
     stateOfExternalCrownstone : false,
     hasError                  : false,
     hubMode                   : false,

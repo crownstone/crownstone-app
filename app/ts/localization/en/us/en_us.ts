@@ -1700,7 +1700,7 @@ export default {
     _Do_you_want_to_cancel_tr_left:         function() { return "No" },
     _Do_you_want_to_cancel_tr_right:        function() { return "Yes" },
     All_Done_:                              function() { return "All Done!" },
-    Teaching_:                              function() { return "Teaching " + arguments[0] },
+    Teaching_:                              function() { return "Learning about " + arguments[0] },
   },
   RoomTraining_explanation:{
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_explanation.tsx",
@@ -1718,7 +1718,7 @@ export default {
     To_let__find_you_in___we_:              function() { return "To let me find you in " + arguments[0] + ", you need to help me a little!" },
     How_large_is_this_room_:                function() { return "How large is this room?" },
     Large_rooms_take_a_bit_mo:              function() { return "Large rooms take a bit more time to learn about than small rooms." },
-    Teaching_:                              function() { return "Teaching " + arguments[0] },
+    Teaching_:                              function() { return "Learning about " + arguments[0] },
   },
   RoomTraining_training:{
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_training.tsx",

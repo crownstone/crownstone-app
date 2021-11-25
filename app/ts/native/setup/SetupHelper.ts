@@ -1,20 +1,18 @@
 import { Alert } from 'react-native';
 
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import { LOG, LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGe, LOGi }       from "../../logging/Log";
 import { CLOUD }                 from '../../cloud/cloudAPI'
-import {Scheduler} from "../../logic/Scheduler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {ScheduleUtil} from "../../util/ScheduleUtil";
-import {StoneUtil} from "../../util/StoneUtil";
+import { Scheduler }             from "../../logic/Scheduler";
+import { MapProvider }           from "../../backgroundProcesses/MapProvider";
 import { KEY_TYPES, STONE_TYPES } from "../../Enums";
-import { core } from "../../Core";
-import { xUtil } from "../../util/StandAloneUtil";
-import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
-import { DataUtil } from "../../util/DataUtil";
-import { connectTo } from "../../logic/constellation/Tellers";
-import { CommandAPI } from "../../logic/constellation/Commander";
-import { CodedError } from "../../util/Errors";
+import { core }                   from "../../Core";
+import { xUtil }                  from "../../util/StandAloneUtil";
+import { UpdateCenter }           from "../../backgroundProcesses/UpdateCenter";
+import { DataUtil }               from "../../util/DataUtil";
+import { connectTo }              from "../../logic/constellation/Tellers";
+import { CommandAPI }             from "../../logic/constellation/Commander";
+import { CodedError }             from "../../util/Errors";
 
 
 const networkError = 'network_error';

@@ -8,35 +8,17 @@ import * as React from 'react';
 import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { TopBarUtil } from "../../../util/TopBarUtil";
-import { LiveComponent } from "../../LiveComponent";
+import { Alert, ScrollView, Text, View } from "react-native";
 import {
   availableModalHeight, background,
   colors,
   deviceStyles,
-  screenHeight,
   screenWidth, styles
 } from "../../styles";
-import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
-import { WeekDayList } from "../../components/WeekDayList";
-import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
-import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
-import { StoneUtil } from "../../../util/StoneUtil";
 import { ScaledImage } from "../../components/ScaledImage";
-import { DataUtil } from "../../../util/DataUtil";
-import { AicoreUtil } from "./supportCode/AicoreUtil";
-import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
-import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 import { xUtil } from "../../../util/StandAloneUtil";
-import ResponsiveText from "../../components/ResponsiveText";
-import { BEHAVIOUR_TYPES } from "../../../Enums";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
-import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Button } from "../../components/Button";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
@@ -104,7 +86,7 @@ export function NoRulesYet(props) {
           />
           }
           { !updateRequired && <BehaviourCopyFromButton sphereId={props.sphereId} stoneId={props.stoneId} rulesAvailable={false}/> }
-          <BehaviourSyncButton sphereId={props.sphereId} stoneId={props.stoneId} />
+          { state.development.show_sync_button_in_behaviour && <BehaviourSyncButton sphereId={props.sphereId} stoneId={props.stoneId} /> }
           <View style={{height:30}} />
         </View>
       </ScrollView>

@@ -21,7 +21,6 @@ import { KeySyncerNext } from "./syncers/KeySyncerNext";
 import { UserSyncerNext } from "./syncers/UserSyncerNext";
 import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
 import { SphereTransferNext } from "./transferrers/SphereTransferNext";
-import { SphereUserTransferNext } from "./transferrers/SphereUserTransferNext";
 import { Get } from "../../../util/GetUtil";
 
 
@@ -38,7 +37,7 @@ export const SyncNext = {
     switch (type) {
       case "SPHERE_USERS":
         scopes = ["sphereUsers"]
-        let syncRequest = getRequestBase(scopes);
+        let syncRequest = getRequestBase(scopes, sphere.config.cloudId);
         syncRequest.spheres[sphere.config.cloudId].users = SphereUserSyncerNext.prepare(sphere);
         let response = await CLOUD.syncNextSphere(localSphereId, syncRequest);
         await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
@@ -63,8 +62,8 @@ export const SyncNext = {
       case "ABILITIES":
       case "BEHAVIOURS":
         scopes = ["stones"]
-        let syncRequest = getRequestBase(scopes);
-        syncRequest.spheres[sphere.config.cloudId].stones = StoneSyncerNext.prepare(sphere);
+        let syncRequest = getRequestBase(scopes, sphere.config.cloudId);
+        syncRequest.spheres[sphere.config.cloudId].stones = StoneSyncerNext.prepare(sphere, localStoneId);
         let response = await CLOUD.syncNextStone(localStoneId, syncRequest);
         await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
         break;
@@ -314,6 +313,13 @@ export const SyncNext = {
 
     if (itemIds.length > 0) {
       for (let itemId of itemIds) {
+
+        if (options.onlyIds !== undefined) {
+          if (options.onlyIds.indexOf(itemId) === -1) {
+            continue;
+          }
+        }
+
         let item = items[itemId];
         if (!cloudIdGetter(item)) {
           let dataForCloud = mapLocalToCloud(item, options.type);
@@ -340,8 +346,8 @@ export const SyncNext = {
 
 
 
-function getRequestBase(scopes: SyncCategory[]) : SyncRequest {
-  return {
+function getRequestBase(scopes: SyncCategory[], sphereId?: string) : SyncRequest {
+  let payload : SyncRequest = {
     sync: {
       appVersion: DeviceInfo.getReadableVersion(),
       type: "REQUEST",
@@ -350,6 +356,10 @@ function getRequestBase(scopes: SyncCategory[]) : SyncRequest {
     },
     spheres: {}
   };
+  if (sphereId) {
+    payload.spheres[sphereId] = {};
+  }
+  return payload;
 }
 
 

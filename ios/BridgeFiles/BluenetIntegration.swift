@@ -908,9 +908,10 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     @objc func getBehaviourMasterHash(_ behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-        LOGGER.info("BluenetBridge: Called getBehaviourMasterHash \(behaviours)")
         let hasher = BehaviourHasher(behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
-        callback([["error" : false, "data": hasher.getMasterHash()]])
+        let hash = hasher.getMasterHash()
+        callback([["error" : false, "data": hash]])
+        LOGGER.info("BluenetBridge: Called getBehaviourMasterHash \(behaviours), result: \(hash)")
     }
     
     @objc func setTimeViaBroadcast(_ time: NSNumber, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String, enableTimeBasedNonce: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -1240,6 +1241,11 @@ open class BluenetJS: RCTEventEmitter {
         wrapForBluenet("setUartState", callback, GLOBAL_BLUENET.bluenet.config(handleUUID!).setUartState(state))
     }
     
+    
+    @objc func getUICR(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+        let handleUUID = UUID(uuidString: handle)
+        wrapForBluenet("getUICR", callback, GLOBAL_BLUENET.bluenet.device(handleUUID!).getUICRData())
+    }
 }
 
 

@@ -1,4 +1,3 @@
-import { LOG_LEVEL }        from "../../logging/LogLevels";
 import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
 import {  FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { Util }             from "../../util/Util";
@@ -11,11 +10,11 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { CONDITION_MAP, STONE_TYPES } from "../../Enums";
 import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
+import {BehaviourTracker} from "../../backgroundProcesses/StoneDataSyncer";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
 const UPDATE_STONE_TIME_LAST_SEEN          = 'UPDATE_STONE_TIME_LAST_SEEN';
-const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
 
 
 interface condition {
@@ -31,64 +30,28 @@ export class StoneEntity {
 
   stoneId;
   sphereId;
-  store;
   storeManager : StoneStoreManager;
+  behaviourTracker : BehaviourTracker;
 
   hubId;
 
   lastKnownTimestamp = 0;
   lastKnownUniqueElement;
-  disabledTimeout;
-  clearRssiTimeout;
 
   ignoreTimeout = null;
   ignoreAdvertisements = false;
   ignoreConditions : condition[] = null;
 
   debugging = false;
-  debugInterval = null;
 
-  constructor(store, storeManager, sphereId, stoneId) {
+  constructor(storeManager, sphereId, stoneId) {
     LOGi.native("StoneEntity: Creating entity for ", stoneId);
-    this.store = store;
     this.storeManager = storeManager;
     this.sphereId = sphereId;
     this.stoneId = stoneId;
+    this.behaviourTracker = new BehaviourTracker(sphereId, stoneId);
 
     this.subscribe();
-    // core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
-    //   this._debug(state);
-    // })
-  }
-
-  // _debug(state) {
-  //   // this can be used to fill the database with fake advertisements
-  //   if (state) {
-  //     if (this.debugging === false) {
-  //       this.debugging = true;
-  //       this.debugInterval = setInterval(() => {
-  //         let state = this.store.getState();
-  //         let stone = state.spheres[this.sphereId].stones[this.stoneId];
-  //
-  //         let adv = generateFakeAdvertisement(this.sphereId, stone);
-  //         this.handleDirectAdvertisement(stone, adv)
-  //       }, 50);
-  //     }
-  //   }
-  //   else {
-  //     clearInterval(this.debugInterval)
-  //   }
-  // }
-
-
-  _validate(state = undefined) {
-    if (!state) {
-      state = this.store.getState();
-    }
-    if (!state.spheres[this.sphereId])                      { return false; }
-    if (!state.spheres[this.sphereId].stones[this.stoneId]) { return false; }
-
-    return true;
   }
 
 
@@ -97,7 +60,7 @@ export class StoneEntity {
     // This is to avoid the case where a state that was recorded pre-connection is shown post-connection
     // (ie. switch off instead of on)
     this.subscriptions.push(core.eventBus.on("connecting", (handle) => {
-      let state = this.store.getState();
+      let state = core.store.getState();
       let sphere = state.spheres[this.sphereId];
       let stone = sphere.stones[this.stoneId];
 
@@ -143,7 +106,7 @@ export class StoneEntity {
 
 
   ibeaconUpdate(ibeaconPackage : ibeaconPackage) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[this.sphereId];
     let stone = sphere.stones[this.stoneId];
 
@@ -483,7 +446,7 @@ export class StoneEntity {
         if (advertisement.serviceData.errorMode) {
           // only mark as error is it is not already marked as error
           if (stone.errors.hasError === false) {
-            this.store.dispatch({
+            core.store.dispatch({
               type: 'UPDATE_STONE_ERRORS',
               sphereId: this.sphereId,
               stoneId: this.stoneId,
@@ -496,7 +459,7 @@ export class StoneEntity {
 
           // store errors in the db
           if (this._errorsHaveChanged(stone.errors, advertisement.serviceData.errors)) {
-            this.store.dispatch({
+            core.store.dispatch({
               type: 'UPDATE_STONE_ERRORS',
               sphereId: this.sphereId,
               stoneId: this.stoneId,
@@ -518,7 +481,7 @@ export class StoneEntity {
       }
       else if (stone.errors.hasError === true) {
         LOGi.advertisements("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
-        this.store.dispatch({
+        core.store.dispatch({
           type:     'CLEAR_STONE_ERRORS',
           sphereId: this.sphereId,
           stoneId:  this.stoneId,
@@ -581,7 +544,14 @@ export class StoneEntity {
         // __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
+  }
 
+
+  handleAlternativeState(advertisement: crownstoneAdvertisement) {
+    if (advertisement.serviceData.alternativeState === false) { return; }
+
+    let behaviourMasterHash = advertisement.serviceData.behaviourMasterHash;
+    this.behaviourTracker.receivedMasterHash(behaviourMasterHash);
   }
 
 

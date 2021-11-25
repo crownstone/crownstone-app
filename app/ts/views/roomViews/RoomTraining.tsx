@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Alert,
-  Vibration
+  Vibration, Platform
 } from 'react-native';
 
 
@@ -31,12 +31,15 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { background } from "../styles";
+import {BleUtil} from "../../util/BleUtil";
+import {Get} from "../../util/GetUtil";
 
+const HF_SCANNING_ID = "ROOM_TRAINING";
 
 export class RoomTraining extends LiveComponent<any, any> {
   static options(props) {
-    let ai = Util.data.getAiName(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai)});
+    let location = Get.location(props.sphereId, props.locationId)
+    return TopBarUtil.getOptions({title:  lang("Teaching_",location.config.name)});
   }
 
   collectedData : any;
@@ -44,6 +47,8 @@ export class RoomTraining extends LiveComponent<any, any> {
   invalidMeasurements : any;
   invalidPointThreshold : number;
   noSignalTimeout : any;
+
+  trainingFinished = false;
 
   constructor(props) {
     super(props);
@@ -84,6 +89,7 @@ export class RoomTraining extends LiveComponent<any, any> {
 
   componentWillUnmount() {
     this.stop();
+    BleUtil.stopHighFrequencyScanning(HF_SCANNING_ID);
     clearTimeout(this.noSignalTimeout);
 
     let state = core.store.getState();
@@ -99,6 +105,10 @@ export class RoomTraining extends LiveComponent<any, any> {
     this.invalidMeasurements = [];
 
     this.setState({started:true, text:'initializing', active:true});
+    if (Platform.OS === 'android') {
+      BleUtil.startHighFrequencyScanning(HF_SCANNING_ID, 150000)
+    }
+
     FingerprintManager.startFingerprinting((data) => {this.handleCollection(data);});
     this.noSignalTimeout = setTimeout(() => {
       // notify the user by vibration that the fingerprint collection is finished
@@ -169,10 +179,12 @@ export class RoomTraining extends LiveComponent<any, any> {
   }
 
   finalizeFingerprint() {
+    BleUtil.stopHighFrequencyScanning(HF_SCANNING_ID);
     // notify the user by vibration that the fingerprint collection is finished
     Vibration.vibrate(400, false);
 
     this.setState({text:'Finished!', phase:2});
+    this.trainingFinished = true;
     TopBarUtil.replaceOptions(this.props.componentId, {title: lang("All_Done_")});
     const store = core.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)

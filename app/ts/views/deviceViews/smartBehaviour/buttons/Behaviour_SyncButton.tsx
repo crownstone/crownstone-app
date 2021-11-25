@@ -14,12 +14,14 @@ export function BehaviourSyncButton({sphereId, stoneId}) {
         core.eventBus.emit("showLoading", "Syncing...");
         StoneDataSyncer.checkAndSyncBehaviour(sphereId, stoneId, true)
           .then(() => {
-            core.eventBus.emit("hideLoading");
+            setTimeout(() => {
+              core.eventBus.emit("hideLoading");
+            }, 500);
           })
           .catch((err) => {
             Alert.alert(
               "Failed to sync",
-              err,
+              err?.message ?? "Unknown reason.",
               [{
                 text: "OK", onPress: () => {
                   core.eventBus.emit("hideLoading");

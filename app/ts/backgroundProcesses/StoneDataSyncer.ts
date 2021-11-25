@@ -1,26 +1,23 @@
 import { core } from "../Core";
-import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
 import { Permissions } from "./PermissionManager";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LOGd, LOGe, LOGi } from "../logging/Log";
-import { CLOUD } from "../cloud/cloudAPI";
-import { MapProvider } from "./MapProvider";
-import { getSyncIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import { Scheduler } from "../logic/Scheduler";
 import { tell } from "../logic/constellation/Tellers";
 import { SyncNext } from "../cloud/sections/newSync/SyncNext";
+import {Get} from "../util/GetUtil";
 
-
-const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
-const RULE_SYNCER_OWNER_ID    = "RULE_SYNCER_OWNER_ID";
 
 class StoneDataSyncerClass {
   initialized = false;
 
-  masterHashTracker = {}
+  // The difference between the cache and the tracker is that the tracker has masterhashes from the Crownstone, and the
+  // cache has hashes from the app.
+  masterHashCache = {};
+  masterHashTracker = {};
 
   scheduledRetries = {};
   pendingRuleTriggers = {};
@@ -57,7 +54,7 @@ class StoneDataSyncerClass {
     for (let i = 0; i < sphereIds.length; i++) {
       let sphereId = sphereIds[i];
       // update the list with this sphere.
-      if (this.masterHashTracker[sphereId] === undefined) { this.masterHashTracker[sphereId] = {}; }
+
 
       let sphere = state.spheres[sphereId];
       if (sphere.state.present) {
@@ -68,9 +65,6 @@ class StoneDataSyncerClass {
           if (!stone.config.handle) { continue; }
 
           let initialAbilities = sphere.stones[stoneId].abilities;
-
-          // update the list with this stone.
-          if (this.masterHashTracker[sphereId][stoneId] === undefined) { this.masterHashTracker[sphereId][stoneId] = null; }
 
           // handle abilities
           if (Permissions.inSphere(sphereId).canChangeAbilities) {
@@ -338,7 +332,7 @@ class StoneDataSyncerClass {
             LOGi.info("StoneDataSyncer: Successfully synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
             let masterHash = returnData.masterHash || null;
-            this.masterHashTracker[sphereId][stoneId] = masterHash;
+            this.updateMasterHash(sphereId, stoneId, masterHash);
           })
           .catch((err) => {
             if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
@@ -367,7 +361,7 @@ class StoneDataSyncerClass {
             LOGi.info("StoneDataSyncer: Successfully updated rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
             core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
             let masterHash = returnData.masterHash || null;
-            this.masterHashTracker[sphereId][stoneId] = masterHash;
+            this.updateMasterHash(sphereId, stoneId, masterHash);
           })
           .catch((err) => {
             if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
@@ -384,10 +378,10 @@ class StoneDataSyncerClass {
             LOGi.info("StoneDataSyncer: Successfully Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
             let index = returnData.index;
             let masterHash = returnData.masterHash || null;
-            this.masterHashTracker[sphereId][stoneId] = masterHash;
+            this.updateMasterHash(sphereId, stoneId, masterHash);
 
             // handle duplicates!
-            let stone = DataUtil.getStone(sphereId, stoneId);
+            let stone = Get.stone(sphereId, stoneId);
             if (stone) {
               let rules = stone.rules;
               let ruleIds = Object.keys(rules);
@@ -418,7 +412,7 @@ class StoneDataSyncerClass {
 
 
   _getTransferRulesFromStone(sphereId,stoneId) : {ruleId: string, behaviour: behaviourTransfer}[] {
-    let stone = DataUtil.getStone(sphereId,stoneId);
+    let stone = Get.stone(sphereId,stoneId);
 
     let ruleIds = Object.keys(stone.rules);
     let transferRules = [];
@@ -440,33 +434,67 @@ class StoneDataSyncerClass {
     return transferRules;
   }
 
-
-  async checkAndSyncBehaviour(sphereId, stoneId, force = false) : Promise<void> {
-    let stone = DataUtil.getStone(sphereId,stoneId);
-    if (!stone) { throw new Error("STONE_NOT_FOUND"); }
-
+  async requestMasterHash(sphereId: string, stoneId: string) : Promise<number> {
     let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
-    let rulesAccordingToCrownstone = null;
-
     let ruleData = [];
     transferRules.forEach((data) => {
       ruleData.push(data.behaviour)
     })
+    let masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(ruleData);
+    this.updateMasterHashCache(sphereId, stoneId, masterHash);
+    return masterHash;
+  }
+
+  updateMasterHashCache(sphereId: string, stoneId: string, masterHash: number) {
+    if (this.masterHashCache[sphereId] === undefined)          { this.masterHashCache[sphereId] = {}; }
+    if (this.masterHashCache[sphereId][stoneId] === undefined) { this.masterHashCache[sphereId][stoneId] = null; }
+
+    this.masterHashCache[sphereId][stoneId] = masterHash;
+  }
+
+  getCachedMasterHash(sphereId: string, stoneId: string) : number | null {
+    return this.masterHashCache[sphereId]?.[stoneId] ?? null;
+  }
+
+  updateMasterHash(sphereId: string, stoneId: string, masterHash: number) {
+    if (this.masterHashTracker[sphereId] === undefined)          { this.masterHashTracker[sphereId] = {}; }
+    if (this.masterHashTracker[sphereId][stoneId] === undefined) { this.masterHashTracker[sphereId][stoneId] = null; }
+
+    this.masterHashTracker[sphereId][stoneId] = masterHash;
+
+    this.updateMasterHashCache(sphereId, stoneId, masterHash);
+  }
+
+  getLastKnownMasterHash(sphereId: string, stoneId: string) : number | null {
+    return this.masterHashTracker[sphereId]?.[stoneId] ?? null;
+  }
+
+
+  async checkAndSyncBehaviour(sphereId, stoneId, force = false) : Promise<void> {
+    let stone = Get.stone(sphereId,stoneId);
+    if (!stone) { throw new Error("STONE_NOT_FOUND"); }
+
+    let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
+    let ruleData = [];
+    transferRules.forEach((data) => {
+      ruleData.push(data.behaviour);
+    })
 
     try {
       let masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(ruleData)
-      if (!force || this.masterHashTracker[sphereId][stoneId] === masterHash) {
+      let lastKnownMasterHash = this.getLastKnownMasterHash(sphereId, stoneId);
+      if (force === true || lastKnownMasterHash === masterHash) {
         LOGi.info("StoneDataSyncer: checkAndSyncBehaviour DONE Syncing! NOT REQUIRED!");
         return;
       }
+
 
       // setTime while we're going to be connected anyway.
       tell(stone).setTime().catch((err) => {})
 
       // SYNC!
-      LOGi.info("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId], "my rules are", ruleData);
+      LOGi.info("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", lastKnownMasterHash, "my rules are", ruleData);
       let rulesAccordingToCrownstone = await tell(stone).syncBehaviours(ruleData);
-
       LOGi.info("StoneDataSyncer: rulesAccordingToCrownstone", rulesAccordingToCrownstone)
 
       // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
@@ -554,12 +582,12 @@ class StoneDataSyncerClass {
         });
       }
       else {
-          LOGi.info("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
-          actions.push({
-            type: "REMOVE_ALL_RULES_OF_STONE",
-            sphereId: sphereId,
-            stoneId: stoneId,
-          });
+        LOGi.info("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
+        actions.push({
+          type: "REMOVE_ALL_RULES_OF_STONE",
+          sphereId: sphereId,
+          stoneId: stoneId,
+        });
       }
 
       if (actions.length > 0) {
@@ -571,7 +599,7 @@ class StoneDataSyncerClass {
       }
     }
     catch (err) {
-        LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
+      LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
       throw err;
     }
   }
@@ -586,6 +614,42 @@ async function downloadBehavioursFromCloud(sphereId, stone) {
     }
     catch (err) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error downloading behaviours.", err)
+    }
+  }
+}
+
+export class BehaviourTracker {
+
+  sphereId: string;
+  stoneId: string;
+
+  syncing = false;
+
+  constructor(sphereId: string, stoneId: string) {
+    this.sphereId = sphereId;
+    this.stoneId = stoneId;
+  }
+
+  async receivedMasterHash(latestMasterHash) {
+    if (this.syncing === true) { return; }
+    let lastKnownHash = StoneDataSyncer.getCachedMasterHash(this.sphereId, this.stoneId);
+    if (lastKnownHash === null) {
+      try {
+        lastKnownHash = await StoneDataSyncer.requestMasterHash(this.sphereId, this.stoneId);
+      }
+      catch(err) {
+        LOGe.info("StoneDataSyncer: BehaviourTracker: Could not request masterHash.");
+      }
+    }
+    let comparibleHash = lastKnownHash >>> 16;
+
+    if (comparibleHash !== latestMasterHash) {
+      this.syncing = true;
+      await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
+        .catch((err) => {
+          LOGe.info("StoneDataSyncer: BehaviourTracker: Failed to sync behaviour based on the master hash from the alternative state.", err);
+        })
+      this.syncing = false;
     }
   }
 }

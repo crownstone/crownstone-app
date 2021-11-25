@@ -117,7 +117,7 @@ class StoneManagerClass {
 
 
   createEntity(sphereId, stoneId) {
-    this.entities[stoneId] = new StoneEntity(core.store, this.storeManager, sphereId, stoneId);
+    this.entities[stoneId] = new StoneEntity(this.storeManager, sphereId, stoneId);
 
     if (!this.sphereEntityCollections[sphereId]) {
       this.sphereEntityCollections[sphereId] = {};
@@ -205,11 +205,6 @@ class StoneManagerClass {
       return;
     }
 
-    if (serviceData.alternativeState === true) {
-      // ignore the alternative state for now.
-      return;
-    }
-
     // this is the referenceId of the spherekeys that we used to decrypt this advertisement
     let sphereId = advertisement.referenceId;
 
@@ -224,6 +219,7 @@ class StoneManagerClass {
       // this._factoryResetUnknownCrownstone(advertisement.handle);
       return;
     }
+
 
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && referenceByCrownstoneId !== undefined) {
@@ -243,6 +239,19 @@ class StoneManagerClass {
       return;
     }
 
+    // create an entity for this crownstone if one does not exist yet.
+    if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }
+    if (!this.entities[referenceByHandle.id])       { this.createEntity(sphereId, referenceByHandle.id);       }
+
+    let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
+    let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
+
+    // handle the alternative state service data
+    if (serviceData.alternativeState === true) {
+      this.entities[referenceByHandle.id].handleAlternativeState(advertisement)
+      return;
+    }
+
     // emit event of valid crownstone
     if (advertisement.rssi && advertisement.rssi < 0) {
       core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi, handle: advertisement.handle, payloadId: referenceByCrownstoneId.id, sphereId: advertisement.referenceId})
@@ -254,12 +263,6 @@ class StoneManagerClass {
       return;
     }
 
-    // create an entity for this crownstone if one does not exist yet.
-    if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }
-    if (!this.entities[referenceByHandle.id])       { this.createEntity(sphereId, referenceByHandle.id);       }
-
-    let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
-    let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
     if (serviceData.stateOfExternalCrownstone === true) {
       this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);

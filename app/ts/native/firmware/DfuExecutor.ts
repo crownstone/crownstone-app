@@ -299,7 +299,7 @@ export class DfuExecutor {
 
       // debugging overrides
         if (this._debugExtraBootloader()) { this.amountOfBootloaders = FORCE_MINIMAL_BOOTLOADER_LAYERS; }
-        if (this._debugExtraFirmware())   { this.amountOfFirmwares   = FORCE_MINIMAL_FIRMWARE_LAYERS; }
+        if (this._debugExtraFirmware())   { this.amountOfFirmwares   = FORCE_MINIMAL_FIRMWARE_LAYERS;   }
       // </ debugging overrides
 
       this._setProgress(DfuPhases.PUT_IN_DFU_MODE, this.currentStep++, 1, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
@@ -460,7 +460,8 @@ export class DfuExecutor {
    * @param bootloaderCandidate
    */
   _checkBootloaderOperations(bootloaderCandidate) {
-    if (!bootloaderCandidate.dependsOnBootloaderVersion) { return Promise.resolve(); }
+    if (!bootloaderCandidate.dependsOnBootloaderVersion)                        { return Promise.resolve(); }
+    if (!xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) { return Promise.resolve(); }
 
     if (xUtil.versions.isLower(this.currentBootloaderVersion, bootloaderCandidate.dependsOnBootloaderVersion)) {
       this.amountOfBootloaders += 1;
@@ -483,6 +484,7 @@ export class DfuExecutor {
    */
   _checkFirmwareOperations(firmwareCandidate) {
     if (!firmwareCandidate.dependsOnFirmwareVersion) { return Promise.resolve(); }
+    if (!xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) { return Promise.resolve(); }
 
     // console.log("_checkFirmwareOperations", firmwareCandidate, this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion)
     let addFirmwareOperation = () => {
@@ -516,6 +518,11 @@ export class DfuExecutor {
 
   _handleBootloader(bootloaderCandidate) {
     if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
+    if (xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) {
+      LOGi.dfu("DfuExecutor: bootloader is a dev-version. Treating as up-to-date!");
+      this._setProgress(DfuPhases.BOOTLOADER, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
+      return Promise.resolve();
+    }
 
     if (xUtil.versions.isHigherOrEqual(this.currentBootloaderVersion, bootloaderCandidate.version) && !this._debugRepeatBootloader()) {
       LOGi.dfu("DfuExecutor: bootloader is up-to-date!");
@@ -587,6 +594,12 @@ export class DfuExecutor {
 
   _handleFirmware(firmwareCandidate) {
     if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
+    if (xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) {
+      LOGi.dfu("DfuExecutor: firmware is a dev-version. Treating as up-to-date!");
+      this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
+      return Promise.resolve();
+    }
+
     if (xUtil.versions.isHigherOrEqual(this.currentFirmwareVersion, firmwareCandidate.version) && !this._debugRepeatFirmware()) {
       LOGi.dfu("DfuExecutor: Firmware is up-to-date!");
       this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);

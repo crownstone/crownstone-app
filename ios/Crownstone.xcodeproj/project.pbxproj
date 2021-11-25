@@ -367,6 +367,13 @@
 			remoteGlobalIDString = EF341C3C9A97E14DF84802EFB14C5AC2;
 			remoteInfo = "Pods-Crownstone-CrownstoneTests";
 		};
+		FABC9F1A274E979C00831B7F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DC66AC6FB5802B9BA94177EDB54263D;
+			remoteInfo = RNCPicker;
+		};
 		FAC6D17A24BCAA8A007AA96F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -797,6 +804,7 @@
 				FA274EB62410144F00D7C858 /* ReactCommon */,
 				FA274EB82410144F00D7C858 /* ReactNativeNavigation */,
 				FA274EBA2410144F00D7C858 /* RNCAsyncStorage */,
+				FABC9F1B274E979C00831B7F /* RNCPicker */,
 				FA5C2BBD24165FEC00358011 /* RNCPushNotificationIOS */,
 				FA274EBC2410144F00D7C858 /* RNDeviceInfo */,
 				FA274EBE2410144F00D7C858 /* RNFS */,
@@ -1405,6 +1413,14 @@
 			remoteRef = FA9F56A8263AE19600A8219A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FABC9F1B274E979C00831B7F /* RNCPicker */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNCPicker;
+			path = libRNCPicker.a;
+			remoteRef = FABC9F1A274E979C00831B7F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FAC6D17B24BCAA8A007AA96F /* RNShare */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1965,7 +1981,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
@@ -1984,7 +2000,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2007,7 +2023,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_BITCODE = NO;
@@ -2026,7 +2042,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2167,7 +2183,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2194,7 +2210,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2231,7 +2247,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
@@ -2257,7 +2273,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2293,7 +2309,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2310,7 +2326,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -2349,7 +2365,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2365,7 +2381,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.0;
+				MARKETING_VERSION = 5.0.0;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;

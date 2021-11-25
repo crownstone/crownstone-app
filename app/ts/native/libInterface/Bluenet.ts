@@ -169,6 +169,7 @@ const BluenetAPI = {
 
 
   getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
+
   addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
