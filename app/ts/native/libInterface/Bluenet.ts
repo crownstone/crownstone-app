@@ -75,7 +75,6 @@ const BluenetAPI = {
   setupFactoryReset:        () => { console.log("BluenetBridgeCall:  setupFactoryReset:"); },
   setupPutInDFU:            () => { console.log("BluenetBridgeCall:  setupPutInDFU:    "); },
   toggleSwitchState:        () => { console.log("BluenetBridgeCall:  toggleSwitchState:"); },
-  setMeshChannel:           () => { console.log("BluenetBridgeCall:  setMeshChannel:   "); },
   getTrackingState:         () => { console.log("BluenetBridgeCall:  getTrackingState: "); },
   setDevicePreferences:     () => { console.log("BluenetBridgeCall:  setDevicePreferences: "); },
   setLocationState:         () => { console.log("BluenetBridgeCall:  setLocationState: "); },
@@ -170,6 +169,7 @@ const BluenetAPI = {
 
 
   getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
+
   addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 

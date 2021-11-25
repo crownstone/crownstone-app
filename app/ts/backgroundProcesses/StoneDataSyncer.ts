@@ -477,7 +477,7 @@ class StoneDataSyncerClass {
     let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
     let ruleData = [];
     transferRules.forEach((data) => {
-      ruleData.push(data.behaviour)
+      ruleData.push(data.behaviour);
     })
 
     try {
