@@ -732,17 +732,7 @@ open class BluenetJS: RCTEventEmitter {
         let handleUUID = UUID(uuidString: handle)
         wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh(handleUUID!).sendNoOp())
     }
-    
-    
-    @objc func setMeshChannel(_ handle: String, channel: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-        let handleUUID = UUID(uuidString: handle)
-        wrapForBluenet("setMeshChannel", callback,
-                       GLOBAL_BLUENET.bluenet.config(handleUUID!).setMeshChannel(channel) // set channel
-                        .then{_ in return GLOBAL_BLUENET.bluenet.waitToWrite()} // wait to store
-                        .then{_ in return GLOBAL_BLUENET.bluenet.control(handleUUID!).reset()} // reset
-        )
-    }
-    
+        
     @objc func getTrackingState(_ callback: @escaping RCTResponseSenderBlock) -> Void {
         LOGGER.info("BluenetBridge: Called getTrackingState")
         callback([["error" : false, "data": GLOBAL_BLUENET.bluenetLocalization.getTrackingState() ]])
@@ -911,7 +901,7 @@ open class BluenetJS: RCTEventEmitter {
         let hasher = BehaviourHasher(behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
         let hash = hasher.getMasterHash()
         callback([["error" : false, "data": hash]])
-        LOGGER.info("BluenetBridge: Called getBehaviourMasterHash \(behaviours), result: \(hash)")
+        LOGGER.info("BluenetBridge: Called getBehaviourMasterHash result: \(hash)")
     }
     
     @objc func setTimeViaBroadcast(_ time: NSNumber, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String, enableTimeBasedNonce: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
