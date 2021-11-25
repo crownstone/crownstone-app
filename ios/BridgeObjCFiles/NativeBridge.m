@@ -90,7 +90,6 @@ RCT_EXTERN_METHOD(setTapToToggleThresholdOffset:(NSString *)handle state:(nonnul
 RCT_EXTERN_METHOD(meshSetTime:(NSString *)handle time:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(sendNoOp:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(sendMeshNoOp:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(setMeshChannel:(NSString *)handle channel:(nonnull NSNumber *)channel callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(isDevelopmentEnvironment:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(viewsInitialized)

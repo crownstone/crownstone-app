@@ -284,7 +284,7 @@ interface UICRData {
 
   productHousing : number, 
   productionWeek : number, 
-  producitonYear : number, 
+  productionYear : number,
   reserved3      : number, 
 }
 

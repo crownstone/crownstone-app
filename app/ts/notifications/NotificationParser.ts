@@ -1,12 +1,10 @@
 import { core }                  from "../Core";
 import { NavigationUtil }        from "../util/NavigationUtil";
-import { Platform }              from "react-native";
 import { CLOUD }                 from "../cloud/cloudAPI";
 import { LocalNotifications }    from "./LocalNotifications";
 import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
 import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
 import { MapProvider }           from "../backgroundProcesses/MapProvider";
-import { INTENTS }               from "../native/libInterface/Constants";
 import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
 import { tell }                  from "../logic/constellation/Tellers";
 import { SyncNext } from "../cloud/sections/newSync/SyncNext";

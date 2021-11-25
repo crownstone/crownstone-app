@@ -25,6 +25,7 @@ let defaultSettings : StoneData = {
     firmwareVersion: null,
     bootloaderVersion: null,
     hardwareVersion: null,
+    uicr: null,
 
     dfuResetRequired: false,
     locationId: null,

@@ -394,7 +394,7 @@ test("Session manager being paused with public connections. These should be clos
 
   expect(pauseFinished).toBeFalsy();
   await TestUtil.nextTick();
-  await mBluenetPromise.for(handle).succeed.disconnectCommand()
+  await mBluenetPromise.for(handle).succeed.disconnectCommand();
 
   evt_disconnected(handle);
 

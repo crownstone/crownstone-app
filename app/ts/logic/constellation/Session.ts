@@ -14,7 +14,6 @@ import { Platform } from "react-native";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
-import { act } from "@testing-library/react-native";
 import { Scheduler } from "../Scheduler";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TemporaryHandleMap } from "./TemporaryHandleMap";
@@ -58,22 +57,7 @@ export class Session {
     LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
-      // if we're attempting to setup a connection and disconnect before the connect promise is resolved, the connect promise should fail.
-      // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
-      if (this.state === "CONNECTING") {
-        LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
-        return;
-      }
-
-
-      this.state = "DISCONNECTED";
-      if (this.recoverFromDisconnect && this._isSessionActive() ) {
-        LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
-      }
-      else {
-        LOGi.constellation("Session: Disconnected from Crownstone, ending session...", this.handle, this.identifier)
-        this.sessionHasEnded();
-      }
+      this._handleDisconnectedState();
     });
 
     this.initializeBootstrapper();
@@ -99,11 +83,30 @@ export class Session {
           // we do this next tick to ensure all the loading processes are finished.
           // I don't want it to matter too much when the commandloaded is called compared to when the actual command
           // is loaded. This solves that issue.
-          await xUtil.nextTick()
+          await xUtil.nextTick();
           await this.handleCommands();
         }
       }));
       this.tryToActivate();
+    }
+  }
+
+
+  _handleDisconnectedState() {
+    // if we're attempting to setup a connection and disconnect before the connect promise is resolved, the connect promise should fail.
+    // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
+    if (this.state === "CONNECTING") {
+      LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      return;
+    }
+
+    this.state = "DISCONNECTED";
+    if (this.recoverFromDisconnect && this._isSessionActive() ) {
+      LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
+    }
+    else {
+      LOGi.constellation("Session: Disconnected from Crownstone, ending session...", this.handle, this.identifier)
+      this.sessionHasEnded();
     }
   }
 
@@ -265,6 +268,7 @@ export class Session {
         // there is a mismatch between the lib and session state. If this was a claimed session, we can reconnect later on a new command.
         // if it was a public session, the session was already ended and this cycle should be broken right here.
         this.state = "DISCONNECTED";
+        this._handleDisconnectedState();
         return;
       }
     }
@@ -323,7 +327,7 @@ export class Session {
         // the session will be cleared by the disconnected event listener
         break;
       case "DISCONNECTED":
-        this.sessionHasEnded()
+        this.sessionHasEnded();
         break;
     }
 

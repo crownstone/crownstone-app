@@ -120,6 +120,7 @@ interface StoneDataConfig {
   firmwareVersion:    string | null,
   bootloaderVersion:  string | null,
   hardwareVersion:    string | null,
+  uicr:               UICRData | null,
 
   dfuResetRequired: boolean,
   locationId:       string,

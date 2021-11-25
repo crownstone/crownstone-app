@@ -5,8 +5,15 @@ import { SessionManager } from "./SessionManager";
 import { CommandAPI, CommandBroadcastAPI } from "./Commander";
 import { Get } from "../../util/GetUtil";
 import { TemporaryHandleMap } from "./TemporaryHandleMap";
+import {Platform} from "react-native";
 
-export async function connectTo(handle, sphereId: string | null = null, timeoutSeconds = 20) : Promise<CommandAPI> {
+const DIRECT_CONNECTION_TIMEOUT = Platform.OS === 'ios' ? 20  : 20;
+const CLAIM_BLUETOOTH_TIMEOUT   = Platform.OS === 'ios' ? 30  : 30;
+const SHARED_CONNECTION_TIMEOUT = Platform.OS === 'ios' ? 10  : 15;
+const MESH_CONNECTION_TIMEOUT   = Platform.OS === 'ios' ? 300 : 300;
+
+
+export async function connectTo(handle, sphereId: string | null = null, timeoutSeconds = DIRECT_CONNECTION_TIMEOUT) : Promise<CommandAPI> {
   LOGi.constellation("Tellers: Starting a direct connection.", handle);
 
   if (sphereId) {
@@ -42,7 +49,7 @@ export async function connectTo(handle, sphereId: string | null = null, timeoutS
 }
 
 
-export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<CommandAPI> {
+export async function claimBluetooth(handle, timeoutSeconds = CLAIM_BLUETOOTH_TIMEOUT) : Promise<CommandAPI> {
   LOGi.constellation("Tellers: Claiming BLE for", handle);
 
   let privateId = xUtil.getUUID();
@@ -75,7 +82,7 @@ export async function claimBluetooth(handle, timeoutSeconds = 30) : Promise<Comm
  * The tellers are functions which return a chainable command API to a single Crownstone.
  * This will also be able to possibly use a hub to propagate these commands.
  */
-export function tell(handle: string | StoneData, timeoutSeconds = 10, label: string = "UNKNOWN") : CommandAPI {
+export function tell(handle: string | StoneData, timeoutSeconds = SHARED_CONNECTION_TIMEOUT, label: string = "UNKNOWN") : CommandAPI {
   if (typeof handle != 'string') { handle = handle.config.handle; }
   let sphereId = MapProvider.stoneHandleMap[handle]?.sphereId || null;
 
@@ -99,7 +106,7 @@ export function tell(handle: string | StoneData, timeoutSeconds = 10, label: str
  * from(stone).getFirmwareVersion()
  * @param handle
  */
-export function from(handle: string | StoneData, timeoutSeconds = 10) : CommandAPI {
+export function from(handle: string | StoneData, timeoutSeconds = SHARED_CONNECTION_TIMEOUT) : CommandAPI {
   return tell(handle, timeoutSeconds);
 }
 
@@ -108,7 +115,7 @@ export function from(handle: string | StoneData, timeoutSeconds = 10) : CommandA
  * TellSphere will notify all Meshes in the Sphere
  * @param sphereId
  */
-export function tellSphere(sphereId, timeoutSeconds = 300, minConnections = 3) : CommandAPI {
+export function tellSphere(sphereId, timeoutSeconds = MESH_CONNECTION_TIMEOUT, minConnections = 3) : CommandAPI {
   LOGi.constellation("Telling sphere", sphereId, minConnections);
 
   let sphere = Get.sphere(sphereId);
