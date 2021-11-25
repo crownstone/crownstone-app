@@ -58,22 +58,7 @@ export class Session {
     LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 
     this._respondTo(NativeBus.topics.disconnectedFromPeripheral, () => {
-      // if we're attempting to setup a connection and disconnect before the connect promise is resolved, the connect promise should fail.
-      // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
-      if (this.state === "CONNECTING") {
-        LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
-        return;
-      }
-
-
-      this.state = "DISCONNECTED";
-      if (this.recoverFromDisconnect && this._isSessionActive() ) {
-        LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
-      }
-      else {
-        LOGi.constellation("Session: Disconnected from Crownstone, ending session...", this.handle, this.identifier)
-        this.sessionHasEnded();
-      }
+      this._handleDisconnectedState();
     });
 
     this.initializeBootstrapper();
@@ -104,6 +89,25 @@ export class Session {
         }
       }));
       this.tryToActivate();
+    }
+  }
+
+
+  _handleDisconnectedState() {
+    // if we're attempting to setup a connection and disconnect before the connect promise is resolved, the connect promise should fail.
+    // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
+    if (this.state === "CONNECTING") {
+      LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      return;
+    }
+
+    this.state = "DISCONNECTED";
+    if (this.recoverFromDisconnect && this._isSessionActive() ) {
+      LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
+    }
+    else {
+      LOGi.constellation("Session: Disconnected from Crownstone, ending session...", this.handle, this.identifier)
+      this.sessionHasEnded();
     }
   }
 
@@ -265,6 +269,7 @@ export class Session {
         // there is a mismatch between the lib and session state. If this was a claimed session, we can reconnect later on a new command.
         // if it was a public session, the session was already ended and this cycle should be broken right here.
         this.state = "DISCONNECTED";
+        this._handleDisconnectedState();
         return;
       }
     }

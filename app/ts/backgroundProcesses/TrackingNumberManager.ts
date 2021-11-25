@@ -31,8 +31,8 @@ class TrackingNumberManagerClass {
 
   constructor() {
     BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
-      .then((result) => {
-        this.canUseDynamicBackgroundBroadcasts = result;
+      .then((canUse) => {
+        this.canUseDynamicBackgroundBroadcasts = canUse;
       })
   }
 
@@ -66,7 +66,7 @@ class TrackingNumberManagerClass {
   }
 
   heartbeat() {
-    if (Platform.OS !== 'ios') { return }
+    if (this.canUseDynamicBackgroundBroadcasts === true) { return; }
 
     let broadcastSphereId = BroadcastStateManager.getSphereInLocationState();
     if (DataUtil.getPresentSphereId() === null) {
@@ -161,7 +161,8 @@ class TrackingNumberManagerClass {
     if (this.canUseDynamicBackgroundBroadcasts === null) {
       BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
         .then((canUse) => {
-          if (canUse) { return; }
+          this.canUseDynamicBackgroundBroadcasts = canUse;
+          if (this.canUseDynamicBackgroundBroadcasts) { return; }
           this._updateMyDeviceTrackingRegistration(sphereId);
         })
     }
