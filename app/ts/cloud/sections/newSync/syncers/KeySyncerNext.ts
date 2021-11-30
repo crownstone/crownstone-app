@@ -22,7 +22,7 @@ export class KeySyncerNext extends SyncViewInterface<UserKeySet> {
       let sphere : SphereData = state.spheres[localSphereId];
 
       // the sphere authorization token is added/updated each sync operation. Add will update if the keyId is the same, which in this case, it is.
-      if (sphere.keys[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key !== keySet.sphereAuthorizationToken) {
+      if (sphere?.keys?.[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key !== keySet.sphereAuthorizationToken) {
         this.actions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN, data: {
           key:       keySet.sphereAuthorizationToken,
           keyType:   KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN,

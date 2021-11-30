@@ -85,8 +85,6 @@ import { Platform } from "react-native";
   export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
   export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation  commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
-  export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
-  export let LOG_ERRORS          = LOG_LEVEL.ERROR;    // enabling LOG.error          commands to be shown.
   export let LOG_MESH            = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES        = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
@@ -97,7 +95,6 @@ import { Platform } from "react-native";
   /**
    * Specific logging settings used for debugging mostly. These will override developer settings only if true.
    */
-  export let LOG_VERBOSE    = LOG_LEVEL.ERROR;   // enabling LOG.verbose    commands to be shown.
   export let LOG_SCHEDULER  = LOG_LEVEL.ERROR;   // enabling LOG.scheduler  commands to be shown.
   export let LOG_BLE        = LOG_LEVEL.ERROR;   // enabling LOG.ble        commands to be shown.
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
