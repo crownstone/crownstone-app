@@ -238,9 +238,9 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     
-    @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
+    @objc func connect(_ handle: String, referenceId: String, highPriority: NSNumber, callback: @escaping RCTResponseSenderBlock) {
         let function_uuid = UUID().uuidString
-        LOGGER.info("BluenetBridge: Called connect to handle \(handle) uuid:\(function_uuid)")
+        LOGGER.info("BluenetBridge: Called connect to handle:\(handle) referenceId:\(referenceId) highPriority:\(highPriority.boolValue) uuid:\(function_uuid) ")
         GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
             .done{ crownstoneMode -> Void in
                 successReply("connect", crownstoneMode, function_uuid, callback)

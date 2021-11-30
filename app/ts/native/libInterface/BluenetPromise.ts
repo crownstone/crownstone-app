@@ -1,9 +1,8 @@
-import { Alert, AppState } from "react-native";
+import { AppState } from "react-native";
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
 import { core } from "../../Core";
-import Bugsnag from "@bugsnag/react-native";
 import { BugReportUtil } from "../../util/BugReportUtil";
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
@@ -65,14 +64,14 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   isPeripheralReady:   () => { return BluenetPromise('isPeripheralReady');    },
-  connect:             (handle, referenceId) => {
+  connect:             (handle, referenceId, highPriority= false) => {
     // tell the app that something is connecting.
     core.eventBus.emit("connecting", handle);
 
     // connect
     if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") };
 
-    return BluenetPromise('connect', handle, referenceId)
+    return BluenetPromise('connect', handle, referenceId, highPriority)
       .then(() => {
         core.eventBus.emit("connected", handle);
       })
@@ -232,9 +231,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
   factoryResetHubOnly:         (handle: string) => { return BluenetPromise('factoryResetHubOnly', handle); },
 };
-
-
-
 
 
 

@@ -202,7 +202,7 @@ export class Session {
     this._sessionIsActivated = true;
     this.state = "CONNECTING";
     try {
-      this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId);
+      this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId, this.privateId !== null);
     }
     catch (err) {
       LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);

@@ -30,7 +30,7 @@ interface BluenetPromiseWrapperProtocol {
    * @param referenceId      The sphere ID.
    * @param highPriority
    */
-  connect(handle: string, referenceId: string)  : Promise< CrownstoneMode >,
+  connect(handle: string, referenceId: string, highPriority?: boolean)  : Promise< CrownstoneMode >,
 
   /**
    * Cancels a connection request to the handle. Will return immediately and will not throw errors.
