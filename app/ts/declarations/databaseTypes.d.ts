@@ -142,16 +142,16 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'REFRESH_DEFAULTS'                        |
                       'REFRESH_ABILITIES'                       |
                       'REFRESH_DEFAULTS'                        |
-                      'UPDATE_RULE_CLOUD_ID'                    |
+                      'UPDATE_BEHAVIOUR_CLOUD_ID'               |
                       'INJECT_IDS'                              |
-                      'ADD_STONE_RULE'                          |
-                      'UPDATE_STONE_RULE'                       |
+                      'ADD_STONE_BEHAVIOUR'                     |
+                      'UPDATE_STONE_BEHAVIOUR'                  |
                       'REFRESH_BEHAVIOURS'                      |
-                      'MARK_STONE_RULE_FOR_DELETION'            |
-                      'MARK_STONE_RULE_AS_SYNCED'               |
+                      'MARK_STONE_BEHAVIOUR_FOR_DELETION'       |
+                      'MARK_STONE_BEHAVIOUR_AS_SYNCED'          |
                       'REFRESH_DEFAULTS'                        |
-                      'REMOVE_ALL_RULES_OF_STONE'               |
-                      'REMOVE_STONE_RULE'                       |
+                      'REMOVE_ALL_BEHAVIOURS_OF_STONE'          |
+                      'REMOVE_STONE_BEHAVIOUR'                  |
                       'USER_ENTER_LOCATION'                     |
                       'USER_EXIT_LOCATION'                      |
                       'CLEAR_USERS_IN_LOCATION'                 |

@@ -120,7 +120,6 @@ export class HubHelper {
     if (!createHubOnline) {
       LOG.info("hubSetupProgress: Requesting cloud Id...");
       let requestedData = await commander.requestCloudId();
-      console.log("requestCloudId Received key data", requestedData);
       if (requestedData.type === 'error') {
         throw new CodedTypedError(3,requestedData.errorType,"Something went wrong while requesting CloudId " + JSON.stringify(requestedData) );
       }

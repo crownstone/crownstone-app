@@ -44,7 +44,7 @@ class BluenetContainer : NSObject {
     BluenetLib.setBluenetGlobals(viewController: nil, appName: "Crownstone")
     
     BluenetLib.LOG.setTimestampPrinting(newState: true)
-        
+    
     self.bluenet = Bluenet(backgroundEnabled: true)
     
     // use the accelerometer.

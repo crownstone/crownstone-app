@@ -132,10 +132,6 @@ class Logger {
       }
     }
   }
-
-  async removeLogs() {
-
-  }
 }
 
 

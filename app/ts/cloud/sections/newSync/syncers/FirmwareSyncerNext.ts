@@ -1,6 +1,3 @@
-import { DataUtil } from "../../../../util/DataUtil";
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { Get } from "../../../../util/GetUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { core } from "../../../../Core";
 import { SyncViewInterface } from "./base/SyncViewInterface";

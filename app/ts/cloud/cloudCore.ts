@@ -85,7 +85,7 @@ export async function request(
       })
       .then((parsedResponse) => {
         if (requestDidTimeout === false) {
-          LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: responseHandler.status, data: parsedResponse}, logToken);
+          LOG.cloud("REPLY from", endPoint, " is: ", {status: responseHandler.status, data: parsedResponse}, logToken);
           finishedRequest = true;
           resolve({status: responseHandler.status, data: parsedResponse});
         }

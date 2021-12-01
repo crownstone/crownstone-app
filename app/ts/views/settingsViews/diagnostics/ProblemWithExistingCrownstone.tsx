@@ -290,6 +290,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
         let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
         if (!nearSummary) {
+          // TODO: add setup mode check here.
           if (nearest.verified === true) {
             if (Permissions.inSphere(this.state.problemStoneSummary.sphereId).removeCrownstone) {
               return (

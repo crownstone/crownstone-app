@@ -1,6 +1,4 @@
 import { LOGe } from "../../../../../logging/Log";
-import { xUtil } from "../../../../../util/StandAloneUtil";
-import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 
 
 export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
@@ -63,6 +61,12 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
       case "CREATED_IN_CLOUD":
       case "ALREADY_IN_CLOUD":
         // Store the cloudId: this is the id in the data field.
+
+        // if the request phase of the sync did not have the cloudId, it will propose an item with it's localId. The cloud will then create that item and return it as data.
+        // the getLocalId method does a map lookup in the
+        // if the localId is undefined, this is because the returned cloudId IS the localId, causing the map lookups for cloudId --> localId to fail.
+        // nextSync will return the provided localId so this part can correlate the returned data.
+        this.localId = this.localId ?? this.cloudId;
         this.updateCloudId(response.data.id, response.data);
         break;
       case "ERROR":

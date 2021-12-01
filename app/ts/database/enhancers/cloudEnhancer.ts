@@ -6,8 +6,6 @@ import { LOG_LEVEL}                    from "../../logging/LogLevels";
 import { MapProvider}                  from "../../backgroundProcesses/MapProvider";
 import { core }                        from "../../Core";
 import { BATCH }                       from "../reducers/BatchReducer";
-import { getSyncIdMap }              from "../../cloud/sections/sync/modelSyncs/SyncingBase";
-import { HubSyncer }                   from "../../cloud/sections/newSync/syncers/HubSyncerNext";
 import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/constants/SceneConstants";
 import { LocationTransferNext }        from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
 import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
@@ -122,15 +120,15 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       handleDeviceInCloud(action, newState);
       break;
 
-    case 'ADD_STONE_RULE':
-    case 'UPDATE_STONE_RULE':
-    case 'MARK_STONE_RULE_FOR_DELETION':
+    case 'ADD_STONE_BEHAVIOUR':
+    case 'UPDATE_STONE_BEHAVIOUR':
+    case 'MARK_STONE_BEHAVIOUR_FOR_DELETION':
       handleBehaviourInCloud(action, newState);
       break;
-    case 'REMOVE_STONE_RULE':
+    case 'REMOVE_STONE_BEHAVIOUR':
       removeBehaviourInCloud(action, newState, oldState);
       break;
-    case 'REMOVE_ALL_RULES_OF_STONE':
+    case 'REMOVE_ALL_BEHAVIOURS_OF_STONE':
       removeAllBehavioursForStoneInCloud(action, newState);
       break;
 
@@ -498,7 +496,7 @@ function handleBehaviourInCloud(action, state) {
       .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
   }
   else {
-    if (action.type === "ADD_STONE_RULE") {
+    if (action.type === "ADD_STONE_BEHAVIOUR") {
       BehaviourTransferNext.createOnCloud(sphereId, stoneId, rule)
         .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
     }

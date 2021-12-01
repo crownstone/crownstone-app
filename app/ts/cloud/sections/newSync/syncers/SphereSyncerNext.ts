@@ -1,5 +1,3 @@
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { DataUtil } from "../../../../util/DataUtil";
 import { Get } from "../../../../util/GetUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { SyncInterface } from "./base/SyncInterface";

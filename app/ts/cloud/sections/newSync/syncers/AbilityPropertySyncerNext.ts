@@ -1,8 +1,5 @@
-import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
-import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { SyncStoneInterface } from "./base/SyncStoneInterface";
 import { AbilityPropertyTransferNext } from "../transferrers/AbilityPropertyTransferNext";
 import { SyncAbilityInterface } from "./base/SyncAbilityInterface";
 import { SyncUtil } from "../../../../util/SyncUtil";
@@ -16,7 +13,6 @@ export class AbilityPropertySyncerNext extends SyncAbilityInterface<AbilityPrope
   }
 
   getLocalId(cloudAbilityProperty: cloud_AbilityProperty) {
-
     return cloudAbilityProperty?.type ?? MapProvider.cloud2localMap.abilityProperties[this.cloudId];
   }
 

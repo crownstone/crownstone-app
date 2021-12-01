@@ -140,12 +140,12 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
 
       if (activeDayCount > 0) {
-        actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays, syncedToCrownstone: false}});
+        actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays, syncedToCrownstone: false}});
       }
       else {
         if (rule.idOnCrownstone !== null) {
           actions.push({
-            type: "MARK_STONE_RULE_FOR_DELETION",
+            type: "MARK_STONE_BEHAVIOUR_FOR_DELETION",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             ruleId: ruleId
@@ -153,7 +153,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         }
         else {
           actions.push({
-            type: "REMOVE_STONE_RULE",
+            type: "REMOVE_STONE_BEHAVIOUR",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             ruleId: ruleId
@@ -175,7 +175,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       updateRuleWithNewActiveDays(newActiveDaysForRule, rule, ruleId);
     }
 
-    // FIRST WE HANDLE DELETE RULE COMMANDS:
+    // FIRST WE HANDLE DELETE BEHAVIOUR COMMANDS:
 
     let appliedDays = selectedDays;
     if (this.props.deleteRule) {
@@ -196,7 +196,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         let rule = rules[this.props.ruleId];
         if (xUtil.deepCompare(this.state.activeDays, rule.activeDays) === true) {
           // this means we change the rule for all active days
-          actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: this.props.ruleId, data: {data: this.rule.stringify(), syncedToCrownstone: false}});
+          actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: this.props.ruleId, data: {data: this.rule.stringify(), syncedToCrownstone: false}});
         }
         else {
           // search for behaviour that is the same as the behaviour to see if we can merge them.
@@ -210,7 +210,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
                     newActiveDaysForMergeRule[day] = true;
                   }
                 })
-                actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
+                actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
                 break;
               }
             }
@@ -220,7 +220,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
           if (!mergedId) {
             let newRuleId = xUtil.getUUID();
             actions.push({
-              type: "ADD_STONE_RULE",
+              type: "ADD_STONE_BEHAVIOUR",
               sphereId: this.props.sphereId,
               stoneId:  this.props.stoneId,
               ruleId: newRuleId,
@@ -258,7 +258,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       // this is a new rule!
       let newRuleId = xUtil.getUUID();
       actions.push({
-        type: "ADD_STONE_RULE",
+        type: "ADD_STONE_BEHAVIOUR",
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
         ruleId: newRuleId,

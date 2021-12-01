@@ -64,12 +64,15 @@ export const SyncNext = {
         scopes = ["stones"]
         let syncRequest = getRequestBase(scopes, sphere.config.cloudId);
         syncRequest.spheres[sphere.config.cloudId].stones = StoneSyncerNext.prepare(sphere, localStoneId);
+        // console.log("partialStoneSync request", JSON.stringify(syncRequest))
         let response = await CLOUD.syncNextStone(localStoneId, syncRequest);
+        // console.log("partialStoneSync reply", JSON.stringify(response))
         await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
         break;
     }
 
     if (actions.length > 0) {
+      // console.log("partialStoneSync Cloud actions", actions)
       core.store.batchDispatch(actions)
     }
   },
@@ -93,8 +96,8 @@ export const SyncNext = {
     // console.log("SYNC response", JSON.stringify(response))
     let sphereIdMap = await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
     // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
-    for (let an of nextActions) {
-      actions.push(an);
+    for (let syncAction of nextActions) {
+      actions.push(syncAction);
     }
 
     return sphereIdMap;
@@ -190,6 +193,7 @@ export const SyncNext = {
           for (let behaviourId in stoneResponse.behaviours) {
             new BehaviourSyncerNext({cloudId: behaviourId, ...sphereSyncBase}, stoneId).process(stoneResponse.behaviours[behaviourId].data, moduleReply);
           }
+
           for (let abilityId in stoneResponse.abilities) {
             let ability = stoneResponse.abilities[abilityId];
             new AbilitySyncerNext({cloudId: abilityId, ...sphereSyncBase}, stoneId).process(ability.data, moduleReply);
@@ -198,9 +202,8 @@ export const SyncNext = {
               new AbilityPropertySyncerNext({cloudId: propertyId, ...sphereSyncBase}, stoneId, abilityId).process(ability.properties[propertyId].data, moduleReply);
             }
           }
-
         }
-        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
+        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply);
       }
 
       if (sphereCloudResponse.hubs) {

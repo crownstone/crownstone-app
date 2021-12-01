@@ -10,7 +10,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AicoreBehaviour", key)(a,b,c,d,e);
 }
 
-const EMPTY_RULE : behaviour = {
+const EMPTY_BEHAVIOUR : behaviour = {
   action:   { type: "BE_ON", data: 100 },
   time:     { type: "ALL_DAY" },
   presence: { type: "IGNORE" },
@@ -24,7 +24,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     super();
 
     if (!behaviour) {
-      this.rule = xUtil.deepExtend({},EMPTY_RULE);
+      this.rule = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
     }
     else if (typeof behaviour === 'string') {
       this.fromString(behaviour)

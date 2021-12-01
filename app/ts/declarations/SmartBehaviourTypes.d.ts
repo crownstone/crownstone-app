@@ -150,16 +150,16 @@ type aicoreEvent = {
 }
 
 
-// RULE: How to respond to a switch or event
+// BEHAVIOUR: How to respond to a switch or event
 interface effectData {
   type: aicoreEffectTypes,
   delayBeforeEffect: number // override in minutes after which the type of the effect will commence
 }
 
 // This described how the aicore rules will react to a user evented switch command (App or Switchcraft)
-type aicoreEffectTypes = "DISABLE_ALL_RULES"           |  // stop the rules until turned back on
-                         "ENABLE_ALL_RULES"            |  // reable previously stopped rules.
-                         "VALID_UNTIL_NEXT_RULE_START" |  // if the rule is from 8:00 to 21:00 and we change the state, the crownstone rules will continue after 21:00 (TOON method)
+type aicoreEffectTypes = "DISABLE_ALL_BEHAVIOURS"           |  // stop the rules until turned back on
+                         "ENABLE_ALL_BEHAVIOURS"            |  // reable previously stopped rules.
+                         "VALID_UNTIL_NEXT_BEHAVIOUR_START" |  // if the rule is from 8:00 to 21:00 and we change the state, the crownstone rules will continue after 21:00 (TOON method)
                          "VALID_UNTIL_STATE_MATCH"     |  // if the rule is from 8:00 to 21:00 and we change the state from ON to OFF, once the active rule thinks "my state should be OFF now", the rule is unpaused.
                          "NO_EFFECT"                      // do NOT respond to interaction from a user.
                                                               // Together with delayBeforeEffect 0, this would lead to a locked crownstone that ignores manual switch events.
@@ -230,7 +230,7 @@ let softFuseEvent = {
     fadeDuration: 0
   },
   effect: {
-    type: "DISABLE_ALL_RULES"
+    type: "DISABLE_ALL_BEHAVIOURS"
     delayBeforeEffect: 0,
   },
   conditions: [],

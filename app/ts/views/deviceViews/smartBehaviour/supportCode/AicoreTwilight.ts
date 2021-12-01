@@ -10,7 +10,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AicoreTwilight", key)(a,b,c,d,e);
 }
 
-const EMPTY_RULE : twilight = {
+const EMPTY_BEHAVIOUR : twilight = {
   action:   { type: "DIM_WHEN_TURNED_ON", data: 60 },
   time:     { type:"RANGE", from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
 };
@@ -23,7 +23,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
     super();
 
     if (!behaviour) {
-      this.rule = xUtil.deepExtend({},EMPTY_RULE);
+      this.rule = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
     }
     else if (typeof behaviour === 'string') {
       this.fromString(behaviour);

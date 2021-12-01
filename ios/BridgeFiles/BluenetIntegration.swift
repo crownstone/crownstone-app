@@ -503,7 +503,7 @@ open class BluenetJS: RCTEventEmitter {
             BluenetLib.LOG.setPrintLevel(.INFO)
             
             LOGGER.setFileLevel(.INFO)
-            LOGGER.setPrintLevel(.VERBOSE)
+            LOGGER.setPrintLevel(.INFO)
         }
     }
     

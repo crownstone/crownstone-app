@@ -84,7 +84,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       let change = data.change;
       if (
         change.changeSphereSmartHomeState ||
-        change.stoneChangeRules      && change.stoneChangeRules.stoneIds[this.props.stoneId] ||
+        change.stoneChangeBehaviours      && change.stoneChangeBehaviours.stoneIds[this.props.stoneId] ||
         change.updateStoneCoreConfig && change.updateStoneCoreConfig.stoneIds[this.props.stoneId]
       ) {
         getTopBarProps(this.props, this.state);

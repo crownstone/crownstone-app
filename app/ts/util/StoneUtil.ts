@@ -163,10 +163,10 @@ export const StoneUtil = {
       // clear the old rules.
       Object.keys(oldRules).forEach((ruleId) => {
         if (oldRules[ruleId].idOnCrownstone === null) {
-          actions.push({type: 'REMOVE_STONE_RULE', ...actionProps, ruleId: ruleId})
+          actions.push({type: 'REMOVE_STONE_BEHAVIOUR', ...actionProps, ruleId: ruleId})
         }
         else {
-          actions.push({type: 'MARK_STONE_RULE_FOR_DELETION', ...actionProps, ruleId: ruleId})
+          actions.push({type: 'MARK_STONE_BEHAVIOUR_FOR_DELETION', ...actionProps, ruleId: ruleId})
         }
       })
 
@@ -178,7 +178,7 @@ export const StoneUtil = {
         delete rule.updatedAt;            // remove timestamp since this is essentially a new rule.
         rule.idOnCrownstone = null;       // new rules do not already have a ruleId on the Crownstone.
         rule.syncedToCrownstone = false;  // new rules are not synced.
-        actions.push({type: "ADD_STONE_RULE", ...actionProps, ruleId: newId, data: rule})
+        actions.push({type: "ADD_STONE_BEHAVIOUR", ...actionProps, ruleId: newId, data: rule})
       })
 
       return actions;

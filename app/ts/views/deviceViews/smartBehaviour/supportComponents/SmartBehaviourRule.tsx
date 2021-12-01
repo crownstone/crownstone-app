@@ -69,10 +69,10 @@ export function SmartBehaviourRule(props: {
               [{text:lang("_Are_you_sure___Since_thi_left")}, {
               text:lang("_Are_you_sure___Since_thi_right"), onPress: () => {
                 if (props.rule.idOnCrownstone !== null) {
-                  core.store.dispatch({type:"MARK_STONE_RULE_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                  core.store.dispatch({type:"MARK_STONE_BEHAVIOUR_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
                 }
                 else {
-                  core.store.dispatch({type:"REMOVE_STONE_RULE", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                  core.store.dispatch({type:"REMOVE_STONE_BEHAVIOUR", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
                 }
               }}])
           }

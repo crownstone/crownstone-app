@@ -1,7 +1,6 @@
 import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
 import ruleReducer         from './stoneSubReducers/behaviours'
-import meshReducer         from './stoneSubReducers/mesh'
 import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer  from './stoneSubReducers/lastUpdated'
 import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
@@ -122,6 +121,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
+        newState.uicr              = update(action.data.uicr,              newState.uicr);
         newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
         newState.hidden            = update(action.data.hidden,            newState.hidden);

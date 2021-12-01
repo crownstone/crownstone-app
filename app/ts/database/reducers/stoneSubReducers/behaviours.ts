@@ -28,7 +28,7 @@ let defaultSettings : behaviourWrapper = {
 
 let ruleReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
-    case "UPDATE_RULE_CLOUD_ID":
+    case "UPDATE_BEHAVIOUR_CLOUD_ID":
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
@@ -40,11 +40,11 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
       newState.activeDays = {...state.activeDays};
       newState.id = action.ruleId;
       return newState;
-    case 'ADD_STONE_RULE':
-    case 'UPDATE_STONE_RULE':
+    case 'ADD_STONE_BEHAVIOUR':
+    case 'UPDATE_STONE_BEHAVIOUR':
       if (action.data) {
         let newState = {...state};
-        if (action.type === 'ADD_STONE_RULE') {
+        if (action.type === 'ADD_STONE_BEHAVIOUR') {
           newState.id = action.ruleId;
         }
 
@@ -73,12 +73,12 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
       newState = {...state};
       newState.syncedToCrownstone = false;
       return newState;
-    case 'MARK_STONE_RULE_FOR_DELETION':
+    case 'MARK_STONE_BEHAVIOUR_FOR_DELETION':
       newState = {...state};
       newState.deleted = true;
       newState.syncedToCrownstone = false;
       return newState;
-    case "MARK_STONE_RULE_AS_SYNCED":
+    case "MARK_STONE_BEHAVIOUR_AS_SYNCED":
       newState = {...state};
       newState.syncedToCrownstone = true;
       return newState;
@@ -93,9 +93,9 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
 // rule Reducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
-    case 'REMOVE_ALL_RULES_OF_STONE':
+    case 'REMOVE_ALL_BEHAVIOURS_OF_STONE':
       return {};
-    case 'REMOVE_STONE_RULE':
+    case 'REMOVE_STONE_BEHAVIOUR':
       if (state[action.ruleId]) {
         let newState = {...state};
         delete newState[action.ruleId];
@@ -104,7 +104,7 @@ export default (state = {}, action : any = {}) => {
       return state;
     default:
       if (action.ruleId !== undefined) {
-        if (state[action.ruleId] !== undefined || action.type === "ADD_STONE_RULE") {
+        if (state[action.ruleId] !== undefined || action.type === "ADD_STONE_BEHAVIOUR") {
           return {
             ...state,
             ...{[action.ruleId]: ruleReducer(state[action.ruleId], action)}
@@ -114,3 +114,4 @@ export default (state = {}, action : any = {}) => {
       return state;
   }
 };
+

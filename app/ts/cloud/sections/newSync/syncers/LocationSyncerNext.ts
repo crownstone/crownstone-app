@@ -5,7 +5,6 @@ import { CLOUD } from "../../../cloudAPI";
 import { FileUtil } from "../../../../util/FileUtil";
 import { LOGe } from "../../../../logging/Log";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { xUtil } from "../../../../util/StandAloneUtil";
 import { LocationTransferNext } from "../transferrers/LocationTransferNext";
 import { SyncNext } from "../SyncNext";
 import { SyncUtil } from "../../../../util/SyncUtil";
@@ -74,12 +73,12 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
     let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
       CLOUD.forLocation(cloudData.id).downloadLocationPicture(toPath)
-      .then((picturePath) => {
-        this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:
-            { picture: picturePath, pictureId: cloudData.imageId, pictureTaken: Date.now() }
-        });
-      })
-      .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
+        .then((picturePath) => {
+          this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:
+              { picture: picturePath, pictureId: cloudData.imageId, pictureTaken: Date.now() }
+          });
+        })
+        .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
     );
   }
 

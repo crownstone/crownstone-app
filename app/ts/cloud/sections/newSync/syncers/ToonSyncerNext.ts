@@ -1,10 +1,7 @@
-import { DataUtil } from "../../../../util/DataUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { Get } from "../../../../util/GetUtil";
 import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { xUtil } from "../../../../util/StandAloneUtil";
 import { ToonTransferNext } from "../transferrers/ToonTransferNext";
-import { StoneTransferNext } from "../transferrers/StoneTransferNext";
 import { SyncNext } from "../SyncNext";
 import { SyncUtil } from "../../../../util/SyncUtil";
 

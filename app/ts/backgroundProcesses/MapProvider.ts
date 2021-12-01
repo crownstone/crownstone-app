@@ -55,7 +55,7 @@ class MapProviderClass {
           change.changeSphereState   ||
           change.changeSpheres       ||
           change.changeSphereUsers   ||
-          change.stoneChangeRules    ||
+          change.stoneChangeBehaviours    ||
           change.changeLocations     ||
           change.changeStones        ||
           change.changeHubs          ||

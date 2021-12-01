@@ -277,7 +277,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "UPDATE_MESSAGE_CLOUD_ID":
     case "UPDATE_LOCATION_CLOUD_ID":
     case "UPDATE_STONE_CLOUD_ID":
-    case "UPDATE_RULE_CLOUD_ID":
+    case "UPDATE_BEHAVIOUR_CLOUD_ID":
     case "UPDATE_SCENE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
@@ -291,13 +291,13 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "REMOVE_SPHERE_KEY":
       eventStatus['updatedSphereKeys'] = affectedIds; break;
       break;
-    case "ADD_STONE_RULE":
-    case "UPDATE_STONE_RULE":
-    case "MARK_STONE_RULE_FOR_DELETION":
+    case "ADD_STONE_BEHAVIOUR":
+    case "UPDATE_STONE_BEHAVIOUR":
+    case "MARK_STONE_BEHAVIOUR_FOR_DELETION":
     case "REFRESH_BEHAVIOURS":
-    case "MARK_STONE_RULE_AS_SYNCED":
-    case "REMOVE_STONE_RULE":
-      eventStatus['stoneChangeRules'] = affectedIds; break;
+    case "MARK_STONE_BEHAVIOUR_AS_SYNCED":
+    case "REMOVE_STONE_BEHAVIOUR":
+      eventStatus['stoneChangeBehaviours'] = affectedIds; break;
     case "REMOVE_ALL_ABILITIES":
     case "ADD_ABILITY_PROPERTY":
     case "ADD_ABILITY":

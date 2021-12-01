@@ -92,7 +92,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
       let change = data.change;
 
       if (
-        change.stoneChangeRules || change.stoneChangeAbilities
+        change.stoneChangeBehaviours || change.stoneChangeAbilities
       ) {
         this.forceUpdate();
       }
