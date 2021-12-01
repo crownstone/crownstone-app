@@ -146,11 +146,11 @@ export class SetupHelper {
 
         let stone = DataUtil.getStone(sphereId, localId);
         if (stone) {
-          let rules = stone.rules;
-          let ruleIds = Object.keys(rules);
+          let behaviours = stone.behaviours;
+          let behaviourIds = Object.keys(behaviours);
           actions.push({ type: "REFRESH_ABILITIES", sphereId: sphereId, stoneId: localId });
-          for (let i = 0; i < ruleIds.length; i++) {
-            actions.push({ type: "REFRESH_BEHAVIOURS", sphereId: sphereId, stoneId: localId, ruleId: ruleIds[i] });
+          for (let i = 0; i < behaviourIds.length; i++) {
+            actions.push({ type: "REFRESH_BEHAVIOURS", sphereId: sphereId, stoneId: localId, behaviourId: behaviourIds[i] });
           }
         }
       }

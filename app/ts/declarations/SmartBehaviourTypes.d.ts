@@ -111,7 +111,7 @@ interface behaviourTransfer {
 }
 
 // TYPE: EVENT
-// events can trigger a switch event. The handleSwitch rule will determine how the aicore responds to this. The PULSE event type will not influence this.
+// events can trigger a switch event. The handleSwitch behaviour will determine how the aicore responds to this. The PULSE event type will not influence this.
 type aicoreEvent = {
   type:       "TIME_OF_DAY",
   action:     eventAction,
@@ -156,11 +156,11 @@ interface effectData {
   delayBeforeEffect: number // override in minutes after which the type of the effect will commence
 }
 
-// This described how the aicore rules will react to a user evented switch command (App or Switchcraft)
-type aicoreEffectTypes = "DISABLE_ALL_BEHAVIOURS"           |  // stop the rules until turned back on
-                         "ENABLE_ALL_BEHAVIOURS"            |  // reable previously stopped rules.
-                         "VALID_UNTIL_NEXT_BEHAVIOUR_START" |  // if the rule is from 8:00 to 21:00 and we change the state, the crownstone rules will continue after 21:00 (TOON method)
-                         "VALID_UNTIL_STATE_MATCH"     |  // if the rule is from 8:00 to 21:00 and we change the state from ON to OFF, once the active rule thinks "my state should be OFF now", the rule is unpaused.
+// This described how the aicore behaviours will react to a user evented switch command (App or Switchcraft)
+type aicoreEffectTypes = "DISABLE_ALL_BEHAVIOURS"           |  // stop the behaviours until turned back on
+                         "ENABLE_ALL_BEHAVIOURS"            |  // reable previously stopped behaviours.
+                         "VALID_UNTIL_NEXT_BEHAVIOUR_START" |  // if the behaviour is from 8:00 to 21:00 and we change the state, the crownstone behaviours will continue after 21:00 (TOON method)
+                         "VALID_UNTIL_STATE_MATCH"     |  // if the behaviour is from 8:00 to 21:00 and we change the state from ON to OFF, once the active behaviour thinks "my state should be OFF now", the behaviour is unpaused.
                          "NO_EFFECT"                      // do NOT respond to interaction from a user.
                                                               // Together with delayBeforeEffect 0, this would lead to a locked crownstone that ignores manual switch events.
                                                               // With a delayBeforeEffect > 0, this gives a temporary manual override.

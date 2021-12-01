@@ -74,22 +74,22 @@ class StoneDataSyncerClass {
             this._syncAbility(sphereId, stoneId, initialAbilities.tapToToggle, 'tapToToggle');
           }
 
-          // handle rules
+          // handle behaviours
           if (Permissions.inSphere(sphereId).canChangeBehaviours) {
             let stone = DataUtil.getStone(sphereId, stoneId);
             if (!stone) { return; }
 
-            let ruleIds = Object.keys(stone.rules);
-            let rulesHaveChanged = false;
-            for (let k = 0; k < ruleIds.length; k++) {
-              let ruleId = ruleIds[k];
-              let rule = stone.rules[ruleId];
-              if (this._shouldBehaviourBeSynced(rule)) {
-                rulesHaveChanged = true;
+            let behaviourIds = Object.keys(stone.behaviours);
+            let behavioursHaveChanged = false;
+            for (let k = 0; k < behaviourIds.length; k++) {
+              let behaviourId = behaviourIds[k];
+              let behaviour = stone.behaviours[behaviourId];
+              if (this._shouldBehaviourBeSynced(behaviour)) {
+                behavioursHaveChanged = true;
               }
             }
 
-            if (rulesHaveChanged) {
+            if (behavioursHaveChanged) {
               this._setSyncBehaviourTrigger(sphereId, stoneId).catch((err) => {
                 LOGe.info("StoneDataSyncer: Failed promise performing setSyncBehaviourTrigger", err?.message)
               })
@@ -102,25 +102,25 @@ class StoneDataSyncerClass {
 
   async _setSyncBehaviourTrigger(sphereId, stoneId) : Promise<void> {
     let sessionId = xUtil.getShortUUID()
-    LOGi.info("StoneDataSyncer: Setting rule syncing trigger for ", sphereId, stoneId, sessionId);
+    LOGi.info("StoneDataSyncer: Setting behaviour syncing trigger for ", sphereId, stoneId, sessionId);
     let id = sphereId+stoneId;
 
     let stone = DataUtil.getStone(sphereId, stoneId);
     if (!stone) { return; }
 
-    let ruleIds = Object.keys(stone.rules);
-    let rulePromises = [];
+    let behaviourIds = Object.keys(stone.behaviours);
+    let behaviourPromises = [];
 
-    for (let k = 0; k < ruleIds.length; k++) {
-      let ruleId = ruleIds[k];
-      let rule = stone.rules[ruleId];
-      if (this._shouldBehaviourBeSynced(rule)) {
-        LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
-        rulePromises.push(
-          this._syncBehaviour(sphereId, stoneId, ruleId, stone, rule, sessionId).catch((err) => {
+    for (let k = 0; k < behaviourIds.length; k++) {
+      let behaviourId = behaviourIds[k];
+      let behaviour = stone.behaviours[behaviourId];
+      if (this._shouldBehaviourBeSynced(behaviour)) {
+        LOGi.info("StoneDataSyncer: Attempting to sync behaviour", sphereId, stoneId, behaviourId, sessionId);
+        behaviourPromises.push(
+          this._syncBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId).catch((err) => {
             if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-              // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
-              // this is done by rule so that the promise.All does not fail on a duplicate single rule.
+              // we ignore the duplicate error because a newer version of this behaviour is already being synced to this crownstone.
+              // this is done by behaviour so that the promise.All does not fail on a duplicate single behaviour.
             }
             else {
               throw err;
@@ -130,7 +130,7 @@ class StoneDataSyncerClass {
       }
     }
 
-    if (rulePromises.length === 0) {
+    if (behaviourPromises.length === 0) {
       delete this.pendingBehaviourTriggers[id];
       if (this.rescheduledBehaviourTriggers[id]) {
         await this._setSyncBehaviourTrigger(sphereId, stoneId).catch(() => {})
@@ -138,9 +138,9 @@ class StoneDataSyncerClass {
       return;
     }
 
-    LOGi.info("StoneDataSyncer: Executing rule syncing trigger for ", sphereId, stoneId, rulePromises.length, sessionId);
+    LOGi.info("StoneDataSyncer: Executing behaviour syncing trigger for ", sphereId, stoneId, behaviourPromises.length, sessionId);
     try {
-      await Promise.all(rulePromises)
+      await Promise.all(behaviourPromises)
       LOGi.info("StoneDataSyncer: Syncing behaviour now...", sphereId, stoneId, sessionId);
       await this.checkAndSyncBehaviour(sphereId, stoneId);
       // clear pending
@@ -151,9 +151,9 @@ class StoneDataSyncerClass {
       }
     }
     catch (err) {
-      LOGe.info("StoneDataSyncer: Failed rule sync trigger", sphereId, stoneId, err, sessionId);
+      LOGe.info("StoneDataSyncer: Failed behaviour sync trigger", sphereId, stoneId, err, sessionId);
       if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-        // we ignore the duplicate error because a newer version of this rule is already being synced to this crownstone.
+        // we ignore the duplicate error because a newer version of this behaviour is already being synced to this crownstone.
       }
       else {
         /** if the syncing fails, we set another watcher **/
@@ -163,12 +163,12 @@ class StoneDataSyncerClass {
           return;
         }
         else {
-          LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger after failure for", sphereId, stoneId);
+          LOGi.info("StoneDataSyncer: Rescheduling behaviour sync trigger after failure for", sphereId, stoneId);
           this.scheduledRetries[id] = { clearRetry:
             Scheduler.scheduleCallback(() => {
-              LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
+              LOGi.info("StoneDataSyncer: Executing reschedule behaviour sync trigger", sphereId, stoneId);
               this._setSyncBehaviourTrigger(sphereId, stoneId).catch(() => {});
-            }, 5000, "Retry rule sync for " + sphereId, stoneId)};
+            }, 5000, "Retry behaviour sync for " + sphereId, stoneId)};
         }
       }
     }
@@ -190,8 +190,8 @@ class StoneDataSyncerClass {
     }
   }
 
-  _shouldBehaviourBeSynced(rule) {
-    return !rule.syncedToCrownstone || rule.deleted || rule.idOnCrownstone === null || rule.idOnCrownstone === undefined;
+  _shouldBehaviourBeSynced(behaviour) {
+    return !behaviour.syncedToCrownstone || behaviour.deleted || behaviour.idOnCrownstone === null || behaviour.idOnCrownstone === undefined;
   }
 
 
@@ -326,108 +326,107 @@ class StoneDataSyncerClass {
 
 
 
-  async _syncBehaviour(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper, sessionId) : Promise<void> {
-    LOGi.info("StoneDataSyncer: Executing trigger for rule", sphereId, stoneId, ruleId, sessionId);
-    if (rule.deleted) {
-      return this._removeBehaviour(sphereId, stoneId, ruleId, stone, rule, sessionId);
+  async _syncBehaviour(sphereId, stoneId, behaviourId, stone, behaviour : behaviourWrapper, sessionId) : Promise<void> {
+    LOGi.info("StoneDataSyncer: Executing trigger for behaviour", sphereId, stoneId, behaviourId, sessionId);
+    if (behaviour.deleted) {
+      return this._removeBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
     }
 
-    let behaviour = xUtil.deepCopy(rule);
+    let behaviourCopy = xUtil.deepCopy(behaviour);
     if (typeof behaviour.data === 'string') {
-      behaviour.data = JSON.parse(behaviour.data);
+      behaviourCopy.data = JSON.parse(behaviourCopy.data);
     }
 
     // the behaviour is already on the Crownstone.
-    if (rule.idOnCrownstone !== null) {
-      return this._updateBehaviour(sphereId, stoneId, ruleId, stone, behaviour, sessionId);
+    if (behaviourCopy.idOnCrownstone !== null) {
+      return this._updateBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
     }
     else {
-      return this._addBehaviour(sphereId, stoneId, ruleId, stone, behaviour, sessionId);
+      return this._addBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
     }
   }
 
 
-  async _removeBehaviour(sphereId, stoneId, ruleId, stone, rule: behaviourWrapper, sessionId) : Promise<void> {
-    LOGi.info("StoneDataSyncer: Syncing deleted rule", sphereId, stoneId, ruleId, sessionId);
-    if (rule.idOnCrownstone === null) {
-      LOGi.info("StoneDataSyncer: Syncing deleted rule by deleting it locally.", sphereId, stoneId, ruleId, sessionId);
-      core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+  async _removeBehaviour(sphereId, stoneId, behaviourId, stone, behaviour: behaviourWrapper, sessionId) : Promise<void> {
+    LOGi.info("StoneDataSyncer: Syncing deleted behaviour", sphereId, stoneId, behaviourId, sessionId);
+    if (behaviour.idOnCrownstone === null) {
+      LOGi.info("StoneDataSyncer: Syncing deleted behaviour by deleting it locally.", sphereId, stoneId, behaviourId, sessionId);
+      core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId});
       return
     }
 
-    LOGi.info("StoneDataSyncer: Syncing deleted rule which is already on Crownstone", sphereId, stoneId, ruleId);
+    LOGi.info("StoneDataSyncer: Syncing deleted behaviour which is already on Crownstone", sphereId, stoneId, behaviourId);
     try {
-      let returnData = await tell(stone).removeBehaviour(rule.idOnCrownstone)
+      let returnData = await tell(stone).removeBehaviour(behaviour.idOnCrownstone)
 
-      LOGi.info("StoneDataSyncer: Successfully synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, sessionId);
-      core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+      LOGi.info("StoneDataSyncer: Successfully synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, sessionId);
+      core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId});
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
     catch (err) {
-      LOGe.info("StoneDataSyncer: ERROR failed synced deleted rule by deleting it from the Crownstone", sphereId, stoneId, ruleId, err, sessionId);
+      LOGe.info("StoneDataSyncer: ERROR failed synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, err, sessionId);
       throw err;
     }
   }
 
 
-  async _updateBehaviour(sphereId, stoneId, ruleId, stone, behaviour, sessionId) {
-    LOGi.info("StoneDataSyncer: Updating rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
+  async _updateBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId) {
+    LOGi.info("StoneDataSyncer: Updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, sessionId);
     try {
       let returnData = await tell(stone).updateBehaviour(behaviour);
-      LOGi.info("StoneDataSyncer: Successfully updated rule which is already on Crownstone", sphereId, stoneId, ruleId, sessionId);
-      core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
+      LOGi.info("StoneDataSyncer: Successfully updated behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, sessionId);
+      core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId, data:{syncedToCrownstone: true}});
 
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
     catch(err) {
-      LOGe.info("StoneDataSyncer: ERROR updating rule which is already on Crownstone", sphereId, stoneId, ruleId, err, sessionId);
+      LOGe.info("StoneDataSyncer: ERROR updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, err, sessionId);
       throw err;
     }
   }
 
 
-  async _addBehaviour(sphereId, stoneId, ruleId, stone, behaviour, sessionId) {
-    LOGi.info("StoneDataSyncer: Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
+  async _addBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId) {
+    LOGi.info("StoneDataSyncer: Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
     try {
       let returnData = await tell(stone).addBehaviour(behaviour)
-      LOGi.info("StoneDataSyncer: Successfully Adding rule to Crownstone", sphereId, stoneId, ruleId, sessionId);
+      LOGi.info("StoneDataSyncer: Successfully Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
       let index = returnData.index;
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
 
       // handle duplicates!
       if (stone) {
-        let rules = stone.rules;
-        let ruleIds = Object.keys(rules);
-        for (let i = 0; i < ruleIds.length; i++) {
-          let rule = rules[ruleIds[i]];
-          if (rule.idOnCrownstone === index && ruleId !== ruleIds[i]) {
-            // this rule is a duplicate &&
-            core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+        let behaviours = stone.behaviours;
+        let behaviourIds = Object.keys(behaviours);
+        for (let i = 0; i < behaviourIds.length; i++) {
+          let behaviour = behaviours[behaviourIds[i]];
+          if (behaviour.idOnCrownstone === index && behaviourId !== behaviourIds[i]) {
+            // this behaviour is a duplicate &&
+            core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId});
             return
           }
         }
       }
 
-      core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
+      core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
     }
     catch(err) {
-      LOGi.info("StoneDataSyncer: ERROR Adding rule to Crownstone ", sphereId, stoneId, ruleId, err, sessionId);
+      LOGi.info("StoneDataSyncer: ERROR Adding behaviour to Crownstone ", sphereId, stoneId, behaviourId, err, sessionId);
       throw err;
     }
   }
 
 
-  _getTransferBehavioursFromStone(sphereId,stoneId) : {ruleId: string, behaviour: behaviourTransfer}[] {
+  _getTransferBehavioursFromStone(sphereId,stoneId) : {behaviourId: string, behaviour: behaviourTransfer}[] {
     let stone = Get.stone(sphereId,stoneId);
 
-    let ruleIds = Object.keys(stone.rules);
+    let behaviourIds = Object.keys(stone.behaviours);
     let transferBehaviours = [];
-    for (let i = 0; i < ruleIds.length; i++) {
-      let rule = stone.rules[ruleIds[i]];
-      let behaviour = xUtil.deepCopy(rule);
+    for (let i = 0; i < behaviourIds.length; i++) {
+      let behaviour = xUtil.deepCopy(stone.behaviours[behaviourIds[i]]);
       if (typeof behaviour.data === 'string') {
         behaviour.data = JSON.parse(behaviour.data);
       }
@@ -438,20 +437,20 @@ class StoneDataSyncerClass {
       delete behaviour.syncedToCrownstone;
       delete behaviour.updatedAt;
 
-      transferBehaviours.push({ruleId: ruleIds[i], behaviour: behaviour});
+      transferBehaviours.push({behaviourId: behaviourIds[i], behaviour: behaviour});
     }
     return transferBehaviours;
   }
 
   async requestMasterHash(sphereId: string, stoneId: string) : Promise<number> {
     let transferBehaviours = this._getTransferBehavioursFromStone(sphereId, stoneId);
-    let ruleData = [];
+    let behaviourData = [];
     transferBehaviours.forEach((data) => {
-      ruleData.push(data.behaviour)
+      behaviourData.push(data.behaviour)
     })
     let masterHash = 0;
     if (transferBehaviours.length > 0) {
-      masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(ruleData);
+      masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(behaviourData);
     }
     this.updateMasterHashCache(sphereId, stoneId, masterHash);
     return masterHash;
@@ -487,13 +486,13 @@ class StoneDataSyncerClass {
     if (!stone) { throw new Error("STONE_NOT_FOUND"); }
 
     let transferBehaviours = this._getTransferBehavioursFromStone(sphereId, stoneId);
-    let ruleData = [];
+    let behaviourData = [];
     transferBehaviours.forEach((data) => {
-      ruleData.push(data.behaviour);
+      behaviourData.push(data.behaviour);
     })
 
     try {
-      let masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(ruleData)
+      let masterHash = await BluenetPromiseWrapper.getBehaviourMasterHash(behaviourData)
       let lastKnownMasterHash = this.getLastKnownMasterHash(sphereId, stoneId);
       if (force === false && lastKnownMasterHash === masterHash) {
         LOGi.info("StoneDataSyncer: checkAndSyncBehaviour DONE Syncing! NOT REQUIRED!");
@@ -505,9 +504,9 @@ class StoneDataSyncerClass {
       tell(stone).setTime().catch((err) => {})
 
       // SYNC!
-      LOGi.info("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", lastKnownMasterHash, "my rules are", ruleData);
-      let rulesAccordingToCrownstone = await tell(stone).syncBehaviours(ruleData);
-      LOGi.info("StoneDataSyncer: rulesAccordingToCrownstone", rulesAccordingToCrownstone)
+      LOGi.info("StoneDataSyncer: Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", lastKnownMasterHash, "my behaviours are", behaviourData);
+      let behavioursAccordingToCrownstone = await tell(stone).syncBehaviours(behaviourData);
+      LOGi.info("StoneDataSyncer: behavioursAccordingToCrownstone", behavioursAccordingToCrownstone)
 
       // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
       // the behaviour comparing locally.
@@ -515,18 +514,18 @@ class StoneDataSyncerClass {
 
       LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Starting the compare analysis.");
 
-      // get the rules from the db again since the cloudsync may have added a few.
+      // get the behaviours from the db again since the cloudsync may have added a few.
       transferBehaviours = this._getTransferBehavioursFromStone(sphereId, stoneId);
       let actions = [];
 
-      LOGd.info("StoneDataSyncer: Transfer rules", transferBehaviours);
-      if (rulesAccordingToCrownstone) {
+      LOGd.info("StoneDataSyncer: Transfer behaviours", transferBehaviours);
+      if (behavioursAccordingToCrownstone) {
         // From this, we get all behaviours that SHOULD be on our phone.
         // (the ones not synced yet (which should be already synced by here, but still) are also in this list).
 
         // We first double check the differences between OUR behaviours and those on the Crownstone
         let indicesThatMatched = {};
-        rulesAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
+        behavioursAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
           let foundMatch = false;
           for (let i = 0; i < transferBehaviours.length; i++) {
             // once we have decided on a match, a behaviour cannot be used for matching again.
@@ -547,13 +546,13 @@ class StoneDataSyncerClass {
 
           if (!foundMatch) {
             LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
-            // this is a new rule!
+            // this is a new behaviour!
             let newBehaviourId = xUtil.getUUID();
             actions.push({
               type: "ADD_STONE_BEHAVIOUR",
               sphereId: sphereId,
               stoneId: stoneId,
-              ruleId: newBehaviourId,
+              behaviourId: newBehaviourId,
               data: {
                 type:           stoneBehaviour.type,
                 data:           JSON.stringify(stoneBehaviour.data),
@@ -567,13 +566,13 @@ class StoneDataSyncerClass {
         })
 
         indicesThatMatched = {};
-        transferBehaviours.forEach((transferBehaviour: {ruleId: string, behaviour: behaviourTransfer}) => {
+        transferBehaviours.forEach((transferBehaviour: {behaviourId: string, behaviour: behaviourTransfer}) => {
           let foundMatch = false;
 
-          for (let i = 0; i < rulesAccordingToCrownstone.length; i++) {
+          for (let i = 0; i < behavioursAccordingToCrownstone.length; i++) {
             if (indicesThatMatched[i]) { continue; }
 
-            if (xUtil.deepCompare(transferBehaviour.behaviour, rulesAccordingToCrownstone[i])) {
+            if (xUtil.deepCompare(transferBehaviour.behaviour, behavioursAccordingToCrownstone[i])) {
               indicesThatMatched[i] = true;
               foundMatch = true;
               // great! this is already in the list. We do not have to do anything here.
@@ -587,7 +586,7 @@ class StoneDataSyncerClass {
               type: "REMOVE_STONE_BEHAVIOUR",
               sphereId: sphereId,
               stoneId: stoneId,
-              ruleId: transferBehaviour.ruleId,
+              behaviourId: transferBehaviour.behaviourId,
             });
           }
         });

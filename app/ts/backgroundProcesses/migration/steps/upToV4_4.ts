@@ -25,7 +25,7 @@ function addIds() {
       // all sphereUsers
       // all locations
       // all stones
-        // all rules
+        // all behaviours
         // all keys
     // all scenes
     // all hubs
@@ -69,8 +69,8 @@ function addIds() {
 
     for (let [stoneId, stone] of Object.entries<StoneData>(sphere.stones)) {
       actions.push({type:"INJECT_IDS", sphereId, stoneId})
-      for (let id in stone.rules) {
-        actions.push({type:"INJECT_IDS", sphereId, stoneId, ruleId: id})
+      for (let id in stone.behaviours) {
+        actions.push({type:"INJECT_IDS", sphereId, stoneId, behaviourId: id})
       }
       for (let id in stone.keys) {
         actions.push({type:"INJECT_IDS", sphereId, stoneId, keyId: id})

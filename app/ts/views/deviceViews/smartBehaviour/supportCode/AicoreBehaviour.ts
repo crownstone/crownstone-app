@@ -17,24 +17,24 @@ const EMPTY_BEHAVIOUR : behaviour = {
 };
 
 export class AicoreBehaviour extends AicoreBehaviourCore {
-  originalRule : behaviour;
-  rule : behaviour;
+  originalBehaviour : behaviour;
+  behaviour : behaviour;
 
   constructor(behaviour?: behaviour | AicoreBehaviour | string) {
     super();
 
     if (!behaviour) {
-      this.rule = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
+      this.behaviour = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
     }
     else if (typeof behaviour === 'string') {
       this.fromString(behaviour)
     }
     else {
       if (!(behaviour instanceof AicoreBehaviour)) {
-        this.rule = behaviour;
+        this.behaviour = behaviour;
       }
       else {
-        this.rule = xUtil.deepExtend({}, behaviour.rule);
+        this.behaviour = xUtil.deepExtend({}, behaviour.behaviour);
       }
     }
   }
@@ -42,23 +42,23 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
 
   _getChunks(sphereId: string) {
     let intentionStr = lang("I_will_be");
-    let actionStr = AicoreUtil.extractActionString(this.rule);
-    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
-    let { locationPrefix, locationStr, locationPostfix } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
-    let timeStr = AicoreUtil.extractTimeString(this.rule);
-    let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
+    let actionStr = AicoreUtil.extractActionString(this.behaviour);
+    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.behaviour);
+    let { locationPrefix, locationStr, locationPostfix } = AicoreUtil.extractLocationStrings(this.behaviour, sphereId);
+    let timeStr = AicoreUtil.extractTimeString(this.behaviour);
+    let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.behaviour);
 
     return {
       intention:       { label: intentionStr,       data: null },
-      action:          { label: actionStr,          data: this.rule.action },
+      action:          { label: actionStr,          data: this.behaviour.action },
       presencePrefix:  { label: presencePrefix,     data: null },
-      presence:        { label: presenceStr,        data: this.rule.presence },
+      presence:        { label: presenceStr,        data: this.behaviour.presence },
       locationPrefix:  { label: locationPrefix,     data: null },
-      location:        { label: locationStr,        data: this.rule.presence },
+      location:        { label: locationStr,        data: this.behaviour.presence },
       locationPostfix: { label: locationPostfix,    data: null },
-      time:            { label: timeStr,            data: this.rule.time },
+      time:            { label: timeStr,            data: this.behaviour.time },
       optionPrefix:    { label: endConditionPrefix, data: null },
-      option:          { label: endConditionStr,    data: this.rule.endCondition }
+      option:          { label: endConditionStr,    data: this.behaviour.endCondition }
     }
   }
 
@@ -128,150 +128,150 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
 
 
   ignorePresence() : AicoreBehaviour {
-    this.rule.presence = { type:"IGNORE" };
+    this.behaviour.presence = { type:"IGNORE" };
     return this;
   }
   setPresenceIgnore() : AicoreBehaviour {
     return this.ignorePresence();
   }
   setPresenceSomebody() : AicoreBehaviour {
-    if (this.rule.presence.type === "IGNORE") {
+    if (this.behaviour.presence.type === "IGNORE") {
       this.setPresenceSomebodyInSphere()
     }
     
-    this.rule.presence.type = "SOMEBODY";
+    this.behaviour.presence.type = "SOMEBODY";
     return this;
   }
   setPresenceNobody() : AicoreBehaviour {
-    if (this.rule.presence.type === "IGNORE") {
+    if (this.behaviour.presence.type === "IGNORE") {
       this.setPresenceNobodyInSphere()
     }
 
-    this.rule.presence.type = "NOBODY";
+    this.behaviour.presence.type = "NOBODY";
     return this;
   }
   setPresenceSomebodyInSphere() : AicoreBehaviour {
-    this.rule.presence = { type:"SOMEBODY", data: {type:"SPHERE"}, delay: this._getSphereDelay()};
+    this.behaviour.presence = { type:"SOMEBODY", data: {type:"SPHERE"}, delay: this._getSphereDelay()};
     return this;
   }
   setPresenceNobodyInSphere() : AicoreBehaviour {
-    this.rule.presence = { type:"NOBODY", data: {type:"SPHERE"}, delay: this._getSphereDelay()};
+    this.behaviour.presence = { type:"NOBODY", data: {type:"SPHERE"}, delay: this._getSphereDelay()};
     return this;
   }
   setPresenceInSphere() : AicoreBehaviour {
-    if (this.rule.presence.type === "IGNORE") {
+    if (this.behaviour.presence.type === "IGNORE") {
       this.setPresenceSomebodyInSphere()
     }
     else {
-      this.rule.presence.data.type = "SPHERE";
+      this.behaviour.presence.data.type = "SPHERE";
     }
     return this;
   }
   setPresenceInLocations(locationIds: number[]) {
-    if (this.rule.presence.type === "IGNORE") {
+    if (this.behaviour.presence.type === "IGNORE") {
       this.setPresenceSomebodyInLocations(locationIds);
     }
     else {
-      this.rule.presence.data = { type: "LOCATION", locationIds: locationIds }
+      this.behaviour.presence.data = { type: "LOCATION", locationIds: locationIds }
     }
     return this;
   }
 
   setPresenceSomebodyInLocations(locationIds: number[]) : AicoreBehaviour {
-    this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
+    this.behaviour.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
   setPresenceNobodyInLocations(locationIds: number[]) : AicoreBehaviour {
-    this.rule.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
+    this.behaviour.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
 
   setNoEndCondition() : AicoreBehaviour {
-    delete this.rule.endCondition;
+    delete this.behaviour.endCondition;
     return this;
   }
   setEndConditionWhilePeopleInSphere() : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
+    this.behaviour.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
     return this;
   }
   setEndConditionWhilePeopleInLocation(locationId: number) : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
+    this.behaviour.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
     return this;
   }
 
   doesActionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    return xUtil.deepCompare(this.rule.action, otherAicoreBehaviour.rule.action);
+    return xUtil.deepCompare(this.behaviour.action, otherAicoreBehaviour.behaviour.action);
   }
   doesPresenceTypeMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    return this.rule.presence.type === otherAicoreBehaviour.rule.presence.type;
+    return this.behaviour.presence.type === otherAicoreBehaviour.behaviour.presence.type;
   }
   doesPresenceLocationMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    if (this.rule.presence.type !== "IGNORE" && otherAicoreBehaviour.rule.presence.type !== "IGNORE") {
-      return xUtil.deepCompare(this.rule.presence.data, otherAicoreBehaviour.rule.presence.data);
+    if (this.behaviour.presence.type !== "IGNORE" && otherAicoreBehaviour.behaviour.presence.type !== "IGNORE") {
+      return xUtil.deepCompare(this.behaviour.presence.data, otherAicoreBehaviour.behaviour.presence.data);
     }
     else {
       return this.doesPresenceTypeMatch(otherAicoreBehaviour);
     }
   }
   doesPresenceMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    return xUtil.deepCompare(this.rule.presence, otherAicoreBehaviour.rule.presence);
+    return xUtil.deepCompare(this.behaviour.presence, otherAicoreBehaviour.behaviour.presence);
   }
   doesTimeMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    let match = xUtil.deepCompare(this.rule.time, otherAicoreBehaviour.rule.time);
+    let match = xUtil.deepCompare(this.behaviour.time, otherAicoreBehaviour.behaviour.time);
     return match;
   }
   doesEndConditionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    if (!this.rule.endCondition && !otherAicoreBehaviour.rule.endCondition) { return true; }
-    if (!this.rule.endCondition &&  otherAicoreBehaviour.rule.endCondition) { return false; }
-    if ( this.rule.endCondition && !otherAicoreBehaviour.rule.endCondition) { return false; }
-    if (this.rule.endCondition.type !== otherAicoreBehaviour.rule.endCondition.type) { return false; }
+    if (!this.behaviour.endCondition && !otherAicoreBehaviour.behaviour.endCondition) { return true; }
+    if (!this.behaviour.endCondition &&  otherAicoreBehaviour.behaviour.endCondition) { return false; }
+    if ( this.behaviour.endCondition && !otherAicoreBehaviour.behaviour.endCondition) { return false; }
+    if (this.behaviour.endCondition.type !== otherAicoreBehaviour.behaviour.endCondition.type) { return false; }
 
-    return this.rule.endCondition &&
-      otherAicoreBehaviour.rule.endCondition &&
-      xUtil.deepCompare(this.rule.endCondition, otherAicoreBehaviour.rule.endCondition);
+    return this.behaviour.endCondition &&
+      otherAicoreBehaviour.behaviour.endCondition &&
+      xUtil.deepCompare(this.behaviour.endCondition, otherAicoreBehaviour.behaviour.endCondition);
   }
 
 
   getLocationUids() : number[] {
-    if (this.rule.presence.type !== "IGNORE") {
-      if (this.rule.presence.data.type === "LOCATION") {
-        return this.rule.presence.data.locationIds;
+    if (this.behaviour.presence.type !== "IGNORE") {
+      if (this.behaviour.presence.data.type === "LOCATION") {
+        return this.behaviour.presence.data.locationIds;
       }
     }
     return [];
   }
 
   isUsingPresence() : boolean {
-    return this.rule.presence.type !== "IGNORE";
+    return this.behaviour.presence.type !== "IGNORE";
   }
   isUsingSingleRoomPresence() : boolean {
-    if (this.rule.presence.type !== "IGNORE") {
-      if (this.rule.presence.data.type === "LOCATION") {
-        return this.rule.presence.data.locationIds.length === 1;
+    if (this.behaviour.presence.type !== "IGNORE") {
+      if (this.behaviour.presence.data.type === "LOCATION") {
+        return this.behaviour.presence.data.locationIds.length === 1;
       }
     }
     return false;
   }
   isUsingMultiRoomPresence() : boolean {
-    if (this.rule.presence.type !== "IGNORE") {
-      if (this.rule.presence.data.type === "LOCATION") {
-        return this.rule.presence.data.locationIds.length > 1;
+    if (this.behaviour.presence.type !== "IGNORE") {
+      if (this.behaviour.presence.data.type === "LOCATION") {
+        return this.behaviour.presence.data.locationIds.length > 1;
       }
     }
     return false;
   }
   isUsingSpherePresence() : boolean {
-    if (this.rule.presence.type !== "IGNORE") {
-      return this.rule.presence.data.type === "SPHERE";
+    if (this.behaviour.presence.type !== "IGNORE") {
+      return this.behaviour.presence.data.type === "SPHERE";
     }
     return false;
   }
   hasNoEndCondition(): boolean {
-    return !this.rule.endCondition;
+    return !this.behaviour.endCondition;
   }
   hasLocationEndCondition(): boolean {
-    if (this.rule.endCondition && this.rule.endCondition.presence && this.rule.endCondition.presence.data.type) {
-      return this.rule.endCondition.presence.data.type === "LOCATION"
+    if (this.behaviour.endCondition && this.behaviour.endCondition.presence && this.behaviour.endCondition.presence.data.type) {
+      return this.behaviour.endCondition.presence.data.type === "LOCATION"
     }
     return false;
   }

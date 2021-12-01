@@ -84,7 +84,7 @@ interface StoneData {
   reachability: {
     lastSeen: timestamp,
   },
-  rules: {
+  behaviours: {
     [behaviourId: string] : behaviourWrapper
   },
   abilities: {

@@ -43,7 +43,7 @@ export const Get = {
 
   behaviour(sphereId: string, stoneId: string, behaviourId: string) : BehaviourData | null {
     let stone = Get.stone(sphereId, stoneId);
-    return stone?.rules?.[behaviourId] || null;
+    return stone?.behaviours?.[behaviourId] || null;
   },
 
   ability(sphereId: string, stoneId: string, abilityId: string) : AbilityData | null {

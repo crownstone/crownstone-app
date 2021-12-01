@@ -48,23 +48,23 @@ export class TextEditBar extends Component<any, any> {
     clearTimeout(this.validationTimeout);
   }
 
-  validateCustom(value, customRules = this.props.validation) {
+  validateCustom(value, customBehaviours = this.props.validation) {
     // check length
     let trimmedValue = value.trim();
 
-    if (customRules.minLength  !== undefined && trimmedValue.length < customRules.minLength)
+    if (customBehaviours.minLength  !== undefined && trimmedValue.length < customBehaviours.minLength)
       return 'errorTooShort';
-    if (customRules.maxLength  !== undefined && value.length > customRules.maxLength)
+    if (customBehaviours.maxLength  !== undefined && value.length > customBehaviours.maxLength)
       return 'errorTooLong';
 
     // check content
-    if (customRules.numbers    !== undefined && customRules.numbers.allowed === false && numberChecker(value) === true)
+    if (customBehaviours.numbers    !== undefined && customBehaviours.numbers.allowed === false && numberChecker(value) === true)
       return 'errorNumber';
-    if (customRules.numbers    !== undefined && customRules.numbers.mandatory === true && numberChecker(value) === false)
+    if (customBehaviours.numbers    !== undefined && customBehaviours.numbers.mandatory === true && numberChecker(value) === false)
       return 'errorNoNumber';
-    if (customRules.characters !== undefined && customRules.characters.allowed === false && characterChecker(value) === true)
+    if (customBehaviours.characters !== undefined && customBehaviours.characters.allowed === false && characterChecker(value) === true)
       return 'errorCharacter';
-    if (customRules.characters !== undefined && customRules.characters.mandatory === true && characterChecker(value) === false)
+    if (customBehaviours.characters !== undefined && customBehaviours.characters.mandatory === true && characterChecker(value) === false)
       return 'errorNoCharacter';
 
     // check if the verification matches the

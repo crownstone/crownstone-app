@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RuleEditor", key)(a,b,c,d,e);
+  return Languages.get("BehaviourEditor", key)(a,b,c,d,e);
 }
 import { LiveComponent }          from "../../../LiveComponent";
 import * as React from 'react';
@@ -35,13 +35,13 @@ import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../Exter
 import { Button } from "../../../components/Button";
 
 
-export class RuleEditor extends LiveComponent<
-  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, selectedDay?: string, twilightRule: boolean},
+export class BehaviourEditor extends LiveComponent<
+  {data: behaviour | twilight, sphereId: string, stoneId: string, behaviourId?: string, selectedDay?: string, twilightBehaviour: boolean},
   {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean}
   > {
   references = [];
   amountOfLines = 0;
-  rule : AicoreBehaviour | AicoreTwilight;
+  behaviour : AicoreBehaviour | AicoreTwilight;
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
@@ -62,17 +62,17 @@ export class RuleEditor extends LiveComponent<
       mainBottomHeight:  new Animated.Value(this.baseHeight),
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
-      showCustomTimeData: this.props.ruleId ? true : false,
+      showCustomTimeData: this.props.behaviourId ? true : false,
     };
 
 
-    if (this.props.twilightRule) {
+    if (this.props.twilightBehaviour) {
       // @ts-ignore
-      this.rule =   new AicoreTwilight(this.props.data);
+      this.behaviour =   new AicoreTwilight(this.props.data);
       let customIntensity = 40;
 
-      if (this.rule.rule.action.data !== 60 && this.rule.rule.action.data !== 80) {
-        customIntensity = this.rule.rule.action.data;
+      if (this.behaviour.behaviour.action.data !== 60 && this.behaviour.behaviour.action.data !== 80) {
+        customIntensity = this.behaviour.behaviour.action.data;
       }
 
 
@@ -86,18 +86,18 @@ export class RuleEditor extends LiveComponent<
           dark:     new AicoreTwilight().setTimeWhenDark(),
           sunUp:    new AicoreTwilight().setTimeWhenSunUp(),
           allDay:   new AicoreTwilight().setTimeAllday(),
-          specific: this.props.ruleId &&  this.rule.isUsingClockTime() ? this.rule : new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
-          custom:   this.props.ruleId && !this.rule.isUsingClockTime() ? this.rule : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
+          specific: this.props.behaviourId &&  this.behaviour.isUsingClockTime() ? this.behaviour : new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
+          custom:   this.props.behaviourId && !this.behaviour.isUsingClockTime() ? this.behaviour : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
         },
       }
     }
     else {
       // @ts-ignore
-      this.rule =   new AicoreBehaviour(this.props.data);
+      this.behaviour =   new AicoreBehaviour(this.props.data);
       this.exampleBehaviours = {
         action: {
           on:       new AicoreBehaviour(),
-          dimming:  new AicoreBehaviour().setActionState(this.rule.rule.action.data < 100 ? this.rule.rule.action.data : 50),
+          dimming:  new AicoreBehaviour().setActionState(this.behaviour.behaviour.action.data < 100 ? this.behaviour.behaviour.action.data : 50),
         },
         presence: {
           somebody: new AicoreBehaviour().setPresenceSomebody(),
@@ -113,8 +113,8 @@ export class RuleEditor extends LiveComponent<
           dark:     new AicoreBehaviour().setTimeWhenDark(),
           sunUp:    new AicoreBehaviour().setTimeWhenSunUp(),
           allDay:   new AicoreBehaviour().setTimeAllday(),
-          specific: this.props.ruleId &&  this.rule.isUsingClockTime() ? this.rule : new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
-          custom:   this.props.ruleId && !this.rule.isUsingClockTime() ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
+          specific: this.props.behaviourId &&  this.behaviour.isUsingClockTime() ? this.behaviour : new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
+          custom:   this.props.behaviourId && !this.behaviour.isUsingClockTime() ? this.behaviour : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
         },
         option: {
           inSphere: new AicoreBehaviour().setEndConditionWhilePeopleInSphere(),
@@ -127,18 +127,18 @@ export class RuleEditor extends LiveComponent<
 
 
 
-  getRuleSentenceElements() {
+  getBehaviourSentenceElements() {
     this.amountOfLines = 0;
 
     let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.csBlueDark.hex, fontSize:20, fontWeight:'bold', height:30  };
     let selectable  : TextStyle = {...normal, textDecorationLine:'underline' };
     let segmentStyle : ViewStyle = {...(styles.centered as ViewStyle), flexDirection:'row', width: screenWidth};
 
-    let ruleChunks = this.rule.getSelectableChunkData(this.props.sphereId);
+    let behaviourChunks = this.behaviour.getSelectableChunkData(this.props.sphereId);
 
     let segments = [];
     let result = [];
-    let paddingForRules = 7;
+    let paddingForBehaviours = 7;
     let letterLengthOnLine = 0;
     let wordsOnLine = [];
 
@@ -152,7 +152,7 @@ export class RuleEditor extends LiveComponent<
       }
     };
 
-    ruleChunks.forEach((chunk,i) => {
+    behaviourChunks.forEach((chunk,i) => {
       // refresh the selected chunk for the UI
       if (chunk.type === this.state.detail) { this.selectedChunk = chunk; }
 
@@ -161,7 +161,7 @@ export class RuleEditor extends LiveComponent<
         return;
       }
 
-      let lastChunk = i == ruleChunks.length -1;
+      let lastChunk = i == behaviourChunks.length -1;
       let words = chunk.label.split(" ");
       wordsOnLine = [];
 
@@ -189,7 +189,7 @@ export class RuleEditor extends LiveComponent<
           lastWordLength = AicoreUtil.getWordLength(words[i] + (lastChunk ? "" : ' '));
           letterLengthOnLine += lastWordLength;
         }
-        if (letterLengthOnLine > screenWidth - paddingForRules*2 && !lastChunk) {
+        if (letterLengthOnLine > screenWidth - paddingForBehaviours*2 && !lastChunk) {
           putWordsIntoSegments();
           putSegmentsIntoLine();
           letterLengthOnLine += lastWordLength;
@@ -266,15 +266,15 @@ export class RuleEditor extends LiveComponent<
 
   _shouldShowSuggestions() {
     let shouldShowTimeConflict = false;
-    let showPresenceSuggestion = this.props.twilightRule === false && this.rule.isUsingPresence() === false;
+    let showPresenceSuggestion = this.props.twilightBehaviour === false && this.behaviour.isUsingPresence() === false;
 
-    let showTimeSuggestion = this.rule.isActiveAllDay() === true;
-    let showEndConditionSuggestion = this.props.twilightRule === false &&
+    let showTimeSuggestion = this.behaviour.isActiveAllDay() === true;
+    let showEndConditionSuggestion = this.props.twilightBehaviour === false &&
       (
-        (this.rule.isUsingClockEndTime() && this.rule.getHour() !== null && this.rule.getHour() >= 20)
-        || this.rule.isUsingSunsetAsEndTime()
+        (this.behaviour.isUsingClockEndTime() && this.behaviour.getHour() !== null && this.behaviour.getHour() >= 20)
+        || this.behaviour.isUsingSunsetAsEndTime()
       ) &&
-      this.rule.hasNoEndCondition();
+      this.behaviour.hasNoEndCondition();
 
     return {
       showPresenceSuggestion:     showPresenceSuggestion     && !shouldShowTimeConflict,
@@ -298,7 +298,7 @@ export class RuleEditor extends LiveComponent<
           iconColor={colors.red.hex}
           icon={'md-remove-circle'}
           key={"timeConflictSuggestion"}
-          label={ lang("There_aleady_is_an_active", this.props.twilightRule,this.rule.getTimeString()) }
+          label={ lang("There_aleady_is_an_active", this.props.twilightBehaviour,this.behaviour.getTimeString()) }
           callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
       />);
     }
@@ -317,7 +317,7 @@ export class RuleEditor extends LiveComponent<
       />);
     }
     if (showEndConditionSuggestion) {
-      let timeStr = this.rule.isUsingSunsetAsEndTime() ? AicoreUtil.getSunsetTimeString(this.props.sphereId) : AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
+      let timeStr = this.behaviour.isUsingSunsetAsEndTime() ? AicoreUtil.getSunsetTimeString(this.props.sphereId) : AicoreUtil.getClockTimeStr(this.behaviour.getHour(), this.behaviour.getMinutes());
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<Button
         key={"optionSuggestion"}
@@ -340,10 +340,10 @@ export class RuleEditor extends LiveComponent<
     let stone = sphere.stones[this.props.stoneId];
 
     core.eventBus.emit("showDimLevelOverlay",{
-      initialValue: this.rule.willDim() ? this.rule.getDimPercentage() : exampleBehaviour.getDimPercentage(),
+      initialValue: this.behaviour.willDim() ? this.behaviour.getDimPercentage() : exampleBehaviour.getDimPercentage(),
       callback: (value) => {
         exampleBehaviour.setDimPercentage(value);
-        this.rule.setDimPercentage(value);
+        this.behaviour.setDimPercentage(value);
         this.setState({selectedDetailField: selectionDescription})
       }
     })
@@ -372,13 +372,13 @@ export class RuleEditor extends LiveComponent<
       callback: (selection) => {
         if (selection.length > 0) {
           this.exampleBehaviours.location.custom.setPresenceInLocations(selection);
-          this.rule.setPresenceInLocations(selection);
+          this.behaviour.setPresenceInLocations(selection);
         }
         this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "3"})
       },
       themeColor: colors.green.rgba(0.8),
       allowMultipleSelections: true,
-      selection: this.rule.getLocationUids(),
+      selection: this.behaviour.getLocationUids(),
       image: require("../../../../../assets/images/overlayCircles/roomsCircle.png")
     })
   }
@@ -394,7 +394,7 @@ export class RuleEditor extends LiveComponent<
     core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
       callback: (newTime : aicoreTime) => {
         this.exampleBehaviours.time[exampleOriginField].setTime(newTime);
-        this.rule.setTime(newTime);
+        this.behaviour.setTime(newTime);
 
         onSelect();
       },
@@ -415,23 +415,23 @@ export class RuleEditor extends LiveComponent<
     return false;
   }
 
-  _evaluateActionSelection( selectedDescription, ruleToMatch ) {
-    return this._evaluateSelection(selectedDescription) || this.rule.doesActionMatch(ruleToMatch);
+  _evaluateActionSelection( selectedDescription, behaviourToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.behaviour.doesActionMatch(behaviourToMatch);
   }
-  _evaluateTimeSelection( selectedDescription, ruleToMatch ) {
-    return this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch);
+  _evaluateTimeSelection( selectedDescription, behaviourToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.behaviour.doesTimeMatch(behaviourToMatch);
   }
-  _evaluatePresenceLocationSelection( selectedDescription, ruleToMatch ) {
-    return this._evaluateSelection(selectedDescription) || this.rule.doesPresenceLocationMatch(ruleToMatch);
+  _evaluatePresenceLocationSelection( selectedDescription, behaviourToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.behaviour.doesPresenceLocationMatch(behaviourToMatch);
   }
-  _evaluateOptionSelection( selectedDescription, ruleToMatch ) {
-    return this._evaluateSelection(selectedDescription) || this.rule.doesEndConditionMatch(ruleToMatch);
+  _evaluateOptionSelection( selectedDescription, behaviourToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.behaviour.doesEndConditionMatch(behaviourToMatch);
   }
 
 
   _getNumberOfDetailSlots(selectedBehaviourType) {
     let details = null;
-    if (this.props.twilightRule) {
+    if (this.props.twilightBehaviour) {
       switch (selectedBehaviourType) {
         case SELECTABLE_TYPE.ACTION:
           return 3 + 1; // 1 for explanation
@@ -458,7 +458,7 @@ export class RuleEditor extends LiveComponent<
 
   _getDetails() {
     let details = null;
-    if (this.props.twilightRule) {
+    if (this.props.twilightBehaviour) {
       switch (this.state.detail) {
         case SELECTABLE_TYPE.ACTION:
           details = (
@@ -475,7 +475,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "1", this.exampleBehaviours.action.dimming8);
                   },
                   onSelect: () => {
-                    this.rule.setDimPercentage(80);
+                    this.behaviour.setDimPercentage(80);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "1"})
                   }
                 },
@@ -485,7 +485,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "4", this.exampleBehaviours.action.dimming6);
                   },
                   onSelect: () => {
-                    this.rule.setDimPercentage(60);
+                    this.behaviour.setDimPercentage(60);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "2"})
                   }
                 },
@@ -510,22 +510,22 @@ export class RuleEditor extends LiveComponent<
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.behaviour)) + ".",
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "1", this.exampleBehaviours.time.dark);
                   },
                   onSelect: () => {
-                    this.rule.setTimeWhenDark();
+                    this.behaviour.setTimeWhenDark();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.behaviour)) + ".",
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "2", this.exampleBehaviours.time.sunUp);
                   },
                   onSelect: () => {
-                    this.rule.setTimeWhenSunUp();
+                    this.behaviour.setTimeWhenSunUp();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "2"})
                   }
                 },
@@ -535,12 +535,12 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
-                    this.rule.setTimeAllday();
+                    this.behaviour.setTimeAllday();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.behaviour)) + ".",
                   subLabel: "(tap to customize)",
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
@@ -583,13 +583,13 @@ export class RuleEditor extends LiveComponent<
               elements={[
                 {
                   label: lang("On"),
-                  isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.on) },
-                  onSelect: () => {this.rule.setActionState(100); this.forceUpdate(); }
+                  isSelected: () => { return this.behaviour.doesActionMatch(this.exampleBehaviours.action.on) },
+                  onSelect: () => {this.behaviour.setActionState(100); this.forceUpdate(); }
                 },
                 {
-                  label: lang("Dimmed____", Math.round(this.rule.willDim() ? this.rule.getDimPercentage() : 50)),
+                  label: lang("Dimmed____", Math.round(this.behaviour.willDim() ? this.behaviour.getDimPercentage() : 50)),
                   subLabel: lang("_tap_to_change_"),
-                  isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
+                  isSelected: () => { return this.behaviour.doesActionMatch(this.exampleBehaviours.action.dimming)},
                   onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }
                 },
               ]}
@@ -605,19 +605,19 @@ export class RuleEditor extends LiveComponent<
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.somebody.rule).presenceStr),
-                  isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
-                  onSelect: () => { this.rule.setPresenceSomebody(); this.forceUpdate(); }
+                  label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.somebody.behaviour).presenceStr),
+                  isSelected: () => { return this.behaviour.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
+                  onSelect: () => { this.behaviour.setPresenceSomebody(); this.forceUpdate(); }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.nobody.rule).presenceStr),
-                  isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
-                  onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
+                  label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.nobody.behaviour).presenceStr),
+                  isSelected: () => { return this.behaviour.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
+                  onSelect: () => { this.behaviour.setPresenceNobody(); this.forceUpdate(); }
                 },
                 {
                   label: lang("Ignore_presence"),
-                  isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                  onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
+                  isSelected: () => { return this.behaviour.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
+                  onSelect: () => { this.behaviour.setPresenceIgnore(); this.forceUpdate(); }
                 },
               ]}
             />
@@ -636,7 +636,7 @@ export class RuleEditor extends LiveComponent<
                   isSelected: () => {
                     return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "1", this.exampleBehaviours.location.sphere);
                   },
-                  onSelect: () => { this.rule.setPresenceInSphere(); this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "1"}) }
+                  onSelect: () => { this.behaviour.setPresenceInSphere(); this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "1"}) }
                 },
                 {
                   label: lang("In_the_room_"),
@@ -653,7 +653,7 @@ export class RuleEditor extends LiveComponent<
                     let state = core.store.getState();
                     let sphere = state.spheres[this.props.sphereId];
                     let stone = sphere.stones[this.props.stoneId];
-                    this.rule.setPresenceInLocations([DataUtil.locationIdToUid(this.props.sphereId, stone.config.locationId)]);
+                    this.behaviour.setPresenceInLocations([DataUtil.locationIdToUid(this.props.sphereId, stone.config.locationId)]);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                   }
                 },
@@ -686,22 +686,22 @@ export class RuleEditor extends LiveComponent<
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.behaviour)) + ".",
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "1", this.exampleBehaviours.time.dark);
                   },
                   onSelect: () => {
-                    this.rule.setTimeWhenDark().setNoEndCondition();
+                    this.behaviour.setTimeWhenDark().setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.behaviour)) + ".",
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "2", this.exampleBehaviours.time.sunUp);
                   },
                   onSelect: () => {
-                    this.rule.setTimeWhenSunUp();
+                    this.behaviour.setTimeWhenSunUp();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "2"})
                   }
                 },
@@ -711,12 +711,12 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
-                    this.rule.setTimeAllday().setNoEndCondition();
+                    this.behaviour.setTimeAllday().setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.behaviour)) + ".",
                   subLabel: lang("_tap_to_customize_"),
                   isSelected: () => {
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
@@ -752,32 +752,32 @@ export class RuleEditor extends LiveComponent<
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inRoom.rule).endConditionStr) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inRoom.behaviour).endConditionStr) + ".",
                   isSelected: () => {
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
                   onSelect: () => {
-                    this.rule.setEndConditionWhilePeopleInLocation(DataUtil.getLocationUIdFromStone(this.props.sphereId, this.props.stoneId));
+                    this.behaviour.setEndConditionWhilePeopleInLocation(DataUtil.getLocationUIdFromStone(this.props.sphereId, this.props.stoneId));
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "1"})
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inSphere.rule).endConditionStr) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inSphere.behaviour).endConditionStr) + ".",
                   isSelected: () => {
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "2", this.exampleBehaviours.option.inSphere);
                   },
                   onSelect: () => {
-                    this.rule.setEndConditionWhilePeopleInSphere();
+                    this.behaviour.setEndConditionWhilePeopleInSphere();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "2"})
                   }
                 },
                 {
                   label: lang("Yes__just_turn_off_afterwa"),
                   isSelected: () => {
-                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.rule.hasNoEndCondition();
+                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.behaviour.hasNoEndCondition();
                   },
                   onSelect: () => {
-                    this.rule.setNoEndCondition();
+                    this.behaviour.setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "3"})
                   }
                 },
@@ -806,10 +806,10 @@ export class RuleEditor extends LiveComponent<
               NavigationUtil.navigate("DeviceSmartBehaviour_Wrapup", {
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
-                ruleId: this.props.ruleId,
-                rule: this.rule.stringify(),
+                behaviourId: this.props.behaviourId,
+                behaviour: this.behaviour.stringify(),
                 selectedDay: this.props.selectedDay,
-                twilightRule: this.props.twilightRule,
+                twilightBehaviour: this.props.twilightBehaviour,
               })}}
              label={lang("Use_Behaviour_")} />
 
@@ -825,7 +825,7 @@ export class RuleEditor extends LiveComponent<
     return (
       <View style={{flex:1}}>
         <View style={{flex:0.75}} />
-        { this.getRuleSentenceElements() }
+        { this.getBehaviourSentenceElements() }
         <View style={{flex:0.25}} />
         { this.getDetails() }
       </View>

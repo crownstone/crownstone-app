@@ -183,8 +183,8 @@ class MapProviderClass {
 
 
       Object.keys(sphere.stones).forEach((stoneId) => {
-        getFromItem(sphereId, sphere.stones[stoneId].rules,     this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
-        getFromItem(sphereId, sphere.stones[stoneId].abilities, this.cloud2localMap.abilities,  this.local2cloudMap.abilities);
+        getFromItem(sphereId, sphere.stones[stoneId].behaviours, this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
+        getFromItem(sphereId, sphere.stones[stoneId].abilities,  this.cloud2localMap.abilities,  this.local2cloudMap.abilities);
         Object.keys(sphere.stones[stoneId].abilities).forEach((abilityId) => {
           getFromItem(sphereId, sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
         })

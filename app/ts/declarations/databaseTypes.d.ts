@@ -51,7 +51,7 @@ interface DatabaseAction {
   stoneId?     : string,
   keyId?       : string,
   hubId?       : string,
-  ruleId?      : string,
+  behaviourId? : string,
   abilityId?   : string,
   propertyId?  : string,
   userId?      : string,

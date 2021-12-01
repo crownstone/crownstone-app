@@ -16,24 +16,24 @@ const EMPTY_BEHAVIOUR : twilight = {
 };
 
 export class AicoreTwilight extends AicoreBehaviourCore {
-  originalRule : twilight;
-  rule : twilight;
+  originalBehaviour : twilight;
+  behaviour : twilight;
 
   constructor(behaviour?: twilight | AicoreTwilight | string) {
     super();
 
     if (!behaviour) {
-      this.rule = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
+      this.behaviour = xUtil.deepExtend({},EMPTY_BEHAVIOUR);
     }
     else if (typeof behaviour === 'string') {
       this.fromString(behaviour);
     }
     else {
       if (!(behaviour instanceof AicoreTwilight)) {
-        this.rule = behaviour;
+        this.behaviour = behaviour;
       }
       else {
-        this.rule = xUtil.deepExtend({}, behaviour.rule);
+        this.behaviour = xUtil.deepExtend({}, behaviour.behaviour);
       }
     }
   }
@@ -41,19 +41,19 @@ export class AicoreTwilight extends AicoreBehaviourCore {
 
   _getChunks(sphereId: string) {
     let intentionStr = lang("If_Im_turned_on");
-    let timeStr   = AicoreUtil.extractTimeString(this.rule, true);
+    let timeStr   = AicoreUtil.extractTimeString(this.behaviour, true);
     if (timeStr) {
       timeStr += ',';
     }
     else {
       intentionStr += ',';
     }
-    let actionStr = AicoreUtil.extractActionString(this.rule);
+    let actionStr = AicoreUtil.extractActionString(this.behaviour);
 
     return {
       intention:      { label: intentionStr,   data: null },
-      time:           { label: timeStr,        data: this.rule.time },
-      action:         { label: actionStr,      data: this.rule.action },
+      time:           { label: timeStr,        data: this.behaviour.time },
+      action:         { label: actionStr,      data: this.behaviour.action },
     }
   }
 
@@ -106,7 +106,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   setEndConditionWhilePeopleInLocation(locationId) : AicoreTwilight { return this;  }
 
   doesActionMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
-    return xUtil.deepCompare(this.rule.action, otherAicoreTwilight.rule.action);
+    return xUtil.deepCompare(this.behaviour.action, otherAicoreTwilight.behaviour.action);
   }
 
   doesPresenceTypeMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
@@ -114,7 +114,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   doesPresenceMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesEndConditionMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesTimeMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
-    let match = xUtil.deepCompare(this.rule.time, otherAicoreTwilight.rule.time);
+    let match = xUtil.deepCompare(this.behaviour.time, otherAicoreTwilight.behaviour.time);
     return match;
   }
 

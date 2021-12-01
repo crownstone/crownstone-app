@@ -979,7 +979,7 @@ export default {
     Customize_my_Behaviour_:                function() { return "Pas mijn gedrag aan!"; },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor.tsx",
   },
-  DeviceSmartBehaviour_NoRulesYet:{
+  DeviceSmartBehaviour_NoBehavioursYet:{
     __stringSameAsBaseLanguage: {
       _You_dont_have_permission_t_header:    false,
       _You_dont_have_permission_t_body:      false,
@@ -3332,7 +3332,7 @@ export default {
     Walk_around_the_room_so__:              function() { return "Loop door de kamer, zodat ik kan leren om je te lokaliseren in de kamer. Elke beat leer ik een beetje meer over de kamer!"; },
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_training.tsx",
   },
-  RuleEditor:{
+  BehaviourEditor:{
     __stringSameAsBaseLanguage: {
       What_should_I_be_:                     false,
       My_behaviour_defines_when:             false,
@@ -3405,7 +3405,7 @@ export default {
     _tap_to_customize_:                     function() { return "(aanpassen)"; },
     _tap_to_create_:                        function() { return "(aanpassen)"; },
     You_can_use_in_the_house_w:             function() { return "Je kan \"thuis\" gebruiken als je minder dan " + arguments[0] + " Crownstones hebt."; },
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourRuleEditor.tsx",
+    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourBehaviourEditor.tsx",
   },
   ScanningForSetupCrownstones:{
     __stringSameAsBaseLanguage: {
@@ -4354,7 +4354,7 @@ export default {
     Cancel:                                 function() { return "Annuleer"; },
     __filename: "../js/views/settingsViews/SetupShared.tsx",
   },
-  SmartBehaviourRule:{
+  SmartBehaviourBehaviour:{
     __stringSameAsBaseLanguage: {
       _Started_Yesterday_:                   false,
       _Are_you_sure___Since_thi_header:      false,
@@ -4373,7 +4373,7 @@ export default {
     __Not_on_Crownstone_yet__:              function() { return "( Staat nog niet op de Crownstone... )"; },
     __Not_removed_from_Crowns:              function() { return "( Nog niet van de Crownstone afgehaald... )"; },
     Indoor_localization_disab:              function() { return "De lokalisatie staat uit op deze telefoon (via de app instellingen)."; },
-    __filename: "../../js/views/deviceViews/smartBehaviour/supportComponents/SmartBehaviourRule.tsx",
+    __filename: "../../js/views/deviceViews/smartBehaviour/supportComponents/SmartBehaviourBehaviour.tsx",
   },
   SmartBehaviourSummaryGraph:{
     __stringSameAsBaseLanguage: {

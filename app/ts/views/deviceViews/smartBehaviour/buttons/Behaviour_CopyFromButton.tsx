@@ -15,7 +15,7 @@ import { StoneUtil } from "../../../../util/StoneUtil";
 import { BehaviourCopySuccessPopup } from "../DeviceSmartBehaviour";
 import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
 
-export function BehaviourCopyFromButton({sphereId, stoneId, rulesAvailable}) {
+export function BehaviourCopyFromButton({sphereId, stoneId, behavioursAvailable}) {
   return (
     <Button
       backgroundColor={colors.blue.rgba(0.5)}
@@ -35,13 +35,13 @@ export function BehaviourCopyFromButton({sphereId, stoneId, rulesAvailable}) {
             stoneId: stoneId,
             copyType: "FROM",
             originId: stoneId,
-            callback: (fromStoneId, selectedRuleIds) => {
+            callback: (fromStoneId, selectedbehaviourIds) => {
               let stoneName = DataUtil.getStoneName(sphereId, fromStoneId);
               Alert.alert(
                 lang("Shall_I_copy_the_behaviou", stoneName),
                 undefined,
                 [{text:lang("Cancel")}, {text:lang("OK"), onPress:() => {
-                    StoneUtil.copyRulesBetweenStones(sphereId, fromStoneId, stoneId, selectedRuleIds)
+                    StoneUtil.copyBehavioursBetweenStones(sphereId, fromStoneId, stoneId, selectedbehaviourIds)
                       .then((success) => {
                         if (success) {
                           BehaviourCopySuccessPopup();
@@ -52,7 +52,7 @@ export function BehaviourCopyFromButton({sphereId, stoneId, rulesAvailable}) {
           });
         }
 
-        if (rulesAvailable) {
+        if (behavioursAvailable) {
           Alert.alert(
             lang("_Copying_will_override_ex_header"),
             lang("_Copying_will_override_ex_body"),

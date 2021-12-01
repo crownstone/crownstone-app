@@ -48,16 +48,16 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   getOptions(examples : AicoreBehaviour[] | AicoreTwilight[], typeLabel, twilight=false) : interviewOption[] {
     let options = [];
 
-    examples.forEach((rule) => {
+    examples.forEach((behaviour) => {
       options.push({
-        label: rule.getSentence(this.props.sphereId),
+        label: behaviour.getSentence(this.props.sphereId),
         onSelect: () => {
-          if (AicoreUtil.canBehaviourUseIndoorLocalization(this.props.sphereId, lang("Pick_a_different_example_"), rule) === false) {
+          if (AicoreUtil.canBehaviourUseIndoorLocalization(this.props.sphereId, lang("Pick_a_different_example_"), behaviour) === false) {
             return false;
           }
 
           NavigationUtil.navigate( "DeviceSmartBehaviour_Editor", {
-            twilightRule: twilight, data: rule, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null, typeLabel: typeLabel})
+            twilightBehaviour: twilight, data: behaviour, sphereId: this.props.sphereId, stoneId: this.props.stoneId, behaviourId: null, typeLabel: typeLabel})
         }
       })
     })

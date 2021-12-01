@@ -8,11 +8,11 @@ import * as React from 'react';
 import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
-  availableModalHeight, background,
+  background,
   colors,
   deviceStyles,
   screenHeight,
@@ -22,23 +22,20 @@ import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
-import { ScaledImage } from "../../components/ScaledImage";
 import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
-import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
-import { xUtil } from "../../../util/StandAloneUtil";
 import ResponsiveText from "../../components/ResponsiveText";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Button } from "../../components/Button";
-import { NoRulesYet } from "./DeviceSmartBehaviour_NoRulesYet";
+import { NoBehavioursYet } from "./DeviceSmartBehaviour_NoBehavioursYet";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 
@@ -99,18 +96,18 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     BackButtonHandler.clearOverride(className);
   }
 
-  copySelectedRulesToStones(stoneIds) {
+  copySelectedBehavioursToStones(stoneIds) {
     let state = core.store.getState();
 
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return;
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return;
-    let rules = stone.rules;
-    let ruleIds = Object.keys(rules);
+    let behaviours = stone.behaviours;
+    let behaviourIds = Object.keys(behaviours);
 
     stoneIds.forEach((toStoneId) => {
-      StoneUtil.copyRulesBetweenStones(this.props.sphereId, this.props.stoneId, toStoneId, ruleIds);
+      StoneUtil.copyBehavioursBetweenStones(this.props.sphereId, this.props.stoneId, toStoneId, behaviourIds);
     })
   }
 
@@ -121,93 +118,93 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return <View />;
-    let rules = stone.rules;
+    let behaviours = stone.behaviours;
 
-    let ruleIds = Object.keys(rules);
+    let behaviourIds = Object.keys(behaviours);
 
-    let ruleComponents = [];
-    let activeRules = {};
+    let behaviourComponents = [];
+    let activeBehaviours = {};
     let activityMap = {};
 
     let previousDay = (DAY_INDICES_SUNDAY_START.indexOf(this.state.activeDay) + 6) % 7;
 
-    let hasRules = ruleIds.length;
+    let hasBehaviours = behaviourIds.length;
 
-    if (!hasRules && !this.state.editMode) {
-      return <NoRulesYet sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
+    if (!hasBehaviours && !this.state.editMode) {
+      return <NoBehavioursYet sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 
-    ruleIds.sort((a,b) => {
-      let aIsYesterday = !rules[a].activeDays[this.state.activeDay] && rules[a].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
+    behaviourIds.sort((a,b) => {
+      let aIsYesterday = !behaviours[a].activeDays[this.state.activeDay] && behaviours[a].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
       if (aIsYesterday) { return -1; }
-      let bIsYesterday = !rules[b].activeDays[this.state.activeDay] && rules[b].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
+      let bIsYesterday = !behaviours[b].activeDays[this.state.activeDay] && behaviours[b].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
       if (bIsYesterday) { return 1; }
 
-      if (AicoreUtil.aStartsBeforeB(rules[a], rules[b], this.props.sphereId)) {
+      if (AicoreUtil.aStartsBeforeB(behaviours[a], behaviours[b], this.props.sphereId)) {
         return 1;
       }
       return -1;
     })
 
-    let presenceRulePresent = false;
-    let roomBasedPresenceRulePresent = false;
+    let presenceBehaviourPresent = false;
+    let roomBasedPresenceBehaviourPresent = false;
     let behaviourOverridden = stone.state.behaviourOverridden;
 
-    ruleIds.forEach((ruleId) => {
-      let rule = rules[ruleId];
-      let active = rule.activeDays[this.state.activeDay];
-      let partiallyActive = !active && rule.activeDays[DAY_INDICES_SUNDAY_START[previousDay]] && AicoreUtil.endsNextDay(rule, this.props.sphereId);
+    behaviourIds.forEach((behaviourId) => {
+      let behaviour = behaviours[behaviourId];
+      let active = behaviour.activeDays[this.state.activeDay];
+      let partiallyActive = !active && behaviour.activeDays[DAY_INDICES_SUNDAY_START[previousDay]] && AicoreUtil.endsNextDay(behaviour, this.props.sphereId);
 
       if (active || (partiallyActive && !this.state.editMode)) {
-        activeRules[ruleId] = rules[ruleId];
-        activityMap[ruleId] = {
-          yesterday: rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]],
-          today:     rules[ruleId].activeDays[this.state.activeDay],
+        activeBehaviours[behaviourId] = behaviours[behaviourId];
+        activityMap[behaviourId] = {
+          yesterday: behaviours[behaviourId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]],
+          today:     behaviours[behaviourId].activeDays[this.state.activeDay],
         };
 
         let overrideActive = false;
 
-        let overrideCheck = (ruleObj) => {
-          if (ruleObj && ruleObj.isCurrentlyActive(this.props.sphereId)) {
-            if (Math.round(100*stone.state.state) !== ruleObj.getDimPercentage() && behaviourOverridden) {
+        let overrideCheck = (behaviourObj) => {
+          if (behaviourObj && behaviourObj.isCurrentlyActive(this.props.sphereId)) {
+            if (Math.round(100*stone.state.state) !== behaviourObj.getDimPercentage() && behaviourOverridden) {
               overrideActive = true;
             }
           }
         }
 
 
-        if (rule.type === BEHAVIOUR_TYPES.behaviour) {
-          let ruleObj = new AicoreBehaviour(rule.data);
-          overrideCheck(ruleObj)
-          if (ruleObj.isUsingPresence()) {
-            if (ruleObj.isUsingMultiRoomPresence() || ruleObj.isUsingSingleRoomPresence()) {
-              roomBasedPresenceRulePresent = true;
+        if (behaviour.type === BEHAVIOUR_TYPES.behaviour) {
+          let behaviourObj = new AicoreBehaviour(behaviour.data);
+          overrideCheck(behaviourObj)
+          if (behaviourObj.isUsingPresence()) {
+            if (behaviourObj.isUsingMultiRoomPresence() || behaviourObj.isUsingSingleRoomPresence()) {
+              roomBasedPresenceBehaviourPresent = true;
             }
-            presenceRulePresent = true;
+            presenceBehaviourPresent = true;
           }
         }
         else {
-          let ruleObj = new AicoreTwilight(rule.data);
-          overrideCheck(ruleObj)
+          let behaviourObj = new AicoreTwilight(behaviour.data);
+          overrideCheck(behaviourObj)
         }
 
-        let ruleComponent = (
-          <SmartBehaviourRule
-            key={"description" + ruleId}
-            rule={rule}
+        let behaviourComponent = (
+          <SmartBehaviour
+            key={"description" + behaviourId}
+            behaviour={behaviour}
             sphereId={this.props.sphereId}
             stoneId={this.props.stoneId}
             activeDay={this.state.activeDay}
             indoorLocalizationDisabled={state.app.indoorLocalizationEnabled !== true}
-            startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]]}
-            ruleId={ruleId}
+            startedYesterday={!behaviours[behaviourId].activeDays[this.state.activeDay] && behaviours[behaviourId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]]}
+            behaviourId={behaviourId}
             overrideActive={overrideActive}
             editMode={this.state.editMode}
             faded={partiallyActive}
           />
         );
 
-        ruleComponents.push(ruleComponent);
+        behaviourComponents.push(behaviourComponent);
       }
     });
 
@@ -240,11 +237,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
             <SlideFadeInView visible={!this.state.editMode} height={0.1*iconSize + 90}>
               <View style={{height: 0.1*iconSize}} />
-              <SmartBehaviourSummaryGraph rules={activeRules} activityMap={activityMap} sphereId={this.props.sphereId} />
+              <SmartBehaviourSummaryGraph behaviours={activeBehaviours} activityMap={activityMap} sphereId={this.props.sphereId} />
             </SlideFadeInView>
             { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>{ lang("This_Crownstone_is_locked") }</Text> }
             <View style={{flex:1}} />
-            {ruleComponents}
+            {behaviourComponents}
             <View style={{flex:2}} />
 
             <SlideFadeInView visible={this.state.editMode} height={80}>
@@ -255,23 +252,23 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
-              <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} rulesAvailable={ruleIds.length > 0}/>
+              <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} behavioursAvailable={behaviourIds.length > 0}/>
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <Button
                 backgroundColor={ colors.blue.rgba(0.5) }
                 label={ lang("Copy_to___") }
                 callback={() => {
-                  let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
+                  let requireDimming = StoneUtil.doBehavioursRequireDimming(this.props.sphereId, this.props.stoneId, behaviourIds);
 
                   NavigationUtil.navigate('DeviceSmartBehaviour_CopyStoneSelection', {
                     sphereId: this.props.sphereId,
                     stoneId: this.props.stoneId,
                     copyType: "TO",
                     originId: this.props.stoneId,
-                    rulesRequireDimming: requireDimming,
+                    behavioursRequireDimming: requireDimming,
                     callback:(stoneIds) => {
-                      this.copySelectedRulesToStones(stoneIds);
+                      this.copySelectedBehavioursToStones(stoneIds);
                       BehaviourCopySuccessPopup();
                     }});
                 }}
@@ -286,7 +283,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
 
             <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
-              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceRulePresent,roomBasedPresenceRulePresent) }</Text>
+              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceBehaviourPresent,roomBasedPresenceBehaviourPresent) }</Text>
             </SlideFadeInView>
 
             <View style={{height:30}} />
@@ -335,7 +332,7 @@ function getTopBarProps(props, viewState) {
     }
     return NAVBAR_PARAMS_CACHE
   }
-  if (Object.keys(stone.rules).length === 0 && viewState.editMode !== true) {
+  if (Object.keys(stone.behaviours).length === 0 && viewState.editMode !== true) {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
       closeModal: true,

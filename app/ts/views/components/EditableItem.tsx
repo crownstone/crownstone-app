@@ -50,13 +50,13 @@ import { Popup } from "./editComponents/Popup";
  --> {label: field label, content: string, contentHeight: number}
 
  * explanation - Text above or below an editable item with padding.
- --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overbehaviour explanation style}
 
  * lightExplanation - Text above or below an editable item with padding.
- --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overbehaviour explanation style}
 
  * largeExplanation - Text above or below an editable item with padding.
- --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overbehaviour explanation style}
 
  * icon - Trigger to change the icon
  --> {label: field label, value: iconName, callback: (newValue) => {}}
@@ -67,8 +67,8 @@ import { Popup } from "./editComponents/Popup";
      icon: RN object to be in front of the label,
      label: field label,
      value: text,
-     valueStyle: style object to overrule value style,
-     labelStyle: style object to overrule label style
+     valueStyle: style object to overbehaviour value style,
+     labelStyle: style object to overbehaviour label style
    }
  * navigation - text with an > for navigation in a menu. The value and valueStyle is optional
  --> {
@@ -77,8 +77,8 @@ import { Popup } from "./editComponents/Popup";
      label: field label,
      value: text,
      callback: (newValue) => {},
-     valueStyle: style object to overrule value style,
-     labelStyle: style object to overrule label style
+     valueStyle: style object to overbehaviour value style,
+     labelStyle: style object to overbehaviour label style
    }
 
  * picture - Trigger to remove a picture or add one

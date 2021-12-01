@@ -93,7 +93,7 @@ import { Ability_SwitchcraftSettings }        from "../views/deviceViews/abiliti
 import { Ability_TapToToggleInformation }     from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
 import { DevicePowerUsage }                   from "../views/deviceViews/DevicePowerUsage";
 import { DeviceSmartBehaviour_CopyStoneSelection } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_CopyStoneSelection";
-import { DeviceSmartBehaviour_RuleSelector }  from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_RuleSelector";
+import { DeviceSmartBehaviour_BehaviourSelector }  from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_BehaviourSelector";
 import { NumericOverlay }                     from "../views/overlays/NumericOverlay";
 import { DEV_UserData }                       from "../views/dev/user/DEV_UserDataSpheres";
 import { DEV_PresenceMocking }                from "../views/dev/PresenceMocking/DEV_PresenceMocking";
@@ -158,7 +158,7 @@ export const Views = {
   DevicePowerUsage:                  DevicePowerUsage,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
   DeviceSmartBehaviour_CopyStoneSelection: DeviceSmartBehaviour_CopyStoneSelection,
-  DeviceSmartBehaviour_RuleSelector: DeviceSmartBehaviour_RuleSelector,
+  DeviceSmartBehaviour_BehaviourSelector: DeviceSmartBehaviour_BehaviourSelector,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,
   DeviceSmartBehaviour_Wrapup:       DeviceSmartBehaviour_Wrapup,

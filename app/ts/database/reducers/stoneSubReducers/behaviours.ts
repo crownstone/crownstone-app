@@ -8,7 +8,7 @@ export const BEHAVIOUR_TYPES = {
 let defaultSettings : behaviourWrapper = {
   id: undefined,
   type: null,
-  data: null, // this is the stringified rule
+  data: null, // this is the stringified behaviour
   activeDays: {
     Mon: false,
     Tue: false,
@@ -26,7 +26,7 @@ let defaultSettings : behaviourWrapper = {
   updatedAt: 1
 };
 
-let ruleReducer = (state = defaultSettings, action : any = {}) => {
+let behaviourReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
     case "UPDATE_BEHAVIOUR_CLOUD_ID":
       if (action.data) {
@@ -38,14 +38,14 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
     case 'INJECT_IDS':
       let newState = {...state};
       newState.activeDays = {...state.activeDays};
-      newState.id = action.ruleId;
+      newState.id = action.behaviourId;
       return newState;
     case 'ADD_STONE_BEHAVIOUR':
     case 'UPDATE_STONE_BEHAVIOUR':
       if (action.data) {
         let newState = {...state};
         if (action.type === 'ADD_STONE_BEHAVIOUR') {
-          newState.id = action.ruleId;
+          newState.id = action.behaviourId;
         }
 
         newState.activeDays = {...state.activeDays};
@@ -90,24 +90,24 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
 };
 
 
-// rule Reducer
+// behaviour Reducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_BEHAVIOURS_OF_STONE':
       return {};
     case 'REMOVE_STONE_BEHAVIOUR':
-      if (state[action.ruleId]) {
+      if (state[action.behaviourId]) {
         let newState = {...state};
-        delete newState[action.ruleId];
+        delete newState[action.behaviourId];
         return newState;
       }
       return state;
     default:
-      if (action.ruleId !== undefined) {
-        if (state[action.ruleId] !== undefined || action.type === "ADD_STONE_BEHAVIOUR") {
+      if (action.behaviourId !== undefined) {
+        if (state[action.behaviourId] !== undefined || action.type === "ADD_STONE_BEHAVIOUR") {
           return {
             ...state,
-            ...{[action.ruleId]: ruleReducer(state[action.ruleId], action)}
+            ...{[action.behaviourId]: behaviourReducer(state[action.behaviourId], action)}
           };
         }
       }

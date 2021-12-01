@@ -1,6 +1,6 @@
 import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
-import ruleReducer         from './stoneSubReducers/behaviours'
+import behaviourReducer    from './stoneSubReducers/behaviours'
 import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer  from './stoneSubReducers/lastUpdated'
 import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
@@ -52,7 +52,7 @@ let defaultSettings : StoneData = {
   reachability: {
     lastSeen: null,
   },
-  rules: {
+  behaviours: {
     // id: behaviourWrapper
   },
   abilities: {
@@ -268,7 +268,7 @@ let combinedStoneReducer = combineReducers({
   config:       stoneConfigReducer,
   state:        stoneStateReducer,
   abilities:    abilityReducer,
-  rules:        ruleReducer,
+  behaviours:   behaviourReducer,
   errors:       stoneErrorsReducer,
   lastUpdated:  lastUpdatedReducer,
   reachability: reachabilityReducer,

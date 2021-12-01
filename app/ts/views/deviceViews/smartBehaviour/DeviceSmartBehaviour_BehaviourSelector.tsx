@@ -19,40 +19,40 @@ import {
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import ResponsiveText from "../../components/ResponsiveText";
 import { Button } from "../../components/Button";
 
 
 /**
  *
- * We're going to copy a number of rules from the origin Crownstone to a number of other Crownstones.
+ * We're going to copy a number of behaviours from the origin Crownstone to a number of other Crownstones.
  *
  * Possible Conflicts:
- *  A - Rule requires dimming, but the candidate crownstone can't dim
- *  B - Candidate Crownstone already has a rule at that timepoint.
+ *  A - behaviour requires dimming, but the candidate crownstone can't dim
+ *  B - Candidate Crownstone already has a behaviour at that timepoint.
  *
  * Possible solutions for A:
  *  1 - During selection, provide an "Enable dimming" button before the Crownstone can be selected.
- *  2 - Change the rule from "40% dimmed" to "on" but keep the behaviour times and conditions the same (Twilight will be ignored).
- *  3 - Decline the copying of the rules that require dimming and copy the remainder.
+ *  2 - Change the behaviour from "40% dimmed" to "on" but keep the behaviour times and conditions the same (Twilight will be ignored).
+ *  3 - Decline the copying of the behaviours that require dimming and copy the remainder.
  *  4 - Just blindly copy the behaviour and twilight and let the Crownstone decide to what to do. If it can't dim, it will turn on.
  *
  * Possible solutions for B:
- *  1 - Detect if the rule has the exact same timeslots and replace, if not, merge. (example: copied behaviour from 15-20, existing from 14-21 --> 14-15 old 15-20 copied 20-21 old)
- *  2 - Delete existing conflicting rule and replace with new one.
+ *  1 - Detect if the behaviour has the exact same timeslots and replace, if not, merge. (example: copied behaviour from 15-20, existing from 14-21 --> 14-15 old 15-20 copied 20-21 old)
+ *  2 - Delete existing conflicting behaviour and replace with new one.
  *  3 - Block the copy fully
- *  4 - Only ignore the copying of the conflicting rules.
+ *  4 - Only ignore the copying of the conflicting behaviours.
  *
  * Decision:
  *  We go with A1 for the dimming and warn the user about the override (similar button system) and do B2
  *
- *  UPDATE: We copy ALL the rules from 1 Crownstone to another.
+ *  UPDATE: We copy ALL the behaviours from 1 Crownstone to another.
  *
  *  This class is unused but may be future work.
  *
  */
-export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
+export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, any> {
   static options(props) {
     const stone = core.store.getState().spheres[props.sphereId].stones[props.stoneId];
     return TopBarUtil.getOptions({title: stone.config.name});
@@ -75,41 +75,41 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return <View />;
-    let rules = stone.rules;
+    let behaviours = stone.behaviours;
 
-    let ruleIds = Object.keys(rules);
+    let behaviourIds = Object.keys(behaviours);
 
-    let ruleComponents = [];
+    let behaviourComponents = [];
 
-    ruleIds.forEach((ruleId) => {
-      let rule = rules[ruleId];
-      let ruleComponent = (
-        <SmartBehaviourRule
-          key={"description" + ruleId}
-          rule={rule}
+    behaviourIds.forEach((behaviourId) => {
+      let behaviour = behaviours[behaviourId];
+      let behaviourComponent = (
+        <SmartBehaviour
+          key={"description" + behaviourId}
+          behaviour={behaviour}
           indoorLocalizationDisabled={state.app.indoorLocalizationEnabled !== true}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
-          ruleId={ruleId}
+          behaviourId={behaviourId}
           editMode={this.state.editMode}
-          ruleSelection={this.state.ruleSelection}
-          selected={this.state.selectionMap[ruleId] === true}
+          behaviourSelection={this.state.behaviourSelection}
+          selected={this.state.selectionMap[behaviourId] === true}
           faded={false}
         />
       );
 
-      ruleComponents.push(<TouchableOpacity key={'ruleSelect' + ruleId} onPress={() => {
+      behaviourComponents.push(<TouchableOpacity key={'behaviourSelect' + behaviourId} onPress={() => {
         let newMap = {...this.state.selectionMap};
 
-        if (this.state.selectionMap[ruleId]) {
-          delete newMap[ruleId];
+        if (this.state.selectionMap[behaviourId]) {
+          delete newMap[behaviourId];
         }
         else {
-          newMap[ruleId] = true;
+          newMap[behaviourId] = true;
         }
 
         this.setState({selectionMap: newMap })
-      }}>{ruleComponent}</TouchableOpacity>);
+      }}>{behaviourComponent}</TouchableOpacity>);
     });
 
     return (
@@ -120,7 +120,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
             <View style={{height: 0.2*iconSize}} />
 
             <View style={{flex:1}} />
-            {ruleComponents}
+            {behaviourComponents}
             <View style={{flex:1}} />
             <SlideFadeInView visible={true} height={80}>
               <Button

@@ -5,8 +5,8 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 const DEFAULT_DELAY_SECONDS = 5*60;
 
 export class AicoreBehaviourCore {
-  originalRule : behaviour | twilight;
-  rule : behaviour | twilight;
+  originalBehaviour : behaviour | twilight;
+  behaviour : behaviour | twilight;
 
   /**
    * This sets the action value. 100 means fully on, 0..100 is dimming.
@@ -14,66 +14,66 @@ export class AicoreBehaviourCore {
    * @param value
    */
   setActionState(value: number)/* : AicoreBehaviourCore*/ {
-    this.rule.action.data = value;
+    this.behaviour.action.data = value;
     return this;
   }
 
   setDimPercentage(value: number)/* : AicoreBehaviourCore*/ {
-    this.rule.action.data = value;
+    this.behaviour.action.data = value;
     return this;
   }
 
   setTimeAllday()/* : AicoreBehaviourCore*/ {
-    this.rule.time = { type: "ALL_DAY" };
+    this.behaviour.time = { type: "ALL_DAY" };
     return this;
   }
   setTimeWhenDark()/* : AicoreBehaviourCore*/ {
-    this.rule.time = { type: "RANGE", from: {type:"SUNSET", offsetMinutes:0}, to: {type:"SUNRISE", offsetMinutes:0} };
+    this.behaviour.time = { type: "RANGE", from: {type:"SUNSET", offsetMinutes:0}, to: {type:"SUNRISE", offsetMinutes:0} };
     return this;
   }
   setTimeWhenSunUp()/* : AicoreBehaviourCore*/ {
-    this.rule.time = { type: "RANGE", from: {type:"SUNRISE", offsetMinutes:0}, to: {type:"SUNSET", offsetMinutes:0} };
+    this.behaviour.time = { type: "RANGE", from: {type:"SUNRISE", offsetMinutes:0}, to: {type:"SUNSET", offsetMinutes:0} };
     return this;
   }
   setTimeFromSunrise(offsetMinutes : number = 0)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
+    if (this.behaviour.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.from = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.from = { type: "SUNRISE", offsetMinutes: offsetMinutes };
     }
     return this;
   }
   setTimeFromSunset(offsetMinutes : number = 0)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") { this.setTimeWhenDark(); }
+    if (this.behaviour.time.type !== "RANGE") { this.setTimeWhenDark(); }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.from = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.from = { type: "SUNSET", offsetMinutes: offsetMinutes };
     }
     return this;
   }
   setTimeToSunrise(offsetMinutes : number = 0)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") { this.setTimeWhenDark(); }
+    if (this.behaviour.time.type !== "RANGE") { this.setTimeWhenDark(); }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.to = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.to = { type: "SUNRISE", offsetMinutes: offsetMinutes };
     }
     return this;
   }
   setTimeToSunset(offsetMinutes : number = 0)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
+    if (this.behaviour.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.to = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.to = { type: "SUNSET", offsetMinutes: offsetMinutes };
     }
     return this;
   }
   setTimeFrom(hours: number, minutes: number)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") {
+    if (this.behaviour.time.type !== "RANGE") {
       if (hours < 14) {
         this.setTimeWhenSunUp();
       }
@@ -82,8 +82,8 @@ export class AicoreBehaviourCore {
       }
     }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     }
     return this;
   }
@@ -91,7 +91,7 @@ export class AicoreBehaviourCore {
 
   setTimeTo(hours: number, minutes: number)/* : AicoreBehaviourCore*/ {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    if (this.rule.time.type !== "RANGE") {
+    if (this.behaviour.time.type !== "RANGE") {
       if (hours > 20) {
         this.setTimeFrom(18,0);
       }
@@ -103,34 +103,34 @@ export class AicoreBehaviourCore {
       }
     }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     }
     return this;
   }
 
   setTime(time: aicoreTime)/* : AicoreBehaviourCore*/ {
-    this.rule.time = time;
+    this.behaviour.time = time;
     return this;
   }
 
   insertTimeDataFrom(timeData: AicoreTimeData) {
-    if (this.rule.time.type !== "RANGE") {
+    if (this.behaviour.time.type !== "RANGE") {
       this.setTimeWhenDark();
     }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.from = timeData.data;
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.from = timeData.data;
     }
   }
 
   insertTimeDataTo(timeData: AicoreTimeData) {
-    if (this.rule.time.type !== "RANGE") {
+    if (this.behaviour.time.type !== "RANGE") {
       this.setTimeWhenDark();
     }
 
-    if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.to = timeData.data;
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      this.behaviour.time.to = timeData.data;
     }
   }
 
@@ -144,38 +144,38 @@ export class AicoreBehaviourCore {
   }
 
   willDim() : boolean {
-    return this.rule.action.data < 100;
+    return this.behaviour.action.data < 100;
   }
   getDimPercentage() : number {
-    return this.rule.action.data;
+    return this.behaviour.action.data;
   }
 
   getTime() : aicoreTime {
-    return this.rule.time;
+    return this.behaviour.time;
   }
   getHour() : number {
-    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
-      return this.rule.time.to.data.hours;
+    if (this.behaviour.time.type === "RANGE" && this.behaviour.time.to.type === "CLOCK") {
+      return this.behaviour.time.to.data.hours;
     }
     return null;
   }
   getMinutes() : number {
-    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
-      return this.rule.time.to.data.minutes;
+    if (this.behaviour.time.type === "RANGE" && this.behaviour.time.to.type === "CLOCK") {
+      return this.behaviour.time.to.data.minutes;
     }
     return null;
   }
 
   getTimeString() {
-    if (this.rule.time.type !== "ALL_DAY") {
-      return AicoreUtil.extractTimeString(this.rule);
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      return AicoreUtil.extractTimeString(this.behaviour);
     }
     return null;
   }
 
-  isOverlappingWith(otherRule : behaviour | twilight, sphereId) : boolean {
-    let otherTime = otherRule.time;
-    let myTime = this.rule.time;
+  isOverlappingWith(otherBehaviour : behaviour | twilight, sphereId) : boolean {
+    let otherTime = otherBehaviour.time;
+    let myTime = this.behaviour.time;
 
 
     /** All day is from 4:00 - 3:59 to cover most of the waking day for people. This will be configurable eventually **/
@@ -210,8 +210,8 @@ export class AicoreBehaviourCore {
    * @param sphereId
    */
   getFromTimeString(sphereId) {
-    if (this.rule.time.type !== "ALL_DAY") {
-      return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.from, sphereId);
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      return AicoreUtil.getTimeStrInTimeFormat(this.behaviour.time.from, sphereId);
     }
     return null;
   }
@@ -220,14 +220,14 @@ export class AicoreBehaviourCore {
    * @param sphereId
    */
   getToTimeString(sphereId) {
-    if (this.rule.time.type !== "ALL_DAY") {
-      return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.to, sphereId);
+    if (this.behaviour.time.type !== "ALL_DAY") {
+      return AicoreUtil.getTimeStrInTimeFormat(this.behaviour.time.to, sphereId);
     }
     return null;
   }
 
   isActiveAllDay() : boolean {
-    return this.rule.time.type === "ALL_DAY";
+    return this.behaviour.time.type === "ALL_DAY";
   }
 
   isUsingClockTime(): boolean {
@@ -235,36 +235,36 @@ export class AicoreBehaviourCore {
   }
 
   isUsingClockStartTime(): boolean {
-    return this.rule.time.type === "RANGE" && this.rule.time.from.type === "CLOCK";
+    return this.behaviour.time.type === "RANGE" && this.behaviour.time.from.type === "CLOCK";
   }
   isUsingClockEndTime(): boolean {
-    return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
+    return this.behaviour.time.type === "RANGE" && this.behaviour.time.to.type === "CLOCK";
   }
 
   isUsingSunsetAsEndTime(): boolean {
-    return this.rule.time.type === "RANGE" && this.rule.time.to.type === "SUNSET";
+    return this.behaviour.time.type === "RANGE" && this.behaviour.time.to.type === "SUNSET";
   }
 
   fromString(dataString) {
-    this.rule = JSON.parse(dataString);
+    this.behaviour = JSON.parse(dataString);
   }
 
   stringify() : string {
-    return JSON.stringify(this.rule);
+    return JSON.stringify(this.behaviour);
   }
 
 
-  isTheSameAs(otherRule: AicoreBehaviourCore | string) : boolean {
-    if (typeof otherRule === 'string') {
-      return xUtil.deepCompare(this.rule, JSON.parse(otherRule));
+  isTheSameAs(otherBehaviour: AicoreBehaviourCore | string) : boolean {
+    if (typeof otherBehaviour === 'string') {
+      return xUtil.deepCompare(this.behaviour, JSON.parse(otherBehaviour));
     }
-    return xUtil.deepCompare(this.rule, otherRule.rule);
+    return xUtil.deepCompare(this.behaviour, otherBehaviour.behaviour);
   }
 
   isCurrentlyActive(sphereId:string) : boolean {
     let now = new Date();
     let nowMinutes = now.getHours() * 60 + now.getMinutes();
-    let myTime = this.rule.time;
+    let myTime = this.behaviour.time;
 
     if (myTime.type === "ALL_DAY") { return true; }
 

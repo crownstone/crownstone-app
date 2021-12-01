@@ -31,31 +31,31 @@ import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abi
 
 /**
  *
- * We're going to copy a number of rules from the origin Crownstone to a number of other Crownstones.
+ * We're going to copy a number of behaviours from the origin Crownstone to a number of other Crownstones.
  *
  * Possible Conflicts:
- *  A - Rule requires dimming, but the candidate crownstone can't dim
- *  B - Candidate Crownstone already has a rule at that timepoint.
+ *  A - behaviour requires dimming, but the candidate crownstone can't dim
+ *  B - Candidate Crownstone already has a behaviour at that timepoint.
  *
  * Possible solutions for A:
  *  1 - During selection, provide an "Enable dimming" button before the Crownstone can be selected.
- *  2 - Change the rule from "40% dimmed" to "on" but keep the behaviour times and conditions the same (Twilight will be ignored).
- *  3 - Decline the copying of the rules that require dimming and copy the remainder.
+ *  2 - Change the behaviour from "40% dimmed" to "on" but keep the behaviour times and conditions the same (Twilight will be ignored).
+ *  3 - Decline the copying of the behaviours that require dimming and copy the remainder.
  *  4 - Just blindly copy the behaviour and twilight and let the Crownstone decide to what to do. If it can't dim, it will turn on.
  *
  * Possible solutions for B:
- *  1 - Detect if the rule has the exact same timeslots and replace, if not, merge. (example: copied behaviour from 15-20, existing from 14-21 --> 14-15 old 15-20 copied 20-21 old)
- *  2 - Delete existing conflicting rule and replace with new one.
+ *  1 - Detect if the behaviour has the exact same timeslots and replace, if not, merge. (example: copied behaviour from 15-20, existing from 14-21 --> 14-15 old 15-20 copied 20-21 old)
+ *  2 - Delete existing conflicting behaviour and replace with new one.
  *  3 - Block the copy fully
- *  4 - Only ignore the copying of the conflicting rules.
+ *  4 - Only ignore the copying of the conflicting behaviours.
  *
  * Decision:
  *  We go with A1 for the dimming and warn the user about the override (similar button system) and do B2
  *
- *  UPDATE: We copy ALL the rules from 1 Crownstone to another.
+ *  UPDATE: We copy ALL the behaviours from 1 Crownstone to another.
  *
  */
-export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, rulesRequireDimming: true, isModal: boolean}, any> {
+export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, behavioursRequireDimming: true, isModal: boolean}, any> {
   static options = {
     topBar: { visible: false, height: 0 }
   };
@@ -128,8 +128,8 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
           location={locations[locationId]}
           stoneDataArray={stoneDataArray}
           callback={this.callback}
-          rulesRequired={this.props.copyType === "FROM"} // if we want to copy behaviour from a Crownstone it must have behaviour
-          dimmingRequired={this.props.copyType === "TO" ? this.props.rulesRequireDimming : false} // if we are copying to, it is important to know if dimming is required.
+          behavioursRequired={this.props.copyType === "FROM"} // if we want to copy behaviour from a Crownstone it must have behaviour
+          dimmingRequired={this.props.copyType === "TO" ? this.props.behavioursRequireDimming : false} // if we are copying to, it is important to know if dimming is required.
           originId={this.props.originId}
         />
         )
@@ -183,21 +183,21 @@ lang("_No_Crownstone_selected___body"),
   }
 }
 
-function LocationStoneList({location, sphereId, stoneDataArray, callback, originId, dimmingRequired = false, rulesRequired = false }) {
+function LocationStoneList({location, sphereId, stoneDataArray, callback, originId, dimmingRequired = false, behavioursRequired = false }) {
   if (stoneDataArray.length === 0) {
     return <View></View>
   }
   return (
     <React.Fragment>
       <LocationRow location={location} />
-      <StoneList stoneDataArray={stoneDataArray} sphereId={sphereId} callback={callback} dimmingRequired={dimmingRequired} rulesRequired={rulesRequired} originId={originId} />
+      <StoneList stoneDataArray={stoneDataArray} sphereId={sphereId} callback={callback} dimmingRequired={dimmingRequired} behavioursRequired={behavioursRequired} originId={originId} />
       <View style={{height:50}} />
     </React.Fragment>
   );
 }
 
 
-function StoneList({stoneDataArray, sphereId, dimmingRequired, rulesRequired, originId, callback}) {
+function StoneList({stoneDataArray, sphereId, dimmingRequired, behavioursRequired, originId, callback}) {
   let stoneComponents = [];
   stoneDataArray.forEach((stoneData) => {
     stoneComponents.push(
@@ -210,7 +210,7 @@ function StoneList({stoneDataArray, sphereId, dimmingRequired, rulesRequired, or
         callback={() => { callback(stoneData.id); }}
         selected={stoneData.selected}
         dimmingRequired={dimmingRequired}
-        rulesRequired={rulesRequired}
+        behavioursRequired={behavioursRequired}
       />
     )
   })
@@ -222,7 +222,7 @@ function StoneList({stoneDataArray, sphereId, dimmingRequired, rulesRequired, or
   )
 }
 
-function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmingRequired, rulesRequired}) {
+function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmingRequired, behavioursRequired}) {
   let [allowOverwrite, setAllowOverwrite] = useState(false);
 
   let height = 80;
@@ -242,15 +242,15 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     borderBottomWidth: 1
   };
 
-  let stoneHasRules = Object.keys(stone.rules).length > 0;
+  let stoneHasBehaviours = Object.keys(stone.behaviours).length > 0;
   let clickable = true;
   let overrideButton = null;
   let circleBackgroundColor = selected ? colors.green.hex : colors.green.rgba(0.5);
   let subText = null;
   let subTextStyleOverride : TextStyle = {};
 
-  if (rulesRequired) {
-    if (!stoneHasRules) {
+  if (behavioursRequired) {
+    if (!stoneHasBehaviours) {
       clickable = false;
       circleBackgroundColor = colors.gray.hex;
       subText = lang("No_behaviours_to_copy___");
@@ -264,7 +264,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     }
   }
   else {
-    if (stoneHasRules) {
+    if (stoneHasBehaviours) {
       if (allowOverwrite === false) {
         clickable = false;
         circleBackgroundColor = colors.csOrange.rgba(0.5);

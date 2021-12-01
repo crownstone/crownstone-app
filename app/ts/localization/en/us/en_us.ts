@@ -506,7 +506,7 @@ export default {
     Edit_Behaviour:                         function() { return arguments[0] || "Edit Behaviour" },
     Customize_my_Behaviour_:                function() { return "Customize my Behaviour!" },
   },
-  DeviceSmartBehaviour_NoRulesYet:{
+  DeviceSmartBehaviour_NoBehavioursYet:{
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
     _You_dont_have_permission_t_header:     function() { return "You don't have permission to do this." },
     _You_dont_have_permission_t_body:       function() { return "Only admins or members can update Behaviour." },
@@ -539,8 +539,8 @@ export default {
   },
   DeviceSmartBehaviour_Wrapup:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_Wrapup.tsx",
-    After_this_behaviour__I_w:              function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!" },
-    I_wont_turn_off_as_long_a:              function() { return "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!" },
+    After_this_behaviour__I_w:              function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another behaviour that will keep me on for you. This will last until sunrise, give it a try!" },
+    I_wont_turn_off_as_long_a:              function() { return "I won't turn off as long as someone is in the room. This is done by automatically another behaviour that will keep me on for you. This will last until sunrise, give it a try!" },
     Tap_the_days_below_to_let:              function() { return "Let me know when I should act on this behaviour! I'll do it on every green day.\n\n You can tap the day to change it!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
     _Never___Please_pick_at_l_header:       function() { return "Never?" },
     _Never___Please_pick_at_l_body:         function() { return "Please pick at least 1 day for this behaviour!" },
@@ -1724,8 +1724,8 @@ export default {
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_training.tsx",
     Walk_around_the_room_so__:              function() { return "Walk around the room so I can learn to locate you within it. Each beat I learn a bit more about the room!" },
   },
-  RuleEditor:{
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourRuleEditor.tsx",
+  BehaviourEditor:{
+    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourBehaviourEditor.tsx",
     What_should_I_be_:                      function() { return "What should I be?" },
     My_behaviour_defines_when:              function() { return "My behaviour defines when I should be on. I will be off when I should not be on." },
     Sounds_about_right_:                    function() { return "Sounds about right!" },
@@ -1968,7 +1968,7 @@ export default {
     You_need_to_be_an_admin_o:              function() { return "You need to be an admin of the Sphere to add rooms.\n\n- Go to the Sphere Overview\n  (with the room bubbles)\n- Tap the icon  with the + sign on it in the lower right corner.\n- Select add room." },
     Moving_the_Crownstone_is_:              function() { return "Moving the Crownstone is done in the Crownstone overview:\n\n- Go to the Sphere Overview\n  (with the room bubbles)\n- Tap the bubble containing your Crownstone.\n- Select the Crownstone you want to move.\n- Tap 'Located in' in the top right corner." },
     Make_sure_dimming_is_enab:              function() { return "Make sure dimming is enabled on the Crownstone:\n\n- Make sure you are an Admin.\n- Go to the Sphere Overview\n    (with the room bubbles)\n- Tap on a room.\n- Select the Crownstone you want to dim.\n- Tap the abilities button.\n- Enable the Dimming Ability." },
-    Indoor_localization_on_ro:              function() { return "Indoor localization on room level works when you have 4 or more Crownstones. If you have less than 4, you can use home enter/exit and near/far. You set these rules per Crownstone.\n\n- Go to the Sphere Overview\n    (with the room bubbles)\n- Tap on a room.\n- Select a Crownstone.\n- Swipe the Crownstone overview left to go to the Behaviours.\n" },
+    Indoor_localization_on_ro:              function() { return "Indoor localization on room level works when you have 4 or more Crownstones. If you have less than 4, you can use home enter/exit and near/far. You set these behaviours per Crownstone.\n\n- Go to the Sphere Overview\n    (with the room bubbles)\n- Tap on a room.\n- Select a Crownstone.\n- Swipe the Crownstone overview left to go to the Behaviours.\n" },
     Make_sure_the_Crownstone_:              function() { return "Make sure the Crownstone is powered and that you're close to it. During setup mode the Crownstone is transmitting very quietly so other people can't claim your Crownstones!\n\nIf it still won't show up, you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below)." },
     Ensure_there_is_power_on_:              function() { return "Ensure there is power on the Crownstone and that you can reach it.\n\nIf you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below)." },
     Retry_a_few_times___If_th:              function() { return "Retry a few times.\n\nIf that fails, turn your bluetooth off and on.\n\n" + arguments[0] + "Check if there are updates available in the " + arguments[1] + ".\n\n" +
@@ -2251,8 +2251,8 @@ export default {
     Skip:                                   function() { return "Skip" },
     Cancel:                                 function() { return "Cancel" },
   },
-  SmartBehaviourRule:{
-    __filename: "../../js/views/deviceViews/smartBehaviour/supportComponents/SmartBehaviourRule.tsx",
+  SmartBehaviourBehaviour:{
+    __filename: "../../js/views/deviceViews/smartBehaviour/supportComponents/SmartBehaviourBehaviour.tsx",
     _Started_Yesterday_:                    function() { return "(Started Yesterday)" },
     _Are_you_sure___Since_thi_header:       function() { return "Are you sure?" },
     _Are_you_sure___Since_thi_body:         function() { return "Since this behaviour is only active on this day, removing it will remove it completely." },

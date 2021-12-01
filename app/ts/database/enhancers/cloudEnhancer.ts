@@ -452,23 +452,23 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 function removeBehaviourInCloud(action, state, oldState) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
-  let ruleId = action.ruleId;
+  let behaviourId = action.behaviourId;
 
   let sphere = oldState.spheres[sphereId];
   if (!sphere) { return }
   let stone = sphere.stones[stoneId];
   if (!stone) { return }
-  let rule = stone.rules[ruleId];
-  if (!rule) { return }
+  let behaviour = stone.behaviours[behaviourId];
+  if (!behaviour) { return }
 
-  if (rule.cloudId) {
+  if (behaviour.cloudId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_BEHAVIOURS',
-      id: 'remove'+ action.ruleId,
-      localId: action.ruleId,
+      id: 'remove'+ action.behaviourId,
+      localId: action.behaviourId,
       sphereId: action.sphereId,
       stoneId: action.stoneId,
-      cloudId: rule.cloudId,
+      cloudId: behaviour.cloudId,
     });
   }
 }
@@ -482,22 +482,22 @@ function removeAllBehavioursForStoneInCloud(action, state) {
 function handleBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
-  let ruleId = action.ruleId;
+  let behaviourId = action.behaviourId;
 
   let sphere = state.spheres[sphereId];
   if (!sphere) { return }
   let stone = sphere.stones[stoneId];
   if (!stone) { return }
-  let rule = stone.rules[ruleId];
-  if (!rule) { return }
+  let behaviour = stone.behaviours[behaviourId];
+  if (!behaviour) { return }
 
-  if (rule.cloudId !== null) {
-    BehaviourTransferNext.updateOnCloud(stoneId, rule)
+  if (behaviour.cloudId !== null) {
+    BehaviourTransferNext.updateOnCloud(stoneId, behaviour)
       .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
   }
   else {
     if (action.type === "ADD_STONE_BEHAVIOUR") {
-      BehaviourTransferNext.createOnCloud(sphereId, stoneId, rule)
+      BehaviourTransferNext.createOnCloud(sphereId, stoneId, behaviour)
         .catch((err) => { console.log("Error handleBehaviourInCloud",err); })
     }
   }

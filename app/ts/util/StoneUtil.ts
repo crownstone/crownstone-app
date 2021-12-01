@@ -126,14 +126,14 @@ export const StoneUtil = {
 
 
   /**
-   * This method does NOT warn against overwriting existing rules.
+   * This method does NOT warn against overwriting existing behaviours.
    * @param sphereId
    * @param fromStoneId
    * @param toStoneId
-   * @param ruleIds
+   * @param behaviourIds
    */
-  copyRulesBetweenStones: function(sphereId, fromStoneId, toStoneId, ruleIds? : string[]) : Promise<boolean> {
-    // this will check if the ruleIds require dimming, and alert the user if he should enable dimming too
+  copyBehavioursBetweenStones: function(sphereId, fromStoneId, toStoneId, behaviourIds? : string[]) : Promise<boolean> {
+    // this will check if the behaviourIds require dimming, and alert the user if he should enable dimming too
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere)      { return Promise.resolve(false); }
@@ -142,49 +142,49 @@ export const StoneUtil = {
     let sourceStone = sphere.stones[fromStoneId];
     if (!sourceStone) { return Promise.resolve(false); }
 
-    if (!ruleIds || Array.isArray(ruleIds) && ruleIds.length === 0) {
-      ruleIds = Object.keys(sourceStone.rules);
+    if (!behaviourIds || Array.isArray(behaviourIds) && behaviourIds.length === 0) {
+      behaviourIds = Object.keys(sourceStone.behaviours);
     }
 
-    if (ruleIds.length === 0) {
+    if (behaviourIds.length === 0) {
       return Promise.resolve(false);
     }
 
-    let rulesRequireDimming = StoneUtil.doRulesRequireDimming(sphereId, fromStoneId, ruleIds);
+    let behavioursRequireDimming = StoneUtil.doBehavioursRequireDimming(sphereId, fromStoneId, behaviourIds);
 
     let stoneCanDim = targetStone.abilities.dimming.enabledTarget;
 
-    let copyRules = () => {
+    let copyBehaviours = () => {
       let actionProps = {sphereId, stoneId: toStoneId};
-      let newRules = sourceStone.rules;
-      let oldRules = targetStone.rules;
+      let newBehaviours = sourceStone.behaviours;
+      let oldBehaviours = targetStone.behaviours;
       let actions = [];
 
-      // clear the old rules.
-      Object.keys(oldRules).forEach((ruleId) => {
-        if (oldRules[ruleId].idOnCrownstone === null) {
-          actions.push({type: 'REMOVE_STONE_BEHAVIOUR', ...actionProps, ruleId: ruleId})
+      // clear the old behaviours.
+      Object.keys(oldBehaviours).forEach((behaviourId) => {
+        if (oldBehaviours[behaviourId].idOnCrownstone === null) {
+          actions.push({type: 'REMOVE_STONE_BEHAVIOUR', ...actionProps, behaviourId: behaviourId})
         }
         else {
-          actions.push({type: 'MARK_STONE_BEHAVIOUR_FOR_DELETION', ...actionProps, ruleId: ruleId})
+          actions.push({type: 'MARK_STONE_BEHAVIOUR_FOR_DELETION', ...actionProps, behaviourId: behaviourId})
         }
       })
 
-      // add the new rules
-      ruleIds.forEach((ruleId) => {
-        let newId = xUtil.getUUID(); // new unique id for the copied rule
-        let rule = {...newRules[ruleId]}; // duplicate the source rule
-        delete rule.cloudId;              // remove cloud id so it will be synced as a unique rule
-        delete rule.updatedAt;            // remove timestamp since this is essentially a new rule.
-        rule.idOnCrownstone = null;       // new rules do not already have a ruleId on the Crownstone.
-        rule.syncedToCrownstone = false;  // new rules are not synced.
-        actions.push({type: "ADD_STONE_BEHAVIOUR", ...actionProps, ruleId: newId, data: rule})
+      // add the new behaviours
+      behaviourIds.forEach((behaviourId) => {
+        let newId = xUtil.getUUID(); // new unique id for the copied behaviour
+        let behaviour = {...newBehaviours[behaviourId]}; // duplicate the source behaviour
+        delete behaviour.cloudId;              // remove cloud id so it will be synced as a unique behaviour
+        delete behaviour.updatedAt;            // remove timestamp since this is essentially a new behaviour.
+        behaviour.idOnCrownstone = null;       // new behaviours do not already have a behaviourId on the Crownstone.
+        behaviour.syncedToCrownstone = false;  // new behaviours are not synced.
+        actions.push({type: "ADD_STONE_BEHAVIOUR", ...actionProps, behaviourId: newId, data: behaviour})
       })
 
       return actions;
     }
 
-    if (rulesRequireDimming && !stoneCanDim) {
+    if (behavioursRequireDimming && !stoneCanDim) {
       return new Promise((resolve, reject) => {
         Alert.alert(
           "These behaviours require that dimming is enabled on the Crownstone",
@@ -192,7 +192,7 @@ export const StoneUtil = {
           [
             {text:'Never mind', onPress: () => { resolve(false)}},
             {text:"Yes",        onPress:() => {
-              let actions = copyRules();
+              let actions = copyBehaviours();
               actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledTarget: true}});
               core.store.batchDispatch(actions);
               resolve(true);
@@ -202,7 +202,7 @@ export const StoneUtil = {
       })
     }
     else {
-      let actions = copyRules();
+      let actions = copyBehaviours();
       core.store.batchDispatch(actions);
       return Promise.resolve(true);
     }
@@ -211,21 +211,21 @@ export const StoneUtil = {
   },
 
 
-  doRulesRequireDimming(sphereId, stoneId, ruleIds) {
+  doBehavioursRequireDimming(sphereId, stoneId, behaviourIds) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere)      { return false; }
     let stone = sphere.stones[stoneId];
     if (!stone) { false; }
-    let rules = stone.rules;
+    let behaviours = stone.behaviours;
 
-    for (let i = 0; i < ruleIds.length; i++) {
-      if (rules[ruleIds[i]].type === BEHAVIOUR_TYPES.twilight) {
+    for (let i = 0; i < behaviourIds.length; i++) {
+      if (behaviours[behaviourIds[i]].type === BEHAVIOUR_TYPES.twilight) {
         return true;
       }
       else {
-        let rule = new AicoreBehaviour(rules[ruleIds[i]].data);
-        if (rule.willDim()) {
+        let behaviour = new AicoreBehaviour(behaviours[behaviourIds[i]].data);
+        if (behaviour.willDim()) {
           return true;
         }
       }

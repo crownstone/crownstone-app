@@ -34,9 +34,8 @@ import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import ResponsiveText from "../../components/ResponsiveText";
-import { DataUtil } from "../../../util/DataUtil";
 
-const ruleStyle : TextStyle = {
+const behaviourStyle : TextStyle = {
   fontSize: 15,
   padding:10,
   fontWeight:'bold',
@@ -48,20 +47,20 @@ const ruleStyle : TextStyle = {
 export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   sphereId: string,
   stoneId: string,
-  rule: string,
-  twilightRule: boolean,
-  ruleId?: string,
+  behaviour: string,
+  twilightBehaviour: boolean,
+  behaviourId?: string,
   selectedDay?: string,
-  deleteRule?: boolean,
+  deleteBehaviour?: boolean,
   isModal?: boolean,
 }, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("When_to_do_this_"), closeModal: props.isModal});
   }
 
-  rule : AicoreBehaviour | AicoreTwilight;
-  ruleHasChanged = true;
-  existingRule : AicoreBehaviour | AicoreTwilight = null;
+  behaviour : AicoreBehaviour | AicoreTwilight;
+  behaviourHasChanged = true;
+  existingBehaviour : AicoreBehaviour | AicoreTwilight = null;
 
   constructor(props) {
     super(props);
@@ -72,42 +71,42 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return;
 
-    if (this.props.twilightRule) {
+    if (this.props.twilightBehaviour) {
       // @ts-ignore
-      this.rule = new AicoreTwilight(this.props.rule);
+      this.behaviour = new AicoreTwilight(this.props.behaviour);
     }
     else {
       // @ts-ignore
-      this.rule = new AicoreBehaviour(this.props.rule);
+      this.behaviour = new AicoreBehaviour(this.props.behaviour);
     }
 
-    if (this.props.ruleId) {
-      let rule = stone.rules[this.props.ruleId];
+    if (this.props.behaviourId) {
+      let behaviour = stone.behaviours[this.props.behaviourId];
 
-      // we want to catch the case where the rule was not changed, even though the used pressed edit.
-      if (this.props.twilightRule) {
+      // we want to catch the case where the behaviour was not changed, even though the used pressed edit.
+      if (this.props.twilightBehaviour) {
         // @ts-ignore
-        this.existingRule = new AicoreTwilight(rule.data);
+        this.existingBehaviour = new AicoreTwilight(behaviour.data);
       }
       else {
         // @ts-ignore
-        this.existingRule = new AicoreBehaviour(rule.data);
+        this.existingBehaviour = new AicoreBehaviour(behaviour.data);
       }
 
-      if (this.rule.isTheSameAs(this.existingRule) === true) {
-        this.ruleHasChanged = false;
+      if (this.behaviour.isTheSameAs(this.existingBehaviour) === true) {
+        this.behaviourHasChanged = false;
       }
     }
 
     let { activeDays, conflictDays } = this._getDayData();
-    if (this.props.ruleId) {
-      let rule = stone.rules[this.props.ruleId];
-      if (rule) {
-        if (this.props.deleteRule && this.props.selectedDay) {
-          activeDays = rule.activeDays;
+    if (this.props.behaviourId) {
+      let behaviour = stone.behaviours[this.props.behaviourId];
+      if (behaviour) {
+        if (this.props.deleteBehaviour && this.props.selectedDay) {
+          activeDays = behaviour.activeDays;
         }
         else {
-          activeDays = rule.activeDays;
+          activeDays = behaviour.activeDays;
         }
       }
     }
@@ -122,16 +121,16 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     if (!sphere) return;
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return;
-    let rules = stone.rules;
-    let ruleIds = Object.keys(rules);
+    let behaviours = stone.behaviours;
+    let behaviourIds = Object.keys(behaviours);
 
     let selectedDays = {...this.state.activeDays};
 
     let actions = [];
 
     // define two util functions that take care of sorting out days. We will use them later on.
-    let updateRuleWithNewActiveDays = (activeDays, rule, ruleId) => {
-      // check if there are any days left for the original rule
+    let updateBehaviourWithNewActiveDays = (activeDays, behaviour, behaviourId) => {
+      // check if there are any days left for the original behaviour
       let activeDayCount = 0;
       for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
         if (activeDays[DAY_INDICES_MONDAY_START[i]]) {
@@ -140,15 +139,15 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
 
       if (activeDayCount > 0) {
-        actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays, syncedToCrownstone: false}});
+        actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, behaviourId: behaviourId, data: {activeDays: activeDays, syncedToCrownstone: false}});
       }
       else {
-        if (rule.idOnCrownstone !== null) {
+        if (behaviour.idOnCrownstone !== null) {
           actions.push({
             type: "MARK_STONE_BEHAVIOUR_FOR_DELETION",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
-            ruleId: ruleId
+            behaviourId: behaviourId
           });
         }
         else {
@@ -156,30 +155,30 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             type: "REMOVE_STONE_BEHAVIOUR",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
-            ruleId: ruleId
+            behaviourId: behaviourId
           });
         }
       }
     }
 
-    let removeActiveDaysFromRule = (rule, ruleId) => {
-      // disable the selected days for the previous rule
+    let removeActiveDaysFromBehaviour = (behaviour, behaviourId) => {
+      // disable the selected days for the previous behaviour
 
-      let newActiveDaysForRule = {...rule.activeDays};
+      let newActiveDaysForBehaviour = {...behaviour.activeDays};
       Object.keys(appliedDays).forEach((day) => {
         if (appliedDays[day]) {
-          newActiveDaysForRule[day] = false;
+          newActiveDaysForBehaviour[day] = false;
         }
       })
 
-      updateRuleWithNewActiveDays(newActiveDaysForRule, rule, ruleId);
+      updateBehaviourWithNewActiveDays(newActiveDaysForBehaviour, behaviour, behaviourId);
     }
 
     // FIRST WE HANDLE DELETE BEHAVIOUR COMMANDS:
 
     let appliedDays = selectedDays;
-    if (this.props.deleteRule) {
-      removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
+    if (this.props.deleteBehaviour) {
+      removeActiveDaysFromBehaviour(behaviours[this.props.behaviourId], this.props.behaviourId)
       core.store.batchDispatch(actions);
       NavigationUtil.dismissModal();
       return;
@@ -188,29 +187,29 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
     // NOW WE HANDLE THE EDITED AND NEW ONES:
 
-    // if we have an existing rule, we have to update it.
-    if (this.props.ruleId) {
-      // if the existing rule has been changed, we make a new one and update the old one to not be active on the selected days.
-      if (this.ruleHasChanged) {
-        // if the rule has been fully changed (for every active day)
-        let rule = rules[this.props.ruleId];
-        if (xUtil.deepCompare(this.state.activeDays, rule.activeDays) === true) {
-          // this means we change the rule for all active days
-          actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: this.props.ruleId, data: {data: this.rule.stringify(), syncedToCrownstone: false}});
+    // if we have an existing behaviour, we have to update it.
+    if (this.props.behaviourId) {
+      // if the existing behaviour has been changed, we make a new one and update the old one to not be active on the selected days.
+      if (this.behaviourHasChanged) {
+        // if the behaviour has been fully changed (for every active day)
+        let behaviour = behaviours[this.props.behaviourId];
+        if (xUtil.deepCompare(this.state.activeDays, behaviour.activeDays) === true) {
+          // this means we change the behaviour for all active days
+          actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, behaviourId: this.props.behaviourId, data: {data: this.behaviour.stringify(), syncedToCrownstone: false}});
         }
         else {
           // search for behaviour that is the same as the behaviour to see if we can merge them.
-          for (let i = 0; i < ruleIds.length; i++) {
-            if (ruleIds[i] !== this.props.ruleId) {
-              if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
-                mergedId = ruleIds[i];
-                let newActiveDaysForMergeRule = {...rules[ruleIds[i]].activeDays};
+          for (let i = 0; i < behaviourIds.length; i++) {
+            if (behaviourIds[i] !== this.props.behaviourId) {
+              if (this.behaviour.isTheSameAs(behaviours[behaviourIds[i]].data)) {
+                mergedId = behaviourIds[i];
+                let newActiveDaysForMergeBehaviour = {...behaviours[behaviourIds[i]].activeDays};
                 Object.keys(appliedDays).forEach((day) => {
                   if (appliedDays[day]) {
-                    newActiveDaysForMergeRule[day] = true;
+                    newActiveDaysForMergeBehaviour[day] = true;
                   }
                 })
-                actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
+                actions.push({type:"UPDATE_STONE_BEHAVIOUR", sphereId: this.props.sphereId, stoneId: this.props.stoneId, behaviourId: mergedId, data: {activeDays: newActiveDaysForMergeBehaviour, syncedToCrownstone: false}});
                 break;
               }
             }
@@ -218,33 +217,33 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
           // we could not find a behaviour to merge with, we will make a new behaviour.
           if (!mergedId) {
-            let newRuleId = xUtil.getUUID();
+            let newbehaviourId = xUtil.getUUID();
             actions.push({
               type: "ADD_STONE_BEHAVIOUR",
               sphereId: this.props.sphereId,
               stoneId:  this.props.stoneId,
-              ruleId: newRuleId,
+              behaviourId: newbehaviourId,
               data: {
-                type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
-                data: this.rule.stringify(),
+                type: this.props.twilightBehaviour ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
+                data: this.behaviour.stringify(),
                 activeDays: appliedDays,
                 syncedToCrownstone: false
               }
             });
           }
 
-          removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
+          removeActiveDaysFromBehaviour(behaviours[this.props.behaviourId], this.props.behaviourId)
         }
       }
       else {
-        // if the rule has not been changed, the active days have been changed.
-        updateRuleWithNewActiveDays(appliedDays, rules[this.props.ruleId], this.props.ruleId);
+        // if the behaviour has not been changed, the active days have been changed.
+        updateBehaviourWithNewActiveDays(appliedDays, behaviours[this.props.behaviourId], this.props.behaviourId);
       }
     }
     else {
       // search for behaviour that is the same as the behaviour to see if we can merge them.
-      for (let i = 0; i < ruleIds.length; i++) {
-        if (rules[ruleIds[i]].deleted === false && this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
+      for (let i = 0; i < behaviourIds.length; i++) {
+        if (behaviours[behaviourIds[i]].deleted === false && this.behaviour.isTheSameAs(behaviours[behaviourIds[i]].data)) {
           Alert.alert(
             lang("_Behaviour_already_exists_header"),
             lang("_Behaviour_already_exists_body"),
@@ -255,30 +254,30 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         }
       }
 
-      // this is a new rule!
-      let newRuleId = xUtil.getUUID();
+      // this is a new behaviour!
+      let newbehaviourId = xUtil.getUUID();
       actions.push({
         type: "ADD_STONE_BEHAVIOUR",
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
-        ruleId: newRuleId,
+        behaviourId: newbehaviourId,
         data: {
-          type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
-          data: this.rule.stringify(),
+          type: this.props.twilightBehaviour ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
+          data: this.behaviour.stringify(),
           activeDays: appliedDays,
         }
       });
     }
 
-    // for all conflicting days, disable the conflicting rules unless they are the merged rules.
+    // for all conflicting days, disable the conflicting behaviours unless they are the merged behaviours.
     for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
       let day = DAY_INDICES_MONDAY_START[i];
       // if we are active that day and there is a conflict
       if (appliedDays[day] && this.state.conflictDays[day].conflict) {
-        let conflictingRules = this.state.conflictDays[day].rules;
-        conflictingRules.forEach((conflictRuleData) => {
-          if (conflictRuleData.ruleId !== mergedId) {
-            removeActiveDaysFromRule(rules[conflictRuleData.ruleId], conflictRuleData.ruleId)
+        let conflictingBehaviours = this.state.conflictDays[day].behaviours;
+        conflictingBehaviours.forEach((conflictBehaviourData) => {
+          if (conflictBehaviourData.behaviourId !== mergedId) {
+            removeActiveDaysFromBehaviour(behaviours[conflictBehaviourData.behaviourId], conflictBehaviourData.behaviourId)
           }
         })
       }
@@ -289,9 +288,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   }
 
   getOptionContext() {
-    if (!this.rule.hasNoEndCondition()) {
+    if (!this.behaviour.hasNoEndCondition()) {
       // @ts-ignore
-      if (this.rule.rule.options.type === "SPHERE_PRESENCE_AFTER") {
+      if (this.behaviour.behaviour.options.type === "SPHERE_PRESENCE_AFTER") {
         return (
           <Text style={deviceStyles.specification}>{ lang("After_this_behaviour__I_w") }</Text>
         );
@@ -315,7 +314,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
     }
 
-    if (this.props.deleteRule !== true) {
+    if (this.props.deleteBehaviour !== true) {
       if (!atleastOneDay) {
         Alert.alert(
           lang("_Never___Please_pick_at_l_header"),
@@ -339,26 +338,26 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   _getDayData() {
     let activeDays = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
     let conflictDays = {
-      Mon: {rules: [], conflict:false },
-      Tue: {rules: [], conflict:false },
-      Wed: {rules: [], conflict:false },
-      Thu: {rules: [], conflict:false },
-      Fri: {rules: [], conflict:false },
-      Sat: {rules: [], conflict:false },
-      Sun: {rules: [], conflict:false }
+      Mon: {behaviours: [], conflict:false },
+      Tue: {behaviours: [], conflict:false },
+      Wed: {behaviours: [], conflict:false },
+      Thu: {behaviours: [], conflict:false },
+      Fri: {behaviours: [], conflict:false },
+      Sat: {behaviours: [], conflict:false },
+      Sun: {behaviours: [], conflict:false }
     };
-    if (this.props.deleteRule) {
+    if (this.props.deleteBehaviour) {
       return {activeDays, conflictDays};
     }
 
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
-    let ruleIds = Object.keys(stone.rules);
+    let behaviourIds = Object.keys(stone.behaviours);
 
 
     // we're editing, by default just highlight the day we edit.
-    if (this.props.ruleId) {
+    if (this.props.behaviourId) {
       activeDays[this.props.selectedDay] = true;
     }
     else {
@@ -366,22 +365,22 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     }
 
 
-    let newRule = {type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour, data: this.rule}
-    let newSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, newRule);
+    let newBehaviour = {type: this.props.twilightBehaviour ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour, data: this.behaviour}
+    let newSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, newBehaviour);
     for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
       let day = DAY_INDICES_MONDAY_START[i];
-      for (let j = 0; j < ruleIds.length; j++) {
-        let ruleId = ruleIds[j];
-        let rule = stone.rules[ruleId];
-        if (ruleId !== this.props.ruleId) {
-          if (newRule.type !== rule.type) { continue; }
-          if (this.rule.isTheSameAs(stone.rules[ruleId].data)) { continue; }
+      for (let j = 0; j < behaviourIds.length; j++) {
+        let behaviourId = behaviourIds[j];
+        let behaviour = stone.behaviours[behaviourId];
+        if (behaviourId !== this.props.behaviourId) {
+          if (newBehaviour.type !== behaviour.type) { continue; }
+          if (this.behaviour.isTheSameAs(stone.behaviours[behaviourId].data)) { continue; }
 
-          let data = AicoreUtil.getOverlapData(newRule, rule, day, this.props.sphereId);
+          let data = AicoreUtil.getOverlapData(newBehaviour, behaviour, day, this.props.sphereId);
           if (data.overlapMins === 0) { continue; }
           if (data.aPercentageOverlapped < 0.4 && data.bPercentageOverlapped < 0.4) { continue; } // no hassle
 
-          let existingSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, rule);
+          let existingSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, behaviour);
 
           let isConflicting = false;
           isConflicting = isConflicting || newSummary.usingSingleRoomPresence && existingSummary.usingSingleRoomPresence;
@@ -402,7 +401,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             if (data.aPercentageOverlapped > 0.5 && data.bPercentageOverlapped > 0.5) {
               // replace
               conflictDays[day].conflict = true;
-              conflictDays[day].rules.push({ruleId: ruleId, label: existingSummary.label});
+              conflictDays[day].behaviours.push({behaviourId: behaviourId, label: existingSummary.label});
               activeDays[day] = false; continue;
             }
           }
@@ -414,13 +413,13 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   }
 
 
-  _getRuleComparison() {
+  _getBehaviourComparison() {
     return (
       <View style={styles.centered}>
-        <Text style={ruleStyle}>{ lang("____",this.existingRule.getSentence(this.props.sphereId)) }</Text>
+        <Text style={behaviourStyle}>{ lang("____",this.existingBehaviour.getSentence(this.props.sphereId)) }</Text>
         <Icon name={'ios-arrow-down'} size={10} color={colors.csBlueDark.hex} />
         <Icon name={'ios-arrow-down'} size={20} color={colors.csBlueDark.hex} />
-        <Text style={ruleStyle}>{ lang("____",this.rule.getSentence(this.props.sphereId)) }</Text>
+        <Text style={behaviourStyle}>{ lang("____",this.behaviour.getSentence(this.props.sphereId)) }</Text>
       </View>
     )
   }
@@ -428,17 +427,17 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   _allActiveDaysAreSelected() {
     let result = true;
 
-    if (this.props.ruleId) {
+    if (this.props.behaviourId) {
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
       if (!sphere) return;
       let stone = sphere.stones[this.props.stoneId];
       if (!stone) return;
 
-      let rule = stone.rules[this.props.ruleId];
-      if (rule) {
+      let behaviour = stone.behaviours[this.props.behaviourId];
+      if (behaviour) {
         DAY_INDICES_MONDAY_START.forEach((dayIndex) => {
-          if (rule.activeDays[dayIndex] && this.state.activeDays[dayIndex] === false) {
+          if (behaviour.activeDays[dayIndex] && this.state.activeDays[dayIndex] === false) {
             result = false;
           }
         })
@@ -449,19 +448,19 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   }
 
   _hasMoreThenOneActiveDay() {
-    if (this.props.ruleId) {
+    if (this.props.behaviourId) {
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
       if (!sphere) return;
       let stone = sphere.stones[this.props.stoneId];
       if (!stone) return;
 
-      let rule = stone.rules[this.props.ruleId];
+      let behaviour = stone.behaviours[this.props.behaviourId];
 
       let count = 0;
-      if (rule) {
+      if (behaviour) {
         DAY_INDICES_MONDAY_START.forEach((dayIndex) => {
-          if (rule.activeDays[dayIndex]) {
+          if (behaviour.activeDays[dayIndex]) {
             count += 1;
           }
         })
@@ -501,16 +500,16 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       header = lang("When_do_I_do_this_")
     }
 
-    // if we have a rule ID, this is an edit operation, not a new rule
+    // if we have a behaviour ID, this is an edit operation, not a new behaviour
     // there will be a separate header, body text and selection.
-    // Conflict resolution is done based on other rules than the existing rule.
-    if (this.props.ruleId && this.ruleHasChanged) {
+    // Conflict resolution is done based on other behaviours than the existing behaviour.
+    if (this.props.behaviourId && this.behaviourHasChanged) {
       headerNumberOfLines = 2;
       header = lang("When_shall_I_use_the_modi");
       body = lang("You_can_quickly_apply_you");
       changeText = this._allActiveDaysAreSelected() && lang("Only_change__", DAYS_LABEL_MAP(this.props.selectedDay))  || lang("Change_everywhere_");
     }
-    else if (this.props.ruleId && this.props.deleteRule) {
+    else if (this.props.behaviourId && this.props.deleteBehaviour) {
       headerNumberOfLines = 2;
       header = lang("From_which_days_shall_I_r");
       body = lang("Select_the_days_you_wish_")
@@ -523,13 +522,13 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
       let stone = sphere.stones[this.props.stoneId];
-      let rule = stone.rules[this.props.ruleId];
+      let behaviour = stone.behaviours[this.props.behaviourId];
       disabledDays = {};
       let activeDayCount = 0;
       let disabledCount = 0;
       for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
         let day = DAY_INDICES_MONDAY_START[i];
-        if (rule.activeDays[day] === false) {
+        if (behaviour.activeDays[day] === false) {
           disabledDays[day] = true;
           disabledCount++;
         }
@@ -562,8 +561,8 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height: 0.02*availableModalHeight}} />
 
-            { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{ lang("____",this.existingRule.getSentence(this.props.sphereId)) }</Text> }
-            { this.props.ruleId && this.ruleHasChanged && this._getRuleComparison() }
+            { this.props.behaviourId && this.props.deleteBehaviour && <Text style={behaviourStyle}>{ lang("____",this.existingBehaviour.getSentence(this.props.sphereId)) }</Text> }
+            { this.props.behaviourId && this.behaviourHasChanged && this._getBehaviourComparison() }
 
             <Text style={deviceStyles.specification}>{ body }</Text>
 
@@ -574,16 +573,16 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
                 <WeekDayListLarge
                   data={this.state.activeDays}
                   tight={true}
-                  customElement={this.props.deleteRule ? LargeDeleteWeekdayElement : null}
+                  customElement={this.props.deleteBehaviour ? LargeDeleteWeekdayElement : null}
                   disabledDays={disabledDays}
                   onChange={(fullData, day) => {
                     if (fullData[day] === true) {
                       if (this.state.conflictDays[day].conflict) {
-                        let ruleList = this.state.conflictDays[day].rules[0].label;
-                        for (let j = 1; j < this.state.conflictDays[day].rules.length; j++) {
-                          ruleList += "\n" + this.state.conflictDays[day].rules[j].label;
+                        let behaviourList = this.state.conflictDays[day].behaviours[0].label;
+                        for (let j = 1; j < this.state.conflictDays[day].behaviours.length; j++) {
+                          behaviourList += "\n" + this.state.conflictDays[day].behaviours[j].label;
                         }
-                        Alert.alert(lang("This_will_replace_the_fol", DAY_LABEL_MAP(day)), ruleList,
+                        Alert.alert(lang("This_will_replace_the_fol", DAY_LABEL_MAP(day)), behaviourList,
                           [{ text: lang("Cancel") }, {text: lang("OK"), onPress: () => { this.setState({ activeDays: fullData }); }}]
                         );
                         return;
@@ -605,9 +604,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             {/*      this.setState({activeDays: activeDays})*/}
             {/*    }*/}
             {/*    else {*/}
-            {/*      let rule = DataUtil.getRule(this.props.sphereId, this.props.stoneId, this.props.ruleId);*/}
-            {/*      if (rule) {*/}
-            {/*        this.setState({activeDays: rule.activeDays})*/}
+            {/*      let behaviour = DataUtil.getBehaviour(this.props.sphereId, this.props.stoneId, this.props.behaviourId);*/}
+            {/*      if (behaviour) {*/}
+            {/*        this.setState({activeDays: behaviour.activeDays})*/}
             {/*      }*/}
             {/*    }*/}
             {/*  }}*/}

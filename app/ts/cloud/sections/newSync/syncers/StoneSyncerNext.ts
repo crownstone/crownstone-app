@@ -38,8 +38,8 @@ export class StoneSyncerNext extends SyncSphereInterface<StoneData, StoneDataCon
   static prepare(sphere: SphereData, localStoneId?: string) : {[itemId:string]: RequestItemCoreType} {
     let options : GatherOptions = {
       key:'stones', type:'stone', children: [
-        {key:'rules',     type:'behaviour', cloudKey: 'behaviours'},
-        {key:'abilities', type:'ability', children: [
+        {key:'behaviours', type:'behaviour', cloudKey: 'behaviours'},
+        {key:'abilities',  type:'ability', children: [
             {key:'properties', type:'abilityProperty'},
           ]},
       ]

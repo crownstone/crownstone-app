@@ -192,14 +192,14 @@ export const DataUtil = {
   },
 
 
-  getRule(sphereId, stoneId, ruleId) {
+  getBehaviour(sphereId, stoneId, behaviourId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null;
     let stone = sphere.stones[stoneId];
     if (!stone) return null;
-    let rule = stone.rules[ruleId];
-    return rule || null;
+    let behaviour = stone.behaviours[behaviourId];
+    return behaviour || null;
   },
 
   getLocation(sphereId, locationId) {

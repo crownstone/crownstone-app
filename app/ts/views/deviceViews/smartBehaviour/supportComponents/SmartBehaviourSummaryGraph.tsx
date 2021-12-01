@@ -31,26 +31,26 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
   }
 
   render() {
-    let ruleIds = Object.keys(this.props.rules);
+    let behaviourIds = Object.keys(this.props.behaviours);
     let onArray = [];
     let presenceArray = [];
     let twilightArray = [];
 
-    ruleIds.forEach((ruleId) => {
-      let rule = this.props.rules[ruleId];
+    behaviourIds.forEach((behaviourId) => {
+      let behaviour = this.props.behaviours[behaviourId];
       let ai;
-      if (rule.type === "BEHAVIOUR") {
-        ai = new AicoreBehaviour(rule.data);
+      if (behaviour.type === "BEHAVIOUR") {
+        ai = new AicoreBehaviour(behaviour.data);
         if (ai.isUsingPresence()) {
-          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
+          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[behaviourId]})
         }
         else {
-          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
+          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[behaviourId]})
         }
       }
-      else if (rule.type === "TWILIGHT") {
-        ai = new AicoreTwilight(rule.data);
-        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
+      else if (behaviour.type === "TWILIGHT") {
+        ai = new AicoreTwilight(behaviour.data);
+        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[behaviourId]})
       }
     });
 
@@ -165,7 +165,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     let result = [];
 
     if (endMinutes < startMinutes) {
-      // this rule is split over day boundary.
+      // this behaviour is split over day boundary.
       if (itemData.activityData.yesterday) {
         result.push(this.getSubItem(getMinutes("00:00"), endMinutes, !itemData.activityData.today));
       }

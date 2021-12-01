@@ -1,7 +1,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSmartBehaviour_NoRulesYet", key)(a,b,c,d,e);
+  return Languages.get("DeviceSmartBehaviour_NoBehavioursYet", key)(a,b,c,d,e);
 }
 
 import * as React from 'react';
@@ -26,7 +26,7 @@ import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 
 let className = "DeviceSmartBehaviour";
 
-export function NoRulesYet(props) {
+export function NoBehavioursYet(props) {
   let state = core.store.getState();
   let sphere = state.spheres[props.sphereId];
   if (!sphere) return <View />;
@@ -85,7 +85,7 @@ export function NoRulesYet(props) {
             }}
           />
           }
-          { !updateRequired && <BehaviourCopyFromButton sphereId={props.sphereId} stoneId={props.stoneId} rulesAvailable={false}/> }
+          { !updateRequired && <BehaviourCopyFromButton sphereId={props.sphereId} stoneId={props.stoneId} behavioursAvailable={false}/> }
           { state.development.show_sync_button_in_behaviour && <BehaviourSyncButton sphereId={props.sphereId} stoneId={props.stoneId} /> }
           <View style={{height:30}} />
         </View>

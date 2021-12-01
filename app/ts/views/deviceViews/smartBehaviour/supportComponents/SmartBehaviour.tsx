@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SmartBehaviourRule", key)(a,b,c,d,e);
+  return Languages.get("SmartBehaviourBehaviour", key)(a,b,c,d,e);
 }
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
@@ -16,11 +16,11 @@ import * as React from "react";
 import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 
 
-export function SmartBehaviourRule(props: {
-  rule: any,
+export function SmartBehaviour(props: {
+  behaviour: any,
   sphereId: string,
   stoneId: string,
-  ruleId: string,
+  behaviourId: string,
   editMode: boolean,
   faded: boolean,
   indoorLocalizationDisabled: boolean,
@@ -28,13 +28,13 @@ export function SmartBehaviourRule(props: {
   startedYesterday?: boolean,
   activeDay?: string,
   selected?: boolean,
-  ruleSelection?: boolean,
+  behaviourSelection?: boolean,
 }) {
   let ai;
-  if      (props.rule.type === "BEHAVIOUR") { ai = new AicoreBehaviour(props.rule.data); }
-  else if (props.rule.type === "TWILIGHT")  { ai = new AicoreTwilight(props.rule.data);  }
+  if      (props.behaviour.type === "BEHAVIOUR") { ai = new AicoreBehaviour(props.behaviour.data); }
+  else if (props.behaviour.type === "TWILIGHT")  { ai = new AicoreTwilight(props.behaviour.data);  }
 
-  let showEditIcons = props.editMode && !props.ruleSelection && !props.rule.deleted;
+  let showEditIcons = props.editMode && !props.behaviourSelection && !props.behaviour.deleted;
 
   const editCallback = () => {
     NavigationUtil.launchModal(
@@ -43,9 +43,9 @@ export function SmartBehaviourRule(props: {
         data: ai,
         sphereId: props.sphereId,
         stoneId: props.stoneId,
-        ruleId: props.ruleId,
+        behaviourId: props.behaviourId,
         selectedDay: props.activeDay,
-        twilightRule: props.rule.type === "TWILIGHT",
+        twilightBehaviour: props.behaviour.type === "TWILIGHT",
         isModal: true,
       });
   }
@@ -57,7 +57,7 @@ export function SmartBehaviourRule(props: {
         <TouchableOpacity onPress={() => {
           let activeDayCount = 0;
           for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
-            if (props.rule.activeDays[DAY_INDICES_MONDAY_START[i]]) {
+            if (props.behaviour.activeDays[DAY_INDICES_MONDAY_START[i]]) {
               activeDayCount++;
             }
           }
@@ -68,11 +68,11 @@ export function SmartBehaviourRule(props: {
               lang("_Are_you_sure___Since_thi_body"),
               [{text:lang("_Are_you_sure___Since_thi_left")}, {
               text:lang("_Are_you_sure___Since_thi_right"), onPress: () => {
-                if (props.rule.idOnCrownstone !== null) {
-                  core.store.dispatch({type:"MARK_STONE_BEHAVIOUR_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                if (props.behaviour.idOnCrownstone !== null) {
+                  core.store.dispatch({type:"MARK_STONE_BEHAVIOUR_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, behaviourId: props.behaviourId});
                 }
                 else {
-                  core.store.dispatch({type:"REMOVE_STONE_BEHAVIOUR", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                  core.store.dispatch({type:"REMOVE_STONE_BEHAVIOUR", sphereId: props.sphereId, stoneId: props.stoneId, behaviourId: props.behaviourId});
                 }
               }}])
           }
@@ -83,11 +83,11 @@ export function SmartBehaviourRule(props: {
                 data: ai,
                 sphereId: props.sphereId,
                 stoneId: props.stoneId,
-                ruleId: props.ruleId,
-                rule: props.rule.data,
-                twilightRule: props.rule.type === "TWILIGHT",
+                behaviourId: props.behaviourId,
+                behaviour: props.behaviour.data,
+                twilightBehaviour: props.behaviour.type === "TWILIGHT",
                 selectedDay: props.activeDay,
-                deleteRule: true,
+                deleteBehaviour: true,
                 isModal: true,
               });
           }
@@ -98,14 +98,14 @@ export function SmartBehaviourRule(props: {
       { /* /Delete Icon */ }
 
       { /* ActivityIndicator for sync required */ }
-      <SlideSideFadeInView width={50} visible={(props.rule.syncedToCrownstone === false || props.rule.deleted) && !props.editMode}>
+      <SlideSideFadeInView width={50} visible={(props.behaviour.syncedToCrownstone === false || props.behaviour.deleted) && !props.editMode}>
         <ActivityIndicator size={"small"} color={colors.csBlue.hex} style={{marginRight:15}} />
       </SlideSideFadeInView>
       { /* /ActivityIndicator for sync required */ }
 
-      { /* Rule text */ }
-      { RuleDescription(props, ai, editCallback, showEditIcons, props.indoorLocalizationDisabled, props.overrideActive) }
-      { /* /Rule text */ }
+      { /* behaviour text */ }
+      { BehaviourDescription(props, ai, editCallback, showEditIcons, props.indoorLocalizationDisabled, props.overrideActive) }
+      { /* /behaviour text */ }
 
 
       { /* Edit icon */ }
@@ -118,8 +118,8 @@ export function SmartBehaviourRule(props: {
 
 
       { /* Selection checkmark */ }
-      <SlideSideFadeInView width={50} visible={props.editMode && props.ruleSelection && !props.selected}></SlideSideFadeInView>
-      <SlideSideFadeInView width={50} visible={props.editMode && props.ruleSelection && props.selected}>
+      <SlideSideFadeInView width={50} visible={props.editMode && props.behaviourSelection && !props.selected}></SlideSideFadeInView>
+      <SlideSideFadeInView width={50} visible={props.editMode && props.behaviourSelection && props.selected}>
         <View style={{width:50, alignItems:'flex-end'}}>
           <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
         </View>
@@ -127,18 +127,18 @@ export function SmartBehaviourRule(props: {
       { /* /Selection checkmark */ }
 
       { /* ActivityIndicator for sync required counterWeight */ }
-      <SlideSideFadeInView width={50} visible={props.rule.syncedToCrownstone === false && !props.editMode} />
+      <SlideSideFadeInView width={50} visible={props.behaviour.syncedToCrownstone === false && !props.editMode} />
       { /* /ActivityIndicator for sync required */ }
     </View>
   );
 }
 
-function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallback, showEditIcons, indoorLocalizationDisabled, overrideActive) {
+function BehaviourDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallback, showEditIcons, indoorLocalizationDisabled, overrideActive) {
   let labelStyle : TextStyle = {
-    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
+    color: props.behaviour.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize:16,
     textAlign:'center',
-    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+    textDecorationLine: props.behaviour.deleted ? 'line-through' : 'none'
   };
 
   if (props.selected) {;
@@ -147,26 +147,26 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
   }
 
   let yesterdayStyle : TextStyle = {
-    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
+    color: props.behaviour.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize: 13,
     textAlign:'center',
     fontWeight:'bold',
-    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+    textDecorationLine: props.behaviour.deleted ? 'line-through' : 'none'
   };
 
   let paddingHorizontal = showEditIcons ? 0 : 20;
 
   let subLabel = null;
   let subLabelStyle : TextStyle = {};
-  if (props.rule.syncedToCrownstone === false && showEditIcons) {
+  if (props.behaviour.syncedToCrownstone === false && showEditIcons) {
     subLabel = lang("__Not_on_Crownstone_yet__");
   }
-  if (props.rule.deleted && showEditIcons) {
+  if (props.behaviour.deleted && showEditIcons) {
     subLabel = lang("__Not_removed_from_Crowns");
   }
 
   // if (!showEditIcons && overrideActive) {
-  //   subLabel = "This behaviour is currently overruled because someone manually switched it.";
+  //   subLabel = "This behaviour is currently overbehaviourd because someone manually switched it.";
   //   subLabelStyle = { color: colors.csBlue.rgba(0.4), fontWeight:'bold'};
   // }
 

@@ -28,22 +28,22 @@ const SunCalc = require('suncalc');
 
 export const AicoreUtil = {
 
-  extractActionString(rule : behaviour | twilight) {
-    if (rule.action.type === "DIM_WHEN_TURNED_ON") {
-      return lang("Ill_dim_to___instead", Math.round(rule.action.data ))
+  extractActionString(behaviour : behaviour | twilight) {
+    if (behaviour.action.type === "DIM_WHEN_TURNED_ON") {
+      return lang("Ill_dim_to___instead", Math.round(behaviour.action.data ))
     }
-    if (rule.action.data < 100) {
-      return lang("dimmed_at__", Math.round(rule.action.data))
+    if (behaviour.action.data < 100) {
+      return lang("dimmed_at__", Math.round(behaviour.action.data))
     }
-    else if (rule.action.data == 100) {
+    else if (behaviour.action.data == 100) {
       return lang("on")
     }
   },
 
-  extractPresenceStrings(rule : behaviour) : {presencePrefix: string, presenceStr: string} {
+  extractPresenceStrings(behaviour : behaviour) : {presencePrefix: string, presenceStr: string} {
     let presencePrefix = null;
     let presenceStr = null;
-    switch (rule.presence.type) {
+    switch (behaviour.presence.type) {
       case AICORE_PRESENCE_TYPES.SOMEBODY:
         presencePrefix = lang("if");
         presenceStr   = lang("somebody");
@@ -61,13 +61,13 @@ export const AicoreUtil = {
     return { presencePrefix, presenceStr };
   },
 
-  extractLocationStrings(rule : behaviour, sphereId: string) {
+  extractLocationStrings(behaviour : behaviour, sphereId: string) {
     let locationPrefix = "";
     let locationStr = "";
     let locationPostfix = "";
-    if (rule.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
+    if (behaviour.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
       // @ts-ignore
-      let pd = rule.presence.data;
+      let pd = behaviour.presence.data;
 
       switch (pd.type) {
         case AICORE_LOCATIONS_TYPES.SPHERE:
@@ -98,17 +98,17 @@ export const AicoreUtil = {
   },
 
 
-  extractTimeString(rule : behaviour | twilight, forceBetween = false) {
+  extractTimeString(behaviour : behaviour | twilight, forceBetween = false) {
     let timeStr = "";
 
-    let time = rule.time;
+    let time = behaviour.time;
     // @ts-ignore
     if (time.type === undefined || time.type != AICORE_TIME_TYPES.ALL_DAY) {
       let tr = time as aicoreTimeRange;
       let noOffset = (tr.from as aicoreTimeDataSun).offsetMinutes === 0 && (tr.to as aicoreTimeDataSun).offsetMinutes === 0;
       if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNSET) && noOffset) {
         // "while the sun is up"
-        if (AicoreUtil.isTwilight(rule)) {
+        if (AicoreUtil.isTwilight(behaviour)) {
           timeStr = lang("while_the_sun_is_up_twilight");
         }
         else {
@@ -117,7 +117,7 @@ export const AicoreUtil = {
       }
       else if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNRISE) && noOffset) {
         // "while its dark outside"
-        if (AicoreUtil.isTwilight(rule)) {
+        if (AicoreUtil.isTwilight(behaviour)) {
           timeStr = lang("while_its_dark_outside_twilight");
         }
         else {
@@ -153,16 +153,16 @@ export const AicoreUtil = {
     return timeStr;
   },
 
-  isTwilight(rule : behaviour | twilight) {
-    return rule.action.type === "DIM_WHEN_TURNED_ON";
+  isTwilight(behaviour : behaviour | twilight) {
+    return behaviour.action.type === "DIM_WHEN_TURNED_ON";
   },
 
 
-  extractEndConditionStrings(rule : behaviour) {
+  extractEndConditionStrings(behaviour : behaviour) {
     let endConditionPrefix = "";
     let endConditionStr= "";
-    if (rule.endCondition && rule.endCondition.type) {
-      switch (rule.endCondition.presence.data.type) {
+    if (behaviour.endCondition && behaviour.endCondition.type) {
+      switch (behaviour.endCondition.presence.data.type) {
         case "SPHERE":
           endConditionPrefix += lang("Afterwards__Ill");
           endConditionStr += lang("stay_on_if_someone_is_stil");
@@ -320,7 +320,7 @@ export const AicoreUtil = {
 
 
   /**
-   * A and B are full rules from the database;
+   * A and B are full behaviours from the database;
    * @param a
    * @param b
    */
@@ -341,31 +341,31 @@ export const AicoreUtil = {
     }
 
 
-    if (bR.rule.time.type === "ALL_DAY" && aR.rule.time.type === "ALL_DAY") { return false; }
-    if (aR.rule.time.type === "ALL_DAY" && bR.rule.time.type !== "ALL_DAY") { return true; }
-    if (aR.rule.time.type !== "ALL_DAY" && bR.rule.time.type === "ALL_DAY") { return false; }
+    if (bR.behaviour.time.type === "ALL_DAY" && aR.behaviour.time.type === "ALL_DAY") { return false; }
+    if (aR.behaviour.time.type === "ALL_DAY" && bR.behaviour.time.type !== "ALL_DAY") { return true; }
+    if (aR.behaviour.time.type !== "ALL_DAY" && bR.behaviour.time.type === "ALL_DAY") { return false; }
 
-    return AicoreUtil.isTimeBeforeOtherTime(aR.rule.time.from, bR.rule.time.from, sphereId)
+    return AicoreUtil.isTimeBeforeOtherTime(aR.behaviour.time.from, bR.behaviour.time.from, sphereId)
   },
 
 
   /**
-   * A and B are full rules from the database;
+   * A and B are full behaviours from the database;
    * @param a
    * @param b
    */
-  endsNextDay(ruleData, sphereId) : boolean {
-    let rule : AicoreBehaviour | AicoreTwilight = null;
-    if (ruleData.type === BEHAVIOUR_TYPES.twilight) {
-      rule = new AicoreTwilight(ruleData.data);
+  endsNextDay(behaviourData, sphereId) : boolean {
+    let behaviour : AicoreBehaviour | AicoreTwilight = null;
+    if (behaviourData.type === BEHAVIOUR_TYPES.twilight) {
+      behaviour = new AicoreTwilight(behaviourData.data);
     }
     else {
-      rule = new AicoreBehaviour(ruleData.data);
+      behaviour = new AicoreBehaviour(behaviourData.data);
     }
 
-    if (rule.rule.time.type === "RANGE") {
-      let fromTime = AicoreUtil.getMinuteValue(rule.rule.time.from, sphereId);
-      let toTime   = AicoreUtil.getMinuteValue(rule.rule.time.to, sphereId);
+    if (behaviour.behaviour.time.type === "RANGE") {
+      let fromTime = AicoreUtil.getMinuteValue(behaviour.behaviour.time.from, sphereId);
+      let toTime   = AicoreUtil.getMinuteValue(behaviour.behaviour.time.to, sphereId);
 
       return fromTime >= toTime
     }
@@ -379,8 +379,8 @@ export const AicoreUtil = {
 
   //
   // /**
-  //  * A and B are full rules from the database;
-  //  * This will return the induced overlap if you enable A on the forDay, given that rule B already exists.
+  //  * A and B are full behaviours from the database;
+  //  * This will return the induced overlap if you enable A on the forDay, given that behaviour B already exists.
   //  * @param a
   //  * @param b
   //  * @param forDay ("Mon", "Tue" etc.
@@ -409,8 +409,8 @@ export const AicoreUtil = {
   //
   //
   //
-  //   let aTime = aR.rule.time;
-  //   let bTime = bR.rule.time;
+  //   let aTime = aR.behaviour.time;
+  //   let bTime = bR.behaviour.time;
   //
   //   let today       = dayArray.indexOf(forDay);
   //   let previousDay = (today + 6) % 7;
@@ -540,8 +540,8 @@ export const AicoreUtil = {
   //   return result;
   // },
 
-  canBehaviourUseIndoorLocalization(sphereId, endLine: string, rule=null) {
-    if (!rule || rule.isUsingSingleRoomPresence() || rule.isUsingMultiRoomPresence() || rule.hasLocationEndCondition()) {
+  canBehaviourUseIndoorLocalization(sphereId, endLine: string, behaviour=null) {
+    if (!behaviour || behaviour.isUsingSingleRoomPresence() || behaviour.isUsingMultiRoomPresence() || behaviour.hasLocationEndCondition()) {
       let state = core.store.getState();
 
       // are there enough?
@@ -571,8 +571,8 @@ export const AicoreUtil = {
   },
 
   /**
-   * A and B are full rules from the database;
-   * This will return the induced overlap if you enable A on the forDay, given that rule B already exists.
+   * A and B are full behaviours from the database;
+   * This will return the induced overlap if you enable A on the forDay, given that behaviour B already exists.
    * @param a
    * @param b
    * @param forDay ("Mon", "Tue" etc.
@@ -597,8 +597,8 @@ export const AicoreUtil = {
     if (b.type === BEHAVIOUR_TYPES.twilight) { bR = new AicoreTwilight(b.data);  }
     else                                     { bR = new AicoreBehaviour(b.data); }
 
-    let aTime = aR.rule.time;
-    let bTime = bR.rule.time;
+    let aTime = aR.behaviour.time;
+    let bTime = bR.behaviour.time;
 
     let today       = DAY_INDICES_MONDAY_START.indexOf(forDay);
     let previousDay = (today + 6) % 7;
@@ -722,37 +722,37 @@ export const AicoreUtil = {
   },
 
 
-  getBehaviourSummary(sphereId: string, ruleData) {
-    let rule : AicoreTwilight | AicoreBehaviour = null;
-    if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
-    else                                            { rule = new AicoreBehaviour(ruleData.data); }
+  getBehaviourSummary(sphereId: string, behaviourData) {
+    let behaviour : AicoreTwilight | AicoreBehaviour = null;
+    if (behaviourData.type === BEHAVIOUR_TYPES.twilight) { behaviour = new AicoreTwilight(behaviourData.data);  }
+    else                                            { behaviour = new AicoreBehaviour(behaviourData.data); }
 
     return {
-      usingSingleRoomPresence: rule.isUsingSingleRoomPresence(),
-      usingMultiRoomPresence:  rule.isUsingMultiRoomPresence(),
-      usingSpherePresence:     rule.isUsingSpherePresence(),
-      type:                    ruleData.type,
-      label:                   rule.getSentence(sphereId),
+      usingSingleRoomPresence: behaviour.isUsingSingleRoomPresence(),
+      usingMultiRoomPresence:  behaviour.isUsingMultiRoomPresence(),
+      usingSpherePresence:     behaviour.isUsingSpherePresence(),
+      type:                    behaviourData.type,
+      label:                   behaviour.getSentence(sphereId),
     }
   },
 
 
   getActiveTurnOnPercentage(sphereId:string, stone) {
-    let rules = stone.rules;
-    let ruleIds = Object.keys(rules);
+    let behaviours = stone.behaviours;
+    let behaviourIds = Object.keys(behaviours);
 
     let dimAmount = 100;
 
-    for (let i = 0; i < ruleIds.length; i++) {
-      let ruleData = rules[ruleIds[i]];
-      let rule : AicoreTwilight | AicoreBehaviour = null;
-      if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
-      else                                            { rule = new AicoreBehaviour(ruleData.data); }
+    for (let i = 0; i < behaviourIds.length; i++) {
+      let behaviourData = behaviours[behaviourIds[i]];
+      let behaviour : AicoreTwilight | AicoreBehaviour = null;
+      if (behaviourData.type === BEHAVIOUR_TYPES.twilight) { behaviour = new AicoreTwilight(behaviourData.data);  }
+      else                                            { behaviour = new AicoreBehaviour(behaviourData.data); }
 
       let currentDay = DAY_INDICES_SUNDAY_START[new Date().getDay()];
-      if (ruleData.activeDays[currentDay]) {
-        if (rule.isCurrentlyActive(sphereId)) {
-          dimAmount = Math.min(dimAmount, rule.getDimPercentage());
+      if (behaviourData.activeDays[currentDay]) {
+        if (behaviour.isCurrentlyActive(sphereId)) {
+          dimAmount = Math.min(dimAmount, behaviour.getDimPercentage());
         }
       }
     }

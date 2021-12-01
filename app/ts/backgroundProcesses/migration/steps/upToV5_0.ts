@@ -5,6 +5,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 
 export const clean_upTo5_0 = function() {
   return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'mesh'}}}}], "MIGRATED_5.0")
+  return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'behaviours'}}}}], "MIGRATED_5.0")
 }
 
 export const upTo5_0 = function(lastMigrationVersion, appVersion) {

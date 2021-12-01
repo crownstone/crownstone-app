@@ -1,7 +1,6 @@
 import { upTo3_0 } from "./steps/upToV3_0";
 import { clean_upTo4_0 } from "./steps/upToV4_0";
 import { upTo4_3 } from "./steps/upToV4_3";
-import { StoreManager } from "../../database/storeManager";
 import { clean_upTo4_4, upTo4_4 } from "./steps/upToV4_4";
 import { clean_upTo5_0, upTo5_0 } from "./steps/upToV5_0";
 import { core } from "../../Core";
