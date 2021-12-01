@@ -143,6 +143,7 @@ Object {
               "updatedAt": 1000000,
             },
           },
+          "behaviours": Object {},
           "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
@@ -181,7 +182,6 @@ Object {
           "reachability": Object {
             "lastSeen": null,
           },
-          "rules": Object {},
           "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
@@ -241,6 +241,7 @@ Object {
               "updatedAt": 1000000,
             },
           },
+          "behaviours": Object {},
           "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
@@ -279,7 +280,6 @@ Object {
           "reachability": Object {
             "lastSeen": null,
           },
-          "rules": Object {},
           "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
@@ -339,6 +339,7 @@ Object {
               "updatedAt": 1000000,
             },
           },
+          "behaviours": Object {},
           "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
@@ -377,7 +378,6 @@ Object {
           "reachability": Object {
             "lastSeen": null,
           },
-          "rules": Object {},
           "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
