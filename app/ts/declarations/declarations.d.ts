@@ -245,3 +245,29 @@ interface HubDataReply {
   dataType:        number // can be null
   message:         string // default empty string ""
 }
+
+interface triggerFormat {
+  [sphereId: string]: {
+    [stoneId: string] : {
+      [ownerId: string] : {
+        [uuid: string] : {
+          rssiRequirement: number,
+          action: () => void,
+          timesToTrigger: number,
+          timesTriggered: number,
+          triggeredIds: map,
+          timeout?:number,
+          promise?: {resolve: (stoneId) => void, reject: (err) => void}
+        }
+      }
+    }
+  }
+}
+
+interface logFormat {
+  [key: string]: {sphereId: string, t: number, rssi: number, lastNotifiedRssi: number, handle: string,}
+}
+
+interface sphereLogFormat {
+  [key: string]: {[key: string] : {t: number, rssi: number, handle: string }}
+}

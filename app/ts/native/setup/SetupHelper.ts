@@ -27,6 +27,7 @@ export class SetupHelper {
   macAddress      : any;
   firmwareVersion : any;
   hardwareVersion : any;
+  uicr            : any;
   cloudResponse   : any;
   meshDeviceKey   : any;
   stoneIdInCloud  : any;
@@ -55,12 +56,13 @@ export class SetupHelper {
    */
   async claim(sphereId, silent : boolean = false) : Promise<{id: string, familiarCrownstone: boolean}> {
     // things to be filled out during setup process
-    this.macAddress = undefined;
-    this.cloudResponse = undefined;
+    this.macAddress      = undefined;
+    this.cloudResponse   = undefined;
     this.firmwareVersion = undefined; // ie. 1.1.1
     this.hardwareVersion = undefined; // ie. 1.1.1
-    this.stoneIdInCloud = undefined; // shorthand to the cloud id
-    this.meshDeviceKey = undefined; // shorthand to the cloud id
+    this.uicr            = undefined; // ie. UICR DATA
+    this.stoneIdInCloud  = undefined; // shorthand to the cloud id
+    this.meshDeviceKey   = undefined; // shorthand to the cloud id
     this.stoneWasAlreadyInCloud = false; // is the stone is already in the cloud during setup of this stone.
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
@@ -83,6 +85,9 @@ export class SetupHelper {
 
       this.hardwareVersion = await api.getHardwareVersion();
       LOG.info("setup progress: have hardware version: ", this.hardwareVersion);
+
+      this.uicr = await api.getUICR();
+      LOG.info("setup progress: have uicr data: ", this.uicr);
 
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3/20 });
 

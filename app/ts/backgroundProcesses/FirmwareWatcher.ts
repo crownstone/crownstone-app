@@ -1,7 +1,12 @@
 import {LOG, LOGe} from "../logging/Log";
-import { Util } from "../util/Util";
 import { core } from "../Core";
 import { from} from "../logic/constellation/Tellers";
+import {StoneProximityTrigger} from "../native/advertisements/StoneProximityTrigger";
+import {Get} from "../util/GetUtil";
+import {DataUtil} from "../util/DataUtil";
+
+
+const FWWatcherClassId = "FirmwareWatcher"
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;
@@ -11,13 +16,13 @@ class FirmwareWatcherClass {
     if (this._initialized === false) {
       // once the user is logged in, we will check if there are crownstones that we do not know the firmware of.
 
-      core.eventBus.on('enterSphere', (sphereId) => { this.checkFirmware(sphereId); });
+      core.eventBus.on('enterSphere', (sphereId) => { this.screenCrownstonesInSphere(sphereId); });
     }
     this._initialized = true;
   }
 
-  checkFirmware(sphereId) {
-    LOG.info("FirmwareWatcher: Starting Firmware Check");
+  screenCrownstonesInSphere(sphereId) {
+    LOG.info("FirmwareWatcher: Starting Crownstone data check");
 
     let state = core.store.getState();
     if (!state.spheres[sphereId]) {
@@ -31,38 +36,20 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: Random Firmware Check Forced.");
     }
 
-    Util.data.callOnStonesInSphere(sphereId, (stoneId, stone) => {
-      let execute = !stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  || !stone.config.hardwareVersion || stone.config.hardwareVersion === '0'
+    DataUtil.callOnStonesInSphere(sphereId, (stoneId, stone) => {
+      let execute = !stone.config.firmwareVersion         ||
+                     stone.config.firmwareVersion === '0' ||
+                    randomCheck                           ||
+                    !stone.config.hardwareVersion         ||
+                     stone.config.hardwareVersion === '0' ||
+                    !stone.config.uicr;
 
-      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute when in range:", execute);
-      // random chance to check the firmware again.
+      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: firmware:", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, 'uicr:', stone.config.uicr, "Will execute when in range:", execute);
+
       if (execute) {
-        from(stone, 3000).getFirmwareVersion()
-          .then((firmwareVersion : string) => {
-            core.store.dispatch({
-              type:     "UPDATE_STONE_CONFIG",
-              stoneId:  stoneId,
-              sphereId: sphereId,
-              data: {
-                firmwareVersion: firmwareVersion
-              }
-            });
-          })
-          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
-
-        from(stone, 3000).getHardwareVersion()
-          .then((hardwareVersion : string) => {
-            core.store.dispatch({
-              type: "UPDATE_STONE_CONFIG",
-              stoneId: stoneId,
-              sphereId: sphereId,
-              data: {
-                hardwareVersion: hardwareVersion
-              }
-            });
-          })
-          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err) });
-
+        StoneProximityTrigger.setTrigger(sphereId, stoneId, FWWatcherClassId, () => {
+          this.getCrownstoneDetails(sphereId, stoneId);
+        }, -80);
         loadedCommands = true;
       }
     });
@@ -74,6 +61,50 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: No need to run a firmware/hardware version check.");
     }
   }
+
+  getCrownstoneDetails(sphereId, stoneId) {
+    let stone = Get.stone(sphereId, stoneId);
+    if (!stone) { return; }
+    from(stone, 30).getFirmwareVersion()
+      .then((firmwareVersion : string) => {
+        core.store.dispatch({
+          type:     "UPDATE_STONE_CONFIG",
+          stoneId:  stoneId,
+          sphereId: sphereId,
+          data: {
+            firmwareVersion: firmwareVersion
+          }
+        });
+      })
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+
+    from(stone, 30).getHardwareVersion()
+      .then((hardwareVersion : string) => {
+        core.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: stoneId,
+          sphereId: sphereId,
+          data: {
+            hardwareVersion: hardwareVersion
+          }
+        });
+      })
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err) });
+
+    from(stone, 30).getUICR()
+      .then((UICR : UICRData) => {
+        core.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: stoneId,
+          sphereId: sphereId,
+          data: {
+            uicr: UICR
+          }
+        });
+      })
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get uicr version from stone.", err) });
+  }
+
 }
 
 export const FirmwareWatcher = new FirmwareWatcherClass();

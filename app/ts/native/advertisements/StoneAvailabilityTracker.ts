@@ -2,20 +2,13 @@ import { core } from "../../Core";
 import { Scheduler } from "../../logic/Scheduler";
 import { DISABLE_TIMEOUT } from "../../ExternalConfig";
 import { LOGd, LOGv } from "../../logging/Log";
+import {StoneProximityTrigger} from "./StoneProximityTrigger";
 
 const RSSI_TIMEOUT_MS = 5000;
 const RSSI_THRESHOLD  = 3;
 const INVALID_RSSI    = -1000;
 
 const TRIGGER_ID = "StoneTracker"
-
-interface logFormat {
-  [key: string]: {sphereId: string, t: number, rssi: number, lastNotifiedRssi: number, handle: string,}
-}
-
-interface sphereLogFormat {
-  [key: string]: {[key: string] : {t: number, rssi: number, handle: string }}
-}
 
 /**
  * This class gathers all incoming advertisments and constructs a map which indicates the last known RSSI's as well
@@ -31,6 +24,8 @@ export class StoneAvailabilityTrackerClass {
   initialized = false;
 
   handleMap = {};
+
+  triggers : triggerFormat = {};
 
   init() {
     if (this.initialized === false) {
@@ -181,6 +176,8 @@ export class StoneAvailabilityTrackerClass {
     let newRSSI = 0.7*prevRSSI + 0.3*data.rssi;
     this.log[data.stoneId].rssi = newRSSI;
     this.sphereLog[data.sphereId][data.stoneId].rssi = newRSSI;
+
+    StoneProximityTrigger.handleTriggers(data.sphereId, data.stoneId, data.rssi);
 
     if (data.handle) {
       LOGv.native("StoneAvailabilityTracker: Storing data in logs");
