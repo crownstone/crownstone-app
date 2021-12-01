@@ -6,8 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
-import { ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
-import { colors, deviceStyles, screenWidth, styles } from "../../../styles";
+import { ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View} from "react-native";
+import { colors, screenWidth} from "../../../styles";
 import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
 import { core } from "../../../../Core";
 import { Icon } from "../../../components/Icon";
@@ -118,7 +118,7 @@ export function SmartBehaviour(props: {
 
 
       { /* Selection checkmark */ }
-      <SlideSideFadeInView width={50} visible={props.editMode && props.behaviourSelection && !props.selected}></SlideSideFadeInView>
+      <SlideSideFadeInView width={50} visible={props.editMode && props.behaviourSelection && !props.selected} />
       <SlideSideFadeInView width={50} visible={props.editMode && props.behaviourSelection && props.selected}>
         <View style={{width:50, alignItems:'flex-end'}}>
           <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
@@ -141,7 +141,7 @@ function BehaviourDescription(props, ai : AicoreBehaviour | AicoreTwilight, edit
     textDecorationLine: props.behaviour.deleted ? 'line-through' : 'none'
   };
 
-  if (props.selected) {;
+  if (props.selected) {
     labelStyle['color'] = colors.csBlueDark.hex;
     labelStyle['fontWeight'] = 'bold';
   }

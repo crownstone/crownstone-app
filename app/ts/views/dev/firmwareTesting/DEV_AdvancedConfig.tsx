@@ -6,7 +6,6 @@ import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
 import Toast from 'react-native-same-toast';
-import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { background, colors, styles } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
@@ -14,11 +13,8 @@ import React from "react";
 import { BleStatusBar } from "./DEV_FirmwareTest";
 import { SlideInView } from "../../components/animated/SlideInView";
 import { ListEditableItems } from "../../components/ListEditableItems";
-import { BleUtil } from "../../../util/BleUtil";
 import { IconButton } from "../../components/IconButton";
-import { DataUtil } from "../../../util/DataUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { LOGe } from "../../../logging/Log";
 import { CommandAPI } from "../../../logic/constellation/Commander";
 
 

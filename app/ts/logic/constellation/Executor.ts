@@ -1,7 +1,4 @@
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
-import { xUtil } from "../../util/StandAloneUtil";
-import { LOGe, LOGi } from "../../logging/Log";
 
 export const Executor = {
 

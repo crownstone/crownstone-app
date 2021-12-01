@@ -11,10 +11,8 @@ import {
   View
 } from 'react-native';
 import {IconButton} from "../../components/IconButton";
-import {Background} from "../../components/Background";
 import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
-import { core } from "../../../Core";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
 

@@ -9,7 +9,6 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { CLOUD } from "../cloud/cloudAPI";
 import {LOGe} from '../logging/Log'
 import { core } from "../Core";
-import { xUtil } from "./StandAloneUtil";
 import { LocationTransferNext } from "../cloud/sections/newSync/transferrers/LocationTransferNext";
 import { Get } from "./GetUtil";
 

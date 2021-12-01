@@ -7,7 +7,7 @@
 import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
-import {getSyncIdMap, SyncingBase} from "./SyncingBase";
+import {SyncingBase} from "./SyncingBase";
 import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
@@ -18,7 +18,6 @@ import { FileUtil } from "../../../../util/FileUtil";
 import { core } from "../../../../Core";
 import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/constants/SceneConstants";
 import { SphereTransferNext } from "../../newSync/transferrers/SphereTransferNext";
-import { Sphere } from "../../../../views/main/Sphere";
 
 export class SphereSyncer extends SyncingBase {
   userId = null;

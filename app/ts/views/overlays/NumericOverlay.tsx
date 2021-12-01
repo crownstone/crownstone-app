@@ -8,14 +8,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
-  Text, TouchableOpacity, TouchableWithoutFeedback,
-  View
+  Text, TouchableOpacity, View
 } from "react-native";
 
 import { OverlayBox } from '../components/overlays/OverlayBox'
-import { colors, screenHeight, screenWidth, styles } from "../styles";
+import { colors, screenWidth, styles } from "../styles";
 import { InterviewTextInput } from "../components/InterviewComponents";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../Core";

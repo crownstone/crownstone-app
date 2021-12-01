@@ -6,19 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated, Platform, SafeAreaView, StatusBar,
+  Animated, Platform, StatusBar,
   View
 } from "react-native";
 
 import {
   styles,
   screenHeight,
-  topBarHeight,
-  tabBarHeight,
   screenWidth,
-  statusBarHeight,
   colors,
-  updateScreenHeight, availableScreenHeight, availableModalHeight, stylesUpdateConstants
+  updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";

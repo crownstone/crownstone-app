@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DfuBatch", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -12,7 +12,7 @@ import {
   ScrollView, Text, Vibration,
   View
 } from "react-native";
-import { availableModalHeight, background, colors, screenWidth, styles } from "../styles";
+import { background, colors, screenWidth, styles } from "../styles";
 import { core } from "../../Core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -178,7 +178,7 @@ export class DfuBatch extends LiveComponent<any, any> {
     let stoneArray = [];
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
-    if (!sphere) { return { itemArray: stoneArray, ids: [] }};
+    if (!sphere) { return { itemArray: stoneArray, ids: [] }}
     let stones = sphere.stones;
 
     this.props.stoneIdsToUpdate.forEach((stoneId) => {

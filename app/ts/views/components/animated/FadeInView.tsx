@@ -10,7 +10,7 @@ import {
   View
 } from "react-native";
 import { useState } from "react";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { BlurView} from "@react-native-community/blur";
 import { colors, screenHeight, screenWidth } from "../../styles";
 
 export class FadeInView extends Component<any, any> {

@@ -1,4 +1,3 @@
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
 import { MapProvider } from "../MapProvider";

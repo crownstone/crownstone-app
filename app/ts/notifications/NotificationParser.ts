@@ -3,7 +3,7 @@ import { NavigationUtil }        from "../util/NavigationUtil";
 import { CLOUD }                 from "../cloud/cloudAPI";
 import { LocalNotifications }    from "./LocalNotifications";
 import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
-import { LOG, LOGe, LOGi, LOGw } from "../logging/Log";
+import { LOG, LOGe, LOGw } from "../logging/Log";
 import { MapProvider }           from "../backgroundProcesses/MapProvider";
 import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
 import { tell }                  from "../logic/constellation/Tellers";
@@ -181,7 +181,7 @@ class NotificationParserClass {
 
   _handleMultiswitch(notificationData, state) {
     let switchEventData : MultiSwitchCrownstoneEvent = notificationData.event;
-    if (!switchEventData) { throw new Error("NO_EVENT_DATA"); };
+    if (!switchEventData) { throw new Error("NO_EVENT_DATA"); }
     try {
       if (typeof switchEventData === "string") {
         switchEventData = JSON.parse(switchEventData);
@@ -193,14 +193,14 @@ class NotificationParserClass {
     }
 
     let cloudSphereId = switchEventData.sphere?.id;
-    if (!cloudSphereId) { throw new Error("NO_CLOUD_SPHERE_ID_PROVIDED"); };
+    if (!cloudSphereId) { throw new Error("NO_CLOUD_SPHERE_ID_PROVIDED"); }
     let sphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId
 
     let sphere = state.spheres[sphereId];
     if (!sphere) { throw new Error("CAN_NOT_FIND_SPHERE"); }
 
     let switchDataArr = switchEventData.switchData;
-    if (!switchDataArr || !Array.isArray(switchDataArr)) { throw new Error("SWITCH_DATA_IS_NOT_AN_ARRAY"); ; };
+    if (!switchDataArr || !Array.isArray(switchDataArr)) { throw new Error("SWITCH_DATA_IS_NOT_AN_ARRAY");  }
 
 
     let actionToPerform = false;
@@ -212,7 +212,7 @@ class NotificationParserClass {
       let switchState = 0;
       switch (switchData.type) {
         case "PERCENTAGE":
-          if (switchData.percentage === undefined || switchData.percentage === null) { return };
+          if (switchData.percentage === undefined || switchData.percentage === null) { return }
           switchState = Math.min(100, Math.max(0,Number(switchData.percentage)));
           break;
         case "TURN_OFF":

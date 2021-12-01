@@ -9,49 +9,33 @@ import * as React from 'react';
 
 import { Background } from '../components/Background'
 import { SphereDeleted }        from "../static/SphereDeleted";
-import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { StoneUtil } from "../../util/StoneUtil";
-import { INTENTS } from "../../native/libInterface/Constants";
-import { availableScreenHeight, background, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import { availableScreenHeight, background, colors, deviceStyles, screenWidth, styles } from "../styles";
 import {
   ActivityIndicator, Alert,
   Text,
   TextStyle,
-  TouchableHighlight,
   TouchableOpacity,
-  View,
-  ViewStyle
+  View
 } from "react-native";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { DimmerSlider, DIMMING_INDICATOR_SIZE, DIMMING_INDICATOR_SPACING } from "../components/DimmerSlider";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
-import { LockedStateUI } from "../components/LockedStateUI";
-import { STONE_TYPES } from "../../Enums";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Navigation } from "react-native-navigation";
 import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { HubHelper } from "../../native/setup/HubHelper";
-import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { DataUtil } from "../../util/DataUtil";
 import { Button } from "../components/Button";
 import { Get } from "../../util/GetUtil";
 import { HubReplyError } from "./HubEnums";
-import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
+import { LOGe, LOGi, LOGw } from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
 import { CLOUD } from "../../cloud/cloudAPI";
-import { HubSyncer } from "../../cloud/sections/newSync/syncers/HubSyncerNext";
-import { ScrollView } from "react-native";
-import { ListEditableItems } from "../components/ListEditableItems";
-import { IconButton } from "../components/IconButton";
-import { Bluenet } from "../../native/libInterface/Bluenet";
 // import { WebRtcClient } from "../../logic/WebRtcClient";
 import { DebugIcon } from "../components/DebugIcon";
 import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";

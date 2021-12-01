@@ -1,7 +1,6 @@
 
 import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { Executor } from "../Executor";
 
 
 export class Command_SetSwitchState extends CommandBase implements CommandBaseInterface {

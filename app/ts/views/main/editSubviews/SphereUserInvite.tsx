@@ -4,7 +4,7 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereUserInvite", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   ScrollView} from 'react-native';

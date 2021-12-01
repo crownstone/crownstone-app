@@ -1,13 +1,10 @@
-import { Platform, AppState } from 'react-native'
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
-import { LOGd, LOGi } from "../../logging/Log";
-import { BROADCAST_THROTTLE_TIME, MINIMUM_FIRMWARE_VERSION_BROADCAST } from "../../ExternalConfig";
+import { LOGi } from "../../logging/Log";
+import { BROADCAST_THROTTLE_TIME} from "../../ExternalConfig";
 import { Scheduler } from "../Scheduler";
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { CONDITION_MAP } from "../../Enums";
-import { Command_MultiSwitch, Command_TurnOn } from "../constellation/commandClasses";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { EventUtil } from "../../util/EventUtil";
 import { SessionManager } from "./SessionManager";

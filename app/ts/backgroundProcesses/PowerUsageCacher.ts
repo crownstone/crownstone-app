@@ -40,7 +40,7 @@ class PowerUsageCacherClass {
   }
 
   processData(adv : crownstoneAdvertisement) {
-    if (!adv.referenceId) { return };
+    if (!adv.referenceId) { return }
 
     let now = Date.now();
 

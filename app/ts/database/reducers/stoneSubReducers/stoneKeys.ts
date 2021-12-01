@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from '../reducerUtil'
+import { update, refreshDefaults } from '../reducerUtil'
 
 let dataState = {
   id: undefined,

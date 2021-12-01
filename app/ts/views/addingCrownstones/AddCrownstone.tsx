@@ -10,7 +10,6 @@ import {
   Platform,
 } from "react-native";
 import { background, colors } from "../styles";
-import { core } from "../../Core";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
 import { NavigationUtil } from "../../util/NavigationUtil";

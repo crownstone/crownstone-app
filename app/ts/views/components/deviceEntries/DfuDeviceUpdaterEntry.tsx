@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth } from "../../styles";
+import { colors, screenWidth } from "../../styles";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../Core";
 import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";

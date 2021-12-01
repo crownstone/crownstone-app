@@ -3,15 +3,14 @@ import { LiveComponent } from "../LiveComponent";
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("PermissionIntroduction", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import { Languages } from "../../Languages";
 import { Interview } from "../components/Interview";
-import { Alert, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import {
   availableModalHeight,
   colors,
   screenHeight,
-  screenWidth,
   statusBarHeight,
   styles,
   tabBarMargin
@@ -25,7 +24,6 @@ import { LOG } from "../../logging/Log";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { randomAiName } from "./AiStart";
 import { ScaledImage } from "../components/ScaledImage";
-import { Icon } from "../components/Icon";
 import { Util } from "../../util/Util";
 
 

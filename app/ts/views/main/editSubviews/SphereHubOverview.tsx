@@ -8,7 +8,6 @@ import {
   Alert,
   ScrollView} from 'react-native';
 import { background, colors } from "../../styles";
-import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {DeviceEntry} from "../../components/deviceEntries/DeviceEntry";

@@ -1,6 +1,5 @@
 import {LOGe} from "../../../logging/Log";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
-import {getSyncIdMap} from "./modelSyncs/SyncingBase";
 import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
 import { core } from "../../../Core";
 

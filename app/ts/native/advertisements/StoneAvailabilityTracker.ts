@@ -178,7 +178,7 @@ export class StoneAvailabilityTrackerClass {
     let prevRSSI = this.log[data.stoneId].rssi;
     if (prevRSSI === INVALID_RSSI) { prevRSSI = data.rssi; }
 
-    let newRSSI = 0.7*prevRSSI + 0.3*data.rssi;;
+    let newRSSI = 0.7*prevRSSI + 0.3*data.rssi;
     this.log[data.stoneId].rssi = newRSSI;
     this.sphereLog[data.sphereId][data.stoneId].rssi = newRSSI;
 

@@ -197,7 +197,7 @@ export const Util = {
 
   getSunTimes: function(sphereId) {
     let coordinates = Util.getSphereLocation(sphereId);
-    var times = SunCalc.getTimes(new Date(), coordinates.latitude, coordinates.longitude);
+    const times = SunCalc.getTimes(new Date(), coordinates.latitude, coordinates.longitude);
 
     let sunriseTime = new Date(times.sunriseEnd).valueOf();
     let sunsetTime  = new Date(times.sunset).valueOf();

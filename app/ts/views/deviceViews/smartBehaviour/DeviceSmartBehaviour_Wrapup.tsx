@@ -8,7 +8,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
   Text,
-  View, ScrollView, Alert, TextStyle, TouchableOpacity
+  View, ScrollView, Alert, TextStyle
 } from "react-native";
 import {
   availableModalHeight, background,

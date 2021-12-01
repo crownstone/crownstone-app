@@ -15,7 +15,6 @@ import { SyncingBase } from "./SyncingBase";
 import { CLOUD } from "../../../cloudAPI";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
-import abilities from "../../../../database/reducers/stoneSubReducers/abilities";
 
 interface locationSummary {
   [key: string]: { locationConfig?: LocationDataConfig, localLocationId: string, localSphereId: string}
@@ -237,7 +236,7 @@ export class FingerprintSyncer extends SyncingBase {
                 });
               }
             })
-        };
+        }
       })
       .then(() => {
         // we will now check if fingerprints have been removed from the cloud

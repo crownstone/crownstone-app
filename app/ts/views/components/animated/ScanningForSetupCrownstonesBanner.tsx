@@ -1,6 +1,6 @@
 import { Component } from "react";
 import * as React from "react";
-import { colors, screenWidth } from "../../styles";
+import { colors} from "../../styles";
 import { AnimatedIconBanner } from "./AnimatedIconBanner";
 
 export class ScanningForSetupCrownstonesBanner extends Component<{height: number, componentId: any}, any> {

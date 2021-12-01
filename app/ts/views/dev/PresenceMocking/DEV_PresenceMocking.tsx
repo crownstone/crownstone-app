@@ -9,7 +9,7 @@ import { Background } from "../../components/Background";
 import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView} from "react-native";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { BackButton, RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
 import { availableScreenHeight, background, colors, screenWidth } from "../../styles";

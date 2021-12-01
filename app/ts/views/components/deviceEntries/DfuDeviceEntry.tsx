@@ -19,8 +19,6 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
-import { BleUtil } from "../../../util/BleUtil";
-import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { tell } from "../../../logic/constellation/Tellers";
 
 

@@ -18,9 +18,7 @@ import {
 } from "../components/InterviewComponents";
 import { ScaledImage } from "./ScaledImage";
 import ResponsiveText from "./ResponsiveText";
-import { SlideInFromBottomView } from "./animated/SlideInFromBottomView";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
-import {BackButton} from "../dev/user/DEV_UserDataSpheres";
 import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
 
 let headerStyle : TextStyle = {

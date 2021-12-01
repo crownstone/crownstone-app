@@ -4,12 +4,11 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ScenesOverview", key)(a,b,c,d,e);
 }
 import * as React                 from 'react';
-import { Platform, Text, View, Image, Alert, ScrollView } from "react-native";
+import { Text, View, Alert, ScrollView } from "react-native";
 import { screenWidth, colors, background } from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../Core";
 import { TopBarUtil }             from "../../util/TopBarUtil";
-import { Background }             from "../components/Background";
 import { BackButtonHandler }      from "../../backgroundProcesses/BackButtonHandler";
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
 import { SlideFadeInView }        from "../components/animated/SlideFadeInView";
@@ -21,7 +20,6 @@ import { SceneIntroduction,
 import { SceneItem }              from "./supportComponents/SceneItem";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
-import { Navigation } from "react-native-navigation";
 import { ScaledImage } from "../components/ScaledImage";
 import { RoundedBackground } from "../components/RoundedBackground";
 const className = "ScenesOverview";

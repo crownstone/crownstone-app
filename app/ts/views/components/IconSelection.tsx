@@ -7,15 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
-  View, Text
+  View
 } from 'react-native';
 
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors} from '../styles'
 
 import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
-import { CustomIcon } from '../../fonts/customIcons'
 import { Icon } from "./Icon";
 
 let borderColor = 'rgba(0,0,0,0.1)';

@@ -17,7 +17,6 @@ import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Util} from "../../../util/Util";
 import { core } from "../../../Core";
-import { StoneUtil } from "../../../util/StoneUtil";
 import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 import { STONE_TYPES } from "../../../Enums";

@@ -18,7 +18,6 @@ import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { HiddenFadeIn, HiddenFadeInView } from "../components/animated/FadeInView";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;

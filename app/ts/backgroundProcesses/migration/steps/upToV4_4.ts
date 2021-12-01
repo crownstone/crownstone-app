@@ -1,6 +1,5 @@
 import { StoreManager } from "../../../database/storeManager";
 import { core } from "../../../Core";
-import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
 
 export const clean_upTo4_4 = function() {

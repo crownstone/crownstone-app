@@ -1,5 +1,5 @@
 import {AppState, Platform} from 'react-native'
-import {LOG, LOGe, LOGw} from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
 import { core } from "../Core";

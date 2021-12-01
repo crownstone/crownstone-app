@@ -22,7 +22,6 @@ import {
   screenWidth,
   styles
 } from "../styles";
-import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";

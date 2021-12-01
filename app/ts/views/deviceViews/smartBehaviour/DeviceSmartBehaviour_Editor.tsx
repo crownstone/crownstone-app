@@ -6,10 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform,
   ScrollView,
-  Text, TouchableOpacity,
-  View
+  Text, View
 } from "react-native";
 
 import {
@@ -18,7 +16,6 @@ import {
   screenWidth
 } from "../../styles";
 import { Background } from "../../components/Background";
-import { core } from "../../../Core";
 import { BehaviourEditor } from "./supportComponents/BehaviourEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import ResponsiveText from "../../components/ResponsiveText";

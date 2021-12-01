@@ -8,12 +8,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View, ScrollView, Platform
+  View, ScrollView
 } from "react-native";
 
-import { HiddenFadeInBlur, HiddenFadeInView } from "../animated/FadeInView";
+import { HiddenFadeInBlur} from "../animated/FadeInView";
 import { Icon }         from '../Icon'
-import { styles, colors, screenHeight, screenWidth, availableScreenHeight, statusBarHeight } from "../../styles";
+import { styles, colors, screenHeight, screenWidth, availableScreenHeight} from "../../styles";
 
 interface overlayBoxProps {
   overrideBackButton?: any,

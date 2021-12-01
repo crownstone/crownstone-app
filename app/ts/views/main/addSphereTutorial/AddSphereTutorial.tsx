@@ -4,13 +4,13 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AddSphereTutorial", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   StyleSheet,
   View
 } from "react-native";
 import { Background } from "../../components/Background";
-import { availableModalHeight, background, colors, screenWidth } from "../../styles";
+import { background, colors, screenWidth } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";

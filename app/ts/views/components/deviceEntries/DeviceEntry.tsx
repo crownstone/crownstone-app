@@ -11,25 +11,21 @@ import {
   Switch,
   TouchableOpacity,
   Text,
-  View, ViewStyle, PanResponder, Platform
+  View, ViewStyle, Platform
 } from "react-native";
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth } from "../../styles";
-import { AlternatingContent }                 from '../animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
-import { INTENTS }                            from '../../../native/libInterface/Constants';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
-import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { SlideFadeInView, SlideSideFadeInView } from "../animated/SlideFadeInView";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
-import { DataUtil } from "../../../util/DataUtil";
 import Slider from "@react-native-community/slider";
 import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";

@@ -1,9 +1,6 @@
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { KEY_TYPES } from "../../../Enums";
-import { Permissions } from "../../PermissionManager";
-import { DataUtil } from "../../../util/DataUtil";
-import DeviceInfo from "react-native-device-info";
 
 
 function moveKeysInDatabase() {

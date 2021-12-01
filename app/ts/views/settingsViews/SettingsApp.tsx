@@ -20,7 +20,6 @@ import {Util} from "../../util/Util";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SliderBar } from "../components/editComponents/SliderBar";
-import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {

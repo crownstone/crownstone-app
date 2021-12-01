@@ -2,7 +2,6 @@
  * The SessionBroker will provide a
  */
 import { SessionManager } from "./SessionManager";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Collector } from "./Collector";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";

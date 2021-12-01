@@ -13,7 +13,6 @@ import {
 import {Background} from "../../components/Background";
 import { background, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
-import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 

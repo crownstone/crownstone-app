@@ -11,7 +11,6 @@ import {
   ScrollView} from 'react-native';
 
 
-import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'

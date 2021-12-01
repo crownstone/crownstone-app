@@ -1,8 +1,7 @@
 import { Component } from "react";
 import * as React from "react";
-import { colors, screenWidth } from "../../styles";
+import { colors} from "../../styles";
 import { AnimatedIconBanner } from "./AnimatedIconBanner";
-import { ViewStateWatcher } from "../ViewStateWatcher";
 
 export class BatchDFUCrownstonesBanner extends Component<{height: number, componentId: any}, any> {
   render() {

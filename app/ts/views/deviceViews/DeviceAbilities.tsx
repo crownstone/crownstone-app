@@ -8,7 +8,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import {
   Text,
-  View, ViewStyle, TextStyle, ScrollView, TouchableOpacity, Switch, Linking, ActivityIndicator
+  View, ScrollView, TouchableOpacity, Switch, Linking, ActivityIndicator
 } from "react-native";
 
 import {
@@ -219,7 +219,7 @@ function getData(props, stone, active) {
       let activeTypeLabel = null;
       if (!tapToToggleEnabledGlobally) {
         disabledLabel = lang("Tap_to_toggle_is_disabled")
-      };
+      }
 
       switch (stone.config.type) {
         case STONE_TYPES.plug:

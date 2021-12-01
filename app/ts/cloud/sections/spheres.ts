@@ -1,15 +1,10 @@
 
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
-import { TokenStore } from "./cloudApiBase";
 import { user } from "./user";
-import { stones } from "./stones";
-import { locations } from "./locations";
 import { core } from "../../Core";
 import { CLOUD } from "../cloudAPI";
 import { SphereTransferNext } from "./newSync/transferrers/SphereTransferNext";
-import { Sphere } from "../../views/main/Sphere";
 
 export const spheres = {
 

@@ -15,8 +15,6 @@ import {
 import { Icon } from './Icon';
 import { colors, topBarHeight, statusBarHeight} from '../styles'
 
-import { AlternatingContent }   from './animated/AlternatingContent'
-
 import {topBarStyle} from "./topbar/TopbarStyles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 

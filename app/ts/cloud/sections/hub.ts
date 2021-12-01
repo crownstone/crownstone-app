@@ -1,4 +1,3 @@
-import {APP_NAME} from "../../ExternalConfig";
 import { cloudApiBase } from "./cloudApiBase";
 
 export const hubs = {

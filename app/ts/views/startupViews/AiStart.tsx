@@ -8,10 +8,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   StyleSheet,
-  TouchableOpacity,
   Text,
-  View,
-  Platform
+  View
 } from 'react-native';
 
 
@@ -19,7 +17,6 @@ import {
 import { Background } from '../components/Background'
 import {LOGe} from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, background } from "../styles";
-import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 import { core } from "../../Core";

@@ -1,8 +1,7 @@
 import {LOG, LOGe} from "../logging/Log";
 import { Util } from "../util/Util";
 import { core } from "../Core";
-import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
-import { from, tell } from "../logic/constellation/Tellers";
+import { from} from "../logic/constellation/Tellers";
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;

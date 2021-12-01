@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining_roomSize", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -17,7 +17,6 @@ import {
 import { Background }   from '../components/Background'
 import { colors, screenWidth, screenHeight, background } from "../styles";
 import { Icon }         from '../components/Icon';
-import { Util }         from "../../util/Util";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";

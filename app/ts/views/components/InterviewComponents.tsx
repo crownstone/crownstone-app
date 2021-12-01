@@ -5,7 +5,6 @@ import { colors, screenWidth } from "../styles";
 import { FadeIn} from "./animated/FadeInView";
 import React, { useRef, useState } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
-import { xUtil } from "../../util/StandAloneUtil";
 import ResponsiveText from "./ResponsiveText";
 import { Util } from "../../util/Util";
 

@@ -18,20 +18,17 @@ import {
   colors,
   overviewStyles
 } from "../styles";
-import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
 import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
-import {Util} from "../../util/Util";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
-import { RoomAdd } from "../roomViews/RoomAdd";
 import { CLOUD } from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
 import { Navigation } from "react-native-navigation";

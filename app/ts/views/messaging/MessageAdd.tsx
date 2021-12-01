@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("MessageAdd", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   ScrollView,
@@ -16,7 +16,6 @@ import {
   background,
   colors
 } from "../styles";
-import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { ProfilePicture } from "../components/ProfilePicture";

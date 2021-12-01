@@ -5,7 +5,8 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Register", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
+
 const sha1 = require('sha-1');
 import {
   Alert, Linking,
@@ -17,7 +18,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 
 import { emailChecker, getImageFileFromUser, processImage } from "../../util/Util";
 
-import { background, colors, screenHeight, screenWidth, styles, topBarHeight } from "../styles";
+import { background, colors, screenHeight, screenWidth, styles} from "../styles";
 
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";

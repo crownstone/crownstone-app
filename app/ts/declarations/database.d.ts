@@ -51,7 +51,7 @@ interface HubData {
     reachable: boolean,
     lastSeen:  timestamp | null,
   },
-};
+}
 
 interface HubDataConfig {
   name:            string,
@@ -103,7 +103,7 @@ interface StoneData {
   lastUpdated:  any,
   reachability: any,
   keys:         any,
-};
+}
 
 interface StoneDataConfig {
   name:         string,
@@ -223,7 +223,7 @@ interface AbilityData {
   properties: {
     [propertyId: string]: AbilityPropertyData
   }
-};
+}
 
 type AbilityPropertyType = "rssiOffset" | "softOnSpeed";
 interface AbilityPropertyData {
@@ -233,7 +233,7 @@ interface AbilityPropertyData {
   valueTarget:      string | number,
   syncedToCrownstone: boolean,
   updatedAt:        number
-};
+}
 
 
 interface ToonData {

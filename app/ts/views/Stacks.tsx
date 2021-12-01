@@ -1,5 +1,4 @@
 import { Languages } from "../Languages";
-import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 
 export const Stacks = {
 

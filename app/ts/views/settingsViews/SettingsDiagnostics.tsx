@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { availableScreenHeight, background, colors, deviceStyles, screenWidth } from "../styles";
+import { background, colors, deviceStyles, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";

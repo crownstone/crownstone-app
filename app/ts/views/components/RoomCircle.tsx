@@ -167,7 +167,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   getCircle() {
-    let newColor = colors.green.rgba(0.75);;
+    let newColor = colors.green.rgba(0.75);
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
       <View>

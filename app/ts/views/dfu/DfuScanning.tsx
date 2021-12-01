@@ -146,7 +146,7 @@ export class DfuScanning extends LiveComponent<any, any> {
   _updateList(stoneMap: StoneMap, rssi) {
     let stoneId = stoneMap.id;
     if (this.stoneUpdateData.stones[stoneId] !== undefined) {
-      if (rssi >= 0 || rssi < -100) { return };
+      if (rssi >= 0 || rssi < -100) { return }
 
       if (this.scannedStones[stoneId] === undefined) {
         this.scannedStones[stoneId] = {updatedAt: null, rssi: rssi};

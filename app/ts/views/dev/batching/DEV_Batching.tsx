@@ -5,12 +5,10 @@
 //   return Languages.get("DEV_Batching", key)(a,b,c,d,e);
 // }
 import React, { Component } from "react";
-import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { BleUtil } from "../../../util/BleUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
-import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, Alert, Animated } from "react-native";
+import { background, colors, screenWidth, styles } from "../../styles";
+import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, Alert} from "react-native";
 import { core } from "../../../Core";
 import { FileUtil } from "../../../util/FileUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";
@@ -23,7 +21,6 @@ import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { CommandAPI } from "../../../logic/constellation/Commander";
 import { tell } from "../../../logic/constellation/Tellers";
 
 const RNFS = require('react-native-fs');

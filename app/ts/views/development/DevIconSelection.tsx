@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors} from '../styles'
 import {NavigationBar} from "../components/editComponents/NavigationBar";
 import {Separator} from "../components/Separator";
 import {SlideInView} from "../components/animated/SlideInView";

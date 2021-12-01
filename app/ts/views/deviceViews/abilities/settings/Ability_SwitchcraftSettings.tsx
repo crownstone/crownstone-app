@@ -6,11 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Button,
   ScrollView,
-  Switch,
-  Text, TouchableOpacity,
-  View
+  Text, View
 } from "react-native";
 
 

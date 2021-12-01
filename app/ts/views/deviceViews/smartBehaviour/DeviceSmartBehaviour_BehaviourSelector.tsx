@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import {  ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {  ScrollView, TouchableOpacity, View } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {

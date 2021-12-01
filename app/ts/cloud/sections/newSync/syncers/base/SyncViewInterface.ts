@@ -1,9 +1,3 @@
-import { LOGe } from "../../../../../logging/Log";
-import { xUtil } from "../../../../../util/StandAloneUtil";
-import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
-
-
-
 export class SyncViewInterface<CloudDataFormat> {
 
   actions:          DatabaseAction[];

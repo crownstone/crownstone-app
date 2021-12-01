@@ -1,10 +1,8 @@
-import { Scheduler } from "../logic/Scheduler";
 import { FileUtil } from "../util/FileUtil";
-import { LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS, LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
-import { getLoggingFilename, LOG_PREFIX } from "../logging/LogUtil";
+import { getLoggingFilename} from "../logging/LogUtil";
 import { core } from "../Core";
 import { MapProvider } from "./MapProvider";
-import { LOG, LOGw } from "../logging/Log";
+import { LOGw } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
 
 const RNFS = require('react-native-fs');
@@ -74,7 +72,7 @@ class LocalizationLoggerClass {
     // do not store more than 1 hour of data.
     if (this._data.length > 3600) {
       this._data.shift()
-    };
+    }
   }
 
 

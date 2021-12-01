@@ -69,7 +69,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
     core.eventBus.emit("connecting", handle);
 
     // connect
-    if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") };
+    if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") }
 
     return BluenetPromise('connect', handle, referenceId, highPriority)
       .then(() => {

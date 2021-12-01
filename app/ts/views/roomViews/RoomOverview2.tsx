@@ -5,21 +5,16 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { Alert, Image, ScrollView, View, Text, TouchableOpacity } from "react-native";
-
-import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
-import { SeparatedItemList }    from '../components/SeparatedItemList'
+import { Alert, ScrollView, View} from "react-native";
 
 import {
-  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../util/DataUtil";
 import {
   styles,
   colors,
-  screenHeight,
-  screenWidth, background
+  screenWidth
 } from "../styles";
-import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
@@ -28,15 +23,11 @@ import { RoomDeleted }            from "../static/RoomDeleted";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { xUtil } from "../../util/StandAloneUtil";
-import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
-import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import { STONE_TYPES } from "../../Enums";
 import { HubEntry } from "../components/deviceEntries/HubEntry";
 import { FadeInView } from "../components/animated/FadeInView";

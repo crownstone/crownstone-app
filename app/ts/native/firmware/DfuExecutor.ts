@@ -1,6 +1,6 @@
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
-import { LOG, LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
+import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
 import { BleUtil } from "../../util/BleUtil";
 import { DfuHelper } from "./DfuHelper";
 import { StoneUtil } from "../../util/StoneUtil";
@@ -10,7 +10,7 @@ import { DfuStateHandler } from "./DfuStateHandler";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
 import { Scheduler } from "../../logic/Scheduler";
 import { Animated } from "react-native";
-import add = Animated.add;
+
 import { SessionManager } from "../../logic/constellation/SessionManager";
 import { CommandAPI } from "../../logic/constellation/Commander";
 import { claimBluetooth } from "../../logic/constellation/Tellers";
@@ -544,7 +544,7 @@ export class DfuExecutor {
     else {
       LOGi.dfu("DfuExecutor: start bootloader update from", this.currentBootloaderVersion, 'to', bootloaderCandidate.version);
       // we can do the DFU now.
-      let downloadedBootloaderPath = null;;
+      let downloadedBootloaderPath = null;
       this._setProgress(DfuPhases.BOOTLOADER, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
       return DfuUtil.downloadBootloader(bootloaderCandidate)
         .catch((err) => { this._handleError(err, DfuPhases.BOOTLOADER, DfuExecutionInformation.DOWNLOAD_FAILED); })
@@ -643,7 +643,7 @@ export class DfuExecutor {
 
   _performFirmwareUpdate(firmwareCandidate) {
     LOGi.dfu("DfuExecutor: start firmware update from", this.currentFirmwareVersion, 'to', firmwareCandidate.version);
-    let downloadedFirmwarePath = null;;
+    let downloadedFirmwarePath = null;
     this._setProgress(DfuPhases.FIRMWARE, this.currentStep, 0, DfuExecutionInformation.DOWNLOAD_STARTED);
     return DfuUtil.downloadFirmware(firmwareCandidate)
       .catch((err) => { this._handleError(err, DfuPhases.FIRMWARE, DfuExecutionInformation.DOWNLOAD_FAILED); })

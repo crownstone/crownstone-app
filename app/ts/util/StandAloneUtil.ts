@@ -536,7 +536,7 @@ export const xUtil = {
 
 
   getCallStack: function(ignoreList = {}) : string[] {
-    var err = new Error();
+    const err = new Error();
 
     let stackArray = err.stack.split("\n");
     // remove code position

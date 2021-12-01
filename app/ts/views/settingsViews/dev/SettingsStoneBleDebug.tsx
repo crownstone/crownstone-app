@@ -10,16 +10,12 @@ import {
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
-import { Util } from "../../../util/Util";
 import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { IconButton } from "../../components/IconButton";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { DataUtil } from "../../../util/DataUtil";
 import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
-import { StoneUtil } from "../../../util/StoneUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { from } from "../../../logic/constellation/Tellers";
 const RNFS = require('react-native-fs');
@@ -369,7 +365,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
                       str = "Connection"; break;
                     case 5:
                       str = "Switchcraft"; break;
-                    case 5:
+                    case 6:
                       str = "TapToToggle"; break;
                     default:
                       str = 'UNKNOWN'

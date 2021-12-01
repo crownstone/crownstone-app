@@ -1,5 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
-import { Animated, Image, Platform, View } from "react-native";
+import { Animated, Image, View } from "react-native";
 
 
 export class AnimatedScaledImage extends Component<{

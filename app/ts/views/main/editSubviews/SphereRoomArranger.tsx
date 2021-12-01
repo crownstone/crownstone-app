@@ -14,8 +14,6 @@ import {
 import { availableScreenHeight, colors, screenWidth, tabBarHeight, tabBarMargin, topBarHeight } from "../../styles";
 import {RoomCircle} from "../../components/RoomCircle";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {CancelButton} from "../../components/topbar/CancelButton";
-import {TopbarButton} from "../../components/topbar/TopbarButton";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../Core";
 import { ForceDirectedView } from "../../components/interactiveView/ForceDirectedView";

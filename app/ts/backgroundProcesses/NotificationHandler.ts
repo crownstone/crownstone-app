@@ -85,7 +85,7 @@ class NotificationHandlerClass {
       },
 
       // (required) Called when a remote or local notification is opened or received
-      onNotification: function(notification) {
+      onNotification: (notification) => {
         // fallback
         this.notificationPermissionGranted = true;
         LOG.info("NotificationHandler: Received notification", notification);

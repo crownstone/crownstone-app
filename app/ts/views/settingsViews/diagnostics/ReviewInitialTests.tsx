@@ -12,13 +12,11 @@ import {
 } from 'react-native';
 import {colors} from "../../styles";
 import {AppUtil} from "../../../util/AppUtil";
-import {eventBus} from "../../../util/EventBus";
 import {SlideInView} from "../../components/animated/SlideInView";
 import { TestResult} from "./DiagnosticUtil";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {TestRunner} from "./TestRunner";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { core } from "../../../Core";
 
 
 export class ReviewInitialTests extends Component<any, any> {

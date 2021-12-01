@@ -22,7 +22,7 @@ import {
   } from 'react-native-svg';
 
 
-import { colors, screenWidth, availableScreenHeight, screenHeight, tabBarHeight } from "../../styles";
+import { colors, screenWidth, availableScreenHeight} from "../../styles";
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";

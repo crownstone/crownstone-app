@@ -5,21 +5,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 // import {BatchCommandHandler} from "../logic/BatchCommandHandler";
-import {INTENTS} from "../native/libInterface/Constants";
 import {LOGe} from "../logging/Log";
 import {Scheduler} from "../logic/Scheduler";
 import {
   Alert,
 } from 'react-native';
 import { core } from "../Core";
-import { BleUtil } from "./BleUtil";
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { BEHAVIOUR_TYPES } from "../database/reducers/stoneSubReducers/behaviours";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { xUtil } from "./StandAloneUtil";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 import { from, tell } from "../logic/constellation/Tellers";
-import { MapProvider } from "../backgroundProcesses/MapProvider";
 import { Get } from "./GetUtil";
 
 export const StoneUtil = {

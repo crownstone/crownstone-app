@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ScanningForSetupCrownstones", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ActivityIndicator,
   ScrollView, Text, TouchableOpacity,
@@ -16,7 +16,7 @@ import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
-import { FadeIn, FadeInView} from "../components/animated/FadeInView";
+import { FadeIn} from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BleUtil } from "../../util/BleUtil";

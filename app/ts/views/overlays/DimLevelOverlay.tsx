@@ -15,12 +15,9 @@ import {
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight, statusBarHeight, styles } from "../styles";
 import { ScaledImage } from "../components/ScaledImage";
-import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { DimmerSlider, DIMMING_INDICATOR_SIZE } from "../components/DimmerSlider";
 import Slider from "@react-native-community/slider";
 import { Icon } from "../components/Icon";
-import { HiddenFadeInView } from "../components/animated/FadeInView";
 
 export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}, {visible:boolean, dimmingValue: number}> {
   callback : any;

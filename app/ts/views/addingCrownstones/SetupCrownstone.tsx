@@ -5,9 +5,8 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupCrownstone", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated, Platform,
   TouchableOpacity,
   View
 } from "react-native";
@@ -22,13 +21,10 @@ import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { SetupCircle } from "../components/animated/SetupCircle";
 import { Icon } from "../components/Icon";
 import KeepAwake from 'react-native-keep-awake';
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { delay } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";
 import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
-import { TopbarImitation } from "../components/TopbarImitation";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
 

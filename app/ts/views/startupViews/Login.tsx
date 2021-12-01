@@ -13,7 +13,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View, StyleSheet
+  View
 } from "react-native";
 
 
@@ -22,7 +22,7 @@ const RNFS    = require('react-native-fs');
 import DeviceInfo from 'react-native-device-info';
 
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
-import { emailChecker, getImageFileFromUser, Util } from "../../util/Util";
+import { emailChecker, getImageFileFromUser} from "../../util/Util";
 import { CLOUD }              from '../../cloud/cloudAPI'
 import { TextEditInput }      from '../components/editComponents/TextEditInput'
 import { Background }         from '../components/Background'

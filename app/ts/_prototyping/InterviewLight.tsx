@@ -11,7 +11,7 @@ import {
 import { core } from "../Core";
 import { Background } from "../views/components/Background";
 import { background, colors, screenWidth } from "../views/styles";
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import { FadeIn} from "../views/components/animated/FadeInView";
 import { TextButtonSemitranslucentDark } from "../views/components/InterviewComponents";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";

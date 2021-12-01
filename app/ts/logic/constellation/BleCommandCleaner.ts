@@ -1,11 +1,5 @@
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../util/StandAloneUtil";
-import { Get } from "../../util/GetUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
-import { LOGd, LOGi } from "../../logging/Log";
-import mesh from "../../database/reducers/stoneSubReducers/mesh";
-
-
+import { LOGi } from "../../logging/Log";
 
 
 /**

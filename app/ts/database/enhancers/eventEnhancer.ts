@@ -208,10 +208,8 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
-    case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_PRESENCE_STATE':
     case 'SET_APP_IDENTIFIER':
-    case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_STONE_DFU_RESET':
     case 'ADD_INSTALLATION':

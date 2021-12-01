@@ -144,7 +144,7 @@ export class LockOverlay extends Component<any, any> {
 
     const state = core.store.getState();
     const sphere = state.spheres[this.state.sphereId];
-    var stone = null;
+    let stone = null;
     if (sphere) {
       stone = sphere.stones[this.state.stoneId];
     }

@@ -1,13 +1,5 @@
 import {getTime, refreshDefaults, update} from "../reducerUtil";
 import { combineReducers } from "redux";
-import sphereUserReducer from "../sphereUser";
-import locationsReducer from "../locations";
-import stonesReducer from "../stones";
-import scenesReducer from "../scenes";
-import messageReducer from "../messages";
-import thirdPartyReducer from "../thirdParty";
-import sortedListsReducer from "../sortedLists";
-import sphereKeyReducer from "../sphereKeys";
 
 let defaultBridgeSettings = {
   id: undefined,
@@ -169,7 +161,7 @@ function hueLightCollectionReducer(state = {}, action : any = {}) {
       }
       return state;
   }
-};
+}
 
 
 let combinedSphereReducer = combineReducers({

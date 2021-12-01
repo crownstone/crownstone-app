@@ -6,11 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { default as React, useEffect, useState }          from "react";
 import { colors, screenWidth, styles }                    from "../../styles";
-import { ActivityIndicator, Alert, Image, Text, TextStyle, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST, SceneConstants } from "../constants/SceneConstants";
 import { SlideSideFadeInView }                            from "../../components/animated/SlideFadeInView";
 import { Icon }                                           from "../../components/Icon";
-import { AlternatingContent }                             from "../../components/animated/AlternatingContent";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../Core";
@@ -18,7 +17,6 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
-import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 import { Util } from "../../../util/Util";
 import { tell } from "../../../logic/constellation/Tellers";
 

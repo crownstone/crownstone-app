@@ -22,8 +22,8 @@ import Slider from "@react-native-community/slider";
 import { FileUtil } from "../../util/FileUtil";
 import { PictureGallerySelector } from "../components/PictureGallerySelector";
 import { xUtil } from "../../util/StandAloneUtil";
-import { processImage, processStockCustomImage, removeStockCustomImage } from "../../util/Util";
-import { executeScene, getScenePictureSource } from "./supportComponents/SceneItem";
+import { processStockCustomImage, removeStockCustomImage } from "../../util/Util";
+import { executeScene} from "./supportComponents/SceneItem";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./constants/SceneConstants";
 
@@ -391,7 +391,7 @@ export function StoneRow({sphereId, stoneId, locationName, selection, initialSel
         onPress={() => { selection(!selected); setSelected(!selected); }}
       >
         { content }
-        <SlideSideFadeInView width={50} visible={!selected}></SlideSideFadeInView>
+        <SlideSideFadeInView width={50} visible={!selected} />
         <SlideSideFadeInView width={50} visible={selected}>
           <View style={{width:50, alignItems:'flex-end'}}>
             <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
@@ -456,8 +456,8 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
           minimumTrackTintColor={colors.gray.hex}
           maximumTrackTintColor={colors.gray.hex}
           onValueChange={(value) => {
-            if (value < 5) { value = 0 };
-            if (value >= 5 && value < 10) { value = 10 };
+            if (value < 5) { value = 0 }
+            if (value >= 5 && value < 10) { value = 10 }
             setStateCallback(value); setSwitchState(value); }}
         />
       </View>

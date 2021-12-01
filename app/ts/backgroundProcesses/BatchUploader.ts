@@ -1,8 +1,5 @@
 import {Scheduler} from "../logic/Scheduler";
-import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
-import {LOGd, LOGe} from "../logging/Log";
-import { xUtil } from "../util/StandAloneUtil";
 import { core } from "../Core";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';

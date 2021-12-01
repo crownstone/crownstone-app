@@ -1,12 +1,10 @@
 import { Languages } from "../Languages";
 import { Navigation } from "react-native-navigation";
-import { NavigationUtil } from "./NavigationUtil";
-import { Image, Platform } from "react-native";
+import { Platform } from "react-native";
 import { LoadingTopBarButton } from "../views/components/topbar/LoadingTopBarButton";
 import { ScaledImage } from "../views/components/ScaledImage";
 import * as React from "react";
 import { statusBarHeight, topBarHeight } from "../views/styles";
-import { LOGd } from "../logging/Log";
 
 export const TopBarUtil = {
 

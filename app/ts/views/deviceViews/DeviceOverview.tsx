@@ -12,14 +12,11 @@ import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { StoneUtil } from "../../util/StoneUtil";
-import { INTENTS } from "../../native/libInterface/Constants";
 import { availableScreenHeight, background, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
 import {
   ActivityIndicator,
   Text,
   TextStyle,
-  TouchableHighlight,
   TouchableOpacity,
   View,
   ViewStyle
@@ -41,8 +38,6 @@ import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
-import { HubHelper } from "../../native/setup/HubHelper";
-import { BluenetPromise, BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { tell } from "../../logic/constellation/Tellers";
 import { DebugIcon } from "../components/DebugIcon";
 

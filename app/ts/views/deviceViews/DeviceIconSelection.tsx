@@ -4,14 +4,13 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceIconSelection", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { background, colors } from "../styles";

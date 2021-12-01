@@ -7,7 +7,6 @@ import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { DebugIcon } from "../../components/DebugIcon";
 import { DataUtil } from "../../../util/DataUtil";
-import { HubRequestHandler } from "../../../cloud/localHub/HubRequest";
 import { HUB_API } from "../../../cloud/localHub/HubApi";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";

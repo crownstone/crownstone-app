@@ -1,7 +1,6 @@
-import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
+import { LOGd, LOGv, LOGw } from "../../logging/Log";
 import { MapProvider }            from "../../backgroundProcesses/MapProvider";
 import { Scheduler }              from "../../logic/Scheduler";
-import { Util }                   from "../../util/Util";
 import { StoneEntity }            from "./StoneEntity";
 import { StoneStoreManager }      from "./StoneStoreManager";
 import { core } from "../../Core";

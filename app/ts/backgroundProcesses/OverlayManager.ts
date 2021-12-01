@@ -83,7 +83,6 @@ class OverlayManagerClass {
           case "unknown":
           case "noPermission":
           case "foreground":
-          case "unknown":
             NavigationUtil.showOverlay('LocationPermissionOverlay',{status: status});
             break;
           case "on":

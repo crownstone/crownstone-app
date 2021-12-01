@@ -1,7 +1,6 @@
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
-import { core } from "../../../../Core";
 import { GenerateSphereTransferFunctions } from "./base/TransferBase";
 
 

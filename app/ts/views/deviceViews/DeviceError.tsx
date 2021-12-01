@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import { Background } from '../components/Background'
 import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { BehaviourSubmitButton } from "./smartBehaviour/supportComponents/BehaviourSubmitButton";
 import React, { Component } from "react";
 import { ErrorContent } from "../content/ErrorContent";

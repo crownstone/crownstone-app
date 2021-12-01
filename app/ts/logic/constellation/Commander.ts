@@ -1,14 +1,9 @@
-import { BroadcastCommandManager } from "./BroadcastCommandManager";
-import { SessionManager } from "./SessionManager";
 import { xUtil } from "../../util/StandAloneUtil";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { Collector } from "./Collector";
 import { core } from "../../Core";
 import { BleCommandManager } from "./BleCommandManager";
 import {
   Command_AddBehaviour,
   Command_AllowDimming,
-  Command_BootloaderToNormalMode,
   Command_ClearErrors,
   Command_CommandFactoryReset,
   Command_FactoryResetHub,
@@ -46,7 +41,6 @@ import {
   Command_MultiSwitch,
   Command_PerformDFU,
   Command_PutInDFU,
-  Command_Recover,
   Command_RegisterTrackedDevice,
   Command_RemoveBehaviour,
   Command_RequestCloudId,
@@ -86,9 +80,9 @@ import {
 } from "./commandClasses";
 import { SessionBroker } from "./SessionBroker";
 import { LOGd, LOGe, LOGi } from "../../logging/Log";
-import { Scheduler } from "../Scheduler";
 import { Command_SetTimeViaBroadcast } from "./commandClasses/Command_SetTimeViaBroadcast";
 import {Command_GetUICR} from "./commandClasses/Command_GetUICR";
+import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -323,7 +317,8 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_SetupCrownstone(dataObject));
   }
   async recover() : Promise< void > {
-    return this._load(new Command_Recover());
+    // Since recover does it's own connect, we do not need to use sessions for this.
+    return BluenetPromiseWrapper.recover(this.options.commandTargets[0]);
   }
   async putInDFU() : Promise< void > {
     return this._load(new Command_PutInDFU());
@@ -335,7 +330,8 @@ export class CommandAPI extends CommandMeshAPI {
     return this._load(new Command_PerformDFU(uri));
   }
   async bootloaderToNormalMode() : Promise< void > {
-    return this._load(new Command_BootloaderToNormalMode());
+    // Since bootloaderToNormalMode does it's own connect, we do not need to use sessions for this.
+    return BluenetPromiseWrapper.bootloaderToNormalMode(this.options.commandTargets[0]);
   }
   async clearErrors(clearErrorJSON : clearErrorData) : Promise< void > {
     return this._load(new Command_ClearErrors(clearErrorJSON));

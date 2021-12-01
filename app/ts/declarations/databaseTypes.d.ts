@@ -32,7 +32,7 @@ interface SceneData {
   cloudId:       string | null,
   data:          { [key: number] : number }, // stoneUID: switchState
   updatedAt:     number
-};
+}
 
 interface EncryptionKeyData {
   id: string,

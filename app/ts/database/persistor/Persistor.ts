@@ -84,7 +84,6 @@ export class Persistor {
     return AsyncStorage.getItem(MIGRATION_PROGRESS_STORAGE_KEY)
       .then((data) : any => {
         progressData = data;
-        return this._destroyDataFields(pathObjects);
         if (!data) {
           return this._destroyDataFields(pathObjects);
         }

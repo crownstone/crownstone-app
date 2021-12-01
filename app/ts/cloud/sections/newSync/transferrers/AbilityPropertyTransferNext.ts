@@ -1,10 +1,3 @@
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { CLOUD } from "../../../cloudAPI";
-import { core } from "../../../../Core";
-import { GenerateStoneTransferFunctions } from "./base/TransferBase";
-
-
 export const AbilityPropertyTransferNext : TransferAbilityTool<AbilityPropertyData, AbilityPropertyData, cloud_AbilityProperty, any> = {
 
   mapLocalToCloud(localData: AbilityPropertyData) : cloud_AbilityProperty_settable {

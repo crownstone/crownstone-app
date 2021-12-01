@@ -1,16 +1,13 @@
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Get } from "../../util/GetUtil";
-import { BCH_ERROR_CODES } from "../../Enums";
 import { BleCommandCleaner } from "./BleCommandCleaner";
 import { Executor } from "./Executor";
 import { SessionManager } from "./SessionManager";
-import { LOG, LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
+import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
 import { ConstellationUtil } from "./util/ConstellationUtil";
-import { BugReportUtil } from "../../util/BugReportUtil";
-import { err } from "react-native-svg/lib/typescript/xml";
 import { TimeKeeper } from "../../backgroundProcesses/TimeKeeper";
 
 

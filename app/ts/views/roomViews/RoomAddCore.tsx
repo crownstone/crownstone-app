@@ -7,8 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert, Platform,
-  TouchableOpacity,
+  Alert, TouchableOpacity,
   View
 } from "react-native";
 

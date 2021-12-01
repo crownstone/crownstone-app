@@ -1,8 +1,5 @@
-import { StoreManager } from "../../../database/storeManager";
 import { core } from "../../../Core";
-import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { KEY_TYPES } from "../../../Enums";
 
 export const upTo4_3 = function(lastMigrationVersion, appVersion) {
   if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {

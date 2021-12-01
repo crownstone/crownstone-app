@@ -7,17 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
 
 
-import { background, colors, screenHeight, screenWidth, styles } from "../../../styles";
+import { background, screenHeight, styles } from "../../../styles";
 import {Background} from "../../../components/Background";
-import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
-import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 

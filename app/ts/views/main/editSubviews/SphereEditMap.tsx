@@ -17,7 +17,6 @@ import { ActivityIndicator, TouchableOpacity, View, ViewStyle } from "react-nati
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Icon } from "../../components/Icon";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { LOG, LOGe } from "../../../logging/Log";
 
 export class SphereEditMap extends LiveComponent<any, any> {
   static options(props) {

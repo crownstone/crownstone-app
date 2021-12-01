@@ -1,4 +1,3 @@
-import { Scheduler } from "../logic/Scheduler";
 import { FileUtil } from "../util/FileUtil";
 import { LOCALIZATION_LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 import { getLoggingFilename } from "../logging/LogUtil";

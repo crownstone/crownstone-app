@@ -13,14 +13,12 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, availableScreenHeight, deviceStyles, availableModalHeight, background } from "../styles";
+import { screenWidth, availableScreenHeight, deviceStyles, background } from "../styles";
 import { Graph } from "../components/graph/Graph";
 import { core } from "../../Core";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { SphereDeleted } from "../static/SphereDeleted";
-import { StoneDeleted } from "../static/StoneDeleted";
 import { PowerUsageCacher } from "../../backgroundProcesses/PowerUsageCacher";
 
 

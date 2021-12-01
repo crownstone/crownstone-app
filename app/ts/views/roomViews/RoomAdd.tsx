@@ -7,15 +7,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert, Platform,
-  TouchableOpacity,
-  View
+  Platform
 } from "react-native";
 
 
-import { availableModalHeight, background, colors, screenHeight, styles } from "../styles";
+import { background, colors} from "../styles";
 
-import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { RoomAddCore } from "./RoomAddCore";

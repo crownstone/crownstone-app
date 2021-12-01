@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, colors, deviceStyles, background } from "../styles";
+import { colors, deviceStyles, background } from "../styles";
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import { core } from "../../Core";
@@ -21,7 +21,6 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
-import { DataUtil } from "../../util/DataUtil";
 
 
 let iconSize = 100;

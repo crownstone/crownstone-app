@@ -10,7 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  View, Platform
+  View
 } from "react-native";
 
 import { IconCircle }  from './IconCircle'
@@ -18,8 +18,7 @@ import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { xUtil } from "../../util/StandAloneUtil";
 
-import ImagePicker, { launchImageLibrary } from "react-native-image-picker";
-import { CameraOptions } from "react-native-image-picker/src/types";
+import { launchImageLibrary } from "react-native-image-picker";
 import { core } from "../../Core";
 import { launchCamera } from "react-native-image-picker/src/index";
 

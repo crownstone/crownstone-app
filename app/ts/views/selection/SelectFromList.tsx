@@ -23,7 +23,6 @@ import {Icon} from "../components/Icon";
 import {SeparatedItemList} from "../components/SeparatedItemList";
 import {EditableItem} from "../components/EditableItem";
 import {ProfilePicture} from "../components/ProfilePicture";
-import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 

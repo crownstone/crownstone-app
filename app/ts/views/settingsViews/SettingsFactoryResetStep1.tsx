@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsFactoryResetStep1", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Image,
   Text,
@@ -14,7 +14,7 @@ import {
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { setupStyle, NextButton } from './SetupShared'
-import { background, colors, screenHeight } from "./../styles";
+import { background, screenHeight } from "./../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";

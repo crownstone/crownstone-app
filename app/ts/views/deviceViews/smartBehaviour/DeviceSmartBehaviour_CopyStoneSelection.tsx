@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { Alert, Platform, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight, background,
@@ -19,7 +19,7 @@ import { LocationFlavourImage } from "../../roomViews/RoomOverview";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
-import { Component, useState } from "react";
+import { useState } from "react";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
@@ -185,7 +185,7 @@ lang("_No_Crownstone_selected___body"),
 
 function LocationStoneList({location, sphereId, stoneDataArray, callback, originId, dimmingRequired = false, behavioursRequired = false }) {
   if (stoneDataArray.length === 0) {
-    return <View></View>
+    return <View />
   }
   return (
     <React.Fragment>
@@ -347,7 +347,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       onPress={callback}
     >
       { content }
-      <SlideSideFadeInView width={50} visible={!selected}></SlideSideFadeInView>
+      <SlideSideFadeInView width={50} visible={!selected} />
       <SlideSideFadeInView width={50} visible={selected}>
         <View style={{width:50, alignItems:'flex-end'}}>
           <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />

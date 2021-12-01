@@ -1,9 +1,8 @@
-import * as React from 'react'; import { Component, PureComponent } from "react";
+import * as React from 'react'; import { Component} from "react";
 import { AppState } from 'react-native';
 import { Navigation } from "react-native-navigation";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { core } from "../Core";
-import { TopBarUtil } from "../util/TopBarUtil";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {

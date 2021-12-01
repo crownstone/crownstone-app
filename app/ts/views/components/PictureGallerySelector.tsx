@@ -8,15 +8,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
   TouchableOpacity,
-  Text,
   View, ViewStyle
 } from "react-native";
 
-import { IconCircle }  from './IconCircle'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { xUtil } from "../../util/StandAloneUtil";
 
 
 export class PictureGallerySelector extends Component<any, any> {

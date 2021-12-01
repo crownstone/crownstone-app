@@ -1,6 +1,6 @@
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
-import { Alert, KeyboardAvoidingView, Linking, Platform, ScrollView } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
@@ -8,14 +8,10 @@ import { background, colors } from "../../styles";
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
-import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
+import { clearLogs} from "../../../logging/LogUtil";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { FileUtil } from "../../../util/FileUtil";
-import { UPTIME_LOG_PREFIX } from "../../../backgroundProcesses/UptimeMonitor";
-import { LOGe } from "../../../logging/Log";
-
 
 
 export class SettingsLogging extends LiveComponent<any, any> {

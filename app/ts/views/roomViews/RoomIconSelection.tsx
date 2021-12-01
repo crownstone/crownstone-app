@@ -6,17 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ScrollView,
-  View
+  ScrollView
 } from 'react-native';
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
-import { background, colors, screenWidth } from "../styles";
-import { core } from "../../Core";
+import { background, colors} from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
-import { Util } from "../../util/Util";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
 

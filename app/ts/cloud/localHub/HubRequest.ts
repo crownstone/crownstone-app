@@ -1,6 +1,5 @@
-import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
-import { CLOUD_ADDRESS, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
+import { NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
 import { Scheduler } from "../../logic/Scheduler";
 import { LOG, LOGe, LOGi } from "../../logging/Log";
 import { ResponseHandler } from "../cloudCore";

@@ -284,7 +284,7 @@ export const AicoreUtil = {
         lon = sphere.config.longitude || lon;
       }
       let baseTime = 0;
-      var times = SunCalc.getTimes(new Date(), lat, lon);
+      let times = SunCalc.getTimes(new Date(), lat, lon);
 
       let obj = (timeObj as aicoreTimeDataSun);
       if (obj.type === "SUNSET") {

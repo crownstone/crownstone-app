@@ -249,7 +249,7 @@ class StoneDataSyncerClass {
     LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
     let stone = DataUtil.getStone(sphereId, stoneId);
-    if (!stone) { return };
+    if (!stone) { return }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }
 
@@ -277,7 +277,7 @@ class StoneDataSyncerClass {
     LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
     let stone = DataUtil.getStone(sphereId, stoneId);
-    if (!stone) { return };
+    if (!stone) { return }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }
 

@@ -37,7 +37,7 @@ export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_
     result.httpPort        = cloudHub.httpPort  || 80;
     result.httpsPort       = cloudHub.httpsPort || 443;
     result.cloudId         = cloudHub.id;
-    result.lastSeenOnCloud = new Date(cloudHub.lastSeen).valueOf();;
+    result.lastSeenOnCloud = new Date(cloudHub.lastSeen).valueOf();
     result.updatedAt       = new Date(cloudHub.updatedAt).valueOf();
   
     return result;

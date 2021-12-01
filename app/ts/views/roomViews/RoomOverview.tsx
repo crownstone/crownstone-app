@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { Alert, Image, ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { Alert, Image, ScrollView, View, Text} from "react-native";
 
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
@@ -36,7 +36,7 @@ import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
+import { SlideFadeInView} from "../components/animated/SlideFadeInView";
 import { STONE_TYPES } from "../../Enums";
 import { HubEntry } from "../components/deviceEntries/HubEntry";
 

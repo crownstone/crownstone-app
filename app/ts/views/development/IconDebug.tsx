@@ -1,4 +1,4 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ScrollView,
   View
@@ -11,10 +11,8 @@ import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
 import {iconCorrections} from "../../fonts/iconCorrections";
 import {DebugIconSelection} from "./DebugIconSelection";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
-import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import {
   glyphMap_flaticon_custom_selection_1,
   glyphMap_flaticon_essentials,

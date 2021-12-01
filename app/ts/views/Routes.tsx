@@ -15,10 +15,6 @@ import { NavigationUtil, topBarComponentNames } from "../util/NavigationUtil";
 import React from "react";
 
 
-import * as TextFontFix from "../util/TextFontFix";
-import { IconDevSelector } from "../views/development/IconDevSelector";
-import { IconDebug } from "../views/development/IconDebug";
-
 let viewsLoaded = false;
 
 export const loadRoutes = function() {

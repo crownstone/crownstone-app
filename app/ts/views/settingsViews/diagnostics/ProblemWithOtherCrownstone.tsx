@@ -18,8 +18,6 @@ import {
   DiagYesNo, nameFromSummary,
   TestResult
 } from "./DiagnosticUtil";
-import {BleUtil} from "../../../util/BleUtil";
-import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {Util} from "../../../util/Util";

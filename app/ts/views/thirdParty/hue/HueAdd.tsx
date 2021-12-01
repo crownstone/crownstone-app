@@ -13,12 +13,8 @@ import {
 import {Background} from "../../components/Background";
 import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
-import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { StoneUtil } from "../../../util/StoneUtil";
-import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Button } from "../../components/Button";
-import { BehaviourCopySuccessPopup } from "../../deviceViews/smartBehaviour/DeviceSmartBehaviour";
 
 
 export class HueAdd extends Component<any, any> {

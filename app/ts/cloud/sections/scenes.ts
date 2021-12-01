@@ -1,6 +1,5 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import { cloudApiBase, TokenStore } from "./cloudApiBase";
-import { CLOUD } from "../cloudAPI";
+import { cloudApiBase} from "./cloudApiBase";
 
 export const scenes = {
   createScene: function(data : any, background = true) {

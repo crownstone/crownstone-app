@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Animated,
   ScrollView,
   View
 } from 'react-native';
@@ -21,7 +20,6 @@ import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../Core";
 import { Background } from "../components/Background";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
-import { RoomList } from "../components/RoomList";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { HubEntryBasic } from "../components/deviceEntries/HubEntryBasic";

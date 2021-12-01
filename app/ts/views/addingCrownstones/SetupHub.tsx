@@ -7,9 +7,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated, Platform,
   TouchableOpacity,
   View
 } from "react-native";
@@ -25,16 +24,11 @@ import { SetupCircle } from "../components/animated/SetupCircle";
 import { Icon } from "../components/Icon";
 import KeepAwake from 'react-native-keep-awake';
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { delay, Util } from "../../util/Util";
-import { BleUtil } from "../../util/BleUtil";
 import { getRandomHubIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
-import { TopbarImitation } from "../components/TopbarImitation";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { HubHelper } from "../../native/setup/HubHelper";
-import { Login } from "../startupViews/Login";
-import { LOG, LOGe, LOGi, LOGw } from "../../logging/Log";
-import { HubReplyError } from "../../Enums";
+import { LOGe, LOGi} from "../../logging/Log";
 import { Get } from "../../util/GetUtil";
 
 export class SetupHub extends LiveComponent<{

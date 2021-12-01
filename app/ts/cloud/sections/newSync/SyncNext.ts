@@ -1,10 +1,7 @@
 import { core } from "../../../Core";
 import DeviceInfo from "react-native-device-info";
 import { CLOUD } from "../../cloudAPI";
-import { LOGe } from "../../../logging/Log";
-import { MapProvider } from "../../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../../util/StandAloneUtil";
-import { getSyncIdMap, SyncingBase } from "../sync/modelSyncs/SyncingBase";
+import { getSyncIdMap} from "../sync/modelSyncs/SyncingBase";
 import { SphereSyncerNext } from "./syncers/SphereSyncerNext";
 import { HubSyncer } from "./syncers/HubSyncerNext";
 import { mapLocalToCloud } from "./mapping/CloudMapper";

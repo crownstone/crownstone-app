@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("IconDevSelector", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ScrollView,
   View
@@ -14,16 +14,9 @@ import { Background }  from '../components/Background'
 import { background, colors, screenWidth } from "../styles";
 
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { DevIconSelection } from "./DevIconSelection";
-import {
-  glyphMap_flaticon_custom_selection_1,
-  glyphMap_flaticon_essentials,
-  glyphMap_flaticon_household
-} from "../../fonts/customIcons_flaticon";
-import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 /*
 Lights

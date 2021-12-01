@@ -8,7 +8,7 @@ import { Alert }                    from 'react-native';
 
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
-import { LOG, LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGe} from "../../logging/Log";
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
@@ -187,7 +187,7 @@ class LocationHandlerClass {
     let locationId = data.location;
     let state = core.store.getState();
 
-    if (state.app.indoorLocalizationEnabled === false) { return };
+    if (state.app.indoorLocalizationEnabled === false) { return }
 
     if (sphereId && locationId) {
       // remove user from all locations except the locationId, if we are in the location ID, don't trigger anything
@@ -211,7 +211,7 @@ class LocationHandlerClass {
     let locationId = data.location;
     let state = core.store.getState();
 
-    if (state.app.indoorLocalizationEnabled === false) { return };
+    if (state.app.indoorLocalizationEnabled === false) { return }
 
     if (sphereId && locationId) {
       core.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});

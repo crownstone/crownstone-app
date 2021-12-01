@@ -15,11 +15,9 @@ import {
 import {
   styles,
   screenHeight,
-  topBarHeight,
-  tabBarHeight,
   colors,
   screenWidth,
-  updateScreenHeight, availableScreenHeight, availableModalHeight, stylesUpdateConstants
+  updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";

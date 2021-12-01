@@ -1,14 +1,11 @@
 import { Scheduler } from "../logic/Scheduler";
 import { core } from "../Core";
-import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { AppState, Platform } from "react-native";
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { xUtil } from "../util/StandAloneUtil";
 import { broadcast, tell, tellSphere } from "../logic/constellation/Tellers";
 import { Get } from "../util/GetUtil";
-import { SessionManager } from "../logic/constellation/SessionManager";
 
 const TRIGGER_ID = "TIME_KEEPER";
 

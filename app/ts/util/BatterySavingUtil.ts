@@ -37,8 +37,6 @@ class BatterySavingClass {
     }
 
 
-    let state = core.store.getState();
-
     // if needed requirements:
     //  - app is in foreground OR
     //  - user is in sphere
@@ -86,8 +84,6 @@ class BatterySavingClass {
       this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => { this.startBatterySaving(forceNotInSphere); }, 60000, 'startBatterySaving');
       return;
     }
-
-    let state = core.store.getState();
 
     // if possible requirements:
     //  - user is NOT in the foreground AND

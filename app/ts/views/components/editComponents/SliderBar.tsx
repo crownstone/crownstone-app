@@ -4,14 +4,13 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SliderBar", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component, useState } from "react";
+import * as React from 'react'; import { useState } from "react";
 import {
-  View, Text, Animated, TouchableOpacity
+  View, Text, TouchableOpacity
 } from "react-native";
 import { colors, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE, screenWidth, styles } from "../../styles";
 import Slider from "@react-native-community/slider";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
-import { FadeInView } from "../animated/FadeInView";
 import { Icon } from "../Icon";
 
 

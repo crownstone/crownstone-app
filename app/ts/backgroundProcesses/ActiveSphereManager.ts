@@ -1,7 +1,5 @@
 import { core } from "../Core";
-import { Util } from "../util/Util";
 import { KEY_TYPES } from "../Enums";
-import { act } from "@testing-library/react-native";
 
 const ACTIVE_SPHERE_EXPIRATION_THRESHOLD = 5*60*1000; // 5 mins
 

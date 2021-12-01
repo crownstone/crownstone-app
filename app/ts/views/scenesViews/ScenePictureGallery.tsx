@@ -6,13 +6,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { LiveComponent } from "../LiveComponent";
 import React from "react";
-import { FlatList, Image, Platform, Text, View, TextStyle, TouchableHighlight, TouchableOpacity } from "react-native";
-import { colors, screenWidth, styles } from "../styles";
+import { FlatList, Image, Text, View, TextStyle, TouchableHighlight} from "react-native";
+import { colors, screenWidth} from "../styles";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { xUtil } from "../../util/StandAloneUtil";
 import { Button } from "../components/Button";
-import { ErrorCode } from "react-native-image-picker/lib/typescript/types";
 import { SelectPicture } from "../components/PictureCircle";
 import {
   PICTURE_GALLERY_TYPES,

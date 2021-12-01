@@ -9,7 +9,6 @@ import * as React from 'react';
 import {
   Alert,
   ActivityIndicator,
-  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -21,15 +20,12 @@ import { styles, colors, background } from "../styles";
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
-import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { INTENTS } from "../../native/libInterface/Constants";
 
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
-import { STONE_TYPES } from "../../Enums";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";

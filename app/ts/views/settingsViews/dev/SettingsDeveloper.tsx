@@ -10,7 +10,7 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../Core";
-import { clearLogs, getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
+import { getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
@@ -31,10 +31,9 @@ import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../Base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
-import {LOG, LOG_file, LOGw} from "../../../logging/Log";
+import {LOG_file, LOGw} from "../../../logging/Log";
 
 const RNFS = require('react-native-fs');
-import Peer from 'react-native-peerjs';
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
 import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";

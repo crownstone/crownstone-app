@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import {
   availableModalHeight,
-  availableScreenHeight,
   colors,
   deviceStyles,
   screenWidth,

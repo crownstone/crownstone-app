@@ -1,5 +1,4 @@
 import { SyncBaseInterface } from "./SyncBaseInterface";
-import { SphereTransferNext } from "../../transferrers/SphereTransferNext";
 
 
 export class SyncInterface<LocalDataFormat, LocalDataSettableFormat, CloudDataFormat extends {id: string}, CloudSettableFormat>

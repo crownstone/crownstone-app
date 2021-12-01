@@ -6,15 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { LiveComponent } from "../LiveComponent";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { DataUtil } from "../../util/DataUtil";
-import { core } from "../../Core";
 import { Alert, Platform, View } from "react-native";
 import { availableModalHeight, colors } from "../styles";
 import { Interview } from "../components/Interview";
 import * as React from "react";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { StoneRow, getStoneSelectionList } from "./SceneAdd";
+import { getStoneSelectionList } from "./SceneAdd";
 
 export class SceneSelectCrownstones extends LiveComponent<any, any> {
   static options = {

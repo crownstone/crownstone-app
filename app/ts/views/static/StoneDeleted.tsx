@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import {Background} from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { availableScreenHeight, deviceStyles, screenWidth } from "../styles";
+import { deviceStyles, screenWidth } from "../styles";
 import { TextButtonLight } from "../components/InterviewComponents";
 import { NavigationUtil } from "../../util/NavigationUtil";
 

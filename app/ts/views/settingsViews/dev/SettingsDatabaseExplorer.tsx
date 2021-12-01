@@ -1,18 +1,14 @@
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
-  ScrollView, View, Text, TouchableOpacity, Alert, TextStyle, ViewStyle
+  ScrollView, Text, TouchableOpacity, TextStyle, ViewStyle
 } from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
-import { ListEditableItems } from '../../components/ListEditableItems'
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { core } from "../../../Core";
 import { background, colors, screenWidth } from "../../styles";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { TextEditBar } from "../../components/editComponents/TextEditBar";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
-import { Persistor } from "../../../database/persistor/Persistor";
 import { StoreManager } from "../../../database/storeManager";
 
 const viewStyle : ViewStyle = {

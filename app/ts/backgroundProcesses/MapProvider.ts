@@ -7,7 +7,7 @@ import {
   getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/MapUtil";
 import { getSyncIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
-import { LOG, LOGi, LOGw } from "../logging/Log";
+import { LOG, LOGi} from "../logging/Log";
 import { core } from "../Core";
 
 /**

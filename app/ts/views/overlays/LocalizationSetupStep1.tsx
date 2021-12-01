@@ -7,12 +7,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Text,Image,
-  TouchableOpacity,
+  Text,TouchableOpacity,
   View,
 } from 'react-native';
 
-import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
 import { Icon }                     from '../components/Icon'
 import { HiddenFadeInView }               from '../components/animated/FadeInView'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
@@ -24,7 +22,6 @@ import Svg,{
   Defs,
   Stop
 } from 'react-native-svg';
-import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { ScaledImage } from "../components/ScaledImage";
 

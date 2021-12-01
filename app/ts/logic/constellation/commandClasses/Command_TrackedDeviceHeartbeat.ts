@@ -1,6 +1,5 @@
 import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { Executor } from "../Executor";
 import { Command_RegisterTrackedDevice } from "./Command_RegisterTrackedDevice";
 import { LOGe, LOGi } from "../../../logging/Log";
 

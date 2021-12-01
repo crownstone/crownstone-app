@@ -10,7 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  View, TextStyle, SafeAreaView
+  View, TextStyle
 } from "react-native";
 
 import { Background } from './../components/Background'
@@ -18,7 +18,6 @@ import {background, colors, deviceModel, screenWidth, tabBarMargin} from "./../s
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 let versionStyle : TextStyle = {

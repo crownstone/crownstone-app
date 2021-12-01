@@ -12,13 +12,10 @@ import {
 } from "react-native";
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
-import { NavigationUtil } from "../../../util/NavigationUtil";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
-import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
-import { Util } from "../../../util/Util";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
-import { SHARE_DATA_TYPE, shareData, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
+import { SHARE_DATA_TYPE, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
 import { Scheduler } from "../../../logic/Scheduler";
 
 export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string}) {

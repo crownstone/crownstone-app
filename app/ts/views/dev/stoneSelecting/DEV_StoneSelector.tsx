@@ -32,7 +32,6 @@ import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionCompo
 import { DEV_SelectionFilter } from "./DEV_SelectionFilter";
 import Slider from "@react-native-community/slider";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
-import { BleUtil } from "../../../util/BleUtil";
 import { AppUtil } from "../../../util/AppUtil";
 import { TESTING_SPHERE_ID } from "../../../backgroundProcesses/dev/DevAppState";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
@@ -436,7 +435,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
 
     return (
       <Background image={background.main} hideNotifications={true}>
-        <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
+        <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }} />
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>
           <FilterButton label={ "Filters"} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>

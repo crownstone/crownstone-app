@@ -18,11 +18,9 @@ import {
 import { setupStyle }            from './SetupShared'
 import { colors, screenWidth, screenHeight, background } from "./../styles";
 import { BleUtil }               from '../../util/BleUtil'
-import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import {LOG, LOGe} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
-import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";

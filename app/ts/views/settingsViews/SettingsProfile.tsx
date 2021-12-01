@@ -20,7 +20,6 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { background, colors, screenWidth } from "./../styles";
 import { IconButton } from "../components/IconButton";
-import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";

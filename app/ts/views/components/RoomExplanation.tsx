@@ -6,17 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Text,
   TouchableOpacity,
   View
 } from "react-native";
 
 import {
-  DataUtil, enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
+  enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
 } from "../../util/DataUtil";
 import { colors } from '../styles'
-import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 /**

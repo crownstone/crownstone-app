@@ -1,4 +1,3 @@
-import { combineReducers } from "redux";
 import { getTime, refreshDefaults, update } from "../reducerUtil";
 
 export const ABILITY_TYPE_ID = {
@@ -175,7 +174,6 @@ let abilityPropertyReducer = (state = abilityPropertyFormat, action) => {
 const abilityPropertyReducerHandler = (state = abilityPropertyFormat, action: any = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_ABILITY_PROPERTIES':
-      let newState = {...state};
       return {};
     default:
       if (action.propertyId !== undefined) {

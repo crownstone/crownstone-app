@@ -1,8 +1,4 @@
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
-import { core } from "../../../../Core";
-import { GenerateSphereTransferFunctions, GenerateTransferFunctions } from "./base/TransferBase";
 
 
 export const UserTransferNext : TransferTool<UserData, UserData, cloud_User, cloud_User_settable> = {

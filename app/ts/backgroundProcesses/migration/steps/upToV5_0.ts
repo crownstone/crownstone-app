@@ -1,11 +1,10 @@
 import { StoreManager } from "../../../database/storeManager";
 import { core } from "../../../Core";
-import DeviceInfo from "react-native-device-info";
 import { xUtil } from "../../../util/StandAloneUtil";
 
-export const clean_upTo5_0 = function() {
-  return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'mesh'}}}}], "MIGRATED_5.0")
-  return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'behaviours'}}}}], "MIGRATED_5.0")
+export const clean_upTo5_0 = async function() {
+  await StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'mesh'}}}}], "MIGRATED_5.0")
+  await StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'behaviours'}}}}], "MIGRATED_5.0")
 }
 
 export const upTo5_0 = function(lastMigrationVersion, appVersion) {

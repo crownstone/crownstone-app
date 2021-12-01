@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsRedownloadFromCloud", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Text,
   View,
@@ -15,7 +15,6 @@ import { BackgroundNoNotification } from '../components/BackgroundNoNotification
 import { availableModalHeight, background, colors, deviceStyles, screenHeight, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {AppUtil} from "../../util/AppUtil";
-import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 

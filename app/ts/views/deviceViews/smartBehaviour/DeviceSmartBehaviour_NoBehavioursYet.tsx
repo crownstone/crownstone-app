@@ -10,7 +10,7 @@ import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { Alert, ScrollView, Text, View } from "react-native";
 import {
-  availableModalHeight, background,
+  background,
   colors,
   deviceStyles,
   screenWidth, styles

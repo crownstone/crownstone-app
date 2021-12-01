@@ -1,7 +1,5 @@
 import { CommandBase } from "./base/CommandBase";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
-import { Executor } from "../Executor";
-import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class Command_ClearErrors extends CommandBase implements CommandBaseInterface {

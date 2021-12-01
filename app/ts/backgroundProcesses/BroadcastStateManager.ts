@@ -6,7 +6,6 @@ import { LOGi } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
 import { TrackingNumberManager } from "./TrackingNumberManager";
 import { AppState } from "react-native";
-import { Scheduler } from "../logic/Scheduler";
 
 
 class BroadcastStateManagerClass {
@@ -57,7 +56,7 @@ class BroadcastStateManagerClass {
             this._reloadDevicePreferences();
           }
         }
-        if (reloadActiveSphereUpdate) { this._handleActiveSphereUpdate(); }
+        if (reloadActiveSphereUpdate) { await this._handleActiveSphereUpdate(); }
       }));
 
       this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {
@@ -191,7 +190,7 @@ class BroadcastStateManagerClass {
 
     if (amountOfPresentSpheres === 0) {
       LOGi.info("BroadcastStateManager: Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
-      this._updateLocationState(activeSphereData.sphereId);
+      await this._updateLocationState(activeSphereData.sphereId);
       return this._stopAdvertising();
     }
 

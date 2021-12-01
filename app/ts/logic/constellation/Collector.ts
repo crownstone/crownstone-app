@@ -3,9 +3,7 @@
  * sourcing of nearby Crownstones, Crownstones in room, direct connection requests as well as attempt connections to
  * multiple Crownstones to deliver a message, after a few successful connections, the rest of the slots can be cancelled.
  */
-import { SessionManager } from "./SessionManager";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Get } from "../../util/GetUtil";
 import { core } from "../../Core";
 
@@ -56,13 +54,13 @@ export const Collector = {
   _getSphereStones(sphereId) : {handle: string, rssi: number, locationId: string}[] {
     let handles = [];
     let sphere = Get.sphere(sphereId);
-    if (!sphere) { return [] };
+    if (!sphere) { return [] }
 
     let stoneIds = Object.keys(sphere.stones);
     for (let stoneId of stoneIds) {
       let stone = sphere.stones[stoneId];
       handles.push({handle: stone.config.handle, rssi: StoneAvailabilityTracker.getAvgRssi(stoneId), locationId: stone.config.locationId});
-    };
+    }
     handles.sort((a,b) => { return b.rssi - a.rssi });
     return handles;
   }
