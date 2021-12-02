@@ -65,6 +65,8 @@ class FirmwareWatcherClass {
   getCrownstoneDetails(sphereId, stoneId) {
     let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return; }
+
+    LOG.info("FirmwareWatcher: Getting Crownstone details.", stone.config.name);
     from(stone, 30).getFirmwareVersion()
       .then((firmwareVersion : string) => {
         core.store.dispatch({
@@ -90,6 +92,21 @@ class FirmwareWatcherClass {
         });
       })
       .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err) });
+
+    from(stone, 30).getBootloaderVersion()
+      .then((bootloaderVersion : string) => {
+        if (bootloaderVersion) {
+          core.store.dispatch({
+            type: "UPDATE_STONE_CONFIG",
+            stoneId: stoneId,
+            sphereId: sphereId,
+            data: {
+              bootloaderVersion: bootloaderVersion
+            }
+          });
+        }
+      })
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get bootloader version from stone.", err) });
 
     from(stone, 30).getUICR()
       .then((UICR : UICRData) => {
