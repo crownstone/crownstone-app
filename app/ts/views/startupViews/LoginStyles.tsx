@@ -49,7 +49,7 @@ export default StyleSheet.create({
     justifyContent:'center',
   },
   loginText: {
-    color: colors.csBlueDarker.hex,
+    color: colors.black.hex,
     fontSize:21,
     fontWeight:'400',
   }
