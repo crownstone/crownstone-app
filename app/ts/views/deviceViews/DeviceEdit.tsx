@@ -435,7 +435,7 @@ lang("_Something_went_wrong_____body"),
     }
     else {
       return (
-        <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
+        <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={async () => {
           if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             return Alert.alert(
               lang("_Cant_see_this_stone___I__header"),
@@ -444,78 +444,57 @@ lang("_Something_went_wrong_____body"),
           }
 
           this.setState({refreshingStoneVersions: true});
-          let promises = [];
-          promises.push(tell(stone).getFirmwareVersion()
-            .then((firmwareVersion : string) => {
-              core.store.dispatch({
-                type: "UPDATE_STONE_CONFIG",
-                stoneId: this.props.stoneId,
-                sphereId: this.props.sphereId,
-                data: {
-                  firmwareVersion: firmwareVersion,
-                }
-              })
-            })
-            .catch((err) => {
-              Alert.alert(
-                lang("_Whoops___I_could_not_get_header"),
-                lang("_Whoops___I_could_not_get_body"),
-                [{text:lang("_Whoops___I_could_not_get_left")}]);
-              throw err;
-            }));
-          promises.push(tell(stone).getHardwareVersion()
-            .then((hardwareVersion : string) => {
-              core.store.dispatch({
-                type: "UPDATE_STONE_CONFIG",
-                stoneId: this.props.stoneId,
-                sphereId: this.props.sphereId,
-                data: {
-                  hardwareVersion: hardwareVersion,
-                }
-              })
-            })
-            .catch((err) => {
-              Alert.alert(
-                lang("_Whoops___I_could_not_get__header"),
-                lang("_Whoops___I_could_not_get__body"),
-                [{text:lang("_Whoops___I_could_not_get__left")}]);
-              throw err;
-            }))
-          promises.push(tell(stone).getBootloaderVersion()
-            .then((bootloaderVersion : string) => {
-              if (bootloaderVersion) {
-                core.store.dispatch({
-                  type: "UPDATE_STONE_CONFIG",
-                  stoneId: this.props.stoneId,
-                  sphereId: this.props.sphereId,
-                  data: {
-                    bootloaderVersion: bootloaderVersion,
-                  }
-                })
-              }
-            })
-            .catch((err) => {
-              Alert.alert(
-                lang("_Whoops___I_could_not_get__header"),
-                lang("_Whoops___I_could_not_get__body"),
-                [{text:lang("_Whoops___I_could_not_get__left")}]);
-              throw err;
-            }))
+          let error = null;
 
+          let firmwareVersion;
+          let hardwareVersion;
+          let bootloaderVersion;
+          let uicr;
 
-          Promise.all(promises)
-            .then(() => {
-              this.setState({refreshingStoneVersions: false});
-            })
-            .catch((err) => {
-              this.setState({refreshingStoneVersions: false});
-            });
+          let promises = [
+            tell(stone).getFirmwareVersion()
+              .then((r) => { firmwareVersion = r }).catch((err) => { error = err; }),
+            tell(stone).getHardwareVersion()
+              .then((r) => { hardwareVersion = r }).catch((err) => { error = err; }),
+            tell(stone).getBootloaderVersion()
+              .then((r) => { bootloaderVersion = r }).catch((err) => { error = err; }),
+            tell(stone).getUICR()
+              .then((r) => { uicr = r }).catch((err) => { error = err; }),
+          ]
+
+          await Promise.all(promises);
+
+          let data : any = {};
+          if (firmwareVersion)   { data.firmwareVersion   = firmwareVersion; }
+          if (hardwareVersion)   { data.hardwareVersion   = hardwareVersion; }
+          if (bootloaderVersion) { data.bootloaderVersion = bootloaderVersion; }
+          if (uicr)              { data.uicr              = uicr; }
+
+          core.store.dispatch({
+            type: "UPDATE_STONE_CONFIG",
+            stoneId: this.props.stoneId,
+            sphereId: this.props.sphereId,
+            data
+          });
+
+          if (error) {
+            Alert.alert(
+              lang("_Whoops___I_could_not_get_header"),
+              lang("_Whoops___I_could_not_get_body"),
+              [{text:lang("_Whoops___I_could_not_get_left")}]
+            );
+          }
+
+          this.setState({refreshingStoneVersions: false});
         }}>
           <Text style={styles.version}>{ lang("address__",stone.config.macAddress, lang("unknown")) }</Text>
           <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("crownstone_id__",stone.config.uid, lang("unknown")) }</Text>
+          {
+            core.store.getState().user.developer && <Text style={styles.version}>{ lang("uicr",JSON.stringify(stone.config.uicr, null, 2), unknownString) }</Text>
+          }
         </TouchableOpacity>
       );
     }
