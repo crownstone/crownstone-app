@@ -23,7 +23,7 @@ import { Get } from "../../../util/GetUtil";
 
 export const SyncNext = {
 
-  partialSphereSync: async function(localSphereId: string, type: "SPHERE_USERS") {
+  partialSphereSync: async function(localSphereId: string, type: "SPHERE_USERS" | "HUBS") {
     let scopes : SyncCategory[] = [];
     let sphere = Get.sphere(localSphereId);
     if (!sphere) { return; }
@@ -37,6 +37,13 @@ export const SyncNext = {
         let syncRequest = getRequestBase(scopes, sphere.config.cloudId);
         syncRequest.spheres[sphere.config.cloudId].users = SphereUserSyncerNext.prepare(sphere);
         let response = await CLOUD.syncNextSphere(localSphereId, syncRequest);
+        await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
+        break;
+      case "HUBS":
+        scopes = ["hubs"]
+        syncRequest = getRequestBase(scopes, sphere.config.cloudId);
+        syncRequest.spheres[sphere.config.cloudId].hubs = HubSyncer.prepare(sphere);
+        response = await CLOUD.syncNextSphere(localSphereId, syncRequest);
         await SyncNext.processSyncResponse(response as SyncRequestResponse, actions, globalCloudIdMap);
     }
 

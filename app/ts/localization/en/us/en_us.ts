@@ -2232,7 +2232,7 @@ export default {
     Working_on_it_:                         function() { return "Working on it!" },
     Setting_up_your_new_Crown:              function() { return "Setting up your new hub now..." },
     Thats_it_:                              function() { return "That's it!" },
-    Would_you_like_to_setup_m:              function() { return "Would you like to setup more hubs or is this enough for now?" },
+    You_are_all_finished:                   function() { return "You're all finished!" },
     Setup_complete_:                        function() { return "Setup complete." },
     This_Crownstone_was_added:              function() { return "This hub was added to your Sphere before I aborted the process. You can remove it from your Sphere in this hub's settings if you'd like." },
     I_know_this_one_:                       function() { return "I know this one!" },

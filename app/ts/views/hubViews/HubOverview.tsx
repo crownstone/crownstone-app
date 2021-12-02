@@ -39,6 +39,7 @@ import { CLOUD } from "../../cloud/cloudAPI";
 // import { WebRtcClient } from "../../logic/WebRtcClient";
 import { DebugIcon } from "../components/DebugIcon";
 import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
+import {SyncNext} from "../../cloud/sections/newSync/SyncNext";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -160,7 +161,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   getStateEntries(stone: StoneData | null, hub: HubData | null, hubs: HubData[]) {
     let entries = [];
-    let index = 5000;
     let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
     let hubState = hub?.state;
     let helper = new HubHelper();
@@ -215,9 +215,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
                 })
                 .catch((err) => {
                   Alert.alert(
-lang("_Something_went_wrong_____P_header"),
-lang("_Something_went_wrong_____P_body"),
-[{text:lang("_Something_went_wrong_____P_left")}]);
+                    lang("_Something_went_wrong_____P_header"),
+                    lang("_Something_went_wrong_____P_body"),
+                    [{text:lang("_Something_went_wrong_____P_left")}]);
                   this.setState({fixing:false})
                 })
             }}
@@ -542,7 +542,8 @@ lang("_Something_went_wrong_____Pleas_body"),
 
     let updateAvailable = stone &&
       stone.config.firmwareVersion &&
-      ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+      ((Util.canUpdate(stone, state) === true) ||
+        xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
 
     return (
