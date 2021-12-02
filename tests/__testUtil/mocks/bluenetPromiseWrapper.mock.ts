@@ -733,6 +733,7 @@ let targetedMethods = [
   "recover",
   "commandFactoryReset",
   "multiSwitch",
+  "getUICR",
   "getFirmwareVersion",
   "getBootloaderVersion",
   "setupFactoryReset",

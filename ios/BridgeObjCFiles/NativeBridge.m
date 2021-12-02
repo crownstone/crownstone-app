@@ -53,6 +53,7 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 RCT_EXTERN_METHOD(commandFactoryReset:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getHardwareVersion:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getUICR:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBootloaderVersion:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(clearErrors:(NSString *)handle errors:(NSDictionary *)errors callback:(RCTResponseSenderBlock)callback)
