@@ -111,6 +111,7 @@ interface cloud_Stone {
   firmwareVersion: string,
   bootloaderVersion: string,
   hardwareVersion: string,
+  uicr?: UICRData,
   locked: boolean;
   locationId?: string,
   sphereId: string,
@@ -136,8 +137,9 @@ interface cloud_Stone_settable {
   firmwareVersion: string,
   bootloaderVersion: string,
   hardwareVersion: string,
-  hidden: boolean;
-  locked: boolean;
+  uicr: UICRData,
+  hidden: boolean,
+  locked: boolean,
   locationId: string,
   updatedAt: string,
 }
