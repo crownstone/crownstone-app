@@ -48,3 +48,5 @@ install https://github.com/react-native-webrtc/react-native-webrtc
 
 
 [v] Add getUICR bridge method which returns UICRData (see proxy.d.ts)
+
+add splash screen / launch image
