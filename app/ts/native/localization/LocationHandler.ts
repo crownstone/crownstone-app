@@ -30,7 +30,7 @@ class LocationHandlerClass {
     // subscribe to iBeacons when the spheres in the cloud change.
     core.eventBus.on('CloudSyncComplete_spheresChanged', () => {
       if (this._readyForLocalization) {
-        LocationHandler.initializeTracking();
+        this.initializeTracking();
       }
     });
 
@@ -38,7 +38,7 @@ class LocationHandlerClass {
     core.eventBus.on('userLoggedInFinished', () => { this._readyForLocalization = true; });
     core.eventBus.on('sphereCreated', () => {
       if (this._readyForLocalization) {
-        LocationHandler.initializeTracking();
+        this.initializeTracking();
       }
     });
 
@@ -377,7 +377,10 @@ class LocationHandlerClass {
 
   reloadFingerprintTracking() {
     this.loadFingerprints();
-    Bluenet.startIndoorLocalization();
+    let state = core.store.getState();
+    if (state.app.indoorLocalizationEnabled === true) {
+      Bluenet.startIndoorLocalization();
+    }
   }
 
 

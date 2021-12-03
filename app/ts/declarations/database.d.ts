@@ -137,7 +137,7 @@ interface StoneDataConfig {
 interface LocationData {
   id: string,
   config: LocationDataConfig
-  presentUsers: [],
+  presentUsers: string[],
   layout: {
     x: number,
     y: number,

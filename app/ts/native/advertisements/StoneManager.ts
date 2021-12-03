@@ -21,36 +21,6 @@ class StoneManagerClass {
   entities = {};
   sphereEntityCollections = {};
 
-  // factoryResettingCrownstones : any = {};
-  // factoryResetUnknownStonesEnabled = false;
-  // factoryResetUnknownStonesEnableTimeout = null;
-
-  // _debugging = false
-  //
-  // constructor() {
-  //   core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
-  //     this._debug(state);
-  //   })
-  // }
-
-
-  // _debug(debugState) {
-  //   if (debugState) {
-  //     if (!this._debugging) {
-  //       this._debugging = true;
-  //       let state = core.store.getState();
-  //       let sphereIds = Object.keys(state.spheres);
-  //       sphereIds.forEach((sphereId) => {
-  //         let stoneIds = Object.keys(state.spheres[sphereId].stones);
-  //         stoneIds.forEach((stoneId) => {
-  //           this.createEntity(sphereId, stoneId);
-  //         })
-  //       })
-  //       core.eventBus.emit("ADVERTISEMENT_DEBUGGING", true);
-  //     }
-  //   }
-  // }
-
 
   init() {
     if (this._initialized === false) {

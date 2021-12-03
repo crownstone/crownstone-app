@@ -21,9 +21,8 @@ export const DataUtil = {
    */
   callOnAllSpheres: function(callback: (sphereId: string, sphere: SphereData) => void) {
     let state = core.store.getState()
-    let sphereIds = Object.keys(state.spheres);
-    for (let i = 0; i < sphereIds.length; i++) {
-      callback(sphereIds[i], state.spheres[sphereIds[i]])
+    for (let sphereId in state.spheres) {
+      callback(sphereId, state.spheres[sphereId])
     }
   },
 
@@ -34,12 +33,24 @@ export const DataUtil = {
    */
   callOnAllStones: function(callback: (sphereId: string, stoneId: string, stone: StoneData) => void) {
     let state = core.store.getState();
-    let sphereIds = Object.keys(state.spheres);
-    for (let i = 0; i < sphereIds.length; i++) {
-      let stones = state.spheres[sphereIds[i]].stones;
-      let stoneIds = Object.keys(stones);
-      for (let j = 0; j < stoneIds.length; j++) {
-        callback(sphereIds[i], stoneIds[j], stones[stoneIds[j]])
+    for (let sphereId in state.spheres) {
+      let stones = state.spheres[sphereId].stones;
+      for (let locationId in stones) {
+        callback(sphereId, locationId, stones[locationId])
+      }
+    }
+  },
+  /**
+   * Call a callback on all stones in all spheres
+   * @param state
+   * @param callback
+   */
+  callOnAllLocations: function(callback: (sphereId: string, locationId: string, location: LocationData) => void) {
+    let state = core.store.getState();
+    for (let sphereId in state.spheres) {
+      let locations = state.spheres[sphereId].locations;
+      for (let locationId in locations) {
+        callback(sphereId, locationId, locations[locationId])
       }
     }
   },
