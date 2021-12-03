@@ -1,7 +1,8 @@
 import { LOG_LEVEL }  from "./LogLevels";
 import { core } from "../Core";
-import { LOGi } from "./Log";
+import {LOG, LOGi} from "./Log";
 import DeviceInfo from "react-native-device-info";
+import {AppState} from "react-native";
 
 
 class LogProcessorClass {
@@ -46,6 +47,8 @@ class LogProcessorClass {
       LOGi.info("App Version",            DeviceInfo.getVersion());          // e.g. 1.1.0
       LOGi.info("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
       LOGi.info("Device Name",            DeviceInfo.getDeviceName());       // e.g. Becca's iPhone 6
+
+      LOGi.info("App State Change", AppState.currentState);
     }
   }
 
