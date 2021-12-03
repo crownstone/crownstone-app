@@ -53,7 +53,7 @@ public class MainApplication extends NavigationApplication {
 		// According to https://docs.bugsnag.com/build-integrations/gradle/
 		Bugsnag.start(this);
 		SoLoader.init(this, /* native exopackage */ false);
-//		initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
+		initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
 	}
 
 	/**
