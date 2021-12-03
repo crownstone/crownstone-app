@@ -31,6 +31,7 @@ import nl.komponents.kovenant.then
 import nl.komponents.kovenant.unwrap
 import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.BluenetConfig
 import rocks.crownstone.bluenet.behaviour.BehaviourHashGen
 import rocks.crownstone.bluenet.behaviour.BehaviourSyncerFromCrownstone
 import rocks.crownstone.bluenet.encryption.KeySet
@@ -1167,9 +1168,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun connect(address: String, referenceId: String?, callback: Callback) {
+	fun connect(address: String, referenceId: String?, highPriority: Boolean, callback: Callback) {
 		Log.i(TAG, "connect $address")
-		bluenet.connect(address, true, 300*1000, 0)
+		val auto: Boolean
+		val timeoutMs: Long
+		val retries: Int
+		if (highPriority) {
+			auto = false
+			timeoutMs = BluenetConfig.TIMEOUT_CONNECT
+			retries = 3
+		}
+		else {
+			auto = true
+			timeoutMs = 300*1000
+			retries = 1
+		}
+		bluenet.connect(address, auto, timeoutMs, retries)
 				.success {
 					Log.i(TAG, "connected to $address")
 					val mode: String = when (bluenet.getOperationMode(address)) {
