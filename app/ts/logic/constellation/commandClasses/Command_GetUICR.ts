@@ -7,7 +7,7 @@ import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromi
 export class Command_GetUICR extends CommandBase implements CommandBaseInterface {
 
   constructor() {
-    super("getHardwareVersion");
+    super("getUICR");
   }
 
 

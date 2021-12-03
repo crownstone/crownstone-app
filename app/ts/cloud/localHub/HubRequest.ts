@@ -95,7 +95,7 @@ export class HubRequestHandler {
       if (requestDidTimeout) { return; }
 
       let responseHandler = new ResponseHandler()
-      let result = null;
+      let result;
       try {
         result = await responseHandler.handle(response);
       }
@@ -140,7 +140,7 @@ export class HubApi extends HubRequestHandler {
 }
 
 function join(...items: string[]) : string {
-  let result = ''
+  let result = '';
   for (let item of items) {
     if (!item) { continue; }
 

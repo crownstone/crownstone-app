@@ -63,7 +63,7 @@
     },
     {
       "extent" : "full-screen",
-      "filename" : "iPhone7x2.png",
+      "filename" : "iPhone5,6x2.png",
       "idiom" : "iphone",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
@@ -87,7 +87,7 @@
     },
     {
       "extent" : "full-screen",
-      "filename" : "iPhone5,6x2.png",
+      "filename" : "iPhone7x2.png",
       "idiom" : "iphone",
       "orientation" : "portrait",
       "scale" : "2x"

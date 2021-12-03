@@ -43,13 +43,14 @@ const BluenetAPI = {
   enableLoggingToFile:      () => { console.log("BluenetBridgeCall: enableLoggingToFile:   "); },
   enableExtendedLogging:    () => { console.log("BluenetBridgeCall: enableExtendedLogging: "); },
   clearLogs:                () => { console.log("BluenetBridgeCall: clearLogs:             "); },
-  crash:                    () => { console.log("BluenetBridgeCall: crash!             "); },
+  crash:                    () => { console.log("BluenetBridgeCall: crash!                 "); },
 
   // mesh
   multiSwitch:              () => { console.log("BluenetBridgeCall: multiSwitch:             "); },
   getHardwareVersion:       () => { console.log("BluenetBridgeCall: getHardwareVersion:      "); },
   getBootloaderVersion:     () => { console.log("BluenetBridgeCall: getBootloaderVersion:    "); },
   getFirmwareVersion:       () => { console.log("BluenetBridgeCall: getFirmwareVersion:      "); },
+  getUICR:                  () => { console.log("BluenetBridgeCall: geUICR:                  "); },
   bootloaderToNormalMode:   () => { console.log("BluenetBridgeCall: bootloaderToNormalMode:  "); },
   clearFingerprintsPromise: () => { console.log("BluenetBridgeCall: clearFingerprintsPromise:"); },
   clearFingerprints:        () => { console.log("BluenetBridgeCall: clearFingerprints:       "); },

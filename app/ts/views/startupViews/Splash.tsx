@@ -30,7 +30,7 @@ export class Splash extends Component<any, any> {
       <Background fullScreen={true} image={background.main} dimStatusBar={false}  hideOrangeLine={true} hideNotifications={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
-          <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.csBlueDarker.hex}}/>
+          <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
           <View style={{flex:2}} />
           <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
           <View style={{flex:0.5}} />

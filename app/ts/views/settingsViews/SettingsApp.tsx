@@ -20,6 +20,7 @@ import {Util} from "../../util/Util";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SliderBar } from "../components/editComponents/SliderBar";
+import {DataUtil} from "../../util/DataUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -28,7 +29,6 @@ export class SettingsApp extends LiveComponent<any, any> {
   }
 
   unsubscribe : any;
-  triggerTapToToggleCalibration = false;
 
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
@@ -167,11 +167,34 @@ export class SettingsApp extends LiveComponent<any, any> {
         Bluenet.setBackgroundScanning(newValue);
 
         if (newValue === false) {
-          // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
+          Bluenet.stopIndoorLocalization();
+
+          // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS IN THE CLOUD
           let deviceId = Util.data.getCurrentDeviceId(state);
           if (deviceId) {
             CLOUD.forDevice(deviceId).exitSphere("*").catch(() => { });  // will also clear location
           }
+
+          // remove user from all locations in the app
+          let userId = state.user.userId as string;
+          let actions = [];
+          DataUtil.callOnAllLocations((sphereId, locationId, location) => {
+            if (location.presentUsers.indexOf(userId) !== -1) {
+              actions.push({
+                type: 'USER_EXIT_LOCATION',
+                sphereId: sphereId,
+                locationId: locationId,
+                data: {userId: state.user.userId}
+              });
+            }
+          })
+
+          if (actions.length > 0) {
+            core.store.batchDispatch(actions);
+          }
+        }
+        else {
+          Bluenet.startIndoorLocalization();
         }
       }
     });

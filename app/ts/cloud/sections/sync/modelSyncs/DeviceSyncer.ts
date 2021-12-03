@@ -371,7 +371,7 @@ export class DeviceSyncer extends SyncingBase {
 
 
   _updateUserLocationInCloud(state, deviceId) {
-    if (state.user.uploadLocation === true) {
+    if (state.user.uploadLocation === true && state.app.indoorLocalizationEnabled === true) {
       if (state.user.userId) {
         let userLocationMap = Util.data.getUserLocations(state, state.user.userId);
         let presentSphereIds = Object.keys(userLocationMap);

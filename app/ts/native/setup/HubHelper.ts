@@ -11,6 +11,7 @@ import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
 import { CodedTypedError, CodedError } from "../../util/Errors";
 import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
+import {SyncNext} from "../../cloud/sections/newSync/SyncNext";
 
 
 const networkError = 'network_error';
@@ -134,6 +135,8 @@ export class HubHelper {
     core.eventBus.emit("setupInProgress", { handle: handle, progress: 40 / 20 });
     await Scheduler.delay(500, 'wait for hub to initialize');
 
+    await SyncNext.partialSphereSync(sphereId, "HUBS");
+
     return { hubId: hubId, cloudId: hubCloudId };
   }
 
@@ -150,11 +153,7 @@ export class HubHelper {
     let handle = stone.config.handle;
     if (!stone)               { throw new CodedError(1, "Invalid stone."); }
     if (!stone.config.handle) { throw new CodedError(2, "No handle.");     }
-
-    let uartKey = null;
-    let hubToken = null;
     let hubCloudId = null;
-    let hubId = xUtil.getUUID();
 
     // we now have everything we need to create a hub.
     let api : CommandAPI;

@@ -252,6 +252,7 @@ export class SetupHub extends LiveComponent<{
         }
       });
     }
+
     if (hub && hub.config.locationId !== this.newCrownstoneState.location.id) {
       core.store.dispatch({
         type: "UPDATE_HUB_CONFIG",
@@ -340,13 +341,6 @@ export class SetupHub extends LiveComponent<{
     ];
 
     let successOptions = [
-      {
-        label: lang("Add_more_Crownstones_"),
-        onSelect: (result) => {
-          this._ensureLocationStorage();
-          NavigationUtil.back();
-        }
-      },
       {
         label: lang("Take_me_to__",this.newCrownstoneState.location.name),
         onSelect: (result) => {
@@ -566,7 +560,7 @@ export class SetupHub extends LiveComponent<{
       },
       setupMore: {
         header:lang("Thats_it_"),
-        subHeader: lang("Would_you_like_to_setup_m"),
+        subHeader: lang("You_are_all_finished"),
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>

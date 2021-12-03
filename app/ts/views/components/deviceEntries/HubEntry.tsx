@@ -29,8 +29,6 @@ import Timeout = NodeJS.Timeout;
 import { IconCircle } from "../IconCircle";
 import { CLOUD } from "../../../cloud/cloudAPI";
 
-const PADDING_LEFT = 15;
-const PADDING_RIGHT = 15;
 
 export class HubEntry extends Component<{
   sphereId: string,
@@ -53,19 +51,14 @@ export class HubEntry extends Component<{
   toggleScrollView?: (state: boolean) => void
 }, any> {
 
-  _panResponder;
   baseHeight : number;
   unsubscribe = [];
   animating = false;
   id = xUtil.getUUID();
 
-  showMeshMessageTimeout;
 
   // these are used to determine persisting the switchstate.
   actualState = 0;
-  storedSwitchState = 0;
-  storeSwitchState = false;
-  storeSwitchStateTimeout = null;
 
   showStateIconTimeout : Timeout;
 
@@ -73,8 +66,6 @@ export class HubEntry extends Component<{
 
   constructor(props) {
     super(props);
-    let state = core.store.getState();
-    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     this.state = {
       backgroundColor: new Animated.Value(0),
       statusText:      null,
@@ -161,7 +152,6 @@ export class HubEntry extends Component<{
       switchViewActive = false;
     }
 
-    let switchViewExplanation = !switchViewActive && this.props.switchView;
     let height = this.props.height || 80;
     let explanationText = this._getExplanationText(state, switchViewActive);
 
@@ -170,7 +160,7 @@ export class HubEntry extends Component<{
     if (!hub) { hubProblem = true; }
     else {
       // not seen for too long.
-      if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800*1000) {
+      if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800 * 1000) {
         hubProblem = true;
       }
 

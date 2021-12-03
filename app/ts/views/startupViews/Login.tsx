@@ -230,7 +230,7 @@ export class Login extends Component<any, any> {
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
-            <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.csBlueDark.hex}}/>
+            <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
             <View style={{flex:3, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput

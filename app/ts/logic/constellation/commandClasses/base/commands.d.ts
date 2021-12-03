@@ -37,6 +37,7 @@ type BridgeCommandType = "addBehaviour"                     |
                          "getTime"                          |
                          "getVoltageMultiplier"             |
                          "getVoltageZero"                   |
+                         "getUICR"                          |
                          "lockSwitch"                       |
                          "multiSwitch"                      |
                          "performDFU"                       |
