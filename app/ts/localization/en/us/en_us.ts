@@ -1078,9 +1078,7 @@ export default {
     Register:                               function() { return "Register" },
     Log_In:                                 function() { return "Log In" },
     Buy_Crownstones_:                       function() { return "Buy Crownstones!" },
-    version__:                              function() { return "version: " + arguments[0] },
-    registerButton:                         function() { return "registerButton" },
-    loginButton:                            function() { return "loginButton" },
+    version__:                              function() { return "version: " + arguments[0] }
   },
   MeshElement:{
     __filename: "../js/views/components/MeshElement.tsx",
