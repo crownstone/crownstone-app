@@ -158,7 +158,7 @@ export class InterviewLight extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={background.main}>
-                {this.state.finished === false ?
+        {this.state.finished === false ?
           <Carousel
             ref={(c) => {
               this._carousel = c;
