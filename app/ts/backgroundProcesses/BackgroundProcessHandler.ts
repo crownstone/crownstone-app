@@ -55,6 +55,8 @@ import { LocalizationLogger }       from "./LocalizationLogger";
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 
+export const TIME_LAST_REBOOT = Date.now();
+
 class BackgroundProcessHandlerClass {
   started               : boolean = false;
   userLoggedIn          : boolean = false;

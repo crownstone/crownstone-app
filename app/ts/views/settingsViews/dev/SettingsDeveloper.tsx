@@ -38,6 +38,7 @@ const RNFS = require('react-native-fs');
 import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 interface iEmailData { [key: string]: emailDataType }
@@ -588,11 +589,10 @@ export function getDevAppItems() {
         NavigationUtil.navigate("SettingsDeveloper", {fromOverview: true});
       }
     });
-  items.push({
-    label: "Debug options for developers.",
-    type: 'explanation',
-    below: true
-  });
+    items.push({
+      label: `Time since last reboot ${xUtil.getDurationFormat(Date.now() - TIME_LAST_REBOOT)}`,
+      type: 'explanation',
+    });
     return items;
 }
 

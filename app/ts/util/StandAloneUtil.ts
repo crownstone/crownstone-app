@@ -15,6 +15,7 @@ export const xUtil = {
     return str;
   },
 
+
   getDurationFormat: function(ms) {
     let days = Math.floor(ms / (24*3600*1000))
     let hours = Math.floor(ms / (3600*1000))%24;
