@@ -57,7 +57,7 @@ class PhysicsEngine {
     this.width = width;
     this.height = height;
 
-    this.physicsBody = {nodes: [], edges: [], physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}, randomSeed:6, radius: this.radius, height: height, width: width};
+    this.physicsBody = {nodes: {}, edges: [], physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}, randomSeed:6, radius: this.radius, height: height, width: width};
 
     this.physicsEnabled = true;
     this.simulationInterval = 1000 / 60;
@@ -462,6 +462,14 @@ class PhysicsEngine {
     // evaluating the stabilized and adaptiveTimestepEnabled conditions
     this.adaptiveTimestepEnabled = (averageNodeVelocity/nodeIndices.length) < velocityAdaptiveThreshold;
     this.stabilized = maxNodeVelocity < this.options.minVelocity;
+  }
+
+
+  unfixNodes() {
+    for (let nodeId in this.physicsBody.nodes) {
+      let node = this.physicsBody.nodes[nodeId];
+      node.fixed = false;
+    }
   }
 
 

@@ -121,6 +121,9 @@ export class RoomLayer extends LiveComponent<any, any> {
     }
     else {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
+      for (let roomId in roomData.initialPositions) {
+        roomData.initialPositions[roomId].fixed = roomData.initialPositions[roomId].x !== null;
+      }
       return (
         <ForceDirectedView
           ref={(r) => { this._forceViewRef = r }}

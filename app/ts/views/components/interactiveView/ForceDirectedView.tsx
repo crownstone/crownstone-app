@@ -464,6 +464,7 @@ export class ForceDirectedView extends Component<{
 
     this.unsubscribeGestureEvents.push(core.eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
       this.recenterOnStable = true;
+      this.physicsEngine.unfixNodes()
       this.physicsEngine.stabilize(iterations, false);
     }));
   }
@@ -589,10 +590,9 @@ export class ForceDirectedView extends Component<{
     this.nodes = {};
 
     // load rooms into nodes
-    for (let i = 0; i < nodeIds.length; i++) {
-      let id = nodeIds[i];
-      let initialPosition = initialPositions && initialPositions[id] || {x:null, y:null};
-      this.nodes[id] = {id: id, mass: 1, fixed: false, support:false, x: initialPosition.x, y: initialPosition.y };
+    for (let id of nodeIds) {
+      let initialPosition = initialPositions && initialPositions[id] || {x:null, y:null, fixed:false};
+      this.nodes[id] = {id: id, mass: 1, fixed: initialPosition.fixed, support:false, x: initialPosition.x, y: initialPosition.y };
       this.state.nodes[id] = {x: new Animated.Value(initialPosition.x || 0), y: new Animated.Value(initialPosition.y || 0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }
 
