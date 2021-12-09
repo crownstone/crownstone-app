@@ -253,13 +253,13 @@ open class BluenetJS: RCTEventEmitter {
     @objc func cancelConnectionRequest(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let function_uuid = UUID().uuidString
         LOGGER.info("BluenetBridge: Called cancelConnectionRequest from handle \(handle) uuid:\(function_uuid)")
-        do {
-            try GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
-            successReply("cancelConnectionRequest", nil, function_uuid, callback)
-        }
-        catch {
-            errReply("cancelConnectionRequest", error, function_uuid, callback)
-        }
+        GLOBAL_BLUENET.bluenet.cancelConnectionRequest(handle)
+            .done{ _ -> Void in
+                successReply("cancelConnectionRequest", nil, function_uuid, callback)
+            }
+            .catch{err in
+                errReply("cancelConnectionRequest", err, function_uuid, callback)
+            }
     }
     
     @objc func phoneDisconnect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {

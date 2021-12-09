@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SmartBehaviourBehaviour", key)(a,b,c,d,e);
+  return Languages.get("SmartBehaviour", key)(a,b,c,d,e);
 }
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";

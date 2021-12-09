@@ -551,12 +551,15 @@ export const NavigationUtil = {
         passProps: props,
         options: {
           layout: {
-            componentBackgroundColor: "transparent"
+            componentBackgroundColor: "transparent",
           },
           overlay: {
             interceptTouchOutside: true,
             handleKeyboardEvents: true,
-          }
+          },
+          statusBar: {
+            drawBehind: true,
+          },
         }
       },
     })
