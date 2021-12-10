@@ -19,6 +19,7 @@ import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { NavigationUtil } from "../../util/NavigationUtil";
+import {TestingFramework} from "../../backgroundProcesses/TestingFramework";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -88,12 +89,13 @@ export class LoginSplash extends Component<any, any> {
     )
   }
 
-  _pressedVersion() {
+  async _pressedVersion() {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => { this.clicks = 0; }, 200);
     this.clicks++;
     if (this.clicks >= 5) {
-      NavigationUtil.launchModal("TestConfigurationCloud");
+      await TestingFramework.clear();
+      NavigationUtil.launchModal("TestConfiguration");
       this.clicks = 0;
       clearTimeout(this.timeout);
     }

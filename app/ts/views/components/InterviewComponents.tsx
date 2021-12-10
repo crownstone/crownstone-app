@@ -240,7 +240,7 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
   }
 }
 
-export function InterviewPasswordInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?}) {
+export function InterviewPasswordInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, testID?, autoCapitalize?}) {
   const inputElement = useRef(null)
   let [passwordSecureDisplay, setPasswordSecureDisplay] = useState(true);
   if (props.focussed === true) {
@@ -250,6 +250,7 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
         autoCapitalize={"none"}
+        testID={props.testID}
         secureTextEntry={Platform.OS === 'android' ? true : passwordSecureDisplay  }
         visiblePassword={Platform.OS === 'android' ? !passwordSecureDisplay : false }
         ref={inputElement}
@@ -264,7 +265,11 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
         callback={(newValue) => { props.callback(newValue) }}
         endCallback={() => { if (props.onBlur) { props.onBlur() }}}
       />
-      <TouchableOpacity style={{position:'absolute', top:0, right: 0, height:60, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { setPasswordSecureDisplay(!passwordSecureDisplay); }}>
+      <TouchableOpacity
+        style={{position:'absolute', top:0, right: 0, height:60, width: 40, alignItems:'center', justifyContent: 'center'}}
+        onPress={() => { setPasswordSecureDisplay(!passwordSecureDisplay); }}
+        testID={props.testID + "_togglePassword"}
+      >
         <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
       </TouchableOpacity>
     </View>

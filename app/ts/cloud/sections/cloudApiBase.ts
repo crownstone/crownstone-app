@@ -1,7 +1,9 @@
 import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
-import {LOG, LOGe, LOGi} from '../../logging/Log'
+import {LOG, LOGe, LOGi, LOGw} from '../../logging/Log'
 import { xUtil } from "../../util/StandAloneUtil";
+import {Alert} from "react-native";
+import {core} from "../../Core";
 
 const RNFS = require('react-native-fs');
 
@@ -53,7 +55,14 @@ export const TokenStore = new TokenStoreClass();
  * When the responses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
  */
 export const cloudApiBase = {
-  _networkErrorHandler: (err) => {},
+  _networkErrorHandler: (err) => {
+    LOGw.cloud("Could not connect to the cloud.", err);
+    Alert.alert(
+      "Connection Problem",
+      "Could not connect to the Cloud. Please check your internet connection.",
+      [{text: 'OK', onPress:()=>{ core.eventBus.emit('hideLoading'); }}],
+    );
+  },
 
   _post: function(options) {
     return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
@@ -108,6 +117,7 @@ export const cloudApiBase = {
       // make sure we do not show this popup when too much time has passed.
       // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
       if (Date.now()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
+        console.log("HERE", String(this._networkErrorHandler))
         this._networkErrorHandler(error);
       }
 

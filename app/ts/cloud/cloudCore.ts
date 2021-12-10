@@ -7,7 +7,7 @@ import { defaultHeaders } from './sections/cloudApiBase'
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "../util/StandAloneUtil";
 import { FileUtil } from "../util/FileUtil";
-import {CloudAddresses} from "../backgroundProcesses/CloudAddresses";
+import {CloudAddresses} from "../backgroundProcesses/indirections/CloudAddresses";
 
 
 let downloadIndex = 0;
@@ -67,14 +67,18 @@ export async function request(
 
 
     let responseHandler = new ResponseHandler();
+    let failedRequest = false;
     fetch(url, requestConfig as any)
       .catch((connectionError) => {
         if (requestDidTimeout === false) {
+          console.log("Failed network error")
+          cancelFallbackCallback();
+          failedRequest = true;
           reject(new Error('Network request to ' + url + ' failed'));
         }
       })
       .then((response) => {
-        if (requestDidTimeout === false) {
+        if (requestDidTimeout === false && failedRequest == false) {
           cancelFallbackCallback();
           return responseHandler.handle(response);
         }
@@ -85,7 +89,7 @@ export async function request(
         return '';
       })
       .then((parsedResponse) => {
-        if (requestDidTimeout === false) {
+        if (requestDidTimeout === false && failedRequest == false) {
           LOG.cloud("REPLY from", endPoint, " is: ", {status: responseHandler.status, data: parsedResponse}, logToken);
           finishedRequest = true;
           resolve({status: responseHandler.status, data: parsedResponse});

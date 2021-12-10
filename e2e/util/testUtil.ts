@@ -12,3 +12,16 @@ export async function tapAlertButton(index: number = 0) {
   await alertButton(index).tap()
   await expect(alertButton(index)).not.toBeVisible();
 }
+export async function tapAlertCancelButton() {
+  await tapAlertButton(0)
+}
+export async function tapAlertOKButton() {
+  await tapAlertButton(1);
+
+}
+
+function delay(num) : Promise<void> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => { resolve() }, num)
+  })
+}

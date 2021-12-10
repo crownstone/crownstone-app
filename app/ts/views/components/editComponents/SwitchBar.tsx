@@ -17,7 +17,9 @@ import {
 import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
 
 export class SwitchBar extends Component<any, any> {
+
   animationAllowed;
+
   constructor(props) {
     super(props);
 
@@ -27,7 +29,6 @@ export class SwitchBar extends Component<any, any> {
     if (props.experimental) {
       this.loop();
     }
-
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,6 +101,7 @@ export class SwitchBar extends Component<any, any> {
             }
             this.props.callback(newValue);
           }}
+          testID={this.props.testID}
         />
       </View>
     )

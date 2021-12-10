@@ -5,6 +5,10 @@ import { Bluenet }        from './Bluenet'
 import { core } from "../../Core";
 import { BugReportUtil } from "../../util/BugReportUtil";
 
+export const BluenetPromiseInterface = {
+  mockBluenetPromises: false
+}
+
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)
   return new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@
  */
 import { cloudApiBase } from "./cloudApiBase";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import {CloudAddresses} from "../../backgroundProcesses/CloudAddresses";
+import {CloudAddresses} from "../../backgroundProcesses/indirections/CloudAddresses";
 
 
 export const syncNext = {

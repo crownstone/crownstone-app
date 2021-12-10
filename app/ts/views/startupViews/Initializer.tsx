@@ -10,7 +10,7 @@ import { NavigationUtil }           from "../../util/NavigationUtil";
 import { Stacks }                   from "../Stacks";
 import { stylesUpdateConstants }    from "../../views/styles";
 import { Bluenet }                  from "../../native/libInterface/Bluenet";
-import {CloudAddresses} from "../../backgroundProcesses/CloudAddresses";
+import { TestingFramework }         from "../../backgroundProcesses/TestingFramework";
 
 
 export class Initializer extends Component<any, any> {
@@ -30,7 +30,7 @@ export class Initializer extends Component<any, any> {
       }
 
       // initialize test overrides if required.
-      CloudAddresses.initialize();
+      TestingFramework.initialize();
 
       // This is a last chance fallback if a user is new but has for some reason never been marked as "not New"
       let store = StoreManager.getStore();

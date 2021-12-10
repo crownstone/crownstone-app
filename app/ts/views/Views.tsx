@@ -124,7 +124,7 @@ import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
-import {TestConfigurationCloud} from "./testingViews/TestConfigurationCloud";
+import {TestConfiguration} from "./testingViews/TestConfiguration";
 
 
 export const Views = {
@@ -250,7 +250,7 @@ export const Views = {
 
 
   // Testing
-  TestConfigurationCloud:           TestConfigurationCloud,
+  TestConfiguration:                TestConfiguration,
 
 
 

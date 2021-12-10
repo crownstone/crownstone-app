@@ -164,7 +164,7 @@ export class Register extends LiveComponent<any, any> {
             <View style={{...styles.centered, flex:1}}>
               <PictureCircle
                 isSquare={true}
-                value={state && state.picture || this.user.picture}
+                value={state?.picture || this.user.picture}
                 callback={(pictureUrl, source) => {
                   this.user.picture = pictureUrl;
 
@@ -208,6 +208,7 @@ export class Register extends LiveComponent<any, any> {
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
                 autofocus={true}
+                testID={'register-email'}
                 autoCapitalize={'none'}
                 focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("Email_address")}
@@ -232,6 +233,7 @@ export class Register extends LiveComponent<any, any> {
               />
               <InterviewPasswordInput
                 autofocus={false}
+                testID={'register-password'}
                 autoCapitalize={'none'}
                 placeholder={lang("Password")}
                 keyboardType={ "ascii-capable" }
@@ -308,7 +310,7 @@ export class Register extends LiveComponent<any, any> {
         header:lang("Thats_it_"),
         subHeader: lang("We_have_sent_an_email_to__", (this.user.email || "" ).toLowerCase()),
         explanation:lang("If_you_do_not_see_the_ema"),
-        testID:"regsiter:finishedCard",
+        testID:"register-finishedCard",
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -319,7 +321,7 @@ export class Register extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Ill_validate_my_account_a"),
-            testID:"regsiter:finish",
+            testID:"register-finish",
             onSelect: () => {
               NavigationUtil.back();
             }
@@ -351,11 +353,10 @@ export class Register extends LiveComponent<any, any> {
         if (reply.data && reply.data.error && reply.data.error.message) {
           let message = reply.data.error.message.split("` ");
           message = message[message.length - 1];
-          core.eventBus.emit('hideLoading')
           Alert.alert(
             lang("_Registration_Error_argum_header"),
             lang("_Registration_Error_argum_body",message),
-            [{text: lang("_Registration_Error_argum_left")}],
+            [{text: lang("_Registration_Error_argum_left"), onPress:() => { core.eventBus.emit('hideLoading'); }}],
             );
         }
         return false;

@@ -32,16 +32,13 @@ import { base_core } from "../../../Base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 import {LOG_file, LOGw} from "../../../logging/Log";
 
-const RNFS = require('react-native-fs');
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
-import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
-import {CloudAddresses} from "../../../backgroundProcesses/CloudAddresses";
+import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
-interface iEmailData { [key: string]: emailDataType }
 
 export const SHARE_DATA_TYPE = {
   allBuffers:           'All buffers',

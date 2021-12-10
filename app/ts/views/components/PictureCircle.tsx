@@ -18,9 +18,8 @@ import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { xUtil } from "../../util/StandAloneUtil";
 
-import { launchImageLibrary } from "react-native-image-picker";
 import { core } from "../../Core";
-import { launchCamera } from "react-native-image-picker/src/index";
+import {launchCamera, launchImageLibrary} from "../../backgroundProcesses/indirections/CameraLibraryInterface";
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
@@ -34,7 +33,9 @@ export class PictureCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 60;
     if (this.props.value || this.props.imageURI) {
-      let imageURI = this.props.imageURI || {uri:xUtil.preparePictureURI(this.props.value)}
+      let imageURI = this.props.imageURI ||
+                     typeof this.props.value === "number" && this.props.value ||
+                     {uri:xUtil.preparePictureURI(this.props.value)};
       let borderWidth = this.props.borderWidth || size / 30;
       let innerSize = size - 2*borderWidth;
       return (
@@ -50,7 +51,7 @@ export class PictureCircle extends Component<any, any> {
                 lang("_Delete_this_picture__arg_body"),
                 [
                   {text:lang("_Delete_this_picture__arg_left")},
-                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); this.triggerOptions(); }}
+                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}
                 ]
               )
             }
@@ -62,7 +63,8 @@ export class PictureCircle extends Component<any, any> {
             backgroundColor: colors.white.hex,
             alignItems:'center',
             justifyContent:'center',
-          }}>
+          }}
+          testID={this.props.testID_remove || "PictureCircleRemove"}>
             <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={imageURI} />
             <View style={[{
               position: 'absolute',
@@ -83,7 +85,7 @@ export class PictureCircle extends Component<any, any> {
     else {
       return (
         <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
-          <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:size}}>
+          <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:size}} testID={this.props.testID || "PictureCircle"}>
             <View>
               <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} outerBorderWidth={2} />
             </View>
@@ -97,9 +99,10 @@ export class PictureCircle extends Component<any, any> {
   }
 }
 
+
 export function SelectPicture(callback) {
   core.eventBus.emit("showPopup", {buttons: [
-    {text: lang("Camera"), callback: () => {
+    {text: lang("Camera"), testID:"optionsCamera", callback: () => {
       setTimeout(() => {
         launchCamera({ saveToPhotos: false, mediaType: "photo"}, (response) => {
           // console.log('Response = ', response);
@@ -117,7 +120,7 @@ export function SelectPicture(callback) {
         });
       }, 100);
     }},
-    {text: lang("Photo_Library"),  callback: () => {
+    {text: lang("Photo_Library"), testID:"optionsPhotoLibrary", callback: () => {
       setTimeout(() => {
         launchImageLibrary({ mediaType: "photo", selectionLimit: 1 }, (response) => {
           // console.log('Response = ', response);

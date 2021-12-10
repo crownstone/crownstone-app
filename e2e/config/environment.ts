@@ -43,7 +43,7 @@ class CustomDetoxEnvironment extends DetoxCircusEnvironment {
     this.registerListeners({
       SpecReporter,
       WorkerAssignReporter,
-      FastFailure
+      // FastFailure
     });
   }
 }
