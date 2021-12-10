@@ -86,14 +86,16 @@ export class Register extends LiveComponent<any, any> {
         header:lang("Welcome_"),
         subHeader:lang("What_should_I_call_you_"),
         optionsBottom: true,
+        testID: 'register-Welcome',
         editableItem: (state, setState) => {
           return (
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
+                testID={"register-firstName"}
                 // autofocus={true}
                 // focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("First_name")}
-                value={state && state.firstName !== null || this.user.firstName}
+                value={state?.firstName || this.user.firstName}
                 callback={(newValue) => {
                   let newState = {};
                   if (state !== "") {
@@ -105,10 +107,11 @@ export class Register extends LiveComponent<any, any> {
                 onBlur={() => { this.focussingIndex = 1; this.forceUpdate(); }}
               />
               <InterviewTextInput
+                testID={"register-lastName"}
                 // autofocus={false}
                 placeholder={ lang("Last_name")}
                 focussed={this.focussingIndex === 1}
-                value={state && state.lastName !== null|| this.user.lastName}
+                value={state?.lastName || this.user.lastName}
                 callback={(newValue) => {
                   let newState = {};
                   if (state !== "") {
@@ -126,6 +129,7 @@ export class Register extends LiveComponent<any, any> {
           {
             label: lang("Thats_me_"),
             nextCard: 'picture',
+            testID:"register-acceptName",
             onSelect: (result) => {
               if (!result.customElementState.firstName && !result.customElementState.lastName && !this.user.firstName && !this.user.lastName) {
                 Alert.alert(
@@ -154,6 +158,7 @@ export class Register extends LiveComponent<any, any> {
       picture: {
         header: lang("Nice_to_meet_you__", this.user.firstName),
         subHeader: lang("Would_you_like_to_add_a_p"),
+        testID: 'register-Picture',
         editableItem: (state, setState) => {
           return (
             <View style={{...styles.centered, flex:1}}>
@@ -190,12 +195,14 @@ export class Register extends LiveComponent<any, any> {
         options: [{
           label: lang("You_bet_I_do_Not_just_yet",this.user.picture),
           nextCard:"email",
+          testID:'register-acceptPicture'
         }]
       },
       email: {
-        header: this.user.picture ? lang("Fantastic_picture_") : lang("Youre_almost_done_"),
+        header:    this.user.picture ? lang("Fantastic_picture_")        : lang("Youre_almost_done_"),
         subHeader: this.user.picture ? lang("Now_lets_create_your_acco") : lang("Lets_create_your_account_"),
         optionsBottom: true,
+        testID: "register-AccountCreation",
         editableItem: (state, setState) => {
           return (
             <View style={{flex:1, width:screenWidth}}>
@@ -263,6 +270,7 @@ export class Register extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Im_ready_"),
+            testID:"register-completeRegistration",
             onSelect: (result) => {
               if (!result.customElementState.email && !this.user.email) {
                 Alert.alert(
@@ -300,6 +308,7 @@ export class Register extends LiveComponent<any, any> {
         header:lang("Thats_it_"),
         subHeader: lang("We_have_sent_an_email_to__", (this.user.email || "" ).toLowerCase()),
         explanation:lang("If_you_do_not_see_the_ema"),
+        testID:"regsiter:finishedCard",
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -310,6 +319,7 @@ export class Register extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Ill_validate_my_account_a"),
+            testID:"regsiter:finish",
             onSelect: () => {
               NavigationUtil.back();
             }
@@ -361,9 +371,8 @@ export class Register extends LiveComponent<any, any> {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
       textColor = this._interview.getTextColorFromCard() || textColor;
     }
-
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={false} hideNotifications={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={false} hideNotifications={true} dimStatusBar={true} testID={"registerView"}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}

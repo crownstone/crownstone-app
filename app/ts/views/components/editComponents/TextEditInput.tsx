@@ -122,13 +122,14 @@ export class TextEditInput extends Component<any, any> {
           this.props.callback(updatedValue);
         }}
         onFocus={() => {this._focus();}}
-        placeholder={this.props.placeholder || this.props.label}
+        placeholder={this.props.placeholder || this.props.label || ''}
         placeholderTextColor={this.props.placeholderTextColor}
         returnKeyType={this.props.returnKeyType}
         style={[{flex:1, fontSize:16}, this.props.style]}
         secureTextEntry={this.props.secureTextEntry}
-        defaultValue={this.props.value ?? ""}
+        defaultValue={this.props.value || ""}
         // value={this.props.value}
+        testID={this.props.testID}
       />
     );
   }

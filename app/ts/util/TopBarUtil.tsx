@@ -148,6 +148,7 @@ function getLeftButton(id, label) {
   else {
     return {
       id: id,
+      testID:id,
       text: label,
     }
   }
@@ -160,6 +161,7 @@ function getButtonComponent(id, label) {
 
   return {
     id: id,
+    testID:id,
     text:label,
   }
 }

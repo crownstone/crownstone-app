@@ -34,6 +34,7 @@ export class AnimatedBackground extends Component<{
   fullScreen?:        boolean,
   hasTopBar?:         boolean,
   image?:             any,
+  testID?:            string,
   topImage?:          any,
   keyboardAvoid?:     boolean,
 }, any> {
@@ -90,7 +91,7 @@ export class AnimatedBackground extends Component<{
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
-      }}>
+      }} testID={this.props.testID}>
         <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>

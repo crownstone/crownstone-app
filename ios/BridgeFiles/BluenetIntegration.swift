@@ -517,13 +517,15 @@ open class BluenetJS: RCTEventEmitter {
             LOGGER.setPrintLevel(.INFO)
         }
         else {
-            BluenetLib.LOG.clearLogs()
             BluenetLib.LOG.setFileLevel(.NONE)
             BluenetLib.LOG.setPrintLevel(.NONE)
             
-            LOGGER.clearLogs()
             LOGGER.setFileLevel(.NONE)
             LOGGER.setPrintLevel(.NONE)
+            
+            
+            BluenetLib.LOG.clearLogs()
+            LOGGER.clearLogs()
         }
     }
     

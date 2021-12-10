@@ -22,38 +22,30 @@ export const FileUtil = {
   },
 
 
-  safeMoveFile: function(from,to) {
+  safeMoveFile: function(from,to) : Promise<void> {
     // we update the session memory to make sure all pictures are reloaded.
     base_core.sessionMemory.cacheBusterUniqueElement = Math.random();
 
     return FileUtil.safeDeleteFile(to)
       .then(() => {
-        return new Promise((resolve, reject) => {
-          RNFS.moveFile(from, to)
-            .then(() => {
-              resolve(to);
-            });
-        })
+        return RNFS.moveFile(from, to)
       })
   },
 
   safeDeleteFile: async function(uri) : Promise<void>  {
     if (!uri) { return; }
 
-    return new Promise((resolve, reject) => {
-      RNFS.exists(uri)
-        .then((fileExists) => {
-          if (fileExists) {
-            return RNFS.unlink(uri);
-          }
-        })
-        .then(() => {
-          resolve()
-        })
-        .catch((err) => {
-          reject(err);
-        })
-    })
+    let pathBase = FileUtil.getPath();
+    if (uri.indexOf(pathBase) === -1) {
+      uri = FileUtil.getPath(uri);
+    }
+
+    return RNFS.exists(uri)
+      .then((fileExists) => {
+        if (fileExists) {
+          return RNFS.unlink(uri);
+        }
+      })
   },
 
   copyCameraRollPictureToTempLocation: function(fileData) {
@@ -83,6 +75,20 @@ export const FileUtil = {
 
   fileExists: function(path) {
     return RNFS.exists(path)
-  }
+  },
+
+  async writeToFile(filename: string, content: string) {
+    let path = FileUtil.getPath(filename);
+    await FileUtil.safeDeleteFile(path).catch((err) => {});
+    await RNFS.appendFile(path, content, 'utf8').catch((err) => {})
+  },
+
+  async readFile(filename) : Promise<string | null> {
+    let path = FileUtil.getPath(filename);
+    if (await FileUtil.fileExists(path)) {
+      return await RNFS.readFile(path,'utf8');
+    }
+    return null;
+  },
 
 };

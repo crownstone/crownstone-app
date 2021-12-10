@@ -106,7 +106,7 @@ export function LargeTextButtonWithLargeImage(props) {
   let height = 0.23*screenWidth;
   return (
     <FadeIn index={props.index || 0}>
-      <TouchableOpacity style={[buttonStyle, {
+      <TouchableOpacity testID={props.testID} style={[buttonStyle, {
         backgroundColor: colors.white.hex,
         borderBottomLeftRadius:  0,
         borderBottomRightRadius: 20,
@@ -141,7 +141,7 @@ export function LargeTextButtonWithLargeImage(props) {
 export function TextButtonWithLargeImage(props) {
   return (
     <FadeIn index={props.index || 0}>
-      <TouchableOpacity style={[buttonStyle, {
+      <TouchableOpacity testID={props.testID} style={[buttonStyle, {
         backgroundColor: colors.white.hex,
         borderBottomLeftRadius:  0,
         borderBottomRightRadius: 20,
@@ -169,6 +169,7 @@ export function TextButtonWithLargeImage(props) {
 export function TextButton(props) {
   return (
     <TouchableOpacity
+      testID={props.testID}
       style={[
         props.basic ? buttonBasicStyle : buttonStyle,
         {backgroundColor: props.backgroundColor},
@@ -185,7 +186,7 @@ export function TextButton(props) {
 }
 function TextButtonWithIcon(props) {
   return (
-    <TouchableOpacity style={[buttonStyle, {
+    <TouchableOpacity testID={props.testID} style={[buttonStyle, {
       backgroundColor: props.backgroundColor,
       borderBottomLeftRadius:  0,
       borderBottomRightRadius: 20,
@@ -199,28 +200,28 @@ function TextButtonWithIcon(props) {
   );
 }
 
-export function TextButtonDark({label, callback, basic=false, selected=false}) {
-  return TextButton({label, callback, selected, basic, backgroundColor: colors.csBlue.rgba(0.2), textColor: colors.csBlue.hex});
+export function TextButtonDark({label, callback, testID="", basic=false, selected=false}) {
+  return TextButton({label, callback, selected, basic, backgroundColor: colors.csBlue.rgba(0.2), textColor: colors.csBlue.hex, testID});
 }
 
-export function TextButtonSemitranslucentDark({label, callback, rounded=false,selected=false}) {
+export function TextButtonSemitranslucentDark({label, callback, testID="", rounded=false,selected=false}) {
   return (
-    TextButton({label, callback, selected, backgroundColor: colors.white.blend(colors.csBlue,0.25).rgba(0.6), textColor: colors.csBlue.hex, rounded})
+    TextButton({label, callback, selected, backgroundColor: colors.white.blend(colors.csBlue,0.25).rgba(0.6), textColor: colors.csBlue.hex, rounded, testID})
   )
 }
 
-export function TextButtonLightOnDark({label, callback, selected=false}) {
-  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(0.3), textColor: colors.white.hex})
+export function TextButtonLightOnDark({label, callback, testID="", selected=false}) {
+  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(0.3), textColor: colors.white.hex, testID})
 }
 
-export function TextButtonLight({label, callback, selected=false, textAlign="left", danger=false}) {
-  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign, danger})
+export function TextButtonLight({label, callback, testID="", selected=false, textAlign="left", danger=false}) {
+  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign, danger, testID})
 }
 
 export function TextButtonLightWithIcon({label, icon, callback, selected=false, textAlign="left"}) {
   return TextButtonWithIcon({label, callback, icon, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign})
 }
-export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected=false, textAlign="left"}) {
+export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected=false, textAlign="left", testID=''}) {
   if (theme === "create") {
     return TextButtonWithIcon({
       label,
@@ -230,11 +231,12 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
       backgroundColor: colors.blue.rgba(0.8),
       textColor: colors.white.hex,
       fontStyle:'italic',
-      textAlign
+      textAlign,
+      testID
     })
   }
   else {
-    return TextButtonWithIcon({label, callback, icon, selected, backgroundColor: colors.white.rgba(0.9), textColor: colors.csBlue.hex, textAlign})
+    return TextButtonWithIcon({label, callback, icon, selected, backgroundColor: colors.white.rgba(0.9), textColor: colors.csBlue.hex, textAlign, testID})
   }
 }
 
@@ -270,7 +272,7 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
 }
 
 
-export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?}) {
+export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?, testID?}) {
   const inputElement = useRef(null)
   if (props.focussed === true) {
     inputElement.current.focus()
@@ -288,8 +290,9 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
         autoCorrect={false}
         keyboardType={props.keyboardType || "default"}
         value={props.value}
-        callback={(newValue) => { props.callback(newValue) }}
+        callback={(newValue) => { props.callback(newValue); }}
         endCallback={() => { if (props.onBlur) { props.onBlur() }}}
+        testID={props.testID}
       />
     </View>
   )

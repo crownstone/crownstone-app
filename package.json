@@ -7,6 +7,9 @@
     "build": "tsc",
     "react": "react-native start --reset-cache",
     "test": "jest",
+    "ios": "react-native run-ios",
+
+    "iosUiTests": "npx wdio ./tests_ui/testConfigs/iosSimulator.conf.js",
     "cleanTest": "jest --useStderr --no-cache --clearMocks",
     "maintainTranslations": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js",
     "maintainTranslationsDelete": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js --deleteLines true",
@@ -50,18 +53,21 @@
   "devDependencies": {
     "@babel/core": "^7.13.14",
     "@bugsnag/source-maps": "^2.2.0",
-    "@react-native-community/cli-debugger-ui": "^4.13.1",
+    "@react-native-community/cli-debugger-ui": "^5.0.1",
     "@testing-library/react-native": "^7.2.0",
     "@types/jest": "^26.0.7",
+    "@types/detox": "^18.1.0",
     "@types/node": "^13.7.7",
     "@types/node-hue-api": "^2.3.1",
     "@types/react": "17.0.3",
     "@types/react-native": "^0.64.4",
     "@types/react-native-snap-carousel": "^3.7.4",
     "babel-jest": "^26.6.3",
-    "jest": "^26.6.3",
+    "detox": "^19.3.0",
+    "jest": "^27.4.3",
     "prettier": "^1.19.1",
-    "jest-cli": "^26.6.3",
+    "jasmine-fail-fast": "^2.0.1",
+    "jest-cli": "^27.4.3",
     "jest-date-mock": "^1.0.8",
     "metro-react-native-babel-preset": "^0.66.2",
     "node-fetch": "^3.0.0",
@@ -70,11 +76,8 @@
     "react-test-renderer": "^17.0.2",
     "readline-sync": "^1.4.9",
     "tape": "~4.10.1",
-    "ts-jest": "^26.5.1",
+    "ts-jest": "^27.1.1",
     "typescript": "^4.2.3"
-  },
-  "resolutions": {
-    "@react-native-community/cli-debugger-ui": "4.13.1"
   },
   "jest": {
     "preset": "@testing-library/react-native",

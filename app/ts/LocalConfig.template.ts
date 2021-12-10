@@ -64,8 +64,8 @@ import { Platform } from "react-native";
   /**
    * Point to the production cloud.
    */
-  export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
-
+  export let CLOUD_ADDRESS    = 'https://cloud.crownstone.rocks/api/';
+  export let CLOUD_V2_ADDRESS = 'https://next.crownstone.rocks/api/';
 
   /**
    * The app will not allow usage of crownstones with a lower version than this.
