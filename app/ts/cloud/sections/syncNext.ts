@@ -3,16 +3,15 @@
  */
 import { cloudApiBase } from "./cloudApiBase";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import {CloudAddresses} from "../../backgroundProcesses/indirections/CloudAddresses";
 
-const url = 'https://next.crownstone.rocks'
-// const url = 'http://10.27.8.224:3050'
 
 export const syncNext = {
 
   syncNext: function (data, background = true) {
     return cloudApiBase._setupRequest(
       'POST',
-      url + '/api/sync',
+      CloudAddresses.cloud_v2 + '/sync',
       {data, background: background},
       'body'
     );
@@ -22,7 +21,7 @@ export const syncNext = {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'POST',
-      url + `/api/spheres/${cloudSphereId}/sync`,
+      CloudAddresses.cloud_v2 + `/spheres/${cloudSphereId}/sync`,
       {data, background: background},
       'body'
     );
@@ -32,7 +31,7 @@ export const syncNext = {
     let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'POST',
-      url + `/api/stones/${cloudStoneId}/sync`,
+      CloudAddresses.cloud_v2 + `/stones/${cloudStoneId}/sync`,
       {data, background: background},
       'body'
     );

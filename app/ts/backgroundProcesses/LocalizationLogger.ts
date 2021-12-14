@@ -188,11 +188,10 @@ async function writeLocalizationDataset(labelName: string, data, ignoreDatetime 
 
 
 async function deleteDataFiles() {
-  let logPath = FileUtil.getPath();
   try {
     let urls = await getDatasetUrls()
     for (let i = 0; i < urls.length; i++) {
-      FileUtil.safeDeleteFile(urls[i]).catch(()=>{});
+      await FileUtil.safeDeleteFile(urls[i]).catch(()=>{});
     }
   }
   catch (err) {

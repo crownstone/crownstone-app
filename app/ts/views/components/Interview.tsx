@@ -311,7 +311,7 @@ function InterviewCard(props : {
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
   let card = props.card;
   return (
-    <View>
+    <View testID={card.testID}>
       <ScrollView style={{height: props.height || availableModalHeight}}>
         <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
           { header      && <ResponsiveText style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText> }
@@ -412,6 +412,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
           label={option.label}
           subLabel={option.subLabel}
           textAlign={option.textAlign}
+          testID={option.testID}
           callback={cb}
         />
       );
@@ -424,6 +425,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
           image={option.image}
           label={option.label}
           textAlign={option.textAlign}
+          testID={option.testID}
           callback={cb}
         />
       );
@@ -436,6 +438,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
           selected={props.selectedOption === index}
           label={option.label}
           textAlign={option.textAlign}
+          testID={option.testID}
           callback={cb}
           theme={option.theme || "default"}
         />
@@ -449,6 +452,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
           label={option.label}
           danger={option.dangerous}
           textAlign={option.textAlign}
+          testID={option.testID}
           callback={cb}
         />
       );

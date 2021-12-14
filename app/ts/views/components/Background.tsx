@@ -63,7 +63,7 @@ export class Background extends Component<{
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
-      }} testID={this.props.testID} nativeID={this.props.testID}>
+      }} testID={this.props.testID}>
         <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
         <KeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }

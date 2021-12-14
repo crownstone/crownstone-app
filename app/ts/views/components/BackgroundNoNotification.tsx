@@ -22,6 +22,7 @@ export class BackgroundNoNotification extends Component<{
   hasTopBar?:         boolean,
   image?:             any,
   topImage?:          any,
+  testID?:            string,
   keyboardAvoid?:     boolean,
 }, any> {
 

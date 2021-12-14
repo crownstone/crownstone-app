@@ -60,7 +60,7 @@ export class OptionPopup extends Component<any, any> {
         <TouchableOpacity style={styles.joinedButtons} onPress={() => {
           if (button.close !== false) { core.eventBus.emit("hidePopup"); }
           button.callback();
-        }} key={'option_button_' + index}>
+        }} key={'option_button_' + index} testID={button.testID || "option"+index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableOpacity>
       );
@@ -106,7 +106,7 @@ export class OptionPopup extends Component<any, any> {
         <TouchableHighlight style={styles.buttonAndroid} onPress={() => {
           if (button.close !== false) { core.eventBus.emit("hidePopup"); }
           button.callback();
-        }} key={'option_button_' + index}>
+        }} key={'option_button_' + index} testID={button.testID || "option"+index}>
           <Text style={styles.buttonTextAndroid}>{button.text}</Text>
         </TouchableHighlight>
       );
@@ -114,7 +114,7 @@ export class OptionPopup extends Component<any, any> {
     });
 
     buttons.push(
-      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { core.eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
+      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { core.eventBus.emit("hidePopup");}} key={'option_button_cancel'} testID={"optionsCancel"}>
         <Text style={styles.buttonTextAndroid}>{ lang("Cancel") }</Text>
       </TouchableHighlight>
     );
@@ -162,7 +162,11 @@ export class OptionPopup extends Component<any, any> {
             height={screenHeight}
             visible={this.state.visible}>
             {this.getChildrenIOS()}
-            <TouchableOpacity style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}} onPress={() => { core.eventBus.emit("hidePopup");}}>
+            <TouchableOpacity
+              style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}}
+              onPress={() => { core.eventBus.emit("hidePopup");}}
+              testID={"optionsCancel"}
+            >
               <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>

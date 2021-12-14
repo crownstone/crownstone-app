@@ -10,7 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  View, TextStyle
+  View, TextStyle, Pressable
 } from "react-native";
 
 import { Background } from './../components/Background'
@@ -19,11 +19,9 @@ import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { NavigationUtil } from "../../util/NavigationUtil";
+import {TestingFramework} from "../../backgroundProcesses/TestingFramework";
 
 let versionStyle : TextStyle = {
-  position:'absolute',
-  bottom:3,
-  right:3,
   backgroundColor:"transparent",
   color: colors.csBlueDarker.rgba(0.4),
   fontSize: 10,
@@ -31,12 +29,19 @@ let versionStyle : TextStyle = {
 
 export class LoginSplash extends Component<any, any> {
 
+  clicks = 0;
+  timeout;
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
   render() {
     console.log("LoginSplash render", deviceModel)
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideNotifications={true}>
+      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideNotifications={true} testID={"LoginSplash"}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
@@ -74,9 +79,25 @@ export class LoginSplash extends Component<any, any> {
               backgroundColor:'transparent'
             }}>{ lang("Buy_Crownstones_") }</Text>
           </TouchableOpacity>
-          <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
+          <Pressable
+            onPress={() => { this._pressedVersion() }}
+            style={{position:'absolute', bottom:3, right:3}} testID={"VersionHiddenButton"}>
+            <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
+          </Pressable>
         </View>
       </Background>
     )
+  }
+
+  async _pressedVersion() {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => { this.clicks = 0; }, 200);
+    this.clicks++;
+    if (this.clicks >= 5) {
+      await TestingFramework.clear();
+      NavigationUtil.launchModal("TestConfiguration");
+      this.clicks = 0;
+      clearTimeout(this.timeout);
+    }
   }
 }

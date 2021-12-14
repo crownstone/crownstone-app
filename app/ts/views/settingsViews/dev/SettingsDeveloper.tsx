@@ -16,7 +16,6 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Scheduler } from "../../../logic/Scheduler";
 import { Util } from "../../../util/Util";
-import { CLOUD_ADDRESS } from "../../../ExternalConfig";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { topBarStyle } from "../../components/topbar/TopbarStyles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
@@ -33,15 +32,13 @@ import { base_core } from "../../../Base_core";
 import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
 import {LOG_file, LOGw} from "../../../logging/Log";
 
-const RNFS = require('react-native-fs');
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
-import { TrackingNumberManager } from "../../../backgroundProcesses/TrackingNumberManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
+import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
-interface iEmailData { [key: string]: emailDataType }
 
 export const SHARE_DATA_TYPE = {
   allBuffers:           'All buffers',
@@ -512,11 +509,13 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         NavigationUtil.back();
     }});
 
-    items.push({label: "CLOUD URL: " + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({label: "CLOUD V1 URL: " + CloudAddresses.cloud_v1, type: 'explanation'});
+    items.push({label: "CLOUD V2 URL: " + CloudAddresses.cloud_v2, type: 'explanation'});
     items.push({label: "Debug version loaded: " + base_core.sessionMemory.developmentEnvironment, type: 'explanation'});
-    items.push({label: `Last time registered token via connection: ${ xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeRegistrationViaConnection)}`, type: 'explanation'});
-    items.push({label: `Last time registered token via broadcast: ${  xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeRegistrationViaBroadcast)}`, type: 'explanation'});
-    items.push({label: `Last time updated heartbeat via connection: ${xUtil.getDateTimeFormat(TrackingNumberManager._lastTimeHeartbeat)}`, type: 'explanation'});
+    items.push({
+      label: `Time since last reboot ${xUtil.getDurationFormat(Date.now() - TIME_LAST_REBOOT)}`,
+      type: 'explanation',
+    });
     items.push({type: 'spacer'});
 
 
@@ -590,8 +589,9 @@ export function getDevAppItems() {
       }
     });
     items.push({
-      label: `Time since last reboot ${xUtil.getDurationFormat(Date.now() - TIME_LAST_REBOOT)}`,
+      label: "Debug options for developers.",
       type: 'explanation',
+      below: true
     });
     return items;
 }

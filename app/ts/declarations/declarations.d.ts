@@ -174,7 +174,8 @@ interface interviewOption {
   textAlign?: string,
   onSelect?: (value: interviewReturnData) => onSelectResult,
   editable?: boolean,
-  theme?: "default" | "create"
+  theme?: "default" | "create",
+  testID?: string,
 }
 
 interface imageData {
@@ -208,7 +209,8 @@ interface interviewCard {
   optionsAlwaysOnTop?: boolean,
   optionsCenter?: boolean,
   optionsBottom?: boolean
-  options: interviewOption[]
+  options: interviewOption[],
+  testID?: string
 }
 
 interface interviewCards {

@@ -220,20 +220,6 @@ class BackgroundProcessHandlerClass {
         LOG.info("BackgroundProcessHandler: Skipping routine sync due to active setup phase.");
       }
     });
-
-    // set the global network error handler.
-    CLOUD.setNetworkErrorHandler((err) => {
-      if (this.connectionPopupActive === false) {
-        this.connectionPopupActive = true;
-        this.connectionPopupActive = false; core.eventBus.emit('hideLoading');
-        LOGw.cloud("Could not connect to the cloud.", err);
-        Alert.alert(
-          "Connection Problem",
-          "Could not connect to the Cloud. Please check your internet connection.",
-          [{text: 'OK'}],
-        );
-      }
-    });
   }
 
 

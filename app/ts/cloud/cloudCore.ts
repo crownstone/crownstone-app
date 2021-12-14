@@ -1,4 +1,4 @@
-import { CLOUD_ADDRESS, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
+import { SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
 import {LOG, LOGe, LOGi} from '../logging/Log'
@@ -7,6 +7,7 @@ import { defaultHeaders } from './sections/cloudApiBase'
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "../util/StandAloneUtil";
 import { FileUtil } from "../util/FileUtil";
+import {CloudAddresses} from "../backgroundProcesses/indirections/CloudAddresses";
 
 
 let downloadIndex = 0;
@@ -41,7 +42,7 @@ export async function request(
 
   let url = endPoint;
   if (endPoint.substr(0,4) !== 'http') {
-    url = CLOUD_ADDRESS + endPoint;
+    url = CloudAddresses.cloud_v1 + endPoint;
   }
 
   LOG.cloud(method,"requesting from URL:", url, "config:", requestConfig, logToken);
@@ -66,25 +67,29 @@ export async function request(
 
 
     let responseHandler = new ResponseHandler();
+    let failedRequest = false;
     fetch(url, requestConfig as any)
       .catch((connectionError) => {
         if (requestDidTimeout === false) {
+          console.log("Failed network error")
+          cancelFallbackCallback();
+          failedRequest = true;
           reject(new Error('Network request to ' + url + ' failed'));
         }
       })
       .then((response) => {
-        if (requestDidTimeout === false) {
+        if (requestDidTimeout === false && failedRequest == false) {
           cancelFallbackCallback();
           return responseHandler.handle(response);
         }
       })
       .catch((parseError) => {
         // TODO: cleanly fix this
-        LOGe.cloud("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
+        LOGe.cloud("ERROR DURING PARSING:", parseError, "from request to:", CloudAddresses.cloud_v1 + endPoint, "using config:", requestConfig);
         return '';
       })
       .then((parsedResponse) => {
-        if (requestDidTimeout === false) {
+        if (requestDidTimeout === false && failedRequest == false) {
           LOG.cloud("REPLY from", endPoint, " is: ", {status: responseHandler.status, data: parsedResponse}, logToken);
           finishedRequest = true;
           resolve({status: responseHandler.status, data: parsedResponse});
@@ -157,7 +162,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
   let headers = prepareHeaders(options, defaultHeaders, accessToken);
 
   // this will automatically try to download to a temp file. When not possible it will remove the temp file and resolve with null
-  return downloadFile(CLOUD_ADDRESS + endPoint, toPath, headers, {begin: beginCallback, progress: progressCallback, success: successCallback});
+  return downloadFile(CloudAddresses.cloud_v1 + endPoint, toPath, headers, {begin: beginCallback, progress: progressCallback, success: successCallback});
 }
 
 export async function downloadFile(url, targetPath, headers : HeaderObject, callbacks) {
@@ -173,7 +178,6 @@ export async function downloadFile(url, targetPath, headers : HeaderObject, call
     await FileUtil.safeDeleteFile(tempPath);
 
     LOGi.cloud('CloudCore:DownloadFile: ',downloadSessionId,'download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
-
 
     // download the file.
     RNFS.downloadFile({
@@ -199,11 +203,11 @@ export async function downloadFile(url, targetPath, headers : HeaderObject, call
         }
         else {
           return FileUtil.safeMoveFile(tempPath, targetPath)
-            .then((toPath) => {
+            .then(() => {
               // if we have renamed the file, we resolve the promise so we can store the changed filename.
               LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Downloaded file successfully:', targetPath);
               callbacks.success();
-              resolve(toPath);
+              resolve(targetPath);
             })
             .catch((err) => {
               LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err);

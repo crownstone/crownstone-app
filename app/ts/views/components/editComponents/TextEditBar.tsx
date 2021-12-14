@@ -155,7 +155,7 @@ export class TextEditBar extends Component<any, any> {
   render() {
     return (
       <View style={[styles.listView, {height:this.props.barHeight}]}>
-        <Text style={styles.listText}>{this.props.label}</Text>
+        { this.props.label !== null && <Text style={styles.listText}>{this.props.label}</Text> }
         <TextEditInput
           ref={this.refName}
           __validate={(value) => {this.validate(value)}}

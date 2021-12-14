@@ -65,6 +65,7 @@
     ]
   },
   "exclude": [
+    "e2e",
     "node_modules",
     "tests"
   ]

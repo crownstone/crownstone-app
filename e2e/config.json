@@ -1,0 +1,12 @@
+{
+    "maxWorkers": 1,
+    "testEnvironment": "./config/environment.ts",
+    "testRunner": "jest-circus/runner",
+    "testTimeout": 120000,
+    "preset": "ts-jest",
+    "bail": 1,
+    "setupFilesAfterEnv": ["./config/setup.ts"],
+    "testRegex": "\\.e2e\\.ts$",
+    "reporters": ["detox/runners/jest/streamlineReporter"],
+    "verbose": true
+}
