@@ -249,25 +249,6 @@ dependencies {
     implementation 'no.nordicsemi.android:dfu:1.10.1'
     implementation project(':bluenet')
     implementation project(':localization-lib-android')
-//    implementation project(':react-native-image-resizer')
-//    implementation project(':react-native-vector-icons')
-//    implementation project(':react-native-svg')
-//    implementation project(':react-native-fs')
-//    implementation project(':react-native-device-info')
-//    implementation project(':react-native-push-notification')
-//    implementation project(':react-native-splash-screen')
-//    implementation project(':react-native-keep-awake')
-//    implementation project(':react-native-device-info')
-//    implementation project(':@react-native-async-storage')
-//    implementation project(':@react-native-community_slider')
-//    implementation project(':react-native-navigation')
-//    implementation project(':react-native-extra-dimensions-android')
-//    implementation project(':@react-native-community_blur')
-//    implementation project(':react-native-maps')
-//    implementation project(':react-native-localize')
-//    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
-//        force = true;
-//    }
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
