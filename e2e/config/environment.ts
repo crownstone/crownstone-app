@@ -1,4 +1,4 @@
-import {formatResultsErrors, formatStackTrace} from "jest-message-util";
+import {formatResultsErrors} from "jest-message-util";
 
 const {
   DetoxCircusEnvironment,
@@ -7,6 +7,7 @@ const {
 } = require('detox/runners/jest-circus');
 
 let cfg;
+
 class FastFailure {
 
   test_done(event) {
@@ -43,7 +44,7 @@ class CustomDetoxEnvironment extends DetoxCircusEnvironment {
     this.registerListeners({
       SpecReporter,
       WorkerAssignReporter,
-      // FastFailure
+      FastFailure
     });
   }
 }

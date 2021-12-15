@@ -1,5 +1,6 @@
 import {Callback, CameraOptions, ImageLibraryOptions} from "react-native-image-picker/src/types";
 import * as RNIP from "react-native-image-picker";
+import {Image} from 'react-native';
 
 export function launchCamera(options: CameraOptions, callback: Callback) {
   if (CameraLibrarySettings.mockCameraLibrary) {
@@ -23,10 +24,12 @@ export function launchImageLibrary(
 }
 
 function mockCallback(callback) {
+  let asset = Image.resolveAssetSource(require("../../../assets/images/mocks/testImage.png"));
+  console.log(asset);
   callback({
     didCancel: false,
     errorCode: null,
-    assets:[{uri:require("../../../assets/images/mocks/testImage.png")}]
+    assets:[asset]
   });
 }
 

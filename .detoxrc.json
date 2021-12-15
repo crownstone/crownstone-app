@@ -1,9 +1,9 @@
 {
   "testRunner": "jest",
-  "runnerConfig": "e2e/config.json",
+  "runnerConfig": "./e2e/config.json",
   "skipLegacyWorkersInjection": true,
   "apps": {
-    "ios": {
+    "ios-debug": {
       "type": "ios.app",
         "binaryPath": "./ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app"
     }
@@ -17,9 +17,9 @@
     }
   },
   "configurations": {
-    "ios": {
+    "ios-debug": {
       "device": "simulator",
-      "app": "ios"
+      "app": "ios-debug"
     }
   }
 }
