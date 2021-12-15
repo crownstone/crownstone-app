@@ -1,10 +1,10 @@
-import { Languages } from "../Languages";
-import { Navigation } from "react-native-navigation";
-import { Platform } from "react-native";
-import { LoadingTopBarButton } from "../views/components/topbar/LoadingTopBarButton";
-import { ScaledImage } from "../views/components/ScaledImage";
+import {Languages} from "../Languages";
+import {Navigation} from "react-native-navigation";
+import {Platform} from "react-native";
+import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButton";
+import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
-import { statusBarHeight, topBarHeight } from "../views/styles";
+import {statusBarHeight, topBarHeight} from "../views/styles";
 
 export const TopBarUtil = {
 
@@ -117,7 +117,7 @@ export const TopBarUtil = {
       });
     }
 
-    let results = { topBar: {} };
+    let results = { topBar: {}, component: { waitForRender: props.waitForRender ?? false }};
     if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
     if (!partialUpdate || leftButtons.length  > 0) {
@@ -130,6 +130,7 @@ export const TopBarUtil = {
         results.topBar["leftButtons"] = leftButtons;
       }
     }
+
 
     // console.log("Setting Topbar Options", results)
     return results;

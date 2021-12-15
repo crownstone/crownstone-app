@@ -66,12 +66,9 @@ export class Initializer extends Component<any, any> {
     }
   }
 
-
   componentWillUnmount() { // cleanup
     this.cleanUp();
   }
-
-
 
   cleanUp() {
     this.unsubscribe.forEach((callback) => {callback()});

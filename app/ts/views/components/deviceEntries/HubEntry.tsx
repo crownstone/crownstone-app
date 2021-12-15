@@ -1,33 +1,28 @@
+import {Languages} from "../../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {ActivityIndicator, Animated, Text, TouchableOpacity, View} from "react-native";
 
-import { Languages } from "../../../Languages"
+import {Icon} from '../Icon';
+import {Util} from '../../../util/Util'
+import {colors, styles} from "../../styles";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
+import {DeviceEntrySubText} from "./DeviceEntrySubText";
+import {xUtil} from "../../../util/StandAloneUtil";
+import {STONE_TYPES} from "../../../Enums";
+import {core} from "../../../Core";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
+import {DataUtil} from "../../../util/DataUtil";
+import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
+import {IconCircle} from "../IconCircle";
+import {CLOUD} from "../../../cloud/cloudAPI";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("HubEntry", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Animated,
-  ActivityIndicator,
-  TouchableOpacity,
-  Text,
-  View
-} from "react-native";
 
-import { Icon } from '../Icon';
-import { Util } from '../../../util/Util'
-import { styles, colors} from "../../styles";
-import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
-import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
-import { xUtil } from "../../../util/StandAloneUtil";
-import { STONE_TYPES } from "../../../Enums";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
-import { DataUtil } from "../../../util/DataUtil";
-import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import Timeout = NodeJS.Timeout;
-import { IconCircle } from "../IconCircle";
-import { CLOUD } from "../../../cloud/cloudAPI";
 
 
 export class HubEntry extends Component<{
@@ -170,7 +165,7 @@ export class HubEntry extends Component<{
       // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByHub;
       hubProblem = hubProblem || !hub.state.hubHasBeenSetup;
       hubProblem = hubProblem || !hub.state.hubHasInternet;
-      hubProblem = hubProblem || hub.state.hubHasError;
+      hubProblem = hubProblem ||  hub.state.hubHasError;
     }
 
 

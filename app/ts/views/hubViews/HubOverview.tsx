@@ -1,45 +1,38 @@
-import { LiveComponent }          from "../LiveComponent";
+import {LiveComponent} from "../LiveComponent";
 
-import { Languages } from "../../Languages"
+import {Languages} from "../../Languages"
+import * as React from 'react';
+
+import {Background} from '../components/Background'
+import {SphereDeleted} from "../static/SphereDeleted";
+import {core} from "../../Core";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {availableScreenHeight, background, colors, deviceStyles, screenWidth, styles} from "../styles";
+import {ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View} from "react-native";
+import {Icon} from "../components/Icon";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {xUtil} from "../../util/StandAloneUtil";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {AnimatedCircle} from "../components/animated/AnimatedCircle";
+import {Navigation} from "react-native-navigation";
+import {Util} from "../../util/Util";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
+import {AlternatingContent} from "../components/animated/AlternatingContent";
+import {HubHelper} from "../../native/setup/HubHelper";
+import {DataUtil} from "../../util/DataUtil";
+import {Button} from "../components/Button";
+import {Get} from "../../util/GetUtil";
+import {HubReplyError} from "./HubEnums";
+import {LOGe, LOGi, LOGw} from "../../logging/Log";
+import {Scheduler} from "../../logic/Scheduler";
+import {CLOUD} from "../../cloud/cloudAPI";
+// import { WebRtcClient } from "../../logic/WebRtcClient";
+import {DebugIcon} from "../components/DebugIcon";
+import {HubTransferNext} from "../../cloud/sections/newSync/transferrers/HubTransferNext";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("HubOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react';
-
-import { Background } from '../components/Background'
-import { SphereDeleted }        from "../static/SphereDeleted";
-import { core } from "../../Core";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { availableScreenHeight, background, colors, deviceStyles, screenWidth, styles } from "../styles";
-import {
-  ActivityIndicator, Alert,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View
-} from "react-native";
-import { Icon } from "../components/Icon";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { xUtil } from "../../util/StandAloneUtil";
-import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { AnimatedCircle } from "../components/animated/AnimatedCircle";
-import { Navigation } from "react-native-navigation";
-import { Util } from "../../util/Util";
-import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
-import { AlternatingContent } from "../components/animated/AlternatingContent";
-import { HubHelper } from "../../native/setup/HubHelper";
-import { DataUtil } from "../../util/DataUtil";
-import { Button } from "../components/Button";
-import { Get } from "../../util/GetUtil";
-import { HubReplyError } from "./HubEnums";
-import { LOGe, LOGi, LOGw } from "../../logging/Log";
-import { Scheduler } from "../../logic/Scheduler";
-import { CLOUD } from "../../cloud/cloudAPI";
-// import { WebRtcClient } from "../../logic/WebRtcClient";
-import { DebugIcon } from "../components/DebugIcon";
-import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
-import {SyncNext} from "../../cloud/sections/newSync/SyncNext";
 
 
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -53,8 +46,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   constructor(props) {
     super(props);
-
-    const stone = Get.stone(this.props.sphereId, this.props.stoneId);
 
     this.state = {fixing: false}
   }
