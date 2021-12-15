@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary_dark">#00172D</color>
-    <color name="status_bar_color">#00172D</color>
-    <!--
-    <style name="SplashScreenTheme" parent="SplashScreen_SplashTheme">
-        <item name="colorPrimaryDark">@color/status_bar_color</item>
-    </style>
-    -->
+    <color name="status_bar_color">#000000</color>
+    <color name="navigation_bar_color">#000000</color>
 </resources>
