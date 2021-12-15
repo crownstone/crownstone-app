@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Text } from "react-native";
+import {Text} from "react-native";
 
 export default class ResponsiveText extends React.Component<any,any> {
   /*
@@ -46,11 +46,11 @@ export default class ResponsiveText extends React.Component<any,any> {
   }
 
   render() {
-    if (Platform.OS === 'ios') {
-      return <Text {...this.props}/>;
-    }
-    else {
-      return <Text onLayout={this.onLayout} {...this.props} style={[this.props.style, this.state._style]}/>
-    }
+    // if (Platform.OS === 'ios') {
+    return <Text {...this.props}/>;
+    // }
+    // else {
+    //   return <Text onLayout={this.onLayout} {...this.props} style={[this.props.style, this.state._style]}/>
+    // }
   }
 }
