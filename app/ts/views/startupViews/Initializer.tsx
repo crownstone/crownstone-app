@@ -1,16 +1,16 @@
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Platform,
-} from 'react-native';
-import { StoreManager }             from '../../database/storeManager'
-import { BackgroundProcessHandler } from '../../backgroundProcesses/BackgroundProcessHandler'
-import { Splash }                   from "./Splash";
-import { core }                     from "../../Core";
-import { NavigationUtil }           from "../../util/NavigationUtil";
-import { Stacks }                   from "../Stacks";
-import { stylesUpdateConstants }    from "../../views/styles";
-import { Bluenet }                  from "../../native/libInterface/Bluenet";
-import { TestingFramework }         from "../../backgroundProcesses/TestingFramework";
+import * as React from 'react';
+import {Component} from 'react';
+import {Platform,} from 'react-native';
+import {StoreManager} from '../../database/storeManager'
+import {BackgroundProcessHandler} from '../../backgroundProcesses/BackgroundProcessHandler'
+import {Splash} from "./Splash";
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {Stacks} from "../Stacks";
+import {stylesUpdateConstants} from "../../views/styles";
+import {Bluenet} from "../../native/libInterface/Bluenet";
+import {TestingFramework} from "../../backgroundProcesses/TestingFramework";
+import SplashScreen from 'react-native-splash-screen';
 
 
 export class Initializer extends Component<any, any> {
@@ -26,6 +26,7 @@ export class Initializer extends Component<any, any> {
   componentDidMount() {
     let startUp = () => {
       if (Platform.OS === "android") {
+        SplashScreen.hide();
         stylesUpdateConstants();
       }
 
