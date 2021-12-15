@@ -91,8 +91,10 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply plugin: "com.bugsnag.android.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// According to https://docs.bugsnag.com/build-integrations/gradle/
+apply plugin: "com.bugsnag.android.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -247,25 +249,6 @@ dependencies {
     implementation 'no.nordicsemi.android:dfu:1.10.1'
     implementation project(':bluenet')
     implementation project(':localization-lib-android')
-//    implementation project(':react-native-image-resizer')
-//    implementation project(':react-native-vector-icons')
-//    implementation project(':react-native-svg')
-//    implementation project(':react-native-fs')
-//    implementation project(':react-native-device-info')
-//    implementation project(':react-native-push-notification')
-//    implementation project(':react-native-splash-screen')
-//    implementation project(':react-native-keep-awake')
-//    implementation project(':react-native-device-info')
-//    implementation project(':@react-native-async-storage')
-//    implementation project(':@react-native-community_slider')
-//    implementation project(':react-native-navigation')
-//    implementation project(':react-native-extra-dimensions-android')
-//    implementation project(':@react-native-community_blur')
-//    implementation project(':react-native-maps')
-//    implementation project(':react-native-localize')
-//    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
-//        force = true;
-//    }
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 

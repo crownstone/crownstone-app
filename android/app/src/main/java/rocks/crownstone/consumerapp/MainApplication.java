@@ -12,6 +12,10 @@ import com.reactnativenavigation.react.NavigationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+// According to https://docs.bugsnag.com/build-integrations/gradle/
+import com.bugsnag.android.Bugsnag;
+import com.bugsnag.android.BugsnagPackage;
+import com.bugsnag.android.BugsnagReactNativePlugin;
 
 public class MainApplication extends NavigationApplication {
 
@@ -46,8 +50,10 @@ public class MainApplication extends NavigationApplication {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		// According to https://docs.bugsnag.com/build-integrations/gradle/
+		Bugsnag.start(this);
 		SoLoader.init(this, /* native exopackage */ false);
-//		initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
+		initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
 	}
 
 	/**

@@ -31,6 +31,7 @@ import nl.komponents.kovenant.then
 import nl.komponents.kovenant.unwrap
 import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.BluenetConfig
 import rocks.crownstone.bluenet.behaviour.BehaviourHashGen
 import rocks.crownstone.bluenet.behaviour.BehaviourSyncerFromCrownstone
 import rocks.crownstone.bluenet.encryption.KeySet
@@ -708,7 +709,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			Log.d(TAG, "timeout")
 			locationManager.removeUpdates(locationListener)
 			locationListener.onTimeout()
-		}, 10*1000)
+		}, 10*1000L)
 
 		// TODO: change to new API: https://stackoverflow.com/questions/51837719/requestsingleupdate-not-working-on-oreo
 	}
@@ -1126,7 +1127,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val fingerprint = Fingerprint()
 		fingerprint.sphereId = sphereId
 		fingerprint.locationId = locationId
-		val fixedSamlesStr = samplesStr.replace("[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}".toRegex()) { it.value.toUpperCase() }
+		val fixedSamlesStr = samplesStr.replace("[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}".toRegex()) { it.value.uppercase() }
 		Log.i(TAG, "fixed: $fixedSamlesStr")
 		try {
 			val samples = FingerprintSamplesMap(fixedSamlesStr)
@@ -1167,9 +1168,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun connect(address: String, referenceId: String?, callback: Callback) {
+	fun connect(address: String, referenceId: String?, highPriority: Boolean, callback: Callback) {
 		Log.i(TAG, "connect $address")
-		bluenet.connect(address, true, 300*1000, 0)
+		val auto: Boolean
+		val timeoutMs: Long
+		val retries: Int
+		if (highPriority) {
+			auto = false
+			timeoutMs = BluenetConfig.TIMEOUT_CONNECT
+			retries = 3
+		}
+		else {
+			auto = true
+			timeoutMs = 300*1000L
+			retries = 1
+		}
+		bluenet.connect(address, auto, timeoutMs, retries)
 				.success {
 					Log.i(TAG, "connected to $address")
 					val mode: String = when (bluenet.getOperationMode(address)) {
@@ -1504,7 +1518,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val listPacket = MultiSwitchLegacyPacket()
 		var success = true
 		for (i in 0 until switchItems.size()) {
-			val itemMap = switchItems.getMap(i) ?: continue
+			val itemMap = switchItems.getMap(i)
 			val crownstoneId = Conversion.toUint8(itemMap.getInt("crownstoneId"))
 			val timeout = Conversion.toUint16(0)
 			val intent = MultiSwitchIntent.MANUAL
@@ -1720,12 +1734,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.control(address).addBehaviour(indexedBehaviourPacket.behaviour)
 				.success {
 					val retVal = genBehaviourReply(it)
-					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong())
-					}
-					else {
-						resolveCallback(callback, retVal)
-					}
+					resolveCallback(callback, retVal)
 				}
 				.fail {
 					rejectCallback(callback, it)
@@ -1744,12 +1753,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.control(address).replaceBehaviour(indexedBehaviourPacket.index, indexedBehaviourPacket.behaviour)
 				.success {
 					val retVal = genBehaviourReply(it)
-					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong())
-					}
-					else {
-						resolveCallback(callback, retVal)
-					}
+					resolveCallback(callback, retVal)
 				}
 				.fail {
 					rejectCallback(callback, it)
@@ -1764,12 +1768,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.control(address).removeBehaviour(behaviourIndex)
 				.success {
 					val retVal = genBehaviourReply(it)
-					if (retVal == null) {
-						rejectCallback(callback, Errors.ValueWrong())
-					}
-					else {
-						resolveCallback(callback, retVal)
-					}
+					resolveCallback(callback, retVal)
 				}
 				.fail {
 					rejectCallback(callback, it)
@@ -3063,7 +3062,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		val array = Arguments.createArray()
 		for (scan in scanList) {
-			val beaconId = "${scan.ibeaconData.uuid.toString().toUpperCase()}_Maj:${scan.ibeaconData.major}_Min:${scan.ibeaconData.minor}"
+			val beaconId = "${scan.ibeaconData.uuid.toString().uppercase()}_Maj:${scan.ibeaconData.major}_Min:${scan.ibeaconData.minor}"
 			if (isLocalizationTraining && !isLocalizationTrainingPaused) {
 				localization.feedMeasurement(scan.rssi, beaconId, null, null)
 			}
