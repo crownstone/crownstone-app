@@ -418,17 +418,6 @@ interface crownstoneAdvertisementSummary {
   rssi   : number,
 }
 
-
-interface crownstoneAdvertisement {
-  handle              : string,
-  name                : string,
-  rssi                : number,
-  referenceId         : string, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
-  isInDFUMode         : boolean,
-  serviceData         : crownstoneServiceData // must always be present
-}
-
-
 interface crownstoneBaseAdvertisement {
   handle              : string,
   name                : string,
@@ -436,6 +425,12 @@ interface crownstoneBaseAdvertisement {
   referenceId         : string, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
   isInDFUMode         : boolean,
 }
+
+interface crownstoneAdvertisement extends crownstoneBaseAdvertisement {
+  serviceData         : crownstoneServiceData // must always be present
+}
+
+
 
 
 interface ibeaconPackage {
