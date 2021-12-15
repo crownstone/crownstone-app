@@ -10,11 +10,11 @@
  *
  * The slot manager will determine when to terminate a slot based on how many users a slot has.
  */
-import { BleCommandManager } from "./BleCommandManager";
-import { Session } from "./Session";
-import { Scheduler } from "../Scheduler";
-import { LOG, LOGd, LOGe, LOGi } from "../../logging/Log";
-import { Platform } from "react-native";
+import {BleCommandManager} from "./BleCommandManager";
+import {Session} from "./Session";
+import {Scheduler} from "../Scheduler";
+import {LOG, LOGd, LOGe, LOGi} from "../../logging/Log";
+import {Platform} from "react-native";
 
 export class SessionManagerClass {
 
@@ -402,7 +402,7 @@ export class SessionManagerClass {
   checkIfSessionIsStillRequired(handle) : string | false {
     // if it was a shared session, it could have been an error or it had nothing to do.
     if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
-      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle]);
+      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle].length);
       return this._pendingSessionRequests[handle][0].commanderId;
     }
     else {

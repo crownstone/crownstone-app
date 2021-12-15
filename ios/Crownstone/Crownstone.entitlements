@@ -8,6 +8,8 @@
 	<array>
 		<string>applinks:my.crownstone.rocks</string>
 		<string>applinks:cloud.crownstone.rocks</string>
+		<string>webcredentials:my.crownstone.rocks</string>
+		<string>webcredentials:cloud.crownstone.rocks</string>
 	</array>
 </dict>
 </plist>

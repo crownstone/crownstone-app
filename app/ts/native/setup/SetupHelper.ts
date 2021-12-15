@@ -1,18 +1,18 @@
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
-import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import { LOG, LOGe, LOGi }       from "../../logging/Log";
-import { CLOUD }                 from '../../cloud/cloudAPI'
-import { Scheduler }             from "../../logic/Scheduler";
-import { MapProvider }           from "../../backgroundProcesses/MapProvider";
-import { KEY_TYPES, STONE_TYPES } from "../../Enums";
-import { core }                   from "../../Core";
-import { xUtil }                  from "../../util/StandAloneUtil";
-import { UpdateCenter }           from "../../backgroundProcesses/UpdateCenter";
-import { DataUtil }               from "../../util/DataUtil";
-import { connectTo }              from "../../logic/constellation/Tellers";
-import { CommandAPI }             from "../../logic/constellation/Commander";
-import { CodedError }             from "../../util/Errors";
+import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
+import {LOG, LOGe, LOGi, LOGw} from "../../logging/Log";
+import {CLOUD} from '../../cloud/cloudAPI'
+import {Scheduler} from "../../logic/Scheduler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {KEY_TYPES, STONE_TYPES} from "../../Enums";
+import {core} from "../../Core";
+import {xUtil} from "../../util/StandAloneUtil";
+import {UpdateCenter} from "../../backgroundProcesses/UpdateCenter";
+import {DataUtil} from "../../util/DataUtil";
+import {connectTo} from "../../logic/constellation/Tellers";
+import {CommandAPI} from "../../logic/constellation/Commander";
+import {CodedError} from "../../util/Errors";
 
 
 const networkError = 'network_error';
@@ -86,8 +86,18 @@ export class SetupHelper {
       this.hardwareVersion = await api.getHardwareVersion();
       LOG.info("setup progress: have hardware version: ", this.hardwareVersion);
 
-      this.uicr = await api.getUICR();
-      LOG.info("setup progress: have uicr data: ", this.uicr);
+      if (xUtil.versions.canIUse(this.firmwareVersion, '5.0.0')) {
+        try {
+          this.uicr = await api.getUICR();
+          LOG.info("setup progress: have uicr data: ", this.uicr);
+        }
+        catch (err) {
+          LOGw.info("setup progress: Failed to get UICR data", err?.message)
+        }
+      }
+      else {
+        LOG.info("setup progress: skip uicr data since fw is not new enough:", this.firmwareVersion);
+      }
 
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3/20 });
 

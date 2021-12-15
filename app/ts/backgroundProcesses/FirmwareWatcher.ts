@@ -1,9 +1,10 @@
 import {LOG, LOGe} from "../logging/Log";
-import { core } from "../Core";
-import { from} from "../logic/constellation/Tellers";
+import {core} from "../Core";
+import {from} from "../logic/constellation/Tellers";
 import {StoneProximityTrigger} from "../native/advertisements/StoneProximityTrigger";
 import {Get} from "../util/GetUtil";
 import {DataUtil} from "../util/DataUtil";
+import {xUtil} from "../util/StandAloneUtil";
 
 
 const FWWatcherClassId = "FirmwareWatcher"
@@ -42,7 +43,7 @@ class FirmwareWatcherClass {
                     randomCheck                           ||
                     !stone.config.hardwareVersion         ||
                      stone.config.hardwareVersion === '0' ||
-                    !stone.config.uicr;
+        (!stone.config.uicr && xUtil.versions.canIUse(stone.config.firmwareVersion,'5.0.0'));
 
       LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: firmware:", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, 'uicr:', stone.config.uicr, "Will execute when in range:", execute);
 
@@ -108,18 +109,21 @@ class FirmwareWatcherClass {
       })
       .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get bootloader version from stone.", err) });
 
-    from(stone, 30).getUICR()
-      .then((UICR : UICRData) => {
-        core.store.dispatch({
-          type: "UPDATE_STONE_CONFIG",
-          stoneId: stoneId,
-          sphereId: sphereId,
-          data: {
-            uicr: UICR
-          }
-        });
-      })
-      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get uicr version from stone.", err) });
+
+    if (xUtil.versions.canIUse(stone.config.firmwareVersion,'5.0.0')) {
+      from(stone, 30).getUICR()
+        .then((UICR: UICRData) => {
+          core.store.dispatch({
+            type: "UPDATE_STONE_CONFIG",
+            stoneId: stoneId,
+            sphereId: sphereId,
+            data: {
+              uicr: UICR
+            }
+          });
+        })
+        .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get uicr version from stone.", err); });
+    }
   }
 
 }

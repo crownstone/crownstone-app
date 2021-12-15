@@ -1,6 +1,6 @@
-import { BATCH } from "../reducers/BatchReducer";
-import { core }  from "../../Core";
-import { LOGw }  from "../../logging/Log";
+import {BATCH} from "../reducers/BatchReducer";
+import {core} from "../../Core";
+import {LOGw} from "../../logging/Log";
 
 
 /**
@@ -249,6 +249,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "FINISHED_REMOVE_STONES":
     case "FINISHED_REMOVE_INSTALLATIONS":
     case "FINISHED_REMOVE_DEVICES":
+    case "FINISHED_REMOVE_BEHAVIOURS":
     case "FINISHED_REMOVE_MESSAGES":
     case "FINISHED_SPECIAL_USER":
     case "FINISHED_SPECIAL_LOCATIONS":

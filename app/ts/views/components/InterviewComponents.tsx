@@ -1,12 +1,12 @@
-import { Text, TextStyle, TouchableOpacity, ViewStyle, View, Platform } from "react-native";
-import { ScaledImage } from "./ScaledImage";
-import { Icon } from "./Icon";
-import { colors, screenWidth } from "../styles";
-import { FadeIn} from "./animated/FadeInView";
-import React, { useRef, useState } from "react";
-import { TextEditInput } from "./editComponents/TextEditInput";
+import {Platform, Text, TextStyle, TouchableOpacity, View, ViewStyle} from "react-native";
+import {ScaledImage} from "./ScaledImage";
+import {Icon} from "./Icon";
+import {colors, screenWidth} from "../styles";
+import {FadeIn} from "./animated/FadeInView";
+import React, {useRef, useState} from "react";
+import {TextEditInput} from "./editComponents/TextEditInput";
 import ResponsiveText from "./ResponsiveText";
-import { Util } from "../../util/Util";
+import {Util} from "../../util/Util";
 
 
 let buttonStyle : ViewStyle = {
@@ -249,6 +249,7 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
+        autoCompleteType={'password'}
         autoCapitalize={"none"}
         testID={props.testID}
         secureTextEntry={Platform.OS === 'android' ? true : passwordSecureDisplay  }
@@ -277,7 +278,7 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
 }
 
 
-export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?, testID?}) {
+export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?, testID?, autoCompleteType?}) {
   const inputElement = useRef(null)
   if (props.focussed === true) {
     inputElement.current.focus()
@@ -285,6 +286,7 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
+        autoCompleteType={props.autoCompleteType}
         autoCapitalize={props.autoCapitalize}
         ref={inputElement}
         focussed={props.focussed}

@@ -1,15 +1,12 @@
-
-import { Languages } from "../../../Languages"
+import {Languages} from "../../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {Keyboard, TextInput,} from 'react-native';
+import {core} from "../../../Core";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("TextEditInput", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Keyboard,
-  TextInput,
-} from 'react-native';
-import { core } from "../../../Core";
 
 
 export class TextEditInput extends Component<any, any> {
@@ -104,6 +101,7 @@ export class TextEditInput extends Component<any, any> {
         autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? "none" : this.props.autoCapitalize || 'words'}
         autoCorrect={  false }
+        autoCompleteType={ this.props.autoCompleteType }
         keyboardType={ this.props.visiblePassword ? 'visible-password' : (this.props.keyboardType || 'default')}
         blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}
         maxLength={    this.props.maxLength }

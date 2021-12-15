@@ -1,35 +1,31 @@
-import { LiveComponent }          from "../LiveComponent";
+import {LiveComponent} from "../LiveComponent";
 
-import { Languages } from "../../Languages"
+import {Languages} from "../../Languages"
+import * as React from 'react';
+import {Alert, Linking, Platform, Text, TouchableHighlight, View} from "react-native";
+
+import {CLOUD} from '../../cloud/cloudAPI'
+
+import {emailChecker, getImageFileFromUser, processImage} from "../../util/Util";
+
+import {background, colors, screenHeight, screenWidth, styles} from "../styles";
+
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {Interview} from "../components/Interview";
+import {AnimatedBackground} from "../components/animated/AnimatedBackground";
+import {TopbarImitation} from "../components/TopbarImitation";
+import {PictureCircle} from "../components/PictureCircle";
+import {InterviewPasswordInput, InterviewTextInput} from "../components/InterviewComponents";
+import {FileUtil} from "../../util/FileUtil";
+import {Icon} from "../components/Icon";
+import {base_core} from "../../Base_core";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Register", key)(a,b,c,d,e);
 }
-import * as React from 'react';
 
 const sha1 = require('sha-1');
-import {
-  Alert, Linking,
-  Platform, Text, TouchableHighlight,
-  View
-} from "react-native";
-
-import { CLOUD } from '../../cloud/cloudAPI'
-
-import { emailChecker, getImageFileFromUser, processImage } from "../../util/Util";
-
-import { background, colors, screenHeight, screenWidth, styles} from "../styles";
-
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { Interview } from "../components/Interview";
-import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { TopbarImitation } from "../components/TopbarImitation";
-import { PictureCircle } from "../components/PictureCircle";
-import { InterviewPasswordInput, InterviewTextInput } from "../components/InterviewComponents";
-import { FileUtil } from "../../util/FileUtil";
-import { Icon } from "../components/Icon";
-import { base_core } from "../../Base_core";
 
 
 export class Register extends LiveComponent<any, any> {
@@ -207,6 +203,7 @@ export class Register extends LiveComponent<any, any> {
           return (
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
+                autoCompleteType={'username'}
                 autofocus={true}
                 testID={'register-email'}
                 autoCapitalize={'none'}

@@ -94,8 +94,9 @@ type EVENT_ACTION_TYPES = 'CLOUD_EVENT_REMOVE_LOCATIONS'    |
                       'FINISHED_REMOVE_LOCATIONS'           |                              
                       'FINISHED_REMOVE_STONES'              |                            
                       'FINISHED_REMOVE_INSTALLATIONS'       |                                  
-                      'FINISHED_REMOVE_DEVICES'             |                            
-                      'FINISHED_REMOVE_MESSAGES'            |                              
+                      'FINISHED_REMOVE_BEHAVIOURS'          |
+                      'FINISHED_REMOVE_DEVICES'             |
+                      'FINISHED_REMOVE_MESSAGES'            |
                       'FINISHED_SPECIAL_USER'               |                          
                       'FINISHED_SPECIAL_LOCATIONS'          |                                
                       'FINISHED_SPECIAL_STONES'             |                            

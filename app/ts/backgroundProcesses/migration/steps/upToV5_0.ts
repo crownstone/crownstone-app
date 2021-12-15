@@ -1,6 +1,6 @@
-import { StoreManager } from "../../../database/storeManager";
-import { core } from "../../../Core";
-import { xUtil } from "../../../util/StandAloneUtil";
+import {StoreManager} from "../../../database/storeManager";
+import {core} from "../../../Core";
+import {xUtil} from "../../../util/StandAloneUtil";
 
 export const clean_upTo5_0 = async function() {
   await StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {stones: { _id_ : 'mesh'}}}}], "MIGRATED_5.0.0")
@@ -20,7 +20,7 @@ function resetAbilities() {
 
   for (let [sphereId, sphere] of Object.entries<SphereData>(state.spheres)) {
     for (let [stoneId, stone] of Object.entries<StoneData>(sphere.stones)) {
-      if (stone.abilities.dimming.properties !== undefined) { continue; }
+      if (Object.keys(stone.abilities.dimming.properties).length > 0) { continue; }
 
       let dimming     = stone.abilities.dimming;
       let switchcraft = stone.abilities.switchcraft;

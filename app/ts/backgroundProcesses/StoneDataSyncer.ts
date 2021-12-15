@@ -1,13 +1,13 @@
-import { core } from "../Core";
-import { DataUtil } from "../util/DataUtil";
-import { xUtil } from "../util/StandAloneUtil";
-import { BCH_ERROR_CODES } from "../Enums";
-import { Permissions } from "./PermissionManager";
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { LOGd, LOGe, LOGi } from "../logging/Log";
-import { Scheduler } from "../logic/Scheduler";
-import { tell } from "../logic/constellation/Tellers";
-import { SyncNext } from "../cloud/sections/newSync/SyncNext";
+import {core} from "../Core";
+import {DataUtil} from "../util/DataUtil";
+import {xUtil} from "../util/StandAloneUtil";
+import {BCH_ERROR_CODES} from "../Enums";
+import {Permissions} from "./PermissionManager";
+import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {LOGd, LOGe, LOGi} from "../logging/Log";
+import {Scheduler} from "../logic/Scheduler";
+import {tell} from "../logic/constellation/Tellers";
+import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import {Get} from "../util/GetUtil";
 
 
@@ -339,10 +339,10 @@ class StoneDataSyncerClass {
 
     // the behaviour is already on the Crownstone.
     if (behaviourCopy.idOnCrownstone !== null) {
-      return this._updateBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
+      return this._updateBehaviour(sphereId, stoneId, behaviourId, stone, behaviourCopy, sessionId);
     }
     else {
-      return this._addBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
+      return this._addBehaviour(sphereId, stoneId, behaviourId, stone, behaviourCopy, sessionId);
     }
   }
 
@@ -365,7 +365,7 @@ class StoneDataSyncerClass {
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
     catch (err) {
-      LOGe.info("StoneDataSyncer: ERROR failed synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, err, sessionId);
+      LOGe.info("StoneDataSyncer: ERROR failed synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
   }
@@ -382,7 +382,7 @@ class StoneDataSyncerClass {
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
     catch(err) {
-      LOGe.info("StoneDataSyncer: ERROR updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, err, sessionId);
+      LOGe.info("StoneDataSyncer: ERROR updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
   }
@@ -414,7 +414,7 @@ class StoneDataSyncerClass {
       core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
     }
     catch(err) {
-      LOGi.info("StoneDataSyncer: ERROR Adding behaviour to Crownstone ", sphereId, stoneId, behaviourId, err, sessionId);
+      LOGi.info("StoneDataSyncer: ERROR Adding behaviour to Crownstone ", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
   }
@@ -527,6 +527,10 @@ class StoneDataSyncerClass {
         let indicesThatMatched = {};
         behavioursAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
           let foundMatch = false;
+
+          // the sync operation of the lib will allow entries without an id to pass. These need not be checked.
+          if (stoneBehaviour.idOnCrownstone === undefined || stoneBehaviour.idOnCrownstone === null) { return; }
+
           for (let i = 0; i < transferBehaviours.length; i++) {
             // once we have decided on a match, a behaviour cannot be used for matching again.
             if (indicesThatMatched[i]) { continue; }
@@ -545,7 +549,7 @@ class StoneDataSyncerClass {
           }
 
           if (!foundMatch) {
-            LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
+            LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.", JSON.stringify(stoneBehaviour), JSON.stringify(transferBehaviours))
             // this is a new behaviour!
             let newBehaviourId = xUtil.getUUID();
             actions.push({
@@ -655,12 +659,12 @@ export class BehaviourTracker {
     let comparibleHash = lastKnownHash >>> 16;
 
     if (comparibleHash !== latestMasterHash) {
-      this.syncing = true;
-      await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
-        .catch((err) => {
-          LOGe.info("StoneDataSyncer: BehaviourTracker: Failed to sync behaviour based on the master hash from the alternative state.", err);
-        })
-      this.syncing = false;
+      // this.syncing = true;
+      // await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
+      //   .catch((err) => {
+      //     LOGe.info("StoneDataSyncer: BehaviourTracker: Failed to sync behaviour based on the master hash from the alternative state.", err);
+      //   })
+      // this.syncing = false;
     }
   }
 }
