@@ -1,45 +1,36 @@
+import {Languages} from "../../Languages"
+import * as React from 'react';
+import {Alert, Image, ScrollView, Text, View} from "react-native";
 
-import { Languages } from "../../Languages"
+import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
+import {SeparatedItemList} from '../components/SeparatedItemList'
+
+import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
+import {background, colors, screenHeight, screenWidth, styles} from "../styles";
+import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
+import {DfuDeviceEntry} from '../components/deviceEntries/DfuDeviceEntry';
+import {RoomExplanation} from '../components/RoomExplanation';
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {RoomDeleted} from "../static/RoomDeleted";
+import {LiveComponent} from "../LiveComponent";
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
+import {Navigation} from "react-native-navigation";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {xUtil} from "../../util/StandAloneUtil";
+import {Icon} from "../components/Icon";
+import {Background} from "../components/Background";
+import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
+import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
+import {SlideFadeInView} from "../components/animated/SlideFadeInView";
+import {STONE_TYPES} from "../../Enums";
+import {HubEntry} from "../components/deviceEntries/HubEntry";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react';
-import { Alert, Image, ScrollView, View, Text} from "react-native";
-
-import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
-import { SeparatedItemList }    from '../components/SeparatedItemList'
-
-import {
-  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
-} from "../../util/DataUtil";
-import {
-  styles,
-  colors,
-  screenHeight,
-  screenWidth, background
-} from "../styles";
-import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
-import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
-import { RoomExplanation }        from '../components/RoomExplanation';
-import { Permissions }            from "../../backgroundProcesses/PermissionManager";
-import { SphereDeleted }          from "../static/SphereDeleted";
-import { RoomDeleted }            from "../static/RoomDeleted";
-import { LiveComponent }          from "../LiveComponent";
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
-import { Navigation } from "react-native-navigation";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { xUtil } from "../../util/StandAloneUtil";
-import { Icon } from "../components/Icon";
-import { Background } from "../components/Background";
-import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
-import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { SlideFadeInView} from "../components/animated/SlideFadeInView";
-import { STONE_TYPES } from "../../Enums";
-import { HubEntry } from "../components/deviceEntries/HubEntry";
-
 
 
 export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean }> {
@@ -480,7 +471,7 @@ function getTopBarProps(state, props, viewingRemotely) {
 
   let title = location.config.name;
 
-  NAVBAR_PARAMS_CACHE = { title: title }
+  NAVBAR_PARAMS_CACHE = { title }
 
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
