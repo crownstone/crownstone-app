@@ -3,4 +3,5 @@
     <color name="primary_dark">#00172D</color>
     <color name="status_bar_color">#000000</color>
     <color name="navigation_bar_color">#000000</color>
+    <color name="background_color">#E5EFF3</color>
 </resources>
