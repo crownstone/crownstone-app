@@ -659,12 +659,12 @@ export class BehaviourTracker {
     let comparibleHash = lastKnownHash >>> 16;
 
     if (comparibleHash !== latestMasterHash) {
-      // this.syncing = true;
-      // await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
-      //   .catch((err) => {
-      //     LOGe.info("StoneDataSyncer: BehaviourTracker: Failed to sync behaviour based on the master hash from the alternative state.", err);
-      //   })
-      // this.syncing = false;
+      this.syncing = true;
+      await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
+        .catch((err) => {
+          LOGe.info("StoneDataSyncer: BehaviourTracker: Failed to sync behaviour based on the master hash from the alternative state.", err);
+        })
+      this.syncing = false;
     }
   }
 }

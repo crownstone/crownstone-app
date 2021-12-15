@@ -7,7 +7,6 @@ interface topbarOptions {
   disableBack? : boolean,
   cancelModal? : boolean,
   closeModal? : boolean,
-  waitForRender? : boolean,
   cancel? : boolean,
   leftNav?: topbarNavComponent,
   leftIcon? : {

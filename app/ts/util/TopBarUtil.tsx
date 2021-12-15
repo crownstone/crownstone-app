@@ -117,7 +117,7 @@ export const TopBarUtil = {
       });
     }
 
-    let results = { topBar: {}, component: { waitForRender: props.waitForRender ?? false }};
+    let results = { topBar: {} }
     if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
     if (!partialUpdate || leftButtons.length  > 0) {
