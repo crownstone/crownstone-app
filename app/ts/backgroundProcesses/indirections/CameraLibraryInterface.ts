@@ -25,7 +25,6 @@ export function launchImageLibrary(
 
 function mockCallback(callback) {
   let asset = Image.resolveAssetSource(require("../../../assets/images/mocks/testImage.png"));
-  console.log(asset);
   callback({
     didCancel: false,
     errorCode: null,
