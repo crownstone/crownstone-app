@@ -1,5 +1,5 @@
-import { FileUtil } from "../util/FileUtil";
-import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
+import {FileUtil} from "../util/FileUtil";
+import {LOG_MAX_STORAGE_TIME_DAYS} from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 
@@ -81,15 +81,15 @@ export class FileLoggerClass {
 
     // create string
     let str = '' + Date.now() + ' - ' + new Date() + " -";
-    for (let i = 0; i < arguments.length; i++) {
-      if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
-        str += " " + JSON.stringify(arguments[i])
+    for (let i = 0; i < args.length; i++) {
+      if (typeof args[i] === 'object' || Array.isArray(args[i])) {
+        str += " " + JSON.stringify(args[i])
       }
       else {
-        str += " " + arguments[i]
+        str += " " + args[i]
       }
     }
-    str += " \n"
+    str += " \n";
 
 
     this._writeQueue.push([this._logPath + '/' + filename, str]);
@@ -106,8 +106,7 @@ export class FileLoggerClass {
 
       if (this._writeQueue.length > 0) {
         // check if we can combine entries.
-        let [filename, combinedEntries] = this._combineLogEntryCalls()
-
+        let [filename, combinedEntries] = this._combineLogEntryCalls();
         await RNFS.appendFile(filename, combinedEntries, 'utf8').catch((err) => {})
       }
 
