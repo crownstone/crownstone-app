@@ -34,10 +34,6 @@
 
 [v] Added crash method to bridge
 
-Updated sentry config (Contact Alex for details.)
-
-install https://github.com/react-native-webrtc/react-native-webrtc
-
 [v] updated react-native-image-picker to v4.0.6
     https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6
 
@@ -49,6 +45,8 @@ install https://github.com/react-native-webrtc/react-native-webrtc
 
 [v] Add getUICR bridge method which returns UICRData (see proxy.d.ts)
 
-add splash screen / launch image
+[v] add splash screen / launch image
 
-Changed service data event
+[v] Changed service data event
+
+install https://github.com/react-native-webrtc/react-native-webrtc

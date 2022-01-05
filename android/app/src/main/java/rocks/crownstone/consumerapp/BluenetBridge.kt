@@ -3217,21 +3217,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putDouble("powerUsageReal", serviceData.powerUsageReal)
 		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
 		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble())
-		serviceDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash.toInt())
 
-		val hubDataArray = Arguments.createArray()
-		for (b in serviceData.hubData) {
-			hubDataArray.pushInt(b.toInt())
-		}
-		serviceDataMap.putArray("hubData", hubDataArray)
 
-		serviceDataMap.putBoolean("uartAlive",                            serviceData.hubFlagUartAlive)
-		serviceDataMap.putBoolean("uartAliveEncrypted",                   serviceData.hubFlagUartAliveEncrypted)
-		serviceDataMap.putBoolean("uartEncryptionRequiredByCrownstone",   serviceData.hubFlagUartEncryptionRequiredByStone)
-		serviceDataMap.putBoolean("uartEncryptionRequiredByHub",          serviceData.hubFlagUartEncryptionRequiredByHub)
-		serviceDataMap.putBoolean("hubHasBeenSetup",                      serviceData.hubFlagHasBeenSetup)
-		serviceDataMap.putBoolean("hubHasInternet",                       serviceData.hubFlagHasInternet)
-		serviceDataMap.putBoolean("hubHasError",                          serviceData.hubFlagHasError)
+
 
 		if (serviceData.version == ServiceDataVersion.V1 || serviceData.version == ServiceDataVersion.UNKNOWN) {
 			serviceDataMap.putDouble("timestamp", -1.0)
@@ -3243,6 +3231,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			serviceDataMap.putInt("timestamp", serviceData.count.toInt())
 		}
 
+		// Bitmask flags.
 		serviceDataMap.putBoolean("dimmerReady", serviceData.flagDimmerReady)
 		serviceDataMap.putBoolean("dimmingAllowed", serviceData.flagDimmable)
 		serviceDataMap.putBoolean("switchLocked", serviceData.flagSwitchLocked)
@@ -3250,7 +3239,26 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putBoolean("switchCraftEnabled", serviceData.flagSwitchCraft)
 		serviceDataMap.putBoolean("tapToToggleEnabled", serviceData.flagTapToToggleEnabled)
 		serviceDataMap.putBoolean("behaviourOverridden", serviceData.flagBehaviourOverridden)
+
+		// Alternative state
+		serviceDataMap.putDouble("assetFiltersCRC", serviceData.assetFiltersCrc.toDouble())
+		serviceDataMap.putInt("assetFiltersMasterVersion", serviceData.assetFiltersVersion.toInt())
 		serviceDataMap.putBoolean("behaviourEnabled", serviceData.flagBehaviourEnabled)
+		serviceDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash.toInt())
+
+		// Hub data
+		val hubDataArray = Arguments.createArray()
+		for (b in serviceData.hubData) {
+			hubDataArray.pushInt(b.toInt())
+		}
+		serviceDataMap.putArray("hubData", hubDataArray)
+		serviceDataMap.putBoolean("uartAlive",                            serviceData.hubFlagUartAlive)
+		serviceDataMap.putBoolean("uartAliveEncrypted",                   serviceData.hubFlagUartAliveEncrypted)
+		serviceDataMap.putBoolean("uartEncryptionRequiredByCrownstone",   serviceData.hubFlagUartEncryptionRequiredByStone)
+		serviceDataMap.putBoolean("uartEncryptionRequiredByHub",          serviceData.hubFlagUartEncryptionRequiredByHub)
+		serviceDataMap.putBoolean("hubHasBeenSetup",                      serviceData.hubFlagHasBeenSetup)
+		serviceDataMap.putBoolean("hubHasInternet",                       serviceData.hubFlagHasInternet)
+		serviceDataMap.putBoolean("hubHasError",                          serviceData.hubFlagHasError)
 
 		val deviceTypeString = when (serviceData.deviceType) {
 			DeviceType.CROWNSTONE_PLUG -> "plug"
