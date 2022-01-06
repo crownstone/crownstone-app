@@ -1,31 +1,24 @@
+import {Languages} from "../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {ActivityIndicator, Alert, Animated, Image, Text, View} from 'react-native';
 
-import { Languages } from "../../Languages"
+
+import {setupStyle} from './SetupShared'
+import {background, colors, screenHeight, screenWidth} from "./../styles";
+import {BleUtil} from '../../util/BleUtil'
+import {LOG, LOGe} from '../../logging/Log'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
+import {tell} from "../../logic/constellation/Tellers";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsFactoryResetStep2", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  Image,
-  Text,
-  View
-} from 'react-native';
-
-
-import { setupStyle }            from './SetupShared'
-import { colors, screenWidth, screenHeight, background } from "./../styles";
-import { BleUtil }               from '../../util/BleUtil'
-import {LOG, LOGe} from '../../logging/Log'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { tell } from "../../logic/constellation/Tellers";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static options(props) {
@@ -237,7 +230,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
         )
       })
       .catch((err) => {
-        LOGe.info("ERROR IN RECOVERY", err);
+        LOGe.info("ERROR IN RECOVERY", err?.message);
         let defaultAction = () => { NavigationUtil.back(); };
         if (err?.message === "NOT_IN_RECOVERY_MODE") {
           Alert.alert(

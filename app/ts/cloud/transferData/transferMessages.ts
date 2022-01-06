@@ -1,6 +1,6 @@
-import { CLOUD }        from "../cloudAPI";
+import {CLOUD} from "../cloudAPI";
 import {LOGe} from "../../logging/Log";
-import { transferUtil } from "./shared/transferUtil";
+import {transferUtil} from "./shared/transferUtil";
 
 
 let fieldMap : fieldMap = [
@@ -37,7 +37,7 @@ export const transferMessages = {
         actions.push({type: 'UPDATE_MESSAGE_CLOUD_ID', sphereId: data.localSphereId, messageId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOGe.cloud("Transfer-Message: Could not create Message in cloud", err);
+        LOGe.cloud("Transfer-Message: Could not create Message in cloud", err?.message);
         throw err;
       });
   },

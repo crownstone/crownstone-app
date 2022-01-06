@@ -6,17 +6,17 @@
  * command and/or direct disconnect.
  */
 
-import { NativeBus } from "../../native/libInterface/NativeBus";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
-import { BleCommandManager } from "./BleCommandManager";
-import { core } from "../../Core";
-import { Platform } from "react-native";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../util/StandAloneUtil";
-import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
-import { Scheduler } from "../Scheduler";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
-import { TemporaryHandleMap } from "./TemporaryHandleMap";
+import {NativeBus} from "../../native/libInterface/NativeBus";
+import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
+import {BleCommandManager} from "./BleCommandManager";
+import {core} from "../../Core";
+import {Platform} from "react-native";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {xUtil} from "../../util/StandAloneUtil";
+import {LOGd, LOGe, LOGi, LOGv} from "../../logging/Log";
+import {Scheduler} from "../Scheduler";
+import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
+import {TemporaryHandleMap} from "./TemporaryHandleMap";
 
 const CONNECTION_THRESHOLD_MIN  = Platform.OS === 'ios' ? -73 : -73;
 const CONNECTION_THRESHOLD_STEP = Platform.OS === 'ios' ? -3  : -3;
@@ -307,7 +307,7 @@ export class Session {
         break;
       case "CONNECTING":
         await BluenetPromiseWrapper.cancelConnectionRequest(this.handle).catch((err) => {
-          LOGe.constellation("Session: Error when cancellingConnectionRequest", err);
+          LOGe.constellation("Session: Error when cancellingConnectionRequest", err?.message);
         })
         LOGd.constellation("Session: cancelConnectionRequest finished, ending session", this.handle, this.identifier);
         this.sessionHasEnded();

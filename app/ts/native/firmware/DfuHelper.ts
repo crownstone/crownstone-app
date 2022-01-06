@@ -1,11 +1,11 @@
-import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
+import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
-import { SetupStateHandler } from "../setup/SetupStateHandler";
-import { core } from "../../Core";
-import { StoneUtil } from "../../util/StoneUtil";
-import { delay } from "../../util/Util";
-import { CommandAPI } from "../../logic/constellation/Commander";
-import { Scheduler } from "../../logic/Scheduler";
+import {SetupStateHandler} from "../setup/SetupStateHandler";
+import {core} from "../../Core";
+import {StoneUtil} from "../../util/StoneUtil";
+import {delay} from "../../util/Util";
+import {CommandAPI} from "../../logic/constellation/Commander";
+import {Scheduler} from "../../logic/Scheduler";
 
 export class DfuHelper {
   handle : any;
@@ -24,7 +24,7 @@ export class DfuHelper {
 
   async putInDFU(commander: CommandAPI, crownstoneMode: crownstoneModes) : Promise<void> {
     if (crownstoneMode.dfuMode) {
-      LOGi.info("DfuHelper: putInDFU: already in DFU mode!", crownstoneMode);
+      LOGi.dfu("DfuHelper: putInDFU: already in DFU mode!", crownstoneMode);
     }
     else {
       return this._putInDFU(commander, crownstoneMode.setupMode);
@@ -35,16 +35,17 @@ export class DfuHelper {
     try {
       if (stoneIsInSetupMode) {
         await commander.setupPutInDFU();
-      } else {
+      }
+      else {
         await commander.putInDFU();
       }
-      LOG.info("DfuHelper: DFU progress: Placed in DFU mode.");
+      LOG.dfu("DfuHelper: DFU progress: Placed in DFU mode.");
       await commander.disconnect();
 
       await Scheduler.delay(3000)
     }
     catch (err) {
-      LOGe.info("DfuHelper: Error during putInDFU.", err);
+      LOGe.dfu("DfuHelper: Error during putInDFU.", err?.message);
       commander.disconnect();
       throw err;
     }
@@ -69,11 +70,11 @@ export class DfuHelper {
   performUpdate(crownstoneMode, path, progressCallback, label= "Data") {
     let updateProcess = () => {
       let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
-        LOGd.info("DfuHelper: DFU event:", data);
+        LOGd.dfu("DfuHelper: DFU event:", data);
         progressCallback(data.progress*0.01);
       });
 
-      LOG.info("DfuHelper: performing " + label + " update.");
+      LOG.dfu("DfuHelper: performing " + label + " update.");
       return BluenetPromiseWrapper.performDFU(this.handle, path)
         .then(() => { return delay(1500); })
         .then(() => { unsubscribe(); })
@@ -93,14 +94,14 @@ export class DfuHelper {
     }
 
     // we load the DFU into the promise manager with priority so we are not interrupted
-    LOG.info("DfuHelper: Scheduling " +label+ " update in promise manager for handle:", this.handle);
+    LOG.dfu("DfuHelper: Scheduling " +label+ " update in promise manager for handle:", this.handle);
   }
 
 
-  setup(crownstoneMode: crownstoneModes, progressCallback) : Promise<void> {
+  setup(commander: CommandAPI, crownstoneMode: crownstoneModes, progressCallback) : Promise<void> {
     if (crownstoneMode.dfuMode === true) {
       return new Promise((resolve, reject) => {
-        LOGe.info("DfuHelper: Cannot perform setup in DFU mode!");
+        LOGe.dfu("DfuHelper: Cannot perform setup in DFU mode!");
         reject(new Error("Cannot perform setup in DFU mode!"));
       });
     }
@@ -110,21 +111,22 @@ export class DfuHelper {
       }
 
       let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
-        LOGd.info("DfuHelper: Setup event:", progress);
+        LOGd.dfu("DfuHelper: Setup event:", progress);
         progressCallback(progress/13);
       });
 
       // the setupStateHandler already uses the PromiseManager so we cant do it here. It would lead to dfu waiting on setup waiting on dfu.
-      return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
+      return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true, commander)
         .catch((err) => {
           if (this.abortedDFU) { throw err; }
           // try again
+          LOG.dfu("DfuHelper: DFU progress: Retry setup.");
           progressCallback(0);
-          return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
+          return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true, commander)
         })
         .then(() => {
           unsubscribe();
-          LOG.info("DfuHelper: DFU progress: Setup complete.");
+          LOG.dfu("DfuHelper: DFU progress: Setup complete.");
         })
         .catch((err) => {
           unsubscribe();

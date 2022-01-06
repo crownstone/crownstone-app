@@ -1,13 +1,13 @@
 /**
  * The SessionBroker will provide a
  */
-import { SessionManager } from "./SessionManager";
-import { Collector } from "./Collector";
-import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../Core";
-import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
-import { BleCommandManager } from "./BleCommandManager";
-import { Testing } from "../../util/Testing";
+import {SessionManager} from "./SessionManager";
+import {Collector} from "./Collector";
+import {xUtil} from "../../util/StandAloneUtil";
+import {core} from "../../Core";
+import {LOGd, LOGe, LOGi, LOGw} from "../../logging/Log";
+import {BleCommandManager} from "./BleCommandManager";
+import {Testing} from "../../util/Testing";
 
 export class SessionBroker {
 
@@ -165,7 +165,7 @@ export class SessionBroker {
             // this will happen if a session is no longer required. This does not need to be escalated.
           }
           else {
-            LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err);
+            LOGw.constellation("SessionBroker: Failed to request session", handle, "for", this.options.commanderId, err?.message);
             throw err;
           }
         })
@@ -182,7 +182,7 @@ export class SessionBroker {
       LOGi.constellation("SessionBroker: Revoke session for kill", sessionHandle, "for", this.options.commanderId);
       await SessionManager.revokeRequest(sessionHandle, this.options.commanderId).catch((err) => {
         if (err?.message !== "REMOVED_FROM_QUEUE") {
-          LOGw.constellation("SessionBroker: Failed to request session", sessionHandle, "for", this.options.commanderId, err);
+          LOGw.constellation("SessionBroker: Failed to request session", sessionHandle, "for", this.options.commanderId, err?.message);
         }
       })
       delete this.connectedSessions[sessionHandle];

@@ -1,56 +1,56 @@
-import { Alert, AppState }       from 'react-native';
+import {Alert, AppState} from 'react-native';
 
-import { Bluenet }               from "../native/libInterface/Bluenet";
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { LocationHandler }       from "../native/localization/LocationHandler";
-import { CLOUD }                 from "../cloud/cloudAPI";
-import { AppUtil }               from "../util/AppUtil";
-import { Util }                  from "../util/Util";
+import {Bluenet} from "../native/libInterface/Bluenet";
+import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {LocationHandler} from "../native/localization/LocationHandler";
+import {CLOUD} from "../cloud/cloudAPI";
+import {AppUtil} from "../util/AppUtil";
+import {Util} from "../util/Util";
 
-import { DataUtil, prepareStoreForUser } from "../util/DataUtil";
+import {DataUtil, prepareStoreForUser} from "../util/DataUtil";
 
-import { StoreManager }          from "../database/storeManager";
-import { FirmwareWatcher }       from "./FirmwareWatcher";
-import { Scheduler }             from "../logic/Scheduler";
-import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, CLOUD_POLLING_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
-import { BatterySavingUtil }     from "../util/BatterySavingUtil";
-import { MapProvider }           from "./MapProvider";
-import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
-import { NotificationHandler }   from "./NotificationHandler";
-import { MessageCenter }         from "./MessageCenter";
-import { CloudEventHandler }     from "./CloudEventHandler";
-import { Permissions }           from "./PermissionManager";
-import { LOG, LOGe, LOGw }       from "../logging/Log";
-import { LogProcessor }          from "../logging/LogProcessor";
-import { BleLogger }             from "../native/advertisements/BleLogger";
-import { StoneManager }          from "../native/advertisements/StoneManager";
+import {StoreManager} from "../database/storeManager";
+import {FirmwareWatcher} from "./FirmwareWatcher";
+import {Scheduler} from "../logic/Scheduler";
+import {SetupStateHandler} from "../native/setup/SetupStateHandler";
+import {CLOUD_POLLING_INTERVAL, LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SYNC_INTERVAL} from "../ExternalConfig";
+import {BatterySavingUtil} from "../util/BatterySavingUtil";
+import {MapProvider} from "./MapProvider";
+import {DfuStateHandler} from "../native/firmware/DfuStateHandler";
+import {NotificationHandler} from "./NotificationHandler";
+import {MessageCenter} from "./MessageCenter";
+import {CloudEventHandler} from "./CloudEventHandler";
+import {Permissions} from "./PermissionManager";
+import {LOG, LOGe, LOGw} from "../logging/Log";
+import {LogProcessor} from "../logging/LogProcessor";
+import {BleLogger} from "../native/advertisements/BleLogger";
+import {StoneManager} from "../native/advertisements/StoneManager";
 // import * as Sentry from "@sentry/react-native";
-import { ToonIntegration }       from "./thirdParty/ToonIntegration";
-import { EncryptionManager }     from "../native/libInterface/Encryption";
-import { BroadcastStateManager } from "./BroadcastStateManager";
-import { WatchStateManager }     from "./WatchStateManager";
+import {ToonIntegration} from "./thirdParty/ToonIntegration";
+import {EncryptionManager} from "../native/libInterface/Encryption";
+import {BroadcastStateManager} from "./BroadcastStateManager";
+import {WatchStateManager} from "./WatchStateManager";
+import {core} from "../Core";
+import {cleanLogs} from "../logging/LogUtil";
+import {migrate} from "./migration/StoreMigration";
+import {CloudPoller} from "../logic/CloudPoller";
+import {UpdateCenter} from "./UpdateCenter";
+import {StoneAvailabilityTracker} from "../native/advertisements/StoneAvailabilityTracker";
+import {StoneDataSyncer} from "./StoneDataSyncer";
+import {BackButtonHandler} from "./BackButtonHandler";
+import {base_core} from "../Base_core";
+import {PowerUsageCacher} from "./PowerUsageCacher";
+import {TimeKeeper} from "./TimeKeeper";
+import {SphereStateManager} from "./SphereStateManager";
+import {UptimeMonitor} from "./UptimeMonitor";
+import {TrackingNumberManager} from "./TrackingNumberManager";
+import {ActiveSphereManager} from "./ActiveSphereManager";
+import {LocalizationMonitor} from "./LocalizationMonitor";
+import {Languages} from "../Languages";
+import {OverlayManager} from "./OverlayManager";
+import {LocalizationLogger} from "./LocalizationLogger";
 
 const PushNotification = require('react-native-push-notification');
-import { core }                     from "../Core";
-import { cleanLogs }                from "../logging/LogUtil";
-import { migrate }                  from "./migration/StoreMigration";
-import { CloudPoller }              from "../logic/CloudPoller";
-import { UpdateCenter }             from "./UpdateCenter";
-import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
-import { StoneDataSyncer }          from "./StoneDataSyncer";
-import { BackButtonHandler }        from "./BackButtonHandler";
-import { base_core }                from "../Base_core";
-import { PowerUsageCacher }         from "./PowerUsageCacher";
-import { TimeKeeper }               from "./TimeKeeper";
-import { SphereStateManager }       from "./SphereStateManager";
-import { UptimeMonitor }            from "./UptimeMonitor";
-import { TrackingNumberManager }    from "./TrackingNumberManager";
-import { ActiveSphereManager }      from "./ActiveSphereManager";
-import { LocalizationMonitor }      from "./LocalizationMonitor";
-import { Languages }                from "../Languages";
-import { OverlayManager }           from "./OverlayManager";
-import { LocalizationLogger }       from "./LocalizationLogger";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -62,7 +62,6 @@ class BackgroundProcessHandlerClass {
   userLoggedIn          : boolean = false;
   userLoggedInReady     : boolean = false;
   storePrepared         : boolean = false;
-  connectionPopupActive : boolean = false;
 
   cancelPauseTrackingCallback = null;
   trackingPaused = false;
@@ -213,7 +212,7 @@ class BackgroundProcessHandlerClass {
           LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
           CLOUD.sync(core.store, true)
             .then(() => { UpdateCenter.checkForFirmwareUpdates(); })
-            .catch((err) => { LOGe.cloud("Error during background sync: ", err)});
+            .catch((err) => { LOGe.cloud("Error during background sync: ", err?.message)});
         }
       }
       else {
@@ -265,13 +264,6 @@ class BackgroundProcessHandlerClass {
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
 
-      // Sentry.addBreadcrumb({
-      //   category: 'AppState',
-      //   data: {
-      //     state: appState,
-      //   }
-      // });
-
       core.eventBus.emit("AppStateChange", appState);
       this._applyAppStateOnScanning(appState);
       this._applyAppStateOnCaching(appState);
@@ -292,6 +284,7 @@ class BackgroundProcessHandlerClass {
 
   _applyAppStateOnScanning(appState) {
     // in the foreground: start scanning!
+
     if (appState === "active" && this.userLoggedInReady) {
       BatterySavingUtil.startNormalUsage();
 
@@ -406,7 +399,7 @@ class BackgroundProcessHandlerClass {
           CLOUD.sync(core.store, true).catch(() => {})
         })
         .catch((err) => {
-          console.log("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
+          console.log("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err?.message);
           if (err?.status === 401) {
             AppUtil.logOut(core.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }

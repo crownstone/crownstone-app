@@ -207,7 +207,7 @@ export class Login extends Component<any, any> {
         // console.log("This is the reponse from the SM", response);
         this.finalizeLogin(response.id, response.userId);
       })
-      .catch((err) => { LOGe.info("Error during login.", err); })
+      .catch((err) => { LOGe.info("Error during login.", err?.message); })
   }
 
   render() {
@@ -290,7 +290,7 @@ export class Login extends Component<any, any> {
                 resolve(newPath);
               })
               .catch((err) => {
-                LOGe.info("Login: failed checkForRegistrationPictureUpload", err);
+                LOGe.info("Login: failed checkForRegistrationPictureUpload", err?.message);
                 reject(err);
               })
           }
@@ -382,7 +382,7 @@ export class Login extends Component<any, any> {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOGd.info("Could be a problem downloading profile picture: ", err);
+        LOGd.info("Could be a problem downloading profile picture: ", err?.message);
       })
       .then(() => {
         LOG.info("Login: step 3");
@@ -404,7 +404,7 @@ export class Login extends Component<any, any> {
         }
       })
       .catch((err) => {
-        LOGe.info("Login: Failed to login.", err);
+        LOGe.info("Login: Failed to login.", err?.message);
         let defaultAction = () => {core.eventBus.emit('hideProgress')};
         Alert.alert(
           lang("_Whoops___An_error_has_oc_header"),
@@ -462,7 +462,7 @@ export class Login extends Component<any, any> {
         }, 100);
       })
       .catch((err) => {
-        LOGe.info("Login: ERROR during login.", err);
+        LOGe.info("Login: ERROR during login.", err?.message);
         // core.eventBus.emit('hideProgress');
       });
   }

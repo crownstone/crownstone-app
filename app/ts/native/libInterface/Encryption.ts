@@ -1,8 +1,8 @@
-import { BluenetPromiseWrapper } from "./BluenetPromise";
-import { Bluenet } from "./Bluenet";
-import { core } from "../../Core";
-import { LOGe } from "../../logging/Log";
-import { KEY_TYPES } from "../../Enums";
+import {BluenetPromiseWrapper} from "./BluenetPromise";
+import {Bluenet} from "./Bluenet";
+import {core} from "../../Core";
+import {LOGe} from "../../logging/Log";
+import {KEY_TYPES} from "../../Enums";
 
 
 class EncryptionManagerClass {
@@ -75,7 +75,7 @@ class EncryptionManagerClass {
     }
     else {
       BluenetPromiseWrapper.setKeySets(keysets)
-        .catch((err) => { LOGe.info("Error EncryptionManager:", err);})
+        .catch((err) => { LOGe.info("Error EncryptionManager:", err?.message);})
     }
   }
 }

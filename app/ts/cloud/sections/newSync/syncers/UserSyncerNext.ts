@@ -1,10 +1,10 @@
-import { Get } from "../../../../util/GetUtil";
-import { CLOUD } from "../../../cloudAPI";
-import { FileUtil } from "../../../../util/FileUtil";
-import { LOGe } from "../../../../logging/Log";
-import { core } from "../../../../Core";
-import { SyncInterface } from "./base/SyncInterface";
-import { UserTransferNext } from "../transferrers/UserTransferNext";
+import {Get} from "../../../../util/GetUtil";
+import {CLOUD} from "../../../cloudAPI";
+import {FileUtil} from "../../../../util/FileUtil";
+import {LOGe} from "../../../../logging/Log";
+import {core} from "../../../../Core";
+import {SyncInterface} from "./base/SyncInterface";
+import {UserTransferNext} from "../transferrers/UserTransferNext";
 
 
 export class UserSyncerNext extends SyncInterface<UserData, UserData, cloud_User, cloud_User_settable> {
@@ -69,7 +69,7 @@ export class UserSyncerNext extends SyncInterface<UserData, UserData, cloud_User
         .then((picturePath) => {
           this.actions.push({type:'USER_APPEND', data:{ picture: picturePath, pictureId: cloudData.profilePicId }});
         })
-        .catch((err) => { LOGe.cloud("UserSyncer: Could not download profile picture to ", toPath, ' err:', err);})
+        .catch((err) => { LOGe.cloud("UserSyncer: Could not download profile picture to ", toPath, ' err:', err?.message);})
     );
   }
 }

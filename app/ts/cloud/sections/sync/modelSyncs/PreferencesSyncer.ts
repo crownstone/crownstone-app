@@ -42,7 +42,7 @@ export class PreferenceSyncer extends SyncingBase {
 
         return Promise.all(this.transferPromises);
       })
-      .catch((err) => { console.warn("PresenceSyncer: Error during sync.", err); })
+      .catch((err) => { console.warn("PresenceSyncer: Error during sync.", err?.message); })
       .then(() => { return this.actions; });
   }
 

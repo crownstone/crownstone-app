@@ -1,11 +1,11 @@
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { Get } from "../../../../util/GetUtil";
-import { CLOUD } from "../../../cloudAPI";
-import { FileUtil } from "../../../../util/FileUtil";
-import { LOGe } from "../../../../logging/Log";
-import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { SphereUserTransferNext } from "../transferrers/SphereUserTransferNext";
-import { SyncNext } from "../SyncNext";
+import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
+import {Get} from "../../../../util/GetUtil";
+import {CLOUD} from "../../../cloudAPI";
+import {FileUtil} from "../../../../util/FileUtil";
+import {LOGe} from "../../../../logging/Log";
+import {SyncSphereInterface} from "./base/SyncSphereInterface";
+import {SphereUserTransferNext} from "../transferrers/SphereUserTransferNext";
+import {SyncNext} from "../SyncNext";
 
 
 export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, SphereUserData, cloud_UserData, {}> {
@@ -66,7 +66,7 @@ export class SphereUserSyncerNext extends SyncSphereInterface<SphereUserData, Sp
               { picture: picturePath, pictureId: cloudData.profilePicId }
           });
         })
-        .catch((err) => { LOGe.cloud("SphereUserSyncer: Could not download sphereUser picture to ", toPath, ' err:', err); })
+        .catch((err) => { LOGe.cloud("SphereUserSyncer: Could not download sphereUser picture to ", toPath, ' err:', err?.message); })
     );
   }
 

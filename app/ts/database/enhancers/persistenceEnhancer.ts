@@ -1,6 +1,6 @@
-import { StoreManager } from "../storeManager";
-import { BATCH } from "../reducers/BatchReducer";
-import { LOGd, LOGe } from "../../logging/Log";
+import {StoreManager} from "../storeManager";
+import {BATCH} from "../reducers/BatchReducer";
+import {LOGd, LOGe} from "../../logging/Log";
 
 
 const TransientTypes = {
@@ -50,7 +50,7 @@ export function PersistenceEnhancer({ getState }) {
       LOGd.store("PersistorEnhancer: Start persisting store updates.");
       StoreManager.persistor.persistChanges(oldState, newState)
         .then(() => { LOGd.store("PersistorEnhancer: finished persisting store updates."); })
-        .catch((err) => { LOGe.store("PersistorEnhancer: Could not persist.", err); })
+        .catch((err) => { LOGe.store("PersistorEnhancer: Could not persist.", err?.message); })
     }
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.

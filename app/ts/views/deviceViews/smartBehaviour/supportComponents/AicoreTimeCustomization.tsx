@@ -1,28 +1,23 @@
+import {Languages} from "../../../../Languages"
+import React, {Component, useState} from 'react';
+import {Alert, Platform, Text, TextStyle, TimePickerAndroid, TouchableOpacity, View} from "react-native";
+import {colors, screenWidth} from "../../../styles";
+import Slider from '@react-native-community/slider';
 
-import { Languages } from "../../../../Languages"
+import {FadeIn} from "../../../components/animated/FadeInView";
+import {xUtil} from "../../../../util/StandAloneUtil";
+import {AicoreBehaviour} from "../supportCode/AicoreBehaviour";
+import {TextButtonDark, TimeButtonWithImage} from "../../../components/InterviewComponents";
+import {AicoreUtil} from "../supportCode/AicoreUtil";
+import {AicoreTimeData} from "../supportCode/AicoreTimeData";
+
+
+import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
+import {LOGe} from "../../../../logging/Log";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
 }
-import React, { useState,Component } from 'react';
-import {
-  Alert,
-  Text,
-  View, TextStyle, Platform, TouchableOpacity, TimePickerAndroid
-} from "react-native";
-import { colors, screenWidth} from "../../../styles";
-import Slider from '@react-native-community/slider';
-
-import { FadeIn } from "../../../components/animated/FadeInView";
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
-import { TextButtonDark, TimeButtonWithImage } from "../../../components/InterviewComponents";
-import { AicoreUtil } from "../supportCode/AicoreUtil";
-import { AicoreTimeData } from "../supportCode/AicoreTimeData";
-
-
-import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import { LOGe } from "../../../../logging/Log";
 
 let timeReference = null;
 
@@ -228,7 +223,7 @@ function TimePart(props : {
                             props.setFinished(true);
                           }
                         })
-                        .catch((err) => { LOGe.info("AicoreTimeCustomization: Could not pick time for android.", err) })
+                        .catch((err) => { LOGe.info("AicoreTimeCustomization: Could not pick time for android.", err?.message) })
                   }}>
                     <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>{ lang("TAP_TIME_TO_CHANGE") }</Text>
                     <Text style={{fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6)}}>

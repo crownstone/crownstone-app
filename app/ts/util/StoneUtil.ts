@@ -1,22 +1,19 @@
-import { Languages } from "../Languages";
+import {Languages} from "../Languages";
+// import {BatchCommandHandler} from "../logic/BatchCommandHandler";
+import {LOGe} from "../logging/Log";
+import {Scheduler} from "../logic/Scheduler";
+import {Alert,} from 'react-native';
+import {core} from "../Core";
+import {BEHAVIOUR_TYPES} from "../database/reducers/stoneSubReducers/behaviours";
+import {AicoreBehaviour} from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
+import {xUtil} from "./StandAloneUtil";
+import {AicoreUtil} from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
+import {from, tell} from "../logic/constellation/Tellers";
+import {Get} from "./GetUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StoneUtil", key)(a,b,c,d,e);
 }
-
-// import {BatchCommandHandler} from "../logic/BatchCommandHandler";
-import {LOGe} from "../logging/Log";
-import {Scheduler} from "../logic/Scheduler";
-import {
-  Alert,
-} from 'react-native';
-import { core } from "../Core";
-import { BEHAVIOUR_TYPES } from "../database/reducers/stoneSubReducers/behaviours";
-import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
-import { xUtil } from "./StandAloneUtil";
-import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
-import { from, tell } from "../logic/constellation/Tellers";
-import { Get } from "./GetUtil";
 
 export const StoneUtil = {
 
@@ -114,7 +111,7 @@ export const StoneUtil = {
       Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
     }
     catch (err) {
-      LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
+      LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err?.message);
       core.eventBus.emit("hideLoading");
       Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK'}]);
     }

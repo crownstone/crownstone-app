@@ -1,30 +1,22 @@
-
-import { Languages } from "../../../Languages"
+import {Languages} from "../../../Languages"
+import * as React from 'react';
+import {ActivityIndicator, Alert, Linking, Text, TouchableOpacity, View} from 'react-native';
+import {Background} from "../../components/Background";
+import {background, colors, deviceStyles, screenWidth} from "../../styles";
+import {toonConfig} from "../../../sensitiveData/toonConfig";
+import {CLOUD} from "../../../cloud/cloudAPI";
+import {ScaledImage} from "../../components/ScaledImage";
+import {TextEditInput} from "../../components/editComponents/TextEditInput";
+import {LOGe} from "../../../logging/Log";
+import {core} from "../../../Core";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {TopBarUtil} from "../../../util/TopBarUtil";
+import {LiveComponent} from "../../LiveComponent";
+import {CodedError} from "../../../util/Errors";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ToonAdd", key)(a,b,c,d,e);
 }
-import * as React from 'react';
-import {
-  Alert,
-  ActivityIndicator,
-  Linking,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { Background } from "../../components/Background";
-import { background, colors, deviceStyles, screenWidth } from "../../styles";
-import { toonConfig } from "../../../sensitiveData/toonConfig";
-import { CLOUD } from "../../../cloud/cloudAPI";
-import { ScaledImage } from "../../components/ScaledImage";
-import { TextEditInput } from "../../components/editComponents/TextEditInput";
-import { LOGe } from "../../../logging/Log";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { TopBarUtil } from "../../../util/TopBarUtil";
-import { LiveComponent } from "../../LiveComponent";
-import { CodedError } from "../../../util/Errors";
 
 
 export class ToonAdd extends LiveComponent<any, any> {
@@ -140,7 +132,7 @@ export class ToonAdd extends LiveComponent<any, any> {
         }
       })
       .catch((err) => {
-        LOGe.info("ToonAdd: Error while adding Toon.", err);
+        LOGe.info("ToonAdd: Error while adding Toon.", err?.message);
         if (err?.code === 1 && this.state.code) {
           Alert.alert(
             lang("_Whoops__The_provided_cod_header"),

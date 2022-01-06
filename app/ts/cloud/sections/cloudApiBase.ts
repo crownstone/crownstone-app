@@ -1,7 +1,7 @@
-import {request, download, downloadFile} from '../cloudCore'
-import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
+import {download, downloadFile, request} from '../cloudCore'
+import {DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD} from "../../ExternalConfig";
 import {LOG, LOGe, LOGi, LOGw} from '../../logging/Log'
-import { xUtil } from "../../util/StandAloneUtil";
+import {xUtil} from "../../util/StandAloneUtil";
 import {Alert} from "react-native";
 import {core} from "../../Core";
 
@@ -56,7 +56,7 @@ export const TokenStore = new TokenStoreClass();
  */
 export const cloudApiBase = {
   _networkErrorHandler: (err) => {
-    LOGw.cloud("Could not connect to the cloud.", err);
+    LOGw.cloud("Could not connect to the cloud.", err?.message);
     Alert.alert(
       "Connection Problem",
       "Could not connect to the Cloud. Please check your internet connection.",
@@ -100,7 +100,7 @@ export const cloudApiBase = {
           return this._finalizeRequest(promise, options);
         }
       })
-      .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
+      .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err?.message); })
   },
   _download: function(options, toPath, beginCallback?, progressCallback?) {
     return download(options, _getId(options.endPoint, TokenStore), TokenStore.accessToken, toPath, beginCallback, progressCallback)

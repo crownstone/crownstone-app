@@ -1,6 +1,6 @@
 import {LOG, LOGe} from "../logging/Log";
 import {syncEvents} from "../cloud/sections/sync/syncEvents";
-import { core } from "../Core";
+import {core} from "../Core";
 
 class CloudEventHandlerClass {
   _initialized : boolean = false;
@@ -46,7 +46,7 @@ class CloudEventHandlerClass {
           this._eventSyncInProgress = false;
         })
         .catch((err) => {
-          LOGe.cloud("Failed Event Sync: ", err);
+          LOGe.cloud("Failed Event Sync: ", err?.message);
           this._eventSyncInProgress = false;
         });
     }

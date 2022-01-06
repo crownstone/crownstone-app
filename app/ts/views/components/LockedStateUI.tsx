@@ -1,16 +1,7 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LockedStateUI", key)(a,b,c,d,e);
-}
-import * as React from 'react'; import { Component } from 'react';
-import {
-  ActivityIndicator,
-  PanResponder,
-  Text,
-  View, ViewStyle, TextStyle
-} from "react-native";
+import {Languages} from "../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {ActivityIndicator, PanResponder, Text, TextStyle, View, ViewStyle} from "react-native";
 
 
 import {colors, screenWidth} from '../styles'
@@ -18,7 +9,11 @@ import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
 import {LOGe} from "../../logging/Log";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../Core";
+import {core} from "../../Core";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LockedStateUI", key)(a,b,c,d,e);
+}
 
 export class LockedStateUI extends Component<any, any> {
   _panResponder;
@@ -92,7 +87,7 @@ export class LockedStateUI extends Component<any, any> {
         setTimeout(() => { this.props.unlockDataCallback() }, 500);
       })
       .catch((err) => {
-        LOGe.info("LockedStateUI: failed to unlock Crownstone", err);
+        LOGe.info("LockedStateUI: failed to unlock Crownstone", err?.message);
         this.setState({ unlockingInProgress: false, failed: true });
         setTimeout(() => { this.setState({ failed: false }); }, 1500);
       })

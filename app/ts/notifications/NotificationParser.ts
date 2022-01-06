@@ -1,13 +1,13 @@
-import { core }                  from "../Core";
-import { NavigationUtil }        from "../util/NavigationUtil";
-import { CLOUD }                 from "../cloud/cloudAPI";
-import { LocalNotifications }    from "./LocalNotifications";
-import { MessageCenter }         from "../backgroundProcesses/MessageCenter";
-import { LOG, LOGe, LOGw } from "../logging/Log";
-import { MapProvider }           from "../backgroundProcesses/MapProvider";
-import { InviteCenter }          from "../backgroundProcesses/InviteCenter";
-import { tell }                  from "../logic/constellation/Tellers";
-import { SyncNext } from "../cloud/sections/newSync/SyncNext";
+import {core} from "../Core";
+import {NavigationUtil} from "../util/NavigationUtil";
+import {CLOUD} from "../cloud/cloudAPI";
+import {LocalNotifications} from "./LocalNotifications";
+import {MessageCenter} from "../backgroundProcesses/MessageCenter";
+import {LOG, LOGe, LOGw} from "../logging/Log";
+import {MapProvider} from "../backgroundProcesses/MapProvider";
+import {InviteCenter} from "../backgroundProcesses/InviteCenter";
+import {tell} from "../logic/constellation/Tellers";
+import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 
 class NotificationParserClass {
 
@@ -89,7 +89,7 @@ class NotificationParserClass {
                   MessageCenter.storeMessage(result);
                 }
               })
-              .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err)})
+              .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err?.message)})
           }
           break;
         case "sphereUsersUpdated":
@@ -98,7 +98,7 @@ class NotificationParserClass {
         case "sphereUserRemoved":
           if (notificationData.sphereId) {
             if (notificationData.removedUserId === state.user.userId) {
-              CLOUD.sync(core.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err); });
+              CLOUD.sync(core.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err?.message); });
             }
             else {
               this._updateSphereUsers(notificationData);
@@ -135,7 +135,7 @@ class NotificationParserClass {
             }
           })
           .catch((err) => {
-            LOGe.notifications("NotifcationParser: Failed to update sphere users.", err);
+            LOGe.notifications("NotifcationParser: Failed to update sphere users.", err?.message);
           })
       }
     } 

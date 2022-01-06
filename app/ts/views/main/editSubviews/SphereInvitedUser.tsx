@@ -1,27 +1,23 @@
+import {Languages} from "../../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {Alert, ScrollView, View} from 'react-native';
 
-import { Languages } from "../../../Languages"
+import {IconButton} from '../../components/IconButton'
+import {Background} from '../../components/Background'
+import {ProfilePicture} from '../../components/ProfilePicture'
+import {ListEditableItems} from '../../components/ListEditableItems'
+import {CLOUD} from '../../../cloud/cloudAPI'
+import {LOGe} from '../../../logging/Log'
+import {background, colors, screenWidth} from "../../styles";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {core} from "../../../Core";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {TopBarUtil} from "../../../util/TopBarUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereInvitedUser", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Alert,
-  ScrollView,
-  View
-} from 'react-native';
-
-import { IconButton } from '../../components/IconButton'
-import { Background } from '../../components/Background'
-import { ProfilePicture } from '../../components/ProfilePicture'
-import { ListEditableItems } from '../../components/ListEditableItems'
-import { CLOUD } from '../../../cloud/cloudAPI'
-import {LOGe} from '../../../logging/Log'
-import { background, colors, screenWidth } from "../../styles";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SphereInvitedUser extends Component<any, any> {
@@ -69,7 +65,7 @@ export class SphereInvitedUser extends Component<any, any> {
                   lang("_Could_not_resend_email___header"),
                   lang("_Could_not_resend_email___body"),
                   [{text:lang("_Could_not_resend_email___left")}]);
-                LOGe.info("Could not resend email", err);
+                LOGe.info("Could not resend email", err?.message);
               })
         }}], { cancelable : false });
     }});
@@ -115,7 +111,7 @@ export class SphereInvitedUser extends Component<any, any> {
                       lang("_Could_not_revoke_invitat_header"),
                       lang("_Could_not_revoke_invitat_body"),
                       [{text: lang("_Could_not_revoke_invitat_left")}]);
-                    LOGe.info("Could not revoke invitation", err);
+                    LOGe.info("Could not revoke invitation", err?.message);
                   })
               }
             }

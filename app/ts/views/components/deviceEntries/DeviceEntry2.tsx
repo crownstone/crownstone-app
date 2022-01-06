@@ -1,32 +1,25 @@
+import {Languages} from "../../../Languages"
+import * as React from 'react';
+import {Component} from 'react';
+import {ActivityIndicator, Animated, Switch, Text, TouchableOpacity, View, ViewStyle} from "react-native";
 
-import { Languages } from "../../../Languages"
+import {Icon} from '../Icon';
+import {Util} from '../../../util/Util'
+import {colors, screenWidth, styles} from "../../styles";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
+import {StoneUtil} from "../../../util/StoneUtil";
+import {xUtil} from "../../../util/StandAloneUtil";
+import {STONE_TYPES} from "../../../Enums";
+import {core} from "../../../Core";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
+import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
+import {safeStoreUpdate} from "../../deviceViews/DeviceOverview";
+import {LOGe} from "../../../logging/Log";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceEntry", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  Animated,
-  ActivityIndicator,
-  Switch,
-  TouchableOpacity,
-  Text,
-  View, ViewStyle
-} from "react-native";
-
-import { Icon } from '../Icon';
-import { Util } from '../../../util/Util'
-import { styles, colors, screenWidth } from "../../styles";
-import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
-import { StoneUtil }                          from "../../../util/StoneUtil";
-import { xUtil } from "../../../util/StandAloneUtil";
-import { STONE_TYPES } from "../../../Enums";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
-import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
-import { safeStoreUpdate } from "../../deviceViews/DeviceOverview";
-import { LOGe } from "../../../logging/Log";
 
 const PADDING_LEFT = 15;
 const PADDING_RIGHT = 15;
@@ -113,7 +106,7 @@ export class DeviceEntry2 extends Component<any, any> {
       }
     }
     catch (err) {
-      LOGe.info("DeviceEntry: Failed to switch", err);
+      LOGe.info("DeviceEntry: Failed to switch", err?.message);
       this.setState({pendingCommand:false});
     }
   }

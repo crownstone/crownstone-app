@@ -4,24 +4,24 @@
 // function lang(key,a?,b?,c?,d?,e?) {
 //   return Languages.get("DEV_Batching", key)(a,b,c,d,e);
 // }
-import React, { Component } from "react";
-import { BleUtil } from "../../../util/BleUtil";
-import { xUtil } from "../../../util/StandAloneUtil";
-import { background, colors, screenWidth, styles } from "../../styles";
-import { ScrollView, TouchableOpacity, View, Text, ActivityIndicator, Alert} from "react-native";
-import { core } from "../../../Core";
-import { FileUtil } from "../../../util/FileUtil";
-import { ListEditableItems } from "../../components/ListEditableItems";
-import { DfuHelper } from "../../../native/firmware/DfuHelper";
-import { LOG, LOGd, LOGv } from "../../../logging/Log";
-import { Scheduler } from "../../../logic/Scheduler";
-import { BigFilterButton } from "../stoneSelecting/DEV_SelectionComponents";
-import { Background } from "../../components/Background";
-import { LiveComponent } from "../../LiveComponent";
-import { TopBarUtil } from "../../../util/TopBarUtil";
+import React, {Component} from "react";
+import {BleUtil} from "../../../util/BleUtil";
+import {xUtil} from "../../../util/StandAloneUtil";
+import {background, colors, screenWidth, styles} from "../../styles";
+import {ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {core} from "../../../Core";
+import {FileUtil} from "../../../util/FileUtil";
+import {ListEditableItems} from "../../components/ListEditableItems";
+import {DfuHelper} from "../../../native/firmware/DfuHelper";
+import {LOG, LOGd, LOGv} from "../../../logging/Log";
+import {Scheduler} from "../../../logic/Scheduler";
+import {BigFilterButton} from "../stoneSelecting/DEV_SelectionComponents";
+import {Background} from "../../components/Background";
+import {LiveComponent} from "../../LiveComponent";
+import {TopBarUtil} from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { tell } from "../../../logic/constellation/Tellers";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {tell} from "../../../logic/constellation/Tellers";
 
 const RNFS = require('react-native-fs');
 
@@ -266,7 +266,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
           finished: {...this.state.finished, [selectedStone.handle]: true},
         })
         this.setState({dfuActiveHandle: null, dfuProgress:0})
-        Alert.alert("FAILED", err)
+        Alert.alert("FAILED", err?.message)
       })
   }
 

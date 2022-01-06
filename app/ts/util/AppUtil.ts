@@ -1,21 +1,20 @@
-import { Languages } from "../Languages";
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("AppUtil", key)(a, b, c, d, e);
-}
-
-import { Alert, Platform }       from 'react-native';
-import { StoreManager }          from '../database/storeManager'
-import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
-import { Bluenet }               from '../native/libInterface/Bluenet';
+import {Languages} from "../Languages";
+import {Alert, Platform} from 'react-native';
+import {StoreManager} from '../database/storeManager'
+import {BluenetPromiseWrapper} from '../native/libInterface/BluenetPromise'
+import {Bluenet} from '../native/libInterface/Bluenet';
 import {LOG, LOGe} from "../logging/Log";
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
 // import * as Sentry from "@sentry/react-native";
 import {Scheduler} from "../logic/Scheduler";
-import { core } from "../Core";
-import { NavigationUtil } from "./NavigationUtil";
-import { Stacks } from "../views/Stacks";
+import {core} from "../Core";
+import {NavigationUtil} from "./NavigationUtil";
+import {Stacks} from "../views/Stacks";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AppUtil", key)(a, b, c, d, e);
+}
 
 export const AppUtil = {
   quit: function() {
@@ -67,7 +66,7 @@ export const AppUtil = {
           })
         })
         .catch((err) => {
-          LOGe.info("Failed to reset database", err);
+          LOGe.info("Failed to reset database", err?.message);
           Alert.alert(lang("Data_reset_failed___"), lang("Something_went_wrong_in_t"),[{text: lang("OK"), onPress: () => { AppUtil.quit(); }}], { cancelable: false})
         })
     };
@@ -139,7 +138,7 @@ export const AppUtil = {
         gracefulExit();
       })
       .catch((err) => {
-        LOGe.info("Could not log user out!", err);
+        LOGe.info("Could not log user out!", err?.message);
         gracefulExit();
       });
   },

@@ -1,18 +1,17 @@
-
-import { Languages } from "../Languages"
+import {Languages} from "../Languages"
+import {CLOUD} from "../cloud/cloudAPI";
+import {core} from "../Core";
+import {OnScreenNotifications} from "../notifications/OnScreenNotifications";
+import {ScaledImage} from "../views/components/ScaledImage";
+import {colors, screenHeight, styles} from "../views/styles";
+import * as React from "react";
+import {Alert, Text, View} from "react-native";
+import {TextButton} from "../views/components/InterviewComponents";
+import {LOGe} from "../logging/Log";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("InviteCenter", key)(a,b,c,d,e);
 }
-import { CLOUD } from "../cloud/cloudAPI";
-import { core } from "../Core";
-import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
-import { ScaledImage } from "../views/components/ScaledImage";
-import { colors, screenHeight, styles } from "../views/styles";
-import * as React from "react";
-import { View, Text, Alert } from "react-native";
-import { TextButton} from "../views/components/InterviewComponents";
-import { LOGe } from "../logging/Log";
 
 export const InviteCenter = {
 
@@ -69,7 +68,7 @@ export const InviteCenter = {
           });
         })
       })
-      .catch((err) => {LOGe.cloud("Something went wrong while checking for invitations", err); })
+      .catch((err) => {LOGe.cloud("Something went wrong while checking for invitations", err?.message); })
   },
 
   acceptInvitation: function(sphereId) {
@@ -88,7 +87,7 @@ lang("_Welcome___The_invitation__body"),
         core.eventBus.emit("hideCustomOverlay");
       })
       .catch((err) => {
-        LOGe.cloud("Something went wrong while accepting the invitation", err);
+        LOGe.cloud("Something went wrong while accepting the invitation", err?.message);
         Alert.alert(
 lang("_Something_went_wrong_____Y_header"),
 lang("_Something_went_wrong_____Y_body"),
@@ -107,7 +106,7 @@ lang("_Something_went_wrong_____Y_body"),
         core.eventBus.emit("hideCustomOverlay");
       })
       .catch((err) => {
-        LOGe.cloud("Something went wrong while declining the invitation", err);
+        LOGe.cloud("Something went wrong while declining the invitation", err?.message);
         Alert.alert(
 lang("_Something_went_wrong_____Yo_header"),
 lang("_Something_went_wrong_____Yo_body"),

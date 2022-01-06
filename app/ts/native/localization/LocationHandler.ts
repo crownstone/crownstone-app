@@ -1,20 +1,19 @@
-import { Languages } from "../../Languages";
+import {Languages} from "../../Languages";
+import {Alert} from 'react-native';
+
+import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
+import {Bluenet} from '../libInterface/Bluenet';
+import {LOG, LOGe} from "../../logging/Log";
+import {BatterySavingUtil} from '../../util/BatterySavingUtil';
+import {FingerprintManager} from "./FingerprintManager";
+import {SphereUtil} from "../../util/SphereUtil";
+import {core} from "../../Core";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {canUseIndoorLocalizationInSphere} from "../../util/DataUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocationHandler", key)(a,b,c,d,e);
 }
-
-import { Alert }                    from 'react-native';
-
-import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
-import { Bluenet  }                 from '../libInterface/Bluenet';
-import { LOG, LOGe} from "../../logging/Log";
-import { BatterySavingUtil } from '../../util/BatterySavingUtil';
-import {FingerprintManager} from "./FingerprintManager";
-import { SphereUtil } from "../../util/SphereUtil";
-import { core } from "../../Core";
-import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -118,7 +117,7 @@ class LocationHandlerClass {
     else {
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
+          LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err?.message);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
@@ -364,7 +363,7 @@ class LocationHandlerClass {
 
         });
       })
-      .catch((err) => { LOGe.info("Tracking Spheres Failed", err); })
+      .catch((err) => { LOGe.info("Tracking Spheres Failed", err?.message); })
   }
 
   initializeTracking() {

@@ -1,11 +1,10 @@
-import { AppState } from 'react-native';
-import { LOG } from "../logging/Log";
-import { Bluenet } from "../native/libInterface/Bluenet";
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { Util } from "./Util";
-import { Scheduler } from "../logic/Scheduler";
+import {AppState} from 'react-native';
+import {LOG} from "../logging/Log";
+import {Bluenet} from "../native/libInterface/Bluenet";
+import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {Util} from "./Util";
+import {Scheduler} from "../logic/Scheduler";
 import {BleUtil} from "./BleUtil";
-import { core } from "../Core";
 
 class BatterySavingClass {
   _initialized: boolean = false;
@@ -100,14 +99,15 @@ class BatterySavingClass {
     if (inSphere) {
       Util.data.callOnStonesInSphere(inSphereId, (stoneId, stone) => {
         if (!stone.config.handle) {
+          LOG.info("BatterySavingUtil: Not all handles known. Missing for", stone.config.name);
           allHandlesKnown = false;
         }
       });
     }
 
-    // LOGd.info("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, appNotInForeground", appNotInForeground, "inSphere", inSphere, "allHandlesKnown", allHandlesKnown, 'total:',appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown)));
+    LOG.info("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, appNotInForeground", appNotInForeground, "inSphere", inSphere, "allHandlesKnown", allHandlesKnown, 'total:',appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown)));
     if (appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown))) {
-      // LOGd.info("BatterySavingUtil: startBatterySaving, execute");
+      LOG.info("BatterySavingUtil: startBatterySaving, execute");
       Bluenet.batterySaving(true);
     }
     else if (!allHandlesKnown && appNotInForeground === true) {

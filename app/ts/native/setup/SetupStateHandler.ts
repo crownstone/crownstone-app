@@ -1,14 +1,14 @@
-import { SetupHelper }        from './SetupHelper';
-import { Util }               from '../../util/Util';
+import {SetupHelper} from './SetupHelper';
+import {Util} from '../../util/Util';
 import {LOGd, LOGe} from '../../logging/Log';
-import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
+import {SETUP_MODE_TIMEOUT} from '../../ExternalConfig';
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../util/StandAloneUtil";
-import { STONE_TYPES } from "../../Enums";
-import { core } from "../../Core";
-import { CodedError } from "../../util/Errors";
-
+import {xUtil} from "../../util/StandAloneUtil";
+import {STONE_TYPES} from "../../Enums";
+import {core} from "../../Core";
+import {CodedError} from "../../util/Errors";
+import {CommandAPI} from "../../logic/constellation/Commander";
 
 
 /**
@@ -227,12 +227,12 @@ class SetupStateHandlerClass {
   }
 
 
-  setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
+  setupExistingStone(handle, sphereId, stoneId, silent : boolean = false, commander : CommandAPI = null) {
     let stoneConfig = core.store.getState().spheres[sphereId].stones[stoneId].config;
-    return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
+    return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent, commander);
   }
 
-  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) : Promise<{id: string, familiarCrownstone: boolean}> {
+  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false, commander : CommandAPI = null) : Promise<{id: string, familiarCrownstone: boolean}> {
     let helper = new SetupHelper(
       handle,
       name,
@@ -256,7 +256,7 @@ class SetupStateHandlerClass {
 
     core.eventBus.emit("setupStarting");
 
-    return helper.claim(sphereId, silent);
+    return helper.claim(sphereId, silent, commander);
   }
 
   getSetupStones() {

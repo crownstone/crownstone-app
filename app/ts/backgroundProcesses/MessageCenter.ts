@@ -1,10 +1,10 @@
-import { LOG, LOGe }          from "../logging/Log";
-import { CLOUD }              from "../cloud/cloudAPI";
-import { LocalNotifications } from "../notifications/LocalNotifications";
-import { Util }               from "../util/Util";
-import { MapProvider }        from "./MapProvider";
-import { xUtil }              from "../util/StandAloneUtil";
-import { core } from "../Core";
+import {LOG, LOGe} from "../logging/Log";
+import {CLOUD} from "../cloud/cloudAPI";
+import {LocalNotifications} from "../notifications/LocalNotifications";
+import {Util} from "../util/Util";
+import {MapProvider} from "./MapProvider";
+import {xUtil} from "../util/StandAloneUtil";
+import {core} from "../Core";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -266,7 +266,7 @@ class MessageCenterClass {
           }
         }
       })
-      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Location:", err);})
+      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Location:", err?.message);})
   }
 
   _handleMessageInSphere(localSphereId, triggerEvent) {
@@ -287,7 +287,7 @@ class MessageCenterClass {
           }
         }
       })
-      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Sphere:", err);})
+      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Sphere:", err?.message);})
   }
 
   /**
