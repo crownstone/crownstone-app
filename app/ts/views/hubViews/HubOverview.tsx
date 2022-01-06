@@ -472,7 +472,7 @@ lang("_Something_went_wrong_____Ple_body"),
       await Scheduler.delay(3000);
     }
     catch(err) {
-      LOGe.info("Problem settings up new hub", err);
+      LOGe.info("Problem settings up new hub", err?.message);
       Alert.alert(
         lang("_Something_went_wrong_____header"),
         lang("_Something_went_wrong_____body"),

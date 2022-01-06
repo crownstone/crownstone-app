@@ -1,41 +1,34 @@
-import { LiveComponent }          from "../LiveComponent";
+import {LiveComponent} from "../LiveComponent";
 
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceEdit", key)(a,b,c,d,e);
-}
+import {Languages} from "../../Languages"
 import * as React from 'react';
-import {
-  Alert,
-  ActivityIndicator,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 
-import { styles, colors, background } from "../styles";
-import { BleUtil } from '../../util/BleUtil'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { IconButton } from '../components/IconButton'
-import { ListEditableItems } from '../components/ListEditableItems'
+import {background, colors, styles} from "../styles";
+import {BleUtil} from '../../util/BleUtil'
+import {CLOUD} from '../../cloud/cloudAPI'
+import {IconButton} from '../components/IconButton'
+import {ListEditableItems} from '../components/ListEditableItems'
 import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { OverlayUtil } from "../overlays/OverlayUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { SortingManager } from "../../logic/SortingManager";
-import { DataUtil } from "../../util/DataUtil";
-import { HubHelper } from "../../native/setup/HubHelper";
-import { tell } from "../../logic/constellation/Tellers";
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {OverlayUtil} from "../overlays/OverlayUtil";
+import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
+import {SortingManager} from "../../logic/SortingManager";
+import {DataUtil} from "../../util/DataUtil";
+import {HubHelper} from "../../native/setup/HubHelper";
+import {tell} from "../../logic/constellation/Tellers";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEdit", key)(a,b,c,d,e);
+}
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -278,7 +271,7 @@ lang("_Something_went_wrong_____body"),
             resolve();
           }
           else {
-            LOGe.info("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err?.message);
             reject();
           }
         })
@@ -287,7 +280,7 @@ lang("_Something_went_wrong_____body"),
         this._removeCrownstoneFromRedux(false);
       })
       .catch((err) => {
-        LOG.info("error while asking the cloud to remove this crownstone", err);
+        LOG.info("error while asking the cloud to remove this crownstone", err?.message);
         core.eventBus.emit('hideLoading');
         Alert.alert(
           lang("_Encountered_Cloud_Issue__header"),
@@ -306,7 +299,7 @@ lang("_Something_went_wrong_____body"),
             resolve();
           }
           else {
-            LOGe.info("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err?.message);
             reject();
           }
         })
@@ -330,7 +323,7 @@ lang("_Something_went_wrong_____body"),
           });
       })
       .catch((err) => {
-        LOG.info("error while asking the cloud to remove this crownstone", err);
+        LOG.info("error while asking the cloud to remove this crownstone", err?.message);
         core.eventBus.emit('hideLoading');
         Alert.alert(
           lang("_Encountered_Cloud_Issue___header"),

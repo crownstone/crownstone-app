@@ -1,5 +1,6 @@
-import { CLOUD } from '../../cloudAPI'
+import {CLOUD} from '../../cloudAPI'
 import {LOGe} from "../../../logging/Log";
+
 const RNFS = require('react-native-fs');
 
 /**
@@ -38,7 +39,7 @@ export const syncEvents = function(store) {
         store.batchDispatch(actions);
       }
     })
-    .catch((err) => { LOGe.cloud('syncEvents: error', err)})
+    .catch((err) => { LOGe.cloud('syncEvents: error', err?.message)})
 
 };
 
@@ -128,7 +129,7 @@ const handleSpecial = function(state, events, actions) {
         promises.push(CLOUD.removeProfileImage({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
-            LOGe.cloud("syncEvents Special: Could not remove image from cloud", err);
+            LOGe.cloud("syncEvents Special: Could not remove image from cloud", err?.message);
           }));
         break;
       case 'uploadProfilePicture':
@@ -148,7 +149,7 @@ const handleSpecial = function(state, events, actions) {
               })
               .then(() => { success() })
               .catch((err) => {
-                LOGe.cloud("syncEvents Special: Could not upload image to cloud", err);
+                LOGe.cloud("syncEvents Special: Could not upload image to cloud", err?.message);
               })
           )
         }
@@ -173,7 +174,7 @@ const handleSpecial = function(state, events, actions) {
         promises.push(CLOUD.forLocation(payload.localId).deleteLocationPicture({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
-            LOGe.cloud("syncEvents Special: Could not remove location image from cloud", err);
+            LOGe.cloud("syncEvents Special: Could not remove location image from cloud", err?.message);
           }));
         break;
       case 'uploadLocationPicture':
@@ -193,7 +194,7 @@ const handleSpecial = function(state, events, actions) {
               })
               .then(() => { success() })
               .catch((err) => {
-                LOGe.cloud("syncEvents Special: Could not upload location image to cloud", err);
+                LOGe.cloud("syncEvents Special: Could not upload location image to cloud", err?.message);
               })
           )
         }
@@ -217,7 +218,7 @@ const handleSpecial = function(state, events, actions) {
         promises.push(CLOUD.forScene(payload.localId).deleteSceneCustomPicture({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
-            LOGe.cloud("syncEvents Special: Could not remove scene image from cloud", err);
+            LOGe.cloud("syncEvents Special: Could not remove scene image from cloud", err?.message);
           }));
         break;
       case 'uploadScenePicture':
@@ -237,7 +238,7 @@ const handleSpecial = function(state, events, actions) {
               })
               .then(() => { success() })
               .catch((err) => {
-                LOGe.cloud("syncEvents Special: Could not upload scene image to cloud", err);
+                LOGe.cloud("syncEvents Special: Could not upload scene image to cloud", err?.message);
               })
           )
         }

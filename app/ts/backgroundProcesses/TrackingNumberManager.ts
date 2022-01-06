@@ -1,11 +1,11 @@
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { AppState } from "react-native";
-import { DataUtil } from "../util/DataUtil";
-import { BroadcastStateManager } from "./BroadcastStateManager";
-import { core } from "../Core";
-import { Scheduler } from "../logic/Scheduler";
-import { LOGe, LOGi } from "../logging/Log";
-import { tellSphere } from "../logic/constellation/Tellers";
+import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {AppState} from "react-native";
+import {DataUtil} from "../util/DataUtil";
+import {BroadcastStateManager} from "./BroadcastStateManager";
+import {core} from "../Core";
+import {Scheduler} from "../logic/Scheduler";
+import {LOGe, LOGi} from "../logging/Log";
+import {tellSphere} from "../logic/constellation/Tellers";
 
 
 const REGISTER_TRIGGER_ID = "TrackingNumberManager";
@@ -98,7 +98,7 @@ class TrackingNumberManagerClass {
           this._lastTimeHeartbeat = Date.now();
         })
         .catch((err) => {
-          LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err);
+          LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN heartbeat", err?.message);
           if (err?.message === "ERR_NOT_FOUND") {
             return this._updateMyDeviceTrackingRegistration(broadcastSphereId);
           }

@@ -418,6 +418,7 @@ interface crownstoneAdvertisementSummary {
   rssi   : number,
 }
 
+
 interface crownstoneBaseAdvertisement {
   handle              : string,
   name                : string,
@@ -426,11 +427,10 @@ interface crownstoneBaseAdvertisement {
   isInDFUMode         : boolean,
 }
 
+
 interface crownstoneAdvertisement extends crownstoneBaseAdvertisement {
   serviceData         : crownstoneServiceData // must always be present
 }
-
-
 
 
 interface ibeaconPackage {

@@ -1,19 +1,18 @@
-import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../Core";
-import { LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
-import { BleUtil } from "../../util/BleUtil";
-import { DfuHelper } from "./DfuHelper";
-import { StoneUtil } from "../../util/StoneUtil";
-import { FileUtil } from "../../util/FileUtil";
-import { DfuUtil } from "../../util/DfuUtil";
-import { DfuStateHandler } from "./DfuStateHandler";
-import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
-import { Scheduler } from "../../logic/Scheduler";
-import { Animated } from "react-native";
+import {xUtil} from "../../util/StandAloneUtil";
+import {core} from "../../Core";
+import {LOGd, LOGe, LOGi, LOGv} from "../../logging/Log";
+import {BleUtil} from "../../util/BleUtil";
+import {DfuHelper} from "./DfuHelper";
+import {StoneUtil} from "../../util/StoneUtil";
+import {FileUtil} from "../../util/FileUtil";
+import {DfuUtil} from "../../util/DfuUtil";
+import {DfuStateHandler} from "./DfuStateHandler";
+import {ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE} from "../../ExternalConfig";
+import {Scheduler} from "../../logic/Scheduler";
 
-import { SessionManager } from "../../logic/constellation/SessionManager";
-import { CommandAPI } from "../../logic/constellation/Commander";
-import { claimBluetooth } from "../../logic/constellation/Tellers";
+import {SessionManager} from "../../logic/constellation/SessionManager";
+import {CommandAPI} from "../../logic/constellation/Commander";
+import {claimBluetooth} from "../../logic/constellation/Tellers";
 
 
 export const DfuExecutionInformation = {
@@ -148,7 +147,7 @@ export class DfuExecutor {
    * @private
    */
   _handleError(err, phase, info) {
-    LOGe.dfu("DfuExecutor: Error", err, phase, info);
+    LOGe.dfu("DfuExecutor: Error", err?.message, phase, info);
 
     if (this.stopDFU)    { throw new Error(DFU_CANCELLED); }
     if (this.shownError) { throw err; }
@@ -240,8 +239,9 @@ export class DfuExecutor {
 
       // check the version of the firmware and bootload from the Crownstone via BLE
       this._setProgress(DfuPhases.SEACHING_FOR_CROWNSTONE, this.currentStep, 0.1, DfuExecutionInformation.OBTAINED_INFORMATION_CLOUD);
+      let crownstoneMode = null;
       try {
-        let crownstoneMode = await this._searchForCrownstone();
+        crownstoneMode = await this._searchForCrownstone();
 
         // IMPORTANT: we now need to block bluetooth and claimBLE for our session.
         this._setProgress(DfuPhases.RESERVING_BLE_CONTROLLER, this.currentStep, 0.1, DfuExecutionInformation.CROWNSTONE_FOUND);
@@ -263,7 +263,7 @@ export class DfuExecutor {
         if (this.currentBootloaderVersion === null) {
           LOGi.dfu("DfuExecutor: preparing to get the bootloader from DFU mode....");
           this._setProgress(DfuPhases.PUT_IN_DFU_MODE, this.currentStep, 0.7, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
-          await this._getBootloaderVersionFromDFU();
+          await this._getBootloaderVersionFromDFU(crownstoneMode);
         }
       }
       catch (err) {
@@ -317,7 +317,7 @@ export class DfuExecutor {
         let crownstoneMode = await this._searchForCrownstone();
 
         LOGi.dfu("DfuExecutor: Starting final setup...");
-        await this.dfuHelper.setup(crownstoneMode, this._getUpdateCallback(DfuPhases.SETUP, this.currentStep, true))
+        await this.dfuHelper.setup(this.claimedCommander, crownstoneMode, this._getUpdateCallback(DfuPhases.SETUP, this.currentStep, true))
       }
       catch (err) {
         this._handleError(err, DfuPhases.SETUP, DfuExecutionInformation.SETUP_FAILED);
@@ -333,11 +333,7 @@ export class DfuExecutor {
       DfuStateHandler._dfuInProgress = false;
       this.runningDfuProcess = false;
       LOGi.dfu("DfuExecutor: DFU failed.");
-      // if (this.claimedCommander) {
-      //   await this.claimedCommander.bootloaderToNormalMode().catch(() => {
-      //     throw err;
-      //   });
-      // }
+
       throw err;
     }
     finally {
@@ -401,10 +397,12 @@ export class DfuExecutor {
   }
 
 
-  async _getBootloaderVersionFromDFU() {
-    let crownstoneMode = await this._searchForCrownstone();
+  async _getBootloaderVersionFromDFU(crownstoneMode : crownstoneModes) {
     await this.dfuHelper.putInDFU(this.claimedCommander, crownstoneMode);
-    crownstoneMode = await this._searchForCrownstone("DFU");
+
+    // wait untill you see the Crownstone in DFU mode.
+    await this._searchForCrownstone("DFU");
+
     await this._getVersionsInBootloaderMode()
     if (!this.currentBootloaderVersion) {
       throw new Error("Failed to get Bootloader!")
@@ -460,8 +458,12 @@ export class DfuExecutor {
    * @param bootloaderCandidate
    */
   _checkBootloaderOperations(bootloaderCandidate) {
-    if (!bootloaderCandidate.dependsOnBootloaderVersion)                        { return Promise.resolve(); }
-    if (!xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) { return Promise.resolve(); }
+    if (!bootloaderCandidate.dependsOnBootloaderVersion)                        {
+      console.log(1, this.amountOfBootloaders)
+      return Promise.resolve(); }
+    if (xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) {
+      console.log(2, this.currentBootloaderVersion, this.amountOfBootloaders)
+      return Promise.resolve(); }
 
     if (xUtil.versions.isLower(this.currentBootloaderVersion, bootloaderCandidate.dependsOnBootloaderVersion)) {
       this.amountOfBootloaders += 1;
@@ -470,10 +472,12 @@ export class DfuExecutor {
       // we need to download the old BL first.
       return DfuUtil.getBootloaderInformation(bootloaderCandidate.dependsOnBootloaderVersion, this.hardwareVersion)
         .then((previousBootloader) => {
+          console.log("here", previousBootloader)
           return this._checkBootloaderOperations(previousBootloader);
         })
     }
     else {
+      console.log("No need")
       return Promise.resolve();
     }
   }
@@ -484,7 +488,7 @@ export class DfuExecutor {
    */
   _checkFirmwareOperations(firmwareCandidate) {
     if (!firmwareCandidate.dependsOnFirmwareVersion) { return Promise.resolve(); }
-    if (!xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) { return Promise.resolve(); }
+    if (xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) { return Promise.resolve(); }
 
     // console.log("_checkFirmwareOperations", firmwareCandidate, this.currentFirmwareVersion, firmwareCandidate.dependsOnFirmwareVersion)
     let addFirmwareOperation = () => {

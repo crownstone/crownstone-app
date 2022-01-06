@@ -54,8 +54,9 @@ export class SetupHelper {
    * @param silent            // if silent is true, this means no popups will be sent or triggered.
    * @returns {Promise<T>}
    */
-  async claim(sphereId, silent : boolean = false) : Promise<{id: string, familiarCrownstone: boolean}> {
+  async claim(sphereId, silent : boolean = false, commander : CommandAPI = null) : Promise<{id: string, familiarCrownstone: boolean}> {
     // things to be filled out during setup process
+    console.log("using commander", commander)
     this.macAddress      = undefined;
     this.cloudResponse   = undefined;
     this.firmwareVersion = undefined; // ie. 1.1.1
@@ -68,35 +69,37 @@ export class SetupHelper {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     core.eventBus.emit("ignoreTriggers");
     core.eventBus.emit("setupStarted", this.handle);
-    let api : CommandAPI = null;
+    let api : CommandAPI = commander;
     try {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 1/20 });
-      LOG.info("setup progress: connecting to ", this.handle);
-      api = await connectTo(this.handle);
-      LOG.info("setup progress: connected");
+      LOG.info("SetupHelper: connecting to ", this.handle);
+      if (api === null) {
+        api = await connectTo(this.handle);
+      }
+      LOG.info("SetupHelper: connected");
 
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 2/20 });
 
       this.macAddress = await api.getMACAddress();
-      LOG.info("setup progress: have mac address: ", this.macAddress);
+      LOG.info("SetupHelper: have mac address: ", this.macAddress);
 
       this.firmwareVersion = await api.getFirmwareVersion();
-      LOG.info("setup progress: have firmware version: ", this.firmwareVersion);
+      LOG.info("SetupHelper: have firmware version: ", this.firmwareVersion);
 
       this.hardwareVersion = await api.getHardwareVersion();
-      LOG.info("setup progress: have hardware version: ", this.hardwareVersion);
+      LOG.info("SetupHelper: have hardware version: ", this.hardwareVersion);
 
       if (xUtil.versions.canIUse(this.firmwareVersion, '5.0.0')) {
         try {
           this.uicr = await api.getUICR();
-          LOG.info("setup progress: have uicr data: ", this.uicr);
+          LOG.info("SetupHelper: have uicr data: ", this.uicr);
         }
         catch (err) {
-          LOGw.info("setup progress: Failed to get UICR data", err?.message)
+          LOGw.info("SetupHelper: Failed to get UICR data", err?.message)
         }
       }
       else {
-        LOG.info("setup progress: skip uicr data since fw is not new enough:", this.firmwareVersion);
+        LOG.info("SetupHelper: skip uicr data since fw is not new enough:", this.firmwareVersion);
       }
 
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3/20 });
@@ -107,7 +110,7 @@ export class SetupHelper {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4/20 });
 
       let meshDeviceKey = await this.getMeshDeviceKeyFromCloud(sphereId, this.stoneIdInCloud);
-      LOG.info("setup progress: DeviceKeyReceveived in cloud");
+      LOG.info("SetupHelper: DeviceKeyReceveived in cloud");
 
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5/20 });
 
@@ -118,7 +121,7 @@ export class SetupHelper {
         await this.setupCrownstone(sphereId, meshDeviceKey, api);
       }
 
-      LOG.info("setup progress: setupCrownstone done");
+      LOG.info("SetupHelper: setupCrownstone done");
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19/20 });
 
       // fast setup will require much less time in 'stand-by' after the setup has completed.
@@ -194,7 +197,7 @@ export class SetupHelper {
       // first add to database, then emit. The adding to database will cause a redraw and having this event after it can lead to race conditions / ghost stones / missing room nodes.
       core.eventBus.emit("setupComplete", this.handle);
 
-      LOG.info("setup complete");
+      LOG.info("SetupHelper: setup complete");
 
       // Resolve the setup promise.
       UpdateCenter.checkForFirmwareUpdates();
@@ -226,7 +229,7 @@ export class SetupHelper {
         // do nothing, alert was already sent
       }
 
-      LOGe.info("SetupHelper: Error during setup phase:", err);
+      LOGe.info("SetupHelper: Error during setup phase:", err?.message);
       promises.push(BluenetPromiseWrapper.phoneDisconnect(this.handle).catch(() => {}));
 
       await Promise.all(promises);

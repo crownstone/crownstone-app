@@ -1,12 +1,12 @@
-import { NotificationParser } from "../notifications/NotificationParser";
+import {NotificationParser} from "../notifications/NotificationParser";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import {Platform} from "react-native";
+import {LOG, LOGd, LOGe, LOGi, LOGw} from "../logging/Log";
+import {Util} from "../util/Util";
+import {CLOUD} from "../cloud/cloudAPI";
+import {core} from "../Core";
 
 const PushNotification = require('react-native-push-notification');
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import { Platform } from "react-native";
-import { LOG, LOGd, LOGe, LOGi, LOGw } from "../logging/Log";
-import { Util } from "../util/Util";
-import { CLOUD } from "../cloud/cloudAPI";
-import { core } from "../Core";
 
 class NotificationHandlerClass {
   requesting = false;
@@ -66,7 +66,7 @@ class NotificationHandlerClass {
               core.store.batchDispatch(actions);
             })
             .catch((err) => {
-              LOGe.info("NotificationHandler: Error during creation of Installation", err);
+              LOGe.info("NotificationHandler: Error during creation of Installation", err?.message);
             });
         }
         else {

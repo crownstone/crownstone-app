@@ -1,10 +1,10 @@
-import { CLOUD }          from "../cloud/cloudAPI";
+import {CLOUD} from "../cloud/cloudAPI";
 import {LOG, LOGe} from "../logging/Log";
-import { FileUtil } from "./FileUtil";
-import { Languages } from "../Languages";
-import { core } from "../Core";
-import { xUtil } from "./StandAloneUtil";
-import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
+import {FileUtil} from "./FileUtil";
+import {Languages} from "../Languages";
+import {core} from "../Core";
+import {xUtil} from "./StandAloneUtil";
+import {ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE} from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 const sha1 = require('sha-1');
@@ -67,7 +67,7 @@ export const DfuUtil = {
         return {notes:releaseNotes, version: highestFirmwareVersion};
       })
       .catch((err) => {
-        LOGe.info("DFU UTIL: Could not download release notes...", err);
+        LOGe.dfu("DfuUtil: Could not download release notes...", err?.message);
         let errorMessage = RELEASE_NOTES_ERROR;
         if (userConfig.firmwareVersionsAvailable[hardwareVersion.substr(0,11)] === undefined) {
           errorMessage += "\nNo firmware available form hardwareVersion: " + hardwareVersion + "\n"
@@ -104,9 +104,6 @@ export const DfuUtil = {
 
     return { stones: updatableStones, amountOfStones: Object.keys(updatableStones).length, versionsObj: versionsAvailable };
   }
-
-
-
 }
 
 function _download(sourceDetails, type) {
@@ -118,26 +115,26 @@ function _download(sourceDetails, type) {
     .then(() => {
       return CLOUD.downloadFile(sourceDetails.downloadUrl, toPath, {
         start: (data) => {
-          LOG.info("DfuHandler: start DOWNLOAD", data);
+          LOG.dfu("DfuUtil: start DOWNLOAD", data);
         },
         progress: (data) => {
-          LOG.info("DfuHandler: progress DOWNLOAD", data);
+          LOG.dfu("DfuUtil: progress DOWNLOAD", data);
         },
         success: (data) => {
-          LOG.info("DfuHandler: success DOWNLOAD", data);
+          LOG.dfu("DfuUtil: success DOWNLOAD", data);
         },
       })
     })
     .then((resultPath) => {
-      LOG.info("DfuUtil: Downloaded file", resultPath);
+      LOG.dfu("DfuUtil: Downloaded file", resultPath);
       return RNFS.readFile(resultPath, 'ascii');
     })
     .then((fileContent) => {
       return new Promise((resolve, reject) => {
         let hash = sha1(fileContent);
-        LOG.info(type, "HASH", '"' + hash + '"', '"' + sourceDetails.sha1hash + '"');
+        LOG.dfu("DfuUtil:", type, "HASH", '"' + hash + '"', '"' + sourceDetails.sha1hash + '"');
         if (hash === sourceDetails.sha1hash) {
-          LOG.info("DfuUtil: Verified hash");
+          LOG.dfu("DfuUtil: Verified hash");
           resolve(toPath);
         }
         else {
@@ -148,7 +145,7 @@ function _download(sourceDetails, type) {
       })
     })
     .catch((err) => {
-      LOGe.info("DfuUtil: Could not download file", err);
+      LOGe.dfu("DfuUtil: Could not download file", err?.message);
       return FileUtil.safeDeleteFile(toPath)
         .catch(() => { throw err; })
         .then(() => { throw err; })

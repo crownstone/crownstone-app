@@ -1,16 +1,16 @@
-import { Alert }          from 'react-native'
-import { createStore, applyMiddleware } from 'redux'
-import CrownstoneReducer                from './reducer'
-import { NativeEnhancer }               from './enhancers/nativeEnhancer'
-import { CloudEnhancer }                from './enhancers/cloudEnhancer'
-import { EventEnhancer }                from './enhancers/eventEnhancer'
+import {Alert} from 'react-native'
+import {applyMiddleware, createStore} from 'redux'
+import CrownstoneReducer from './reducer'
+import {NativeEnhancer} from './enhancers/nativeEnhancer'
+import {CloudEnhancer} from './enhancers/cloudEnhancer'
+import {EventEnhancer} from './enhancers/eventEnhancer'
 import {LOG, LOGe} from '../logging/Log'
-import { PersistenceEnhancer }          from "./enhancers/persistenceEnhancer";
+import {PersistenceEnhancer} from "./enhancers/persistenceEnhancer";
 import {Persistor} from "./persistor/Persistor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { batchActions, enableBatching } from "./reducers/BatchReducer";
-import { migrateBeforeInitialization } from "../backgroundProcesses/migration/StoreMigration";
-import { core } from "../Core";
+import {batchActions, enableBatching} from "./reducers/BatchReducer";
+import {migrateBeforeInitialization} from "../backgroundProcesses/migration/StoreMigration";
+import {core} from "../Core";
 
 const LOGGED_IN_USER_ID_STORAGE_KEY = 'CrownstoneLoggedInUser';
 
@@ -45,7 +45,7 @@ class StoreManagerClass {
       .then((userId) => {
         this._initializeStore(userId);
       })
-      .catch((err) => { LOGe.store("StoreManager: Could not get store from AsyncStorage", err)});
+      .catch((err) => { LOGe.store("StoreManager: Could not get store from AsyncStorage", err?.message)});
   }
 
   _initializeStore(userId) {
@@ -64,7 +64,7 @@ class StoreManagerClass {
               setTimeout(() => { core.eventBus.emit('storeManagerInitialized'); } , 0)
             })
             .catch((err) => {
-              LOGe.store("StoreManager: failed to initialize.", err);
+              LOGe.store("StoreManager: failed to initialize.", err?.message);
               Alert.alert("Problem with the database.","Please log in again.",[{text:"OK", onPress: () => {
                   this.persistor.endSession();
                   this.storeInitialized = true;
@@ -90,7 +90,7 @@ class StoreManagerClass {
   userLogIn(userId) {
     return this.persistor.initialize(userId, this.store)
       .catch((err) => {
-        LOGe.store("StoreManager: failed to log in user.", err);
+        LOGe.store("StoreManager: failed to log in user.", err?.message);
         throw err;
       })
   }
@@ -106,7 +106,7 @@ class StoreManagerClass {
     return AsyncStorage.setItem(LOGGED_IN_USER_ID_STORAGE_KEY, userId)
       .then((result) => { console.log("Stored logged in state", userId) })
       .catch((err) => {
-        LOGe.store("StoreManager: finalize login failed. ", err);
+        LOGe.store("StoreManager: finalize login failed. ", err?.message);
       })
   }
 
@@ -132,7 +132,7 @@ class StoreManagerClass {
             resolve();
           })
           .catch((err) => {
-            LOGe.store("StoreManager: Could not log out.", err);
+            LOGe.store("StoreManager: Could not log out.", err?.message);
             reject(err);
           })
       }

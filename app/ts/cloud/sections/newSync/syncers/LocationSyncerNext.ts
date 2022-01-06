@@ -1,12 +1,12 @@
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { Get } from "../../../../util/GetUtil";
-import { CLOUD } from "../../../cloudAPI";
-import { FileUtil } from "../../../../util/FileUtil";
-import { LOGe } from "../../../../logging/Log";
-import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { LocationTransferNext } from "../transferrers/LocationTransferNext";
-import { SyncNext } from "../SyncNext";
-import { SyncUtil } from "../../../../util/SyncUtil";
+import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
+import {Get} from "../../../../util/GetUtil";
+import {CLOUD} from "../../../cloudAPI";
+import {FileUtil} from "../../../../util/FileUtil";
+import {LOGe} from "../../../../logging/Log";
+import {SyncSphereInterface} from "./base/SyncSphereInterface";
+import {LocationTransferNext} from "../transferrers/LocationTransferNext";
+import {SyncNext} from "../SyncNext";
+import {SyncUtil} from "../../../../util/SyncUtil";
 
 
 export class LocationSyncerNext extends SyncSphereInterface<LocationData, LocationDataConfig, cloud_Location, cloud_Location_settable> {
@@ -77,7 +77,7 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
               { picture: picturePath, pictureId: cloudData.imageId, pictureTaken: Date.now() }
           });
         })
-        .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
+        .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err?.message); })
     );
   }
 

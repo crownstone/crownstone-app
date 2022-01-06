@@ -1,12 +1,12 @@
-import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
-import { Get } from "../../../../util/GetUtil";
-import { CLOUD } from "../../../cloudAPI";
-import { FileUtil } from "../../../../util/FileUtil";
-import { LOGe } from "../../../../logging/Log";
-import { SyncSphereInterface } from "./base/SyncSphereInterface";
-import { SceneTransferNext } from "../transferrers/SceneTransferNext";
-import { SyncNext } from "../SyncNext";
-import { SyncUtil } from "../../../../util/SyncUtil";
+import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
+import {Get} from "../../../../util/GetUtil";
+import {CLOUD} from "../../../cloudAPI";
+import {FileUtil} from "../../../../util/FileUtil";
+import {LOGe} from "../../../../logging/Log";
+import {SyncSphereInterface} from "./base/SyncSphereInterface";
+import {SceneTransferNext} from "../transferrers/SceneTransferNext";
+import {SyncNext} from "../SyncNext";
+import {SyncUtil} from "../../../../util/SyncUtil";
 
 
 export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, cloud_Scene, cloud_Scene_settable> {
@@ -72,7 +72,7 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
               { picture: picturePath, pictureId: cloudData.customPictureId, pictureSource: "CUSTOM" }
           });
         })
-        .catch((err) => { LOGe.cloud("SceneSyncer: Could not download scene picture to ", toPath, ' err:', err); })
+        .catch((err) => { LOGe.cloud("SceneSyncer: Could not download scene picture to ", toPath, ' err:', err?.message); })
     );
   }
 

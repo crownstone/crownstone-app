@@ -1,7 +1,7 @@
 import {LOGe} from "../../../logging/Log";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
-import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
-import { core } from "../../../Core";
+import {PresenceSyncer} from "./modelSyncs/PresenceSyncer";
+import {core} from "../../../Core";
 
 let syncingUsersInSpheres = {};
 
@@ -47,7 +47,7 @@ export const syncUsersInSphere = {
           }
         })
         .catch((err) => {
-          LOGe.cloud("SyncUsersInSphere: Error during background user sync: ", err);
+          LOGe.cloud("SyncUsersInSphere: Error during background user sync: ", err?.message);
         })
         .then(() => {
           syncingUsersInSpheres[localSphereId] = false;

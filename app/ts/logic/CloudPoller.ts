@@ -1,8 +1,8 @@
-import { CLOUD } from "../cloud/cloudAPI";
-import { MessageCenter } from "../backgroundProcesses/MessageCenter";
-import { LOGe } from "../logging/Log";
-import { NotificationHandler } from "../backgroundProcesses/NotificationHandler";
-import { InviteCenter } from "../backgroundProcesses/InviteCenter";
+import {CLOUD} from "../cloud/cloudAPI";
+import {MessageCenter} from "../backgroundProcesses/MessageCenter";
+import {LOGe} from "../logging/Log";
+import {NotificationHandler} from "../backgroundProcesses/NotificationHandler";
+import {InviteCenter} from "../backgroundProcesses/InviteCenter";
 
 class CloudPollerClass {
 
@@ -13,7 +13,7 @@ class CloudPollerClass {
         .then(() => { return                  InviteCenter.checkForInvites(); })
         .then(() => { return                  MessageCenter.checkForMessages(); })
         .catch((err) => {
-          LOGe.cloud("CloudPoller: Failed to poll.", err);
+          LOGe.cloud("CloudPoller: Failed to poll.", err?.message);
         })
     }
     else {

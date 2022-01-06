@@ -4,17 +4,17 @@
 // function lang(key,a?,b?,c?,d?,e?) {
 //   return Languages.get("DEV_DFU", key)(a,b,c,d,e);
 // }
-import { LiveComponent } from "../../LiveComponent";
-import { TopBarUtil } from "../../../util/TopBarUtil";
-import { FileUtil } from "../../../util/FileUtil";
-import { DfuHelper } from "../../../native/firmware/DfuHelper";
-import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { core } from "../../../Core";
-import { ActivityIndicator, Alert, View, Text, ScrollView } from "react-native";
-import { background, colors, screenWidth } from "../../styles";
+import {LiveComponent} from "../../LiveComponent";
+import {TopBarUtil} from "../../../util/TopBarUtil";
+import {FileUtil} from "../../../util/FileUtil";
+import {DfuHelper} from "../../../native/firmware/DfuHelper";
+import {FocusManager} from "../../../backgroundProcesses/dev/FocusManager";
+import {core} from "../../../Core";
+import {ActivityIndicator, Alert, ScrollView, Text, View} from "react-native";
+import {background, colors, screenWidth} from "../../styles";
 import React from "react";
-import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
-import { ListEditableItems } from "../../components/ListEditableItems";
+import {AnimatedBackground} from "../../components/animated/AnimatedBackground";
+import {ListEditableItems} from "../../components/ListEditableItems";
 
 const RNFS = require('react-native-fs');
 
@@ -76,7 +76,7 @@ export class DEV_DFU extends LiveComponent<{
       })
       .catch((err) => {
         this.setState({dfuActive: false, dfuProgress:0})
-        Alert.alert("FAILED", err)
+        Alert.alert("FAILED", err?.message)
       })
   }
 

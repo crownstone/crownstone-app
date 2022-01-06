@@ -1,22 +1,21 @@
-import { CLOUD }                    from '../../cloudAPI'
+import {CLOUD} from '../../cloudAPI'
 import {LOG, LOGe, LOGw} from '../../../logging/Log'
-import { AppUtil }                  from "../../../util/AppUtil";
-import { syncEvents }               from "./syncEvents";
-import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
-import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
-import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
-import { getSyncIdMap }           from "./modelSyncs/SyncingBase";
-import { Scheduler }                from "../../../logic/Scheduler";
-import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
+import {AppUtil} from "../../../util/AppUtil";
+import {syncEvents} from "./syncEvents";
+import {NotificationHandler} from "../../../backgroundProcesses/NotificationHandler";
+import {SphereSyncer} from "./modelSyncs/SphereSyncer";
+import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
+import {getSyncIdMap} from "./modelSyncs/SyncingBase";
+import {Scheduler} from "../../../logic/Scheduler";
+import {FingerprintSyncer} from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";
-import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
-import { core } from "../../../Core";
-import { CloudPoller } from "../../../logic/CloudPoller";
-import { Permissions } from "../../../backgroundProcesses/PermissionManager";
-import { xUtil } from "../../../util/StandAloneUtil";
-import { SyncNext } from "../newSync/SyncNext";
-import { MapProvider } from "../../../backgroundProcesses/MapProvider";
-
+import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
+import {core} from "../../../Core";
+import {CloudPoller} from "../../../logic/CloudPoller";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {xUtil} from "../../../util/StandAloneUtil";
+import {SyncNext} from "../newSync/SyncNext";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 
 /**
@@ -222,7 +221,7 @@ export const sync = {
         CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
         core.eventBus.emit("CloudSyncComplete");
-        LOGe.cloud("Sync: error during sync:", err);
+        LOGe.cloud("Sync: error during sync:", err?.message);
 
         throw err;
       })
@@ -246,7 +245,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
           return retryThisAfterRecovery();
         })
         .catch((err) => {
-          LOG.info("Sync: COULD NOT VERIFY USER -- ERROR", err);
+          LOG.info("Sync: COULD NOT VERIFY USER -- ERROR", err?.message);
           if (err?.status === 401) {
             AppUtil.logOut(store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }

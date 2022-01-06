@@ -1,38 +1,33 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomTraining", key)(a,b,c,d,e);
-}
+import {Languages} from "../../Languages"
 import * as React from 'react';
-import {
-  Animated,
-  Alert,
-  Vibration, Platform
-} from 'react-native';
+import {Alert, Animated, Platform, Vibration} from 'react-native';
 
 
 import KeepAwake from 'react-native-keep-awake';
 
-import { FingerprintManager } from '../../native/localization/FingerprintManager'
-import { Bluenet } from '../../native/libInterface/Bluenet'
-import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
-import { Background } from '../components/Background'
+import {FingerprintManager} from '../../native/localization/FingerprintManager'
+import {Bluenet} from '../../native/libInterface/Bluenet'
+import {canUseIndoorLocalizationInSphere} from '../../util/DataUtil'
+import {Background} from '../components/Background'
 import {LOG, LOGd, LOGe} from '../../logging/Log'
 
-import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
-import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
-import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
-import { Util } from "../../util/Util";
+import {RoomTraining_explanation} from './trainingComponents/RoomTraining_explanation'
+import {RoomTraining_training} from './trainingComponents/RoomTraining_training'
+import {RoomTraining_finished} from './trainingComponents/RoomTraining_finished'
+import {Util} from "../../util/Util";
 
 import {CLOUD} from "../../cloud/cloudAPI";
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { LiveComponent } from "../LiveComponent";
-import { background } from "../styles";
+import {core} from "../../Core";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {LiveComponent} from "../LiveComponent";
+import {background} from "../styles";
 import {BleUtil} from "../../util/BleUtil";
 import {Get} from "../../util/GetUtil";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining", key)(a,b,c,d,e);
+}
 
 const HF_SCANNING_ID = "ROOM_TRAINING";
 
@@ -211,9 +206,9 @@ export class RoomTraining extends LiveComponent<any, any> {
             });
           })
           .catch((err) => {
-            LOGe.info("uploadedFingerprint fingerprint ERROR:", err);
+            LOGe.info("uploadedFingerprint fingerprint ERROR:", err?.message);
           });
-      }).catch((err) => { LOGe.cloud("ERR W fingerprint uploading", err)});
+      }).catch((err) => { LOGe.cloud("ERR W fingerprint uploading", err?.message)});
   }
 
 

@@ -10,9 +10,9 @@
  * @param sphereInState
  */
 
-import { Util } from "../../../../util/Util";
-import { SyncingBase } from "./SyncingBase";
-import { CLOUD } from "../../../cloudAPI";
+import {Util} from "../../../../util/Util";
+import {SyncingBase} from "./SyncingBase";
+import {CLOUD} from "../../../cloudAPI";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
 
@@ -145,7 +145,7 @@ export class FingerprintSyncer extends SyncingBase {
             })
           })
           .catch((err) => {
-            LOGe.cloud("FingerprintSyncer: Could not create fingerprint in cloud", err);
+            LOGe.cloud("FingerprintSyncer: Could not create fingerprint in cloud", err?.message);
           })
       )
     }
@@ -208,7 +208,7 @@ export class FingerprintSyncer extends SyncingBase {
                   }
                 })
                 .catch((err) => {
-                  LOGe.cloud("FingerprintSyncer: Could not update fingerprint in cloud", err);
+                  LOGe.cloud("FingerprintSyncer: Could not update fingerprint in cloud", err?.message);
                 })
             );
           }
@@ -250,7 +250,7 @@ export class FingerprintSyncer extends SyncingBase {
         // }
       })
       .catch((err) => {
-        LOGe.cloud("FingerprintSyncer: Could not check updared for fingerprints in cloud.", err);
+        LOGe.cloud("FingerprintSyncer: Could not check updared for fingerprints in cloud.", err?.message);
       })
   }
 
@@ -327,7 +327,7 @@ export class FingerprintSyncer extends SyncingBase {
         }
       })
       .catch((err) => {
-        LOGe.cloud("FingerprintSyncer: Could not check get fingerprints in locations.", err);
+        LOGe.cloud("FingerprintSyncer: Could not check get fingerprints in locations.", err?.message);
       })
   }
 

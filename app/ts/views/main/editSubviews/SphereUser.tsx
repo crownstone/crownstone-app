@@ -1,26 +1,22 @@
-import { LiveComponent }          from "../../LiveComponent";
+import {LiveComponent} from "../../LiveComponent";
 
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SphereUser", key)(a,b,c,d,e);
-}
+import {Languages} from "../../../Languages"
 import * as React from 'react';
-import {
-  Alert,
-  ScrollView,
-  View
-} from 'react-native';
+import {Alert, ScrollView, View} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {LOGe} from "../../../logging/Log";
 import {Background} from "../../components/Background";
-import { background, screenWidth } from "../../styles";
+import {background, screenWidth} from "../../styles";
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { TopBarUtil } from "../../../util/TopBarUtil";
+import {core} from "../../../Core";
+import {NavigationUtil} from "../../../util/NavigationUtil";
+import {TopBarUtil} from "../../../util/TopBarUtil";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereUser", key)(a,b,c,d,e);
+}
 
 
 export class SphereUser extends LiveComponent<any, any> {
@@ -79,7 +75,7 @@ export class SphereUser extends LiveComponent<any, any> {
               lang("_Something_went_wrong__Pl_header"),
               lang("_Something_went_wrong__Pl_body"),
               [{text:lang("_Something_went_wrong__Pl_left")}]);
-            LOGe.info("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err?.message);
           })
         }
       }
@@ -113,7 +109,7 @@ export class SphereUser extends LiveComponent<any, any> {
               lang("_Something_went_wrong__Ple_header"),
               lang("_Something_went_wrong__Ple_body"),
               [{text:lang("_Something_went_wrong__Ple_left")}]);
-            LOGe.info("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err?.message);
           })
 
       }}])

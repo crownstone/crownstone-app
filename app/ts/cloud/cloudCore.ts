@@ -1,13 +1,14 @@
-import { SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
+import {NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD} from '../ExternalConfig'
+import {LOG, LOGe, LOGi} from '../logging/Log'
+import {prepareEndpointAndBody, prepareHeaders} from "./cloudUtil";
+import {defaultHeaders} from './sections/cloudApiBase'
+import {Scheduler} from "../logic/Scheduler";
+import {xUtil} from "../util/StandAloneUtil";
+import {FileUtil} from "../util/FileUtil";
+import {CloudAddresses} from "../backgroundProcesses/indirections/CloudAddresses";
+
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
-import {LOG, LOGe, LOGi} from '../logging/Log'
-import { prepareEndpointAndBody, prepareHeaders } from "./cloudUtil";
-import { defaultHeaders } from './sections/cloudApiBase'
-import {Scheduler} from "../logic/Scheduler";
-import { xUtil } from "../util/StandAloneUtil";
-import { FileUtil } from "../util/FileUtil";
-import {CloudAddresses} from "../backgroundProcesses/indirections/CloudAddresses";
 
 
 let downloadIndex = 0;
@@ -197,7 +198,7 @@ export async function downloadFile(url, targetPath, headers : HeaderObject, call
               resolve(null);
             })
             .catch((err) => {
-              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err);
+              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err?.message);
               throw err;
             });
         }
@@ -210,14 +211,14 @@ export async function downloadFile(url, targetPath, headers : HeaderObject, call
               resolve(targetPath);
             })
             .catch((err) => {
-              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err);
+              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err?.message);
               throw err;
             });
         }
       })
       .catch((err) => {
-        LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId,"Could not download file err:", err);
-        FileUtil.safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId," Could not delete file", tempPath, 'err:', err); });
+        LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId,"Could not download file err:", err?.message);
+        FileUtil.safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId," Could not delete file", tempPath, 'err:', err?.message); });
         reject(err);
       })
   });

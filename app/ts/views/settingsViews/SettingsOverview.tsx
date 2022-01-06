@@ -1,31 +1,25 @@
-import { LiveComponent }          from "../LiveComponent";
+import {LiveComponent} from "../LiveComponent";
 
-import { Languages } from "../../Languages"
+import {Languages} from "../../Languages"
+import * as React from 'react';
+import {Alert, Linking, Platform, ScrollView, Text, TouchableHighlight, View} from "react-native";
+
+import {ListEditableItems} from '../components/ListEditableItems'
+import {background, colors, styles} from "../styles";
+
+import DeviceInfo from 'react-native-device-info';
+import {core} from "../../Core";
+import {TopBarUtil} from "../../util/TopBarUtil";
+import {NavigationUtil} from "../../util/NavigationUtil";
+import {AppUtil} from "../../util/AppUtil";
+import {LOGe} from "../../logging/Log";
+import {IconButton} from "../components/IconButton";
+import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
+import {getDevAppItems} from "./dev/SettingsDeveloper";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react';
-import {
-  Linking,
-  TouchableHighlight,
-  ScrollView,
-  Text,
-  View, Alert, Platform
-} from "react-native";
-
-import { ListEditableItems } from '../components/ListEditableItems'
-import { styles, colors, background } from "../styles";
-
-import DeviceInfo from 'react-native-device-info';
-import { core } from "../../Core";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { AppUtil } from "../../util/AppUtil";
-import { LOGe } from "../../logging/Log";
-import { IconButton } from "../components/IconButton";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { getDevAppItems } from "./dev/SettingsDeveloper";
 
 export class SettingsOverview extends LiveComponent<any, any> {
   static options(props) {
@@ -144,7 +138,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
                     AppUtil.quit();
                   }
                   catch(err) {
-                    LOGe.info("Failed to quit.", err);
+                    LOGe.info("Failed to quit.", err?.message);
                   }
                 }}
             ])

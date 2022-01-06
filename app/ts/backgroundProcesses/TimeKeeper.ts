@@ -1,11 +1,11 @@
-import { Scheduler } from "../logic/Scheduler";
-import { core } from "../Core";
-import { Util } from "../util/Util";
-import { Bluenet } from "../native/libInterface/Bluenet";
-import { AppState, Platform } from "react-native";
-import { xUtil } from "../util/StandAloneUtil";
-import { broadcast, tell, tellSphere } from "../logic/constellation/Tellers";
-import { Get } from "../util/GetUtil";
+import {Scheduler} from "../logic/Scheduler";
+import {core} from "../Core";
+import {Util} from "../util/Util";
+import {Bluenet} from "../native/libInterface/Bluenet";
+import {AppState, Platform} from "react-native";
+import {xUtil} from "../util/StandAloneUtil";
+import {broadcast, tell, tellSphere} from "../logic/constellation/Tellers";
+import {Get} from "../util/GetUtil";
 
 const TRIGGER_ID = "TIME_KEEPER";
 
@@ -27,7 +27,7 @@ class TimeKeeperClass {
     if (this.initialized === false) {
       this.initialized = true;
 
-      Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds:4*3600} );
+      Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds:1*3600} );
       Scheduler.loadOverwritableCallback( TRIGGER_ID, "TIME_SETTER", this._setTime.bind(this), false);
 
       core.eventBus.on("enterSphere", (enteringSphereId) => {

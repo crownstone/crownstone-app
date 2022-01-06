@@ -1,9 +1,7 @@
-
-
 import {CLOUD} from "../cloud/cloudAPI";
 import {LOGe} from "../logging/Log";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
-import { xUtil } from "./StandAloneUtil";
+import {xUtil} from "./StandAloneUtil";
 
 export const MessageUtil = {
   uploadMessage: function(store, sphereId, messageId, message, recipients) {
@@ -43,7 +41,7 @@ export const MessageUtil = {
         });
       })
       .catch((err) => {
-        LOGe.cloud("MessageUtil: failed to send message to cloud", err);
+        LOGe.cloud("MessageUtil: failed to send message to cloud", err?.message);
         store.dispatch({
           type:'APPEND_MESSAGE',
           sphereId: sphereId,

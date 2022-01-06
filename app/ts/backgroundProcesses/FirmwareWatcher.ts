@@ -79,7 +79,7 @@ class FirmwareWatcherClass {
           }
         });
       })
-      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err?.message)});
 
     from(stone, 30).getHardwareVersion()
       .then((hardwareVersion : string) => {
@@ -92,7 +92,7 @@ class FirmwareWatcherClass {
           }
         });
       })
-      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err) });
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err?.message) });
 
     from(stone, 30).getBootloaderVersion()
       .then((bootloaderVersion : string) => {
@@ -107,7 +107,7 @@ class FirmwareWatcherClass {
           });
         }
       })
-      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get bootloader version from stone.", err) });
+      .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get bootloader version from stone.", err?.message) });
 
 
     if (xUtil.versions.canIUse(stone.config.firmwareVersion,'5.0.0')) {
@@ -122,7 +122,7 @@ class FirmwareWatcherClass {
             }
           });
         })
-        .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get uicr version from stone.", err); });
+        .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get uicr version from stone.", err?.message); });
     }
   }
 

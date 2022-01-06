@@ -236,7 +236,7 @@ class StoneDataSyncerClass {
         })
         .catch((err) => {
           if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err);
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for dimming speed", sphereId, stoneId, err?.message);
             /** if the syncing fails, we set another watcher **/
             this.update();
           }
@@ -265,7 +265,7 @@ class StoneDataSyncerClass {
         .catch((err) => {
           if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
             /** if the syncing fails, we set another watcher **/
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err);
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft", sphereId, stoneId, err?.message);
             this.update();
           }
         });
@@ -314,7 +314,7 @@ class StoneDataSyncerClass {
         })
         .catch((err) => {
           if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err);
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for tap2toggle offset", sphereId, stoneId, err?.message);
             /** if the syncing fails, we set another watcher **/
             this.update();
           }

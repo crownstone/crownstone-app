@@ -1,16 +1,15 @@
-import { Languages } from "../Languages";
+import {Languages} from "../Languages";
+import {Alert} from 'react-native';
+import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {CLOUD} from "../cloud/cloudAPI";
+import {LOGe} from '../logging/Log'
+import {core} from "../Core";
+import {LocationTransferNext} from "../cloud/sections/newSync/transferrers/LocationTransferNext";
+import {Get} from "./GetUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("CreateSphere", key)(a,b,c,d,e);
 }
-
-import { Alert } from 'react-native';
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
-import { CLOUD } from "../cloud/cloudAPI";
-import {LOGe} from '../logging/Log'
-import { core } from "../Core";
-import { LocationTransferNext } from "../cloud/sections/newSync/transferrers/LocationTransferNext";
-import { Get } from "./GetUtil";
 
 export const createNewSphere = function(name) {
   core.eventBus.emit('showLoading', lang("Creating_Sphere___"));
@@ -18,7 +17,7 @@ export const createNewSphere = function(name) {
   let newSphere_cloud_id = null; // underscores so it is visually distinctive
   return BluenetPromiseWrapper.requestLocation()
     .catch((err) => {
-      LOGe.info("Could not get Location when creating a sphere: ", err);
+      LOGe.info("Could not get Location when creating a sphere: ", err?.message);
     })
     .then((location) => {
       let latitude = undefined;
@@ -57,7 +56,7 @@ export const createNewSphere = function(name) {
     })
     .catch((err) => {
       core.eventBus.emit('hideLoading');
-      LOGe.info("Could not create sphere", err);
+      LOGe.info("Could not create sphere", err?.message);
       Alert.alert(lang("Could_not_create_sphere"), lang("Please_try_again_later_"), [{text:lang("OK")}])
     })
 };

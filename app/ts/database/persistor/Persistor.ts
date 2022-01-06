@@ -1,8 +1,8 @@
-import { Alert } from 'react-native'
+import {Alert} from 'react-native'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {PersistorUtil} from "./PersistorUtil";
-import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
-import { LOG_LEVEL } from "../../logging/LogLevels";
+import {LOGd, LOGe, LOGi, LOGw} from "../../logging/Log";
+import {LOG_LEVEL} from "../../logging/LogLevels";
 
 const LEGACY_BASE_STORAGE_KEY = 'CrownstoneStore_';
 const MIGRATION_PROGRESS_STORAGE_KEY = 'CrownstoneMigrationProgress';
@@ -107,7 +107,7 @@ export class Persistor {
         return AsyncStorage.setItem(MIGRATION_PROGRESS_STORAGE_KEY, newValue)
       })
       .catch((err) => {
-        console.warn("destroyDataFields ERROR: ", err)
+        console.warn("destroyDataFields ERROR: ", err?.message)
       })
   }
 
@@ -263,7 +263,7 @@ export class Persistor {
         this.indicateProcessEnded(initialState);
       })
       .catch((err) => {
-        LOGe.store("Persistor: Error during hydration", err);
+        LOGe.store("Persistor: Error during hydration", err?.message);
         this.indicateProcessEnded(initialState);
         throw err;
       })
@@ -352,7 +352,7 @@ export class Persistor {
           // illegal keys do not have to be _batchRemoved since that also cascades.
           return AsyncStorage.multiRemove(illegalKeys)
             .catch((err) => {
-              LOGe.store("Persistor: Hydration v2 Step1, Failed in step 1", err);
+              LOGe.store("Persistor: Hydration v2 Step1, Failed in step 1", err?.message);
               throw err;
             })
             .then(() => {
@@ -392,7 +392,7 @@ export class Persistor {
           LOGd.store("Persistor: Hydration v2 Step2, removing failing keys.", failedKeys);
           return AsyncStorage.multiRemove(failedKeys)
             .catch((err) => {
-              LOGe.store("Persistor: Hydration v2 Step2, Failed in step 2.", err);
+              LOGe.store("Persistor: Hydration v2 Step2, Failed in step 2.", err?.message);
               throw err;
             })
             .then(() => {     return this._step1() })
@@ -438,7 +438,7 @@ export class Persistor {
       LOGd.store("Persistor: Hydration v2 Step3, Removing invalid keys.", invalidKeys);
       return this._batchRemove(invalidKeys)
         .catch((err) => {
-          LOGe.store("Persistor: Hydration v2 Step3, Failed step 3", err);
+          LOGe.store("Persistor: Hydration v2 Step3, Failed step 3", err?.message);
           throw err;
         })
         .then(()                  => { return this._step1();                  })
@@ -488,7 +488,7 @@ export class Persistor {
       .then((keyValuePairArray) => { return this._step3(keyValuePairArray); })
       .then((keyValuePairArray) => { return this._step4(keyValuePairArray); })
       .catch((err) => {
-        LOGe.store("Persistor: Error during hydrate v2", err);
+        LOGe.store("Persistor: Error during hydrate v2", err?.message);
         this.fail();
         return {};
       })

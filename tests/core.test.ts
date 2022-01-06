@@ -1,7 +1,7 @@
-import { resetMocks } from "./__testUtil/mocks/suite.mock";
-import { addHub, addSphere, addStone } from "./__testUtil/helpers/data.helper";
-import { core } from "../app/ts/Core";
-import { xUtil } from "../app/ts/util/StandAloneUtil";
+import {resetMocks} from "./__testUtil/mocks/suite.mock";
+import {addSphere, addStone} from "./__testUtil/helpers/data.helper";
+import {core} from "../app/ts/Core";
+import {xUtil} from "../app/ts/util/StandAloneUtil";
 
 beforeEach(async () => {
   resetMocks()
@@ -30,6 +30,7 @@ test("versionUtil", async () => {
   expect(xUtil.versions.isValidSemver('d8139754ec667797')).toBeFalsy()
   expect(xUtil.versions.isValidSemver('4.2.1-rc1')).toBeTruthy()
   expect(xUtil.versions.isValidSemver('4.2.1')).toBeTruthy()
+  expect(xUtil.versions.isValidSemver('1.0.0')).toBeTruthy()
   expect(xUtil.versions.isValidSemver('4.6.2.10', 4)).toBeTruthy()
   // expect(xUtil.versions.isLower('3fca3fva3dfv4rdf2qf3','4.6.3.1')).toBeFalsy()
 })

@@ -1,7 +1,7 @@
-import { Navigation } from "react-native-navigation";
+import {Navigation} from "react-native-navigation";
 // import * as Sentry from "@sentry/react-native";
-import { LOGd, LOGi, LOGw } from "../logging/Log";
-import { core } from "../Core";
+import {LOGd, LOGi, LOGw} from "../logging/Log";
+import {core} from "../Core";
 
 const BASE_TAB_NAME = "BASE_TAB";
 
@@ -640,7 +640,7 @@ export const NavigationUtil = {
         LOGi.nav("DISMISS Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        LOGi.nav("DISMISS Going back from ", backFrom, " FAILED!", err)
+        LOGi.nav("DISMISS Going back from ", backFrom, " FAILED!", err?.message)
       });
   },
 
@@ -818,7 +818,7 @@ export const NavigationUtil = {
         LOGi.nav("Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        LOGi.nav("Going back from ", backFrom, " FAILED!", err)
+        LOGi.nav("Going back from ", backFrom, " FAILED!", err?.message)
       })
   },
 
@@ -833,7 +833,7 @@ export const NavigationUtil = {
         LOGi.nav("Going back baseStackBack ", backFrom, " success!")
       })
       .catch((err) => {
-        LOGi.nav("Going back baseStackBack ", backFrom, " FAILED!", err)
+        LOGi.nav("Going back baseStackBack ", backFrom, " FAILED!", err?.message)
       })
   },
 
