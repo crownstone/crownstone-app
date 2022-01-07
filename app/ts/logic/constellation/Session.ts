@@ -101,6 +101,7 @@ export class Session {
     }
 
     this.state = "DISCONNECTED";
+    LOGi.constellation("Session: _handleDisconnectedState", this.recoverFromDisconnect, this._isSessionActive());
     if (this.recoverFromDisconnect && this._isSessionActive() ) {
       LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
     }
@@ -206,6 +207,8 @@ export class Session {
     }
     catch (err) {
       LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      this.interactionModule.isDeactivated();
+
       if (!this._isSessionActive()) {
         // the session will be ended once the cancelConnectionRequest has finished.
         return;
@@ -213,7 +216,6 @@ export class Session {
 
       // a failed connection will automatically retry until the session is ended.
       LOGi.constellation("Session: Reinitializing the bootstrapper to reactivate the session", this.handle, this. identifier);
-      this.interactionModule.isDeactivated();
       this.initializeBootstrapper();
       return;
     }
@@ -288,6 +290,9 @@ export class Session {
     await this.handleCommands();
   }
 
+  waitForDisconnect() : Promise<void> {
+    return new Promise((resolve, reject) => { this._pendingForClose.push(resolve) });
+  }
 
   /**
    * This will be called when the SessionManager closes this session.
@@ -355,7 +360,6 @@ export class Session {
     else {
       LOGi.constellation("Session: disconnecting from phone...", this.handle, this.identifier);
       await BluenetPromiseWrapper.phoneDisconnect(this.handle);
-
     }
 
     LOGi.constellation("Session: disconnect done", this.handle, this.identifier);

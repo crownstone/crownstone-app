@@ -188,7 +188,10 @@ export class SessionManagerClass {
       // This is assuming that the resolve is not done before that.
 
       // IF the session does NOT exist yet, we can create the session.
-      if (!session) {
+      if (this._blocked) {
+        // the request will be added to pending below;
+      }
+      else if (!session) {
         this._createSession(handle, commanderId, privateSessionRequest);
         // the request will be added to pending below;
       }
@@ -361,8 +364,18 @@ export class SessionManagerClass {
    */
   async disconnectSession(handle: string, commanderId: string) {
     let session = this._sessions[handle];
-    if (session && session.isPrivate() && session.privateId === commanderId && session.state !== "DISCONNECTING" && session.state !== "DISCONNECTED") {
-      await session.disconnect();
+    // LOGi.constellation("DisconnectSession Data", session === undefined);
+    // if (session) {
+    //   LOGi.constellation("session exists", session.isPrivate(), session.privateId === commanderId, session.state)
+    // }
+    if (session && session.isPrivate() && session.privateId === commanderId&& session.state !== "DISCONNECTED") {
+      if (session.state === "DISCONNECTING") {
+        await session.waitForDisconnect();
+      }
+      else {
+        // LOGi.constellation("attempting disconnect")
+        await session.disconnect();
+      }
     }
   }
 
@@ -377,10 +390,12 @@ export class SessionManagerClass {
    */
   async _endSession(handle) {
     LOGi.constellation("SessionManager: Ending session in manager", handle)
-    let session = this._sessions[handle];
 
     delete this._sessions[handle];
     delete this._activeSessions[handle];
+
+    // if we have blocked the sessionManager, do not create new sessions now.
+    if (this._blocked) { return; }
 
     // the session either had an error, it was killed, or it had nothing to do and as closed (shared session only)
 
@@ -389,7 +404,7 @@ export class SessionManagerClass {
     if (this._pendingPrivateSessionRequests[handle] && this._pendingPrivateSessionRequests[handle].length > 0) {
       let pendingPrivate = this._pendingPrivateSessionRequests[handle][0];
       LOGi.constellation("SessionManager: creating session after the previous session had ended for private commander.", handle, pendingPrivate.commanderId);
-      this._createSession(handle, pendingPrivate.commanderId, true)
+      this._createSession(handle, pendingPrivate.commanderId, true);
     }
     else {
       let newRequest = this.checkIfSessionIsStillRequired(handle);
@@ -453,18 +468,18 @@ export class SessionManagerClass {
     // here we wait for a max of 1 minute for any private sessions to close.
     // new sessions cannot be started due to the _blocked boolean.
 
-    LOGi.constellation("IntiatingBlock: Initiating block. Waiting for sessions to expire.");
+    LOGi.constellation("SessionManager: InitiatingBlock: Initiating block. Waiting for sessions to expire.");
     while (privateSessionsPresent && timeWaitedMs < 60000) {
       privateSessionsPresent = false;
       for (let handle in this._activeSessions) {
-        LOGd.constellation("IntiatingBlock: Active session found", handle);
+        LOGd.constellation("SessionManager: IntiatingBlock: Active session found", handle);
         let session = this._sessions[handle];
         if (session && session.isPrivate()) {
           privateSessionsPresent = true;
         }
       }
 
-      LOGd.constellation("IntiatingBlock: privateSessionsPresent", privateSessionsPresent, timeWaitedMs);
+      LOGd.constellation("SessionManager: InitiatingBlock: privateSessionsPresent", privateSessionsPresent, timeWaitedMs);
       if (privateSessionsPresent != false) {
         await Scheduler.delay(stepMs);
       }
@@ -472,11 +487,11 @@ export class SessionManagerClass {
     }
 
     // now we close any remaining active session.
-    LOGi.constellation("InitiatingBlock: Closing active sessions.", this._activeSessions);
+    LOGi.constellation("SessionManager: InitiatingBlock: Closing active sessions.", this._activeSessions);
     for (let handle in this._activeSessions) {
-      LOGi.constellation("IntiatingBlock: Closing Session...", handle)
+      LOGi.constellation("SessionManager: InitiatingBlock: Closing Session...", handle)
       await this.closeSession(handle);
-      LOGi.constellation("IntiatingBlock: Closed Session.", handle)
+      LOGi.constellation("SessionManager: InitiatingBlock: Closed Session.", handle)
     }
 
     // since we wait for disconnect events from the bluetooth stack, we wait for all active sessions to automatically be deactivated.
@@ -485,25 +500,52 @@ export class SessionManagerClass {
     // by allowing the wait to be 20 seconds, we ensure that all connections are over.
     // The only exception here being DFU. That is why we first wait for all private connections to end by themselves.
     while (Object.keys(this._activeSessions).length > 0 && timeWaitedMs < 20000) {
-      LOGd.constellation("InitiatingBlock, waiting for sessions to close.", this._activeSessions, Object.keys(this._activeSessions))
+      LOGd.constellation("SessionManager: InitiatingBlock, waiting for sessions to close.", this._activeSessions, Object.keys(this._activeSessions))
       await Scheduler.delay(stepMs);
       timeWaitedMs += stepMs;
     }
 
     // if any are stuck for whatever reason, we manually clean them up.
-    LOGi.constellation("InitiatingBlock: Awaiting the forced ending of the active sessions.", this._activeSessions);
+    LOGi.constellation("SessionManager: InitiatingBlock: Awaiting the forced ending of the active sessions.", this._activeSessions);
     for (let handle in this._activeSessions) {
-      LOGi.constellation("IntiatingBlock: Forcing end of Session...", handle)
+      LOGi.constellation("SessionManager: InitiatingBlock: Forcing end of Session...", handle)
       await this._sessions[handle].sessionHasEnded();
-      LOGi.constellation("IntiatingBlock: Session ended.", handle)
+      LOGi.constellation("SessionManager: InitiatingBlock: Session ended.", handle)
     }
 
     this._activeSessions = {};
-    LOGi.constellation("InitiatingBlock: Finished.")
+    LOGi.constellation("SessionManager: InitiatingBlock: Finished.")
   }
 
   releaseBlock() {
+    LOGi.constellation("SessionManager: Releasing Block.")
     this._blocked = false;
+
+    // check all pending private requests
+    for (let handle in this._pendingPrivateSessionRequests) {
+      let itemsForHandle = this._pendingPrivateSessionRequests[handle];
+      if (itemsForHandle.length > 0) {
+        let pendingPrivate = this._pendingPrivateSessionRequests[handle][0];
+
+        if (this._blocked) { return; }
+
+        LOGi.constellation("SessionManager: creating session after the previous session had ended for private commander.", handle, pendingPrivate.commanderId);
+        this._createSession(handle, pendingPrivate.commanderId, true);
+      }
+    }
+
+    // check all pending public requests
+    for (let handle in this._pendingSessionRequests) {
+      // if a private session was requested above, do not make a public one.
+      if (this._sessions[handle] !== undefined) { continue; }
+
+      let itemsForHandle = this._pendingSessionRequests[handle];
+      if (itemsForHandle.length > 0) {
+        let pendingPublic = this._pendingSessionRequests[handle][0];
+        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle].length);
+        this._createSession(handle, pendingPublic.commanderId, false);
+      }
+    }
   }
 
 }

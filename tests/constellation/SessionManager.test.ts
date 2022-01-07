@@ -1,16 +1,12 @@
-import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
-import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
-import {
-  Command_AllowDimming,
-  Command_GetHardwareVersion,
-  Command_TurnOn
-} from "../../app/ts/logic/constellation/commandClasses";
-import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
+import {mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {SessionManagerClass} from "../../app/ts/logic/constellation/SessionManager";
+import {addSphere, addStone, createMockDatabase} from "../__testUtil/helpers/data.helper";
+import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
+import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
+import {Command_AllowDimming} from "../../app/ts/logic/constellation/commandClasses";
+import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 
 
 beforeEach(async () => {
@@ -333,14 +329,8 @@ test("Session manager being paused with no active sessions. It should block new 
 
   await TestUtil.nextTick();
 
-  expect(sessionManager._sessions[handle].state).toBe("INITIALIZING");
-  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
-  expect(sessionManager._activeSessions).toStrictEqual({});
-
-  // this should normally trigger a connection request if it was allowed
-  evt_ibeacon(-70, handle);
-  expect(mBluenetPromise.has(handle).called.connect()).toBeFalsy();
-  expect(sessionManager._sessions[handle].state).toBe("INITIALIZING");
+  expect(sessionManager._sessions[handle]).toBeUndefined();
+  expect(sessionManager._pendingPrivateSessionRequests[handle].length).toBe(1);
 });
 
 

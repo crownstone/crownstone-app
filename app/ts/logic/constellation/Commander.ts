@@ -1,6 +1,6 @@
-import { xUtil } from "../../util/StandAloneUtil";
-import { core } from "../../Core";
-import { BleCommandManager } from "./BleCommandManager";
+import {xUtil} from "../../util/StandAloneUtil";
+import {core} from "../../Core";
+import {BleCommandManager} from "./BleCommandManager";
 import {
   Command_AddBehaviour,
   Command_AllowDimming,
@@ -78,9 +78,9 @@ import {
   Command_TurnOn,
   Command_UpdateBehaviour
 } from "./commandClasses";
-import { SessionBroker } from "./SessionBroker";
-import { LOGd, LOGe, LOGi } from "../../logging/Log";
-import { Command_SetTimeViaBroadcast } from "./commandClasses/Command_SetTimeViaBroadcast";
+import {SessionBroker} from "./SessionBroker";
+import {LOGd, LOGe, LOGi} from "../../logging/Log";
+import {Command_SetTimeViaBroadcast} from "./commandClasses/Command_SetTimeViaBroadcast";
 import {Command_GetUICR} from "./commandClasses/Command_GetUICR";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
 
@@ -101,9 +101,6 @@ class CommandAPI_base {
   id : string | null;
   options : commandOptions;
 
-  _connectionRequested   : boolean = false;
-  _targetConnectionState : { [handle: string] : ConnectionState } = {};
-
   broker : SessionBroker;
 
   _ended = false;
@@ -115,6 +112,16 @@ class CommandAPI_base {
 
     LOGi.constellation("Commander: Created for target", this.options.commandTargets, "options:", JSON.stringify(this.options));
     this.broker = new SessionBroker(this.options);
+  }
+
+  isConnected() : boolean {
+    if (this.options.commandTargets.length !== 1) {
+      LOGe.constellation("Commander: Cannot use isConnected when there are multiple targets.");
+      return false;
+    }
+    let targetHandle = this.options.commandTargets[0];
+
+    return this.broker.isConnectedTo(targetHandle)
   }
 
   /**

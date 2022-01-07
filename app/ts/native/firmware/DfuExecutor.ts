@@ -431,15 +431,6 @@ export class DfuExecutor {
   }
 
 
-  // _getFirmwareVersionFromStone() {
-  //   return StoneUtil.checkFirmwareVersion(this.sphereId, this.stoneId)
-  //     .then((firmwareVersion) => {
-  //       this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.5, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
-  //       this.__storeFirmwareVersion(firmwareVersion);
-  //     })
-  // };
-
-
   __storeFirmwareVersion(firmwareVersion) {
     this.currentFirmwareVersion = firmwareVersion;
     LOGi.dfu("DfuExecutor: Stone firmware version received.", this.currentFirmwareVersion);
