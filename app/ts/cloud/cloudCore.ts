@@ -72,7 +72,6 @@ export async function request(
     fetch(url, requestConfig as any)
       .catch((connectionError) => {
         if (requestDidTimeout === false) {
-          console.log("Failed network error")
           cancelFallbackCallback();
           failedRequest = true;
           reject(new Error('Network request to ' + url + ' failed'));

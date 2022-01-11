@@ -17,8 +17,6 @@ export class SessionBroker {
 
   _unsubscribeListeners = [];
 
-  requestedSessions : [] = [];
-
   connectedSessions : { [handle: string]:    { id: string, private: boolean } } = {};
   pendingSessions   : { [handle: string]:    Promise<void> } = {};
   pendingCommands   : { [commandId: string]: BleCommand } = {};
@@ -27,6 +25,12 @@ export class SessionBroker {
     this.options = commandOptions;
   }
 
+  isConnectedTo(handle: string) : boolean {
+    if (this.connectedSessions[handle] !== undefined) {
+      return true;
+    }
+    return false;
+  }
 
   loadSession(handle: string, commandId: string = xUtil.getUUID(), privateSession: boolean = true) {
     this.connectedSessions[handle] = { id: xUtil.getUUID(), private: privateSession };

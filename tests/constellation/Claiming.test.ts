@@ -1,21 +1,10 @@
-import { mBluenetPromise, mocks, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
-import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
-import { xUtil } from "../../app/ts/util/StandAloneUtil";
-import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
-import {
-  Command_AllowDimming, Command_GetBootloaderVersion,
-  Command_GetFirmwareVersion,
-  Command_GetHardwareVersion,
-  Command_TurnOn
-} from "../../app/ts/logic/constellation/commandClasses";
-import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { broadcast, claimBluetooth, connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
-import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
+import {mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
+import {createMockDatabase} from "../__testUtil/helpers/data.helper";
+import {claimBluetooth, tell} from "../../app/ts/logic/constellation/Tellers";
+import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
 
 beforeEach(async () => {
   BleCommandManager.reset()
@@ -73,4 +62,102 @@ test("Check claiming Bluetooth to handle session with connect / disconnect", asy
   expect(SessionManager._sessions[handle]).toBeUndefined();
   expect(SessionManager._activeSessions[handle]).toBeUndefined();
 });
+
+
+
+test("Check claiming Bluetooth to handle session with open commands", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+
+  tell(handle).allowDimming(true);
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(1)
+  evt_ibeacon(-70, handle);
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(1)
+  expect(Object.keys(SessionManager._activeSessions).length).toBe(1)
+
+  let block = SessionManager.intiateBlock()
+
+  expect(mBluenetPromise.has(handle).called.cancelConnectionRequest()).toBeTruthy();
+  await mBluenetPromise.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenetPromise.for(handle).succeed.cancelConnectionRequest();
+
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(1)
+  expect(Object.keys(SessionManager._activeSessions).length).toBe(0)
+
+  await TestUtil.nextTick()
+  mScheduler.triggerDelay()
+  await block;
+
+  expect(Object.keys(SessionManager._sessions).length).toBe(0)
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(1)
+
+  let claimedCommanderPromise = claimBluetooth(handle,30)
+
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.connect("dfu")
+
+  let commander = await claimedCommanderPromise;
+
+  commander.end()
+
+  await TestUtil.nextTick()
+  expect(mBluenetPromise.has(handle).called.phoneDisconnect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
+  evt_disconnected(handle);
+
+  await TestUtil.nextTick()
+  expect(Object.keys(SessionManager._sessions).length).toBe(0)
+
+  // releasing block, the previous pending commands will resume.
+  SessionManager.releaseBlock();
+
+  expect(Object.keys(SessionManager._sessions).length).toBe(1)
+});
+
+
+
+
+test("Check claiming Bluetooth to handle session with open commands which timeout during the claim", async () => {
+  let db = createMockDatabase(meshId, secondMeshId);
+  let handle = db.stones[0].handle;
+
+  let expectedError
+
+  tell(handle).allowDimming(true).catch((err) => { expectedError = err; })
+  evt_ibeacon(-70, handle);
+
+  let block = SessionManager.intiateBlock()
+
+  await mBluenetPromise.for(handle).fail.connect("CONNECTION_CANCELLED");
+  await mBluenetPromise.for(handle).succeed.cancelConnectionRequest();
+
+  await TestUtil.nextTick()
+  mScheduler.triggerDelay()
+  await block;
+
+  let claimedCommanderPromise = claimBluetooth(handle,30)
+  await mBluenetPromise.for(handle).succeed.connect("dfu")
+
+  let commander = await claimedCommanderPromise;
+
+  // fire the timeout
+  await mScheduler.trigger();
+  expect(expectedError?.message).toBe("SESSION_REQUEST_TIMEOUT");
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(0)
+
+  commander.end();
+
+  await TestUtil.nextTick()
+  expect(mBluenetPromise.has(handle).called.phoneDisconnect()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.phoneDisconnect();
+  evt_disconnected(handle);
+
+  await TestUtil.nextTick()
+  expect(Object.keys(SessionManager._sessions).length).toBe(0)
+
+  // releasing block, the previous pending commands will resume.
+  SessionManager.releaseBlock();
+
+});
+
 

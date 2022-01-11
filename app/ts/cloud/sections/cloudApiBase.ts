@@ -117,7 +117,6 @@ export const cloudApiBase = {
       // make sure we do not show this popup when too much time has passed.
       // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
       if (Date.now()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
-        console.log("HERE", String(this._networkErrorHandler))
         this._networkErrorHandler(error);
       }
 

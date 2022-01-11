@@ -431,15 +431,6 @@ export class DfuExecutor {
   }
 
 
-  // _getFirmwareVersionFromStone() {
-  //   return StoneUtil.checkFirmwareVersion(this.sphereId, this.stoneId)
-  //     .then((firmwareVersion) => {
-  //       this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.5, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
-  //       this.__storeFirmwareVersion(firmwareVersion);
-  //     })
-  // };
-
-
   __storeFirmwareVersion(firmwareVersion) {
     this.currentFirmwareVersion = firmwareVersion;
     LOGi.dfu("DfuExecutor: Stone firmware version received.", this.currentFirmwareVersion);
@@ -458,12 +449,8 @@ export class DfuExecutor {
    * @param bootloaderCandidate
    */
   _checkBootloaderOperations(bootloaderCandidate) {
-    if (!bootloaderCandidate.dependsOnBootloaderVersion)                        {
-      console.log(1, this.amountOfBootloaders)
-      return Promise.resolve(); }
-    if (xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) {
-      console.log(2, this.currentBootloaderVersion, this.amountOfBootloaders)
-      return Promise.resolve(); }
+    if (!bootloaderCandidate.dependsOnBootloaderVersion)                       { return Promise.resolve(); }
+    if (xUtil.versions.isValidSemver(this.currentBootloaderVersion) === false) { return Promise.resolve(); }
 
     if (xUtil.versions.isLower(this.currentBootloaderVersion, bootloaderCandidate.dependsOnBootloaderVersion)) {
       this.amountOfBootloaders += 1;
@@ -472,12 +459,10 @@ export class DfuExecutor {
       // we need to download the old BL first.
       return DfuUtil.getBootloaderInformation(bootloaderCandidate.dependsOnBootloaderVersion, this.hardwareVersion)
         .then((previousBootloader) => {
-          console.log("here", previousBootloader)
           return this._checkBootloaderOperations(previousBootloader);
         })
     }
     else {
-      console.log("No need")
       return Promise.resolve();
     }
   }
