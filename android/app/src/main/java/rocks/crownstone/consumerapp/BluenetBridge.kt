@@ -7,10 +7,7 @@
 
 package rocks.crownstone.consumerapp
 
-import android.app.ActivityManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.PendingIntent
+import android.app.*
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
@@ -77,6 +74,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private lateinit var behaviourSyncer: BehaviourSyncerFromCrownstone
 
 	private val ONGOING_NOTIFICATION_ID = 99115
+	private val BLE_STATUS_NOTIFICATION_ID = 99116
+	private val LOCATION_STATUS_NOTIFICATION_ID = 99117
 
 	// Scanning
 	enum class ScannerState {
@@ -88,6 +87,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var scannerState = ScannerState.STOPPED
 	private var isTracking = false
 	private var batterySaving = false
+	private var backgroundScanning = true
 
 	// Localization
 	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
@@ -523,6 +523,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			sendEvent("locationStatus", "off")
 		}
 		else {
+			NotificationManagerCompat.from(reactContext).cancel(LOCATION_STATUS_NOTIFICATION_ID)
 			sendEvent("locationStatus", "on")
 		}
 	}
@@ -536,6 +537,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		else {
 			Log.i(TAG, "sendBleStatus poweredOn")
+			NotificationManagerCompat.from(reactContext).cancel(BLE_STATUS_NOTIFICATION_ID)
 			sendEvent("bleStatus", "poweredOn")
 		}
 	}
@@ -936,6 +938,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		else {
 			bluenet.runInBackground()
 		}
+		backgroundScanning = enable
 	}
 
 	private fun updateScanner() {
@@ -2924,12 +2927,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onLocationStatus $event")
 		when (event) {
 			BluenetEvent.NO_LOCATION_SERVICE_PERMISSION -> {
+				if (backgroundScanning) {
+					NotificationManagerCompat.from(reactContext).notify(LOCATION_STATUS_NOTIFICATION_ID, getNotification(false, "Location permission missing.", "App needs location permission for localization to work."))
+				}
 			}
 			BluenetEvent.LOCATION_PERMISSION_GRANTED -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_ON -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_OFF -> {
+				if (backgroundScanning) {
+					NotificationManagerCompat.from(reactContext).notify(LOCATION_STATUS_NOTIFICATION_ID, getNotification(false, "Location disabled.", "Location needs to be enabled for localization to work."))
+				}
 			}
 		}
 		sendLocationStatus()
@@ -2940,10 +2949,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onBleStatus $event")
 		when (event) {
 			BluenetEvent.BLE_TURNED_ON -> {
-//				NotificationManagerCompat.from(reactContext).notify(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running", "Crownstone is running in the background"))
 			}
 			BluenetEvent.BLE_TURNED_OFF -> {
-//				NotificationManagerCompat.from(reactContext).notify(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone stopped", "Bluetooth turned off", true))
+				if (backgroundScanning) {
+					NotificationManagerCompat.from(reactContext).notify(BLE_STATUS_NOTIFICATION_ID, getNotification(false, "Localization not working", "Bluetooth must be enabled for localization to work."))
+				}
 			}
 		}
 		sendBleStatus()
@@ -3454,9 +3464,46 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
-	private fun getServiceNotification(title: String, text: String, important: Boolean = false): Notification {
-		val notificationChannelId = "Crownstone" // The id of the notification channel. Must be unique per package. The value may be truncated if it is too long.
-//		val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background)
+	private fun sendNotification(title: String, text: String) {
+		getNotification(false, title, text)
+	}
+
+	private fun getServiceNotification(title: String, text: String): Notification {
+		return getNotification(true, title, text)
+	}
+
+	private fun getNotification(serviceNotification: Boolean, title: String, text: String): Notification {
+		// The id of the notification channel. Must be unique per package. The value may be truncated if it is too long.
+		val channelId = when (serviceNotification) {
+			true -> "Service"
+			false -> "Notification"
+		}
+
+		// The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
+		val channelName = when (serviceNotification) {
+			true -> "Background"
+			false -> "Alerts"
+		}
+
+		// The recommended maximum length is 300 characters; the value may be truncated if it is too long.
+		val channelDescription = when (serviceNotification) {
+			true -> "Shows when the app is running in the backbround."
+			false -> "Various alerts."
+		}
+
+		val importance = when (serviceNotification) {
+			true -> android.app.NotificationManager.IMPORTANCE_MIN
+			false -> android.app.NotificationManager.IMPORTANCE_DEFAULT
+		}
+
+		val comparImportance = when (serviceNotification) {
+			true -> NotificationCompat.PRIORITY_LOW
+			false -> NotificationCompat.PRIORITY_DEFAULT
+		}
+
+		val showBadge = !serviceNotification
+		val onGoing = serviceNotification
+
 
 		val notificationIntent = Intent(reactContext, MainActivity::class.java)
 //		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -3468,14 +3515,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (Build.VERSION.SDK_INT >= 26) {
 			// Create the notification channel, must be done before posting any notification.
 			// It's safe to call this repeatedly because creating an existing notification channel performs no operation.
-			val name = "Crownstone" // The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
-			val importance = when (important) {
-				true -> android.app.NotificationManager.IMPORTANCE_MAX
-				false -> android.app.NotificationManager.IMPORTANCE_MIN
-			}
-			val channel = NotificationChannel(notificationChannelId, name, importance)
-//			channel.description = "description" // The recommended maximum length is 300 characters; the value may be truncated if it is too long.
-			channel.setShowBadge(false)
+			val channel = NotificationChannel(channelId, channelName, importance)
+			channel.description = channelDescription
+			channel.setShowBadge(showBadge)
 
 			// Register the channel with the system; you can't change the importance or other notification behaviors after this
 			val notificationManager = reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
@@ -3489,21 +3531,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
 
-		val notification = NotificationCompat.Builder(reactContext, notificationChannelId)
+		val notification = NotificationCompat.Builder(reactContext, channelId)
 		notification.setSmallIcon(R.drawable.icon_notification)
 		notification.setContentTitle(title)
 		notification.setContentText(text)
 		notification.setContentIntent(pendingIntent)
-		notification.setOngoing(true)
+		notification.setOngoing(onGoing)
 
-		if (important) {
-//			notification.setVibrate(null)
-//			notification.setSound(null)
-			notification.setPriority(NotificationCompat.PRIORITY_HIGH)
-		}
-		else {
-			notification.setPriority(NotificationCompat.PRIORITY_LOW)
-		}
+		notification.setPriority(comparImportance)
 
 		notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 		// TODO: add action to close the app + service
