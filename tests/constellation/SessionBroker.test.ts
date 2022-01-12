@@ -1,25 +1,13 @@
-import {
-  mBluenetPromise,
-  mConstellationState,
-  mocks,
-  mScheduler,
-  resetMocks,
-  TestHookCatcher
-} from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { addLocation, addSphere, addStone } from "../__testUtil/helpers/data.helper";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
+import {mBluenetPromise, mConstellationState, mocks, resetMocks, TestHookCatcher} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
+import {addSphere, addStone} from "../__testUtil/helpers/data.helper";
+import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
 
-import { Collector } from "../../app/ts/logic/constellation/Collector";
-import { StoneAvailabilityTracker } from "../../app/ts/native/advertisements/StoneAvailabilityTracker";
-import {
-  Command_GetFirmwareVersion,
-  Command_GetHardwareVersion
-} from "../../app/ts/logic/constellation/commandClasses";
-import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
-import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
+import {StoneAvailabilityTracker} from "../../app/ts/native/advertisements/StoneAvailabilityTracker";
+import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
+import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 
 beforeEach(async () => {
   StoneAvailabilityTracker.sphereLog = {};

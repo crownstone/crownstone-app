@@ -429,7 +429,6 @@ class BackgroundProcessHandlerClass {
     }
   }
 
-
   startSingletons() {
     LogProcessor.init();
     BleLogger.init();

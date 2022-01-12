@@ -1,21 +1,11 @@
-import { mBluenetPromise, mocks, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
-import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
-import { xUtil } from "../../app/ts/util/StandAloneUtil";
-import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
-import {
-  Command_AllowDimming, Command_GetBootloaderVersion,
-  Command_GetFirmwareVersion,
-  Command_GetHardwareVersion,
-  Command_TurnOn
-} from "../../app/ts/logic/constellation/commandClasses";
-import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { broadcast, claimBluetooth, connectTo, tell } from "../../app/ts/logic/constellation/Tellers";
-import { SessionManager, SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
+import {mBluenetPromise, mocks, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
+import {createMockDatabase} from "../__testUtil/helpers/data.helper";
+import {broadcast, claimBluetooth, connectTo, tell} from "../../app/ts/logic/constellation/Tellers";
+import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
+import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 
 beforeEach(async () => {
   BleCommandManager.reset()

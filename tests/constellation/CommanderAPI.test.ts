@@ -1,21 +1,10 @@
-import { mBluenet, mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { BleCommandManagerClass } from "../../app/ts/logic/constellation/BleCommandManager";
-import { addSphere, addStone, createMockDatabase } from "../__testUtil/helpers/data.helper";
-import { xUtil } from "../../app/ts/util/StandAloneUtil";
-import { MapProvider } from "../../app/ts/backgroundProcesses/MapProvider";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
-import {
-  Command_AllowDimming,
-  Command_GetFirmwareVersion,
-  Command_GetHardwareVersion,
-  Command_TurnOn
-} from "../../app/ts/logic/constellation/commandClasses";
-import { Executor } from "../../app/ts/logic/constellation/Executor";
-import { CommandAPI } from "../../app/ts/logic/constellation/Commander";
-
-
+import {mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
+import {createMockDatabase} from "../__testUtil/helpers/data.helper";
+import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
+import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 
 
 let BleCommandManager = null;

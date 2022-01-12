@@ -1,6 +1,4 @@
 import * as ReactNative from "react-native";
-import { AppState } from "react-native";
-import { AsyncHookResult, PowerState } from "react-native-device-info/src/internal/types";
 
 export const Platform = {
   ...ReactNative.Platform,
