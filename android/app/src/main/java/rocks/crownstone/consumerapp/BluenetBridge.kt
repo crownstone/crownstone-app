@@ -21,6 +21,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.*
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -84,17 +85,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		BALANCED,
 		HIGH_POWER
 	}
-//	private var uniqueScansOnly = false // Easier than unsubscribing and subscribing to events.
 	private var scannerState = ScannerState.STOPPED
-	private var prevScannerState = ScannerState.STOPPED
 	private var isTracking = false
-	private var appForeGround = true // Assume we start in foreground.
+	private var batterySaving = false
 
 	// Localization
 	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
 	private var isLocalizationTrainingPaused = false
 	private var lastLocationId: String? = null
 	private var lastSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
+	private var isInSphere = false
 
 	private var nearestStoneSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
 	private var nearestSetupSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
@@ -165,10 +165,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onBridgeHostResume() {
 		Log.i(TAG, "onHostResume")
-		appForeGround = true
 		initBluenetPromise.success {
 			handler.post {
-				bluenet.filterForCrownstones(true)
 				// When the GUI is killed, but the app is still running,
 				// the GUI needs to get the location and BLE status when the GUI is opened again.
 				// Although we might be in login screen, this is unlikely.
@@ -181,12 +179,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onBridgeHostPause() {
 		Log.i(TAG, "onHostPause")
-		appForeGround = false
-		initBluenetPromise.success {
-			handler.post {
-				bluenet.filterForCrownstones(false)
-			}
-		}
 	}
 
 	fun onTrimMemory(level: Int) {
@@ -266,7 +258,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		reactContext.addLifecycleEventListener(lifecycleEventListener)
 
-		initBluenetPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
+		initBluenetPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running", "Crownstone is running in the background"))
 		initLogger()
 		initBluenetPromise
 				.success {
@@ -766,8 +758,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (nearestSetupSub == null) {
 			nearestSetupSub = bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 		}
-		scannerState = ScannerState.HIGH_POWER
-		updateScanner()
 	}
 
 	@ReactMethod
@@ -786,8 +776,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.unsubscribe(nearestSetupSubVal)
 			nearestSetupSub = null
 		}
-		scannerState = prevScannerState
-		updateScanner()
 	}
 
 	@ReactMethod
@@ -826,10 +814,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun startScanning() {
 		Log.i(TAG, "startScanning")
-//		scannerState = ScannerState.HIGH_POWER
-		scannerState = ScannerState.BALANCED
-		bluenet.filterForIbeacons(true)
-		bluenet.filterForCrownstones(appForeGround)
+		scannerState = ScannerState.HIGH_POWER
 		updateScanner()
 	}
 
@@ -837,10 +822,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun startScanningForCrownstones() {
 		Log.i(TAG, "startScanningForCrownstones")
-//		scannerState = ScannerState.HIGH_POWER
-		scannerState = ScannerState.BALANCED
-		bluenet.filterForIbeacons(true)
-		bluenet.filterForCrownstones(appForeGround)
+		scannerState = ScannerState.HIGH_POWER
 		updateScanner()
 	}
 
@@ -850,8 +832,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startScanningForCrownstonesUniqueOnly")
 		// Validated and non validated, but unique only.
 		scannerState = ScannerState.UNIQUE_ONLY
-		bluenet.filterForIbeacons(true)
-		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
 	}
 
@@ -894,7 +874,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 		bluenet.iBeaconRanger.stopTracking(uuid)
-		// TODO: change isTracking?
+		// TODO: set isTracking = false when no more uuid are tracked.
 	}
 
 	@ReactMethod
@@ -932,10 +912,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun batterySaving(enable: Boolean) {
 		Log.i(TAG, "batterySaving $enable")
+		batterySaving = enable
 		// Called when app goes to foreground with enable=true
 		// Called when app goes to background with enable=false
 		// When enabled, beacon ranging should still continue.
-		// TODO
+		initBluenetPromise.success {
+			handler.post {
+				updateScanner()
+			}
+		}
 	}
 
 	@ReactMethod
@@ -946,7 +931,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// When disabled, no scanning has to happen in background.
 		if (enable) {
 			// TODO: This is actually a promise, but it should happen faster than it's possible to click a button.
-			bluenet.runInForeground(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
+			bluenet.runInForeground(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running", "Crownstone is running in the background"))
 		}
 		else {
 			bluenet.runInBackground()
@@ -954,33 +939,23 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun updateScanner() {
-		bluenet.filterForIbeacons(isTracking)
-		when (scannerState) {
-			ScannerState.STOPPED -> {
-				if (isTracking) {
-					bluenet.setScanInterval(ScanMode.BALANCED)
-					bluenet.startScanning()
-				}
-				else {
-					bluenet.stopScanning()
-				}
-			}
-			ScannerState.UNIQUE_ONLY,
-			ScannerState.BALANCED-> {
-				if (isTracking) {
-					bluenet.setScanInterval(ScanMode.BALANCED)
-				}
-				else {
-					bluenet.setScanInterval(ScanMode.BALANCED)
-				}
-				bluenet.startScanning()
-			}
-			ScannerState.HIGH_POWER -> {
-				bluenet.setScanInterval(ScanMode.LOW_LATENCY)
-				bluenet.startScanning()
-			}
+		Log.i(TAG, "updateScanner scannerState=$scannerState isTracking=$isTracking batterySaving=$batterySaving")
+		if ((scannerState == ScannerState.STOPPED) && !isTracking) {
+			bluenet.stopScanning()
+			return
 		}
-		prevScannerState = scannerState
+
+		val scanMode: ScanMode = when (isInSphere) {
+			true -> ScanMode.LOW_LATENCY
+			false -> ScanMode.BALANCED
+		}
+
+		Log.i(TAG, "Scan with scanMode=$scanMode")
+		bluenet.setScanInterval(scanMode)
+//		bluenet.filterForIbeacons(isTracking)
+		bluenet.filterForIbeacons(true) // Always filter for iBeacons, we need them to decrypt service data.
+		bluenet.filterForCrownstones(!batterySaving)
+		bluenet.startScanning()
 	}
 //endregion
 
@@ -2965,8 +2940,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onBleStatus $event")
 		when (event) {
 			BluenetEvent.BLE_TURNED_ON -> {
+//				NotificationManagerCompat.from(reactContext).notify(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running", "Crownstone is running in the background"))
 			}
 			BluenetEvent.BLE_TURNED_OFF -> {
+//				NotificationManagerCompat.from(reactContext).notify(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone stopped", "Bluetooth turned off", true))
 			}
 		}
 		sendBleStatus()
@@ -3012,8 +2989,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun onRegionEnter(eventData: IbeaconRegionEventData) {
+		isInSphere = eventData.list.isNotEmpty()
+		updateScanner()
+
 		val uuid = eventData.changedRegion
 		val referenceId = eventData.changedRegionReferenceId
+
 		lastSphereId = referenceId
 		Log.i(TAG, "enterSphere uuid=$uuid refId=$referenceId")
 		sendEvent("enterSphere", referenceId)
@@ -3021,8 +3002,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun onRegionExit(eventData: IbeaconRegionEventData) {
+		isInSphere = eventData.list.isNotEmpty()
+		updateScanner()
+
 		val uuid = eventData.changedRegion
 		val referenceId = eventData.changedRegionReferenceId
+
 		// TODO: this should be in the localization library
 		if (referenceId == lastSphereId && lastLocationId != null) {
 			Log.i(TAG, "Send exit $lastSphereId $lastLocationId")
@@ -3469,7 +3454,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
-	private fun getServiceNotification(text: String): Notification {
+	private fun getServiceNotification(title: String, text: String, important: Boolean = false): Notification {
 		val notificationChannelId = "Crownstone" // The id of the notification channel. Must be unique per package. The value may be truncated if it is too long.
 //		val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background)
 
@@ -3484,9 +3469,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			// Create the notification channel, must be done before posting any notification.
 			// It's safe to call this repeatedly because creating an existing notification channel performs no operation.
 			val name = "Crownstone" // The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
-//			val importance = android.app.NotificationManager.IMPORTANCE_NONE
-			val importance = android.app.NotificationManager.IMPORTANCE_MIN
-//			val importance = android.app.NotificationManager.IMPORTANCE_LOW
+			val importance = when (important) {
+				true -> android.app.NotificationManager.IMPORTANCE_MAX
+				false -> android.app.NotificationManager.IMPORTANCE_MIN
+			}
 			val channel = NotificationChannel(notificationChannelId, name, importance)
 //			channel.description = "description" // The recommended maximum length is 300 characters; the value may be truncated if it is too long.
 			channel.setShowBadge(false)
@@ -3504,20 +3490,28 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
 
 		val notification = NotificationCompat.Builder(reactContext, notificationChannelId)
-				.setSmallIcon(R.drawable.icon_notification)
-				.setContentTitle("Crownstone is running")
-				.setContentText(text)
-				.setContentIntent(pendingIntent)
-				.setOngoing(true)
-				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-				// TODO: add action to close the app + service
-				// TODO: add action to pause the app?
-//				.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
-//				.setLargeIcon()
-				.build()
+		notification.setSmallIcon(R.drawable.icon_notification)
+		notification.setContentTitle(title)
+		notification.setContentText(text)
+		notification.setContentIntent(pendingIntent)
+		notification.setOngoing(true)
 
-		return notification
+		if (important) {
+//			notification.setVibrate(null)
+//			notification.setSound(null)
+			notification.setPriority(NotificationCompat.PRIORITY_HIGH)
+		}
+		else {
+			notification.setPriority(NotificationCompat.PRIORITY_LOW)
+		}
+
+		notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+		// TODO: add action to close the app + service
+		// TODO: add action to pause the app?
+//		notification.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
+//		notification.setLargeIcon()
+
+		return notification.build()
 	}
 }
 //endregion
