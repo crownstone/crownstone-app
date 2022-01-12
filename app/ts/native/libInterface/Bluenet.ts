@@ -56,7 +56,7 @@ const BluenetAPI = {
   clearFingerprints:        () => { console.log("BluenetBridgeCall: clearFingerprints:       "); },
   setTime:                  () => { console.log("BluenetBridgeCall: setTime:                 "); },
   meshSetTime:              () => { console.log("BluenetBridgeCall: meshSetTime:             "); },
-  batterySaving:            () => { console.log("BluenetBridgeCall: batterySaving:           "); },
+  batterySaving:            () => { console.log("BluenetBridgeCall: batterySaving:           "); }, // Called with true when app goes to background, lib can stop parsing service data. Can be called multiple times in short time.
   setBackgroundScanning:    () => { console.log("BluenetBridgeCall: setBackgroundScanning:   "); },
 
   viewsInitialized:         () => { console.log("BluenetBridgeCall: viewsInitialized:  "); },
