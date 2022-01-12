@@ -1,12 +1,10 @@
-import { mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
-import { TestUtil } from "../__testUtil/util/testUtil";
-import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
-import { SessionManagerClass } from "../../app/ts/logic/constellation/SessionManager";
-import { addLocation, addSphere, addStone } from "../__testUtil/helpers/data.helper";
-import { getCommandOptions } from "../__testUtil/helpers/constellation.helper";
+import {resetMocks} from "../__testUtil/mocks/suite.mock";
+import {TestUtil} from "../__testUtil/util/testUtil";
+import {eventHelperSetActive, evt_ibeacon} from "../__testUtil/helpers/event.helper";
+import {addLocation, addSphere, addStone} from "../__testUtil/helpers/data.helper";
 
-import { Collector } from "../../app/ts/logic/constellation/Collector";
-import { StoneAvailabilityTracker } from "../../app/ts/native/advertisements/StoneAvailabilityTracker";
+import {Collector} from "../../app/ts/logic/constellation/Collector";
+import {StoneAvailabilityTracker} from "../../app/ts/native/advertisements/StoneAvailabilityTracker";
 
 
 beforeEach(async () => {

@@ -360,7 +360,6 @@ class LocationHandlerClass {
 
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
-
         });
       })
       .catch((err) => { LOGe.info("Tracking Spheres Failed", err?.message); })
