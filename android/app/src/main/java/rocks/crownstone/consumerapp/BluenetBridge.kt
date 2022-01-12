@@ -523,7 +523,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			sendEvent("locationStatus", "off")
 		}
 		else {
-			NotificationManagerCompat.from(reactContext).cancel(LOCATION_STATUS_NOTIFICATION_ID)
+			cancelNotification(LOCATION_STATUS_NOTIFICATION_ID)
 			sendEvent("locationStatus", "on")
 		}
 	}
@@ -537,7 +537,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		else {
 			Log.i(TAG, "sendBleStatus poweredOn")
-			NotificationManagerCompat.from(reactContext).cancel(BLE_STATUS_NOTIFICATION_ID)
+			cancelNotification(BLE_STATUS_NOTIFICATION_ID)
 			sendEvent("bleStatus", "poweredOn")
 		}
 	}
@@ -2928,7 +2928,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		when (event) {
 			BluenetEvent.NO_LOCATION_SERVICE_PERMISSION -> {
 				if (backgroundScanning) {
-					NotificationManagerCompat.from(reactContext).notify(LOCATION_STATUS_NOTIFICATION_ID, getNotification(false, "Location permission missing.", "App needs location permission for localization to work."))
+					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location permission missing.", "App needs location permission for localization to work.")
 				}
 			}
 			BluenetEvent.LOCATION_PERMISSION_GRANTED -> {
@@ -2937,7 +2937,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_OFF -> {
 				if (backgroundScanning) {
-					NotificationManagerCompat.from(reactContext).notify(LOCATION_STATUS_NOTIFICATION_ID, getNotification(false, "Location disabled.", "Location needs to be enabled for localization to work."))
+					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location disabled.", "Location needs to be enabled for localization to work.")
 				}
 			}
 		}
@@ -2952,7 +2952,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 			BluenetEvent.BLE_TURNED_OFF -> {
 				if (backgroundScanning) {
-					NotificationManagerCompat.from(reactContext).notify(BLE_STATUS_NOTIFICATION_ID, getNotification(false, "Localization not working", "Bluetooth must be enabled for localization to work."))
+					sendNotification(BLE_STATUS_NOTIFICATION_ID, "Localization not working", "Bluetooth must be enabled for localization to work.")
 				}
 			}
 		}
@@ -3464,8 +3464,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
-	private fun sendNotification(title: String, text: String) {
-		getNotification(false, title, text)
+	private fun sendNotification(id: Int, title: String, text: String) {
+		NotificationManagerCompat.from(reactContext).notify(id, getNotification(false, title, text))
+	}
+
+	private fun cancelNotification(id: Int) {
+		NotificationManagerCompat.from(reactContext).cancel(id)
 	}
 
 	private fun getServiceNotification(title: String, text: String): Notification {
@@ -3496,8 +3500,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			false -> android.app.NotificationManager.IMPORTANCE_DEFAULT
 		}
 
-		val comparImportance = when (serviceNotification) {
-			true -> NotificationCompat.PRIORITY_LOW
+		val compatImportance = when (serviceNotification) {
+			true -> NotificationCompat.PRIORITY_MIN
 			false -> NotificationCompat.PRIORITY_DEFAULT
 		}
 
@@ -3538,7 +3542,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		notification.setContentIntent(pendingIntent)
 		notification.setOngoing(onGoing)
 
-		notification.setPriority(comparImportance)
+//		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+			notification.setPriority(compatImportance)
+//		}
 
 		notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 		// TODO: add action to close the app + service
