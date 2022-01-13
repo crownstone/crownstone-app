@@ -88,6 +88,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var isTracking = false
 	private var batterySaving = false
 	private var backgroundScanning = true
+	private var appForeGround = false
 
 	// Localization
 	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
@@ -165,6 +166,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onBridgeHostResume() {
 		Log.i(TAG, "onHostResume")
+		appForeGround = true
 		initBluenetPromise.success {
 			handler.post {
 				// When the GUI is killed, but the app is still running,
@@ -179,6 +181,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onBridgeHostPause() {
 		Log.i(TAG, "onHostPause")
+		appForeGround = false
 	}
 
 	fun onTrimMemory(level: Int) {
@@ -2927,7 +2930,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onLocationStatus $event")
 		when (event) {
 			BluenetEvent.NO_LOCATION_SERVICE_PERMISSION -> {
-				if (backgroundScanning) {
+				if (backgroundScanning && !appForeGround) {
 					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location permission missing.", "App needs location permission for localization to work.")
 				}
 			}
@@ -2936,7 +2939,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			BluenetEvent.LOCATION_SERVICE_TURNED_ON -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_OFF -> {
-				if (backgroundScanning) {
+				if (backgroundScanning && !appForeGround) {
 					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location disabled.", "Location needs to be enabled for localization to work.")
 				}
 			}
@@ -2951,7 +2954,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			BluenetEvent.BLE_TURNED_ON -> {
 			}
 			BluenetEvent.BLE_TURNED_OFF -> {
-				if (backgroundScanning) {
+				if (backgroundScanning && !appForeGround) {
 					sendNotification(BLE_STATUS_NOTIFICATION_ID, "Localization not working", "Bluetooth must be enabled for localization to work.")
 				}
 			}
