@@ -19,7 +19,6 @@ buildscript {
         googlePlayServicesVisionVersion = "17.0.2" // Used by camera module
         androidMapsUtilsVersion = "0.5+"
     }
-    println "here we set mindSdkVersion ${ext.minSdkVersion}"
 
     repositories {
         google()
