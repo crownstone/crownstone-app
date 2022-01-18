@@ -144,6 +144,7 @@ function getLeftButton(id, label) {
       id: id,
       icon: require('../../assets/images/icons/backArrow.png'),
       showAsAction: 'always',
+      testID:id,
     }
   }
   else {
