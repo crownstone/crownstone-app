@@ -19,7 +19,7 @@ class CrownstoneBootReceiver: BroadcastReceiver() {
 	private val TAG = this.javaClass.simpleName
 
 	override fun onReceive(context: Context, intent: Intent?) {
-		Log.e(TAG, "Handle boot event: context=$context context.applicationContext=${context.applicationContext} intent=$intent extras=${intent?.extras}")
+		Log.w(TAG, "Handle boot event: context=$context context.applicationContext=${context.applicationContext} intent=$intent extras=${intent?.extras}")
 
 		// The react code has to run on the main thread.
 		val handler = Handler(Looper.getMainLooper())
