@@ -10,6 +10,11 @@
     "android-release": {
       "type": "android.apk",
       "binaryPath": "android/app/build/outputs/apk/release/app-release.apk"
+    },
+    "android-debug": {
+      "type": "android.apk",
+      "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd .."
     }
   },
   "devices": {
@@ -19,10 +24,10 @@
         "type": "iPhone 13"
       }
     },
-    "s7": {
+    "android-device": {
       "type": "android.attached",
       "device": {
-        "adbName": "988667375251555033"
+        "adbName": ".*"
       }
     }
   },
@@ -31,9 +36,9 @@
       "device": "simulator",
       "app": "ios-debug"
     },
-    "android-s7": {
-      "device": "s7",
-      "app": "android-release"
+    "android-debug-device": {
+      "device": "android-device",
+      "app": "android-debug"
     }
   }
 }
