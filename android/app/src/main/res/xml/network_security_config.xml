@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- As per https://wix.github.io/Detox/docs/introduction/android/#setup-%EF%B8%8F -->
+<network-security-config>
+<domain-config cleartextTrafficPermitted="true">
+	<!-- 10.0.2.2 for Google emulators, 10.0.3.2 for Genymotion emulators -->
+	<domain includeSubdomains="true">10.0.2.2</domain>
+	<domain includeSubdomains="true">localhost</domain>
+</domain-config>
+</network-security-config>

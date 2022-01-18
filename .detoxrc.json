@@ -5,7 +5,11 @@
   "apps": {
     "ios-debug": {
       "type": "ios.app",
-        "binaryPath": "./ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app"
+      "binaryPath": "./ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app"
+    },
+    "android-release": {
+      "type": "android.apk",
+      "binaryPath": "android/app/build/outputs/apk/release/app-release.apk"
     }
   },
   "devices": {
@@ -14,12 +18,22 @@
       "device": {
         "type": "iPhone 13"
       }
+    },
+    "s7": {
+      "type": "android.attached",
+      "device": {
+        "adbName": "988667375251555033"
+      }
     }
   },
   "configurations": {
     "ios-debug": {
       "device": "simulator",
       "app": "ios-debug"
+    },
+    "android-s7": {
+      "device": "s7",
+      "app": "android-release"
     }
   }
 }

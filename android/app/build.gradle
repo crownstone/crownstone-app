@@ -152,6 +152,7 @@ android {
 
 
     defaultConfig {
+        println "here we use mindSdkVersion ${rootProject.ext.minSdkVersion}"
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -163,6 +164,10 @@ android {
 //        }
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
+
+        // Detox, as per https://wix.github.io/Detox/docs/introduction/android
+        testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     splits {
         abi {
@@ -201,6 +206,10 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources false // Only works with minifyEnabled?
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            // Detox-specific additions to pro-guard
+            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
+
 //            debuggable false
             // debuggable false
             // jniDebuggable false
@@ -251,6 +260,8 @@ dependencies {
     implementation project(':localization-lib-android')
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    androidTestImplementation('com.wix:detox:+')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
