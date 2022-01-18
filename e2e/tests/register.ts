@@ -1,5 +1,5 @@
 import { by, device, expect, element, waitFor } from 'detox';
-import {$, alertButton, tapAlertButton, tapAlertCancelButton, tapAlertOKButton} from "../util/testUtil";
+import {$, tapAlertButton, tapAlertCancelButton, tapAlertOKButton} from "../util/testUtil";
 
 
 export const TestRegisterNewUser = () => {

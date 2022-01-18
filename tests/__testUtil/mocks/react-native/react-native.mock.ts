@@ -27,6 +27,8 @@ export function mockReactNative() {
   mockRN.reset = () => { mockRN.appState = 'active' }
   return mockRN;
 }
+
+
 jest.mock("react-native-navigation", () => {
   return {
     Navigation:{
@@ -34,9 +36,6 @@ jest.mock("react-native-navigation", () => {
     }}
 })
 
-jest.mock("react-native-extra-dimensions-android", () => {
-  return jest.fn()
-})
 
 jest.mock("react-native-device-info", () => {
   return {
