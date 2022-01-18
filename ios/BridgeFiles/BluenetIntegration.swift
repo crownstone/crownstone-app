@@ -243,7 +243,7 @@ open class BluenetJS: RCTEventEmitter {
         LOGGER.info("BluenetBridge: Called connect to handle:\(handle) referenceId:\(referenceId) highPriority:\(highPriority.boolValue) uuid:\(function_uuid) ")
         GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
             .done{ crownstoneMode -> Void in
-                successReply("connect", crownstoneMode, function_uuid, callback)
+                successReply("connect", "\(crownstoneMode)", function_uuid, callback)
             }
             .catch{err in
                 errReply("connect", err, function_uuid, callback)
@@ -1319,5 +1319,11 @@ func errReply(_ label: String, _ err: Any, _ function_uuid: String, _ callback: 
 
 func successReply(_ label: String, _ data: Any?, _ function_uuid: String, _ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Finished \(label) withArgs: \(String(describing: data)) uuid:\(function_uuid)")
-    callback([["error" : false, "data": data]])
+    if let dataResult = data {
+        callback([["error" : false, "data": dataResult]])
+    }
+    else {
+        callback([["error" : false, "data": nil]])
+    }
+    
 }

@@ -274,7 +274,7 @@ export class BleCommandManagerClass {
         commandRemoved = true;
       }
       else if (command.commandType === 'MESH') {
-        // if the error is not connected,
+        // if the error is NOT not_connected,
         if (err?.message !== "NOT_CONNECTED") {
           command.promise.reject(err);
           LOGw.constellation("BleCommandManager: Failing the mesh command", command.command.type, handle, err?.message, command.id);

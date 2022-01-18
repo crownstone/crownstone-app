@@ -42,7 +42,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
           reject(new Error(result.data));
         }
         else {
-			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " npm start:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           BugReportUtil.breadcrumb("BLE: Finished Command",{
             functionCalled: functionName,
             id: id,
@@ -76,8 +76,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
     if (!handle) { throw new Error("CANT_CONNECT_NO_HANDLE") }
 
     return BluenetPromise('connect', handle, referenceId, highPriority)
-      .then(() => {
+      .then((crownstoneMode) => {
         core.eventBus.emit("connected", handle);
+        return crownstoneMode
       })
 
   },

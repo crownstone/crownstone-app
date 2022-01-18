@@ -6183,11 +6183,6 @@ react-native-device-info@^8.4.5:
   resolved "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.4.6.tgz"
   integrity sha512-T2x3B2zij+nnTGQU+WIjCk5cb3C+jAW7YqruxRTevM+NMaFwvBVMQ+IU8VPpXM9GyFahvVoCSdAb/wuCUUVlTw==
 
-react-native-extra-dimensions-android@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.npmjs.org/react-native-extra-dimensions-android/-/react-native-extra-dimensions-android-1.2.5.tgz"
-  integrity sha512-eorFo9X1vEqAWUkgcZ300yKBG1wtgNeE7tdWAH2CE+P50FGTniJg5Sr6l1iPWG8ZskQOuF+KeiSTFlDa4vLfMw==
-
 react-native-fs@^2.18.0:
   version "2.18.0"
   resolved "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.18.0.tgz"
