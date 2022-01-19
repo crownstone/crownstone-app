@@ -97,6 +97,7 @@ export class Session {
     // this means that we should not end the session as we'll enter the reconnect phase in the error handling of the connect promise.
     if (this.state === "CONNECTING") {
       LOGi.constellation("Session: Disconnect event before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      this.state = "DISCONNECTED";
       return;
     }
 
