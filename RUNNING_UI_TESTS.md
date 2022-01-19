@@ -44,6 +44,46 @@ npm run react
 We use detox to run the tests.
 
 ```
-./run_UI_tests.sh
+./run_UI_tests_ios.sh
 ```
+
+# Android
+
+## Debug build
+
+First build the app:
+```
+cd android
+./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug
+cd ..
+```
+
+When running a test on a debug build, make sure the react-native server is running:
+```
+cd android
+./reverse.sh
+cd ..
+react-native start
+```
+
+## Release build
+
+First build the app:
+```
+cd android
+./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release
+cd ..
+```
+
+Then run the tests:
+```
+./run_UI_tests_android.sh
+```
+
+
+
+# Developing UI tests
+
+In android studio, you can find out the ids of GUI elements with the "layout inspector", while running a debug build.
+
 
