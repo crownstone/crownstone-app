@@ -17,11 +17,23 @@ export function androidAlertButton(index: number = 0) {
   }
 }
 
-export async function tapAlertButton(index: number = 0) {
-  await expect(iosAlertButton(index)).toBeVisible();
-  await iosAlertButton(index).tap()
-  await expect(iosAlertButton(index)).not.toBeVisible();
+async function tapAlertButton(index) {
+  if (Platform() === 'ios') {
+    await expect(iosAlertButton(index)).toBeVisible();
+    await iosAlertButton(index).tap()
+    await expect(iosAlertButton(index)).not.toBeVisible();
+  }
+  else {
+    await expect(androidAlertButton(index)).toBeVisible();
+    await androidAlertButton(index).tap()
+    await expect(androidAlertButton(index)).not.toBeVisible();
+  }
 }
+export async function tapSingularAlertButton() {
+  return tapAlertButton(0);
+}
+
+
 export async function tapAlertCancelButton() {
   if (Platform() === 'ios') {
     await tapAlertButton(0)
@@ -48,10 +60,9 @@ function delay(num) : Promise<void> {
 
 export function Platform() {
   try {
-    // @ts-ignore
     let platform = process.env.PLATFORM;
     if (platform !== 'ios' && platform !== 'android') {
-      throw new Error("Platform launch argument must be provided!")
+      throw new Error("Platform launch argument must be provided and must be either ios or android!")
     }
     return platform;
   }

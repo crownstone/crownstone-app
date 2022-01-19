@@ -91,7 +91,6 @@ export class BroadcastCommandManagerClass {
 
   _broadcast(bleCommand: BleCommand<BroadcastInterface>) {
     let itemId = this._prepareForExecution(bleCommand);
-    let type = bleCommand.command.type;
     LOGi.constellation("BroadcastCommandManager: broadcasting", bleCommand.command.type, bleCommand.id);
     Scheduler.scheduleCallback(() => { bleCommand.promise.resolve(); }, 120, "auto resolve broadcast promise" );
 
