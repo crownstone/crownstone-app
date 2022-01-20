@@ -152,12 +152,11 @@ android {
 
 
     defaultConfig {
-        println "here we use mindSdkVersion ${rootProject.ext.minSdkVersion}"
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 //        missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 110
+        versionCode 111
         versionName"5.0.0"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"

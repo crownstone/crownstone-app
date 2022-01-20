@@ -34,10 +34,16 @@ The config file is `.detoxrc.json`.
 Ensure the app is built for the configuration you want to tests (see .detoxrc.json)
 
 ## Running react
+
 If you're debugging an app, ensure you are running the React builder
 ```
 npm run react
 ```
+
+## IP address
+
+In order for the test app to find the test cloud, the script needs the IP address of your computer.
+By default, it will use the first result of `ipconfig`, but that is not always correct. In that case, provice your IP address to the script.
 
 # iOS
 
