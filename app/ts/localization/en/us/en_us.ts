@@ -2130,6 +2130,7 @@ export default {
     Last_Name:                              function() { return "Last Name" },
     Email:                                  function() { return "Email" },
     Change_Password:                        function() { return "Change Password" },
+    DELETE_USER:                            function() { return "Download or delete user data" },
     Enable_Developer_Mode:                  function() { return "Enable Developer Mode" },
     This_will_enable_certain_:              function() { return "This will enable certain features that are useful for developers. Only use if you know what you\'re doing." },
     My_Account:                             function() { return "My Account" },
