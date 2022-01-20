@@ -7,8 +7,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert,
-  ScrollView, TouchableWithoutFeedback,
+  Alert, Linking,
+  ScrollView, Text, TouchableHighlight, TouchableWithoutFeedback,
   View
 } from "react-native";
 
@@ -145,6 +145,18 @@ export class SettingsProfile extends LiveComponent<any, any> {
           ]
         )
       }
+    });
+    items.push({
+      type: 'explanation',
+      __item: (
+        <View style={{backgroundColor:'transparent'}}>
+          <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
+            <TouchableHighlight onPress={() => { Linking.openURL('https://next.crownstone.rocks/user-data').catch(err => {})}}>
+              <Text style={{fontSize:12, color:colors.blue3.hex}}>{ lang("DELETE_USER") }</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      )
     });
 
     items.push({type:'spacer'});

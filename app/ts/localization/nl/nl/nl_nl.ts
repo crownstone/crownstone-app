@@ -4121,6 +4121,7 @@ export default {
     Last_Name:                              function() { return "Achternaam"; },
     Email:                                  function() { return "E-mail"; },
     Change_Password:                        function() { return "Wachtwoord wijzigen"; },
+    DELETE_USER:                            function() { return "Download of verwijder gebruikersdata" },
     Enable_Developer_Mode:                  function() { return "Activeer de ontwikkelaarsmodus"; },
     This_will_enable_certain_:              function() { return "Dit maakt bepaalde functies mogelijk die nuttig zijn voor ontwikkelaars. Alleen gebruiken als je weet wat je doet."; },
     My_Account:                             function() { return "Mijn Account"; },
