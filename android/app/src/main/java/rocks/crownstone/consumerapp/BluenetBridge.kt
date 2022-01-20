@@ -3525,6 +3525,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			val channel = NotificationChannel(channelId, channelName, importance)
 			channel.description = channelDescription
 			channel.setShowBadge(showBadge)
+			channel.setSound(null, null)
 
 			// Register the channel with the system; you can't change the importance or other notification behaviors after this
 			val notificationManager = reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
@@ -3544,6 +3545,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		notification.setContentText(text)
 		notification.setContentIntent(pendingIntent)
 		notification.setOngoing(onGoing)
+		notification.setSound(null)
 
 //		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 			notification.setPriority(compatImportance)
