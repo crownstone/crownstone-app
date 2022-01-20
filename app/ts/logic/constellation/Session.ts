@@ -353,7 +353,7 @@ export class Session {
     }
 
     LOGi.constellation("Session: closing commands done.", this.handle, this.identifier);
-    if (this.crownstoneMode === "operation") {
+    if (this.crownstoneMode === "operation" && Platform.OS !== 'ios') {
       // tell the crownstone to disconnect from the phone.
       LOGi.constellation("Session: telling the Crownstone to disconnect...", this.handle, this.identifier);
       await BluenetPromiseWrapper.disconnectCommand(this.handle);
