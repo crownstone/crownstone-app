@@ -5,8 +5,7 @@ import {LOG, LOGd, LOGe, LOGi, LOGw} from "../logging/Log";
 import {Util} from "../util/Util";
 import {CLOUD} from "../cloud/cloudAPI";
 import {core} from "../Core";
-
-const PushNotification = require('react-native-push-notification');
+import PushNotification, {Importance} from 'react-native-push-notification';
 
 class NotificationHandlerClass {
   requesting = false;
@@ -120,6 +119,16 @@ class NotificationHandlerClass {
        */
       requestPermissions: false,
     });
+
+    if (Platform.OS === 'android') {
+      PushNotification.createChannel(
+        {
+          channelId: "crownstone-notification-channel", // (required)
+          channelName: "Crownstone notifications", // (required)
+        },
+        (created) => console.log(`NotificationHandler: Created channel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+      );
+    }
   }
 
   request() {

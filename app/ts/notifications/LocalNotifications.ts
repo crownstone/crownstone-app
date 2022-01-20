@@ -77,6 +77,7 @@ export const LocalNotifications = {
           // deliver message through local notification.
           if (Platform.OS === 'android') {
             PushNotification.localNotification({
+              channelId: 'crownstone-notification-channel',
               tag: 'newMessage',
 
               data: data,
@@ -128,6 +129,7 @@ export const LocalNotifications = {
       let data = {source: 'crownstonePopup', type: 'info'};
       if (Platform.OS === 'android') {
         PushNotification.localNotification({
+          channelId:"crownstone-notification-channel",
           tag: 'crownstonePopup',
           data: data,
           message: text, // (required)
