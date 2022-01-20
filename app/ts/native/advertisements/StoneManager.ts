@@ -223,7 +223,13 @@ class StoneManagerClass {
 
     // emit event of valid crownstone
     if (advertisement.rssi && advertisement.rssi < 0) {
-      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi, handle: advertisement.handle, payloadId: referenceByCrownstoneId.id, sphereId: advertisement.referenceId})
+      core.eventBus.emit("AdvertisementOfValidCrownstone", {
+        stoneId: referenceByHandle.id,
+        rssi: advertisement.rssi,
+        handle: advertisement.handle,
+        payloadId: referenceByCrownstoneId.id,
+        sphereId: advertisement.referenceId
+      });
     }
 
     // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.

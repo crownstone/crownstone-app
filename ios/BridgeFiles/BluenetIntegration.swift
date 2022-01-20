@@ -267,8 +267,11 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     @objc func disconnectCommand(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
-        let handleUUID = UUID(uuidString: handle)
-        wrapForBluenet("disconnectCommand", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).disconnect())
+        LOGGER.info("BluenetBridge: Called disconnectCommand from handle \(handle) but performing phoneDisconnect instead")
+        wrapForBluenet("phoneDisconnect", callback, GLOBAL_BLUENET.bluenet.disconnect(handle: handle))
+        
+//        let handleUUID = UUID(uuidString: handle)
+//        wrapForBluenet("disconnectCommand", callback, GLOBAL_BLUENET.bluenet.control(handleUUID!).disconnect())
     }
     
     @objc func toggleSwitchState(_ handle: String, stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {

@@ -20,6 +20,7 @@ const handle       = 'TestHandle';
 const meshId       = 'MeshId';
 const secondMeshId = 'otherMesh';
 const privateId    = 'PrivateIDX';
+
 eventHelperSetActive(handle);
 
 test("Session manager registration and queue for shared connections.", async () => {
@@ -79,7 +80,6 @@ test("Session manager registration and queue for private connections.", async ()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
-
 
   let p1    = jest.fn();
   let p2    = jest.fn();

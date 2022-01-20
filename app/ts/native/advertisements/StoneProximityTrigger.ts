@@ -27,9 +27,9 @@ export class StoneProximityTriggerClass {
 
 
   handleTriggers(sphereId, stoneId, rssi: number) {
-    if (!this.triggers[sphereId])          { return; }
-    if (!this.triggers[sphereId][stoneId]) { return; }
-    if (rssi >= 0 || rssi <= -100)         { return; }
+    if (!this.triggers[sphereId])           { return; }
+    if (!this.triggers[sphereId][stoneId])  { return; }
+    if (!rssi || rssi >= 0 || rssi <= -100) { return; }
 
     // handle targeted triggers
     let stoneTriggers = this.triggers[sphereId][stoneId];

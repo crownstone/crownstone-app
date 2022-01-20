@@ -133,6 +133,8 @@ export class StoneAvailabilityTrackerClass {
       this.sphereLog[data.sphereId] = {};
     }
 
+    let now = Date.now();
+
     let registerStoneId = (stoneId, sphereId, rssi) => {
       // store the handle so we can quickly check if we have an RSSI value for a handle.
       this.handleMap[data.handle] = stoneId;
@@ -150,25 +152,22 @@ export class StoneAvailabilityTrackerClass {
 
         if (rssi) { core.eventBus.emit("rssiChange", {stoneId: stoneId, sphereId: sphereId, rssi: rssi}); }// Major change in RSSI
       }
+
+      if (this.sphereLog[sphereId][stoneId] === undefined) {
+        this.sphereLog[sphereId][stoneId] = {t: null, rssi: null, handle: null };
+      }
+
+      this.sphereLog[sphereId][data.stoneId].t = now;
+      this.log[stoneId].t = now;
     }
 
     // add stone that has broadcast this advertisment
     registerStoneId(data.stoneId, data.sphereId, data.rssi);
     // add stone that has been relayed by this advertisement via the mesh. If this is not a mesh message,
     // the payloadId and stoneId are the same and this call does nothing.
-    if (data.payloadId !== undefined) {
+    if (data.payloadId !== undefined && data.stoneId !== data.payloadId) {
       registerStoneId(data.payloadId, data.sphereId, null);
     }
-
-    if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
-      this.sphereLog[data.sphereId][data.stoneId] = {t: null, rssi: null, handle: null };
-    }
-
-    let now = Date.now();
-    this.sphereLog[data.sphereId][data.stoneId].t = now;
-    this.log[data.stoneId].t = now;
-
-
 
     let prevRSSI = this.log[data.stoneId].rssi;
     if (prevRSSI === INVALID_RSSI) { prevRSSI = data.rssi; }
