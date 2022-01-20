@@ -9,7 +9,6 @@ import {LOG, LOGi} from "../logging/Log";
 import {Util} from "../util/Util";
 const PushNotification = require('react-native-push-notification');
 import {canUseIndoorLocalizationInSphere} from "../util/DataUtil";
-import Toast from 'react-native-same-toast';
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 
@@ -109,7 +108,6 @@ export const LocalNotifications = {
         }
         else {
           if (!alreadyNotified) {
-            Toast.showWithGravity(lang("__Message_found___"), Toast.SHORT, Toast.CENTER);
             LOG.info("LocalNotifications: on the front, just vibe.");
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(200, false);
@@ -150,7 +148,6 @@ export const LocalNotifications = {
       }
     }
     else {
-      Toast.showWithGravity(' ' + text + ' ', Toast.SHORT, Toast.CENTER);
       Vibration.vibrate(200, false);
     }
   },

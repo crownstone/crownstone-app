@@ -5,7 +5,6 @@ import { Stacks } from "../../Stacks";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
-import Toast from 'react-native-same-toast';
 import { SetupHelper } from "../../../native/setup/SetupHelper";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { background, colors, screenWidth, styles } from "../../styles";
@@ -74,7 +73,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   async bleAction(action : (api: CommandAPI) => Promise<any> | void, failureHandler: () => void = () => {}) {
     if (this.state.bleState === BLE_STATE_BUSY) {
-      Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       return;
     }
     this.setState({bleState: BLE_STATE_BUSY})
@@ -162,7 +160,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   _setupCrownstone() {
     if (this.state.bleState === BLE_STATE_BUSY) {
-      Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       return;
     }
 

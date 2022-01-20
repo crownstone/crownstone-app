@@ -20,6 +20,7 @@ import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
 import {MessageUtil} from "../../util/MessageUtil";
 import { core } from "../../Core";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export class MessageEntry extends Component<{
   deleteMessage(): void
@@ -149,12 +150,13 @@ export class MessageEntry extends Component<{
     else {
       let locationId = this.props.message.config.triggerLocationId;
 
-      let locationName = '';
-      if (locationId === ANYWHERE_IN_SPHERE || locationId === null || !this.props.sphere.locations[locationId]) {
+      let locationName;
+      if (locationId === ANYWHERE_IN_SPHERE || locationId === null) {
         locationName = this.props.sphere.config.name;
       }
       else {
-        locationName = this.props.sphere.locations[locationId].config.name;
+        let localLocationId = MapProvider.cloud2localMap.locations[locationId] || locationId;
+        locationName = this.props.sphere?.locations?.[localLocationId]?.config.name ?? this.props.sphere?.config.name;
       }
       return <Text numberOfLines={1} style={{fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
     }

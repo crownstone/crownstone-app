@@ -341,6 +341,8 @@ class BackgroundProcessHandlerClass {
   _clearBadge() {
     // if there is a badge number, remove it on opening the app.
     PushNotification.setApplicationIconBadgeNumber(0);
+
+    PushNotification.cancelAllLocalNotifications();
   }
 
   startBluetoothListener() {

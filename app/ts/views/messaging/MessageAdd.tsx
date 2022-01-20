@@ -128,6 +128,7 @@ lang("_No_recipients____I_cant__body"),
       let location = sphere.locations[locationId];
       locationData.push({id: locationId, text: location.config.name, icon: location.config.icon, singular: true, selected: this.state.triggerLocationId === locationId});
     });
+    locationData.sort((a,b) => { return a.text > b.text ? 1 : -1; })
 
     locationData.push({id: 'sphereExplanation', type:'explanation', label: lang("ANYWHERE_IN_THE_SPHERE")});
     locationData.push({id: ANYWHERE_IN_SPHERE, text: sphere.config.name, icon: 'c1-sphere', singular: true, selected: this.state.triggerLocationId === ANYWHERE_IN_SPHERE});

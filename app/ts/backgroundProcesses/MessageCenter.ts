@@ -1,4 +1,4 @@
-import {LOG, LOGe} from "../logging/Log";
+import {LOG, LOGe, LOGi} from "../logging/Log";
 import {CLOUD} from "../cloud/cloudAPI";
 import {LocalNotifications} from "../notifications/LocalNotifications";
 import {Util} from "../util/Util";
@@ -294,6 +294,7 @@ class MessageCenterClass {
    * This will check for messages in the current location. It is self contained and can be called whenever.
    */
   checkForMessages() : Promise<void> {
+    LOGi.info("MessageCenter: Checking for messages...")
     let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId();
 

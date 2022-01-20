@@ -5,7 +5,6 @@ import { Stacks } from "../../Stacks";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
-import Toast from 'react-native-same-toast';
 import { background, colors, styles } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
@@ -75,7 +74,6 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
   async bleAction(action : (api: CommandAPI) => Promise<any>, failureHandler: () => void = () => {}) {
     if (this.state.bleState === BLE_STATE_BUSY) {
-      Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       return;
     }
     this.setState({bleState: BLE_STATE_BUSY})

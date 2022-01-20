@@ -6239,11 +6239,6 @@ react-native-push-notification@^8.1.1:
   resolved "https://registry.npmjs.org/react-native-push-notification/-/react-native-push-notification-8.1.1.tgz"
   integrity sha512-XpBtG/w+a6WXTxu6l1dNYyTiHnbgnvjoc3KxPTxYkaIABRmvuJZkFxqruyGvfCw7ELAlZEAJO+dthdTabCe1XA==
 
-react-native-same-toast@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/react-native-same-toast/-/react-native-same-toast-1.0.1.tgz"
-  integrity sha1-pzWqfbWSvS1wxANa9IR1pCBa8K0=
-
 react-native-share@^7.2.1:
   version "7.2.1"
   resolved "https://registry.npmjs.org/react-native-share/-/react-native-share-7.2.1.tgz"
