@@ -123,8 +123,8 @@ class NotificationHandlerClass {
     if (Platform.OS === 'android') {
       PushNotification.createChannel(
         {
-          channelId: "crownstone-notification-channel", // (required)
-          channelName: "Crownstone notifications", // (required)
+          channelId: "messages-notification-channel", // (required)
+          channelName: "Messages", // (required) Shown to user in the "notification categories" menu.
         },
         (created) => console.log(`NotificationHandler: Created channel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
       );
