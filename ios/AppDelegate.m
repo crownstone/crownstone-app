@@ -52,6 +52,12 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
   [[[Portal alloc] init] applicationWillTerminate];
 }
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  [[[Portal alloc] init] applicationDidEnterBackground];
+}
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+  [[[Portal alloc] init] applicationWillEnterForeground];
+}
 
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken

@@ -9,6 +9,8 @@ export const BluenetPromiseInterface = {
   mockBluenetPromises: false
 }
 
+let OPEN_PROMISES = {};
+
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)
   return new Promise((resolve, reject) => {
@@ -30,6 +32,10 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
         state: 'started',
       }, "state");
       let promiseResolver = (result) => {
+        delete OPEN_PROMISES[id];
+        LOGi.constellation("BluenetPromise: donePromise Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
+        LOGi.constellation("BluenetPromise: donePromise Currently open promises:", OPEN_PROMISES);
+
         if (result.error === true) {
           LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           BugReportUtil.breadcrumb("BLE: Failed Command",{
@@ -54,7 +60,10 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       };
 
 
+      OPEN_PROMISES[id] = {function: functionName, params: bluenetArguments, appState: AppState.currentState, t: Date.now()};
       LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
+      LOGi.constellation("BluenetPromise: newPromise  Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
+      LOGi.constellation("BluenetPromise: newPromise  Currently open promises:", OPEN_PROMISES);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);

@@ -83,7 +83,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
         // Store provided sphere data in database, create if we don't have one yet..
         if (!this.localId) {
           if (MapProvider.cloudIdMap[response.data.id]) {
-            LOGe.cloud("Creating new local item while the cloudId already exists locally", MapProvider.cloudIdMap[response.data.id]);
+            LOGe.cloud("Creating new local item while the cloudId already exists locally", MapProvider.cloudIdMap[response.data.id], response);
           }
           this.createLocal(response.data)
         }

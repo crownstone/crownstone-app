@@ -851,18 +851,6 @@ export const NavigationUtil = {
   },
 };
 
-
-function addSentryLog(methodName: string, data: string) {
-  // Sentry.addBreadcrumb({
-  //   category: 'Navigation',
-  //   data: {
-  //     methodName: methodName,
-  //     data: data
-  //   }
-  // });
-}
-
-
 /**
  * quickly get the last item in an array. This should clean up the code a bit since:
  * this.modals[this.modal.length - 1][this.modals[this.modal.length - 1].length -1] is very ugly and unclear

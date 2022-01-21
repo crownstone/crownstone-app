@@ -6,9 +6,8 @@ import { core } from "../Core";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {
-  ___subscribedToAppState = false;
   ___shouldForceUpdate = false;
-  ___hasOverriddenUnmount = false;
+  ___appStateListener = null;
   ___navListener = null;
   ___eventListeners = [];
 
@@ -70,9 +69,8 @@ export class LiveComponent<a, b> extends Component<a, b> {
   forceUpdate(cb?) {
     if (AppState.currentState !== 'active') {
       this.___shouldForceUpdate = true;
-      if (this.___subscribedToAppState === false) {
-        this.___subscribedToAppState = true;
-        AppState.addEventListener('change', this.__appStateSubscription);
+      if (this.___appStateListener === null) {
+        this.___appStateListener = AppState.addEventListener('change', this.__appStateSubscription);
       }
     }
     else {
@@ -99,8 +97,8 @@ export class LiveComponent<a, b> extends Component<a, b> {
       this.___eventListeners.forEach((unsubscribe) => { unsubscribe() })
     }
 
-    if (this.___subscribedToAppState) {
-      AppState.removeEventListener('change', this.__appStateSubscription)
+    if (this.___appStateListener) {
+      this.___appStateListener.remove();
     }
   }
 
