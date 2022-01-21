@@ -41,6 +41,7 @@ class MapProviderClass {
   stoneIBeaconMap : StoneIBeaconMap = {};
   cloud2localMap  : syncIdMap = getSyncIdMap();
   local2cloudMap  : syncIdMap = getSyncIdMap();
+  cloudIdMap      : Record<string, any> = {};
 
   init() {
     if (this._initialized === false) {
@@ -147,6 +148,7 @@ class MapProviderClass {
     let state = core.store.getState();
     this.cloud2localMap = getSyncIdMap();
     this.local2cloudMap = getSyncIdMap();
+    this.cloudIdMap = {};
 
     let fillMaps = (source, getCloudIdFromItem, cloud2local, local2cloud) => {
       let sourceIds = Object.keys(source);
@@ -179,7 +181,7 @@ class MapProviderClass {
       getFromConfig( sphereId, sphere.hubs,             this.cloud2localMap.hubs,       this.local2cloudMap.hubs);
       getFromItem(   sphereId, sphere.scenes,           this.cloud2localMap.scenes,     this.local2cloudMap.scenes);
       getFromItem(   sphereId, sphere.thirdParty.toons, this.cloud2localMap.toons,      this.local2cloudMap.toons);
-      getFromIdPerSphere(sphereId, sphere.users,            this.cloud2localMap.users,      this.local2cloudMap.users);
+      getFromIdPerSphere(sphereId, sphere.users,        this.cloud2localMap.users,      this.local2cloudMap.users);
 
 
       Object.keys(sphere.stones).forEach((stoneId) => {
@@ -190,6 +192,14 @@ class MapProviderClass {
         })
       })
     });
+
+
+    // this will be used to check if newly created things from syncV2 are conflicting with existing items.
+    for (let item in this.cloud2localMap) {
+      for (let id in this.cloud2localMap[item]) {
+        this.cloudIdMap[id] = {item, localId: this.cloud2localMap[item][id]};
+      }
+    }
   }
 }
 

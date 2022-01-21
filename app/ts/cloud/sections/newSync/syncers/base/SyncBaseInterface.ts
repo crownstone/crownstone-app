@@ -1,4 +1,5 @@
 import { LOGe } from "../../../../../logging/Log";
+import {MapProvider} from "../../../../../backgroundProcesses/MapProvider";
 
 
 export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: string}, CloudSettableFormat> {
@@ -81,6 +82,9 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
       case "NEW_DATA_AVAILABLE":
         // Store provided sphere data in database, create if we don't have one yet..
         if (!this.localId) {
+          if (MapProvider.cloudIdMap[response.data.id]) {
+            LOGe.cloud("Creating new local item while the cloudId already exists locally", MapProvider.cloudIdMap[response.data.id]);
+          }
           this.createLocal(response.data)
         }
         else {
