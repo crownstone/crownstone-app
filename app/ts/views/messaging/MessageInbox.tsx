@@ -262,6 +262,20 @@ export class MessageInbox extends LiveComponent<any, any> {
         return (
           <BackgroundNoNotification image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
+            <TouchableOpacity style={{ width: 200, height: 30, backgroundColor:'#f00', padding: 5, borderRadius:5, margin:5}} onPress={() => {
+              Navigation.mergeOptions(this.props.componentId, {
+                bottomTab: {
+                  badge: '1'
+                }
+              })
+            }}><Text>Badge</Text></TouchableOpacity>
+            <TouchableOpacity style={{ width: 200, height: 30, backgroundColor:'#f00', padding: 5, borderRadius:5, margin:5}} onPress={() => {
+              Navigation.mergeOptions(this.props.componentId, {
+                bottomTab: {
+                  badge: null
+                }
+              });
+            }}><Text>Remove</Text></TouchableOpacity>
             { scrollView }
           </BackgroundNoNotification>
         );
