@@ -284,12 +284,7 @@ export class SessionManagerClass {
         else {
           if (session && session.isPrivate() === false) {
             // this should close a session in any state and cleans it up. It will trigger a new session if there are open requests.
-            if (this._pendingSessionRequests[handle] !== undefined) {
-              LOGi.constellation("SessionManager: Keep session open for other requests after timeout.");
-            }
-            else {
-              this.closeSession(handle);
-            }
+            this.closeSession(handle);
           }
         }
 
@@ -317,10 +312,15 @@ export class SessionManagerClass {
         // if other processes require this public session, allow them to use it instead.
         if (this.checkIfSessionIsStillRequired(handle) === false) {
           // public sessions close themselves, no need to end if it is connected
+          LOGi.constellation("SessionManager: closing session after revoke since it is not required anymore.", handle, session.identifier);
+          await this.closeSession(handle);
+        }
+        else if (session.state === "CONNECTING" && Date.now() - session.createdAt > 10000) {
+          LOGi.constellation("SessionManager: closing session after after revoke since it has been trying to connect for more than 10 seconds.", handle, session.identifier);
           await this.closeSession(handle);
         }
         else {
-          LOGi.constellation("SessionManager: Keep session open for other requests after revoke.", handle);
+          LOGi.constellation("SessionManager: Keep session open for other requests after revoke.", handle, session.identifier);
         }
       }
     }
@@ -338,6 +338,7 @@ export class SessionManagerClass {
 
     // if the session is private, the revocation must close it.
     if (session && session.isPrivate() === true && session.privateId === commanderId) {
+      LOGi.constellation("SessionManager: closing private session after revoke.", handle, session.identifier, session.privateId);
       await this.closeSession(handle);
     }
   }
@@ -353,6 +354,9 @@ export class SessionManagerClass {
     let session = this._sessions[handle];
     if (session) {
       await session.kill();
+    }
+    else {
+      LOGi.constellation("SessionManager: closeSession, but session does not exist anymore", handle);
     }
   }
 
@@ -451,12 +455,11 @@ export class SessionManagerClass {
   }
 
 
-
-
   async removeFromQueue(handle, commanderId) {
     removeFromQueueList(this._pendingPrivateSessionRequests, handle, commanderId);
     removeFromQueueList(this._pendingSessionRequests, handle, commanderId);
   }
+
 
   async intiateBlock() : Promise<void> {
     this._blocked = true;

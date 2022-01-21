@@ -34,6 +34,8 @@ export class Session {
   _sessionIsKilled = false;
   _sessionHasEnded = false;
 
+  createdAt : number;
+
   _pendingForClose = [];
 
   privateId : string | null;
@@ -53,6 +55,7 @@ export class Session {
     this.interactionModule = interactionModule;
     this.privateId = privateId || null;
     this.sphereId  = MapProvider.stoneHandleMap[handle]?.sphereId || TemporaryHandleMap.get(handle) || null;
+    this.createdAt = Date.now();
 
     LOGi.constellation("Session: Creating session", this.handle, this.identifier);
 

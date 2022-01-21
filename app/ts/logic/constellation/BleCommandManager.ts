@@ -228,6 +228,7 @@ export class BleCommandManagerClass {
     //   4 - If a command is cleaned, ask the SessionManager to re-evaluate their required sessions.
     //   5 - The goal is to close sessions that are still pending connections.
     let errorDuringCommand = null;
+    let errorWasThrown = false;
     let commandRemoved = false;
     try {
       // mark this handle as something that is attempting this command.
@@ -260,6 +261,7 @@ export class BleCommandManagerClass {
       }
     }
     catch (err) {
+      errorWasThrown = true;
       errorDuringCommand = err;
       LOGw.constellation("BleCommandManager: Something went wrong while performing", command.command.type, handle, err?.message, command.id);
       let attemptingIndex = command.attemptingBy.indexOf(handle)
@@ -296,7 +298,8 @@ export class BleCommandManagerClass {
     }
 
     // escalate this error to the caller.
-    if (errorDuringCommand) {
+    if (errorWasThrown) {
+      LOGw.constellation("BleCommandManager: Escalating error", command.command.type, handle, errorDuringCommand?.message, command.id);
       throw errorDuringCommand;
     }
 

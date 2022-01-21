@@ -39,11 +39,11 @@ export class Command_TrackedDeviceHeartbeat extends CommandBase implements Comma
       );
     }
     catch (err) {
-      LOGe.constellation("Command: TrackedDeviceHeartBeat has generated error: ", err, connectedHandle)
+      LOGe.constellation("Command: TrackedDeviceHeartBeat has generated error: ", err?.message, connectedHandle)
       switch (err?.message) {
         case "ERR_NOT_FOUND":
         case "ERR_TIMEOUT":
-          LOGi.constellation("Command: TrackedDeviceHeartBeat will try to register to recover ", err, connectedHandle)
+          LOGi.constellation("Command: TrackedDeviceHeartBeat will try to register to recover ", err?.message, connectedHandle)
           await this.register(connectedHandle, options)
           break
         default:
