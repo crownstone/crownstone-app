@@ -25,7 +25,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 export class MessageEntry extends Component<{
   deleteMessage(): void
   size: number,
-  store: any,
+  removeBadgeCallback: any,
   self: any,
   sphere: any,
   sphereId: string,
@@ -35,7 +35,6 @@ export class MessageEntry extends Component<{
 }, any> {
 
   _getRecipients() {
-
     let userArray = [];
     let senderId = this.props.message.config.senderId;
     if (this.props.message.config.senderId !== this.props.self.userId) {
@@ -238,6 +237,7 @@ export class MessageEntry extends Component<{
 
             if (this.props.read === false) {
               core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+              this.props.removeBadgeCallback()
             }
           }}
         >

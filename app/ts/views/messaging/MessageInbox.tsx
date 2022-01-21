@@ -129,7 +129,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     }
     Navigation.mergeOptions(this.props.componentId, {
       bottomTab: {
-        badge: null
+        badge: ''
       }
     });
   }
@@ -171,7 +171,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         items.push({__item:
           <View style={[styles.listView,{backgroundColor: backgroundColor, paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
-              store={core.store}
+              removeBadgeCallback={() => { this.clearMessageBadge(); }}
               message={message}
               read={read}
               messageId={messageData.id}
@@ -262,20 +262,6 @@ export class MessageInbox extends LiveComponent<any, any> {
         return (
           <BackgroundNoNotification image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
-            <TouchableOpacity style={{ width: 200, height: 30, backgroundColor:'#f00', padding: 5, borderRadius:5, margin:5}} onPress={() => {
-              Navigation.mergeOptions(this.props.componentId, {
-                bottomTab: {
-                  badge: '1'
-                }
-              })
-            }}><Text>Badge</Text></TouchableOpacity>
-            <TouchableOpacity style={{ width: 200, height: 30, backgroundColor:'#f00', padding: 5, borderRadius:5, margin:5}} onPress={() => {
-              Navigation.mergeOptions(this.props.componentId, {
-                bottomTab: {
-                  badge: null
-                }
-              });
-            }}><Text>Remove</Text></TouchableOpacity>
             { scrollView }
           </BackgroundNoNotification>
         );
