@@ -1,10 +1,12 @@
-import {mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {mBluenet, mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
 import {createMockDatabase} from "../__testUtil/helpers/data.helper";
 import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
+import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
+import {advanceBy} from "jest-date-mock";
 
 
 let BleCommandManager = null;
@@ -72,10 +74,7 @@ test("Check multiple commanders requiring the same session", async () => {
   let commander2 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
   commander2.getFirmwareVersion().then(c2Success)
 
-  // trigger the timeout of the first session requested by the 1st commander
-  await mScheduler.trigger()
-  await TestUtil.nextTick()
-  expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"))
+  await commander1.end();
 
   await mBluenetPromise.for(handle).succeed.connect("operation");
 
@@ -90,3 +89,50 @@ test("Check multiple commanders requiring the same session", async () => {
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
 });
 
+
+test("Ensure sessions do not perform commands after they are killed.", async () => {
+  let db = createMockDatabase(meshId);
+  let handle = db.stones[0].handle
+  let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
+  let commander2 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
+
+  let p1Err = jest.fn();
+  let p2Err = jest.fn();
+  commander1.trackedDeviceHeartbeat(1,() => 2,3,4,{
+      profileId:1,
+      rssiOffset:2,
+      ignoreForPresence:false,
+      tapToToggleEnabled:false,
+      ttlMinutes:12
+    }
+  ).catch(p1Err);
+
+  // fire ibeacon event to trigger the connect request
+  evt_ibeacon(-70, handle);
+
+  // expect the session to attempt a connect
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+  advanceBy(11000)
+
+  commander2.trackedDeviceHeartbeat(1,() => 2,3,4,{
+      profileId:1,
+      rssiOffset:2,
+      ignoreForPresence:false,
+      tapToToggleEnabled:false,
+      ttlMinutes:12
+    }
+  ).catch(p2Err);
+
+  await TestUtil.nextTick()
+
+  expect(p1Err).toHaveBeenCalled()
+  expect(mBluenetPromise.has(handle).called.cancelConnectionRequest()).toBeTruthy();
+
+  await mBluenetPromise.for(handle).succeed.connect("operation");
+  await TestUtil.nextTick()
+
+  evt_disconnected(handle)
+  await mBluenetPromise.for(handle).succeed.cancelConnectionRequest()
+
+  expect(mBluenetPromise.has(handle).called.trackedDeviceHeartbeat()).toBeFalsy();
+});

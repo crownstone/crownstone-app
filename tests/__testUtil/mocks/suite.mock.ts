@@ -36,7 +36,7 @@ let silenceMap = {
   info:           true,
   promiseManager: true,
   broadcast:      true,
-  constellation:  true,
+  constellation:  false,
   notifications:  true,
   event:          true,
   cloud:          true,

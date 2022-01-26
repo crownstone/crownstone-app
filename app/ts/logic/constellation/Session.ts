@@ -105,7 +105,7 @@ export class Session {
     }
 
     this.state = "DISCONNECTED";
-    LOGi.constellation("Session: _handleDisconnectedState", this.recoverFromDisconnect, this._isSessionActive());
+    LOGi.constellation("Session: _handleDisconnectedState", this.handle, this.identifier, this.recoverFromDisconnect, this._isSessionActive());
     if (this.recoverFromDisconnect && this._isSessionActive() ) {
       LOGi.constellation("Session: Disconnected from Crownstone, Ready for reconnect...", this.handle, this.identifier);
     }
@@ -228,7 +228,12 @@ export class Session {
     // It should not happen that a disconnect event is thrown during this process. At that point, the connection process for this session failed.
     // @ts-ignore
     if (this.state === "DISCONNECTED") {
-      LOGe.constellation("Session: Disconnected before connect finished", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      LOGe.constellation("Session: Disconnected before connect finished.", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      return;
+    }
+
+    if (!this._isSessionActive()) {
+      LOGe.constellation("Session: Killed before connect finished.", this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
       return;
     }
 

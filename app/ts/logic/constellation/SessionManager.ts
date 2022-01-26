@@ -52,7 +52,7 @@ export class SessionManagerClass {
    */
   async _createSession(handle: string, commanderId: string, privateSession: boolean) {
     let privateId = privateSession ? commanderId : null;
-    LOGd.constellation("SessionManager: Create new session by request.", commanderId, privateId);
+    LOGd.constellation("SessionManager: Create new session by request.", handle, commanderId, privateId);
     this._sessions[handle] = new Session(handle, privateId, this._getInteractionModule(handle, commanderId, privateSession));
   }
 
@@ -302,7 +302,7 @@ export class SessionManagerClass {
    * @param handle
    * @param commanderId
    */
-  async revokeRequest(handle: string, commanderId: string) {
+  async revokeRequest(handle: string, commanderId: string) : Promise<void> {
     let session = this._sessions[handle];
 
     // if it was in the public list, remove it from there.
@@ -421,14 +421,14 @@ export class SessionManagerClass {
   checkIfSessionIsStillRequired(handle) : string | false {
     // if it was a shared session, it could have been an error or it had nothing to do.
     if (this._pendingSessionRequests[handle] && this._pendingSessionRequests[handle].length > 0) {
-      LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are queued requests", handle, this._pendingSessionRequests[handle].length);
+      LOGi.constellation("SessionManager: Session is still required there are queued requests", handle, this._pendingSessionRequests[handle].length);
       return this._pendingSessionRequests[handle][0].commanderId;
     }
     else {
       let pendingCommandId = BleCommandManager.areThereCommandsFor(handle);
       if (pendingCommandId !== null) {
         // there are still shared commands, so the session will be retried.
-        LOGi.constellation("SessionManager: creating public session after the previous session had ended because there are still commands to be executed.", handle, pendingCommandId);
+        LOGi.constellation("SessionManager: Session is still required because there are still commands to be executed.", handle, pendingCommandId);
         return "stillRequiredForCommand_" + pendingCommandId;
       }
     }
