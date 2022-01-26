@@ -155,21 +155,23 @@ export class LockOverlay extends Component<any, any> {
     let iconSize = 150;
 
     return (
-      <OverlayBox visible={this.state.visible} height={400} width={300} overrideBackButton={false} backgroundColor={colors.black.rgba(0.4)}>
-        <View style={{flex:1}} />
-        <IconButton
-          name="md-lock"
-          size={100}
-          color="#fff"
-          buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlueDark.hex, borderRadius: 0.5*iconSize}}
-          style={{position:'relative', top:0}}
-        />
-        <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
-        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.csBlueDark.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
-        <View style={{flex:1}} />
-        { this._getButtons() }
-        <View style={{flex:1}} />
+      <OverlayBox visible={this.state.visible} overrideBackButton={false} backgroundColor={colors.black.rgba(0.4)}>
+        <View style={{flex:1, alignItems:'center'}}>
+          <View style={{flex:1}} />
+          <IconButton
+            name="md-lock"
+            size={100}
+            color="#fff"
+            buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlueDark.hex, borderRadius: 0.5*iconSize}}
+            style={{position:'relative', top:0}}
+          />
+          <View style={{flex:1}} />
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.csBlueDark.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
+          <View style={{flex:1}} />
+          { this._getButtons() }
+          <View style={{flex:1}} />
+        </View>
       </OverlayBox>
     );
   }

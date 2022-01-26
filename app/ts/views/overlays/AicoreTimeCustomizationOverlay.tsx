@@ -13,6 +13,7 @@ import { ScaledImage } from "../components/ScaledImage";
 import { AicoreTimeCustomization } from "../deviceViews/smartBehaviour/supportComponents/AicoreTimeCustomization";
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import {View} from "react-native";
 
 export class AicoreTimeCustomizationOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -24,15 +25,15 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
     this.state = { visible: false };
     this.unsubscribe = [];
 
-    this.timeData = props.data.time ? xUtil.deepExtend({}, props.data.time) : null;
-    this.callback = props.data.callback;
+    this.timeData = props.data?.time ? xUtil.deepExtend({}, props.data.time) : null;
+    this.callback = props.data?.callback;
   }
 
   componentDidMount() {
     this.setState({ visible: true });
     this.unsubscribe.push(core.eventBus.on("showAicoreTimeCustomizationOverlay", (data) => {
       this.callback = data.callback;
-      this.timeData = data.time ? xUtil.deepExtend({}, data.time) : null;
+      this.timeData = data?.time ? xUtil.deepExtend({}, data.time) : null;
     }));
   }
 
@@ -50,27 +51,23 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
   }
 
   render() {
-    let idealAspectRatio = 1.85;
-    let width = 0.85*screenWidth;
-    let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
-
     return (
       <OverlayBox
         visible={this.state.visible}
-        height={height} width={width}
+        vFlex={5} hFlex={8}
         overrideBackButton={false}
         canClose={true}
         scrollable={true}
         closeCallback={() => { this.close(); }}
-        backgroundColor={colors.white.rgba(0.6)}
+        backgroundColor={colors.white.rgba(0.2)}
         getDesignElement={(innerSize) => { return (
           <ScaledImage source={require('../../../assets/images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}
         title={ lang("Time_Selection")}
       >
-        <AicoreTimeCustomization width={width} timeData={this.timeData} save={(newTimeData) => {
-          this.callback(newTimeData);
-          this.close();
+        <AicoreTimeCustomization timeData={this.timeData} save={(newTimeData) => {
+         this.callback(newTimeData);
+         this.close();
         }}/>
       </OverlayBox>
     );

@@ -33,7 +33,6 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
-import ResponsiveText from "../../components/ResponsiveText";
 
 const behaviourStyle : TextStyle = {
   fontSize: 15,
@@ -558,7 +557,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       <Background image={background.main} hideNotifications={true} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
 
             { this.props.behaviourId && this.props.deleteBehaviour && <Text style={behaviourStyle}>{ lang("____",this.existingBehaviour.getSentence(this.props.sphereId)) }</Text> }

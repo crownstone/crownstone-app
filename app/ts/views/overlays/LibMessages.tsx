@@ -34,33 +34,35 @@ export class LibMessages extends Component<any, any> {
   render() {
     return (
       <OverlayBox visible={this.state.visible} overrideBackButton={false}>
-        <View style={{flex:1}} />
-        <IconButton
-          name="ios-bluetooth"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue3.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative', top:0.008*screenHeight}}
-        />
-        <View style={{flex:1}} />
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this.props.header}</Text>
-        <Text style={{fontSize: 12, color: colors.blue3.hex, padding:15, textAlign:'center'}}>
-          {this.props.body}
-        </Text>
-        <View style={{flex:1}} />
-        <TouchableOpacity
-          onPress={() => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); }) }}
-          style={[styles.centered, {
-            width: 0.4 * screenWidth,
-            height: 36,
-            borderRadius: 18,
-            borderWidth: 2,
-            borderColor: colors.blue3.rgba(0.5),
-          }]}
-        >
-          <Text style={{fontSize: 14, color: colors.blue3.hex}}>{ lang("OK",this.state.buttonText) }</Text>
-        </TouchableOpacity>
-        <View style={{flex:0.5}} />
+        <View style={{flex:1, alignItems:'center'}}>
+          <View style={{flex:1}} />
+          <IconButton
+            name="ios-bluetooth"
+            size={0.15*screenHeight}
+            color="#fff"
+            buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue3.hex, borderRadius: 0.03*screenHeight}}
+            style={{position:'relative', top:0.008*screenHeight}}
+          />
+          <View style={{flex:1}} />
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this.props.header}</Text>
+          <Text style={{fontSize: 12, color: colors.blue3.hex, padding:15, textAlign:'center'}}>
+            {this.props.body}
+          </Text>
+          <View style={{flex:1}} />
+          <TouchableOpacity
+            onPress={() => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); }) }}
+            style={[styles.centered, {
+              width: 0.4 * screenWidth,
+              height: 36,
+              borderRadius: 18,
+              borderWidth: 2,
+              borderColor: colors.blue3.rgba(0.5),
+            }]}
+          >
+            <Text style={{fontSize: 14, color: colors.blue3.hex}}>{ lang("OK",this.state.buttonText) }</Text>
+          </TouchableOpacity>
+          <View style={{flex:0.5}} />
+        </View>
       </OverlayBox>
     );
   }

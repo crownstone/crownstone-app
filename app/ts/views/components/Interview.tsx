@@ -17,7 +17,6 @@ import {
   TextButtonLight, TextButtonWithLargeImage, ThemedTextButtonWithIcon
 } from "../components/InterviewComponents";
 import { ScaledImage } from "./ScaledImage";
-import ResponsiveText from "./ResponsiveText";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
 
@@ -314,7 +313,7 @@ function InterviewCard(props : {
     <View testID={card.testID}>
       <ScrollView style={{height: props.height || availableModalHeight}}>
         <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-          { header      && <ResponsiveText style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText> }
+          { header      && <Text style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text> }
           { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
           { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
           {

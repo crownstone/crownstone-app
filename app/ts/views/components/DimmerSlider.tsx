@@ -16,7 +16,6 @@ import {
 import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
 import { HiddenFadeInView } from "./animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import ResponsiveText from "./ResponsiveText";
 import { core } from "../../Core";
 
 const SLIDER_BUBBLE_SIZE = Math.min(0.12*availableScreenHeight, 70);
@@ -210,7 +209,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
-          <ResponsiveText adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>Get close to enable dimming!</ResponsiveText>
+          <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>Get close to enable dimming!</Text>
         </View>
       );
     }

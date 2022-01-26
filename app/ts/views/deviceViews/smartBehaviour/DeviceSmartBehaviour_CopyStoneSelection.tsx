@@ -23,7 +23,6 @@ import { useState } from "react";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
-import ResponsiveText from "../../components/ResponsiveText";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
 
@@ -173,7 +172,7 @@ lang("_No_Crownstone_selected___body"),
         <NotificationLine />
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <ResponsiveText style={{...deviceStyles.header, width: 0.85*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
+            <Text style={{...deviceStyles.header, width: 0.85*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height:30}} />
             { this._getLocationStoneList() }
           </View>

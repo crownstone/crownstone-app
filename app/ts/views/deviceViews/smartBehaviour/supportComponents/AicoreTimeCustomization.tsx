@@ -50,7 +50,6 @@ export class AicoreTimeCustomization extends Component<any,any> {
     return (
       <View style={{flex:1}}>
         <TimePart
-          width={this.props.width}
           initialLabel={ lang("When_should_I_start_")}
           finalLabel={lang("Ill_start_at_")}
           visible={true}
@@ -63,7 +62,6 @@ export class AicoreTimeCustomization extends Component<any,any> {
         />
         {this.state.fromFinished ? <View style={{ height: 20 }} /> : undefined}
         <TimePart
-          width={this.props.width}
           initialLabel={ lang("When_am_I_finished_")}
           finalLabel={ lang("This_behaviour_ends_at_")}
           visible={this.state.fromFinished}
@@ -113,7 +111,6 @@ function TimePart(props : {
   timeObj: AicoreTimeData,
   visible: boolean,
   instantEdit: boolean,
-  width: number,
 }) {
   const [type, setType] = useState(props.timeObj.getType());
   const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
@@ -146,11 +143,11 @@ function TimePart(props : {
               </FadeIn>
               <View style={{ height: 5 }}/>
               <FadeIn index={index++}>
-                <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ flexDirection: "row", justifyContent: 'flex-end', alignItems: 'center'}}>
                   <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("__h") }</Text>
-                  <View>
+                  <View style={{flex:1}}>
                     <Slider
-                      style={{ width: props.width - 0.06 * screenWidth - 75 - 20, height: 40 }}
+                      style={{ height: 40 }}
                       minimumValue={-120}
                       maximumValue={120}
                       step={15}

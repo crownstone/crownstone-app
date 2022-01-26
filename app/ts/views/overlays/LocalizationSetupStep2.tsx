@@ -31,19 +31,22 @@ export class LocalizationSetupStep2 extends Component<any, any> {
     return (
       <OverlayBox
         visible={this.state.visible}
+        vFlex={6} hFlex={10}
         overrideBackButton={() => { this.setState({visible:false}); }}
       >
-        <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.menuBackground.hex, padding:15}}>{ lang("The_Next_Step") }</Text>
-        <Image source={require('../../../assets/images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
-        <Text style={{fontSize: 13, color: colors.blue3.hex, textAlign:'center'}}>{ lang("You_can_now_teach__when_y") }</Text>
-        <View style={{flex:1}}/>
-        <Text style={{fontSize:14, fontWeight:'bold', color: colors.blue3.hex, textAlign:'center'}}>{ lang("Once_youre_ready__tap_one") }</Text>
-        <View style={{flex:1}}/>
-        <TouchableOpacity
-          onPress={() => {this.setState({visible:false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });}}
-          style={[styles.centered,{width:0.4*screenWidth, height:36, borderRadius:18, borderWidth:2, borderColor:colors.blue3.rgba(0.25), marginBottom:10}]}>
-          <Text style={{fontSize: 13, color: colors.blue3.hex}}>{ lang("OK") }</Text>
-        </TouchableOpacity>
+        <View style={{flex:1, alignItems:'center'}}>
+          <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.menuBackground.hex, padding:15}}>{ lang("The_Next_Step") }</Text>
+          <Image source={require('../../../assets/images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
+          <Text style={{fontSize: 13, color: colors.blue3.hex, textAlign:'center'}}>{ lang("You_can_now_teach__when_y") }</Text>
+          <View style={{flex:1}}/>
+          <Text style={{fontSize:14, fontWeight:'bold', color: colors.blue3.hex, textAlign:'center'}}>{ lang("Once_youre_ready__tap_one") }</Text>
+          <View style={{flex:1}}/>
+          <TouchableOpacity
+            onPress={() => {this.setState({visible:false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });}}
+            style={[styles.centered,{width:0.4*screenWidth, height:36, borderRadius:18, borderWidth:2, borderColor:colors.blue3.rgba(0.25), marginBottom:10}]}>
+            <Text style={{fontSize: 13, color: colors.blue3.hex}}>{ lang("OK") }</Text>
+          </TouchableOpacity>
+        </View>
       </OverlayBox>
     );
   }

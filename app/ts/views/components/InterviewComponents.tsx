@@ -5,7 +5,6 @@ import {colors, screenWidth} from "../styles";
 import {FadeIn} from "./animated/FadeInView";
 import React, {useRef, useState} from "react";
 import {TextEditInput} from "./editComponents/TextEditInput";
-import ResponsiveText from "./ResponsiveText";
 import {Util} from "../../util/Util";
 
 
@@ -40,7 +39,7 @@ let buttonBasicStyle : ViewStyle = {
   paddingTop:10,
   paddingBottom:10,
   paddingLeft:15,
-  paddingRight:25,
+  paddingRight:15,
   alignItems:'center',
   backgroundColor: colors.csBlue.rgba(0.2),
   borderBottomLeftRadius:  0,
@@ -93,9 +92,9 @@ export function TimeButtonWithImage(props) {
   return (
     <FadeIn index={props.index || 0}>
       <TouchableOpacity style={props.basic ? buttonBasicStyle : buttonStyle} onPress={() => { props.callback(); }}>
-        <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetHeight={40}/>
+        <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetWidth={40}/>
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <ResponsiveText style={{...textStyle, width:0.85*screenWidth - 135, paddingRight:0}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</ResponsiveText>
+        <Text style={{...textStyle, flex:1, paddingRight:0}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
       </TouchableOpacity>
     </FadeIn>
   );

@@ -69,12 +69,11 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
     let customContent = null;
 
     let slideWrapperHeight = height - Math.min(0.21*screenHeight,0.38 * screenWidth) - 80;
-    let sliderHeight = slideWrapperHeight - 90;
 
     return (
       <OverlayBox
         visible={this.state.visible}
-        height={height} width={width}
+        vFlex={5} hFlex={8}
         overrideBackButton={false}
         canClose={true}
         scrollable={false}
@@ -86,24 +85,26 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
         title={ lang("Dim_how_much_") }
         footerComponent={this._getSaveButton()}
       >
-        <View style={{transform: [ { rotate: "-90deg" } ], width: slideWrapperHeight, height:200, flexDirection:'row', ...styles.centered}}>
-          <Icon name={'md-moon'} size={25} color={colors.csBlue.hex} />
+        <View style={{flex:1}}>
+          <View style={{height:40, alignItems:"center"}}><Icon name={'md-sunny'} size={40} color={colors.lightCsOrange.hex} /></View>
           <View style={{flex:1}}/>
-          <IndicatorClass percentage={this.state.dimmingValue} range={sliderHeight} />
-          <Slider
-            style={{ width: sliderHeight, height: 20 }}
-            minimumValue={10}
-            maximumValue={100}
-            step={ 1}
-            value={this.state.dimmingValue}
-            minimumTrackTintColor={colors.gray.hex}
-            maximumTrackTintColor={colors.gray.hex}
-            onValueChange={(value) => {
-              this.setState({ dimmingValue: value })
-            }}
-          />
+            <IndicatorClass percentage={this.state.dimmingValue} />
+            <View style={{flex:10, transform: [ { rotate: "-90deg" } ], justifyContent:'center'}}>
+            <Slider
+              style={{ height: 40 }}
+              minimumValue={10}
+              maximumValue={100}
+              step={1}
+              value={this.props.data.initialValue}
+              minimumTrackTintColor={colors.gray.hex}
+              maximumTrackTintColor={colors.gray.hex}
+              onValueChange={(value) => {
+                this.setState({ dimmingValue: value })
+              }}
+            />
+          </View>
           <View style={{flex:1}}/>
-          <Icon name={'md-sunny'} size={40} color={colors.lightCsOrange.hex} />
+          <View style={{height:40, alignItems:"center"}}><Icon name={'md-moon'} size={25} color={colors.csBlue.hex} /></View>
         </View>
         <View style={{height:50}} />
       </OverlayBox>
@@ -117,14 +118,13 @@ class IndicatorClass extends Component<any, any> {
     let percentage = this.props.percentage;
     let width = 60;
     let height = 40;
-
+    let range = 70;
     return (
       <View
         style={{
           position: "absolute",
-          left: percentage*(this.props.range-30) / 90,
-          top: 20,
-          transform: [ { rotate: "90deg" } ],
+          left: 50,
+          top: `${Math.floor(range-((percentage - 10)/90)*range) + 10}%`,
           height: height,
           width: width,
           borderRadius: 10,

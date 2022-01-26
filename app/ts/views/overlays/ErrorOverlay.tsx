@@ -119,27 +119,27 @@ export class ErrorOverlay extends Component<any, any> {
       stone = sphere.stones[this.state.stoneId];
     }
 
-
-
     return (
-      <OverlayBox visible={this.state.visible} height={0.95*availableScreenHeight} maxOpacity={this.state.maxOpacity} overrideBackButton={true}>
-        <View style={{flex:1}} />
-        <IconButton
-          name="ios-warning"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative',}}
-        />
-        <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{ lang("Crownstone_Hardware_Error") }</Text>
-        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
-          {this._getText(stone)}
-        </Text>
-        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiName) }</Text>
-        <View style={{flex:1}} />
-        {this._getButton(stone)}
-        <View style={{flex:1}} />
+      <OverlayBox visible={this.state.visible} vFlex={6} maxOpacity={this.state.maxOpacity} overrideBackButton={true}>
+        <View style={{flex:1, alignItems:'center'}}>
+          <View style={{flex:1}} />
+          <IconButton
+            name="ios-warning"
+            size={0.15*screenHeight}
+            color="#fff"
+            buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
+            style={{position:'relative',}}
+          />
+          <View style={{flex:1}} />
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{ lang("Crownstone_Hardware_Error") }</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
+            {this._getText(stone)}
+          </Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiName) }</Text>
+          <View style={{flex:1}} />
+          {this._getButton(stone)}
+          <View style={{flex:1}} />
+        </View>
       </OverlayBox>
     );
   }

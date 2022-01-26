@@ -151,7 +151,7 @@ export class ListOverlay extends LiveComponent<any, any> {
     return (
       <OverlayBox
         visible={this.state.visible}
-        height={height} width={width}
+        hFlex={5} vFlex={5}
         overrideBackButton={false}
         canClose={true}
         scrollable={true}
@@ -163,8 +163,8 @@ export class ListOverlay extends LiveComponent<any, any> {
         title={ customContent ? null : this.state.title }
         footerComponent={this._getSaveButton()}
       >
-        { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback:() => { this.setState({showCustomContent: false}); }}) : this.getElements() }
-        <View style={{height:50}} />
+          { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback:() => { this.setState({showCustomContent: false}); }}) : this.getElements() }
+          <View style={{height:50}} />
       </OverlayBox>
     );
   }

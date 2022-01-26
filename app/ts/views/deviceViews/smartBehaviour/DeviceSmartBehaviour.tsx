@@ -29,7 +29,6 @@ import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
-import ResponsiveText from "../../components/ResponsiveText";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
@@ -213,7 +212,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
         {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</ResponsiveText>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
             <View style={{height: 0.2*iconSize}} />
             <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
               <WeekDayList

@@ -18,7 +18,6 @@ import {
 import { Background } from "../../components/Background";
 import { BehaviourEditor } from "./supportComponents/BehaviourEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import ResponsiveText from "../../components/ResponsiveText";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: boolean, data: any, sphereId: string, stoneId: string, behaviourId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
@@ -37,7 +36,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: b
       <Background image={background.main} hideNotifications={true} hasNavBar={false}>
         <ScrollView style={{width:screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingVertical:30}}>
-            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*height}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
             <BehaviourEditor {...this.props} />

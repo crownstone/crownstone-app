@@ -71,23 +71,23 @@ export class NumericOverlay extends Component<any, any> {
   render() {
     if (this.state.status !== "NONE") {
       return (
-          <OverlayBox
-            visible={this.state.visible}
-            overrideBackButton={false}
-            canClose={true}
-            backgroundColor={this.state.status === "SUCCESS" ? colors.green.rgba(0.8) : colors.csOrange.rgba(0.8)}
-            closeCallback={() => {
-              this.setState({ visible: false, value: null });
-              NavigationUtil.closeOverlay(this.props.componentId);
-            }}
-          >
-            <View style={{flex:1, alignItems:'center', justifyContent:'center' }}>
-              {this.state.status === "SUCCESS" ?
-                <Icon name="ios-checkmark-circle" size={0.5 * screenWidth} color={colors.green.rgba(0.8)}/> :
-                <Icon name="ios-close-circle" size={0.5 * screenWidth} color={colors.red.rgba(0.8)}/>
-              }
-            </View>
-          </OverlayBox>
+        <OverlayBox
+          visible={this.state.visible}
+          overrideBackButton={false}
+          canClose={true}
+          backgroundColor={this.state.status === "SUCCESS" ? colors.green.rgba(0.8) : colors.csOrange.rgba(0.8)}
+          closeCallback={() => {
+            this.setState({ visible: false, value: null });
+            NavigationUtil.closeOverlay(this.props.componentId);
+          }}
+        >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center' }}>
+            {this.state.status === "SUCCESS" ?
+              <Icon name="ios-checkmark-circle" size={0.5 * screenWidth} color={colors.green.rgba(0.8)}/> :
+              <Icon name="ios-close-circle" size={0.5 * screenWidth} color={colors.red.rgba(0.8)}/>
+            }
+          </View>
+        </OverlayBox>
       );
     }
     else {
@@ -145,21 +145,19 @@ export class NumericOverlay extends Component<any, any> {
 
       if (Platform.OS === 'android') {
         return (
-          <View style={styles.centered}>
-            <OverlayBox
-              visible={this.state.visible}
-              overrideBackButton={false}
-              canClose={true}
-              closeCallback={() => {
-                this.setState({ visible: false, value: null, ok: false });
-                NavigationUtil.closeOverlay(this.props.componentId);
-              }}
-            >
-              <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                {content}
-              </View>
-            </OverlayBox>
-          </View>
+          <OverlayBox
+            visible={this.state.visible}
+            overrideBackButton={false}
+            canClose={true}
+            closeCallback={() => {
+              this.setState({ visible: false, value: null, ok: false });
+              NavigationUtil.closeOverlay(this.props.componentId);
+            }}
+          >
+            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+              {content}
+            </View>
+          </OverlayBox>
         );
       }
       else {

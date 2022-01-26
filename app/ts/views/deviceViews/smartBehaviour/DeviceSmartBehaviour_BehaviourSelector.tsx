@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import {  ScrollView, TouchableOpacity, View } from "react-native";
+import {  ScrollView, TouchableOpacity, View, Text, } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
@@ -20,7 +20,6 @@ import {
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
-import ResponsiveText from "../../components/ResponsiveText";
 import { Button } from "../../components/Button";
 
 
@@ -116,7 +115,7 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
       <Background image={background.main} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</ResponsiveText>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</Text>
             <View style={{height: 0.2*iconSize}} />
 
             <View style={{flex:1}} />

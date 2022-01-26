@@ -21,9 +21,9 @@ interface overlayBoxProps {
   backgroundColor?:    any,
   maxOpacity?:         number,
   scrollable?:         boolean,
-  height?:             number,
-  width?:              number,
   canClose?:           boolean,
+  vFlex?: number,
+  hFlex?: number,
   closeCallback?:      any,
   style?:              any
   wrapperStyle?:       any,
@@ -38,7 +38,7 @@ interface overlayBoxProps {
 //    function: execute that function when the back button is pressed
 export class OverlayBox extends Component<overlayBoxProps, any> {
 
-  _getExtraContent(width, height, size, padding, top) {
+  _getExtraContent(size, padding) {
     if (this.props.getDesignElement) {
       let left = 10;
       let innerSize = size - 2 * padding;
@@ -46,31 +46,29 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
       return (
         <View style={{
           position: 'absolute',
-          top: top,
+          top: -35,
           left: left,
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: colors.white.rgba(0.5)
+          flexDirection:"row",
         }}>
           <View style={{
-            position: 'absolute',
-            top: padding,
-            left: padding,
-            width: innerSize,
-            height: innerSize,
-            borderRadius: innerSize / 2,
-            backgroundColor: colors.white.rgba(1)
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: colors.white.rgba(0.5)
           }}>
-            {this.props.getDesignElement(innerSize)}
+            <View style={{
+              position: 'absolute',
+              top: padding,
+              left: padding,
+              width: innerSize,
+              height: innerSize,
+              borderRadius: innerSize / 2,
+              backgroundColor: colors.white.rgba(1)
+            }}>
+              {this.props.getDesignElement(innerSize)}
+            </View>
           </View>
-          { this.props.title ? <View style={{
-            position: 'absolute',
-            top: 0.5*size,
-            left: padding + size,
-            width: width-size,
-            height: 0.5*size+padding,
-          }}>
+          { this.props.title ? <View style={{flex:1, paddingLeft:padding, justifyContent:'center'}}>
             <Text style={{fontSize: 20, fontWeight:'bold'}}>{this.props.title}</Text>
             { this.props.subTitle ? <Text style={{fontSize: 15, fontWeight:'bold', paddingTop:10}}>{this.props.subTitle}</Text> : undefined }
           </View>  : undefined }
@@ -89,12 +87,12 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     }
   }
 
-  _getFooterComponent(width, height, padding, closeIconSize, top) {
+  _getFooterComponent(padding, closeIconSize) {
     if (this.props.footerComponent) {
       return (
         <View style={{
           position: 'absolute',
-          top: top+height+padding-5,
+          bottom: -30,
           left: 0,
           width: screenWidth - 0.25*closeIconSize,
           height: 60,
@@ -105,10 +103,10 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     }
   }
 
-  _getCloseIcon(width, height, size) {
+  _getCloseIcon(size) {
     if (this.props.canClose === true) {
-      let top   = ((screenHeight - height) / 2) - 0.25*size;
-      let right = ((screenWidth - width)   / 2) - 0.25*size;
+      let top   = -0.25*size
+      let right = -0.25*size
       return (
         <TouchableOpacity onPress={this.props.closeCallback} style={{
           position: 'absolute',
@@ -130,12 +128,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
   }
 
   render() {
-    let width = this.props.width || 0.85*screenWidth;
-    let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
-
-    let topPositionOfOverlay = (screenHeight - height) / 2;
     let designElementSize = Math.min(0.21*screenHeight,0.38 * screenWidth);
-    let topPositionOfDesignElements = topPositionOfOverlay - 0.3*designElementSize;
     let closeIconSize = 40;
     let topPadding = 12;
     let padding = 0.03*screenWidth;
@@ -143,8 +136,8 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let innerPaddingTop = this.props.getDesignElement ? 0.7*designElementSize - 2*topPadding - 30: padding;
 
     let innerChildrenArea = (
-      <View style={{ minHeight: height - innerPaddingTop - 2*topPadding}}>
-        {this.props.getDesignElement ? <View style={{height:35}} /> : undefined}
+      <View style={{ flexGrow: 1}}>
+        {this.props.getDesignElement ? <View style={{height:55}} /> : undefined}
         {this.props.children}
       </View>
     );
@@ -152,11 +145,9 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     return (
       <HiddenFadeInBlur
         style={[
-          styles.fullscreen,
           {
+            flex:1,
             backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2),
-            justifyContent:'center',
-            alignItems:'center',
             overflow:"hidden",
           },
           this.props.wrapperStyle
@@ -166,29 +157,39 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         maxOpacity={this.props.maxOpacity}
         visible={this.props.visible}
       >
-        <View style={{backgroundColor:colors.white.rgba(0.5), width: width, height: height, borderRadius: 25, padding: topPadding}}>
-          <View style={[
-            styles.centered,
-            {
-              backgroundColor:'#fff',
-              flex:1,
-              overflow:"hidden",
-              borderRadius: 25-0.02*screenWidth,
-              paddingLeft:  padding,
-              paddingRight: padding,
-              paddingTop: innerPaddingTop
-             },
-            {...this.props.style}
-          ]}>
-            { this._getTitle() }
-            { this.props.scrollable ?
-              <ScrollView style={{ width: width - 2*padding }}>{innerChildrenArea}</ScrollView> : this.props.children
-            }
+        <View style={{flex:1}} />
+        <View style={{flex:this.props.vFlex ?? 4}}>
+          <View style={{flex:1, flexDirection:'row'}}>
+            <View style={{flex:1}} />
+            <View style={{flex:this.props.hFlex ?? 7, backgroundColor:colors.white.rgba(0.5), borderRadius: 25, padding: topPadding}}>
+              <View style={[
+                {
+                  backgroundColor:'#fff',
+                  flex:1,
+                  overflow:"hidden",
+                  borderRadius: 18,
+                  paddingLeft:  padding,
+                  paddingRight: padding,
+                  paddingTop: innerPaddingTop
+                },
+                {...this.props.style}
+              ]}>
+                { this._getTitle() }
+                { this.props.scrollable ?
+                  <ScrollView contentContainerStyle={{flexGrow:1}}>{innerChildrenArea}</ScrollView> : innerChildrenArea
+                }
+              </View>
+              { this._getCloseIcon(closeIconSize) }
+            </View>
+            { this._getExtraContent(designElementSize, padding) }
+            <View style={{flex:1}} />
+
           </View>
+          { this._getFooterComponent(padding, closeIconSize) }
         </View>
-        { this._getExtraContent(width, height, designElementSize, padding, topPositionOfDesignElements) }
-        { this._getFooterComponent(width, height, padding, closeIconSize, topPositionOfDesignElements) }
-        { this._getCloseIcon(width, height, closeIconSize) }
+        <View style={{flex:1.25}} />
+
+
       </HiddenFadeInBlur>
     );
   }
