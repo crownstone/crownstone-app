@@ -182,13 +182,12 @@ export class HiddenFadeInBlur extends Component<any, any> {
     // this will be the processing view after initialization.
     if (this.state.show === true) {
       return (
-        <Animated.View style={{width:screenWidth, height:screenHeight, position:'absolute', top:0, left:0, overflow:'hidden', opacity:this.state.viewOpacity}}>
-          { Platform.OS === 'ios' ? <BlurView
+        <Animated.View style={{flex:1, overflow:'hidden', opacity:this.state.viewOpacity}}>
+          <BlurView
             style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
             blurType="light"
             blurAmount={6}
-          /> :
-            <View style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.white.rgba(0.4)}} />}
+          />
           <View style={this.props.style}>
             {this.props.children}
           </View>
