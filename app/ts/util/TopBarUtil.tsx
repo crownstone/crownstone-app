@@ -131,8 +131,10 @@ export const TopBarUtil = {
       }
     }
 
+    if (!results.topBar['rightButtons']) { results.topBar['rightButtons'] = []; }
+    if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
 
-    // console.log("Setting Topbar Options", results)
+
     return results;
   },
 }

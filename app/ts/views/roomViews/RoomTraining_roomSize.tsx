@@ -120,11 +120,11 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
           }}>{ lang("Large_rooms_take_a_bit_mo") }</Text>
 
           <View style={{flex:3}} />
-          {this._getButton(30, Math.min(0.06*screenHeight,0.10*screenWidth), 'Normal (up to 20 m', "small")}
+          {this._getButton(40, Math.min(0.06*screenHeight,0.10*screenWidth), 'Normal (up to 20 m', "small")}
           <View style={{flex:1}} />
-          {this._getButton(60, Math.min(0.08*screenHeight,0.15*screenWidth), 'Big (up to 50 m', "medium sized")}
+          {this._getButton(80, Math.min(0.08*screenHeight,0.15*screenWidth), 'Big (up to 50 m', "medium sized")}
           <View style={{flex:1}} />
-          {this._getButton(90, Math.min(0.10*screenHeight,0.20*screenWidth), 'Huge (more than 50 m', "large")}
+          {this._getButton(120, Math.min(0.10*screenHeight,0.20*screenWidth), 'Huge (more than 50 m', "large")}
           <View style={{flex:2}} />
         </View>
       </Background>
