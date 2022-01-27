@@ -16,14 +16,18 @@ import {CLOUD} from "../../../cloudAPI";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
 
+interface locationSummaryMap {
+  [key: string]: locationSummary
+}
+
 interface locationSummary {
-  [key: string]: { locationConfig?: LocationDataConfig, localLocationId: string, localSphereId: string}
+  locationConfig?: LocationDataConfig, localLocationId: string, localSphereId: string
 }
 
 interface locationCoverageMap {
-  missing:  locationSummary,
-  existing: locationSummary,
-  new:      locationSummary,
+  missing:  locationSummaryMap,
+  existing: locationSummaryMap,
+  new:      locationSummaryMap,
 }
 
 export class FingerprintSyncer extends SyncingBase {
@@ -79,9 +83,9 @@ export class FingerprintSyncer extends SyncingBase {
 
 
   _getLocationIds(state) : locationCoverageMap {
-    let newFingerprints      : locationSummary = {};
-    let existingFingerprints : locationSummary = {};
-    let missingFingerprints  : locationSummary = {};
+    let newFingerprints      : locationSummaryMap = {};
+    let existingFingerprints : locationSummaryMap = {};
+    let missingFingerprints  : locationSummaryMap = {};
 
     let existingLocations = {};
 
@@ -129,7 +133,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  syncUp(state, deviceId, locationIdsWithNewFingerprints : locationSummary) {
+  syncUp(state, deviceId, locationIdsWithNewFingerprints : locationSummaryMap) {
     // all the fingerprints we have and that do not have a cloudId, upload them to the cloud.
     let locationIds = Object.keys(locationIdsWithNewFingerprints);
     for ( let i = 0; i < locationIds.length; i++ ) {
@@ -152,7 +156,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : locationSummary) : Promise<void> {
+  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : locationSummaryMap) : Promise<void> {
     // get the fingerprints ids from the locationIdObject.
     let locationIds = Object.keys(locationIdsWithCloudFingerprints);
 
@@ -161,7 +165,7 @@ export class FingerprintSyncer extends SyncingBase {
     }
 
 
-    let locationMap = {};
+    let locationMap : Record<string, locationSummary> = {};
     let fingerprintIds = [];
     let availabilityMap = {};
     for ( let i = 0; i < locationIds.length; i++ ) {
@@ -198,7 +202,7 @@ export class FingerprintSyncer extends SyncingBase {
                     let locationData = locationMap[fingerprintCloudId];
                     this.actions.push({
                       type: 'UPDATE_LOCATION_FINGERPRINT',
-                      sphereId: locationData.sphereId,
+                      sphereId: locationData.localSphereId,
                       locationId: locationData.localLocationId,
                       data: {
                         fingerprintCloudId:   updatedFingerprint.id,
@@ -230,7 +234,7 @@ export class FingerprintSyncer extends SyncingBase {
                 this.reinitializeTracking = true;
                 this.actions.push({
                   type:'UPDATE_LOCATION_FINGERPRINT',
-                  sphereId: locationData.sphereId,
+                  sphereId: locationData.localSphereId,
                   locationId: locationData.localLocationId,
                   data:{ fingerprintRaw: JSON.stringify(updatedFingerprint.data), fingerprintCloudId: updatedFingerprint.id, fingerprintUpdatedAt: updatedFingerprint.updatedAt }
                 });
@@ -266,7 +270,7 @@ export class FingerprintSyncer extends SyncingBase {
    * @param locationIdsRequiringFingerprints
    * @returns {Promise<any>}
    */
-  syncDown(state, deviceId, locationIdsRequiringFingerprints : locationSummary) : Promise<void> {
+  syncDown(state, deviceId, locationIdsRequiringFingerprints : locationSummaryMap) : Promise<void> {
     let cloudIds = Object.keys(locationIdsRequiringFingerprints);
     // download fingerprints for rooms that need it from our cloud database.
     let pendingActions =  [];
