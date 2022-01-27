@@ -20,6 +20,10 @@ export let screenHeight = Dimensions.get('window').height; // initial guess
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
 
+//TODO: Utilize these constants
+export const UIconstants = Navigation.constantsSync()
+
+
 export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
   if (Platform.OS === 'android') {
     let heightOffset = 0;

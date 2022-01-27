@@ -6,17 +6,24 @@ import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
 import {statusBarHeight, topBarHeight} from "../views/styles";
 
+interface topBarOptionConfig {
+  backButton?:        boolean,
+  clearEmptyButtons?: boolean,
+  partialUpdate?:     boolean,
+}
+
+
 export const TopBarUtil = {
 
-  updateOptions: function(componentId, props: topbarOptions) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, true));
+  updateOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
   },
 
-  replaceOptions: function(componentId, props: topbarOptions) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, false));
+  replaceOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
   },
 
-  getOptions: function(props : topbarOptions, partialUpdate = false) {
+  getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {
     if (props === null) { return; }
 
     let leftButtons = [];
@@ -118,21 +125,32 @@ export const TopBarUtil = {
     }
 
     let results = { topBar: {} }
-    if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
-    if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
-    if (!partialUpdate || leftButtons.length  > 0) {
-      // this is here so it wont interfere with the back button.
-      if (Platform.OS === 'android' && (leftButtons.length !== 0 || props.disableBack)) {
-        results.topBar["leftButtons"] = leftButtons;
-        // results.topBar.
-      }
-      else if (Platform.OS === 'ios') {
-        results.topBar["leftButtons"] = leftButtons;
+
+    if (config.backButton) {
+      if (Platform.OS === 'android') {
+        if (leftButtons.length === 0) {
+          leftButtons.push(getLeftButton('back', 'back'))
+        }
       }
     }
 
-    if (!results.topBar['rightButtons']) { results.topBar['rightButtons'] = []; }
-    if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
+    if (config.partialUpdate) {
+      results.topBar["title"]        = {text: props.title};
+      results.topBar["rightButtons"] = rightButtons;
+      results.topBar["leftButtons"]  = leftButtons;
+    }
+    else {
+      if (props.title)             { results.topBar["title"]        = {text: props.title}; }
+      if (rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons;        }
+      if (leftButtons.length  > 0) { results.topBar["leftButtons"]  = leftButtons;         }
+    }
+
+    if (config.clearEmptyButtons) {
+      if (!results.topBar['rightButtons']) { results.topBar['rightButtons'] = []; }
+      if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
+    }
+
+    console.log("Setting Topbar Options", JSON.stringify(results, null, 2))
 
 
     return results;

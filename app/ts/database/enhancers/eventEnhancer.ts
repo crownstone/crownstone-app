@@ -278,6 +278,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_BEHAVIOUR_CLOUD_ID":
     case "UPDATE_SCENE_CLOUD_ID":
+    case "UPDATE_ABILITY_PROPERTY_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
     case "UPDATE_STONE_REACHABILITY":

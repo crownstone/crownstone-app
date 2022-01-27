@@ -180,7 +180,7 @@ export class RoomTraining extends LiveComponent<any, any> {
 
     this.setState({text:'Finished!', phase:2});
     this.trainingFinished = true;
-    TopBarUtil.replaceOptions(this.props.componentId, {title: lang("All_Done_")});
+    TopBarUtil.replaceOptions(this.props.componentId, {title: lang("All_Done_")}, {clearEmptyButtons:true});
     const store = core.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint : any) => {
