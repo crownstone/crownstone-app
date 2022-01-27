@@ -29,7 +29,7 @@ import { Stacks } from "../../Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../Base_core";
-import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
+import { LocalizationLogger } from "../../../backgroundProcesses/dev/LocalizationLogger";
 import {LOG_file, LOGw} from "../../../logging/Log";
 
 // import { WebRtcClient } from "../../../logic/WebRtcClient";

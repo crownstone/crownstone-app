@@ -150,7 +150,7 @@ export const TopBarUtil = {
       if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
     }
 
-    console.log("Setting Topbar Options", JSON.stringify(results, null, 2))
+    // console.log("Setting Topbar Options", JSON.stringify(results, null, 2))
 
 
     return results;

@@ -14,7 +14,7 @@ import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { core } from "../../../Core";
-import { LocalizationLogger } from "../../../backgroundProcesses/LocalizationLogger";
+import { LocalizationLogger } from "../../../backgroundProcesses/dev/LocalizationLogger";
 import { SHARE_DATA_TYPE, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
 import { Scheduler } from "../../../logic/Scheduler";
 

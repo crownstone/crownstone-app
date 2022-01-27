@@ -1,9 +1,9 @@
-import { FileUtil } from "../util/FileUtil";
-import { getLoggingFilename} from "../logging/LogUtil";
-import { core } from "../Core";
-import { MapProvider } from "./MapProvider";
-import { LOGw } from "../logging/Log";
-import { DataUtil } from "../util/DataUtil";
+import { FileUtil } from "../../util/FileUtil";
+import { getLoggingFilename} from "../../logging/LogUtil";
+import { core } from "../../Core";
+import { MapProvider } from "./../MapProvider";
+import { LOGw } from "../../logging/Log";
+import { DataUtil } from "../../util/DataUtil";
 
 const RNFS = require('react-native-fs');
 

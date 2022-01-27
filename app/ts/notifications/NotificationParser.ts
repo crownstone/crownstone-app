@@ -28,7 +28,7 @@ class NotificationParserClass {
   _handleLocalNotifications(messageData) {
     switch (messageData.type) {
       case 'newMessage':
-        NavigationUtil.navigate( "MessageInbox");
+        NavigationUtil.navigateTab(2);
         break;
     }
   }

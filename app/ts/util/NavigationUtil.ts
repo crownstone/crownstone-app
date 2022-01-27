@@ -749,6 +749,16 @@ export const NavigationUtil = {
     });
   },
 
+  navigateTab: function(currentTabIndex) {
+    let activeView = NavState.getActiveComponent();
+    LOGi.nav("Navigating from ",activeView, "to tab index", currentTabIndex);
+    Navigation.mergeOptions(activeView, {
+      bottomTabs: {
+        currentTabIndex: currentTabIndex
+      }
+    });
+  },
+
 
   navigateFromUnderlyingModal(target, props) {
     LOGi.nav("UNDERLYING MODAL");

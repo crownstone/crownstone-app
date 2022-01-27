@@ -48,7 +48,7 @@ import {ActiveSphereManager} from "./ActiveSphereManager";
 import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
-import {LocalizationLogger} from "./LocalizationLogger";
+import {LocalizationLogger} from "./dev/LocalizationLogger";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -331,7 +331,7 @@ class BackgroundProcessHandlerClass {
 
   _applyAppStateOnActiveSphere(appState) {
     if (appState === "active" && this.userLoggedInReady) {
-      ActiveSphereManager.onScreen()
+      ActiveSphereManager.onScreen();
     }
     else if (appState === 'background') {
       ActiveSphereManager.toBackground()
