@@ -1,11 +1,10 @@
 import { resetMocks } from "../__testUtil/mocks/suite.mock";
 import { addSphere, addStone } from "../__testUtil/helpers/data.helper";
 import { core } from "../../app/ts/Core";
-import { SyncNext } from "../../app/ts/cloud/sections/newSync/SyncNext";
-import { getSyncIdMap } from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
-import { reply1 } from "./replyMocks/reply1";
-import { CLOUD } from "../../app/ts/cloud/cloudAPI";
 import { SyncUtil } from "../../app/ts/util/SyncUtil";
+import {
+  AbilityPropertyTransferNext
+} from "../../app/ts/cloud/sections/newSync/transferrers/AbilityPropertyTransferNext";
 
 beforeEach(async () => {
   resetMocks()
@@ -56,3 +55,16 @@ test("Using SyncUtil", async () => {
 //   console.log("syncIdMap", syncIdMap)
 //   console.log("actions", actions)
 // })
+
+test("Check if abilityProperties sync correctly", async () => {
+  let sphere = addSphere();
+  let stone = addStone('handle1').stone
+
+  let action = AbilityPropertyTransferNext.getUpdateLocalCloudIdAction(sphere.id, stone.id, 'dimming', 'softOnSpeed', '123')
+  core.store.dispatch(action)
+  expect(core.store.getState().spheres[sphere.id].stones[stone.id].abilities.dimming.properties.softOnSpeed.cloudId).toBe('123')
+
+  action = AbilityPropertyTransferNext.getUpdateLocalCloudIdAction(sphere.id, stone.id, 'dimming', 'softOnSpeed', null)
+  core.store.dispatch(action)
+  expect(core.store.getState().spheres[sphere.id].stones[stone.id].abilities.dimming.properties.softOnSpeed.cloudId).toBe(null)
+})

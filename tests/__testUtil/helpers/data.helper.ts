@@ -4,7 +4,6 @@ if (core["reset"] === undefined) { throw "ERROR: mockCore should be performed be
 import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 import { Get } from "../../../app/ts/util/GetUtil";
 import { MapProvider } from "../../../app/ts/backgroundProcesses/MapProvider";
-import { hostname } from "os";
 
 
 /**
