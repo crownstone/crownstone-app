@@ -81,6 +81,6 @@ Navigation.events().registerAppLaunchedListener(() => {
   NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
-  // Navigation.registerComponent("IconDevSelector", () => IconDebug);
+  // Navigation.registerComponent("IconDevSelector", () => IconShowcase);
   // NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
 });

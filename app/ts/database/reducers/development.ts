@@ -2,22 +2,19 @@ import { update, refreshDefaults } from './reducerUtil'
 import { LOG_LEVEL } from "../../logging/LogLevels";
 
 let defaultState = {
-  logging_enabled:   false,
-  log_info:           LOG_LEVEL.info,
-  log_constellation:  LOG_LEVEL.info,
-  log_promiseManager: LOG_LEVEL.info,
-  log_native:         LOG_LEVEL.error,
-  log_mesh:           LOG_LEVEL.error,
-  log_advertisements: LOG_LEVEL.error,
-  log_notifications:  LOG_LEVEL.error,
-  log_scheduler:      LOG_LEVEL.error,
-  log_ble:            LOG_LEVEL.error,
-  log_bch:            LOG_LEVEL.info,
-  log_dfu:            LOG_LEVEL.info,
-  log_events:         LOG_LEVEL.error,
-  log_store:          LOG_LEVEL.info,
-  log_cloud:          LOG_LEVEL.info,
-  log_nav:            LOG_LEVEL.info,
+  logging_enabled:            false,
+  log_info:                   LOG_LEVEL.info,
+  log_constellation:          LOG_LEVEL.info,
+  log_native:                 LOG_LEVEL.error,
+  log_advertisements:         LOG_LEVEL.error,
+  log_notifications:          LOG_LEVEL.error,
+  log_scheduler:              LOG_LEVEL.error,
+  log_ble:                    LOG_LEVEL.error,
+  log_dfu:                    LOG_LEVEL.info,
+  log_events:                 LOG_LEVEL.error,
+  log_store:                  LOG_LEVEL.info,
+  log_cloud:                  LOG_LEVEL.info,
+  log_nav:                    LOG_LEVEL.info,
   show_rssi_values_in_mesh:   false,
   nativeExtendedLogging:      false,
 
@@ -50,7 +47,7 @@ export default (state = defaultState, action : any = {}) => {
         newState = {...state};
         newState.logging_enabled =    update(action.data.logging_enabled,    newState.logging_enabled);
         newState.log_info =           update(action.data.log_info,           newState.log_info);
-        newState.log_constellation =  update(action.data.log_constellation, newState.log_constellation);
+        newState.log_constellation =  update(action.data.log_constellation,  newState.log_constellation);
         newState.log_mesh =           update(action.data.log_mesh,           newState.log_mesh);
         newState.log_advertisements = update(action.data.log_advertisements, newState.log_advertisements);
         newState.log_native =         update(action.data.log_native,         newState.log_native);

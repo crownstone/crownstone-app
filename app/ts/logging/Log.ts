@@ -4,7 +4,6 @@ import {
   LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
-  LOG_MESH,
   LOG_CONSTELLATION,
   LOG_STORE,
   LOG_SCHEDULER,
@@ -85,10 +84,6 @@ class Logger {
 
   scheduler(...any) {
     this._log('Scheduler --', LOG_SCHEDULER, LogProcessor.log_scheduler, arguments);
-  }
-
-  mesh(...any) {
-    this._log('Mesh -------', LOG_MESH,      LogProcessor.log_mesh, arguments);
   }
 
   messages(...any) {

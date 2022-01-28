@@ -125,6 +125,8 @@ import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
 import {TestConfiguration} from "./testingViews/TestConfiguration";
+import {SettingsLogLevelConfig} from "./settingsViews/dev/SettingsLogLevelConfig";
+import {SettingsLogOverview} from "./settingsViews/dev/SettingsLogOverview";
 
 
 export const Views = {
@@ -193,6 +195,8 @@ export const Views = {
   SettingsFactoryResetStep2:         SettingsFactoryResetStep2,
   SettingsLocalizationDebug:         SettingsLocalizationDebug,
   SettingsLogging:                   SettingsLogging,
+  SettingsLogLevelConfig:            SettingsLogLevelConfig,
+  SettingsLogOverview:               SettingsLogOverview,
   // SettingsMeshOverview:              SettingsMeshOverview,
   // SettingsMeshTopology:              SettingsMeshTopology,
   SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,

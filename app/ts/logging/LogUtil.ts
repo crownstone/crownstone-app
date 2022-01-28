@@ -3,7 +3,10 @@ import {LOG_MAX_STORAGE_TIME_DAYS} from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 
-export const LOG_PREFIX = 'CrownstoneAppLog';
+export const APP_LOG_PREFIX = 'CrownstoneAppLog';
+export const IOS_LIB_LOG_PREFIX = 'BluenetLog';
+export const IOS_BRIDGE_LOG_PREFIX = 'BridgeLog';
+export const ANDROID_NATIVE_LOG_PREFIX = 'log_';
 
 export function getLoggingFilename(timestamp, prefix, time: boolean = false) {
   let month = new Date(timestamp).getMonth()+1;
@@ -27,7 +30,7 @@ async function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAY
   let allowedLogFiles = {};
   for (let i = 0; i < amountOfDaysStored; i++) {
     let timestamp = Date.now() - i*86400000;
-    allowedLogFiles[getLoggingFilename(timestamp, LOG_PREFIX)] = true;
+    allowedLogFiles[getLoggingFilename(timestamp, APP_LOG_PREFIX)] = true;
   }
 
   let flagForRemoval = [];
@@ -35,7 +38,7 @@ async function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAY
     let files = await RNFS.readdir(logPath)
 
     for (let i = 0; i < files.length; i++) {
-      if (files[i].substr(0, LOG_PREFIX.length) === LOG_PREFIX && allowedLogFiles[files[i]] !== true) {
+      if (files[i].substr(0, APP_LOG_PREFIX.length) === APP_LOG_PREFIX && allowedLogFiles[files[i]] !== true) {
         flagForRemoval.push(files[i]);
       }
     }
@@ -48,6 +51,66 @@ async function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAY
   catch (err) {
     console.log("Failed to clean logs", amountOfDaysStored);
   }
+}
+
+export async function getAppLogFileData() {
+  let logPath = FileUtil.getPath();
+
+  let results = []
+
+  try {
+    let files = await RNFS.readdir(logPath)
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].substr(0, APP_LOG_PREFIX.length) === APP_LOG_PREFIX) {
+        let path = logPath + "/" + files[i];
+        let stat = await RNFS.stat(path);
+        results.push({filename: files[i], size: stat.size, date: files[i].substr(APP_LOG_PREFIX.length, 10), path})
+      }
+    }
+  }
+  catch (err) {
+    console.log("Failed to get data", err);
+  }
+
+  results.sort((a,b) => {
+    return a.date > b.date ? -1 : 1})
+  return results;
+}
+
+export async function getAllLogData() {
+  let app     = await getLogData(APP_LOG_PREFIX);
+  let lib     = await getLogData(IOS_LIB_LOG_PREFIX);
+  let bridge  = await getLogData(IOS_BRIDGE_LOG_PREFIX);
+  let android = await getLogData(ANDROID_NATIVE_LOG_PREFIX);
+
+  let results = app.concat(lib,bridge,android);
+
+  results.sort((a,b) => {return a.date > b.date ? -1 : 1});
+
+  return results;
+}
+
+export async function getLogData(prefix) {
+  let logPath = FileUtil.getPath();
+
+  let results = []
+
+  try {
+    let files = await RNFS.readdir(logPath)
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].substr(0, prefix.length) === prefix) {
+        let path = logPath + "/" + files[i];
+        let stat = await RNFS.stat(path);
+        results.push({filename: files[i], size: stat.size, date: stat.mtime, path})
+      }
+    }
+  }
+  catch (err) {
+    console.log("Failed to get data", err);
+  }
+
+  results.sort((a,b) => {return a.date > b.date ? -1 : 1})
+  return results;
 }
 
 export async function clearLogs() {
@@ -77,7 +140,7 @@ export class FileLoggerClass {
     if (this.blocked) { return; }
 
     // generate filename based on current date.
-    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
+    let filename = getLoggingFilename(Date.now(), APP_LOG_PREFIX);
 
     // create string
     let str = '' + Date.now() + ' - ' + new Date() + " -";

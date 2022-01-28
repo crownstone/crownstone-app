@@ -86,7 +86,6 @@ import { Platform } from "react-native";
   export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
   export let LOG_CONSTELLATION   = LOG_LEVEL.ERROR;    // enabling LOG.constellation  commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
-  export let LOG_MESH            = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES        = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
   export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu            commands to be shown.

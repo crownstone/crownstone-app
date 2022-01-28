@@ -1,6 +1,6 @@
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import {Alert, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
@@ -8,10 +8,13 @@ import { background, colors } from "../../styles";
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
-import { clearLogs} from "../../../logging/LogUtil";
+import {clearLogs, getAppLogFileData} from "../../../logging/LogUtil";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import {FileUtil} from "../../../util/FileUtil";
+import Share from "react-native-share";
+import {LOGw} from "../../../logging/Log";
 
 
 export class SettingsLogging extends LiveComponent<any, any> {
@@ -19,21 +22,40 @@ export class SettingsLogging extends LiveComponent<any, any> {
     return TopBarUtil.getOptions({title:  "Logging"});
   }
 
-  unsubscribe;
+  mounted = false;
+
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      logInformation: [],
+      logsLoaded: false
+    };
+
+    this.getLogs();
+  }
+
+  async getLogs() {
+    if (this.mounted) { this.setState({logsLoaded: false}); }
+    else              {
+      // @ts-ignore
+      this.state.logsLoaded = false;
+    }
+    let results = await getAppLogFileData();
+
+    if (this.mounted) { this.setState({logInformation: results, logsLoaded: true});; }
+    else              {
+      // @ts-ignore
+      this.state.logsLoaded     = true;
+      // @ts-ignore
+      this.state.logInformation = results;
+    }
+  }
 
   componentDidMount() {
-    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-      if  (change.changeDeveloperData) {
-        this.forceUpdate();
-      }
-    });
+    this.mounted = true;
   }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
 
   _getItems() {
     let items = [];
@@ -43,74 +65,91 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: "SET LOGGING LEVELS",
+      label: `ACTIVE LOG PRESET: ${getProfile() ?? "custom"}`,
     });
-
-    let logLevelsData = {
-      log_info:           { label: "General",         explanation: ''},
-      log_constellation:  { label: "Constellation",   explanation: ''},
-      log_native:         { label: "Native",          explanation: ''},
-      log_nav:            { label: "Navigation",      explanation: ''},
-      log_advertisements: { label: "Advertisements",  explanation: ''},
-      log_mesh:           { label: "Mesh",            explanation: ''},
-      log_notifications:  { label: "Notifications",   explanation: ''},
-      log_scheduler:      { label: "Scheduler",       explanation: ''},
-      log_ble:            { label: "BLE",             explanation: ''},
-      log_dfu:            { label: "DFU",             explanation: ''},
-      log_events:         { label: "Events",          explanation: ''},
-      log_store:          { label: "Store",           explanation: ''},
-      log_cloud:          { label: "Cloud",           explanation: ''},
-    };
-
-    let logLevels = Object.keys(logLevelsData);
-
-    let levels = {};
-    levels[LOG_LEVEL.verbose] = "verbose";
-    levels[LOG_LEVEL.debug] = "debug";
-    levels[LOG_LEVEL.info] = "info";
-    levels[LOG_LEVEL.warning] = "warning";
-    levels[LOG_LEVEL.error] = "error";
-    levels[LOG_LEVEL.none] = "none";
-
-    let values = [
-      {label: "disabled", value: LOG_LEVEL.none},
-      {label: "error",    value: LOG_LEVEL.error},
-      {label: "warning",  value: LOG_LEVEL.warning},
-      {label: "info",     value: LOG_LEVEL.info},
-      {label: "debug",    value: LOG_LEVEL.debug},
-      {label: "verbose",  value: LOG_LEVEL.verbose},
-    ];
-
-    logLevels.forEach((level) => {
+    // presets
+    for (let profileId in LOGGING_PROFILES) {
       items.push({
-        type: 'popup',
-        label: logLevelsData[level].label,
-        labelStyle: { paddingLeft: 15 },
-        valueRight: true,
-        buttons: true,
-        valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
-        value: state.development[level],
-        valueLabel: levels[state.development[level]],
-        items: values,
-        callback: (newValue) => {
-          let data = {};
-          data[level] = newValue;
-          core.store.dispatch({type: "DEFINE_LOGGING_DETAILS", data: data})
+        label: `Load "${profileId}"`,
+        type: 'button',
+        style: {color: colors.iosBlue.hex},
+        callback:() => {
+          store.dispatch({type: 'DEFINE_LOGGING_DETAILS', data: LOGGING_PROFILES[profileId]});
+          Alert.alert("Preset loaded")
         }
-      })
-    });
+      });
+    }
 
 
+    // sizes of log files (app only, in MBs)
+      // press --> pop up, share, delete
+    items.push({ type:'explanation', label: "CURRENT APP LOG FILES" });
+    if (this.state.logsLoaded === false) {
+      items.push({ type:'info', label: "Loading..." });
+    }
+    else if (this.state.logInformation.length === 0) {
+      items.push({ type:'button', label: "No logs yet...", callback:() => { this.getLogs() }});
+    }
+    else {
+      for (let file of this.state.logInformation) {
+        let name = file.filename.replace(".log","");
+        items.push({
+          label: `${name} - ${Math.round(file.size/1024/1024)}MB`,
+          type: 'button',
+          style: {color: colors.iosBlue.hex},
+          callback:() => {
+            core.eventBus.emit("showPopup", {
+              tite: name,
+              buttons: [
+                {text: "Share", testID:"Share", callback: async () => {
+                    try {
+                      let result = await Share.open({ urls: [file.path] });
+                    }
+                    catch (err) {
+                      LOGw.info("Something went wrong while sharing data:",err)
+                    }
+                }},
+                {text: "Delete", testID:"Delete", callback: () => {
+                  Alert.alert(`Are you sure you want to delete ${name}?`, "This cannot be undone.", [{text:"Cancel"},{text:"Yes", style:'destructive', onPress: async () => {
+                    await FileUtil.safeDeleteFile(file.path);
+                    await this.getLogs();
+                  }}])
+                }},
+            ]})
+          }
+        });
+      }
+    }
+    items.push({type:'explanation', label: "CUSTOMIZE LOG LEVELS"});
     items.push({
-      type:'explanation',
-      label: "NATIVE EXTENDED LOGGING",
+      label: "Manage all logs",
+      type: 'navigation',
+      icon: <IconButton name="ios-document" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.csBlue.hex }}/>,
+      callback: () => {
+        NavigationUtil.navigate("SettingsLogOverview");
+      }
     });
 
+
+
+    items.push({type:'explanation', label: "CUSTOMIZE LOG LEVELS"});
+    items.push({
+      label: "Logging Configuration",
+      type: 'navigation',
+      icon: <IconButton name="ios-options" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.iosBlue.hex }}/>,
+      callback: () => {
+        NavigationUtil.navigate("SettingsLogLevelConfig");
+      }
+    });
+
+    // config --> SettingsLogLevelConfig
+
+    items.push({type:'explanation',label: "NATIVE EXTENDED LOGGING"});
     items.push({
       label: "Native Extended Logging",
       value: state.development.nativeExtendedLogging,
       type: 'switch',
-      icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+      icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'DEFINE_LOGGING_DETAILS',
@@ -151,8 +190,6 @@ export class SettingsLogging extends LiveComponent<any, any> {
       }
     });
 
-
-
     items.push({ type:'spacer' });
     items.push({ type:'spacer' });
 
@@ -171,3 +208,43 @@ export class SettingsLogging extends LiveComponent<any, any> {
     );
   }
 }
+
+function getProfile() {
+  let state = core.store.getState();
+  let development = state.development;
+  for (let profileId in LOGGING_PROFILES) {
+    if (isProfile(development, LOGGING_PROFILES[profileId])) {
+      return profileId;
+    }
+  }
+  return null;
+}
+
+function isProfile(development, profile) {
+  for (let item in profile) {
+    if (development[item] !== profile[item]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+const LOGGING_PROFILES = {
+  DEFAULT: {
+    log_info:           LOG_LEVEL.info,
+    log_constellation:  LOG_LEVEL.info,
+    log_native:         LOG_LEVEL.error,
+    log_advertisements: LOG_LEVEL.error,
+    log_notifications:  LOG_LEVEL.info,
+    log_scheduler:      LOG_LEVEL.error,
+    log_ble:            LOG_LEVEL.error,
+    log_dfu:            LOG_LEVEL.info,
+    log_events:         LOG_LEVEL.error,
+    log_store:          LOG_LEVEL.info,
+    log_cloud:          LOG_LEVEL.info,
+    log_nav:            LOG_LEVEL.info,
+  }
+}
+
+

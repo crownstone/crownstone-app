@@ -10,7 +10,6 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../Core";
-import { getLoggingFilename, LOG_PREFIX } from "../../../logging/LogUtil";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
@@ -164,13 +163,12 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     })
 
     items.push({
-      label: "Share debug data",
+      label: "Share collected buffers",
       type: 'button',
       style: { color: colors.purple.hex },
       icon: <IconButton name="ios-mail" size={22} color="#fff" buttonStyle={{ backgroundColor: colors.purple.hex }}/>,
       callback: () => {
         core.eventBus.emit("showPopup", {buttons: [
-          {text: SHARE_DATA_TYPE.logs              , callback: () => { shareData(SHARE_DATA_TYPE.logs              ) }},
           {text: SHARE_DATA_TYPE.localization      , callback: () => { shareDataViaRTC(SHARE_DATA_TYPE.localization) }},
           {text: SHARE_DATA_TYPE.allBuffers        , callback: () => { shareData(SHARE_DATA_TYPE.allBuffers        ) }},
           {text: SHARE_DATA_TYPE.switchCraftBuffers, callback: () => { shareData(SHARE_DATA_TYPE.switchCraftBuffers) }},
@@ -668,48 +666,44 @@ export async function getShareDataFileUrls(shareDataType) : Promise<string[]> {
   let storagePath = FileUtil.getPath();
   let urls = [];
   if (shareDataType === SHARE_DATA_TYPE.logs) {
-    let filename = getLoggingFilename(Date.now(), LOG_PREFIX);
-    urls = [
-      "file://" + storagePath + "/" + filename,
-    ]
-  }
-  else if (shareDataType === SHARE_DATA_TYPE.localization) {
-    let fingerprintPath = await LocalizationLogger.storeFingerprints();
-    let logUrls = await LocalizationLogger.getURLS();
-    logUrls.push(fingerprintPath);
-    urls = logUrls.map((a) => { return "file://" + a })
-  }
-  else if (shareDataType === SHARE_DATA_TYPE.allBuffers) {
-    urls = [
-      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-      "file://" + storagePath + '/power-samples-filteredData.log',
-      "file://" + storagePath + '/power-samples-unfilteredData.log',
-      "file://" + storagePath + '/power-samples-softFuseData.log',
-    ]
-  }
-  else if (shareDataType ===  SHARE_DATA_TYPE.switchCraftBuffers) {
-    urls = [
-      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-    ]
-  }
-  else if (shareDataType ===  SHARE_DATA_TYPE.measurementBuffers) {
-    urls = [
-      "file://" + storagePath + '/power-samples-filteredData.log',
-      "file://" + storagePath + '/power-samples-unfilteredData.log',
-    ]
-  }
-  else if (shareDataType ===  SHARE_DATA_TYPE.errorBuffers) {
-    urls = [
-      "file://" + storagePath + '/power-samples-filteredData.log',
-      "file://" + storagePath + '/power-samples-unfilteredData.log',
-      "file://" + storagePath + '/power-samples-softFuseData.log',
-    ]
+    if (shareDataType === SHARE_DATA_TYPE.localization) {
+      let fingerprintPath = await LocalizationLogger.storeFingerprints();
+      let logUrls = await LocalizationLogger.getURLS();
+      logUrls.push(fingerprintPath);
+      urls = logUrls.map((a) => { return "file://" + a })
+    }
+    else if (shareDataType === SHARE_DATA_TYPE.allBuffers) {
+      urls = [
+        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+        "file://" + storagePath + '/power-samples-softFuseData.log',
+      ]
+    }
+    else if (shareDataType ===  SHARE_DATA_TYPE.switchCraftBuffers) {
+      urls = [
+        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+      ]
+    }
+    else if (shareDataType ===  SHARE_DATA_TYPE.measurementBuffers) {
+      urls = [
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+      ]
+    }
+    else if (shareDataType ===  SHARE_DATA_TYPE.errorBuffers) {
+      urls = [
+        "file://" + storagePath + '/power-samples-filteredData.log',
+        "file://" + storagePath + '/power-samples-unfilteredData.log',
+        "file://" + storagePath + '/power-samples-softFuseData.log',
+      ]
+    }
   }
 
   return urls
