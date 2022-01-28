@@ -103,7 +103,7 @@ import { Platform } from "react-native";
   export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native     commands to be shown.
 
 
-  export let LOG_TIMESTAMPS     = false;    // add timestamps to logs.
+  export let LOG_TIMESTAMPS     = false;    // add timestamps to console.logs. Files always have timestamps.
   export let LOG_TIME_DIFFS     = false;    // add dt since last log to logs.
 
   /**

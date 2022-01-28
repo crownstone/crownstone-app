@@ -7,7 +7,7 @@ let defaultState = {
   log_constellation:          LOG_LEVEL.info,
   log_native:                 LOG_LEVEL.error,
   log_advertisements:         LOG_LEVEL.error,
-  log_notifications:          LOG_LEVEL.error,
+  log_notifications:          LOG_LEVEL.info,
   log_scheduler:              LOG_LEVEL.error,
   log_ble:                    LOG_LEVEL.error,
   log_dfu:                    LOG_LEVEL.info,
