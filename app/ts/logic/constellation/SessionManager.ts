@@ -320,7 +320,7 @@ export class SessionManagerClass {
           await this.closeSession(handle);
         }
         else {
-          LOGi.constellation("SessionManager: Keep session open for other requests after revoke.", handle, session.identifier);
+          LOGi.constellation("SessionManager: Keep session open for other requests after revoke.", handle, session.identifier, session.state);
         }
       }
     }

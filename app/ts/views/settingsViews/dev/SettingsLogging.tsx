@@ -65,21 +65,28 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
     items.push({
       type:'explanation',
-      label: `ACTIVE LOG PRESET: ${getProfile() ?? "custom"}`,
+      label: `ACTIVE LOG PRESET:`,
     });
-    // presets
-    for (let profileId in LOGGING_PROFILES) {
-      items.push({
-        label: `Load "${profileId}"`,
-        type: 'button',
-        style: {color: colors.iosBlue.hex},
-        callback:() => {
-          store.dispatch({type: 'DEFINE_LOGGING_DETAILS', data: LOGGING_PROFILES[profileId]});
-          Alert.alert("Preset loaded")
+    items.push({
+      label: `${getProfile() ?? "custom"}`,
+      type: 'button',
+      style: {color: colors.iosBlue.hex},
+      callback:() => {
+        let presets = [];
+        // presets
+        for (let profileId in LOGGING_PROFILES) {
+          presets.push({
+            text: `Load "${profileId}"`,
+            callback:() => {
+              store.dispatch({type: 'DEFINE_LOGGING_DETAILS', data: LOGGING_PROFILES[profileId]});
+              Alert.alert("Preset loaded")
+            }
+          });
         }
-      });
-    }
 
+        core.eventBus.emit("showPopup", { tite: 'Load Preset', buttons: presets})
+      }
+    })
 
     // sizes of log files (app only, in MBs)
       // press --> pop up, share, delete
@@ -103,7 +110,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
               buttons: [
                 {text: "Share", testID:"Share", callback: async () => {
                     try {
-                      let result = await Share.open({ urls: [file.path] });
+                      await Share.open({ urls: [file.path] });
                     }
                     catch (err) {
                       LOGw.info("Something went wrong while sharing data:",err)

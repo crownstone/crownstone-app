@@ -770,6 +770,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 function formatError(err) : string {
   try {
     if (typeof err === 'string') { return err; }
+    if (err?.message)            { return err.message; }
     if (typeof err === 'object') { return JSON.stringify(err, undefined, 2); }
     return String(err);
   }
