@@ -23,6 +23,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
   }
 
   mounted = false;
+  unsubscribe;
 
 
   constructor(props) {
@@ -53,9 +54,21 @@ export class SettingsLogging extends LiveComponent<any, any> {
     }
   }
 
+
   componentDidMount() {
     this.mounted = true;
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeDeveloperData) {
+        this.forceUpdate();
+      }
+    });
   }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
 
   _getItems() {
     let items = [];
@@ -76,7 +89,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
         // presets
         for (let profileId in LOGGING_PROFILES) {
           presets.push({
-            text: `Load "${profileId}"`,
+            text: profileId,
             callback:() => {
               store.dispatch({type: 'DEFINE_LOGGING_DETAILS', data: LOGGING_PROFILES[profileId]});
               Alert.alert("Preset loaded")
@@ -251,6 +264,48 @@ const LOGGING_PROFILES = {
     log_store:          LOG_LEVEL.info,
     log_cloud:          LOG_LEVEL.info,
     log_nav:            LOG_LEVEL.info,
+  },
+  "INFO STORE AND CLOUD": {
+    log_info:           LOG_LEVEL.info,
+    log_constellation:  LOG_LEVEL.error,
+    log_native:         LOG_LEVEL.error,
+    log_advertisements: LOG_LEVEL.error,
+    log_notifications:  LOG_LEVEL.error,
+    log_scheduler:      LOG_LEVEL.error,
+    log_ble:            LOG_LEVEL.error,
+    log_dfu:            LOG_LEVEL.error,
+    log_events:         LOG_LEVEL.error,
+    log_store:          LOG_LEVEL.info,
+    log_cloud:          LOG_LEVEL.info,
+    log_nav:            LOG_LEVEL.error,
+  },
+  "CONSTELLATION ONLY": {
+    log_info:           LOG_LEVEL.error,
+    log_constellation:  LOG_LEVEL.info,
+    log_native:         LOG_LEVEL.error,
+    log_advertisements: LOG_LEVEL.error,
+    log_notifications:  LOG_LEVEL.error,
+    log_scheduler:      LOG_LEVEL.error,
+    log_ble:            LOG_LEVEL.error,
+    log_dfu:            LOG_LEVEL.error,
+    log_events:         LOG_LEVEL.error,
+    log_store:          LOG_LEVEL.error,
+    log_cloud:          LOG_LEVEL.error,
+    log_nav:            LOG_LEVEL.error,
+  },
+  "ERRORS ONLY": {
+    log_info:           LOG_LEVEL.error,
+    log_constellation:  LOG_LEVEL.error,
+    log_native:         LOG_LEVEL.error,
+    log_advertisements: LOG_LEVEL.error,
+    log_notifications:  LOG_LEVEL.error,
+    log_scheduler:      LOG_LEVEL.error,
+    log_ble:            LOG_LEVEL.error,
+    log_dfu:            LOG_LEVEL.error,
+    log_events:         LOG_LEVEL.error,
+    log_store:          LOG_LEVEL.error,
+    log_cloud:          LOG_LEVEL.error,
+    log_nav:            LOG_LEVEL.error,
   }
 }
 

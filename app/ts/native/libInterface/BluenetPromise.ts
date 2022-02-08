@@ -47,7 +47,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
           reject(new Error(result.data));
         }
         else {
-			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data", result.data, "for ID:", id, "AppState:", AppState.currentState);
+			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           BugReportUtil.breadcrumb("BLE: Finished Command",{
             functionCalled: functionName,
             id: id,

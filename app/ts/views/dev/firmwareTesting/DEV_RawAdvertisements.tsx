@@ -95,7 +95,7 @@ export class DEV_RawAdvertisements extends LiveComponent<{
       this.setState({mode: type})
     }
 
-    let strData = xUtil.stringify(data);
+    let strData = xUtil.stringify(data, 2);
     if (this.state.advertisement !== strData) {
       this.setState({advertisement: strData, stateOfExternalCrownstone: data.serviceData.stateOfExternalCrownstone})
     }

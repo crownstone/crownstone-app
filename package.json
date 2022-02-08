@@ -6,6 +6,7 @@
     "start": "tsc --watch",
     "build": "tsc",
     "react": "react-native start --reset-cache",
+    "react-lite": "react-native start --reset-cache --max-workers 2",
     "test": "jest",
     "ios": "react-native run-ios",
     "iosUiTests": "npx wdio ./tests_ui/testConfigs/iosSimulator.conf.js",

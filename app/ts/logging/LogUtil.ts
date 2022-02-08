@@ -136,12 +136,7 @@ export class FileLoggerClass {
     this._logPath = FileUtil.getPath();
   }
 
-  log(args: any[]) {
-    if (this.blocked) { return; }
-
-    // generate filename based on current date.
-    let filename = getLoggingFilename(Date.now(), APP_LOG_PREFIX);
-
+  static generateStringFromArgs(args: any[]) : string {
     // create string
     let str = '' + Date.now() + ' - ' + new Date() + " -";
     for (let i = 0; i < args.length; i++) {
@@ -153,7 +148,17 @@ export class FileLoggerClass {
       }
     }
     str += " \n";
+    return str;
+  }
 
+  log(args: any[]) {
+    if (this.blocked) { return; }
+
+    // generate filename based on current date.
+    let filename = getLoggingFilename(Date.now(), APP_LOG_PREFIX);
+
+    // create string
+    let str = FileLoggerClass.generateStringFromArgs(args);
 
     this._writeQueue.push([this._logPath + '/' + filename, str]);
     this._write();

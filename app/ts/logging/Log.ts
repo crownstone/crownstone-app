@@ -7,9 +7,15 @@ import {
   LOG_CONSTELLATION,
   LOG_STORE,
   LOG_SCHEDULER,
-  LOG_MESSAGES, LOG_NATIVE,
+  LOG_MESSAGES,
+  LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_TO_FILE, LOG_DFU, LOG_NAVIGATION
+  LOG_TIMESTAMPS,
+  LOG_NOTIFICATIONS,
+  LOG_TO_FILE,
+  LOG_DFU,
+  LOG_NAVIGATION,
+  STREAM_FULL_LOGS
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { LOG_LEVEL } from "./LogLevels";
@@ -122,8 +128,13 @@ class Logger {
       }
 
       if (base_core.sessionMemory.developmentEnvironment) {
-        // @ts-ignore
-        console.log.apply(this, args);
+        if (STREAM_FULL_LOGS) {
+          console.log(FileLoggerClass.generateStringFromArgs(args));
+        }
+        else {
+          // @ts-ignore
+          console.log.apply(this, args);
+        }
       }
     }
   }

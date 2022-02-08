@@ -251,7 +251,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
           }
           else {
             core.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
-            CLOUD.forSphere(this.props.sphereId).deleteSphere()
+            CLOUD.deleteSphere(this.props.sphereId)
               .then(() => {
                 this._processLocalDeletion();
               })

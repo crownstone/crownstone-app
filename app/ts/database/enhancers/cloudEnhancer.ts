@@ -476,7 +476,7 @@ function removeBehaviourInCloud(action, state, oldState) {
 function removeAllBehavioursForStoneInCloud(action, state) {
   // this is only used for devs, so we won't wrap it in the events
   let stoneId = action.stoneId;
-  CLOUD.forStone(stoneId).deleteAllBehaviours();
+  CLOUD.forStone(stoneId).deleteAllBehaviours()
 }
 
 function handleBehaviourInCloud(action, state) {

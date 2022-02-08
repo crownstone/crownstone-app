@@ -493,11 +493,11 @@ export const xUtil = {
   },
 
 
-  stringify: function(obj, space = 2) {
+  stringify: function(obj, space = 0) {
     let allKeys = [];
     JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
     allKeys.sort();
-    return JSON.stringify( obj, allKeys, space);
+    return JSON.stringify(obj, allKeys, space);
   },
 
 
