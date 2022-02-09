@@ -1,14 +1,15 @@
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { xUtil } from "../../util/StandAloneUtil";
-import { Get } from "../../util/GetUtil";
-import { BleCommandCleaner } from "./BleCommandCleaner";
-import { Executor } from "./Executor";
-import { SessionManager } from "./SessionManager";
-import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
-import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { MapProvider }             from "../../backgroundProcesses/MapProvider";
+import { xUtil }                   from "../../util/StandAloneUtil";
+import { Get }                     from "../../util/GetUtil";
+import { BleCommandCleaner }       from "./BleCommandCleaner";
+import { Executor }                from "./Executor";
+import { SessionManager }          from "./SessionManager";
+import { LOGd, LOGi, LOGv, LOGw }  from "../../logging/Log";
+import { BluenetPromiseWrapper }   from "../../native/libInterface/BluenetPromise";
 import { BroadcastCommandManager } from "./BroadcastCommandManager";
-import { ConstellationUtil } from "./util/ConstellationUtil";
-import { TimeKeeper } from "../../backgroundProcesses/TimeKeeper";
+import { ConstellationUtil }       from "./util/ConstellationUtil";
+import { TimeKeeper }              from "../../backgroundProcesses/TimeKeeper";
+import { Scheduler }               from "../Scheduler";
 
 
 /**
@@ -39,7 +40,7 @@ export class BleCommandManagerClass {
     let commandId = xUtil.getUUID();
 
     // we use every field from the options excep the command targets. Each target in this list get an individual command.
-    let usedOptions = {...options};
+    let usedOptions : commandOptions = {...options};
     delete usedOptions.commandTargets;
 
     if (options.commandType === "BROADCAST") {
@@ -161,16 +162,35 @@ export class BleCommandManagerClass {
     LOGi.constellation("BleCommandManager: Loading command", JSON.stringify(command));
 
     let targetId = command.commandTarget;
+    let index;
     switch (command.commandType) {
       case "MESH":
         if (this.queue.mesh[targetId] === undefined) { this.queue.mesh[targetId] = []; }
         this.queue.mesh[targetId].push(command);
+        index = this.queue.mesh[targetId].length - 1;
+
+        command.removeTimeout = Scheduler.scheduleCallback(() => {
+          LOGi.constellation("BleCommandManager: Removing Mesh command due to timeout", targetId, command.id, command.commanderId);
+          this._removeMeshCommand(targetId,index,"COMMAND_TIMEOUT");
+          SessionManager.evaluateSessionNecessity();
+        }, command.timeout*1000 + 5000);
+
         break;
       case "DIRECT":
         if (this.queue.direct[targetId] === undefined) { this.queue.direct[targetId] = []; }
         this.queue.direct[targetId].push(command);
+        index = this.queue.direct[targetId].length - 1;
+
+        command.removeTimeout = Scheduler.scheduleCallback(() => {
+          LOGi.constellation("BleCommandManager: Removing Direct command due to timeout", targetId, command.id, command.commanderId);
+          this._removeDirectCommand(targetId,index,"COMMAND_TIMEOUT");
+          SessionManager.evaluateSessionNecessity();
+        }, command.timeout*1000 + 5000);
+
         break;
     }
+
+
   }
 
 
@@ -411,8 +431,13 @@ export class BleCommandManagerClass {
   // Util methods
 
   _removeDirectCommand(handle : string, index: number, errorMessage : string | null = null) {
-    let command = this.queue.direct[handle][index];
+    let command = this.queue.direct[handle]?.[index];
+    if (!command) { return; }
+
     this.queue.direct[handle].splice(index,1);
+
+    if (command.removeTimeout) { command.removeTimeout() }
+
     LOGi.constellation("BleCommandManager: Removing command", handle, command.id, errorMessage);
 
     if (errorMessage !== null) {
@@ -424,8 +449,12 @@ export class BleCommandManagerClass {
   }
 
   _removeMeshCommand(meshId: string, index: number, errorMessage: string | null = null) {
-    let meshCommand = this.queue.mesh[meshId][index];
+    let meshCommand = this.queue.mesh[meshId]?.[index];
+    if (!meshCommand) { return; }
+
     this.queue.mesh[meshId].splice(index,1);
+
+    if (meshCommand.removeTimeout) { meshCommand.removeTimeout() }
 
     LOGi.constellation("BleCommandManager: Removing mesh command", meshId, meshCommand.id, errorMessage);
 

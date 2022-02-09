@@ -287,7 +287,7 @@ class SchedulerClass {
       }
     }
     let uuid = label + xUtil.getUUID();
-    LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
+    LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms. Will use timeout:', useTimeout);
 
     // fallback to try to fire this callback after exactly the amount of ms
     let timeoutId = null;

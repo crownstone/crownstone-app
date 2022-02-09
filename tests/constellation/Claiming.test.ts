@@ -1,14 +1,16 @@
-import {mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
 import {createMockDatabase} from "../__testUtil/helpers/data.helper";
 import {claimBluetooth, tell} from "../../app/ts/logic/constellation/Tellers";
 import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
+import {TimeKeeper} from "../../app/ts/backgroundProcesses/TimeKeeper";
 
 beforeEach(async () => {
-  BleCommandManager.reset()
-  SessionManager.reset()
+  BleCommandManager.reset();
+  SessionManager.reset();
+  TimeKeeper.reset();
   resetMocks()
 })
 beforeAll(async () => {})
@@ -84,8 +86,7 @@ test("Check claiming Bluetooth to handle session with open commands", async () =
   expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(1)
   expect(Object.keys(SessionManager._activeSessions).length).toBe(0)
 
-  await TestUtil.nextTick()
-  mScheduler.triggerDelay()
+  await TestUtil.nextTick();
   await block;
 
   expect(Object.keys(SessionManager._sessions).length).toBe(0)
@@ -131,19 +132,19 @@ test("Check claiming Bluetooth to handle session with open commands which timeou
   await mBluenetPromise.for(handle).fail.connect("CONNECTION_CANCELLED");
   await mBluenetPromise.for(handle).succeed.cancelConnectionRequest();
 
-  await TestUtil.nextTick()
-  mScheduler.triggerDelay()
+  await TestUtil.nextTick();
   await block;
 
-  let claimedCommanderPromise = claimBluetooth(handle,30)
-  await mBluenetPromise.for(handle).succeed.connect("dfu")
+  let claimedCommanderPromise = claimBluetooth(handle,30);
+  await mBluenetPromise.for(handle).succeed.connect("dfu");
 
   let commander = await claimedCommanderPromise;
 
+  await moveTimeBy(11000);
+
   // fire the timeout
-  await mScheduler.trigger();
   expect(expectedError?.message).toBe("SESSION_REQUEST_TIMEOUT");
-  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(0)
+  expect(Object.keys(SessionManager._pendingSessionRequests).length).toBe(0);
 
   commander.end();
 
@@ -153,7 +154,7 @@ test("Check claiming Bluetooth to handle session with open commands which timeou
   evt_disconnected(handle);
 
   await TestUtil.nextTick()
-  expect(Object.keys(SessionManager._sessions).length).toBe(0)
+  expect(Object.keys(SessionManager._sessions).length).toBe(0);
 
   // releasing block, the previous pending commands will resume.
   SessionManager.releaseBlock();

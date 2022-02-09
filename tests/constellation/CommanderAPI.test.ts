@@ -1,12 +1,12 @@
-import {mBluenet, mBluenetPromise, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {mBluenet, mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
 import {createMockDatabase} from "../__testUtil/helpers/data.helper";
 import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
-import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
 import {advanceBy} from "jest-date-mock";
+import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
 
 
 let BleCommandManager = null;
@@ -43,14 +43,14 @@ test("Check the CommanderAPI handling multiple session timeouts", async () => {
   let p1Err = jest.fn();
   commander.getBootloaderVersion().catch(p1Err);
 
-  await mScheduler.trigger()
+  moveTimeBy(16000)
   await TestUtil.nextTick()
   expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"))
 
   let p2Err = jest.fn();
   commander.getBootloaderVersion().catch(p2Err);
 
-  await mScheduler.trigger()
+  moveTimeBy(16000)
   await TestUtil.nextTick()
   expect(p1Err).toBeCalledWith(new Error("SESSION_REQUEST_TIMEOUT"))
 });
@@ -83,6 +83,9 @@ test("Check multiple commanders requiring the same session", async () => {
 
   await mBluenetPromise.for(handle).succeed.getFirmwareVersion("1.2.3");
   expect(c2Success).toBeCalledWith("1.2.3");
+
+  expect(mBluenetPromise.has(handle).called.setTime()).toBeTruthy();
+  await mBluenetPromise.for(handle).succeed.setTime();
 
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBeTruthy();
   evt_disconnected(handle);
@@ -136,3 +139,38 @@ test("Ensure sessions do not perform commands after they are killed.", async () 
 
   expect(mBluenetPromise.has(handle).called.trackedDeviceHeartbeat()).toBeFalsy();
 });
+
+test("Check if the timeout of the commands works properly", async () => {
+  let db = createMockDatabase(meshId);
+  let handle = db.stones[0].handle
+  let commander = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
+
+  let p1Err = jest.fn();
+  commander.getBootloaderVersion().catch(p1Err);
+
+  // fire ibeacon event to trigger the connect request
+  evt_ibeacon(-70, handle);
+
+  // expect the session to attempt a connect
+  expect(mBluenetPromise.has(handle).called.connect()).toBeTruthy();
+
+  expect(SessionManager._timeoutHandlers[handle][commander.id]).toBeDefined()
+  await mBluenetPromise.for(handle).succeed.connect();
+  expect(SessionManager._timeoutHandlers[handle][commander.id]).toBeUndefined()
+
+  evt_disconnected(handle);
+
+  expect(SessionManager._timeoutHandlers[handle][commander.id]).toBeUndefined()
+  expect(SessionManager._sessions[handle]).toBeDefined()
+
+  await moveTimeBy(16000) // this is the timeout of the original commander session.
+
+  expect(p1Err).not.toHaveBeenCalled();
+  
+  // no timeout handlers for sessions.
+  expect(Object.keys(SessionManager._timeoutHandlers[handle]).length).toBe(0)
+  
+  await moveTimeBy(5000) // timeout the command.
+
+  expect(SessionManager._sessions[handle]).not.toBeDefined()
+})

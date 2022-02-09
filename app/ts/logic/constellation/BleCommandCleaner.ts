@@ -102,6 +102,8 @@ export const BleCommandCleaner =  {
 
 
   _removeCommand(command: BleCommand) {
+    if (command.removeTimeout) { command.removeTimeout(); }
+
     command.promise.reject(new Error(BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE));
   },
 

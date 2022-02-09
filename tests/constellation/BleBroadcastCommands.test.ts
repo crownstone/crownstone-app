@@ -1,4 +1,4 @@
-import { mBluenet, mBluenetPromise, mScheduler, resetMocks } from "../__testUtil/mocks/suite.mock";
+import {mBluenet, mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { BleCommandManagerClass } from "../../app/ts/logic/constellation/BleCommandManager";
 import { createMockDatabase } from "../__testUtil/helpers/data.helper";
@@ -106,8 +106,6 @@ test("Broadcast command, check if it throttles", async () => {
   let second  = loadTurnOn(db.stones[0]);
   expect(mBluenetPromise.has().stacked.turnOnBroadcast()).toBe(1);
 
-  advanceBy(1000) // advance the time so that the queued item will be executed on the next pending check.
-  mScheduler.trigger(); // this will resolve the initial turn on command promise.
-  mScheduler.trigger(); // this will trigger te the pending check.
+  moveTimeBy(1000) // advance the time so that the queued item will be executed on the next pending check.
   expect(mBluenetPromise.has().stacked.turnOnBroadcast()).toBe(2);
 });

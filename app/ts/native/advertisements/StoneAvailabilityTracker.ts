@@ -47,6 +47,13 @@ export class StoneAvailabilityTrackerClass {
     }
   }
 
+  reset() {
+    this.log = {};
+    this.sphereLog = {}
+    this.handleMap = {};
+    this.triggers = {};
+  }
+
   notify() {
     let logStoneIds = Object.keys(this.log);
     let availabilityStoneIds = {};

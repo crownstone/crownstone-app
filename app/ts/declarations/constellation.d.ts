@@ -9,7 +9,7 @@ interface commandOptions {
   commandTargets: string[],   // this can be a number of meshIds or handles
   private?: boolean,
   minConnections?: number
-  timeout?: number // seconds
+  timeout: number // seconds
 }
 
 interface SessionInteractionModule {
@@ -48,7 +48,8 @@ interface BleCommand<T = CommandInterface> {
   private?:        boolean,
   minConnections:  number
   startTime:       number,
-  timeout?:        number // seconds
+  removeTimeout?:  () => void,
+  timeout:         number,
 }
 
 

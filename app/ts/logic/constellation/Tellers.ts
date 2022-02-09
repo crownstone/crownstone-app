@@ -139,5 +139,6 @@ export function broadcast(sphereId) : CommandBroadcastAPI {
     sphereId:       sphereId,
     commandType:    "BROADCAST",
     commandTargets: ["BROADCAST"],
+    timeout:        0,
   })
 }

@@ -249,6 +249,8 @@ export class Session {
 
 
   async handleCommands() {
+    if (this._sessionIsKilled) { return; }
+
     let availableCommandId = BleCommandManager.areThereCommandsFor(this.handle, this.privateId);
 
     if (availableCommandId === null) {

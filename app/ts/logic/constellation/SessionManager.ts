@@ -36,6 +36,11 @@ export class SessionManagerClass {
     this._activeSessions = {};
     this._pendingPrivateSessionRequests = {};
     this._pendingSessionRequests = {};
+    for (let handle in this._timeoutHandlers) {
+      for (let commanderId in this._timeoutHandlers[handle]) {
+        this._timeoutHandlers[handle][commanderId].clearCallback();
+      }
+    }
     this._timeoutHandlers = {};
   }
 

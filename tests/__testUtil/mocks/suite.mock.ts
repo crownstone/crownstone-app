@@ -1,5 +1,7 @@
+const INITIAL_TIME = new Date("2022-01-01 12:00:00Z").valueOf()
+
 import { advanceBy, advanceTo, clear } from 'jest-date-mock';
-advanceTo(1e6); // reset to timestamp = 1.000.000
+advanceTo(INITIAL_TIME); // reset to timestamp = 1.000.000
 
 import { mockAppUtil } from "./appUtil.mock";
 mockAppUtil();
@@ -36,7 +38,7 @@ let silenceMap = {
   info:           true,
   promiseManager: true,
   broadcast:      true,
-  constellation:  true,
+  constellation:  false,
   notifications:  true,
   event:          true,
   cloud:          true,
@@ -67,8 +69,8 @@ export const mBluenetPromise = libStateWrapper;
 export const mBluenet = mockedBluenet;
 export const mCore = core;
 
-import { mockScheduler } from "./scheduler.mock";
-export const mScheduler = mockScheduler();
+// import { mockScheduler } from "./scheduler.mock";
+// export const mScheduler = mockScheduler();
 
 import { mockExternalConfig } from "./externalConfig.mock";
 mockExternalConfig();
@@ -81,16 +83,24 @@ export const TestHookCatcher = new TestHookCatcherClass()
 
 export const mConstellationState = mockConstellationUtil()
 
+import {Scheduler} from "../../../app/ts/logic/Scheduler";
+export const moveTimeBy = function(ms) {
+  advanceBy(ms);
+  Scheduler.tick();
+  return new Promise<void>((resolve,reject) => {
+    setImmediate(() => { resolve(); })
+  })
+}
+
 export const resetMocks = function() {
-  libStateWrapper.reset();
-  mScheduler.reset();
+  // mScheduler.reset();
   core.reset();
   mockedBluenet.reset();
   mockRN.reset();
   resetMockRandom();
   resetDataHelper();
   mConstellationState.reset();
-  advanceTo(1e6);
+  advanceTo(INITIAL_TIME);
   TestHookCatcher.init()
 }
 
@@ -98,7 +108,7 @@ export const mocks = {
   core,
   mConstellationState,
   mBluenet: mBluenetPromise,
-  mScheduler,
+  // mScheduler,
   mRN: mockRN,
   mockedBluenet,
   reset: resetMocks,

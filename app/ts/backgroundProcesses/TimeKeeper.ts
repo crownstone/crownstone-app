@@ -63,6 +63,11 @@ class TimeKeeperClass {
     }
   }
 
+  reset() {
+    this.lastSetTimeBroadcastTimestamp = 0;
+    this.lastTimeSet = 0;
+  }
+
   /**
    * In case a Crownstone has rebooted and it will not get the time from its neighbours, this will ensure the time will be set.
    * @param sphereId

@@ -510,6 +510,7 @@ class StoneDataSyncerClass {
 
       // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
       // the behaviour comparing locally.
+      // TODO: this will re-add behaviours if they are quickly removed one by one.
       await downloadBehavioursFromCloud(sphereId, stone);
 
       LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Starting the compare analysis.");
@@ -659,6 +660,7 @@ export class BehaviourTracker {
     let comparibleHash = lastKnownHash >>> 16;
 
     if (comparibleHash !== latestMasterHash) {
+      LOGi.info("StoneDataSyncer: BehaviourTracker: Triggering sync since the comparible hash is different from the lastest hash", lastKnownHash, comparibleHash, latestMasterHash);
       this.syncing = true;
       await StoneDataSyncer.checkAndSyncBehaviour(this.sphereId, this.stoneId)
         .catch((err) => {

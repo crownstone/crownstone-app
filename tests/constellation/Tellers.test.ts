@@ -1,4 +1,4 @@
-import {mBluenetPromise, mocks, mScheduler, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {mBluenetPromise, mocks, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
@@ -6,10 +6,12 @@ import {createMockDatabase} from "../__testUtil/helpers/data.helper";
 import {broadcast, claimBluetooth, connectTo, tell} from "../../app/ts/logic/constellation/Tellers";
 import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
+import {TimeKeeper} from "../../app/ts/backgroundProcesses/TimeKeeper";
 
 beforeEach(async () => {
-  BleCommandManager.reset()
-  SessionManager.reset()
+  BleCommandManager.reset();
+  SessionManager.reset();
+  TimeKeeper.reset();
   resetMocks()
 })
 beforeAll(async () => {})
@@ -112,7 +114,7 @@ test("Check connectTo error propagation", async () => {
 
   await mBluenetPromise.for(handle).fail.connect("Failed");
   await TestUtil.nextTick();
-  await mScheduler.trigger();
+  await moveTimeBy(21000);
   expect(caught).toBeTruthy();
 });
 
@@ -194,7 +196,7 @@ test("Timeout the request from the teller should also clean up the commands", as
   tell(handle).getTime().catch((err) => { caughtErrors.push(err); })
   tell(handle).getAdcChannelSwaps().catch((err) => { caughtErrors.push(err); })
 
-  await mocks.mScheduler.trigger(5)
+  moveTimeBy(11000)
   await TestUtil.nextTick()
 
   expect(caughtErrors[0]).toStrictEqual(new Error("SESSION_REQUEST_TIMEOUT"))
@@ -240,8 +242,7 @@ test("Check if the broadcast method works", async () => {
   await TestUtil.nextTick()
   await mBluenetPromise.succeed().setTimeViaBroadcast();
   // this trigger is required since broadcasts end in 120ms
-  await mocks.mScheduler.trigger(1)
-
+  await moveTimeBy(200)
   expect(p1).toBeCalled()
 });
 

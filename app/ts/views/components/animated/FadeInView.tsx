@@ -98,7 +98,7 @@ export function HiddenFadeInView(props) {
 export function FadeIn(props) {
   let [visible, setVisible] = useState(false);
   if (visible === false) {
-    setTimeout(() => { setVisible(true); }, 0);
+    setImmediate(() => { setVisible(true); });
   }
 
   return (
@@ -111,7 +111,7 @@ export function FadeIn(props) {
 export function HiddenFadeIn(props) {
   let [visible, setVisible] = useState(false);
   if (visible === false) {
-    setTimeout(() => { setVisible(true); }, 0);
+    setImmediate(() => { setVisible(true); });
   }
 
   return (
@@ -142,7 +142,7 @@ export class HiddenFadeInBlur extends Component<any, any> {
       this.state.viewOpacity.stopAnimation()
       if (this.props.visible === true) {
         this.setState({show: true});
-        this.pendingTimeout = setTimeout(() => {
+        this.pendingTimeout = setImmediate(() => {
           this.pendingTimeout = null;
           Animated.timing(this.state.viewOpacity, {
             toValue:  this.props.maxOpacity || this.maxOpacity,
@@ -150,7 +150,7 @@ export class HiddenFadeInBlur extends Component<any, any> {
             duration: this.props.duration  || defaultDuration,
             useNativeDriver: false
           }).start();
-        }, 0);
+        });
       }
       else {
         Animated.timing(this.state.viewOpacity, {

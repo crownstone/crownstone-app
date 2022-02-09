@@ -51,8 +51,8 @@ test("Session public connection success. Check disconnection process when discon
   expect(interactionModule.isConnected).toBeCalled();
 
   await TestUtil.nextTick();
-  // it now checks for commands and there arent any. It thus disconnects and cleans up.
-
+  // it now checks for commands and will set time. Afterwards it disconnects and cleans up.
+  await mBluenetPromise.for(handle).succeed.setTime();
   expect(mBluenetPromise.has(handle).called.disconnectCommand()).toBe(true)
   await mBluenetPromise.for(handle).fail.disconnectCommand();
   evt_disconnected();

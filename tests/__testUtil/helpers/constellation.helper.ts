@@ -8,7 +8,7 @@ export function getCommandOptions(sphereId:string, targets : string[], privateSe
     commandTargets: targets,
     private:        privateSession,
     minConnections: 3,
-    timeout:        60,
+    timeout:        15,
   };
   return options;
 }
@@ -21,7 +21,7 @@ export function getCommandOptionsMesh(sphereId:string, targets : string[], priva
     commandTargets: targets,
     private:        privateSession,
     minConnections: 3,
-    timeout:        60,
+    timeout:        15,
   };
   return options;
 }

@@ -1,4 +1,11 @@
-import {mBluenetPromise, mConstellationState, mocks, resetMocks, TestHookCatcher} from "../__testUtil/mocks/suite.mock";
+import {
+  mBluenetPromise,
+  mConstellationState,
+  mocks,
+  moveTimeBy,
+  resetMocks,
+  TestHookCatcher
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
@@ -8,12 +15,15 @@ import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
 import {StoneAvailabilityTracker} from "../../app/ts/native/advertisements/StoneAvailabilityTracker";
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
+import {TimeKeeper} from "../../app/ts/backgroundProcesses/TimeKeeper";
+import { Scheduler } from "../../app/ts/logic/Scheduler";
 
 beforeEach(async () => {
-  StoneAvailabilityTracker.sphereLog = {};
-  StoneAvailabilityTracker.log = {};
+  StoneAvailabilityTracker.reset()
   BleCommandManager.reset();
+  Scheduler.reset();
   SessionManager.reset();
+  TimeKeeper.reset();
   resetMocks()
   mConstellationState.allowBroadcasting = false;
 })
@@ -103,6 +113,7 @@ test("SessionBroker direct command finishes mesh commands", async () => {
   await mBluenetPromise.for(handle1).succeed.turnOnMesh();
 
   await TestUtil.nextTick();
+  await mBluenetPromise.for(handle1).succeed.setTime();
   await mBluenetPromise.for(handle1).succeed.disconnectCommand();
   evt_disconnected(handle1);
 
@@ -188,6 +199,7 @@ test("SessionBroker check the cleanup of closed public session", async () => {
   await TestUtil.nextTick();
 
   expect(SessionManager._sessions[handle1].state).toBe("DISCONNECTING");
+  await mBluenetPromise.for(handle1).succeed.setTime();
   await mBluenetPromise.for(handle1).succeed.disconnectCommand();
 
   evt_disconnected(handle1);
@@ -208,7 +220,7 @@ test("SessionBroker do not re-request sessions on failure or finish of a single 
   api.getFirmwareVersion().catch((err) => { fwErr = err; })
   api.getHardwareVersion().catch((err) => { hwErr = err; })
 
-  await mocks.mScheduler.trigger(1)
+  moveTimeBy(16000)
   await TestUtil.nextTick()
 
   expect(fwErr).toStrictEqual(new Error('SESSION_REQUEST_TIMEOUT'));
