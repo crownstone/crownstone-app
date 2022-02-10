@@ -117,7 +117,7 @@ export class Interview extends Component<{
 
     this.setState({ cardIds: currentIds }, () => {
       this.checkStyleUpdates();
-      setImmediate(() => { this._carousel.snapToItem(currentIds.length - 1); });
+      setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 10);
     })
   }
 
@@ -141,7 +141,7 @@ export class Interview extends Component<{
     this.transitioningToCardId = cardId;
     this.setState({ cardIds: currentIds }, () => {
       this.checkStyleUpdates();
-      setImmediate(() => { this._carousel.snapToItem(currentIds.length - 1); });
+      setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 10);
     });
   }
 
@@ -168,7 +168,7 @@ export class Interview extends Component<{
 
           this.setState({ cardIds: currentIds }, () => {
             this.checkStyleUpdates();
-            setImmediate(() => { this._carousel.snapToItem(currentIds.length - 1, true); });
+            setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1, true); }, 10);
           })
         }}
         card={item}
