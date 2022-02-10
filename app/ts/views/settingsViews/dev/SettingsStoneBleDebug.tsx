@@ -362,7 +362,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
                     case 3:
                       str = "Uart"; break;
                     case 4:
-                      str = "Connection"; break;
+                      str = "BLE Connection"; break;
                     case 5:
                       str = "Switchcraft"; break;
                     case 6:
@@ -374,21 +374,40 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
                 case 1:
                   str =  "Behaviour ID: " + switchHistory.sourceId; break;
                 case 3:
-                  str =  "Broadcast DeviceId: " + switchHistory.sourceId; break;
+                  str =  "Broadcast by deviceId: " + switchHistory.sourceId; break;
               }
               if (switchHistory.viaMesh) {
-                str += " via mesh"
+                str += " via mesh."
               }
               else {
                 str += " directly."
               }
               return str;
             }
+
+
+            function convertStateValue(value) {
+              switch (value) {
+                case 0:
+                  return "OFF"
+                case 127:
+                  return "RELAY ON"
+                case 255:
+                  return "TURN ON"
+                case 254:
+                  return "RELEASE OVERRIDE"
+                case 253:
+                  return "TOGGLE"
+                default:
+                  return `DIMMED AT ${value}%`;
+              }
+            }
+
             data.forEach((switchHistory) => {
               resultString += xUtil.getDateTimeFormat(xUtil.crownstoneTimeToTimestamp(switchHistory.timestamp)) +
-                "\n" + switchHistory.switchCommand +
-                " -> " + switchHistory.switchState +
-                " from:" + getSource(switchHistory) + "\n\n";
+                "\nCommand " + convertStateValue(switchHistory.switchCommand) +
+                " resulted in " + convertStateValue(switchHistory.switchState) + '.' +
+                "\nTriggered by " + getSource(switchHistory) + "\n\n";
             })
 
             this.setState({debugInformationText: resultString});

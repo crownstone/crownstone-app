@@ -65,10 +65,8 @@
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "32"
       notificationPayloadFile = "WatchTower Extension/PushNotificationPayload.apns">
-      <RemoteRunnable
-         runnableDebuggingMode = "2"
-         BundleIdentifier = "com.apple.Carousel"
-         RemotePath = "/Crownstone">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA86C67D21CCEECD00811933"
@@ -76,7 +74,7 @@
             BlueprintName = "WatchTower"
             ReferencedContainer = "container:Crownstone.xcodeproj">
          </BuildableReference>
-      </RemoteRunnable>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -85,10 +83,8 @@
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
       launchAutomaticallySubstyle = "32">
-      <RemoteRunnable
-         runnableDebuggingMode = "2"
-         BundleIdentifier = "com.apple.Carousel"
-         RemotePath = "/Crownstone">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA86C67D21CCEECD00811933"
@@ -96,16 +92,7 @@
             BlueprintName = "WatchTower"
             ReferencedContainer = "container:Crownstone.xcodeproj">
          </BuildableReference>
-      </RemoteRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "FA86C67D21CCEECD00811933"
-            BuildableName = "WatchTower.app"
-            BlueprintName = "WatchTower"
-            ReferencedContainer = "container:Crownstone.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
