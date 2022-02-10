@@ -1,5 +1,8 @@
-import {mConstellationState, resetMocks} from "../__testUtil/mocks/suite.mock";
-import {TestUtil} from "../__testUtil/util/testUtil";
+import {
+  cleanupSuiteAfterTest,
+  mConstellationState,
+  prepareSuiteForTest,
+} from "../__testUtil/mocks/suite.mock";
 import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
 import {addSphere, addStone} from "../__testUtil/helpers/data.helper";
 import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
@@ -9,11 +12,11 @@ import {Executor} from "../../app/ts/logic/constellation/Executor";
 let BleCommandManager = null;
 beforeEach(async () => {
   BleCommandManager = new BleCommandManagerClass();
-  resetMocks();
+  prepareSuiteForTest();
   mConstellationState.allowBroadcasting = false;
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest(); })
 afterAll( async () => {})
 
 const meshId = "meshNetwork";

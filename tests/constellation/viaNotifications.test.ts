@@ -1,4 +1,10 @@
-import { mBluenetPromise, mConstellationState, resetMocks } from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenetPromise,
+  mConstellationState,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { addLocation, addSphere, addStone } from "../__testUtil/helpers/data.helper";
 
@@ -6,16 +12,18 @@ import { StoneAvailabilityTracker } from "../../app/ts/native/advertisements/Sto
 import { advanceTo } from "jest-date-mock";
 import { NotificationParser } from "../../app/ts/notifications/NotificationParser";
 import { BleCommandManager } from "../../app/ts/logic/constellation/BleCommandManager";
+import {Scheduler} from "../../app/ts/logic/Scheduler";
 
 
 beforeEach(async () => {
   StoneAvailabilityTracker.sphereLog = {};
   StoneAvailabilityTracker.log = {};
-  resetMocks()
+  Scheduler.reset();
+  prepareSuiteForTest()
   mConstellationState.allowBroadcasting = false;
 })
 beforeAll(async () => { })
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll(async () => {})
 
 

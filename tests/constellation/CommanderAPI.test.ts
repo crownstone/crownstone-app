@@ -1,21 +1,32 @@
-import {mBluenet, mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenet,
+  mBluenetPromise,
+  moveTimeBy,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
-import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
+import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
 import {createMockDatabase} from "../__testUtil/helpers/data.helper";
 import {getCommandOptions} from "../__testUtil/helpers/constellation.helper";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 import {advanceBy} from "jest-date-mock";
 import {SessionManager} from "../../app/ts/logic/constellation/SessionManager";
+import {TimeKeeper} from "../../app/ts/backgroundProcesses/TimeKeeper";
+import {Scheduler} from "../../app/ts/logic/Scheduler";
 
 
-let BleCommandManager = null;
 beforeEach(async () => {
-  BleCommandManager = new BleCommandManagerClass();
-  resetMocks()
+  BleCommandManager.reset();
+  SessionManager.reset();
+  Scheduler.reset();
+  TimeKeeper.reset();
+  prepareSuiteForTest()
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll( async () => {})
 
 const meshId = "meshNetwork";

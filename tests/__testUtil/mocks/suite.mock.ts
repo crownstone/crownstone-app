@@ -1,3 +1,5 @@
+import {TestUtil} from "../util/testUtil";
+
 const INITIAL_TIME = new Date("2022-01-01 12:00:00Z").valueOf()
 
 import { advanceBy, advanceTo, clear } from 'jest-date-mock';
@@ -84,6 +86,7 @@ export const TestHookCatcher = new TestHookCatcherClass()
 export const mConstellationState = mockConstellationUtil()
 
 import {Scheduler} from "../../../app/ts/logic/Scheduler";
+
 export const moveTimeBy = function(ms) {
   advanceBy(ms);
   Scheduler.tick();
@@ -93,15 +96,18 @@ export const moveTimeBy = function(ms) {
 }
 
 export const resetMocks = function() {
-  // mScheduler.reset();
   core.reset();
   mockedBluenet.reset();
+  mBluenetPromise.reset();
   mockRN.reset();
   resetMockRandom();
   resetDataHelper();
   mConstellationState.reset();
   advanceTo(INITIAL_TIME);
   TestHookCatcher.init()
+}
+export const cleanupMocks = function() {
+  // mScheduler.reset();
 }
 
 export const mocks = {
@@ -112,4 +118,15 @@ export const mocks = {
   mRN: mockRN,
   mockedBluenet,
   reset: resetMocks,
+}
+
+
+export const prepareSuiteForTest = async function() {
+  Scheduler.reset();
+  resetMocks();
+}
+export const cleanupSuiteAfterTest = async function() {
+  Scheduler.reset();
+  cleanupMocks();
+  await TestUtil.nextTick()
 }

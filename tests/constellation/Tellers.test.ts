@@ -1,4 +1,9 @@
-import {mBluenetPromise, mocks, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenetPromise,
+  moveTimeBy,
+  prepareSuiteForTest,
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
@@ -12,10 +17,10 @@ beforeEach(async () => {
   BleCommandManager.reset();
   SessionManager.reset();
   TimeKeeper.reset();
-  resetMocks()
+  prepareSuiteForTest()
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll( async () => {})
 
 const meshId       = "meshNetwork";
@@ -81,7 +86,7 @@ test("Check the direct teller with slowly incoming commands.", async () => {
 test("Check basic tell for cleanup of session", async () => {
   let db = createMockDatabase(meshId, secondMeshId);
   let handle = db.stones[0].handle;
-  let result = tell(handle).getFirmwareVersion()
+  let result = tell(handle).getFirmwareVersion();
 
   let valueReturned = false
   result.then((fwVersion) => {
@@ -94,10 +99,10 @@ test("Check basic tell for cleanup of session", async () => {
   await TestUtil.nextTick();
   await mBluenetPromise.for(handle).succeed.getFirmwareVersion("5.4.0");
   await TestUtil.nextTick();
+  await mBluenetPromise.for(handle).succeed.setTime();
   await mBluenetPromise.for(handle).succeed.disconnectCommand();
   await TestUtil.nextTick();
-  evt_disconnected(handle);
-  expect(valueReturned).toBeTruthy()
+  expect(valueReturned).toBeTruthy();
 });
 
 
@@ -124,8 +129,8 @@ test("Check connectTo and the sessionbroker work together", async () => {
 
   let commander : CommandAPI = null;
   connectTo(handle).then((result) => { commander = result; })
-
   await mBluenetPromise.for(handle).succeed.connect("operation");
+  console.log("succeeded")
   expect(commander).not.toBe(null);
 
   commander.setupPulse();

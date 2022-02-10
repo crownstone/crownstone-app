@@ -1,4 +1,10 @@
-import {mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenetPromise,
+  moveTimeBy,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
@@ -11,10 +17,10 @@ beforeEach(async () => {
   BleCommandManager.reset();
   SessionManager.reset();
   TimeKeeper.reset();
-  resetMocks()
+  prepareSuiteForTest()
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll( async () => {})
 
 const meshId       = "meshNetwork";

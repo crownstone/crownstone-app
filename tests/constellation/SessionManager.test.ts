@@ -1,4 +1,10 @@
-import {mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenetPromise,
+  moveTimeBy,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {eventHelperSetActive, evt_disconnected, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {SessionManager, SessionManagerClass} from "../../app/ts/logic/constellation/SessionManager";
@@ -16,10 +22,10 @@ beforeEach(async () => {
   BleCommandManager.reset();
   SessionManager.reset();
   TimeKeeper.reset()
-  resetMocks()
+  prepareSuiteForTest()
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll( async () => {})
 
 const handle       = 'TestHandle';
@@ -144,7 +150,7 @@ test("Session manager failing shared connection.", async () => {
   let p1Err = jest.fn();
   let p2Err = jest.fn();
 
-  sessionManager.request(handle, 'commanderId1', false).then(() => { p1(); }).catch((err) => { console.log(2,err); p1Err(err); })
+  sessionManager.request(handle, 'commanderId1', false).then(() => { p1(); }).catch((err) => { p1Err(err); })
   await TestUtil.nextTick();
   evt_ibeacon(-70);
 

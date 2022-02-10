@@ -1,4 +1,4 @@
-import {resetMocks} from "../__testUtil/mocks/suite.mock";
+import {cleanupSuiteAfterTest, prepareSuiteForTest, resetMocks} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {eventHelperSetActive, evt_ibeacon} from "../__testUtil/helpers/event.helper";
 import {addLocation, addSphere, addStone} from "../__testUtil/helpers/data.helper";
@@ -10,10 +10,10 @@ import {StoneAvailabilityTracker} from "../../app/ts/native/advertisements/Stone
 beforeEach(async () => {
   StoneAvailabilityTracker.sphereLog = {};
   StoneAvailabilityTracker.log = {};
-  resetMocks()
+  prepareSuiteForTest()
 })
 beforeAll(async () => { })
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest(); })
 afterAll(async () => {})
 
 const handle      = 'TestHandle';

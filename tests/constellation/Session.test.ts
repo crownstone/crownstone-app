@@ -1,4 +1,4 @@
-import { mBluenetPromise, resetMocks } from "../__testUtil/mocks/suite.mock";
+import {cleanupSuiteAfterTest, mBluenetPromise, prepareSuiteForTest, resetMocks} from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { Session } from "../../app/ts/logic/constellation/Session";
 import { eventHelperSetActive, evt_disconnected, evt_ibeacon } from "../__testUtil/helpers/event.helper";
@@ -7,10 +7,10 @@ import { NativeBusMockClass } from "../__testUtil/mocks/nativeBus.mock";
 
 
 beforeEach(async () => {
-  resetMocks()
+  prepareSuiteForTest()
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll(async () => {})
 
 const handle    = 'TestHandle';

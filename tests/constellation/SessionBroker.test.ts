@@ -1,9 +1,8 @@
 import {
+  cleanupSuiteAfterTest,
   mBluenetPromise,
   mConstellationState,
-  mocks,
-  moveTimeBy,
-  resetMocks,
+  moveTimeBy, prepareSuiteForTest,
   TestHookCatcher
 } from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
@@ -16,19 +15,17 @@ import {StoneAvailabilityTracker} from "../../app/ts/native/advertisements/Stone
 import {BleCommandManager} from "../../app/ts/logic/constellation/BleCommandManager";
 import {CommandAPI} from "../../app/ts/logic/constellation/Commander";
 import {TimeKeeper} from "../../app/ts/backgroundProcesses/TimeKeeper";
-import { Scheduler } from "../../app/ts/logic/Scheduler";
 
 beforeEach(async () => {
   StoneAvailabilityTracker.reset()
   BleCommandManager.reset();
-  Scheduler.reset();
   SessionManager.reset();
   TimeKeeper.reset();
-  resetMocks()
+  prepareSuiteForTest()
   mConstellationState.allowBroadcasting = false;
 })
 beforeAll(async () => { })
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll(async () => {})
 
 const handle      = 'TestHandle';

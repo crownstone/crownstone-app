@@ -1,4 +1,11 @@
-import {mBluenet, mBluenetPromise, moveTimeBy, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenet,
+  mBluenetPromise,
+  moveTimeBy,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import { TestUtil } from "../__testUtil/util/testUtil";
 import { BleCommandManagerClass } from "../../app/ts/logic/constellation/BleCommandManager";
 import { createMockDatabase } from "../__testUtil/helpers/data.helper";
@@ -7,7 +14,6 @@ import {
   Command_MultiSwitch,
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
-import { advanceBy } from "jest-date-mock";
 import {
   BroadcastCommandManager,
 } from "../../app/ts/logic/constellation/BroadcastCommandManager";
@@ -18,10 +24,10 @@ let BleCommandManager = null;
 beforeEach(async () => {
   BleCommandManager = new BleCommandManagerClass();
   BroadcastCommandManager.reset();
-  resetMocks();
+  prepareSuiteForTest();
 })
+afterEach(async () => { await cleanupSuiteAfterTest() });
 beforeAll(async () => {});
-afterEach(async () => { await TestUtil.nextTick(); });
 afterAll( async () => {});
 
 const meshId = "meshNetwork";

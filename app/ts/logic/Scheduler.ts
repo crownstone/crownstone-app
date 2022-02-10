@@ -44,6 +44,10 @@ class SchedulerClass {
 
   reset() {
     this.triggers = {};
+    for (let uuid in this.singleFireTriggers) {
+      clearTimeout(this.singleFireTriggers[uuid].timeoutId);
+    }
+    clearTimeout(this.scheduledTick);
     this.singleFireTriggers = {};
   }
 

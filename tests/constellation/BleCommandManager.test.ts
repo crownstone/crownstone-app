@@ -1,4 +1,10 @@
-import {mBluenetPromise, mConstellationState, resetMocks} from "../__testUtil/mocks/suite.mock";
+import {
+  cleanupSuiteAfterTest,
+  mBluenetPromise,
+  mConstellationState,
+  prepareSuiteForTest,
+  resetMocks
+} from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
 import {BleCommandManagerClass} from "../../app/ts/logic/constellation/BleCommandManager";
 import {addSphere, addStone, createMockDatabase} from "../__testUtil/helpers/data.helper";
@@ -8,15 +14,17 @@ import {
   Command_GetFirmwareVersion,
   Command_TurnOn
 } from "../../app/ts/logic/constellation/commandClasses";
+import {Scheduler} from "../../app/ts/logic/Scheduler";
 
 let BleCommandManager = null;
 beforeEach(async () => {
   BleCommandManager = new BleCommandManagerClass();
-  resetMocks()
+  prepareSuiteForTest()
   mConstellationState.allowBroadcasting = false;
+  Scheduler.reset();
 })
 beforeAll(async () => {})
-afterEach(async () => { await TestUtil.nextTick(); })
+afterEach(async () => { await cleanupSuiteAfterTest() })
 afterAll(async () => {})
 
 const meshId = "meshNetwork";
