@@ -6,6 +6,8 @@ import {Util} from "./Util";
 import {Scheduler} from "../logic/Scheduler";
 import {BleUtil} from "./BleUtil";
 
+const MAX_TIMES_TO_POSTPONE = 5;
+
 class BatterySavingClass {
   _initialized: boolean = false;
   _cancelPostponedBatterySaving : any = null;
@@ -21,19 +23,11 @@ class BatterySavingClass {
    */
   startNormalUsage(sphereId = null) {
     LOGi.info("BatterySavingUtil: startNormalUsage, sphereId: ", sphereId);
-    let cancelPostponedScan = () => {
-      LOGi.info("BatterySavingUtil: startNormalUsage, cancelPostponedScan, starting.");
-      if (typeof this._cancelPostponedBatterySaving === 'function') {
-        LOGi.info("BatterySavingUtil: startNormalUsage, cancelPostponedScan, started.");
-        this._cancelPostponedBatterySaving();
-        this._cancelPostponedBatterySaving = null;
-      }
-    };
 
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
       LOGi.info("BatterySavingUtil: startNormalUsage will not continue because highFrequencyScanUsed.");
-      cancelPostponedScan();
+      this._clearPostponedAction();
       return;
     }
 
@@ -57,7 +51,7 @@ class BatterySavingClass {
 
     // LOGd.info("BatterySavingUtil: startNormalUsage, checking execute startNormalUsage, appInForeground", appInForeground, "inSphere", inSphere, "notAllHandlesAreKnown", notAllHandlesAreKnown, 'total:',appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true);
 
-    let allowNormalScanning = appInForeground || (inSphere && notAllHandlesAreKnown === true)
+    let allowNormalScanning = appInForeground || (inSphere && notAllHandlesAreKnown === true && this._postponeCount < 10)
     LOG.info("BatterySavingUtil: startNormalUsage, checking execute startNormalUsage, " +
       "appInForeground",       appInForeground,
       "inSphere",              inSphere,
@@ -67,8 +61,8 @@ class BatterySavingClass {
 
     if (allowNormalScanning) {
       LOGi.info("BatterySavingUtil: startNormalUsage, executing");
-      this._postponeCount = 0;
-      cancelPostponedScan();
+      this._clearPostponedAction();
+
       Bluenet.batterySaving(false);
       BluenetPromiseWrapper.isReady().then(() => {
         LOG.info("BatterySavingUtil: startNormalUsage, Start Scanning.");
@@ -92,7 +86,7 @@ class BatterySavingClass {
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
       // try again later tho.
-      this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => { this.startBatterySaving(forceNotInSphere); }, 60000, 'startBatterySaving');
+      this._postponeBatterySaving(forceNotInSphere);
       return;
     }
 
@@ -101,7 +95,7 @@ class BatterySavingClass {
     //  - user in a sphere and all handles are known OR
     //  - user not in a sphere
 
-    let appNotInForeground = AppState.currentState !== 'active';
+    let appInForeground = AppState.currentState === 'active';
     let inSphereId = Util.data.getPresentSphereId();
     if (forceNotInSphere === true) {
       inSphereId = null;
@@ -117,30 +111,55 @@ class BatterySavingClass {
       });
     }
 
-    let allowBatterySaving = appNotInForeground === true &&
-                            (inSphere === false || (inSphere === true && allHandlesKnown)) &&
-                            this._postponeCount < 10;
-
     LOG.info("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, " +
-      "appNotInForeground",  appNotInForeground,
+      "appInForeground",  appInForeground,
       "inSphere",            inSphere,
       "allHandlesKnown",     allHandlesKnown,
       "_postponeCount",      this._postponeCount,
-      'allowBatterySaving:', allowBatterySaving
     );
-    if (allowBatterySaving) {
-      LOG.info("BatterySavingUtil: startBatterySaving, execute");
-      this._postponeCount = 0;
-      Bluenet.batterySaving(true);
+
+    if (appInForeground === false) {
+      if (inSphere === false) {
+        // battery saving
+        this._executeBatterySaving();
+      }
+      else if (inSphere === true && allHandlesKnown) {
+        if (this._postponeCount < MAX_TIMES_TO_POSTPONE) {
+          // try again later
+          this._postponeBatterySaving(forceNotInSphere);
+        }
+        else {
+          // battery saving
+          this._executeBatterySaving();
+        }
+      }
     }
-    else if (!allHandlesKnown && appNotInForeground === true) {
-      // user is continuing scanning to get all handles. Stop when we know them.
-      this._postponeCount++;
-      this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => {
-        this._cancelPostponedBatterySaving = null;
-        this.startBatterySaving(forceNotInSphere);
-      }, 60000, 'startBatterySaving');
+  }
+
+
+  _clearPostponedAction() {
+    if (this._cancelPostponedBatterySaving) {
+      this._cancelPostponedBatterySaving();
     }
+    this._cancelPostponedBatterySaving = null;
+  }
+
+  _postponeBatterySaving(forceNotInSphere = false) {
+    LOG.info("BatterySavingUtil: startBatterySaving, postpone");
+
+    // user is continuing scanning to get all handles. Stop when we know them.
+    this._postponeCount++;
+    this._clearPostponedAction();
+    this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => {
+      this._cancelPostponedBatterySaving = null;
+      this.startBatterySaving(forceNotInSphere);
+    }, 60000, 'startBatterySaving');
+  }
+
+  _executeBatterySaving() {
+    LOG.info("BatterySavingUtil: startBatterySaving, execute");
+    this._postponeCount = 0;
+    Bluenet.batterySaving(true);
   }
 }
 
