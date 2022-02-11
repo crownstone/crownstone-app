@@ -25,6 +25,15 @@ We use jest:
 npm install -g jest
 ```
 
+### iOS preperation
+
+[Install applesimutils](https://github.com/wix/AppleSimulatorUtils)
+
+```angular2html
+brew tap wix/brew
+brew install applesimutils
+```
+
 ### Config
 
 The config file is `.detoxrc.json`.

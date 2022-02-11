@@ -16,6 +16,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {xUtil} from "../../../util/StandAloneUtil";
 import {SyncNext} from "../newSync/SyncNext";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { AppState } from "react-native";
 
 
 /**
@@ -47,7 +48,7 @@ export const sync = {
       }
     }, 30000);
 
-    LOG.info("Sync: Start Syncing.");
+    LOG.info("Sync: Start Syncing. Current app state:", AppState.currentState);
     CLOUD.__currentlySyncing = true;
 
     // set the authentication tokens

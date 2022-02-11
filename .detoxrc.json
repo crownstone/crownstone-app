@@ -5,7 +5,7 @@
   "apps": {
     "ios-debug": {
       "type": "ios.app",
-      "binaryPath": "./ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app"
+      "binaryPath": "ios/build/Products/Debug-iphonesimulator/Crownstone.app"
     },
     "android-release": {
       "type": "android.apk",

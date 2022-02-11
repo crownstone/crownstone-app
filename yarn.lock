@@ -2325,6 +2325,14 @@ bunyan-debug-stream@^1.1.0:
     colors "^1.0.3"
     exception-formatter "^1.0.4"
 
+bunyan-debug-stream@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/bunyan-debug-stream/-/bunyan-debug-stream-2.0.1.tgz#9bd7c7e30c7b2cf711317e9d37529b0464c3b164"
+  integrity sha512-MCEoqggU7NMt7f2O+PU8VkqfSkoQoa4lmN/OWhaRfqFRBF1Se2TOXQyLF6NxC+EtfrdthnquQe8jOe83fpEoGA==
+  dependencies:
+    colors "1.4.0"
+    exception-formatter "^1.0.4"
+
 bunyan@^1.8.12:
   version "1.8.15"
   resolved "https://registry.yarnpkg.com/bunyan/-/bunyan-1.8.15.tgz#8ce34ca908a17d0776576ca1b2f6cbd916e93b46"
@@ -2583,7 +2591,7 @@ colors@0.6.x:
   resolved "https://registry.npmjs.org/colors/-/colors-0.6.2.tgz"
   integrity sha1-JCP+ZnisDF2uiFLl0OW+CMmXq8w=
 
-colors@^1.0.3, colors@^1.1.2:
+colors@1.4.0, colors@^1.0.3, colors@^1.1.2:
   version "1.4.0"
   resolved "https://registry.npmjs.org/colors/-/colors-1.4.0.tgz"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
@@ -3024,20 +3032,19 @@ detox@*:
     yargs "^16.0.3"
     yargs-unparser "^2.0.0"
 
-detox@19.1.0:
-  version "19.1.0"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-19.1.0.tgz#c17ca8a307c4e6f45ef29993beec0e505d330e7f"
-  integrity sha512-DdGj9HgEwFDtERt4TG6pHUxOvBcbE8JsTDqALFH/IlZ6SAxibJeIQ9yo65g2hQGJGHdAMJpUX5/30QD+PQfBaQ==
+detox@^19.4.5:
+  version "19.4.5"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-19.4.5.tgz#81b1cadaec5c0f7dc53798d65242ff19f4da8412"
+  integrity sha512-kMHxNn3I9uTxOzIX4CTymI9qHRLn90xzuM/QhqHNeUH3AEDFtUmlJpcL86GmPO/VLWafcJScia9jqUiKveNAqg==
   dependencies:
     ajv "^8.6.3"
     bunyan "^1.8.12"
-    bunyan-debug-stream "^1.1.0"
+    bunyan-debug-stream "^2.0.1"
     chalk "^2.4.2"
     child-process-promise "^2.2.0"
     find-up "^4.1.0"
     fs-extra "^4.0.2"
     funpermaproxy "^1.0.1"
-    get-port "^2.1.0"
     ini "^1.3.4"
     lodash "^4.17.5"
     minimist "^1.2.0"

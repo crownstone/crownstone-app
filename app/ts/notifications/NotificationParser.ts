@@ -51,19 +51,19 @@ class NotificationParserClass {
       let notificationIndex     = sequenceTime.counter   || null;
       if (notificationTimestamp && notificationIndex !== null) {
         if (Date.now() - notificationTimestamp > 30000) {
-          LOGw.info("This notification is more than 30 seconds old. Ignoring it.", notificationData, Date.now() - notificationTimestamp);
+          LOGw.info("NotificationParser: This notification is more than 30 seconds old. Ignoring it.", notificationData, Date.now() - notificationTimestamp);
           return;
         }
 
         if (this.timekeeper[notificationData.command]) {
           let cloudTimeBetweenNotifications = notificationTimestamp - this.timekeeper[notificationData.command].timestamp;
           if (cloudTimeBetweenNotifications < -500) {
-            LOGw.info("Notifications received out of order. Difference is more than 500ms. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
+            LOGw.info("NotificationParser: Notifications received out of order. Difference is more than 500ms. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
             return;
           }
 
           if (this.timekeeper[notificationData.command].counter === notificationIndex) {
-            LOGw.info("Duplicate notifications received. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
+            LOGw.info("NotificationParser: Duplicate notifications received. Ignoring it.", notificationData, cloudTimeBetweenNotifications);
             return
           }
         }
@@ -98,7 +98,7 @@ class NotificationParserClass {
         case "sphereUserRemoved":
           if (notificationData.sphereId) {
             if (notificationData.removedUserId === state.user.userId) {
-              CLOUD.sync(core.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err?.message); });
+              CLOUD.sync(core.store).catch((err) => { LOGe.notifications("NotificationParser: Could not sync to remove user from sphere!", err?.message); });
             }
             else {
               this._updateSphereUsers(notificationData);

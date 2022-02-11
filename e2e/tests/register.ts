@@ -1,5 +1,10 @@
 import { by, device, expect, element, waitFor } from 'detox';
-import {$, tapAlertCancelButton, tapAlertOKButton, tapSingularAlertButton} from "../util/testUtil";
+import {
+  $,
+  tapAlertCancelButton,
+  tapAlertOKButton,
+  tapSingularAlertButton
+} from "../util/testUtil";
 
 
 export const TestRegisterNewUser = () => {
@@ -27,6 +32,7 @@ export const TestRegisterNewUser = () => {
 
   test('register: should get popup if there is no first name', async () => {
     await $("register-lastName").replaceText(`LastName`);
+    await $("register-lastName").tapReturnKey();
     await $('register-acceptName').tap()
     await tapSingularAlertButton()
   });
@@ -34,13 +40,14 @@ export const TestRegisterNewUser = () => {
   test('register: should accept only first name', async () => {
     await $("register-firstName").replaceText(`Testy`);
     await $("register-lastName").clearText();
+    await $("register-lastName").tapReturnKey();
     await $('register-acceptName').tap();
     await expect($('register-Picture')).toBeVisible();
   });
 
   test('register: should accept no picture', async () => {
     await $('register-acceptPicture').tap();
-    await expect($('register-AccountCreation')).toBeVisible();
+    await expect($('register-email')).toBeVisible();
   })
 
   test('register: should be able to go back 1 step', async () => {
@@ -87,12 +94,18 @@ export const TestRegisterNewUser = () => {
 
   test('register: cannot make account with invalid email address', async () => {
     await $("register-email").replaceText(`invalidEmail`);
+    await $("register-email").tapReturnKey();
+    await $("register-password").replaceText(``);
+    await $("register-password").tapReturnKey();
     await $("register-completeRegistration").tap();
     await tapSingularAlertButton();
   });
 
   test('register: cannot make account without password', async () => {
     await $("register-email").replaceText(`crownstone.main.test@gmail.com`);
+    await $("register-email").tapReturnKey();
+    await $("register-password").replaceText(``);
+    await $("register-password").tapReturnKey();
     await $("register-completeRegistration").tap();
     await tapSingularAlertButton();
   });
@@ -100,6 +113,7 @@ export const TestRegisterNewUser = () => {
   test('register: can create account with valid email and password', async () => {
     await $("register-email").replaceText(`crownstone.main.test@gmail.com`);
     await $("register-password").replaceText(`testPassword`);
+    await $("register-password").tapReturnKey();
     await $("register-completeRegistration").tap();
     await expect($('register-finishedCard')).toBeVisible();
   });

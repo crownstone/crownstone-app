@@ -3,6 +3,7 @@ import { FileUtil } from "../util/FileUtil";
 import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 import { getLoggingFilename } from "../logging/LogUtil";
 import { NativeBus } from "../native/libInterface/NativeBus";
+import { LOGi } from "../logging/Log";
 
 const RNFS = require('react-native-fs');
 
@@ -39,6 +40,7 @@ class UptimeMonitorClass {
 
   storeUptime() {
     let str = Date.now() + "\n";
+    LOGi.info("UptimeMonitor: Store uptime", str);
     cleanLogs();
     writeToUpTime(str);
   }

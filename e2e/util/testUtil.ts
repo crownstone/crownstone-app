@@ -22,6 +22,7 @@ async function tapAlertButton(buttonElement) {
   await expect(buttonElement).not.toBeVisible();
 }
 
+
 export async function tapSingularAlertButton() {
   if (isIos()) {
     await tapAlertButton(iosSingleAlertButton());
