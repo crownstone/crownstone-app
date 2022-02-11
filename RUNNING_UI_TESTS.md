@@ -54,6 +54,11 @@ npm run react
 In order for the test app to find the test cloud, the script needs the IP address of your computer.
 By default, it will use the first result of `ipconfig`, but that is not always correct. In that case, provice your IP address to the script.
 
+
+## Running on simulators
+
+Ensure that hardware keyboard is disabled. This means that when text is inputted, you should see the keyboard coming up. Just like a real phone! 
+
 # iOS
 
 We use detox to run the tests.
