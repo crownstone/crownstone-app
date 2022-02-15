@@ -550,47 +550,45 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
 
 export function getDevAppItems() {
-    let items = [];
+  let items = [];
+  items.push({
+    label: "DEVELOPERS ONLY",
+    type: 'explanation',
+    below: true
+  });
+  items.push({
+    label: "Developer Menu",
+    icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+    type: 'navigation',
+    callback: () => {
+      NavigationUtil.navigate("SettingsDeveloper", {fromOverview: true});
+    }
+  });
+  items.push({
+    label: "Go to dev app",
+    type: 'button',
+    style: { color: colors.black.hex, fontWeight: 'bold' },
+    icon: <ScaledImage source={require('../../../../assets/images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
+    callback: () => {
+      OnScreenNotifications.removeAllNotifications();
+      BroadcastStateManager.destroy();
+      LocationHandler.destroy();
+      core.eventBus.clearAllEvents();
 
-    items.push({ label: "GO TO DEV APP", type: 'explanation' });
-    items.push({
-      label: "Go to dev app",
-      type: 'button',
-      style: { color: colors.black.hex, fontWeight: 'bold' },
-      icon: <ScaledImage source={require('../../../../assets/images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
-      callback: () => {
-        OnScreenNotifications.removeAllNotifications();
-        BroadcastStateManager.destroy();
-        LocationHandler.destroy();
-        core.eventBus.clearAllEvents();
-
-        // reset the overlay manager events since we need these and we destroyed all events above.
-        OverlayManager._initialized = false;
-        OverlayManager.init()
+      // reset the overlay manager events since we need these and we destroyed all events above.
+      OverlayManager._initialized = false;
+      OverlayManager.init()
 
 
-        DevAppState.init();
-        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
-      }
-    });
-    items.push({
-      label: "This can brick your Crownstones. Beware! Your locationhandler will be _sessionIsKilled. Restart the app to go back to app mode.",
-      type: 'explanation',
-      below: true
-    });
-    items.push({
-      label: "Developer Menu",
-      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
-      type: 'navigation',
-      callback: () => {
-        NavigationUtil.navigate("SettingsDeveloper", {fromOverview: true});
-      }
-    });
-    items.push({
-      label: "Debug options for developers.",
-      type: 'explanation',
-      below: true
-    });
+      DevAppState.init();
+      NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
+    }
+  });
+  items.push({
+    label: "This can brick your Crownstones. Beware! Your locationhandler will be _sessionIsKilled. Restart the app to go back to app mode.",
+    type: 'explanation',
+    below: true
+  });
     return items;
 }
 
@@ -665,45 +663,43 @@ export async function shareDataViaRTC(shareDataType) {
 export async function getShareDataFileUrls(shareDataType) : Promise<string[]> {
   let storagePath = FileUtil.getPath();
   let urls = [];
-  if (shareDataType === SHARE_DATA_TYPE.logs) {
-    if (shareDataType === SHARE_DATA_TYPE.localization) {
-      let fingerprintPath = await LocalizationLogger.storeFingerprints();
-      let logUrls = await LocalizationLogger.getURLS();
-      logUrls.push(fingerprintPath);
-      urls = logUrls.map((a) => { return "file://" + a })
-    }
-    else if (shareDataType === SHARE_DATA_TYPE.allBuffers) {
-      urls = [
-        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-        "file://" + storagePath + '/power-samples-softFuseData.log',
-      ]
-    }
-    else if (shareDataType ===  SHARE_DATA_TYPE.switchCraftBuffers) {
-      urls = [
-        "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
-        "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
-        "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
-      ]
-    }
-    else if (shareDataType ===  SHARE_DATA_TYPE.measurementBuffers) {
-      urls = [
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-      ]
-    }
-    else if (shareDataType ===  SHARE_DATA_TYPE.errorBuffers) {
-      urls = [
-        "file://" + storagePath + '/power-samples-filteredData.log',
-        "file://" + storagePath + '/power-samples-unfilteredData.log',
-        "file://" + storagePath + '/power-samples-softFuseData.log',
-      ]
-    }
+  if (shareDataType === SHARE_DATA_TYPE.localization) {
+    let fingerprintPath = await LocalizationLogger.storeFingerprints();
+    let logUrls = await LocalizationLogger.getURLS();
+    logUrls.push(fingerprintPath);
+    urls = logUrls.map((a) => { return "file://" + a })
+  }
+  else if (shareDataType === SHARE_DATA_TYPE.allBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+      "file://" + storagePath + '/power-samples-softFuseData.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.switchCraftBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-switchcraft-false-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-positive.log',
+      "file://" + storagePath + '/power-samples-switchcraft-false-negative.log',
+      "file://" + storagePath + '/power-samples-switchcraft-true-negative.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.measurementBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+    ]
+  }
+  else if (shareDataType ===  SHARE_DATA_TYPE.errorBuffers) {
+    urls = [
+      "file://" + storagePath + '/power-samples-filteredData.log',
+      "file://" + storagePath + '/power-samples-unfilteredData.log',
+      "file://" + storagePath + '/power-samples-softFuseData.log',
+    ]
   }
 
   return urls

@@ -57,7 +57,7 @@ export class SettingsLogOverview extends LiveComponent<any, { logInformation: an
           buttons: [
             {text: "Share", testID:"Share", callback: async () => {
                 try {
-                  let result = await Share.open({ urls: this.state.selectedUrls });
+                  let result = await Share.open({ urls: this.state.selectedUrls.map((path) => { return `file://${path}`; }) });
                 }
                 catch (err) {
                   LOGw.info("Something went wrong while sharing data:",err)

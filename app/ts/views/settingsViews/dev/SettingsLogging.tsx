@@ -123,7 +123,9 @@ export class SettingsLogging extends LiveComponent<any, any> {
               buttons: [
                 {text: "Share", testID:"Share", callback: async () => {
                     try {
-                      await Share.open({ urls: [file.path] });
+                      let url = `file://${file.path}`;
+                      console.log("Sharing this:", url)
+                      await Share.open({ urls: [url] });
                     }
                     catch (err) {
                       LOGw.info("Something went wrong while sharing data:",err)
