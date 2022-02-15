@@ -12,7 +12,8 @@ export const EnableTestOverrides = () => {
 
     await $("cloudV1Input").replaceText(`http://${CONFIG.IP_ADDRESS}:3000/api/`);
     await $("cloudV2Input").replaceText(`http://${CONFIG.IP_ADDRESS}:3050/api/`);
-    await $("cloudV2Input").tapReturnKey();
+    await $("mockBluenetUrl").replaceText(`http://${CONFIG.IP_ADDRESS}:3100/`);
+    await $("mockBluenetUrl").tapReturnKey();
     await $("mockImageLibrary").tap();
     await $("mockBluenetPromise").tap();
 

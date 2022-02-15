@@ -6,7 +6,7 @@
 // }
 
 declare const global: {
-  __DEV__: boolean
+  __DEV__: boolean,
 };
 
 interface locationDataContainer {

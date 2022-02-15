@@ -6,9 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomEdit", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  Alert,
-  ScrollView} from 'react-native';
+import { Alert, ScrollView} from 'react-native';
+const sha1 = require('sha-1');
 
 
 import { ListEditableItems } from './../components/ListEditableItems'
@@ -197,6 +196,15 @@ export class RoomEdit extends LiveComponent<any, any> {
       }
     });
 
+    if (state.user.developer) {
+      let hash = sha1(room.config.fingerprintRaw);
+      let h1 = Number(`0x${hash.substr(0, 10)}`);
+      let h2 = Number(`0x${hash.substr(10, 10)}`);
+      let h3 = Number(`0x${hash.substr(20, 10)}`);
+      let h4 = Number(`0x${hash.substr(30, 10)}`);
+
+      items.push({label: `DEV fingerprintHash: ${mapToEmoticon(h1)}${mapToEmoticon(h2)}${mapToEmoticon(h3)}${mapToEmoticon(h4)} (${(h3%0xFFFFF).toString(36)})`, type: 'explanation',  below:false});
+    }
 
     // here we do the training if required and possible.
     if (state.app.indoorLocalizationEnabled) {
@@ -328,4 +336,41 @@ export class RoomEdit extends LiveComponent<any, any> {
       </BackgroundNoNotification>
     );
   }
+}
+
+
+function mapToEmoticon(value) {
+  if (typeof value === 'string') {
+    value = Number(`0x${value}`);
+  }
+  let ranges = [
+    { min: 9193, max: 9203, length: 10 },
+    { min: 9800, max: 9811, length: 11 },
+    { min: 127377, max: 127386, length: 9 },
+    { min: 127538, max: 127546, length: 8 },
+    { min: 127744, max: 127777, length: 33 },
+    { min: 127780, max: 127891, length: 111 },
+    { min: 127902, max: 127984, length: 82 },
+    { min: 127991, max: 128253, length: 262 },
+    { min: 128255, max: 128317, length: 62 },
+    { min: 128336, max: 128359, length: 23 },
+    { min: 128371, max: 128377, length: 6 },
+    { min: 128506, max: 128591, length: 85 },
+    { min: 128640, max: 128709, length: 69 },
+    { min: 129296, max: 129304, length: 8 }
+
+  ];
+  let totalRange = 0;
+  for (let r of ranges) {
+    totalRange+=r.length;
+  }
+  let v = value%totalRange;
+  let s = 0;
+  for (let r of ranges) {
+    if (v >= s && v < s+r.length) {
+      return String.fromCodePoint(v - s + r.min);
+    }
+    s += r.length;
+  }
+  return null;
 }

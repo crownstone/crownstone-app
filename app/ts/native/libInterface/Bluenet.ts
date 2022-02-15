@@ -183,6 +183,7 @@ if (DISABLE_NATIVE === true) {
   Bluenet = BluenetAPI;
 }
 else if (NativeModules.BluenetJS) {
+  // @ts-ignore
   if (global.__DEV__ ) {
     let wrappedBluenet = {};
     Object.keys(NativeModules.BluenetJS).forEach((key) => {

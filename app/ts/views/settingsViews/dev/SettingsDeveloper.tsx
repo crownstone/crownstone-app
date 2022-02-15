@@ -516,7 +516,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     });
     items.push({type: 'spacer'});
 
-
     return items;
   }
 
@@ -525,7 +524,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       <BackgroundNoNotification image={background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
-          title={ "test"}
           titleObject={
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
               <View style={{flex:1, width: screenWidth-160, alignItems:'center', justifyContent:'center'}}>
@@ -538,8 +536,8 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         />
         <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
-          <SlideFadeInView visible={this.state.devAppVisible} height={160}>
-            <ListEditableItems items={getDevAppItems()} separatorIndent={true} />
+          <SlideFadeInView visible={this.state.devAppVisible} height={120}>
+            <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
           </SlideFadeInView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
         </ScrollView>

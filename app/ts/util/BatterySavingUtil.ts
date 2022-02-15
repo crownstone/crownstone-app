@@ -112,7 +112,7 @@ class BatterySavingClass {
     }
 
     LOG.info("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, " +
-      "appInForeground",  appInForeground,
+      "appInForeground",     appInForeground,
       "inSphere",            inSphere,
       "allHandlesKnown",     allHandlesKnown,
       "_postponeCount",      this._postponeCount,

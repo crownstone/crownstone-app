@@ -19,6 +19,7 @@ import { Platform } from "react-native";
 
   // DO NOT CHANGE THIS LINE.
   // the global is meant as a last resort, forcing release to true when compiled in release mode.
+  // @ts-ignore
   export const RELEASE_MODE_USED = (RELEASE_MODE && DeviceInfo.getModel() !== "Simulator") || global.__DEV__ !== true;
 
   // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.

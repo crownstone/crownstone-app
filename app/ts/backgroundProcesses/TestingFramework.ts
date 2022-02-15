@@ -19,6 +19,7 @@ export const TestingFramework = {
         CameraLibrarySettings.mockImageLibrary      = json.mockImageLibrary;
         CameraLibrarySettings.mockCameraLibrary     = json.mockCameraLibrary;
         BluenetPromiseInterface.mockBluenetPromises = json.mockBluenetPromises;
+        BluenetPromiseInterface.mockBridgeUrl       = json.mockBrigeUrl;
       }
       catch (err) {
         console.log("TestingFramework: Something went wrong", err);
@@ -30,7 +31,6 @@ export const TestingFramework = {
   },
 
 
-
   async persist() {
     let data = JSON.stringify({
       cloud_v1:            CloudAddresses.cloud_v1,
@@ -38,6 +38,7 @@ export const TestingFramework = {
       mockImageLibrary:    CameraLibrarySettings.mockImageLibrary,
       mockCameraLibrary:   CameraLibrarySettings.mockCameraLibrary,
       mockBluenetPromises: BluenetPromiseInterface.mockBluenetPromises,
+      mockBridgeUrl:       BluenetPromiseInterface.mockBluenetPromises,
     });
     await FileUtil.writeToFile(TestingOverrideConfigFile, data);
   },
@@ -50,5 +51,6 @@ export const TestingFramework = {
     CameraLibrarySettings.mockImageLibrary      = false;
     CameraLibrarySettings.mockCameraLibrary     = false;
     BluenetPromiseInterface.mockBluenetPromises = false;
+    BluenetPromiseInterface.mockBridgeUrl       = '';
   }
 }

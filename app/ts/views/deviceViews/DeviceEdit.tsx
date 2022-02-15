@@ -238,7 +238,9 @@ lang("_Something_went_wrong_____body"),
           if (isInSetupMode === true) {
             this._removeCloudOnly();
           }
-          this._removeCloudReset(stone);
+          else {
+            this._removeCloudReset(stone);
+          }
         })
         .catch((err) => {
           core.eventBus.emit('hideLoading');
@@ -299,7 +301,7 @@ lang("_Something_went_wrong_____body"),
             resolve();
           }
           else {
-            LOGe.info("COULD NOT DELETE IN CLOUD", err?.message);
+            LOGe.info("DeviceEdit: COULD NOT DELETE IN CLOUD", err?.message);
             reject();
           }
         })
@@ -311,7 +313,7 @@ lang("_Something_went_wrong_____body"),
             this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
-            LOGe.info("ERROR:",err);
+            LOGe.info("DeviceEdit: error during removeCloudReset, commandFactoryReset phase.",err?.message);
             core.eventBus.emit('hideLoading');
             Alert.alert(
               lang("_Encountered_a_problem____header"),
@@ -323,7 +325,7 @@ lang("_Something_went_wrong_____body"),
           });
       })
       .catch((err) => {
-        LOG.info("error while asking the cloud to remove this crownstone", err?.message);
+        LOGe.info("DeviceEdit: error while asking the cloud to remove this crownstone", err?.message);
         core.eventBus.emit('hideLoading');
         Alert.alert(
           lang("_Encountered_Cloud_Issue___header"),

@@ -24,7 +24,6 @@ export class TestConfiguration extends LiveComponent<any, any> {
 
   _getItems() {
     let items = [];
-
     items.push({ label: "TESTING OVERRIDES", type: 'largeExplanation'});
 
     items.push({label: "Base cloud", type: 'explanation', below: false});
@@ -45,6 +44,15 @@ export class TestConfiguration extends LiveComponent<any, any> {
       testID: 'cloudV2Input',
       callback:(newValue) => {
         CloudAddresses.cloud_v2 = newValue;
+    }});
+    items.push({label: "Bridge mock url", type: 'explanation', below: false});
+    items.push({
+      label: null,
+      value: BluenetPromiseInterface.mockBridgeUrl,
+      type: 'textEdit',
+      testID: 'mockBluenetUrl',
+      callback:(newValue) => {
+        BluenetPromiseInterface.mockBridgeUrl = newValue;
     }});
 
     items.push({label: "MOCKS", type: 'explanation', below: false});

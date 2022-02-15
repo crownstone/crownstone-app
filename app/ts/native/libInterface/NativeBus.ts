@@ -3,6 +3,7 @@ import { LOGe, LOGi } from '../../logging/Log'
 import { DISABLE_NATIVE } from "../../ExternalConfig";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Bluenet } from "./Bluenet";
+import { EventBusClass } from '../../util/EventBus';
 
 let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
 
@@ -15,18 +16,20 @@ export class NativeBusClass {
   refMap: any;
 
   _registeredEvents = {};
-
+  
   subscribersForNearest = 0;
   subscribersForUnverified = 0;
 
   _count = 0;
   _id : string;
   _type = 'NativeBus'
-  _subscriptions = {};
+  _subscriptionCount = {};
+
+  _mirrorBus : EventBusClass;
 
   constructor() {
     this._id = xUtil.getUUID();
-    this._subscriptions = {};
+    this._subscriptionCount = {};
     this.topics = {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
       dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneBaseAdvertisement
@@ -68,6 +71,8 @@ export class NativeBusClass {
     Object.keys(this.topics).forEach((key) => {
       this.refMap[this.topics[key]] = true;
     });
+
+    this._mirrorBus = new EventBusClass("NativeBusMirror");
   }
 
   on(topic, callback) {
@@ -88,25 +93,26 @@ export class NativeBusClass {
     this._checkTopicAvailability(topic);
 
     // initialize the reference map for logging
-    if (this._subscriptions[topic] === undefined) {
-      this._subscriptions[topic] = 0;
+    if (this._subscriptionCount[topic] === undefined) {
+      this._subscriptionCount[topic] = 0;
     }
 
-    this._subscriptions[topic] += 1;
+    this._subscriptionCount[topic] += 1;
     this._count += 1;
-    LOGi.event(`Subscribed to topic[${topic}], topicCount:[${this._subscriptions[topic]}], totalCount:[${this._count}] type:[${this._type}] busId:[${this._id}]`);
+    LOGi.event(`Subscribed to topic[${topic}], topicCount:[${this._subscriptionCount[topic]}], totalCount:[${this._count}] type:[${this._type}] busId:[${this._id}]`);
 
     // generate unique id
     let id = xUtil.getUUID();
 
     // subscribe to native event.
     let subscription = BluenetEmitter.addListener(topic, callback);
+    let clearMirror  = this._mirrorBus.on(topic, callback);
 
     let removeCallback = () => {
       if (this._registeredEvents[id]) {
-        this._subscriptions[topic] -= 1;
+        this._subscriptionCount[topic] -= 1;
         this._count -= 1;
-        LOGi.event(`Unsubscribed from topic[${topic}], topicCount:[${this._subscriptions[topic]}], totalCount:[${this._count}] type:[${this._type}] busId:[${this._id}]`);
+        LOGi.event(`Unsubscribed from topic[${topic}], topicCount:[${this._subscriptionCount[topic]}], totalCount:[${this._count}] type:[${this._type}] busId:[${this._id}]`);
         subscription.remove();
 
         // disable unused topics if possible.
@@ -114,6 +120,7 @@ export class NativeBusClass {
 
         this._registeredEvents[id] = undefined;
         delete this._registeredEvents[id];
+        clearMirror();
       }
     };
 
@@ -123,17 +130,27 @@ export class NativeBusClass {
     return removeCallback;
   }
 
+  /**
+   * Used for mocking the nativebus.
+   * @param topic
+   * @param data
+   */
+  emit(topic, data) {
+    this._mirrorBus.emit(topic, data);
+  }
+
   clearAllEvents() {
     LOGi.info("Clearing all native event listeners.");
     this._count = 0;
     LOGi.event(`EventBus: Clearing all event listeners.  busId:${this._id}`);
-    this._subscriptions = {}
+    this._subscriptionCount = {}
     let keys = Object.keys(this._registeredEvents);
     keys.forEach((key) => {
       if (typeof this._registeredEvents[key] === 'function') {
         this._registeredEvents[key]();
       }
     });
+    this._mirrorBus.clearAllEvents()
   }
 
 
