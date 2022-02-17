@@ -24,22 +24,22 @@ import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
 import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
-import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { core }                     from "../../Core";
+import { NavigationUtil }           from "../../util/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
-import { xUtil } from "../../util/StandAloneUtil";
-import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
-import { CLOUD } from "../../cloud/cloudAPI";
+import { xUtil }                    from "../../util/StandAloneUtil";
+import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
+import { CLOUD }                    from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
-import { Navigation } from "react-native-navigation";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { DataUtil } from "../../util/DataUtil";
-import { RoomAddCore } from "../roomViews/RoomAddCore";
-import { Background } from "../components/Background";
-import { SmartHomeStateButton } from "./buttons/SmartHomeStateButton";
-import { ActiveSphereManager } from "../../backgroundProcesses/ActiveSphereManager";
-import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
-import { DebugToolsButton } from "./buttons/DebugToolsButton";
+import { Navigation }               from "react-native-navigation";
+import { TopBarUtil }               from "../../util/TopBarUtil";
+import { DataUtil }                 from "../../util/DataUtil";
+import { RoomAddCore }              from "../roomViews/RoomAddCore";
+import { Background }               from "../components/Background";
+import { SmartHomeStateButton }     from "./buttons/SmartHomeStateButton";
+import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
+import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
+import { DebugToolsButton }         from "./buttons/DebugToolsButton";
 
 
 const ZOOM_LEVELS = {

@@ -1,10 +1,4 @@
 import { LiveComponent }          from "../LiveComponent";
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsApp", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import { ScrollView }               from 'react-native';
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
@@ -12,9 +6,9 @@ import { ListEditableItems }        from '../components/ListEditableItems'
 import { background }               from "../styles";
 import { TopBarUtil }               from "../../util/TopBarUtil";
 import { CloudAddresses }           from "../../backgroundProcesses/indirections/CloudAddresses";
-import { TestingFramework }         from "../../backgroundProcesses/TestingFramework";
-import {CameraLibrarySettings} from "../../backgroundProcesses/indirections/CameraLibraryInterface";
-import {BluenetPromiseInterface} from "../../native/libInterface/BluenetPromise";
+import { TestingFramework }         from "../../backgroundProcesses/testing/TestingFramework";
+import { CameraLibrarySettings }    from "../../backgroundProcesses/indirections/CameraLibraryInterface";
+import {BluenetConfig} from "../../native/libInterface/BluenetConfig";
 
 
 export class TestConfiguration extends LiveComponent<any, any> {
@@ -48,11 +42,12 @@ export class TestConfiguration extends LiveComponent<any, any> {
     items.push({label: "Bridge mock url", type: 'explanation', below: false});
     items.push({
       label: null,
-      value: BluenetPromiseInterface.mockBridgeUrl,
+      placeholder: 'none',
+      value: BluenetConfig.mockBridgeUrl,
       type: 'textEdit',
       testID: 'mockBluenetUrl',
       callback:(newValue) => {
-        BluenetPromiseInterface.mockBridgeUrl = newValue;
+        BluenetConfig.mockBridgeUrl = newValue;
     }});
 
     items.push({label: "MOCKS", type: 'explanation', below: false});
@@ -67,14 +62,13 @@ export class TestConfiguration extends LiveComponent<any, any> {
     }});
     items.push({
       label: "Mock BluenetPromise",
-      value: BluenetPromiseInterface.mockBluenetPromises,
+      value: BluenetConfig.mockBluenet,
       type: 'switch',
       testID: 'mockBluenetPromise',
       callback:(newValue) => {
-        BluenetPromiseInterface.mockBluenetPromises = newValue;
+        BluenetConfig.mockBluenet = newValue;
         this.forceUpdate();
     }});
-
 
     return items;
   }

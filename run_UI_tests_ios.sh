@@ -19,7 +19,7 @@ fi
 
 echo "Using $IP_ADDRESS as local IP address." 
 
-${CLOUD_DIR}/reset_mongo_db.sh
+${CLOUD_DIR}/reset.sh
 
 detox test --configuration ios-debug
 

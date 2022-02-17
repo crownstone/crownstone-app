@@ -72,17 +72,17 @@ export class FadeInView extends Component<any, any> {
       // this will be the processing view after initialization.
       if (this.state.show === true) {
         return (
-          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
+          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
             {this.props.children}
           </Animated.View>
         );
       }
-      return <View />;
+      return <View testID={this.props.testID} />;
 
     }
     else {
       return (
-        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
+        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
           {this.props.children}
         </Animated.View>
       );
@@ -115,7 +115,7 @@ export function HiddenFadeIn(props) {
   }
 
   return (
-    <HiddenFadeInView visible={visible} delay={props.index * 65 || 0} style={props.style}>
+    <HiddenFadeInView visible={visible} delay={props.index * 65 || 0} style={props.style} testID={props.testID}>
       {props.children}
     </HiddenFadeInView>
   );
@@ -181,7 +181,7 @@ export class HiddenFadeInBlur extends Component<any, any> {
     // this will be the processing view after initialization.
     if (this.state.show === true) {
       return (
-        <Animated.View style={{flex:1, overflow:'hidden', opacity:this.state.viewOpacity}}>
+        <Animated.View style={{flex:1, overflow:'hidden', opacity:this.state.viewOpacity}} testID={this.props.testID}>
           <BlurView
             style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
             blurType="light"

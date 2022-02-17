@@ -1,24 +1,24 @@
 import {waitFor} from 'detox';
-import {$} from "../util/testUtil";
+import {$, replaceText, tap, tapReturnKey, waitToShow} from "../util/testUtil";
 import {CONFIG} from "../testSuite.e2e";
 
 export const EnableTestOverrides = () => {
   test('should set the custom cloud address', async () => {
     await waitFor($('LoginSplash')).toBeVisible().withTimeout(10000);
     let versionElement = $('VersionHiddenButton');
-    await versionElement.multiTap(5)
+    await versionElement.multiTap(5);
 
-    await waitFor($('TestConfiguration')).toBeVisible().withTimeout(1000);
+    await waitToShow('TestConfiguration');
 
-    await $("cloudV1Input").replaceText(`http://${CONFIG.IP_ADDRESS}:3000/api/`);
-    await $("cloudV2Input").replaceText(`http://${CONFIG.IP_ADDRESS}:3050/api/`);
-    await $("mockBluenetUrl").replaceText(`http://${CONFIG.IP_ADDRESS}:3100/`);
-    await $("mockBluenetUrl").tapReturnKey();
-    await $("mockImageLibrary").tap();
-    await $("mockBluenetPromise").tap();
+    await replaceText("cloudV1Input"  ,`http://${CONFIG.IP_ADDRESS}:3000/api/`);
+    await replaceText("cloudV2Input"  ,`http://${CONFIG.IP_ADDRESS}:3050/api/`);
+    await replaceText("mockBluenetUrl",`http://${CONFIG.IP_ADDRESS}:3100/`);
+    await tapReturnKey("mockBluenetUrl");
+    await tap("mockImageLibrary");
+    await tap("mockBluenetPromise");
+    await tap('closeModal');
 
-    await $('closeModal').tap()
-    await waitFor($('LoginSplash')).toBeVisible().withTimeout(1000);
+    await waitToShow('LoginSplash');
   });
 };
 

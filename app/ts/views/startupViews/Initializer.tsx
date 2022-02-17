@@ -9,7 +9,7 @@ import {NavigationUtil} from "../../util/NavigationUtil";
 import {Stacks} from "../Stacks";
 import {stylesUpdateConstants} from "../../views/styles";
 import {Bluenet} from "../../native/libInterface/Bluenet";
-import {TestingFramework} from "../../backgroundProcesses/TestingFramework";
+import {TestingFramework} from "../../backgroundProcesses/testing/TestingFramework";
 import SplashScreen from 'react-native-splash-screen';
 
 

@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi } from "../../logging/Log";
+import {BluenetConfig} from "./BluenetConfig";
 
 export let Bluenet;
 
@@ -176,7 +177,7 @@ const BluenetAPI = {
 
 };
 
-if (DISABLE_NATIVE === true) {
+if (DISABLE_NATIVE === true && BluenetConfig.mockBluenet) {
   // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   // LOG.info("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
   // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");

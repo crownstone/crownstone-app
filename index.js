@@ -1,6 +1,7 @@
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs([
   /Require cycle*/,
+  /.*/,
 ])
 
 import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";

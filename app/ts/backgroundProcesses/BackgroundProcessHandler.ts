@@ -49,7 +49,6 @@ import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
-import { EventSSEConnector } from "./SSE";
 
 const PushNotification = require('react-native-push-notification');
 

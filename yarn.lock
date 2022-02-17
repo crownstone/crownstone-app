@@ -2837,8 +2837,10 @@ crownstone-logger@^0.1.4:
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
 
-"crownstone-sse@file:../crownstone-lib-nodejs-sse":
-  version "4.2.1"
+crownstone-sse@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/crownstone-sse/-/crownstone-sse-5.0.0.tgz#5cf4a138e3d39276c45c452a515326d8d9e30d8f"
+  integrity sha512-xd+Fbg90Y2hnf+HjdPyHWgAoHoj3+GGGY2WUXPp2PrAEbLSJwepcJJj5E1HqoVpAU9JIoaq+3P5m557PRhI7sg==
   dependencies:
     cross-fetch "^3.0.4"
     crownstone-logger "^0.1.4"

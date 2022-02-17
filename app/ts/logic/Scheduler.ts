@@ -3,6 +3,7 @@ import {LOG, LOGe} from '../logging/Log'
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
 import { core } from "../Core";
+import {cleanLogs} from "../logging/LogUtil";
 
 
 interface scheduledCallback {
@@ -254,7 +255,6 @@ class SchedulerClass {
     if (afterMilliseconds === null) {
       throw new Error("NO_TIMEOUT_PROVIDED_TO_SCHEDULE_CALLBACK");
     }
-
     if (AppState.currentState === 'active') {
       return this.scheduleActiveCallback(callback, afterMilliseconds, label);
     }
@@ -497,6 +497,13 @@ class SchedulerClass {
 
   setTimeout(callback, afterMilliseconds, label = "unlabeled") : () => void {
     return this.scheduleCallback(callback, afterMilliseconds, label);
+  }
+
+  setInterval(callback, afterMilliseconds) {
+    let triggerId = xUtil.getUUID();
+    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: afterMilliseconds*0.001});
+    Scheduler.loadCallback(triggerId, callback, false);
+    return () => { this.removeTrigger(triggerId); }
   }
 }
 

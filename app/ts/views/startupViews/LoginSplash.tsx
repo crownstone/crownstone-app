@@ -19,7 +19,7 @@ import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { NavigationUtil } from "../../util/NavigationUtil";
-import {TestingFramework} from "../../backgroundProcesses/TestingFramework";
+import {TestingFramework} from "../../backgroundProcesses/testing/TestingFramework";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",

@@ -117,6 +117,7 @@ export class Processing extends Component<any, any> {
         style={[styles.fullscreen, {backgroundColor:colors.black.rgba(this.state.opacity || 0.75),justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={200}
+        testID={"Processing"}
         visible={this.state.visible}>
         <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >
           <AnimatedLogo />

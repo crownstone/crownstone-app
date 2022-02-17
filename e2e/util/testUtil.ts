@@ -1,4 +1,4 @@
-import { by, device, expect, element, waitFor } from 'detox';
+import {by, device, expect, element, waitFor} from 'detox';
 
 export function $(id) {
   return element(by.id(id))
@@ -19,7 +19,53 @@ export function androidIndexAlertButton(index: number = 0) {
 async function tapAlertButton(buttonElement) {
   await expect(buttonElement).toBeVisible();
   await buttonElement.tap()
-  await expect(buttonElement).not.toBeVisible();
+  await delay(100);
+}
+
+export async function replaceText(id, text, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await item.replaceText(text)
+  await delay(100);
+}
+
+export async function clearText(id, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await item.clearText();
+  await delay(100);
+}
+
+export async function tap(id, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await item.tap();
+  await delay(200);
+}
+
+export async function tapReturnKey(id, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await item.tapReturnKey()
+  await delay(100);
+}
+
+export async function waitToShow(id, timeout = 1500) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await delay(100);
+}
+
+export async function waitToNavigate(id, timeout = 2000) {
+  await delay(200);
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await delay(200);
 }
 
 
@@ -49,9 +95,9 @@ export async function tapAlertOKButton() {
   }
 }
 
-function delay(num) : Promise<void> {
+export function delay(ms) : Promise<void> {
   return new Promise((resolve, reject) => {
-    setTimeout(() => { resolve() }, num)
+    setTimeout(() => { resolve() }, ms)
   })
 }
 

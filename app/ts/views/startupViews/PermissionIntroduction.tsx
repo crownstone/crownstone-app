@@ -70,6 +70,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         options: [
           {
             label: lang("I_understand"),
+            testID: "permission_i_understand",
             onSelect: (result) => {
               return LocationHandler.initializeTracking().then(() => {
                 if (Platform.OS === 'android') {
@@ -90,6 +91,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Sounds_fair"),
+            testID: "permission_sounds_fair",
             onSelect: (result) => {
               LOG.info("Sync: Requesting notification permissions during Login.");
               NotificationHandler.request();
@@ -111,6 +113,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Nice_to_meet_you_"),
+            testID: "permission_nice_to_meet_you",
             onSelect: (result) => {
               let name = result.textfieldState.trim() || this.randomAiName;
               let state = core.store.getState();
@@ -134,7 +137,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor = this._interview.getTextColorFromCard() || textColor;
+      textColor       = this._interview.getTextColorFromCard()  || textColor;
     }
 
     return (

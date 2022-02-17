@@ -216,7 +216,7 @@ export class Login extends Component<any, any> {
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true}>
+      <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true} testID={"LoginView"}>
         <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
@@ -231,6 +231,7 @@ export class Login extends Component<any, any> {
                 placeholder={lang("emailemail_address")}
                 keyboardType='email-address'
                 autocorrect={false}
+                testID={"login_email_address"}
                 autoCapitalize="none"
                 placeholderTextColor='#888'
                 value={this.state.email}
@@ -248,18 +249,24 @@ export class Login extends Component<any, any> {
                 secureTextEntry={Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  }
                 visiblePassword={Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false }
                 placeholder={lang("password____")}
+                testID={"login_password"}
                 placeholderTextColor='#888'
                 autoCorrect={false}
                 value={this.state.password}
                 callback={(newValue) => { this.setState({password:newValue});}}
               />
-              <TouchableOpacity style={{position:'absolute', top:0, right: 0, height:40, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { this.setState({passwordSecureDisplay: !this.state.passwordSecureDisplay })}}>
+              <TouchableOpacity
+                style={{position:'absolute', top:0, right: 0, height:40, width: 40, alignItems:'center', justifyContent: 'center'}}
+                onPress={() => { this.setState({passwordSecureDisplay: !this.state.passwordSecureDisplay })}}
+                testID={"login_viewPassword"}
+              >
                 <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
               </TouchableOpacity>
             </View>
-            <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-            <Text style={{color: colors.csOrange.hex}}>{ lang("Forgot_Password_") }</Text></TouchableHighlight>
-            <LoginButton loginCallback={() => {this.attemptLogin()}} />
+            <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)} testID={"login_forgotPassword"}>
+              <Text style={{color: colors.csOrange.hex}}>{ lang("Forgot_Password_") }</Text>
+            </TouchableHighlight>
+            <LoginButton loginCallback={() => {this.attemptLogin()}} testID={"login_big_button"} />
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>
         </ScrollView>
@@ -476,18 +483,18 @@ class LoginButton extends Component<any, any> {
       return (
         <View style={{flex:1, minHeight: 130}}>
           <View style={{flex:1}} />
-          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+          <TouchableOpacity onPress={() => { this.props.loginCallback() }} testID={this.props.testID}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Log_In") }</Text></View>
           </TouchableOpacity>
           <View style={{flex:1.5}} />
         </View>
-      )
+      );
     }
     else {
       return (
         <View style={{flex:1}}>
           <View style={{flex:1}} />
-          <TouchableOpacity style={{height:60, width: 0.6*screenWidth}} onPress={() => { this.props.loginCallback() }}>
+          <TouchableOpacity style={{height:60, width: 0.6*screenWidth}} onPress={() => { this.props.loginCallback() }}  testID={this.props.testID}>
             <View style={{
               backgroundColor:'transparent',
               height: 60,

@@ -4,27 +4,27 @@ import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
 import { core } from "../../Core";
 import { BugReportUtil } from "../../util/BugReportUtil";
+import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
+import {BluenetConfig} from "./BluenetConfig";
 
-export const BluenetPromiseInterface = {
-  mockBluenetPromises: false,
-  mockBridgeUrl: null
-}
+
 
 let OPEN_PROMISES = {};
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {
+  let bluenetArguments = [];
+  // fill the bluenet arguments list with all arguments we will send to bluenet.
+  for (let i = 1; i < arguments.length; i++) {
+    bluenetArguments.push(arguments[i])
+  }
 
   return new Promise((resolve, reject) => {
 	  let id = (Math.random() * 1e8).toString(36);
-    if (DISABLE_NATIVE === true) {
+
+    if (DISABLE_NATIVE === true && !BluenetConfig.mockBluenet) {
       resolve()
     }
     else {
-      let bluenetArguments = [];
-      // fill the bluenet arguments list with all arguments we will send to bluenet.
-      for (let i = 1; i < arguments.length; i++) {
-        bluenetArguments.push(arguments[i])
-      }
       BugReportUtil.breadcrumb("BLE: Started Command",{
         functionCalled: functionName,
         id: id,
@@ -48,7 +48,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
           reject(new Error(result.data));
         }
         else {
-			  LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+          LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           BugReportUtil.breadcrumb("BLE: Finished Command",{
             functionCalled: functionName,
             id: id,
@@ -63,6 +63,11 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       OPEN_PROMISES[id] = {function: functionName, params: bluenetArguments, appState: AppState.currentState, t: Date.now()};
       LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
       LOGi.constellation("BluenetPromise: newPromise  Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
+
+      if (BluenetConfig.mockBluenet) {
+        BridgeMock.call(functionName, bluenetArguments, promiseResolver);
+        return;
+      }
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
