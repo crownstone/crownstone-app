@@ -885,8 +885,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		updateScanner()
 	}
 
-
-
 	@ReactMethod
 	@Synchronized
 	fun trackIBeacon(uuidString: String, sphereId: String) {
@@ -962,6 +960,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				updateScanner()
 			}
 		}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun useHighFrequencyScanningInBackground(enable: Boolean) {
+		defaultScanMode = when (enable) {
+			true -> ScanMode.LOW_LATENCY
+			false -> ScanMode.BALANCED
+		}
+		updateScanner()
 	}
 
 	@ReactMethod
