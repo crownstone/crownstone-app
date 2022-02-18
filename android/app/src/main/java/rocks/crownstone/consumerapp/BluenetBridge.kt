@@ -3505,22 +3505,27 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 
 	private fun sendEvent(eventName: String) {
+		Log.v(TAG, "sendEvent $eventName")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, null)
 	}
 
 	private fun sendEvent(eventName: String, params: WritableMap?) {
+		Log.v(TAG, "sendEvent $eventName")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
 	private fun sendEvent(eventName: String, params: WritableArray?) {
+		Log.v(TAG, "sendEvent $eventName")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
 	private fun sendEvent(eventName: String, params: String?) {
+		Log.v(TAG, "sendEvent $eventName")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
 	private fun sendEvent(eventName: String, params: Int?) {
+		Log.v(TAG, "sendEvent $eventName")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
