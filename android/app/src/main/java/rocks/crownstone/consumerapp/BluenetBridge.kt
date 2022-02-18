@@ -271,6 +271,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		reactContext.addLifecycleEventListener(lifecycleEventListener)
 
 		initBluenetPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running", "Crownstone is running in the background"))
+		updateServiceNotification()
 		initLogger()
 		initBluenetPromise
 				.success {
@@ -535,7 +536,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			sendEvent("locationStatus", "off")
 		}
 		else {
-			cancelNotification(LOCATION_STATUS_NOTIFICATION_ID)
+//			cancelNotification(LOCATION_STATUS_NOTIFICATION_ID)
 			sendEvent("locationStatus", "on")
 		}
 	}
@@ -549,7 +550,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		else {
 			Log.i(TAG, "sendBleStatus poweredOn")
-			cancelNotification(BLE_STATUS_NOTIFICATION_ID)
+//			cancelNotification(BLE_STATUS_NOTIFICATION_ID)
 			sendEvent("bleStatus", "poweredOn")
 		}
 	}
@@ -977,6 +978,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.runInBackground()
 		}
 		backgroundScanning = enable
+		updateServiceNotification()
 	}
 
 	private fun determineScanMode(): ScanMode {
@@ -2981,20 +2983,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "onLocationStatus $event")
 		when (event) {
 			BluenetEvent.NO_LOCATION_SERVICE_PERMISSION -> {
-				if (backgroundScanning && !appForeGround) {
-					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location permission missing.", "App needs location permission for localization to work.")
-				}
+//				if (backgroundScanning && !appForeGround) {
+//					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location permission missing.", "App needs location permission for localization to work.")
+//				}
 			}
 			BluenetEvent.LOCATION_PERMISSION_GRANTED -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_ON -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_OFF -> {
-				if (backgroundScanning && !appForeGround) {
-					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location disabled.", "Location needs to be enabled for localization to work.")
-				}
+//				if (backgroundScanning && !appForeGround) {
+//					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location disabled.", "Location needs to be enabled for localization to work.")
+//				}
 			}
 		}
+		updateServiceNotification()
 		sendLocationStatus()
 	}
 
@@ -3005,11 +3008,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			BluenetEvent.BLE_TURNED_ON -> {
 			}
 			BluenetEvent.BLE_TURNED_OFF -> {
-				if (backgroundScanning && !appForeGround) {
-					sendNotification(BLE_STATUS_NOTIFICATION_ID, "Localization not working", "Bluetooth must be enabled for localization to work.")
-				}
+//				if (backgroundScanning && !appForeGround) {
+//					sendNotification(BLE_STATUS_NOTIFICATION_ID, "Localization not working", "Bluetooth must be enabled for localization to work.")
+//				}
 			}
 		}
+		updateServiceNotification()
 		sendBleStatus()
 	}
 
@@ -3059,6 +3063,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		isInSphere = eventData.list.isNotEmpty()
 		updateScanner()
+		updateServiceNotification()
 
 		lastSphereId = referenceId
 		sendEvent("enterSphere", referenceId)
@@ -3072,6 +3077,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		isInSphere = eventData.list.isNotEmpty()
 		updateScanner()
+		updateServiceNotification()
 
 		// TODO: this should be in the localization library
 		if (referenceId == lastSphereId && lastLocationId != null) {
@@ -3530,6 +3536,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return getNotification(true, title, text)
 	}
 
+	private fun updateServiceNotification() {
+		if (!backgroundScanning) {
+			return
+		}
+
+		var title = "Localization running"
+		var text = when (isInSphere) {
+			true -> "Currently in sphere."
+			false -> "Currently not in sphere."
+		}
+
+		if (!bluenet.isBleEnabled()) {
+			title = "Localization not working"
+			text = "Bluetooth must be enabled for localization to work."
+		}
+		else if (!bluenet.isLocationPermissionGranted()) {
+			title = "Localization not working"
+			text = "App needs location permission for localization to work."
+		}
+		else if (!bluenet.isLocationServiceEnabled()) {
+			title = "Localization not working"
+			text = "Location needs to be enabled for localization to work."
+		}
+
+		NotificationManagerCompat.from(reactContext).notify(ONGOING_NOTIFICATION_ID, getNotification(true, title, text))
+	}
+
 	private fun getNotification(serviceNotification: Boolean, title: String, text: String): Notification {
 		// The id of the notification channel. Must be unique per package. The value may be truncated if it is too long.
 		val channelId = when (serviceNotification) {
@@ -3591,7 +3624,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
 
 		val notification = NotificationCompat.Builder(reactContext, channelId)
-		notification.setSmallIcon(R.drawable.icon_notification)
+		notification.setSmallIcon(R.mipmap.ic_notification)
 		notification.setContentTitle(title)
 		notification.setContentText(text)
 		notification.setContentIntent(pendingIntent)
