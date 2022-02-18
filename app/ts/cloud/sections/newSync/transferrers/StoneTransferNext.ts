@@ -2,7 +2,6 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateSphereTransferFunctions } from "./base/TransferBase";
 
 
 export const StoneTransferNext : TransferSphereTool<StoneData, StoneDataConfig, cloud_Stone, cloud_Stone_settable> = {
@@ -98,6 +97,11 @@ export const StoneTransferNext : TransferSphereTool<StoneData, StoneDataConfig, 
     await CLOUD.forSphere(cloudSphereId).deleteStone(localId);
   },
 
-  ...GenerateSphereTransferFunctions(this)
+
+  createLocal(localSphereId: string, data: Partial<any>) {
+    let newItemData = StoneTransferNext.getCreateLocalAction(localSphereId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 

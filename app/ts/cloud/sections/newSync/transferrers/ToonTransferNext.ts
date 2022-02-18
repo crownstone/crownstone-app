@@ -2,7 +2,6 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateSphereTransferFunctions } from "./base/TransferBase";
 
 
 export const ToonTransferNext : TransferSphereTool<ToonData, ToonData, cloud_Toon, cloud_Toon_settable> = {
@@ -75,6 +74,11 @@ export const ToonTransferNext : TransferSphereTool<ToonData, ToonData, cloud_Too
     await CLOUD.forSphere(cloudSphereId).deleteToon(localId);
   },
 
-  ...GenerateSphereTransferFunctions(this)
+
+  createLocal(localSphereId: string, data: Partial<any>) {
+    let newItemData = ToonTransferNext.getCreateLocalAction(localSphereId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 

@@ -2,7 +2,6 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateSphereTransferFunctions } from "./base/TransferBase";
 
 
 export const LocationTransferNext : TransferSphereTool<LocationData, LocationDataConfig, cloud_Location, cloud_Location_settable> = {
@@ -74,6 +73,10 @@ export const LocationTransferNext : TransferSphereTool<LocationData, LocationDat
   },
 
 
-  ...GenerateSphereTransferFunctions(this)
+  createLocal(localSphereId: string, data: Partial<any>) {
+    let newItemData = LocationTransferNext.getCreateLocalAction(localSphereId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 

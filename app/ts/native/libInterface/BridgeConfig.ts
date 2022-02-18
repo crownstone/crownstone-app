@@ -1,4 +1,4 @@
-export const BluenetConfig = {
+export const BridgeConfig = {
   mockBluenet: false,
   mockBridgeUrl: null
 }

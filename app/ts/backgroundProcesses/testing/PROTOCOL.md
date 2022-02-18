@@ -5,7 +5,7 @@ via the TestConfiguration view. This is automatically done in the UI testing.
 
 ## place BluenetPromise calls
 
-Send a POST request to http://<localIP>:3100/call with body:
+Send a POST request to http://<localIP>:3100/callPromise with body:
 
 ```json
 {

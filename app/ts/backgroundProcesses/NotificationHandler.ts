@@ -6,6 +6,7 @@ import {Util} from "../util/Util";
 import {CLOUD} from "../cloud/cloudAPI";
 import {core} from "../Core";
 import PushNotification, {Importance} from 'react-native-push-notification';
+import {BridgeConfig} from "../native/libInterface/BridgeConfig";
 
 class NotificationHandlerClass {
   requesting = false;
@@ -132,13 +133,14 @@ class NotificationHandlerClass {
   }
 
   request() {
-    if (this.requesting === false) {
-      LOGi.info("NotificationHandler: Requesting push permissions");
-      this.requesting = true;
-      PushNotification.requestPermissions();
-    }
-    else {
-      LOGi.info("NotificationHandler: Push permissions request already pending.");
+    if (BridgeConfig.mockBluenet === false) {
+      if (this.requesting === false) {
+        LOGi.info("NotificationHandler: Requesting push permissions");
+        this.requesting = true;
+        PushNotification.requestPermissions();
+      } else {
+        LOGi.info("NotificationHandler: Push permissions request already pending.");
+      }
     }
   }
 }

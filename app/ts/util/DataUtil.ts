@@ -657,7 +657,7 @@ export const DataUtil = {
       randomDeviceToken,
       activeRandomDeviceToken,
       randomDeviceTokenValidated,
-      useTimeBasedNonce: state.development.use_time_based_nonce
+      useTimeBasedNonce: state.user.developer && state.development.use_time_based_nonce
     }
   }
 };

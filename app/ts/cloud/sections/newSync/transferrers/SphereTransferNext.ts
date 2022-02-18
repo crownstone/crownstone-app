@@ -1,7 +1,6 @@
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateTransferFunctions } from "./base/TransferBase";
 
 
 export const SphereTransferNext : TransferTool<SphereData, SphereDataConfig, cloud_Sphere, cloud_Sphere_settable> = {
@@ -73,6 +72,10 @@ export const SphereTransferNext : TransferTool<SphereData, SphereDataConfig, clo
     await CLOUD.deleteSphere(localId);
   },
 
-  ...GenerateTransferFunctions(this)
+  createLocal(data: Partial<any>) {
+    let newItemData = SphereTransferNext.getCreateLocalAction(data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 

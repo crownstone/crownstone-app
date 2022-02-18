@@ -5,7 +5,7 @@ import { Bluenet }        from './Bluenet'
 import { core } from "../../Core";
 import { BugReportUtil } from "../../util/BugReportUtil";
 import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
-import {BluenetConfig} from "./BluenetConfig";
+import {BridgeConfig} from "./BridgeConfig";
 
 
 
@@ -21,7 +21,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
   return new Promise((resolve, reject) => {
 	  let id = (Math.random() * 1e8).toString(36);
 
-    if (DISABLE_NATIVE === true && !BluenetConfig.mockBluenet) {
+    if (DISABLE_NATIVE === true && !BridgeConfig.mockBluenet) {
       resolve()
     }
     else {
@@ -64,8 +64,8 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
       LOGi.constellation("BluenetPromise: newPromise  Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
 
-      if (BluenetConfig.mockBluenet) {
-        BridgeMock.call(functionName, bluenetArguments, promiseResolver);
+      if (BridgeConfig.mockBluenet) {
+        BridgeMock.callPromise(functionName, bluenetArguments, promiseResolver);
         return;
       }
 

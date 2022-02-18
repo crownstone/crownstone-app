@@ -56,13 +56,14 @@ export const LoginUser = () => {
     });
   }
 
-
   test('login: login', async () => {
     await replaceText('login_email_address','crownstone.main.test@gmail.com');
     await tapReturnKey('login_email_address')
     await replaceText('login_password','testPassword');
     await tapReturnKey('login_password')
     await tap('login_big_button')
+    await delay(1000);
+    await waitToNavigate('PermissionIntroduction', 5000);
   });
 
 };

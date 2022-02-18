@@ -31,19 +31,23 @@ export const createNewSphere = function(name) {
     .then((sphereIdData) => {
       newSphereLocalId = sphereIdData.localId;
       newSphere_cloud_id = sphereIdData.cloudId;
+      console.log(1)
       // Create initial locations
       return createNewLocation("Living room", "c1-tvSetup2", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       // Create initial locations
+      console.log(2)
       return createNewLocation("Kitchen", "c1-foodWine", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       // Create initial locations
+      console.log(3)
       return createNewLocation("Bedroom", "c1-bed", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       core.eventBus.emit('hideLoading');
+      console.log(4)
       return newSphereLocalId;
     })
     .catch((err) => {

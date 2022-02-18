@@ -88,6 +88,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         subHeader: lang("We_use_notifications_switc"),
         explanation: lang("We_also_use_them_to_quick"),
         optionsBottom: true,
+        testID:'permission_Notifications_view',
         options: [
           {
             label: lang("Sounds_fair"),
@@ -110,6 +111,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
         hasTextInputField: true,
         placeholder: this.randomAiName,
         optionsBottom: true,
+        testID:'permission_AI_setup',
         options: [
           {
             label: lang("Nice_to_meet_you_"),
@@ -141,7 +143,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true} testID={"PermissionIntroduction"}>
         <Interview
           backButtonName={"permissionIntroduction"}
           height={screenHeight - 0.5*tabBarMargin - statusBarHeight}

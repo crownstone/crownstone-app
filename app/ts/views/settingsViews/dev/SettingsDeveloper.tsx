@@ -160,7 +160,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           // WebRtcClient.refreshConnectionToken();
         })
       }
-    })
+    });
 
     items.push({
       label: "Share collected buffers",
@@ -176,7 +176,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           {text: SHARE_DATA_TYPE.errorBuffers      , callback: () => { shareData(SHARE_DATA_TYPE.errorBuffers      ) }},
         ]});
       }
-    })
+    });
 
 
     items.push({
@@ -446,6 +446,21 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           data: {use_time_based_nonce: newValue}
         });
       }});
+
+    if (Platform.OS === 'android') {
+      items.push({
+        label: "HF background scanning",
+        value: dev.useHighFrequencyScanningInBackground,
+        icon: <IconButton name={"ios-battery-charging"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.iosBlueDark.hex}}/>,
+        type: 'switch',
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'CHANGE_DEV_SETTINGS',
+            data: {useHighFrequencyScanningInBackground: newValue}
+          });
+          Bluenet.useHighFrequencyScanningInBackground(newValue);
+        }});
+    }
 
 
     items.push({label: "FIRMWARE EARLY ACCESS", type: 'explanation'});

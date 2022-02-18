@@ -2,7 +2,6 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateSphereTransferFunctions } from "./base/TransferBase";
 
 
 export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_Hub, cloud_Hub_settable> = {
@@ -85,6 +84,10 @@ export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_
     await CLOUD.forSphere(cloudSphereId).deleteLocation(localId);
   },
 
-  ...GenerateSphereTransferFunctions(this)
+  createLocal(localSphereId: string, data: Partial<any>) {
+    let newItemData = HubTransferNext.getCreateLocalAction(localSphereId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 

@@ -61,7 +61,7 @@ export async function waitToShow(id, timeout = 1500) {
   await delay(100);
 }
 
-export async function waitToNavigate(id, timeout = 2000) {
+export async function waitToNavigate(id, timeout = 3000) {
   await delay(200);
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);

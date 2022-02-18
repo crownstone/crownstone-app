@@ -125,6 +125,7 @@ export const TestRegisterNewUser = () => {
     await replaceText("register-password",`testPassword`);
     await tapReturnKey("register-password");
     await tap("register-completeRegistration");
+    await delay(300);
     await waitToNavigate('register-finishedCard');
   });
   test('register: go back to splash', async () => {

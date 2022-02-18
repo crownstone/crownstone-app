@@ -2,7 +2,6 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import { GenerateStoneTransferFunctions } from "./base/TransferBase";
 
 
 export const BehaviourTransferNext : TransferStoneTool<BehaviourData, BehaviourData, cloud_Behaviour, cloud_Behaviour_settable> = {
@@ -86,6 +85,10 @@ export const BehaviourTransferNext : TransferStoneTool<BehaviourData, BehaviourD
     await CLOUD.forStone(cloudStoneId).deleteBehaviour(localId);
   },
 
-  ...GenerateStoneTransferFunctions(this)
+  createLocal(localSphereId: string, localStoneId: string, data: Partial<any>) {
+    let newItemData = BehaviourTransferNext.getCreateLocalAction(localSphereId, localStoneId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 
