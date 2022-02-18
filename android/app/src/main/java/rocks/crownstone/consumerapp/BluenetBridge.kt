@@ -86,6 +86,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		HIGH_POWER
 	}
 	private var scannerState = ScannerState.STOPPED
+	private var defaultScanMode = ScanMode.BALANCED // To be changed by a setting.
 	private var isTracking = false
 	private var batterySaving = false
 	private var backgroundScanning = true
@@ -170,6 +171,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		appForeGround = true
 		initBluenetPromise.success {
 			handler.post {
+				updateScanner()
 				// When the GUI is killed, but the app is still running,
 				// the GUI needs to get the location and BLE status when the GUI is opened again.
 				// Although we might be in login screen, this is unlikely.
@@ -184,6 +186,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onBridgeHostPause() {
 		Log.i(TAG, "onHostPause")
 		appForeGround = false
+		initBluenetPromise.success {
+			handler.post {
+				updateScanner()
+			}
+		}
 	}
 
 	fun onTrimMemory(level: Int) {
@@ -972,22 +979,38 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		backgroundScanning = enable
 	}
 
+	private fun determineScanMode(): ScanMode {
+		if (!isInSphere) {
+			// When out of sphere, always scan balanced.
+			return ScanMode.BALANCED
+		}
+		if (appForeGround) {
+			// When in sphere and app is in foreground, always scan with low latency.
+			return ScanMode.LOW_LATENCY
+		}
+		// When in sphere, but app is not in foreground.
+		return when (scannerState) {
+			ScannerState.HIGH_POWER -> ScanMode.LOW_LATENCY
+			ScannerState.BALANCED -> defaultScanMode
+			ScannerState.UNIQUE_ONLY -> defaultScanMode
+			ScannerState.STOPPED -> ScanMode.LOW_POWER
+		}
+	}
+
 	private fun updateScanner() {
-		Log.i(TAG, "updateScanner scannerState=$scannerState isTracking=$isTracking batterySaving=$batterySaving")
+		Log.i(TAG, "updateScanner scannerState=$scannerState isTracking=$isTracking batterySaving=$batterySaving isInSphere=$isInSphere")
 		if ((scannerState == ScannerState.STOPPED) && !isTracking) {
 			bluenet.stopScanning()
 			return
 		}
 
-		val scanMode: ScanMode = when (isInSphere) {
-			true -> ScanMode.LOW_LATENCY
-			false -> ScanMode.BALANCED
-		}
+		val scanMode: ScanMode = determineScanMode()
 
 		Log.i(TAG, "Scan with scanMode=$scanMode")
 		bluenet.setScanInterval(scanMode)
+		// Always filter for iBeacons, we need them to decrypt service data.
 //		bluenet.filterForIbeacons(isTracking)
-		bluenet.filterForIbeacons(true) // Always filter for iBeacons, we need them to decrypt service data.
+		bluenet.filterForIbeacons(true)
 		bluenet.filterForCrownstones(!batterySaving)
 		bluenet.startScanning()
 	}
