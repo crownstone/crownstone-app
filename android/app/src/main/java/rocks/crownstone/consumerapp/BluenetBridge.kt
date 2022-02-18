@@ -17,6 +17,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.*
+import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -174,6 +175,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				// Although we might be in login screen, this is unlikely.
 				sendLocationStatus()
 				sendBleStatus()
+//				checkBatteryOptimizationSetting()
 			}
 		}
 	}
@@ -650,6 +652,32 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			callback.invoke(retVal)
 		}
 	}
+
+	/**
+	 * Return true if in app's battery settings "Not optimized" and false if "Optimizing battery use".
+	 */
+	private fun isIgnoringBatteryOptimization(): Boolean {
+		val powerManager = reactContext.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+		val packageName = reactContext.applicationContext.packageName
+		return powerManager.isIgnoringBatteryOptimizations(packageName)
+	}
+
+	private fun requestIgnoreBatteryOptimization() {
+		// Brings the user to the battery optimization settings, still requires the user to:
+		// - Select "All apps".
+		// - Scroll to this app.
+		// - Click this app.
+		// Alternatively, we could use REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, but google does not seem to like that.
+		val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+		reactContext.startActivity(intent)
+	}
+
+	private fun checkBatteryOptimizationSetting() {
+		if (!isIgnoringBatteryOptimization()) {
+			requestIgnoreBatteryOptimization()
+		}
+	}
+
 
 	@ReactMethod
 	@Synchronized
