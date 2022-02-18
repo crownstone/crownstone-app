@@ -18,6 +18,8 @@ let defaultState = {
   show_rssi_values_in_mesh:   false,
   nativeExtendedLogging:      false,
 
+  useHighFrequencyScanningInBackground: false,
+
   firmwareEarlyAccessLevel: 0,
 
   show_sync_button_in_behaviour: false,
@@ -61,12 +63,13 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_nav =            update(action.data.log_nav,            newState.log_nav);
         newState.preview =            update(action.data.preview,            newState.preview);
         newState.debugRTCtoken =      update(action.data.debugRTCtoken,      newState.debugRTCtoken);
-        newState.show_sync_button_in_behaviour = update(action.data.show_sync_button_in_behaviour, newState.show_sync_button_in_behaviour);
-        newState.use_time_based_nonce =          update(action.data.use_time_based_nonce, newState.use_time_based_nonce);
-        newState.nativeExtendedLogging =         update(action.data.nativeExtendedLogging,         newState.nativeExtendedLogging);
-        newState.show_rssi_values_in_mesh =      update(action.data.show_rssi_values_in_mesh,      newState.show_rssi_values_in_mesh);
-        newState.firmwareEarlyAccessLevel =      update(action.data.firmwareEarlyAccessLevel,      newState.firmwareEarlyAccessLevel);
-        newState.devAppVisible =                 update(action.data.devAppVisible,                 newState.devAppVisible);
+        newState.show_sync_button_in_behaviour =        update(action.data.show_sync_button_in_behaviour,        newState.show_sync_button_in_behaviour);
+        newState.use_time_based_nonce =                 update(action.data.use_time_based_nonce,                 newState.use_time_based_nonce);
+        newState.nativeExtendedLogging =                update(action.data.nativeExtendedLogging,                newState.nativeExtendedLogging);
+        newState.useHighFrequencyScanningInBackground = update(action.data.useHighFrequencyScanningInBackground, newState.useHighFrequencyScanningInBackground);
+        newState.show_rssi_values_in_mesh =             update(action.data.show_rssi_values_in_mesh,             newState.show_rssi_values_in_mesh);
+        newState.firmwareEarlyAccessLevel =             update(action.data.firmwareEarlyAccessLevel,             newState.firmwareEarlyAccessLevel);
+        newState.devAppVisible =                        update(action.data.devAppVisible,                        newState.devAppVisible);
         return newState;
       }
       return state;

@@ -8,7 +8,7 @@ import { TopBarUtil }               from "../../util/TopBarUtil";
 import { CloudAddresses }           from "../../backgroundProcesses/indirections/CloudAddresses";
 import { TestingFramework }         from "../../backgroundProcesses/testing/TestingFramework";
 import { CameraLibrarySettings }    from "../../backgroundProcesses/indirections/CameraLibraryInterface";
-import {BluenetConfig} from "../../native/libInterface/BluenetConfig";
+import {BridgeConfig} from "../../native/libInterface/BridgeConfig";
 
 
 export class TestConfiguration extends LiveComponent<any, any> {
@@ -43,11 +43,11 @@ export class TestConfiguration extends LiveComponent<any, any> {
     items.push({
       label: null,
       placeholder: 'none',
-      value: BluenetConfig.mockBridgeUrl,
+      value: BridgeConfig.mockBridgeUrl,
       type: 'textEdit',
       testID: 'mockBluenetUrl',
       callback:(newValue) => {
-        BluenetConfig.mockBridgeUrl = newValue;
+        BridgeConfig.mockBridgeUrl = newValue;
     }});
 
     items.push({label: "MOCKS", type: 'explanation', below: false});
@@ -62,11 +62,11 @@ export class TestConfiguration extends LiveComponent<any, any> {
     }});
     items.push({
       label: "Mock BluenetPromise",
-      value: BluenetConfig.mockBluenet,
+      value: BridgeConfig.mockBluenet,
       type: 'switch',
       testID: 'mockBluenetPromise',
       callback:(newValue) => {
-        BluenetConfig.mockBluenet = newValue;
+        BridgeConfig.mockBluenet = newValue;
         this.forceUpdate();
     }});
 

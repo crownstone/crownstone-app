@@ -4,11 +4,11 @@ import { DISABLE_NATIVE } from "../../ExternalConfig";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Bluenet } from "./Bluenet";
 import { EventBusClass } from '../../util/EventBus';
-import {BluenetConfig} from "./BluenetConfig";
+import {BridgeConfig} from "./BridgeConfig";
 
 let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
 
-if (DISABLE_NATIVE !== true && BluenetConfig.mockBluenet !== true) {
+if (DISABLE_NATIVE !== true && BridgeConfig.mockBluenet !== true) {
   BluenetEmitter = new NativeEventEmitter(NativeModules.BluenetJS);
 }
 

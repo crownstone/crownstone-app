@@ -67,6 +67,9 @@ We use detox to run the tests.
 ./run_UI_tests_ios.sh
 ```
 
+Make sure you set the build folder in XCode to be in /ios/build/...
+or make sure the app path matches where the app is built.
+
 # Android
 
 ## Debug build
@@ -101,9 +104,12 @@ Then run the tests:
 ```
 
 
-
 # Developing UI tests
 
 In android studio, you can find out the ids of GUI elements with the "layout inspector", while running a debug build.
+
+In XCode you can use the hierarchy view to do this.
+
+## Resuming tests
 
 

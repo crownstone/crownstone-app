@@ -4,7 +4,7 @@ import {CLOUD_ADDRESS, CLOUD_V2_ADDRESS} from "../../ExternalConfig";
 import {CameraLibrarySettings} from "../indirections/CameraLibraryInterface";
 import {CrownstoneSSE} from "../../logic/SSE";
 import {BridgeMock} from "./BridgeMock";
-import { BluenetConfig } from "../../native/libInterface/BluenetConfig";
+import { BridgeConfig } from "../../native/libInterface/BridgeConfig";
 
 const TestingOverrideConfigFile = "CLOUD_ADDRESS_OVERWRITE_FILE.config"
 
@@ -18,12 +18,12 @@ export const TestingFramework = {
       console.log("TestingFramework: Got data to load.", data);
       try {
         let json = JSON.parse(data);
-        CloudAddresses.cloud_v1                     = json.cloud_v1;
-        CloudAddresses.cloud_v2                     = json.cloud_v2;
-        CameraLibrarySettings.mockImageLibrary      = json.mockImageLibrary;
-        CameraLibrarySettings.mockCameraLibrary     = json.mockCameraLibrary;
-        BluenetConfig.mockBluenet = json.mockBluenet;
-        BluenetConfig.mockBridgeUrl       = json.mockBridgeUrl;
+        CloudAddresses.cloud_v1                 = json.cloud_v1;
+        CloudAddresses.cloud_v2                 = json.cloud_v2;
+        CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary;
+        CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary;
+        BridgeConfig.mockBluenet               = json.mockBluenet;
+        BridgeConfig.mockBridgeUrl             = json.mockBridgeUrl;
       }
       catch (err) {
         console.log("TestingFramework: Something went wrong", err);
@@ -33,19 +33,19 @@ export const TestingFramework = {
       console.log("TestingFramework: No overrides set.");
     }
 
-    if (BluenetConfig.mockBluenet && BluenetConfig.mockBridgeUrl) {
+    if (BridgeConfig.mockBluenet && BridgeConfig.mockBridgeUrl) {
       TestingFramework.setupSSE();
     }
   },
 
   setupSSE() {
-    if (BluenetConfig.mockBluenet) {
-      console.log("init", BluenetConfig.mockBridgeUrl)
+    if (BridgeConfig.mockBluenet) {
+      console.log("init", BridgeConfig.mockBridgeUrl)
       if (!TestingFramework.SSE) {
-        TestingFramework.SSE = new CrownstoneSSE({sseUrl: BluenetConfig.mockBridgeUrl});
+        TestingFramework.SSE = new CrownstoneSSE({sseUrl: BridgeConfig.mockBridgeUrl+'sse'});
       }
       TestingFramework.SSE.accessToken = "TEST_DEV";
-      TestingFramework.SSE.start(BridgeMock.handleSSE);
+      TestingFramework.SSE.start((event) => { BridgeMock.handleSSE(event); });
     }
   },
 
@@ -63,12 +63,12 @@ export const TestingFramework = {
       cloud_v2:            CloudAddresses.cloud_v2,
       mockImageLibrary:    CameraLibrarySettings.mockImageLibrary,
       mockCameraLibrary:   CameraLibrarySettings.mockCameraLibrary,
-      mockBluenet: BluenetConfig.mockBluenet,
-      mockBridgeUrl:       BluenetConfig.mockBluenet,
+      mockBluenet:         BridgeConfig.mockBluenet,
+      mockBridgeUrl:       BridgeConfig.mockBridgeUrl,
     });
     await FileUtil.writeToFile(TestingOverrideConfigFile, data);
 
-    if (BluenetConfig.mockBluenet && BluenetConfig.mockBridgeUrl) {
+    if (BridgeConfig.mockBluenet && BridgeConfig.mockBridgeUrl) {
       TestingFramework.setupSSE();
     }
   },
@@ -82,7 +82,7 @@ export const TestingFramework = {
     CloudAddresses.cloud_v2                     = CLOUD_V2_ADDRESS;
     CameraLibrarySettings.mockImageLibrary      = false;
     CameraLibrarySettings.mockCameraLibrary     = false;
-    BluenetConfig.mockBluenet = false;
-    BluenetConfig.mockBridgeUrl       = '';
+    BridgeConfig.mockBluenet                   = false;
+    BridgeConfig.mockBridgeUrl                 = '';
   }
 }

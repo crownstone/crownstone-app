@@ -1,9 +1,11 @@
 import { NativeModules } from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi } from "../../logging/Log";
-import {BluenetConfig} from "./BluenetConfig";
+import {BridgeConfig} from "./BridgeConfig";
+import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
 
 export let Bluenet;
+export let Bluenet_direct; // used for UI testing
 
 const BluenetAPI = {
   clearTrackedBeacons:      () => { console.log("BluenetBridgeCall: clearTrackedBeacons: "); },        // called through BluenetPromiseWrapper --> must be promise.
@@ -175,17 +177,19 @@ const BluenetAPI = {
   addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
+  useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
+
 };
 
-if (DISABLE_NATIVE === true && BluenetConfig.mockBluenet) {
-  // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  // LOG.info("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
-  // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+if (DISABLE_NATIVE === true && BridgeConfig.mockBluenet === false) {
+  // console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  // console.log("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
+  // console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = BluenetAPI;
 }
 else if (NativeModules.BluenetJS) {
   // @ts-ignore
-  if (global.__DEV__ ) {
+  if (global.__DEV__  || BridgeConfig.mockBluenet) {
     let wrappedBluenet = {};
     Object.keys(NativeModules.BluenetJS).forEach((key) => {
       wrappedBluenet[key] = function(param, param2, param3, param4, param5) {
@@ -204,13 +208,19 @@ else if (NativeModules.BluenetJS) {
         else {
           LOGi.info("BLUENET CALL:", key, bluenetArguments);
         }
+        console.log("BluenetConfig", BridgeConfig.mockBluenet)
+        if (BridgeConfig.mockBluenet) {
+          return BridgeMock.callBluenet(key, bluenetArguments);
+        }
         return NativeModules.BluenetJS[key].apply(this, bluenetArguments);
       }
     })
-    Bluenet = wrappedBluenet;
+    Bluenet        = wrappedBluenet;
+    Bluenet_direct = NativeModules.BluenetJS;
   }
   else {
-    Bluenet = NativeModules.BluenetJS;
+    Bluenet        = NativeModules.BluenetJS;
+    Bluenet_direct = NativeModules.BluenetJS;
   }
 
   let API_Keys = Object.keys(BluenetAPI);

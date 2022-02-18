@@ -1,4 +1,4 @@
-import {Alert, AppState} from 'react-native';
+import {Alert, AppState, Platform} from 'react-native';
 
 import {Bluenet} from "../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
@@ -150,6 +150,12 @@ class BackgroundProcessHandlerClass {
           core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         }
 
+        if (Platform.OS === 'android') {
+          if (state.user.developer === true) {
+            Bluenet.useHighFrequencyScanningInBackground(state.development.useHighFrequencyScanningInBackground);
+          }
+        }
+
         LOG.info("Sync: Initialize tracking during Login.");
         LocationHandler.initializeTracking()
 
@@ -163,6 +169,7 @@ class BackgroundProcessHandlerClass {
       core.eventBus.on("storePrepared", () => {
         LOG.info("BackgroundProcessHandler: Store is prepared.");
         this.storePrepared = true;
+        MapProvider.init();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
@@ -440,7 +447,6 @@ class BackgroundProcessHandlerClass {
     FirmwareWatcher.init();
     LocationHandler.init();
     LocalizationMonitor.init();
-    MapProvider.init();
     MessageCenter.init();
     NotificationHandler.init();
     Permissions.init();

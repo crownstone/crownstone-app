@@ -1,5 +1,5 @@
 import {waitFor} from 'detox';
-import {$, replaceText, tap, tapReturnKey, waitToShow} from "../util/testUtil";
+import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../util/testUtil";
 import {CONFIG} from "../testSuite.e2e";
 
 export const EnableTestOverrides = () => {
@@ -8,7 +8,7 @@ export const EnableTestOverrides = () => {
     let versionElement = $('VersionHiddenButton');
     await versionElement.multiTap(5);
 
-    await waitToShow('TestConfiguration');
+    await waitToNavigate('TestConfiguration');
 
     await replaceText("cloudV1Input"  ,`http://${CONFIG.IP_ADDRESS}:3000/api/`);
     await replaceText("cloudV2Input"  ,`http://${CONFIG.IP_ADDRESS}:3050/api/`);
@@ -18,7 +18,7 @@ export const EnableTestOverrides = () => {
     await tap("mockBluenetPromise");
     await tap('closeModal');
 
-    await waitToShow('LoginSplash');
+    await waitToNavigate('LoginSplash');
   });
 };
 

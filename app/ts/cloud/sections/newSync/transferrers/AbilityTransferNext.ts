@@ -1,5 +1,5 @@
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { GenerateStoneTransferFunctions } from "./base/TransferBase";
+import {core} from "../../../../Core";
 
 
 export const AbilityTransferNext : TransferStoneTool<AbilityData, AbilityData, cloud_Ability, cloud_Ability_settable> = {
@@ -72,6 +72,10 @@ export const AbilityTransferNext : TransferStoneTool<AbilityData, AbilityData, c
     throw new Error("UNUSED");
   },
 
-  ...GenerateStoneTransferFunctions(this)
+  createLocal(localSphereId: string, localStoneId: string, data: Partial<any>) {
+    let newItemData = AbilityTransferNext.getCreateLocalAction(localSphereId, localStoneId, data);
+    core.store.dispatch(newItemData.action);
+    return newItemData.id;
+  }
 }
 
