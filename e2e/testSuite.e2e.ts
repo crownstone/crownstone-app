@@ -1,14 +1,19 @@
-import {BootApp}                  from "./tests/boot";
-import {TestRegisterNewUser}      from "./tests/register";
-import {EnableTestOverrides}      from "./tests/enableTestOverrides";
+import {BootApp}                  from "./tests/initialization/boot";
+import {EnableTestOverrides}      from "./tests/initialization/enableTestOverrides";
+import {TestRegisterNewUser}      from "./tests/registerLogin/register";
+import {LoginUser}                from "./tests/registerLogin/login";
+import {PermissionInitialization} from "./tests/registerLogin/permissionInitialization";
+import {SphereEditMenu}           from "./tests/sphereEditMenu";
+
 import {Platform}                 from "./util/testUtil";
-import {LoginUser}                from "./tests/login";
-import {PermissionInitialization} from "./tests/permissionInitialization";
+import {TestingAssistant}          from "./util/TestingAssistant";
 
 export const CONFIG = {
-  IP_ADDRESS: process.env.IP_ADDRESS,
-  ONLY_ESSENTIALS: true,
+  IP_ADDRESS:      process.env.IP_ADDRESS,
+  ONLY_ESSENTIALS: false,
 };
+
+export const Assistant = new TestingAssistant();
 
 if (CONFIG.IP_ADDRESS === undefined) { throw "IP_ADDRESS ENVIRONMENTAL VARIABLE IS REQUIRED."}
 
@@ -21,3 +26,6 @@ describe('Set Custom Cloud Endpoints for Testing', EnableTestOverrides);
 describe('Register a new user',                    TestRegisterNewUser);
 describe('Login with user',                        LoginUser);
 describe('Setup initial permissions',              PermissionInitialization);
+
+describe('Test the Sphere Edit menu',              SphereEditMenu);
+

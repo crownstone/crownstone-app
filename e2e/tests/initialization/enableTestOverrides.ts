@@ -1,6 +1,6 @@
 import {waitFor} from 'detox';
-import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../util/testUtil";
-import {CONFIG} from "../testSuite.e2e";
+import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../../util/testUtil";
+import {CONFIG} from "../../testSuite.e2e";
 
 export const EnableTestOverrides = () => {
   test('should set the custom cloud address', async () => {

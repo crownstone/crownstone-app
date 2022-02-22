@@ -208,7 +208,6 @@ else if (NativeModules.BluenetJS) {
         else {
           LOGi.info("BLUENET CALL:", key, bluenetArguments);
         }
-        console.log("BluenetConfig", BridgeConfig.mockBluenet)
         if (BridgeConfig.mockBluenet) {
           return BridgeMock.callBluenet(key, bluenetArguments);
         }

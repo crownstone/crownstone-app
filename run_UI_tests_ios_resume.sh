@@ -19,5 +19,5 @@ fi
 
 echo "Using $IP_ADDRESS as local IP address." 
 
-detox test --configuration ios-debug
+detox test --reuse --configuration ios-debug
 

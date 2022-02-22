@@ -64,7 +64,6 @@ export class SphereEdit extends LiveComponent<any, any> {
 
     if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
       if (amountOfSpheres === 0) {
-
         items.push({
           label: lang("Create_Sphere"),
           type: 'navigation',
@@ -106,6 +105,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Rooms"),
       type: 'navigation',
+      testID: 'SphereEdit_rooms',
       largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereRoomOverview", {sphereId: this.props.sphereId});
@@ -116,6 +116,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Crownstones"),
       type: 'navigation',
+      testID: 'SphereEdit_crownstones',
       largeIcon: <IconButton name='c2-pluginFilled' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
@@ -125,6 +126,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Hubs"),
       type: 'navigation',
+      testID: 'SphereEdit_hubs',
       largeIcon: <IconButton name='c1-router' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.darkerPurple.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereHubOverview", {sphereId: this.props.sphereId});
@@ -135,26 +137,18 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Users"),
       type: 'navigation',
       fieldId: 'sphereEdit_users',
+      testID: 'SphereEdit_user',
       largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereUserOverview", {sphereId: this.props.sphereId});
       }
     });
 
-    // if (spherePermissions.editSphere) {
-    //   items.push({
-    //     label: lang("Behaviour"),
-    //     type: 'navigation',
-    //     largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
-    //     callback: () => {
-    //       NavigationUtil.navigate( "SphereBehaviour", {sphereId: this.props.sphereId});
-    //     }
-    //   });
-    // }
 
     items.push({
       label: lang("Integrations"),
       type: 'navigation',
+      testID: 'SphereEdit_integrations',
       largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereIntegrations", {sphereId: this.props.sphereId});
@@ -166,6 +160,7 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Settings"),
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       type: 'navigation',
+      testID: 'SphereEdit_settings',
       callback: () => {
         NavigationUtil.navigate( "SphereEditSettings", {sphereId: this.props.sphereId});
       }
@@ -176,6 +171,7 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Create_a_new_Sphere"),
       largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
       type: 'navigation',
+      testID: 'SphereEdit_createSphere',
       callback: () => {
         NavigationUtil.launchModal( "AddSphereTutorial", {sphereId: this.props.sphereId});
       }
@@ -193,7 +189,7 @@ export class SphereEdit extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} >
+      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={'SphereEdit'}>
         <ScrollView>
           <RefreshControl
             refreshing={this.state.syncing}

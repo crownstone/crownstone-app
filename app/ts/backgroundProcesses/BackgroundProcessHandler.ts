@@ -49,6 +49,7 @@ import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
+import {TestingFramework} from "./testing/TestingFramework";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -66,8 +67,11 @@ class BackgroundProcessHandlerClass {
   cancelPauseTrackingCallback = null;
   trackingPaused = false;
 
-  start() {
+  async start() {
     if (!this.started) {
+
+      // initialize test overrides if required.
+      await TestingFramework.initialize();
 
       LOG.info("BackgroundProcessHandler: Starting the background processes.");
       // start the BLE things.

@@ -244,7 +244,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
+          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")} testID={"SphereOverview_SphereView"}>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );
@@ -263,7 +263,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={background.main}>
+            <Background hideNotifications={true} image={background.main} testID={"SphereOverview_addRoom"}>
               <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )
@@ -286,7 +286,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
       return (
-        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
+        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere} testID={"SphereOverview"}>
           { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
@@ -303,7 +303,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={backgroundOverride}>
+        <AnimatedBackground image={backgroundOverride} testID={"SphereOverview_noSphere"}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>

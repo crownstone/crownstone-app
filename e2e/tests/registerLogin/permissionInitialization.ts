@@ -9,8 +9,8 @@ import {
   tapReturnKey,
   tapSingularAlertButton,
   waitToNavigate, waitToShow,
-} from "../util/testUtil";
-import {CONFIG} from "../testSuite.e2e";
+} from "../../util/testUtil";
+import {CONFIG} from "../../testSuite.e2e";
 
 
 export const PermissionInitialization = () => {
@@ -24,6 +24,8 @@ export const PermissionInitialization = () => {
     await tap('permission_sounds_fair')
     await delay(500)
     await waitToNavigate('permission_AI_setup')
+    await tap('permission_nice_to_meet_you')
+    await waitToNavigate('SphereOverview')
   })
 
 
@@ -33,3 +35,4 @@ export const PermissionInitialization = () => {
 
 
 };
+``

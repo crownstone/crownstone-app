@@ -48,7 +48,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  _getRoomItem(state, roomId, room) {
+  _getRoomItem(state, roomId: string, room : LocationData) {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
         NavigationUtil.dismissModal()
@@ -59,7 +59,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
           locationId: roomId,
           title: room.config.name,
         });
-      }}>
+      }}  testID={"SphereEdit_roomOverview_room" + room.config.cloudId}>
       <View style={[styles.listView, {paddingRight:5}]}>
         <RoomList
           icon={room.config.icon}
@@ -76,7 +76,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
     return (
       <TouchableHighlight key={'rearrangeItem_entry'} onPress={() => {
         NavigationUtil.navigate( "SphereRoomArranger", {sphereId: this.props.sphereId});
-      }}>
+      }} testID={"SphereEdit_roomOverview_rearrange"}>
         <View style={[styles.listView, {paddingRight:5}]}>
           <RoomList
             icon={"md-cube"}
@@ -114,6 +114,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
     if (Permissions.inSphere(this.props.sphereId).addRoom) {
       items.push({
         label: lang("Add_a_room"),
+        testID: "SphereEdit_roomOverview_addRoom",
         largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
         style: {color: colors.blue.hex, fontWeight: 'bold'},
         type: 'navigation',
@@ -133,7 +134,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   render() {
     let backgroundImage = background.menu;
     return (
-      <Background image={backgroundImage} hasNavBar={false} >
+      <Background image={backgroundImage} hasNavBar={false} testID={'SphereEdit_RoomOverview'}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

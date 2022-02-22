@@ -1085,7 +1085,9 @@ open class BluenetJS: RCTEventEmitter {
         )
     }
     
-    
+    @objc func useHighFrequencyScanningInBackground(_ state: NSNumber) {
+        // do nothing, this is for android.
+    }
     
     @objc func getMinSchedulerFreeSpace(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)

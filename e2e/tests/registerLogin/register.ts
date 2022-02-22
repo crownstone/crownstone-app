@@ -4,8 +4,8 @@ import {
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow
-} from "../util/testUtil";
-import {CONFIG} from "../testSuite.e2e";
+} from "../../util/testUtil";
+import {CONFIG} from "../../testSuite.e2e";
 
 
 export const TestRegisterNewUser = () => {
@@ -41,7 +41,7 @@ export const TestRegisterNewUser = () => {
   }
 
   test('register: should accept only first name', async () => {
-    await replaceText("register-firstName",`Testy`);
+    await replaceText("register-firstName",`TestUser`);
     await $("register-lastName").clearText();
     await tapReturnKey("register-lastName");
     await tap('register-acceptName');

@@ -21,8 +21,7 @@ class BridgeMockClass {
   }
 
   callBluenet(functionName: string, args: any[]) {
-    console.log("HERE")
-    let data = { function: functionName, args, tCalled: Date.now() };
+    let data = { function: functionName, args, tStart: Date.now() };
     fetch(`${BridgeConfig.mockBridgeUrl}callBluenet`, {method:"POST", headers: defaultHeaders as any, body: JSON.stringify(data)})
       .then(()     => { console.log("BridgeMock: Success performing mock callBluenet."); })
       .catch((err) => { console.log("BridgeMock: Error while performing mock callBluenet.", err?.message); })

@@ -9,8 +9,8 @@ import {
   tapReturnKey,
   tapSingularAlertButton,
   waitToNavigate, waitToShow,
-} from "../util/testUtil";
-import {CONFIG} from "../testSuite.e2e";
+} from "../../util/testUtil";
+import {CONFIG} from "../../testSuite.e2e";
 
 
 export const LoginUser = () => {
@@ -63,7 +63,7 @@ export const LoginUser = () => {
     await tapReturnKey('login_password')
     await tap('login_big_button')
     await delay(1000);
-    await waitToNavigate('PermissionIntroduction', 5000);
+    await waitToNavigate('PermissionIntroduction', 15000);
   });
 
 };

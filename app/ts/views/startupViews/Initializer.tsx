@@ -9,7 +9,6 @@ import {NavigationUtil} from "../../util/NavigationUtil";
 import {Stacks} from "../Stacks";
 import {stylesUpdateConstants} from "../../views/styles";
 import {Bluenet} from "../../native/libInterface/Bluenet";
-import {TestingFramework} from "../../backgroundProcesses/testing/TestingFramework";
 import SplashScreen from 'react-native-splash-screen';
 
 
@@ -29,9 +28,6 @@ export class Initializer extends Component<any, any> {
         SplashScreen.hide();
         stylesUpdateConstants();
       }
-
-      // initialize test overrides if required.
-      TestingFramework.initialize();
 
       // This is a last chance fallback if a user is new but has for some reason never been marked as "not New"
       let store = StoreManager.getStore();
