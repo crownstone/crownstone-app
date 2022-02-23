@@ -50,6 +50,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
       validationMethod:'icons',
       keyboardType: 'email-address',
       value: this.state.email,
+      testID: 'email',
       placeholder: lang("Send_email_to___"),
       validationCallback: (newState) => {
         this.inputStates.email = newState;
@@ -72,6 +73,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
         buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
+        testID: 'AccessLevel',
         items: dropDownItems,
         callback: (permission) => {
           this.setState({permission:permission});
@@ -93,6 +95,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
     items.push({
       label: lang("Send_invitation_"),
       type:  'button',
+      testID: 'SendInvitation',
       style: {color:colors.blue3.hex},
       callback: () => {this.validateAndContinue(state);}
     });
@@ -160,7 +163,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.menu} >
+      <Background hasNavBar={false} image={background.menu} testID={'SphereUserInvite'}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

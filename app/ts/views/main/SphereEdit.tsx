@@ -135,7 +135,7 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Users"),
       type: 'navigation',
       fieldId: 'sphereEdit_users',
-      testID: 'SphereEdit_user',
+      testID: 'SphereEdit_users',
       largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereUserOverview", {sphereId: this.props.sphereId});

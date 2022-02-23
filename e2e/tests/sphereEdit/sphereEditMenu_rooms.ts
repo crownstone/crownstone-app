@@ -122,7 +122,7 @@ export const SphereEditMenu_rooms = () => {
     await waitToNavigate('SphereEdit');
   })
 
-  test('new room should exist', async () => {
+  test('should have created the new room should', async () => {
     await Assistant.update();
     if (await Assistant.doesRoomNameExists(ROOM_NAME) === false) {
       console.error("Room does not exist.")

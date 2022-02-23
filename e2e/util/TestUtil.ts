@@ -17,6 +17,7 @@ export function androidIndexAlertButton(index: number = 0) {
 }
 
 async function tapAlertButton(buttonElement) {
+  await delay(100);
   await expect(buttonElement).toBeVisible();
   await buttonElement.tap()
   await delay(100);
@@ -123,4 +124,15 @@ export function isAndroid() {
 }
 export function isIos() {
   return device.getPlatform() === 'ios';
+}
+
+let screenshot_count = 0;
+export async function screenshot(name?: string) {
+  screenshot_count++;
+  if (name) {
+    await device.takeScreenshot(`${screenshot_count}_${name}`)
+  }
+  else {
+    await device.takeScreenshot(`${screenshot_count}_screenshot`)
+  }
 }

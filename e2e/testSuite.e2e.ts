@@ -8,6 +8,9 @@ import {SphereEditMenu}           from "./tests/sphereEdit/sphereEditMenu";
 import {Platform}                 from "./util/TestUtil";
 import {TestingAssistant}          from "./util/TestingAssistant";
 import {SphereEditMenu_rooms} from "./tests/sphereEdit/sphereEditMenu_rooms";
+import {SphereEditMenu_users} from "./tests/sphereEdit/sphereEditMenu_users";
+import {SphereEditMenu_crownstones_empty} from "./tests/sphereEdit/sphereEditMenu_crownstones_empty";
+import {SphereEditMenu_integrations} from "./tests/sphereEdit/sphereEditMenu_integrations";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
@@ -30,4 +33,7 @@ describe('Setup initial permissions',              PermissionInitialization);
 
 describe('Test the Sphere Edit menu',              SphereEditMenu);
 describe('Test the Sphere Edit menu, rooms',       SphereEditMenu_rooms);
+describe('Test the Sphere Edit menu, crownstones empty', SphereEditMenu_crownstones_empty);
+describe('Test the Sphere Edit menu, users',       SphereEditMenu_users);
+describe('Test the Sphere Edit menu, integrations', SphereEditMenu_integrations);
 

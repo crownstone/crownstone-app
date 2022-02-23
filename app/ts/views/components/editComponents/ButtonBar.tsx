@@ -30,7 +30,7 @@ export class ButtonBar extends Component<any, any> {
       <TouchableHighlight onPress={() => {
         this.props.setActiveElement && this.props.setActiveElement();
         this.props.callback()
-      }}>
+      }} testID={this.props.testID}>
         <View style={[styles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || '#ffffff'}]}>
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}

@@ -56,6 +56,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
+              testID: `user:${users[userId].email}`,
               type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  "navigation",
               icon: <IconButton name='ios-mail' size={27} radius={17}  color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
@@ -71,6 +72,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
           else {
             result.push({
               label: ((users[userId].firstName + " ") || "") + (users[userId].lastName || ""),
+              testID: `user:${users[userId].email}`,
               type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  "navigation",
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
@@ -119,6 +121,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
       items.push({
         label: lang("Invite_someone_new_"), // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
+        testID: 'AddUser',
         labelStyle: {color: colors.blue.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
@@ -137,7 +140,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false} testID={'SphereUserOverview'}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
