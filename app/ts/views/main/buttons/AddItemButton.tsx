@@ -45,7 +45,10 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
 
     return (
       <HiddenFadeInView visible={props.arrangingRooms === false && props.inSphere} style={buttonStyle}>
-        <TouchableOpacity onPress={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: props.sphereId}); }}>
+        <TouchableOpacity
+          onPress={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: props.sphereId}); }}
+          testID={"AddToSphereButton"}
+        >
           <View style={viewStyle}>
             <Icon name="c3-addRounded" size={ iconSize } color={ iconColor } />
           </View>

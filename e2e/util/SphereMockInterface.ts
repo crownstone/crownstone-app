@@ -7,6 +7,8 @@ const headers = {
 
 export class SphereMockInterface {
 
+  activeSphere = false;
+
   ibeaconUuid:   string;
   sphereLocalId: string;
   sphereCloudId: string;
@@ -22,14 +24,8 @@ export class SphereMockInterface {
    * Load important sphere properties into the mock interface
    */
   async loadSphereData() {
-    let result = await fetch('http://localhost:3100/functionCalls?function=trackIBeacon', {
-      method: "GET",
-      headers: {headers}
-    });
-
-    let json = await result.json();
-    console.log("JSON FROM LOAD SPHERE DATA", json)
-    for (let functionCall of json.bluenet) {
+    let calls = await this._getCalledMethods('trackIBeacon');
+    for (let functionCall of calls.bluenet) {
       if (functionCall.args[0] === this.ibeaconUuid) {
         this.sphereLocalId = functionCall.args[1];
       }
@@ -38,8 +34,6 @@ export class SphereMockInterface {
     for (let resolver of this.resolvers) {
       resolver();
     }
-
-    console.log("Initialized sphereLocalId", this.sphereLocalId, 'ibeaconUuid', this.ibeaconUuid, 'sphereCloudId',this.sphereCloudId)
 
     this.resolvers = [];
   }
@@ -50,8 +44,31 @@ export class SphereMockInterface {
     })
   }
 
+  async checkForActive() : Promise<boolean> {
+    let calls = await this._getCalledMethods('setLocationState');
+    console.log("calls")
+    for (let functionCall of calls.bluenet) {
+      if (this.sphereLocalId === functionCall.args[4]) {
+        this.activeSphere = true;
+        return true;
+      }
+      this.activeSphere = false;
+      return false;
+    }
+  }
+
 
   sendAdvertisement() {
 
+  }
+
+  async _getCalledMethods(methodName) {
+    let result = await fetch(`http://localhost:3100/functionCalls?function=${methodName}`, {
+      method: "GET",
+      headers: {headers}
+    });
+
+    let json = await result.json();
+    return json;
   }
 }

@@ -41,8 +41,16 @@ export async function clearText(id, timeout = 1000) {
 export async function tap(id, timeout = 1000) {
   await delay(100);
   let item = $(id);
-  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
   await item.tap();
+  await delay(200);
+}
+
+export async function longPress(id, duration= 2000, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
+  await item.longPress(duration);
   await delay(200);
 }
 
@@ -62,10 +70,16 @@ export async function waitToShow(id, timeout = 1500) {
 }
 
 export async function waitToNavigate(id, timeout = 3000) {
-  await delay(200);
+  await delay(300);
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);
-  await delay(200);
+  await delay(300);
+}
+export async function waitToStart(id, timeout = 8000) {
+  await delay(500);
+  let item = $(id);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
+  await delay(500);
 }
 
 

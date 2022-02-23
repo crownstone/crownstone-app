@@ -13,7 +13,7 @@ export class MirrorDatabase {
   accessToken : string;
   userId      : string;
 
-  spheres     : any = {};
+  spheres     : any = {}; // this is the dump of cloud sync FULL
   user        : any = {};
 
   async login() {
@@ -42,8 +42,8 @@ export class MirrorDatabase {
       }
     );
     let json     = await result.json();
-    this.spheres = json.spheres;
-    this.user    = json.user.data;
+    this.spheres = json?.spheres;
+    this.user    = json?.user?.data;
   }
 
 }

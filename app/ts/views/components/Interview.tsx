@@ -318,7 +318,7 @@ function InterviewCard(props : {
           { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
           {
             card.hasTextInputField ?
-              <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :
+              <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} testID={card.textInputTestID} /> :
               undefined
           }
           { card.editableItem ?

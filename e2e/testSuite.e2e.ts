@@ -3,10 +3,11 @@ import {EnableTestOverrides}      from "./tests/initialization/enableTestOverrid
 import {TestRegisterNewUser}      from "./tests/registerLogin/register";
 import {LoginUser}                from "./tests/registerLogin/login";
 import {PermissionInitialization} from "./tests/registerLogin/permissionInitialization";
-import {SphereEditMenu}           from "./tests/sphereEditMenu";
+import {SphereEditMenu}           from "./tests/sphereEdit/sphereEditMenu";
 
-import {Platform}                 from "./util/testUtil";
+import {Platform}                 from "./util/TestUtil";
 import {TestingAssistant}          from "./util/TestingAssistant";
+import {SphereEditMenu_rooms} from "./tests/sphereEdit/sphereEditMenu_rooms";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
@@ -28,4 +29,5 @@ describe('Login with user',                        LoginUser);
 describe('Setup initial permissions',              PermissionInitialization);
 
 describe('Test the Sphere Edit menu',              SphereEditMenu);
+describe('Test the Sphere Edit menu, rooms',       SphereEditMenu_rooms);
 

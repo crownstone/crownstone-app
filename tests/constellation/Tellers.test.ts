@@ -130,7 +130,6 @@ test("Check connectTo and the sessionbroker work together", async () => {
   let commander : CommandAPI = null;
   connectTo(handle).then((result) => { commander = result; })
   await mBluenetPromise.for(handle).succeed.connect("operation");
-  console.log("succeeded")
   expect(commander).not.toBe(null);
 
   commander.setupPulse();

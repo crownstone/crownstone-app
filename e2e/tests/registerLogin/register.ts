@@ -4,7 +4,7 @@ import {
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow
-} from "../../util/testUtil";
+} from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
 

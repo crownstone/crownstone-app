@@ -204,13 +204,14 @@ interface interviewCard {
   editableItem?: (state, setState) => any,
   backgroundImage?: any
   hasTextInputField?: boolean
+  textInputTestID?: string,
   placeholder?: string
   optionsHiddenIfNotOnTop?: boolean,
   optionsAlwaysOnTop?: boolean,
   optionsCenter?: boolean,
   optionsBottom?: boolean
   options: interviewOption[],
-  testID?: string
+  testID?: string,
 }
 
 interface interviewCards {

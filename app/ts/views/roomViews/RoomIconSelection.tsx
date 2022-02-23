@@ -19,7 +19,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 let listOfIcons = {
-  plants: [
+  plants: [
     "fiCS1-forest",
     "fiCS1-tree",
     "fiCS1-sun",
@@ -38,7 +38,7 @@ let listOfIcons = {
     'c1-tree',
     'c1-tree-pot',
   ],
-  bathroom: [
+  bathroom: [
     "fiCS1-furniture-and-household-12",
     "fiHS-washing-machine-1",
     "fiHS-washing-machine",
@@ -76,7 +76,7 @@ let listOfIcons = {
     "c1-toilet2",
     'c1-rain1',
   ],
-  kitchen: [
+  kitchen: [
     "fiCS1-coffee-machine",
     "fiHS-stove",
     "fiHS-stove-1",
@@ -106,7 +106,7 @@ let listOfIcons = {
     'c1-oven',
     'c1-oven2',
   ],
-  livingRoom: [
+  livingRoom: [
     "fiHS-armchair",
     "fiHS-armchair-1",
     "fiHS-armchair-2",
@@ -245,7 +245,7 @@ let listOfIcons = {
     'c1-weight',
     'c1-projector',
   ],
-  miscellaneous: [
+  miscellaneous: [
     "fiHS-window",
     "fiHS-window-2",
     "fiHS-window-3",
@@ -281,7 +281,7 @@ let listOfIcons = {
     'c1-nuclear-circle',
     'c1-fence',
   ],
-  hallway: [
+  hallway: [
     "fiHS-door-2",
     "fiHS-door-3",
     "fiHS-door-4",
@@ -389,7 +389,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
     ];
 
     return (
-      <Background hasNavBar={false} image={background.main}>
+      <Background hasNavBar={false} image={background.main} testID={"RoomIconSelection"}>
         <ScrollView>
           <IconSelection
             categories={categories}

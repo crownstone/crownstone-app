@@ -100,8 +100,6 @@ export class SphereEdit extends LiveComponent<any, any> {
       }
     }
 
-    let spherePermissions = Permissions.inSphere(this.props.sphereId);
-
     items.push({
       label: lang("Rooms"),
       type: 'navigation',

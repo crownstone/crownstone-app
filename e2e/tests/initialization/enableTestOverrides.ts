@@ -1,5 +1,5 @@
 import {waitFor} from 'detox';
-import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../../util/testUtil";
+import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
 export const EnableTestOverrides = () => {

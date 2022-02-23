@@ -80,7 +80,7 @@ export class IconSelection extends Component<any, any> {
           let newState = {};
           newState[category.key] = !this.state[category.key];
           this.setState(newState);
-        }} />
+        }} testID={category.key} />
         <Separator fullLength={true} />
         <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
           {this._getIconRows(icons, this.state[category.key])}
@@ -140,6 +140,7 @@ export class IconSelection extends Component<any, any> {
           key={     icons[iconIndex] }
           style={   [styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ] }
           onPress={ () => {this.props.callback(icons[iconIndex])} }
+          testID={icons[iconIndex]}
         >
           <Icon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
           {/*<Text>{icons[iconIndex]}</Text>*/}

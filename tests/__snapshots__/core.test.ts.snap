@@ -39,6 +39,7 @@ Object {
     "preview": false,
     "show_rssi_values_in_mesh": false,
     "show_sync_button_in_behaviour": false,
+    "useHighFrequencyScanningInBackground": false,
     "use_time_based_nonce": false,
   },
   "devices": Object {},

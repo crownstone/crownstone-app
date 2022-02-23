@@ -22,8 +22,8 @@ export const TestingFramework = {
         CloudAddresses.cloud_v2                 = json.cloud_v2;
         CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary;
         CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary;
-        BridgeConfig.mockBluenet               = json.mockBluenet;
-        BridgeConfig.mockBridgeUrl             = json.mockBridgeUrl;
+        BridgeConfig.mockBluenet                = json.mockBluenet;
+        BridgeConfig.mockBridgeUrl              = json.mockBridgeUrl;
       }
       catch (err) {
         console.log("TestingFramework: Something went wrong", err);

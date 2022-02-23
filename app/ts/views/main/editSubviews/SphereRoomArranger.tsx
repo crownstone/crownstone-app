@@ -118,7 +118,11 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
     return (
       <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height: tabBarHeight || topBarHeight, alignItems:'center', justifyContent:'center'}}>
         <View style={{position:'absolute', bottom: tabBarHeight, left:0, width:screenWidth, height: 1, backgroundColor: colors.csBlue.hex}} />
-        <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: screenWidth, height: 40}} onPress={() => { core.eventBus.emit('physicsRun'+this.viewId, 150)}}>
+        <TouchableOpacity
+          style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: screenWidth, height: 40}}
+          onPress={() => { core.eventBus.emit('physicsRun'+this.viewId, 150)}}
+          testID={"SphereRoomArranger_autoArrange"}
+        >
           <Icon name={'md-radio-button-on'} size={35} color={colors.csBlue.hex} />
           <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>{ lang("Solve_Positions") }</Text>
         </TouchableOpacity>
@@ -142,7 +146,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
-        <Background image={require('../../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')} hasNavBar={false}>
+        <Background image={require('../../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')} hasNavBar={false} testID={'SphereRoomArranger'}>
           <ForceDirectedView
             ref={this.refName}
             viewId={this.viewId}

@@ -17,7 +17,9 @@ if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	usage
 fi
 
-echo "Using $IP_ADDRESS as local IP address." 
+echo "Using $IP_ADDRESS as local IP address."
+
+${CLOUD_DIR}/scripts/reset_mocks.sh
 
 detox test --reuse --configuration ios-debug
 

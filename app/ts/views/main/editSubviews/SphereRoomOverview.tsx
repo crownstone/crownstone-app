@@ -59,7 +59,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
           locationId: roomId,
           title: room.config.name,
         });
-      }}  testID={"SphereEdit_roomOverview_room" + room.config.cloudId}>
+      }} testID={"SphereEdit_roomOverview_room" + room.config.cloudId}>
       <View style={[styles.listView, {paddingRight:5}]}>
         <RoomList
           icon={room.config.icon}
