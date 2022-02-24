@@ -1,5 +1,5 @@
 import {
-  $, delay, longPress, replaceText, tap,
+  $, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -15,15 +15,18 @@ export const SphereEditMenu_users = () => {
   test('should go to the SphereEdit user overview', async () => {
     await tap('SphereEdit_users')
     await waitToNavigate('SphereUserOverview');
+    await screenshot();
   })
 
   test('should be able invite a user', async () => {
     await tap('AddUser')
     await waitToNavigate('SphereUserInvite');
+    await screenshot();
   })
 
   test('should warn no email adress is supplied', async () => {
     await tap('SendInvitation')
+    await screenshot();
     await tapSingularAlertButton();
   })
 
@@ -31,32 +34,39 @@ export const SphereEditMenu_users = () => {
     await replaceText('email', 'invalidEmail');
     await tapReturnKey('email');
     await tap('SendInvitation')
+    await screenshot();
     await tapSingularAlertButton();
   })
 
   test('should invite a new user', async () => {
     await replaceText('email', 'crownstone.test.member@gmail.com');
     await tapReturnKey('email');
-    await tap('SendInvitation')
+    await tap('SendInvitation');
+    await screenshot();
     await tapSingularAlertButton();
     await waitToNavigate('SphereUserInvite');
   })
 
   test('should get the user invite detail view', async () => {
+    await screenshot();
     await tap('user:crownstone.test.member@gmail.com');
     await waitToNavigate('SphereInvitedUser');
   })
 
   test('should be able to resend the invitation', async () => {
+    await screenshot();
     await tap('ResendInvitation');
     await tapAlertCancelButton();
     await tap('ResendInvitation');
+    await screenshot();
+    await tapAlertOKButton();
     await delay(500);
     await tapSingularAlertButton();
   })
 
   test('should be able to revoke the invitation', async () => {
     await tap('RevokeInvitation');
+    await screenshot();
     await tapAlertCancelButton();
     await tap('RevokeInvitation');
     await tapAlertOKButton();

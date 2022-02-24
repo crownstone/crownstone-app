@@ -32,6 +32,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
         t: Date.now(),
         state: 'started',
       }, "state");
+
       let promiseResolver = (result) => {
         delete OPEN_PROMISES[id];
         LOGi.constellation("BluenetPromise: donePromise Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
@@ -71,6 +72,7 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
+
       // @ts-ignore
       Bluenet[functionName].apply(this, bluenetArguments);
     }
@@ -248,6 +250,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   requestCloudId:              (handle: string) => { return BluenetPromise('requestCloudId', handle); },
   factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
   factoryResetHubOnly:         (handle: string) => { return BluenetPromise('factoryResetHubOnly', handle); },
+  getLaunchArguments:          () => { return BluenetPromise("getLaunchArguments"); },
 };
 
 

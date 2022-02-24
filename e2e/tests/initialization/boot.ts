@@ -1,13 +1,10 @@
 import {device} from "detox";
-import {delay} from "../../util/TestUtil";
 
 export const BootApp = () => {
   test("should boot the app", async () => {
-    await device.launchApp({launchArgs: { detoxEnableSynchronization: 0 }});
-  });
+    let launchArguments = device.appLaunchArgs.get();
+    console.log("LaunchArgs", launchArguments)
 
-  test("should disable synchronization", async () => {
-    await device.disableSynchronization();
-    await delay(300);
+    await device.launchApp({launchArgs: { detoxEnableSynchronization: 0, ...launchArguments }});
   });
 }

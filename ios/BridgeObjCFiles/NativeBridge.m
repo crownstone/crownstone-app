@@ -153,6 +153,7 @@ RCT_EXTERN_METHOD(broadcastUpdateTrackedDevice:(NSString *)referenceId
                      deviceToken:(nonnull NSNumber *)deviceToken
                      ttlMinutes:(nonnull NSNumber *)ttlMinutes
                      callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getLaunchArguments:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(switchRelay:(NSString *)handle state:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getCrownstoneUptime:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getAdcRestarts:(NSString *)handle callback:(RCTResponseSenderBlock)callback)

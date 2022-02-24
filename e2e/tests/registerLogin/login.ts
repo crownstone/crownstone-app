@@ -42,7 +42,7 @@ export const LoginUser = () => {
     });
 
     test('login: popup forgot password invalid email', async () => {
-      await replaceText('login_email_address','bob');
+      await replaceText('login_email_address','invalidEmail');
       await tapReturnKey('login_email_address')
       await tapReturnKey('login_password');
       await screenshot();

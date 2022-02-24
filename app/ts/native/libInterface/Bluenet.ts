@@ -178,6 +178,7 @@ const BluenetAPI = {
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
+  getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
 
 };
 

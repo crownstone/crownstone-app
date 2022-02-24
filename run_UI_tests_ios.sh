@@ -30,10 +30,10 @@ echo "Using $IP_ADDRESS as local IP address."
 
 if [ "$REUSE" == "0" ]; then
   ${CLOUD_DIR}/reset.sh
-  detox test --configuration ios-debug
+  detox test --configuration ios-debug-english
 else
   ${CLOUD_DIR}/scripts/reset_mocks.sh
-  detox test --reuse --configuration ios-debug
+  detox test --configuration ios-debug-english --reuse
 fi
 
 

@@ -7,7 +7,7 @@ import {Bluenet_direct} from "../../native/libInterface/Bluenet";
 
 class BridgeMockClass {
 
-  promiseCalls = {};
+  promiseCalls : Record<string, {functionName: string, args: any[], promiseResolver: (result : any) => void}> = {};
 
   constructor() {}
 
@@ -43,6 +43,15 @@ class BridgeMockClass {
         break;
       case "callBluenet":
         Bluenet_direct[event.functionName].apply(this, event.arguments);
+        break;
+      case "nativeResolve":
+        let promise = this.promiseCalls[event.callId];
+        if (promise) {
+          let args = promise.args;
+          args.push(promise.promiseResolver);
+          Bluenet_direct[promise.functionName].apply(this, args);
+          delete this.promiseCalls[event.callId];
+        }
         break;
     }
   }

@@ -13,8 +13,11 @@ class ScreenshotPathBuilder {
 
   buildPathForTestArtifact(artifactName, testSummary) {
     /* ... use this._rootDir ... */
-    let filename = artifactName.replace(".png",'') + testSummary.fullName.toLowerCase().replace(/ /g,'_') + '.png';
-    return path.join(this._rootDir, filename);
+    let artifactCorrectedName = artifactName.replace(".png",'');
+    let name = testSummary.fullName.replace(/ /g,'_')
+    name = name.replace(/:/g,'')
+    let filename = artifactCorrectedName + name + '.png';
+    return path.join(this._rootDir, filename.toLowerCase());
   }
 }
 

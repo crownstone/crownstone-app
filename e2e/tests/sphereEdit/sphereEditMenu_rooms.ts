@@ -1,5 +1,5 @@
 import {
-  $, delay, longPress, replaceText, tap,
+  $, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -17,12 +17,14 @@ export const SphereEditMenu_rooms = () => {
   test('should go to the SphereEdit room overview', async () => {
     await tap('SphereEdit_rooms')
     await waitToNavigate('SphereEdit_RoomOverview');
+    await screenshot();
   })
 
   if (CONFIG.ONLY_ESSENTIALS === false) {
     test('should go to the Rearrange rooms mode', async () => {
       await tap('SphereEdit_roomOverview_rearrange')
       await waitToNavigate('SphereRoomArranger');
+      await screenshot();
     })
 
     test('should be able to cancel', async () => {
@@ -35,6 +37,7 @@ export const SphereEditMenu_rooms = () => {
     test('should be able auto-arrange rooms and save', async () => {
       await tap('SphereRoomArranger_autoArrange')
       await delay(1000);
+      await screenshot();
       await tap('save');
       await waitToNavigate('SphereEdit_RoomOverview');
     })
@@ -43,6 +46,7 @@ export const SphereEditMenu_rooms = () => {
       let roomIdToNavigateTo = await Assistant.getRoomId();
       await tap(`SphereEdit_roomOverview_room${roomIdToNavigateTo}`)
       await waitToNavigate('RoomOverview');
+      await screenshot();
     })
 
     test('should be able to rearrange rooms by press and holding', async () => {
@@ -50,6 +54,8 @@ export const SphereEditMenu_rooms = () => {
       await waitToNavigate('SphereOverview');
       let roomIdToPress = await Assistant.getRoomId();
       await longPress(`RoomCircle${roomIdToPress}`);
+      await delay(200);
+      await screenshot();
       await tap("cancel");
       await delay(200);
       await expect($("cancel")).not.toBeVisible();
@@ -64,6 +70,7 @@ export const SphereEditMenu_rooms = () => {
   test('should be able to create a room', async () => {
     await tap('SphereEdit_roomOverview_addRoom')
     await waitToNavigate('RoomAdd');
+    await screenshot();
   });
 
 
@@ -77,6 +84,7 @@ export const SphereEditMenu_rooms = () => {
 
     test('should give a popup if no name is provided', async () => {
       await tap('RoomAdd_roomName_next')
+      await screenshot();
       await tapSingularAlertButton();
     })
   }
@@ -84,21 +92,26 @@ export const SphereEditMenu_rooms = () => {
   test('should be able to set the room name', async () => {
     await replaceText('RoomAdd_roomName', ROOM_NAME);
     await tapReturnKey('RoomAdd_roomName');
+    await screenshot();
     await tap('RoomAdd_roomName_next')
     await waitToNavigate('RoomAdd_icon');
   })
 
   if (CONFIG.ONLY_ESSENTIALS === false) {
     test('should be able to pick an icon', async () => {
+      await screenshot();
       await tap('RoomAdd_IconSelection');
       await waitToNavigate('RoomIconSelection');
+      await screenshot();
       await tap('hallway');
       await delay(300);
+      await screenshot();
       await tap('fiCS1-dungeon');
       await waitToNavigate('RoomAdd_icon');
     })
 
     test('should be able to pick a picture', async () => {
+      await screenshot();
       await tap('PictureCircle');
       await tap("optionsPhotoLibrary");
     })
@@ -111,6 +124,7 @@ export const SphereEditMenu_rooms = () => {
   test('should be able to pick a picture again', async () => {
     await tap('PictureCircle');
     await tap("optionsCamera");
+    await screenshot();
   })
 
   test('should be able to create a room', async () => {

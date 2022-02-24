@@ -268,6 +268,7 @@ interface BluenetPromiseWrapperProtocol {
   requestCloudId(handle: string)                                        : Promise<HubDataReply>,
   factoryResetHub(handle: string)                                       : Promise<HubDataReply>,
   factoryResetHubOnly(handle: string)                                   : Promise<HubDataReply>,
+  getLaunchArguments()                                                  : Promise<string[]>
 }
 
 interface UICRData {
