@@ -34,7 +34,11 @@
   "configurations": {
     "ios-debug": {
       "device": "simulator",
-      "app": "ios-debug"
+      "app": "ios-debug",
+      "artifacts": {
+        "rootDir": "../crownstone-app-screenshots/ios-debug/",
+        "pathBuilder": "./e2e/config/pathBuilder.js"
+      }
     },
     "android-debug-device": {
       "device": "android-device",

@@ -1,14 +1,21 @@
 # Set to dir with the cloud test container repo.
 CLOUD_DIR="../cloud-test-container"
 
+export REUSE=0
+while getopts i:r: flag
+do
+    case "${flag}" in
+        i) IP_ADDRESS=${OPTARG};;
+        r) REUSE=${OPTARG};;
+    esac
+done
+
 usage () {
-	echo "Usage: $0 [local_IP_address]"
+	echo "Usage: -i $0 [local_IP_address] -r $1 [reuse 1|0]"
 	exit 1
 }
 
-if [ $# -gt 0 ]; then
-	export IP_ADDRESS="$1"
-else
+if [ -z "$IP_ADDRESS" ]; then
 	export IP_ADDRESS=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
 fi
 
@@ -19,7 +26,14 @@ fi
 
 echo "Using $IP_ADDRESS as local IP address." 
 
-${CLOUD_DIR}/reset.sh
+./scripts/set_demo_mode_ios.sh
 
-detox test --configuration ios-debug
+if [ "$REUSE" == "0" ]; then
+  ${CLOUD_DIR}/reset.sh
+  detox test --configuration ios-debug
+else
+  ${CLOUD_DIR}/scripts/reset_mocks.sh
+  detox test --reuse --configuration ios-debug
+fi
+
 

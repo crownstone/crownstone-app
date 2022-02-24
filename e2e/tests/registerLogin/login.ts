@@ -2,7 +2,7 @@ import { waitFor } from 'detox';
 import {
   $,
   delay,
-  replaceText,
+  replaceText, screenshot,
   tap,
   tapAlertCancelButton,
   tapAlertOKButton,
@@ -22,6 +22,7 @@ export const LoginUser = () => {
   test('should go to the login screen', async () => {
     await tap('loginButton');
     await waitToNavigate('LoginView');
+    await screenshot();
   })
 
   if (!CONFIG.ONLY_ESSENTIALS) {
@@ -35,6 +36,7 @@ export const LoginUser = () => {
       await replaceText('login_email_address','');
       await tapReturnKey('login_email_address');
       await tapReturnKey('login_password');
+      await screenshot();
       await tap('login_forgotPassword')
       await tapSingularAlertButton()
     });
@@ -43,6 +45,7 @@ export const LoginUser = () => {
       await replaceText('login_email_address','bob');
       await tapReturnKey('login_email_address')
       await tapReturnKey('login_password');
+      await screenshot();
       await tap('login_forgotPassword')
       await tapSingularAlertButton()
     });
@@ -51,6 +54,7 @@ export const LoginUser = () => {
       await replaceText('login_email_address','crownstone.main.test@gmail.com');
       await tapReturnKey('login_email_address')
       await tapReturnKey('login_password');
+      await screenshot();
       await tap('login_forgotPassword')
       await tapAlertCancelButton();
     });
@@ -60,8 +64,10 @@ export const LoginUser = () => {
     await replaceText('login_email_address','crownstone.main.test@gmail.com');
     await tapReturnKey('login_email_address')
     await replaceText('login_password','testPassword');
-    await tapReturnKey('login_password')
+    await tapReturnKey('login_password');
+    await screenshot();
     await tap('login_big_button')
+    await screenshot();
     await delay(1000);
     await waitToNavigate('PermissionIntroduction', 15000);
   });

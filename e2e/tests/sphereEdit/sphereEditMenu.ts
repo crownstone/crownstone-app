@@ -1,5 +1,5 @@
 import {
-  $, delay, replaceText, tap,
+  $, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -9,6 +9,7 @@ import {Assistant, CONFIG} from "../../testSuite.e2e";
 export const SphereEditMenu = () => {
   test('should be on the SphereOverview view', async () => {
     await waitToStart('SphereOverview');
+    await screenshot();
 
     // update the assistant for later use.
     await Assistant.update();
@@ -17,6 +18,7 @@ export const SphereEditMenu = () => {
   test('should go to the SphereEdit menu when you tap edit', async () => {
     await tap('edit')
     await waitToNavigate('SphereEdit');
+    await screenshot();
   })
 
   if (CONFIG.ONLY_ESSENTIALS === false) {

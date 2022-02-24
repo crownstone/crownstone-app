@@ -127,12 +127,12 @@ export function isIos() {
 }
 
 let screenshot_count = 0;
-export async function screenshot(name?: string) {
+export async function screenshot(prefix?: string) {
   screenshot_count++;
-  if (name) {
-    await device.takeScreenshot(`${screenshot_count}_${name}`)
+  if (prefix) {
+    await device.takeScreenshot(`${screenshot_count}_${prefix}_`)
   }
   else {
-    await device.takeScreenshot(`${screenshot_count}_screenshot`)
+    await device.takeScreenshot(`${screenshot_count}_`)
   }
 }

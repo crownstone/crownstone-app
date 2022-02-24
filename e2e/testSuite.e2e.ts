@@ -26,14 +26,14 @@ console.log("Running tests on platform:", Platform());
 console.log("Looking for cloud at IP:", CONFIG.IP_ADDRESS);
 
 describe('Boot the app',                           BootApp);
-describe('Set Custom Cloud Endpoints for Testing', EnableTestOverrides);
+describe('Set UI test overrides',                  EnableTestOverrides);
 describe('Register a new user',                    TestRegisterNewUser);
 describe('Login with user',                        LoginUser);
 describe('Setup initial permissions',              PermissionInitialization);
 
-describe('Test the Sphere Edit menu',              SphereEditMenu);
-describe('Test the Sphere Edit menu, rooms',       SphereEditMenu_rooms);
-describe('Test the Sphere Edit menu, crownstones empty', SphereEditMenu_crownstones_empty);
-describe('Test the Sphere Edit menu, users',       SphereEditMenu_users);
-describe('Test the Sphere Edit menu, integrations', SphereEditMenu_integrations);
+describe('Test the Sphere Edit menu',                 SphereEditMenu);
+describe('Test the Sphere Edit menu, rooms',          SphereEditMenu_rooms);
+describe('Test the Sphere Edit menu, no crownstones', SphereEditMenu_crownstones_empty);
+describe('Test the Sphere Edit menu, users',          SphereEditMenu_users);
+describe('Test the Sphere Edit menu, integrations',   SphereEditMenu_integrations);
 

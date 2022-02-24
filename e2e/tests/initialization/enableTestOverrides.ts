@@ -1,9 +1,9 @@
 import {waitFor} from 'detox';
-import {$, replaceText, tap, tapReturnKey, waitToNavigate, waitToShow} from "../../util/TestUtil";
+import {$, replaceText, screenshot, tap, tapReturnKey, waitToNavigate, waitToShow} from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
 export const EnableTestOverrides = () => {
-  test('should set the custom cloud address', async () => {
+  test('should set the UI test overrides', async () => {
     await waitFor($('LoginSplash')).toBeVisible().withTimeout(10000);
     let versionElement = $('VersionHiddenButton');
     await versionElement.multiTap(5);
@@ -16,6 +16,9 @@ export const EnableTestOverrides = () => {
     await tapReturnKey("mockBluenetUrl");
     await tap("mockImageLibrary");
     await tap("mockBluenetPromise");
+
+    await screenshot();
+
     await tap('closeModal');
 
     await waitToNavigate('LoginSplash');
