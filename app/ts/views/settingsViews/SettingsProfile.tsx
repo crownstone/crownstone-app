@@ -93,6 +93,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({
       label: lang("First_Name"),
       type: 'textEdit',
+      testID:'firstName',
       value: this.state.firstName,
       validation:{minLength:1, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.firstName = result;},
@@ -116,7 +117,8 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({
       label: lang("Last_Name"), 
       type: 'textEdit',
-      value: this.state.lastName ,
+      value: this.state.lastName,
+      testID:'lastName',
       callback: (newText) => {
         this.setState({lastName: newText});
       },
@@ -135,6 +137,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({
       label: lang("Change_Password"),
       type: 'button',
+      testID:'changePassword',
       style: {color:colors.blue3.hex},
       callback: () => {
         Alert.alert(
@@ -179,7 +182,8 @@ export class SettingsProfile extends LiveComponent<any, any> {
           }
         });
         items.push({ label: lang("This_will_enable_certain_"), type: 'explanation', below: true });
-      } else {
+      }
+      else {
         items.push({
           label: lang("Developer_Menu"),
           icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex}
@@ -231,7 +235,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={background.menu} hideNotifications={true} testID={"SettingsProfile"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

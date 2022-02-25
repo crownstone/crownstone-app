@@ -55,6 +55,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
     items.push({
       id: 'My Account',
       label: lang("My_Account"),
+      testID: 'myAccount',
       mediumIcon: <IconButton name={'ios-body'} buttonSize={40} size={30} color={colors.white.hex} buttonStyle={{backgroundColor:colors.purple.hex}}/>,
       type: 'navigation',
       callback: () => {
@@ -64,6 +65,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
     items.push({
       id:'Privacy',
       label: lang("Privacy"),
+      testID: 'privacy',
       mediumIcon: <IconButton name={'ios-eye'} buttonSize={40} size={32} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkPurple.hex}}/>,
       type: 'navigation',
       callback:() => {
@@ -77,6 +79,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id: 'App Settings',
       label: lang("App_Settings"),
       type: 'navigation',
+      testID: 'appSettings',
       mediumIcon: <IconButton name={'ios-cog'} buttonSize={40} size={35} color={colors.white.hex} buttonStyle={{backgroundColor:colors.green.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SettingsApp");
@@ -88,6 +91,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id:'Diagnostics',
       label: lang("Diagnostics"),
       type:'navigation',
+      testID: 'diagnostics',
       mediumIcon: <IconButton name={'md-analytics'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.csBlue.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SettingsDiagnostics");
@@ -97,6 +101,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id:'Help',
       label: lang("Help"),
       type:'navigation',
+      testID:'help',
       mediumIcon: <IconButton name={'ios-help-circle'} buttonSize={40} size={30} color={colors.white.hex} buttonStyle={{backgroundColor:colors.csBlueLight.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SettingsFAQ");
@@ -108,6 +113,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id:'Log Out',
       label: lang("Log_Out"),
       type:'button',
+      testID:'logOut',
       mediumIcon: <IconButton name={'md-log-out'} buttonSize={40} size={32} color={colors.white.hex} buttonStyle={{backgroundColor:colors.menuRed.hex}}/>,
       callback: () => {
         Alert.alert(
@@ -126,6 +132,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
         id: 'quit',
         type:'button',
         label: lang("Force_Quit"),
+        testID:'forceQuit',
         mediumIcon:  <IconButton name={'md-remove-circle'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkRed.hex}}/>,
         callback: () => {
           Alert.alert(

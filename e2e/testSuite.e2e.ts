@@ -20,6 +20,8 @@ import {Rooms_deleteAll}          from "./tests/rooms/rooms_deleteAll";
 import {Rooms_createRoom}         from "./tests/rooms/rooms_createRoom";
 
 import {Settings_start}           from "./tests/settings/settings_start";
+import {Settings_myAccount} from "./tests/settings/settings_myAccount";
+import {Settings_privacy} from "./tests/settings/settings_privacy";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
@@ -35,11 +37,11 @@ console.log("Running tests on platform:", Platform());
 console.log("Looking for cloud at IP:", CONFIG.IP_ADDRESS);
 
 describe('Boot the app',                                 BootApp);
-// describe('Set UI test overrides',                        EnableTestOverrides);
-// describe('Register a new user',                          TestRegisterNewUser);
-// describe('Login with user',                              LoginUser);
-// describe('Setup initial permissions',                    PermissionInitialization);
-//
+describe('Set UI test overrides',                        EnableTestOverrides);
+describe('Register a new user',                          TestRegisterNewUser);
+describe('Login with user',                              LoginUser);
+describe('Setup initial permissions',                    PermissionInitialization);
+// //
 // describe('Test room edit',                               Rooms_edit);
 // describe('Test room deletion',                           Rooms_deleteAll);
 // describe('Test room creation when there are no rooms',   Rooms_createRoom);
@@ -54,4 +56,5 @@ describe('Boot the app',                                 BootApp);
 // describe('Test the Sphere Edit menu, close',             SphereEditMenu_close);
 
 describe('Test the Settings menu, start',             Settings_start);
-//
+describe('Test the Settings menu, start',             Settings_myAccount);
+// describe('Test the Settings menu, start',             Settings_privacy);

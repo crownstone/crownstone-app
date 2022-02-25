@@ -53,13 +53,15 @@ export const TestRegisterNewUser = () => {
     await screenshot();
   });
 
+
+
+  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: should accept no picture', async () => {
       await tap('register-acceptPicture');
       await waitToNavigate('register-email')
       await screenshot();
     })
 
-  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: should be able to go back 1 step', async () => {
       await tap('topBarLeftItem');
       await waitToNavigate('register-Picture')
@@ -97,15 +99,17 @@ export const TestRegisterNewUser = () => {
       await delay(1000);
       await expect($("PictureCircleRemove")).not.toBeVisible()
     });
+  }
 
-    test('register: can add picture from album and continue', async () => {
-      await tap('PictureCircle');
-      await tap("optionsPhotoLibrary");
-      await tap("register-acceptPicture");
-      await waitToNavigate('register-AccountCreation');
-      await screenshot();
-    });
+  test('register: can add picture from album and continue', async () => {
+    await tap('PictureCircle');
+    await tap("optionsPhotoLibrary");
+    await tap("register-acceptPicture");
+    await waitToNavigate('register-email');
+    await screenshot();
+  });
 
+  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: cannot make account with no email address', async () => {
       await tap("register-completeRegistration");
       await screenshot();

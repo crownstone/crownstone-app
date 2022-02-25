@@ -208,7 +208,7 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={!this.props.modal}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={!this.props.modal} testID={"SettingsApp"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
