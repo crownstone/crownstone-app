@@ -35,7 +35,7 @@ export class SphereChangeButton extends Component<any, any> {
           alignItems:'center',
           justifyContent:'center',
         }}>
-          <TouchableOpacity onPress={() => { this.props.onPress(); }}>
+          <TouchableOpacity onPress={() => { this.props.onPress(); }} testID={"SphereChangeButton"}>
           <View style={{
             width: outerRadius,
             height:outerRadius,

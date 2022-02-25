@@ -23,7 +23,7 @@ import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
-import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
+import {ZoomInstructionOverlay, ZoomInstructionsFooter} from "./ZoomInstructionOverlay";
 import { core }                     from "../../Core";
 import { NavigationUtil }           from "../../util/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
@@ -46,6 +46,7 @@ const ZOOM_LEVELS = {
   sphere: 'sphere',
   room: 'room'
 };
+
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
@@ -229,7 +230,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   _getInstructionScreen() {
-    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay /> });
+    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
   }
 
   render() {
@@ -244,7 +245,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")} testID={"SphereOverview_SphereView"}>
+          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );

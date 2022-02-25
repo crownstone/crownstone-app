@@ -24,7 +24,7 @@ export class ZoomInstructionOverlay extends Component<any, any> {
     let size = 8*factor;
 
     return (
-      <View style={WNStyles.innerScrollView}>
+      <View style={WNStyles.innerScrollView} testID={'ZoomInstructionOverlay'}>
         <Text style={{
           fontSize: 17,
           fontWeight:'bold',
@@ -42,19 +42,29 @@ export class ZoomInstructionOverlay extends Component<any, any> {
         <View style={{flex:1, minHeight:30}} />
         <Text style={WNStyles.detail}>{ lang("Youll_have_to_do_this_onc") }</Text>
         <View style={{flex:1, minHeight:30}} />
+      </View>
+    );
+  }
+
+}
+
+
+export class ZoomInstructionsFooter extends Component<any, any> {
+
+  render() {
+    return (
+      <View style={{flex:1, flexDirection:'row'}}>
+        <View style={{flex:1}} />
         <TouchableOpacity
           onPress={() => { core.eventBus.emit("hideCustomOverlay") }}
-          style={[styles.centered, {
-            width: 0.4 * screenWidth,
-            height: 36,
-            borderRadius: 18,
-            borderWidth: 2,
-            borderColor: colors.blue3.rgba(0.5),
-          }]}
+          style={{
+            height:50, flex:3, borderColor:colors.white.hex, borderWidth:2, backgroundColor: colors.green.hex, borderRadius: 20, alignItems: 'center', justifyContent:'center'
+          }}
+          testID={'ZoomInstructionsButton'}
         >
-          <Text style={{fontSize: 15, color: colors.blue3.hex}}>{ lang("Ill_try_it_") }</Text>
+          <Text style={{fontSize: 15, fontWeight:'bold', color: colors.csBlueDark.hex}}>{ lang("Ill_try_it_") }</Text>
         </TouchableOpacity>
-        <View style={{height:15}} />
+        <View style={{flex:0.2}} />
       </View>
     );
   }
@@ -69,8 +79,7 @@ export const WNStyles = StyleSheet.create({
   },
   innerScrollView: {
     alignItems: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
+    padding: 10
   },
   outerScrollView: {
   },

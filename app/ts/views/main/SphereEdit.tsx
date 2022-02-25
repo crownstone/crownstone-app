@@ -21,6 +21,7 @@ import { NavigationUtil }    from "../../util/NavigationUtil";
 import { TopBarUtil }        from "../../util/TopBarUtil";
 import { LiveComponent }     from "../LiveComponent";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import {Stacks} from "../Stacks";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {
@@ -67,13 +68,14 @@ export class SphereEdit extends LiveComponent<any, any> {
         items.push({
           label: lang("Create_Sphere"),
           type: 'navigation',
+          testID: "SphereEdit_createOnlySphere",
           largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius}  color="#fff"
                                  buttonStyle={{ backgroundColor: colors.green.hex }}/>,
           callback: () => {
             createNewSphere(state.user.firstName + "'s Sphere")
               .then((localSphereId) => {
                 setTimeout(() => {
-                  NavigationUtil.navigate( "AiStart");
+                  NavigationUtil.setRoot(Stacks.aiStart({localSphereId}));
                 }, 100)
               })
               .catch((err) => {
@@ -188,7 +190,7 @@ export class SphereEdit extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={'SphereEdit'}>
-        <ScrollView>
+        <ScrollView testID={"SphereEditScrollView"}>
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(core.store, true) }}

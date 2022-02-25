@@ -28,7 +28,6 @@ class BridgeMockClass {
   }
 
   handleSSE(event: any) {
-    console.log("BridgeMock: Incoming testevent", event, typeof event);
     switch (event.type) {
       case "failCall":
         this.promiseCalls[event.callId]?.promiseResolver({error:true, data: event.error })

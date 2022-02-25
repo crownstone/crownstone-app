@@ -2,16 +2,19 @@
 CLOUD_DIR="../cloud-test-container"
 
 export REUSE=0
+export VERBOSE_ARG="info"
+
 while getopts i:r: flag
 do
     case "${flag}" in
         i) IP_ADDRESS=${OPTARG};;
         r) REUSE=${OPTARG};;
+        v) VERBOSE=${OPTARG};;
     esac
 done
 
 usage () {
-	echo "Usage: -i $0 [local_IP_address] -r $1 [reuse 1|0]"
+	echo "Usage: -i $0 [local_IP_address] -r $1 [reuse 1|0] -v $2 [verbose 1|0]"
 	exit 1
 }
 
@@ -24,16 +27,20 @@ if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	usage
 fi
 
-echo "Using $IP_ADDRESS as local IP address." 
+echo "Using $IP_ADDRESS as local IP address."
+
+if [ -n "$VERBOSE" ]; then
+  export VERBOSE_ARG="verbose"
+fi
 
 ./scripts/set_demo_mode_ios.sh
 
 if [ "$REUSE" == "0" ]; then
   ${CLOUD_DIR}/reset.sh
-  detox test --configuration ios-debug-english
+  detox test --configuration ios-debug-english --loglevel "${VERBOSE_ARG}"
 else
   ${CLOUD_DIR}/scripts/reset_mocks.sh
-  detox test --configuration ios-debug-english --reuse
+  detox test --configuration ios-debug-english --reuse --loglevel "${VERBOSE_ARG}"
 fi
 
 

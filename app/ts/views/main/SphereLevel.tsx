@@ -98,7 +98,9 @@ export class SphereLevel extends LiveComponent<any, any> {
         height={availableScreenHeight}
         zoomInCallback={ this.props.zoomInCallback }
         zoomOutCallback={ this.props.zoomOutCallback }
-        renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }} />
+        renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
+        testID={"SphereOverview_SphereLevel"}
+      />
     );
   }
 }

@@ -28,6 +28,7 @@ export class SphereMockInterface {
     for (let functionCall of calls.bluenet) {
       if (functionCall.args[0] === this.ibeaconUuid) {
         this.sphereLocalId = functionCall.args[1];
+        break;
       }
     }
 
@@ -46,15 +47,14 @@ export class SphereMockInterface {
 
   async checkForActive() : Promise<boolean> {
     let calls = await this._getCalledMethods('setLocationState');
-    console.log("calls")
     for (let functionCall of calls.bluenet) {
       if (this.sphereLocalId === functionCall.args[4]) {
         this.activeSphere = true;
         return true;
       }
-      this.activeSphere = false;
-      return false;
     }
+    this.activeSphere = false;
+    return false;
   }
 
 

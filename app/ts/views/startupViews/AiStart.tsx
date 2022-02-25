@@ -57,7 +57,7 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hasNavBar={false} keyboardAvoid={true} image={background.main}>
+      <Background hasNavBar={false} keyboardAvoid={true} image={background.main} testID={'AiStart'}>
         <View style={[styles.centered, {flex:1, paddingTop:30, paddingBottom:30}]}>
           <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
           <View style={{flex:1}} />
@@ -72,10 +72,11 @@ export class AiStart extends Component<any, any> {
               autocorrect={false}
               placeholderTextColor='#888'
               value={this.state.aiName}
+              testID={'AiName'}
               callback={(newValue) => {this.setState({aiName:newValue});}} />
           </View>
           <View style={{flex:3}} />
-          <BehaviourSubmitButton label={lang("OK")} callback={() => { this.handleAnswer(userFirstName); }} />
+          <BehaviourSubmitButton label={lang("OK")} callback={() => { this.handleAnswer(userFirstName); }} testID={'AiStart_OK'}/>
         </View>
       </Background>
     );

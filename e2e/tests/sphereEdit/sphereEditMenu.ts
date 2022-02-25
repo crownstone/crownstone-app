@@ -20,13 +20,4 @@ export const SphereEditMenu = () => {
     await waitToNavigate('SphereEdit');
     await screenshot();
   })
-
-  if (CONFIG.ONLY_ESSENTIALS === false) {
-    test('should be able to go back via edit button', async () => {
-      await tap('closeModal')
-      await waitToNavigate('SphereOverview');
-      await tap('edit')
-      await waitToNavigate('SphereEdit');
-    })
-  }
 };

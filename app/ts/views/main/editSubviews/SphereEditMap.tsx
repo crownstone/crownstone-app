@@ -123,7 +123,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
 
 
     return (
-      <Background image={background.menu} hasNavBar={false} >
+      <Background image={background.menu} hasNavBar={false} testID={"SphereEditMap"}>
         <MapView
           ref={(r) => { this.map = r }}
           style={{flex:1}}
@@ -156,6 +156,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
               NavigationUtil.back();
             }}
             label={ lang("Use_this_location_")}
+            testID={'UseLocation'}
           />
         </View>
       </Background>

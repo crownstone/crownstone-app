@@ -12,39 +12,50 @@ export const SphereEditMenu_sphereSettings = () => {
     await waitToStart('SphereEdit');
   })
 
-  // if (CONFIG.ONLY_ESSENTIALS === false) {
-  test('should go to the sphereIntegrations view', async () => {
-    await tap("SphereEdit_integrations");
-    await waitToNavigate('SphereIntegrations');
+  test('should go to the SphereEditSettings view', async () => {
+    await tap("SphereEdit_settings");
+    await waitToNavigate('SphereEditSettings');
     await screenshot();
   })
 
-  test('should go to the Add Toon view', async () => {
-    await tap('Integration_Toon');
-    await waitToNavigate('ToonAdd');
-    await screenshot();
-    await tap('closeModal');
-    await waitToNavigate('SphereIntegrations');
+  test('should be able to change the sphere name', async () => {
+    await replaceText("SphereName","My Home");
+    await tapReturnKey("SphereName");
+    await delay(500);
   })
 
-  test('should go to the Alexa overview', async () => {
-    await tap('Integration_Alexa');
-    await waitToNavigate('AlexaOverview');
+  test('should be able to go to the accept the AI name', async () => {
+    await tap("SphereAI_button");
+    await waitToNavigate("AiStart");
+    await tap("AiStart_OK");
     await screenshot();
-    await tap('BackButton');
-    await waitToNavigate('SphereIntegrations');
+    await tapSingularAlertButton();
+    await waitToNavigate("SphereEditSettings");
   })
 
-  test('should go to the GoogleAssistant overview', async () => {
-    await tap('Integration_Google_Assistant');
-    await waitToNavigate('GoogleAssistantOverview');
+  test('should be able to go to the change the AI name', async () => {
+    await tap("SphereAI_button");
+    await waitToNavigate("AiStart");
+    await replaceText("AiName", "Frank");
+    await tapReturnKey('AiName');
+    await tap("AiStart_OK");
     await screenshot();
-    await tap('BackButton');
-    await waitToNavigate('SphereIntegrations');
+    await tapSingularAlertButton();
+    await waitToNavigate("SphereEditSettings");
   })
 
-  test('should go back to the sphereEdit menu', async () => {
-    await tap('BackButton');
-    await waitToStart('SphereEdit');
+  test('should be able to go place your sphere on the map', async () => {
+    await tap("SphereLocation");
+    await waitToNavigate("SphereEditMap");
+    await screenshot();
+    await tap("UseLocation");
+    await waitToNavigate("SphereEditSettings");
+  })
+
+  test('should be able to go to the sphere users', async () => {
+    await tap("SphereUser_button");
+    await waitToNavigate("SphereUserOverview");
+    await tap("BackButton");
+    await waitToNavigate("SphereEdit");
   })
 };

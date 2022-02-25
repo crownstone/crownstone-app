@@ -80,6 +80,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
       items.push({
         type:'textEdit',
         label: lang("Name"),
+        testID: 'SphereName',
         value: this.state.sphereName,
         validation:{minLength:2},
         validationCallback: (result) => {this.validationState.sphereName = result;},
@@ -89,13 +90,17 @@ export class SphereEditSettings extends LiveComponent<any, any> {
         endCallback: (newText) => {
           if (sphereSettings.name !== newText) {
             if (this.validationState.sphereName === 'valid' && newText.trim().length >= 2) {
+
+              console.log("SHOW LOADING")
               core.eventBus.emit('showLoading', lang("Changing_sphere_name___"));
               CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
                 .then((result) => {
                   core.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: this.props.sphereId,  data: {name: newText}});
+                  console.log("HIDE LOADING")
                   core.eventBus.emit('hideLoading');
                 })
                 .catch((err) => {
+                  console.log("ERR HIDE LOADING")
                   core.eventBus.emit('hideLoading');
                 })
             }
@@ -123,6 +128,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: ai,
       type: spherePermissions.editSphere ? 'navigation' : 'info',
+      testID: 'SphereAI_button',
       icon: <IconButton name='c1-brain' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "AiStart", {sphereId: this.props.sphereId, canGoBack: true});
@@ -135,6 +141,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: lang("Near_",city),
       type: spherePermissions.canSetSphereLocation ? 'navigation' : 'info',
+      testID: 'SphereLocation',
       icon: <IconButton name='c1-locationIcon1' size={15} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereEditMap", {sphereId: this.props.sphereId});
@@ -147,6 +154,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: lang("Manage_Sphere_Users"),
       type: 'navigation',
+      testID: 'SphereUser_button',
       icon: <IconButton name='c1-people' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         core.eventBus.emit("highlight_nav_field", "sphereEdit_users");
@@ -165,6 +173,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
       icon: <IconButton name="md-exit" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       style: {color:colors.menuRed.hex},
       type: 'button',
+      testID: 'LeaveSphere',
       callback: () => {
         this._leaveSphere(state);
       }
@@ -175,6 +184,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
         icon: <IconButton name="md-exit" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.darkRed.hex}}/>,
         style: {color: colors.darkRed.hex},
         type: 'button',
+        testID: 'DeleteSphere',
         callback: () => {
           this._deleteSphere(state);
         }
@@ -192,25 +202,26 @@ export class SphereEditSettings extends LiveComponent<any, any> {
 
   _leaveSphere(state) {
     Alert.alert(
-lang("_Are_you_sure_you_want_to_header"),
-lang("_Are_you_sure_you_want_to_body"),
-[{text:lang("_Are_you_sure_you_want_to_left")},
+      lang("_Are_you_sure_you_want_to_header"),
+      lang("_Are_you_sure_you_want_to_body"),
+      [{text:lang("_Are_you_sure_you_want_to_left")},
         {
-text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
-            core.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
-            CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
-              .then(() => {
-                this._processLocalDeletion()
-              })
-              .catch((err) => {
-                let explanation =  lang("Please_try_again_later_");
-                if (err && err?.data && err?.data.error && err?.data.error.message === "can't exit from sphere where user with id is the owner") {
-                  explanation =  lang("You_are_the_owner_of_this");
-                }
+          text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
+          core.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
+          CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
+            .then(() => {
+              this._processLocalDeletion()
+            })
+            .catch((err) => {
 
-                core.eventBus.emit('hideLoading');
-                Alert.alert("Could not leave Sphere!", explanation, [{text:"OK"}]);
-              })
+              let explanation =  lang("Please_try_again_later_");
+              if (err && err?.data && err?.data.error && err?.data.error.message === "Trying to remove the only user from the sphere. Remove the sphere if there are no more users in it.") {
+                explanation =  lang("You_are_the_owner_of_this");
+              }
+
+              core.eventBus.emit('hideLoading');
+              Alert.alert("Could not leave Sphere!", explanation, [{text:"OK"}]);
+            })
         }}
       ]
     );
@@ -270,7 +281,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} >
+      <Background image={background.menu} hasNavBar={false} testID={"SphereEditSettings"}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

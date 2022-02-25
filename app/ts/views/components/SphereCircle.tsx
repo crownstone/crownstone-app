@@ -197,7 +197,10 @@ class SphereCircleClass extends Component<any, any> {
     };
 
     return (
-      <Animated.View style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}>
+      <Animated.View
+        style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}
+        testID={`SphereCircle${sphere.config.cloudId}`}
+      >
         {this.getCircle(sphere)}
         {this.showAlert !== null ? this._getAlertIcon() : undefined}
       </Animated.View>

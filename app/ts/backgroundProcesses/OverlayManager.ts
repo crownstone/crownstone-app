@@ -9,6 +9,8 @@ class OverlayManagerClass {
   _initialized : boolean = false;
   _initializedStateOverlays : boolean = false;
 
+  loadingState = false;
+
   init() {
     if (this._initialized === false) {
       core.eventBus.on('showAicoreTimeCustomizationOverlay', (data) => { NavigationUtil.showOverlay('AicoreTimeCustomizationOverlay',{data: data}); })
@@ -37,8 +39,9 @@ class OverlayManagerClass {
       core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
       core.eventBus.on('showLockOverlay',      (data) => { NavigationUtil.showOverlay('LockOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
-      core.eventBus.on('showLoading',          (data) => { NavigationUtil.showOverlay('Processing',    {data: data}); })
-      core.eventBus.on('showProgress',         (data) => { NavigationUtil.showOverlay('Processing',    {data: data}); })
+      core.eventBus.on('showLoading',          (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
+      core.eventBus.on('hideLoading',          () => {     this.loadingState = false; })
+      core.eventBus.on('showProgress',         (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('showCustomOverlay',    (data) => { NavigationUtil.showOverlay('SimpleOverlay', {data: data}); })
       core.eventBus.on('showNumericOverlay',   (data) => { NavigationUtil.showOverlay('NumericOverlay',{data: data}); })
       core.eventBus.on('showTextInputOverlay', (data) => { NavigationUtil.showOverlay('TextInputOverlay',{data: data}); })

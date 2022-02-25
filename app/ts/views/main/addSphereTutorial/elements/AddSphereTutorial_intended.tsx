@@ -36,7 +36,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
     }];
 
     return (
-      <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
+      <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}} testID={"AddSphereTutorial_intended"}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <Text style={tutorialStyle.header}>{ lang("One_Sphere_per_House") }</Text>
           <View style={{width: screenWidth, height: 0.07*screenHeight}} />
@@ -54,7 +54,9 @@ export class AddSphereTutorial_intended extends Component<any, any> {
             onPress={() => {
               NavigationUtil.dismissModal();
             }}
-            style={buttonStyle}>
+            style={buttonStyle}
+            testID={"AddSphere_nevermind"}
+          >
             <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_dont_need_a_sphere") }</Text>
           </TouchableOpacity>
           <View style={{height:15}} />
@@ -71,7 +73,9 @@ export class AddSphereTutorial_intended extends Component<any, any> {
                   Alert.alert(lang("Whoops"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
                 });
             }}
-            style={buttonStyle}>
+            style={buttonStyle}
+            testID={"AddSphere_create"}
+          >
             <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_understand_") }</Text>
           </TouchableOpacity>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />

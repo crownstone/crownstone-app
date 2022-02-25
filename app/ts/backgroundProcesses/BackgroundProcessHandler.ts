@@ -80,7 +80,6 @@ class BackgroundProcessHandlerClass {
 
     if (localizationOverride) {
       Languages.setLocale(localizationOverride);
-      // Languages.defaultLanguage = localizationOverride;
     }
   }
 

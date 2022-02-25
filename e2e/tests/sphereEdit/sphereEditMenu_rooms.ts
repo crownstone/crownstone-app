@@ -16,6 +16,7 @@ export const SphereEditMenu_rooms = () => {
 
   test('should go to the SphereEdit room overview', async () => {
     await tap('SphereEdit_rooms')
+    await Assistant.update();
     await waitToNavigate('SphereEdit_RoomOverview');
     await screenshot();
   })

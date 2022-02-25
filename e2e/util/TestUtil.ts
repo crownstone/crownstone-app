@@ -60,7 +60,7 @@ export async function tapReturnKey(id, timeout = 1000) {
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);
   await item.tapReturnKey()
-  await delay(100);
+  await delay(300);
 }
 
 export async function waitToShow(id, timeout = 1500) {
@@ -81,6 +81,14 @@ export async function waitToStart(id, timeout = 8000) {
   let item = $(id);
   await waitFor(item).toBeVisible(100).withTimeout(timeout);
   await delay(500);
+}
+
+export async function scrollDownUntilVisible( itemId, scrollViewId ) {
+  await waitFor($(itemId)).toBeVisible().whileElement(by.id(scrollViewId)).scroll(100, 'down');
+}
+
+export async function swipeNext( itemId ) {
+  await $(itemId).swipe('left');
 }
 
 
