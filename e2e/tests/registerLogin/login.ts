@@ -36,8 +36,8 @@ export const LoginUser = () => {
       await replaceText('login_email_address','');
       await tapReturnKey('login_email_address');
       await tapReturnKey('login_password');
-      await screenshot();
       await tap('login_forgotPassword')
+      await screenshot();
       await tapSingularAlertButton()
     });
 
@@ -45,8 +45,8 @@ export const LoginUser = () => {
       await replaceText('login_email_address','invalidEmail');
       await tapReturnKey('login_email_address')
       await tapReturnKey('login_password');
-      await screenshot();
       await tap('login_forgotPassword')
+      await screenshot();
       await tapSingularAlertButton()
     });
 
@@ -54,8 +54,8 @@ export const LoginUser = () => {
       await replaceText('login_email_address','crownstone.main.test@gmail.com');
       await tapReturnKey('login_email_address')
       await tapReturnKey('login_password');
-      await screenshot();
       await tap('login_forgotPassword')
+      await screenshot();
       await tapAlertCancelButton();
     });
   }

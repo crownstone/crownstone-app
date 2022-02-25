@@ -109,10 +109,10 @@ export const SphereEditMenu_rooms = () => {
       await screenshot();
       await tap('fiCS1-dungeon');
       await waitToNavigate('RoomAdd_icon');
+      await screenshot();
     })
 
     test('should be able to pick a picture', async () => {
-      await screenshot();
       await tap('PictureCircle');
       await tap("optionsPhotoLibrary");
     })

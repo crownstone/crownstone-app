@@ -564,11 +564,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
 export function getDevAppItems() {
   let items = [];
-  items.push({
-    label: "DEVELOPERS ONLY",
-    type: 'explanation',
-    below: true
-  });
+  items.push({type: 'spacer'});
   items.push({
     label: "Developer Menu",
     icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,

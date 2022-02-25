@@ -6,13 +6,10 @@ import {
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
-export const SphereEditMenu = () => {
+export const SphereEditMenu_start = () => {
   test('should be on the SphereOverview view', async () => {
     await waitToStart('SphereOverview');
     await screenshot();
-
-    // update the assistant for later use.
-    await Assistant.update();
   })
 
   test('should go to the SphereEdit menu when you tap edit', async () => {

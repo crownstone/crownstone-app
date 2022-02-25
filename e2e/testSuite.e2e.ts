@@ -3,21 +3,27 @@ import {EnableTestOverrides}      from "./tests/initialization/enableTestOverrid
 import {TestRegisterNewUser}      from "./tests/registerLogin/register";
 import {LoginUser}                from "./tests/registerLogin/login";
 import {PermissionInitialization} from "./tests/registerLogin/permissionInitialization";
-import {SphereEditMenu}           from "./tests/sphereEdit/sphereEditMenu";
 
 import {Platform}                 from "./util/TestUtil";
-import {TestingAssistant}          from "./util/TestingAssistant";
-import {SphereEditMenu_rooms} from "./tests/sphereEdit/sphereEditMenu_rooms";
-import {SphereEditMenu_users} from "./tests/sphereEdit/sphereEditMenu_users";
+import {TestingAssistant}         from "./util/TestingAssistant";
+import {SphereEditMenu_start}     from "./tests/sphereEdit/sphereEditMenu_start";
+import {SphereEditMenu_rooms}     from "./tests/sphereEdit/sphereEditMenu_rooms";
+import {SphereEditMenu_users}     from "./tests/sphereEdit/sphereEditMenu_users";
 import {SphereEditMenu_crownstones_empty} from "./tests/sphereEdit/sphereEditMenu_crownstones_empty";
-import {SphereEditMenu_integrations} from "./tests/sphereEdit/sphereEditMenu_integrations";
-import {SphereEditMenu_sphereSettings} from "./tests/sphereEdit/sphereEditMenu_sphereSettings";
-import {SphereEditMenu_sphereManagement} from "./tests/sphereEdit/SphereEditMenu_sphereManagement";
-import {SphereEditMenu_close} from "./tests/sphereEdit/sphereEditMenu_close";
+import {SphereEditMenu_integrations}      from "./tests/sphereEdit/sphereEditMenu_integrations";
+import {SphereEditMenu_sphereSettings}    from "./tests/sphereEdit/sphereEditMenu_sphereSettings";
+import {SphereEditMenu_sphereManagement}  from "./tests/sphereEdit/SphereEditMenu_sphereManagement";
+import {SphereEditMenu_close}     from "./tests/sphereEdit/sphereEditMenu_close";
+
+import {Rooms_edit}               from "./tests/rooms/rooms_edit";
+import {Rooms_deleteAll}          from "./tests/rooms/rooms_deleteAll";
+import {Rooms_createRoom}         from "./tests/rooms/rooms_createRoom";
+
+import {Settings_start}           from "./tests/settings/settings_start";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
-  ONLY_ESSENTIALS: false,
+  ONLY_ESSENTIALS: true,
 };
 
 export const Assistant = new TestingAssistant();
@@ -28,18 +34,24 @@ if (CONFIG.IP_ADDRESS === undefined) { throw "IP_ADDRESS ENVIRONMENTAL VARIABLE 
 console.log("Running tests on platform:", Platform());
 console.log("Looking for cloud at IP:", CONFIG.IP_ADDRESS);
 
-describe('Boot the app',                               BootApp);
-describe('Set UI test overrides',                      EnableTestOverrides);
-describe('Register a new user',                        TestRegisterNewUser);
-describe('Login with user',                            LoginUser);
-describe('Setup initial permissions',                  PermissionInitialization);
+describe('Boot the app',                                 BootApp);
+// describe('Set UI test overrides',                        EnableTestOverrides);
+// describe('Register a new user',                          TestRegisterNewUser);
+// describe('Login with user',                              LoginUser);
+// describe('Setup initial permissions',                    PermissionInitialization);
 //
-describe('Test the Sphere Edit menu',                  SphereEditMenu);
-describe('Test the Sphere Edit menu, sphere creation', SphereEditMenu_sphereManagement);
-describe('Test the Sphere Edit menu, rooms',           SphereEditMenu_rooms);
-describe('Test the Sphere Edit menu, no crownstones',  SphereEditMenu_crownstones_empty);
-describe('Test the Sphere Edit menu, users',           SphereEditMenu_users);
-describe('Test the Sphere Edit menu, integrations',    SphereEditMenu_integrations);
-describe('Test the Sphere Edit menu, sphere settings', SphereEditMenu_sphereSettings);
-describe('Test the Sphere Edit menu, close',           SphereEditMenu_close);
+// describe('Test room edit',                               Rooms_edit);
+// describe('Test room deletion',                           Rooms_deleteAll);
+// describe('Test room creation when there are no rooms',   Rooms_createRoom);
 
+// describe('Test the Sphere Edit menu, start',             SphereEditMenu_start);
+// describe('Test the Sphere Edit menu, sphere management', SphereEditMenu_sphereManagement);
+// describe('Test the Sphere Edit menu, rooms',             SphereEditMenu_rooms);
+// describe('Test the Sphere Edit menu, no crownstones',    SphereEditMenu_crownstones_empty);
+// describe('Test the Sphere Edit menu, users',             SphereEditMenu_users);
+// describe('Test the Sphere Edit menu, integrations',      SphereEditMenu_integrations);
+// describe('Test the Sphere Edit menu, sphere settings',   SphereEditMenu_sphereSettings);
+// describe('Test the Sphere Edit menu, close',             SphereEditMenu_close);
+
+describe('Test the Settings menu, start',             Settings_start);
+//

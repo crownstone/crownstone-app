@@ -181,7 +181,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu}>
+      <BackgroundNoNotification image={background.menu} testID={"SettingsOverview"}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>

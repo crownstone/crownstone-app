@@ -24,38 +24,47 @@ export const SphereEditMenu_sphereSettings = () => {
     await delay(500);
   })
 
-  test('should be able to go to the accept the AI name', async () => {
-    await tap("SphereAI_button");
-    await waitToNavigate("AiStart");
-    await tap("AiStart_OK");
-    await screenshot();
-    await tapSingularAlertButton();
-    await waitToNavigate("SphereEditSettings");
-  })
+  if (CONFIG.ONLY_ESSENTIALS === false) {
+    test('should be able to go to the accept the AI name', async () => {
+      await tap("SphereAI_button");
+      await waitToNavigate("AiStart");
+      await tap("AiStart_OK");
+      await screenshot();
+      await tapSingularAlertButton();
+      await waitToNavigate("SphereEditSettings");
+    })
 
-  test('should be able to go to the change the AI name', async () => {
-    await tap("SphereAI_button");
-    await waitToNavigate("AiStart");
-    await replaceText("AiName", "Frank");
-    await tapReturnKey('AiName');
-    await tap("AiStart_OK");
-    await screenshot();
-    await tapSingularAlertButton();
-    await waitToNavigate("SphereEditSettings");
-  })
+    test('should be able to go to the change the AI name', async () => {
+      await tap("SphereAI_button");
+      await waitToNavigate("AiStart");
+      await replaceText("AiName", "Frank");
+      await tapReturnKey('AiName');
+      await tap("AiStart_OK");
+      await screenshot();
+      await tapSingularAlertButton();
+      await waitToNavigate("SphereEditSettings");
+    })
 
-  test('should be able to go place your sphere on the map', async () => {
-    await tap("SphereLocation");
-    await waitToNavigate("SphereEditMap");
-    await screenshot();
-    await tap("UseLocation");
-    await waitToNavigate("SphereEditSettings");
-  })
 
-  test('should be able to go to the sphere users', async () => {
-    await tap("SphereUser_button");
-    await waitToNavigate("SphereUserOverview");
-    await tap("BackButton");
-    await waitToNavigate("SphereEdit");
-  })
+    test('should be able to go place your sphere on the map', async () => {
+      await tap("SphereLocation");
+      await waitToNavigate("SphereEditMap");
+      await screenshot();
+      await tap("UseLocation");
+      await waitToNavigate("SphereEditSettings");
+    })
+
+    test('should be able to go to the sphere users', async () => {
+      await tap("SphereUser_button");
+      await waitToNavigate("SphereUserOverview");
+      await tap("BackButton");
+      await waitToNavigate("SphereEdit");
+    })
+  }
+  else {
+    test('should be able to back from the sphere settings', async () => {
+      await tap("BackButton");
+      await waitToNavigate("SphereEdit");
+    })
+  }
 };

@@ -48,21 +48,32 @@ export class TestingAssistant {
     return candidate;
   }
 
-  async getRoomId(roomIndex: number = 0) : Promise<string | null> {
-    console.log("this.activeSphereId", this.activeSphereId)
+
+  async getRoomCount() {
     if (!this.activeSphereId) {
       await this._getActiveSphereId();
     }
 
-    console.log("this.activeSphereId", this.activeSphereId)
     if (!this.activeSphereId) {
       return null;
     }
-    console.log("this.db.spheres", this.db.spheres)
-    console.log("this.db.spheres[this.activeSphereId]", this.db.spheres[this.activeSphereId])
+    let locationIds = Object.keys(this.db.spheres[this.activeSphereId].locations);
+    return locationIds.length;
+  }
+
+
+  async getRoomId(roomIndex: number = 0) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
     let locationIds = Object.keys(this.db.spheres[this.activeSphereId].locations);
     return locationIds[roomIndex];
   }
+
 
   async doesRoomNameExists(name: string) : Promise<boolean> {
     console.log('doesRoomNameExists', this.activeSphereId)
@@ -84,7 +95,6 @@ export class TestingAssistant {
     }
     return false;
   }
-
 
 
   _getActiveSphereId() {

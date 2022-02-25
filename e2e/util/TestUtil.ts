@@ -1,4 +1,5 @@
 import {by, device, expect, element, waitFor} from 'detox';
+import fs from "fs"
 
 export function $(id) {
   return element(by.id(id))
@@ -135,12 +136,8 @@ export function isIos() {
 }
 
 let screenshot_count = 0;
-export async function screenshot(prefix?: string) {
+export async function screenshot() {
   screenshot_count++;
-  if (prefix) {
-    await device.takeScreenshot(`${screenshot_count}_${prefix}_`)
-  }
-  else {
-    await device.takeScreenshot(`${screenshot_count}_`)
-  }
+  let tmpPath = await device.takeScreenshot(`${screenshot_count}_`);
+  return tmpPath;
 }

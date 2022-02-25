@@ -6,10 +6,11 @@ import {
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
-export const SphereEditMenu_close = () => {
-  test('should be able to go back via edit menu', async () => {
-    await waitToStart('SphereEdit');
-    await tap('BackButton')
-    await waitToNavigate('SphereOverview');
+export const Settings_start = () => {
+  test('should be able to go the settings tab', async () => {
+    await tap('bottomTab_settings');
+    await waitToNavigate('SettingsOverview');
+    await screenshot();
   })
+
 };
