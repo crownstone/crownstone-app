@@ -69,15 +69,7 @@ class BackgroundProcessHandlerClass {
 
   async parseLaunchArguments() {
     let launchArguments = await BluenetPromiseWrapper.getLaunchArguments();
-    let localizationOverride = null;
-    for (let i = 0; i < launchArguments.length; i++) {
-      if (launchArguments[i] === '-localization') {
-        localizationOverride = launchArguments[i+1];
-        i++;
-      }
-    }
-
-
+    let localizationOverride = launchArguments?.['localization'];
     if (localizationOverride) {
       Languages.setLocale(localizationOverride);
     }
