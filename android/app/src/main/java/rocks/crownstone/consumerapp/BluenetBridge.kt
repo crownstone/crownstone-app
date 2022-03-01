@@ -99,9 +99,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var lastSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
 	private var isInSphere = false
 
-	private var nearestStoneSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
-	private var nearestSetupSub: rocks.crownstone.bluenet.util.SubscriptionId? = null
+	private var nearestStoneSub: SubscriptionId? = null
+	private var nearestSetupSub: SubscriptionId? = null
 	private var sendUnverifiedAdvertisements = false
+
+	private var localizationSubscribed = false
 
 	private var lastLocation: Location? = null // Store last known GPS location.
 
@@ -300,6 +302,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun subscribeBluenetEvents() {
 		initBluenetPromise.success {
 			handler.post {
+				Log.i(TAG, "subscribeBluenetEvents")
 				bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
 				bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
 				bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
@@ -965,6 +968,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun useHighFrequencyScanningInBackground(enable: Boolean) {
+		Log.i(TAG, "useHighFrequencyScanningInBackground $enable")
 		defaultScanMode = when (enable) {
 			true -> ScanMode.LOW_LATENCY
 			false -> ScanMode.BALANCED
@@ -1008,7 +1012,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun updateScanner() {
-		Log.i(TAG, "updateScanner scannerState=$scannerState isTracking=$isTracking batterySaving=$batterySaving isInSphere=$isInSphere")
+		Log.i(TAG, "updateScanner scannerState=$scannerState isTracking=$isTracking batterySaving=$batterySaving isInSphere=$isInSphere appForeGround=$appForeGround")
 		if ((scannerState == ScannerState.STOPPED) && !isTracking) {
 			bluenet.stopScanning()
 			return
@@ -1076,8 +1080,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
 		localization.startLocalization(localizationCallback)
-		localization.subscribe(LocalizationEvent.CLASSIFIER_RESULT) { onClassifierResult(it as PredictionResult) }
-		localization.subscribe(LocalizationEvent.CLASSIFIER_PREDICTION) { onClassifierPrediction(it as PredictionProbabilityLocation?) }
+		if (!localizationSubscribed) {
+			localization.subscribe(LocalizationEvent.CLASSIFIER_RESULT) { onClassifierResult(it as PredictionResult) }
+			localization.subscribe(LocalizationEvent.CLASSIFIER_PREDICTION) { onClassifierPrediction(it as PredictionProbabilityLocation?) }
+			localizationSubscribed = true
+		}
 	}
 
 	@Synchronized
@@ -3109,15 +3116,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				Log.d("IbeaconScan", "    ${scan.address} uuid=${scan.ibeaconData.uuid} major=${scan.ibeaconData.major} minor=${scan.ibeaconData.minor} rssi=${scan.rssi}")
 			}
 
-			val activityManager = getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-			var memoryInfo = ActivityManager.MemoryInfo()
-			activityManager.getMemoryInfo(memoryInfo)
-			Log.i("Memory", "Sys memory: total=${memoryInfo.totalMem} available=${memoryInfo.availMem}")
-			val runtime = Runtime.getRuntime()
-			val used = runtime.totalMemory() - runtime.freeMemory()
-			val availableHeap = runtime.maxMemory() - used
-			Log.i("Memory", "Runtime: max=${runtime.maxMemory()} total=${runtime.totalMemory()} free=${runtime.freeMemory()} used=$used availableHeap=$availableHeap")
-			Log.i("Memory", "heapSize=${Debug.getNativeHeapSize()} heapAvailable=${Debug.getNativeHeapFreeSize()}")
+			logMemoryUsage()
 		}
 
 		if (scanList.isEmpty()) {
@@ -3655,6 +3654,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		notification.setLargeIcon()
 
 		return notification.build()
+	}
+
+	private fun logMemoryUsage() {
+		val activityManager = getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+		var memoryInfo = ActivityManager.MemoryInfo()
+		activityManager.getMemoryInfo(memoryInfo)
+		Log.i("Memory", "Sys memory: total=${memoryInfo.totalMem} available=${memoryInfo.availMem}")
+		val runtime = Runtime.getRuntime()
+		val used = runtime.totalMemory() - runtime.freeMemory()
+		val availableHeap = runtime.maxMemory() - used
+		Log.i("Memory", "Runtime: max=${runtime.maxMemory()} total=${runtime.totalMemory()} free=${runtime.freeMemory()} used=$used availableHeap=$availableHeap")
+		Log.i("Memory", "heapSize=${Debug.getNativeHeapSize()} heapAvailable=${Debug.getNativeHeapFreeSize()}")
 	}
 }
 //endregion
