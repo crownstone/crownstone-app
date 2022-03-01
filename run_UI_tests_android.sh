@@ -11,7 +11,7 @@ do
 done
 
 usage () {
-	echo "Usage: -i $0 [local_IP_address] -r $1 [reuse 1|0]"
+	echo "Usage: $0 -i <local_IP_address> -r <1|0>"
 	exit 1
 }
 
@@ -29,12 +29,13 @@ echo "Using $IP_ADDRESS as local IP address."
 ./scripts/set_demo_mode_android.sh on
 
 if [ "$REUSE" == "0" ]; then
-  ${CLOUD_DIR}/reset.sh
-  detox build --configuration android-debug-device
-  detox test --configuration android-debug-device -l verbose
+	${CLOUD_DIR}/reset.sh
+	detox build --configuration android-debug-device
+	detox test --configuration android-debug-device -l verbose
 else
-  ${CLOUD_DIR}/scripts/reset_mocks.sh
-  detox test --configuration android-debug-device -l --reuse verbose
+	${CLOUD_DIR}/scripts/reset_mocks.sh
+	detox test --configuration android-debug-device -l --reuse verbose
 fi
 
 ./scripts/set_demo_mode_android.sh off
+

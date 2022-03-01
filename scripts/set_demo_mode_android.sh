@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+# See https://android.googlesource.com/platform/frameworks/base/+/master/packages/SystemUI/docs/demo_mode.md
 CMD=$1
 
 if [[ $ADB == "" ]]; then
