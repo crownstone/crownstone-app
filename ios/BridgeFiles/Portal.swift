@@ -24,7 +24,7 @@ class BluenetContainer : NSObject {
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
 
-  open var launchArguments = [String]()
+  open var launchArguments = [String: String]()
   
   var watchStateManager: WatchStateManager!
   
@@ -192,7 +192,17 @@ class BluenetContainer : NSObject {
   }
   
   @objc func setLaunchArguments(_ arguments: [String])  {
-      GLOBAL_BLUENET.launchArguments = arguments
+    var map = [String: String]()
+    var prevValue = ""
+    for thing in arguments {
+      if (thing == "--args") { continue }
+      if (prevValue.starts(with: "-")) {
+        map[prevValue.replacingOccurrences(of: "-", with:"")] = thing
+      }
+      prevValue = thing;
+    }
+    
+    GLOBAL_BLUENET.launchArguments = map
   }
 }
 
