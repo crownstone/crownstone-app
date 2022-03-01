@@ -12,7 +12,7 @@ import {SphereEditMenu_users}     from "./tests/sphereEdit/sphereEditMenu_users"
 import {SphereEditMenu_crownstones_empty} from "./tests/sphereEdit/sphereEditMenu_crownstones_empty";
 import {SphereEditMenu_integrations}      from "./tests/sphereEdit/sphereEditMenu_integrations";
 import {SphereEditMenu_sphereSettings}    from "./tests/sphereEdit/sphereEditMenu_sphereSettings";
-import {SphereEditMenu_sphereManagement}  from "./tests/sphereEdit/SphereEditMenu_sphereManagement";
+import {SphereEditMenu_sphereManagement}  from "./tests/sphereEdit/sphereEditMenu_sphereManagement";
 import {SphereEditMenu_close}     from "./tests/sphereEdit/sphereEditMenu_close";
 
 import {Rooms_edit}               from "./tests/rooms/rooms_edit";
