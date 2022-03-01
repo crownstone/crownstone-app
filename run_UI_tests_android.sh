@@ -24,6 +24,8 @@ if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	usage
 fi
 
+export IP_ADDRESS=$IP_ADDRESS
+
 echo "Using $IP_ADDRESS as local IP address."
 
 ./scripts/set_demo_mode_android.sh on
