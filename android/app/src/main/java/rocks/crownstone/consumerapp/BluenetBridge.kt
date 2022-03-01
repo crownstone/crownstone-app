@@ -395,6 +395,26 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun getLaunchArguments(callback: Callback) {
+		// Should return the detox launchArgs as map.
+
+		val resultMap = Arguments.createMap()
+		val bundle = reactContext.currentActivity?.intent?.getBundleExtra("launchArgs")
+		Log.i(TAG, "getLaunchArguments bundle=$bundle")
+		if (bundle == null) {
+			resolveCallback(callback, resultMap)
+			return
+		}
+		// List of expected launchArgs, assume they're all strings.
+		val keys = arrayOf("localization")
+		for (key in keys) {
+			resultMap.putString(key, bundle.getString(key, ""))
+		}
+		resolveCallback(callback, resultMap)
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun setKeySets(keySets: ReadableArray, callback: Callback) {
 		Log.i(TAG, "setKeySets")
 		// keys can be either in plain string or hex string format, check length to determine which
