@@ -268,6 +268,7 @@ interface BluenetPromiseWrapperProtocol {
   requestCloudId(handle: string)                                        : Promise<HubDataReply>,
   factoryResetHub(handle: string)                                       : Promise<HubDataReply>,
   factoryResetHubOnly(handle: string)                                   : Promise<HubDataReply>,
+  getLaunchArguments()                                                  : Promise<string[]>
 }
 
 interface UICRData {
@@ -409,8 +410,6 @@ interface crownstoneServiceData {
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
   uniqueElement             : number // Partial timestamp, counter, etc. Is this required?
-
-
 }
 
 interface crownstoneAdvertisementSummary {

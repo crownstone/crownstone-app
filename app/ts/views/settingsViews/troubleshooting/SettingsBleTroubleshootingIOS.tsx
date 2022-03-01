@@ -25,7 +25,7 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsBleTroubleshooting"}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />

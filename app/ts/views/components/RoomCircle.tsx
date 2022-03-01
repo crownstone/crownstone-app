@@ -24,6 +24,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
+import {Get} from "../../util/GetUtil";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -242,8 +243,13 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       ]
     };
 
+    let room = Get.location(this.props.sphereId, this.props.locationId);
+
     return (
-      <Animated.View style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}>
+      <Animated.View
+        style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}
+        testID={`RoomCircle${room?.config?.cloudId}`}
+      >
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}

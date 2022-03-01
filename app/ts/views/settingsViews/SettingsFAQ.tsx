@@ -238,7 +238,7 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <BackgroundNoNotification image={background.menu} testID={"SettingsFAQ"}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

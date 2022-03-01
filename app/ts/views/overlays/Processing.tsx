@@ -17,6 +17,7 @@ import { HiddenFadeInView }         from '../components/animated/FadeInView'
 import { styles, colors , screenHeight} from '../styles'
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;
@@ -103,7 +104,13 @@ export class Processing extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.setState({visible: true})
+    if (OverlayManager.loadingState === false) {
+      console.log("closing after mount")
+      this.setState({visible: false}, () => {NavigationUtil.closeOverlay(this.props.componentId);});
+    }
+    else {
+      this.setState({visible: true});
+    }
   }
 
   componentWillUnmount() {

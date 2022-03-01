@@ -1,52 +1,12 @@
-[v] @react-native-community/slider updated
+add bridge method "getLaunchArguments" 
 
-[v] Added handles to most bridge methods.
+getLaunchArguments() :  Promise<string[]>
 
-[v] Added nativeEvents:
-    "connectedToPeripheral"       // dataType: string --> handle of Crownstone
-    "disconnectedFromPeripheral"  // dataType: string --> handle of Crownstone
+See bottom of this page on how to get them https://wix.github.io/Detox/docs/api/launch-args
 
-[v] Connect bridge method now returns the Crownstone's operation mode:
-    "unknown"
-    "setup"
-    "operation"
-    "dfu"
+These are cached once on boot and served when asked for it.
 
+I'm getting this from ios:
+["/Users/alex/Library/Developer/CoreSimulator/Devices/09DFB66B-EEE4-4449-B87B-B4D41CF4094B/data/Containers/Bundle/Application/2A28FBE6-9A52-49FB-98B2-C006BCC5B004/Crownstone.app/Crownstone", "--args", "-detoxServer", "ws://localhost:56869", "-detoxSessionId", "1ec83337-e290-e48b-39a6-53e0049c8931", "-localization", "en_us", "-detoxEnableSynchronization", "0", "-detoxDisableHierarchyDump", "YES"]
 
-[v] Add cancelConnectionRequest(handle) bridge method which will fail the connection promise with error "CONNECTION_CANCELLED".
-
-[v] Move to the HERMES engine
-    https://reactnative.dev/docs/hermes
-
-[v] Updated to RN 0.64.2
-
-[v] remove setMeshChannel bridge method. this is from the old mesh.
-
-[v] Updated data type for this event:
-    crownstoneAdvertisementReceived: "crownstoneAdvertisementReceived",   // data type = crownstoneAdvertisementSummary, this is only the handle. // Any advertisement, verified and unverified from crownstones.
-    
-[v] Setup command will no longer receive meshAccessAddress. Hardcode into lib if required for legacy.
-
-[v] Turn on mesh command data changed. It is now a list of stone short ids.
-    turnOnMesh(handle: string, arrayOfStoneIds: number[])
-
-[v] If a command fails due to not being connected to a crownstone (anymore), throw this error: "NOT_CONNECTED"
-
-[v] Added crash method to bridge
-
-[v] updated react-native-image-picker to v4.0.6
-    https://github.com/react-native-image-picker/react-native-image-picker/releases/tag/v4.0.6
-
-[v] Added setTimeViaBroadcast parameter enableTimeBasedNonce (boolean) to the end of the param list. False means use CAFEBABE instead of time as validation nonce.
-    This sets a customValidationNonce of 0xCAFEBABE
-
-[v] Add a tick event for the native bus. This event does not need data but should be approx. every second. The scheduler runs off this.
-
-
-[v] Add getUICR bridge method which returns UICRData (see proxy.d.ts)
-
-[v] add splash screen / launch image
-
-[v] Changed service data event
-
-install https://github.com/react-native-webrtc/react-native-webrtc
+We'll have to see what it is that you get.

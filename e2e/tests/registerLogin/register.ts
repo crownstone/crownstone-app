@@ -1,22 +1,24 @@
 import { by, device, expect, element, waitFor } from 'detox';
 import {
-  $, delay, replaceText, tap,
+  $, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow
-} from "../util/testUtil";
-import {CONFIG} from "../testSuite.e2e";
+} from "../../util/TestUtil";
+import {CONFIG} from "../../testSuite.e2e";
 
 
 export const TestRegisterNewUser = () => {
   test('should be on the splash screen', async () => {
     await waitToNavigate('LoginSplash');
     await waitToShow('registerButton');
+    await screenshot();
   })
 
   test('should go to the register screen', async () => {
     await tap('registerButton');
     await waitToNavigate('registerView');
+    await screenshot();
   })
 
   if (!CONFIG.ONLY_ESSENTIALS) {
@@ -29,6 +31,7 @@ export const TestRegisterNewUser = () => {
       await tap('registerButton');
       await waitToNavigate('registerView');
       await tap('register-acceptName');
+      await screenshot();
       await tapSingularAlertButton();
     });
 
@@ -36,24 +39,29 @@ export const TestRegisterNewUser = () => {
       await replaceText("register-lastName",`LastName`);
       await tapReturnKey("register-lastName");
       await tap('register-acceptName');
+      await screenshot();
       await tapSingularAlertButton()
     });
   }
 
   test('register: should accept only first name', async () => {
-    await replaceText("register-firstName",`Testy`);
+    await replaceText("register-firstName",`TestUser`);
     await $("register-lastName").clearText();
     await tapReturnKey("register-lastName");
     await tap('register-acceptName');
     await waitToNavigate('register-Picture')
+    await screenshot();
   });
 
+
+
+  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: should accept no picture', async () => {
       await tap('register-acceptPicture');
       await waitToNavigate('register-email')
+      await screenshot();
     })
 
-  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: should be able to go back 1 step', async () => {
       await tap('topBarLeftItem');
       await waitToNavigate('register-Picture')
@@ -61,6 +69,7 @@ export const TestRegisterNewUser = () => {
 
     test('register: can cancel picture popup', async () => {
       await tap('PictureCircle');
+      await screenshot();
       await tap("optionsCancel");
       await delay(300);
       await expect($("optionsCancel")).not.toBeVisible()
@@ -69,6 +78,7 @@ export const TestRegisterNewUser = () => {
     test('register: can add picture from album', async () => {
       await tap('PictureCircle');
       await tap("optionsPhotoLibrary");
+      await screenshot();
       await delay(300);
       await expect($("PictureCircleRemove")).toBeVisible()
     });
@@ -77,6 +87,7 @@ export const TestRegisterNewUser = () => {
       await delay(300);
       await expect($("PictureCircleRemove")).toBeVisible()
       await tap("PictureCircleRemove");
+      await screenshot();
       await tapAlertCancelButton();
       await delay(300);
       await expect($("PictureCircleRemove")).toBeVisible()
@@ -88,16 +99,20 @@ export const TestRegisterNewUser = () => {
       await delay(1000);
       await expect($("PictureCircleRemove")).not.toBeVisible()
     });
+  }
 
-    test('register: can add picture from album and continue', async () => {
-      await tap('PictureCircle');
-      await tap("optionsPhotoLibrary");
-      await tap("register-acceptPicture");
-      await waitToNavigate('register-AccountCreation');
-    });
+  test('register: can add picture from album and continue', async () => {
+    await tap('PictureCircle');
+    await tap("optionsPhotoLibrary");
+    await tap("register-acceptPicture");
+    await waitToNavigate('register-email');
+    await screenshot();
+  });
 
+  if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: cannot make account with no email address', async () => {
       await tap("register-completeRegistration");
+      await screenshot();
       await tapSingularAlertButton();
     });
 
@@ -107,6 +122,7 @@ export const TestRegisterNewUser = () => {
       await replaceText("register-password",``);
       await tapReturnKey("register-password");
       await tap("register-completeRegistration");
+      await screenshot();
       await tapSingularAlertButton();
     });
 
@@ -116,9 +132,11 @@ export const TestRegisterNewUser = () => {
       await replaceText("register-password",``);
       await tapReturnKey("register-password");
       await tap("register-completeRegistration");
+      await screenshot();
       await tapSingularAlertButton();
     });
   }
+
 
   test('register: can create account with valid email and password', async () => {
     await replaceText("register-email",`crownstone.main.test@gmail.com`);
@@ -127,7 +145,10 @@ export const TestRegisterNewUser = () => {
     await tap("register-completeRegistration");
     await delay(300);
     await waitToNavigate('register-finishedCard');
+    await screenshot();
   });
+
+
   test('register: go back to splash', async () => {
     await tap("register-finish");
     await waitToNavigate('LoginSplash');

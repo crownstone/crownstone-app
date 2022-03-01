@@ -373,31 +373,31 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     // else {
     //   items.push({label: "EXPERIMENTAL FEATURES", type: 'explanation', below: false});
     // }
-//     items.push({
-//       label: "Join Alpha Program",
-//       value: user.betaAccess,
-//       experimental: user.betaAccess,
-//       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex}}/>,
-//       type: 'switch',
-//       callback:(newValue) => {
-//         let storeIt = () => {
-//           store.dispatch({
-//             type: 'SET_BETA_ACCESS',
-//             data: {betaAccess: newValue}
-//           });
-//         };
-//         if (newValue) {
-//           Alert.alert(
-// "EXPERIMENTAL!",
-// "Switchcraft is currently in the experimental phase. It will not detect all switches, " + "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" + "Use this at your own risk! Are you sure?",
-// [{text:"I'll wait.", style:'cancel'}, {
-// text:"Yes.", onPress: storeIt}]
-//           );
-//         }
-//         else {
-//           storeIt();
-//         }
-//       }});
+    //     items.push({
+    //       label: "Join Alpha Program",
+    //       value: user.betaAccess,
+    //       experimental: user.betaAccess,
+    //       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+    //       type: 'switch',
+    //       callback:(newValue) => {
+    //         let storeIt = () => {
+    //           store.dispatch({
+    //             type: 'SET_BETA_ACCESS',
+    //             data: {betaAccess: newValue}
+    //           });
+    //         };
+    //         if (newValue) {
+    //           Alert.alert(
+    // "EXPERIMENTAL!",
+    // "Switchcraft is currently in the experimental phase. It will not detect all switches, " + "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" + "Use this at your own risk! Are you sure?",
+    // [{text:"I'll wait.", style:'cancel'}, {
+    // text:"Yes.", onPress: storeIt}]
+    //           );
+    //         }
+    //         else {
+    //           storeIt();
+    //         }
+    //       }});
     // items.push({
     //   label: "Feature Preview",
     //   value: dev.preview,
@@ -564,11 +564,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
 export function getDevAppItems() {
   let items = [];
-  items.push({
-    label: "DEVELOPERS ONLY",
-    type: 'explanation',
-    below: true
-  });
+  items.push({type: 'spacer'});
   items.push({
     label: "Developer Menu",
     icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,

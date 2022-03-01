@@ -13,6 +13,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[[Portal alloc] init] setLaunchArguments:NSProcessInfo.processInfo.arguments];
   [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
   // Define UNUserNotificationCenter
    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];

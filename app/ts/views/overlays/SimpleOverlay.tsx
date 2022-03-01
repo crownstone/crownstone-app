@@ -61,6 +61,7 @@ export class SimpleOverlay extends Component<any, any> {
         closeCallback={() => { this.close(); }}
         backgroundColor={this.state.backgroundColor || colors.white.rgba(0.2)}
         title={this.state.title}
+        footerComponent={this.props.data?.footer}
       >
         { this.customContent }
       </OverlayBox>

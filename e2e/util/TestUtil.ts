@@ -1,4 +1,5 @@
 import {by, device, expect, element, waitFor} from 'detox';
+import fs from "fs"
 
 export function $(id) {
   return element(by.id(id))
@@ -17,6 +18,7 @@ export function androidIndexAlertButton(index: number = 0) {
 }
 
 async function tapAlertButton(buttonElement) {
+  await delay(100);
   await expect(buttonElement).toBeVisible();
   await buttonElement.tap()
   await delay(100);
@@ -41,8 +43,16 @@ export async function clearText(id, timeout = 1000) {
 export async function tap(id, timeout = 1000) {
   await delay(100);
   let item = $(id);
-  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
   await item.tap();
+  await delay(200);
+}
+
+export async function longPress(id, duration= 2000, timeout = 1000) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
+  await item.longPress(duration);
   await delay(200);
 }
 
@@ -51,7 +61,7 @@ export async function tapReturnKey(id, timeout = 1000) {
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);
   await item.tapReturnKey()
-  await delay(100);
+  await delay(300);
 }
 
 export async function waitToShow(id, timeout = 1500) {
@@ -62,10 +72,24 @@ export async function waitToShow(id, timeout = 1500) {
 }
 
 export async function waitToNavigate(id, timeout = 3000) {
-  await delay(200);
+  await delay(300);
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);
-  await delay(200);
+  await delay(300);
+}
+export async function waitToStart(id, timeout = 8000) {
+  await delay(500);
+  let item = $(id);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
+  await delay(500);
+}
+
+export async function scrollDownUntilVisible( itemId, scrollViewId ) {
+  await waitFor($(itemId)).toBeVisible().whileElement(by.id(scrollViewId)).scroll(100, 'down');
+}
+
+export async function swipeNext( itemId ) {
+  await $(itemId).swipe('left');
 }
 
 
@@ -109,4 +133,11 @@ export function isAndroid() {
 }
 export function isIos() {
   return device.getPlatform() === 'ios';
+}
+
+let screenshot_count = 0;
+export async function screenshot() {
+  screenshot_count++;
+  let tmpPath = await device.takeScreenshot(`${screenshot_count}_`);
+  return tmpPath;
 }

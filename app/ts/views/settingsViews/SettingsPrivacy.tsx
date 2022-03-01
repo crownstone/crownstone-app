@@ -154,7 +154,7 @@ lang("_Whoops___We_could_not_re_body"),
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <BackgroundNoNotification image={background.menu} testID={"SettingsPrivacy"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

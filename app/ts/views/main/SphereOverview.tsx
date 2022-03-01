@@ -23,7 +23,7 @@ import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
-import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
+import {ZoomInstructionOverlay, ZoomInstructionsFooter} from "./ZoomInstructionOverlay";
 import { core }                     from "../../Core";
 import { NavigationUtil }           from "../../util/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
@@ -46,6 +46,7 @@ const ZOOM_LEVELS = {
   sphere: 'sphere',
   room: 'room'
 };
+
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
@@ -229,7 +230,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   _getInstructionScreen() {
-    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay /> });
+    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
   }
 
   render() {
@@ -263,7 +264,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={background.main}>
+            <Background hideNotifications={true} image={background.main} testID={"SphereOverview_addRoom"}>
               <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )
@@ -286,7 +287,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
       return (
-        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
+        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere} testID={"SphereOverview"}>
           { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
@@ -303,7 +304,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={backgroundOverride}>
+        <AnimatedBackground image={backgroundOverride} testID={"SphereOverview_noSphere"}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>

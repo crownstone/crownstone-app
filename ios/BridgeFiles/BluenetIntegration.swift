@@ -1087,6 +1087,17 @@ open class BluenetJS: RCTEventEmitter {
     
     
     
+    @objc func getLaunchArguments(_ callback: @escaping RCTResponseSenderBlock) {
+        let function_uuid = UUID().uuidString
+        LOGGER.info("BluenetBridge: Called getLaunchArguments function_uuid:\(function_uuid)")
+        successReply("getLaunchArguments", GLOBAL_BLUENET.launchArguments, function_uuid, callback)
+    }
+    
+    
+    @objc func useHighFrequencyScanningInBackground(_ state: NSNumber) {
+        // do nothing, this is for android.
+    }
+    
     @objc func getMinSchedulerFreeSpace(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)
         wrapForBluenet("getMinSchedulerFreeSpace", callback, GLOBAL_BLUENET.bluenet.debug(handleUUID!).getMinSchedulerFreeSpace(), handle)

@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from "react-native";
 import * as React from "react";
 
 
-export function BehaviourSubmitButton(props : { callback:any, label: string, color?: string, width?: number }) {
+export function BehaviourSubmitButton(props : { callback:any, label: string, color?: string, width?: number, testID?: string }) {
   return (
     <TouchableOpacity
       onPress={props.callback}
@@ -16,7 +16,8 @@ export function BehaviourSubmitButton(props : { callback:any, label: string, col
         justifyContent: 'center',
         borderColor: colors.white.rgba(0.9),
         borderWidth: 3
-      }}>
+      }}
+      testID={props.testID}>
        <Text style={{fontSize:17, fontWeight:'bold', color: colors.white.hex}}>{props.label}</Text>
     </TouchableOpacity>
 )

@@ -24,7 +24,7 @@ export class GoogleAssistantOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false} testID={"GoogleAssistantOverview"}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />

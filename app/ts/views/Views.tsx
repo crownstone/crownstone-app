@@ -37,7 +37,6 @@ import { SphereUserInvite }                   from "../views/main/editSubviews/S
 import { SphereUserOverview }                 from "../views/main/editSubviews/SphereUserOverview";
 import { SphereInvitedUser }                  from "../views/main/editSubviews/SphereInvitedUser";
 import { SphereUser }                         from "../views/main/editSubviews/SphereUser";
-import { SphereBehaviour }                    from "../views/main/editSubviews/SphereBehaviour";
 import { SphereIntegrations }                 from "../views/main/editSubviews/SphereIntegrations";
 
 import { SettingsApp }                        from '../views/settingsViews/SettingsApp'
@@ -207,7 +206,6 @@ export const Views = {
   SettingsStoneBleDebug:             SettingsStoneBleDebug,
   SettingsUptime:                    SettingsUptime,
   SettingsLocalizationMonitor:       SettingsLocalizationMonitor,
-  SphereBehaviour:                   SphereBehaviour,
   SphereCrownstoneOverview:          SphereCrownstoneOverview,
   SphereEdit:                        SphereEdit,
   SphereEditSettings:                SphereEditSettings,

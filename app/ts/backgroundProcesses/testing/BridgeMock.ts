@@ -7,7 +7,7 @@ import {Bluenet_direct} from "../../native/libInterface/Bluenet";
 
 class BridgeMockClass {
 
-  promiseCalls = {};
+  promiseCalls : Record<string, {functionName: string, args: any[], promiseResolver: (result : any) => void}> = {};
 
   constructor() {}
 
@@ -21,15 +21,13 @@ class BridgeMockClass {
   }
 
   callBluenet(functionName: string, args: any[]) {
-    console.log("HERE")
-    let data = { function: functionName, args, tCalled: Date.now() };
+    let data = { function: functionName, args, tStart: Date.now() };
     fetch(`${BridgeConfig.mockBridgeUrl}callBluenet`, {method:"POST", headers: defaultHeaders as any, body: JSON.stringify(data)})
       .then(()     => { console.log("BridgeMock: Success performing mock callBluenet."); })
       .catch((err) => { console.log("BridgeMock: Error while performing mock callBluenet.", err?.message); })
   }
 
   handleSSE(event: any) {
-    console.log("BridgeMock: Incoming testevent", event, typeof event);
     switch (event.type) {
       case "failCall":
         this.promiseCalls[event.callId]?.promiseResolver({error:true, data: event.error })
@@ -44,6 +42,15 @@ class BridgeMockClass {
         break;
       case "callBluenet":
         Bluenet_direct[event.functionName].apply(this, event.arguments);
+        break;
+      case "nativeResolve":
+        let promise = this.promiseCalls[event.callId];
+        if (promise) {
+          let args = promise.args;
+          args.push(promise.promiseResolver);
+          Bluenet_direct[promise.functionName].apply(this, args);
+          delete this.promiseCalls[event.callId];
+        }
         break;
     }
   }

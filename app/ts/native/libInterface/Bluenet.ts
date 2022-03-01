@@ -178,6 +178,7 @@ const BluenetAPI = {
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
+  getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
 
 };
 
@@ -208,7 +209,6 @@ else if (NativeModules.BluenetJS) {
         else {
           LOGi.info("BLUENET CALL:", key, bluenetArguments);
         }
-        console.log("BluenetConfig", BridgeConfig.mockBluenet)
         if (BridgeConfig.mockBluenet) {
           return BridgeMock.callBluenet(key, bluenetArguments);
         }

@@ -63,7 +63,7 @@ export class NavigationBar extends Component<any, any> {
 
 
     return (
-      <TouchableHighlight onPress={() => {this.setActiveElement(); this.props.callback()}}>
+      <TouchableHighlight onPress={() => {this.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
         <Animated.View style={[styles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}

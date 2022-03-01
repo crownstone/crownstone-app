@@ -57,7 +57,8 @@ export class TestConfiguration extends LiveComponent<any, any> {
       type: 'switch',
       testID: 'mockImageLibrary',
       callback:(newValue) => {
-        CameraLibrarySettings.mockImageLibrary = newValue;
+        CameraLibrarySettings.mockCameraLibrary = newValue;
+        CameraLibrarySettings.mockImageLibrary  = newValue;
         this.forceUpdate();
     }});
     items.push({

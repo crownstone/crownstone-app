@@ -21,7 +21,7 @@ import { tutorialStyle } from "../AddSphereTutorial";
 export class AddSphereTutorial_multiple extends Component<any, any> {
   render() {
     return (
-      <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
+      <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}} testID={"AddSphereTutorial_multiple"}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <Text style={tutorialStyle.header}>{ lang("Multiple_Spheres") }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />

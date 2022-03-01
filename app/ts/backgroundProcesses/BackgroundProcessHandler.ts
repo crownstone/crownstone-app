@@ -1,7 +1,7 @@
 import {Alert, AppState, Platform} from 'react-native';
 
 import {Bluenet} from "../native/libInterface/Bluenet";
-import {BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
+import {BluenetPromise, BluenetPromiseWrapper} from "../native/libInterface/BluenetPromise";
 import {LocationHandler} from "../native/localization/LocationHandler";
 import {CLOUD} from "../cloud/cloudAPI";
 import {AppUtil} from "../util/AppUtil";
@@ -49,6 +49,7 @@ import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
+import {TestingFramework} from "./testing/TestingFramework";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -66,8 +67,30 @@ class BackgroundProcessHandlerClass {
   cancelPauseTrackingCallback = null;
   trackingPaused = false;
 
-  start() {
+  async parseLaunchArguments() {
+    let launchArguments = await BluenetPromiseWrapper.getLaunchArguments();
+    let localizationOverride = null;
+    for (let i = 0; i < launchArguments.length; i++) {
+      if (launchArguments[i] === '-localization') {
+        localizationOverride = launchArguments[i+1];
+        i++;
+      }
+    }
+
+
+    if (localizationOverride) {
+      Languages.setLocale(localizationOverride);
+    }
+  }
+
+  async start() {
     if (!this.started) {
+
+      // get the launch arguments
+      await this.parseLaunchArguments();
+
+      // initialize test overrides if required.
+      await TestingFramework.initialize();
 
       LOG.info("BackgroundProcessHandler: Starting the background processes.");
       // start the BLE things.

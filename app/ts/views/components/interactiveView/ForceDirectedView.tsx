@@ -49,6 +49,7 @@ export class ForceDirectedView extends Component<{
   options? : any,
   zoomOutCallback? : any,
   zoomInCallback? : any,
+  testID? : string,
 }, any> {
 
   state:any; // used to avoid warnings for setting state values
@@ -916,6 +917,7 @@ export class ForceDirectedView extends Component<{
         ref={(v) => { this._viewRef = v; }}
         {...this._panResponder.panHandlers}
         style={{backgroundColor: 'transparent', width: screenWidth, height:this.props.height, position: 'absolute', top: 0, left: 0, verflow:'hidden'}}
+        testID={this.props.testID}
       >
         <Animated.View
           style={

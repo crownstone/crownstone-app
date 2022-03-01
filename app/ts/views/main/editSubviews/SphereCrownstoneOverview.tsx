@@ -68,49 +68,54 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
 
     let stoneIds = Object.keys(stones);
 
-    if (stoneIds.length == 0) {
-      items.push({label: lang("There_are_no_Crownstones_"),  type:'largeExplanation', below:false});
-      return items;
-    }
+    if (stoneIds.length > 0) {
+      let rooms = state.spheres[this.props.sphereId].locations;
+      let roomIds = Object.keys(rooms);
+      roomIds.sort((a, b) => {
+        return rooms[a].config.name > rooms[b].config.name ? 1 : -1
+      });
 
-    let rooms = state.spheres[this.props.sphereId].locations;
-    let roomIds = Object.keys(rooms);
-    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 });
-
-    let renderStonesInRoom = (roomId) => {
-      let stonesInRoom = Util.data.getStonesInLocation(state, this.props.sphereId, roomId);
-      let stoneIdsInRoom = Object.keys(stonesInRoom);
-      if (stoneIdsInRoom.length > 0) {
-        let label = "CROWNSTONES NOT IN A ROOM";
-        if (roomId !== null) {
-          label =  lang("CROWNSTONES_IN_",rooms[roomId].config.name.toUpperCase());
-        }
-
-        items.push({label: label, type:'explanation', below:false});
-        stoneIdsInRoom.sort((a,b) => { return stonesInRoom[a].config.name > stonesInRoom[b].config.name ? 1 : -1 });
-
-        stoneIdsInRoom.forEach((stoneId) => {
-          let stone = stonesInRoom[stoneId];
-          if (stone.config.type !== STONE_TYPES.crownstoneUSB && stone.config.type !== STONE_TYPES.hub) {
-            this._pushCrownstoneItem(items, this.props.sphereId, stone, stoneId);
+      let renderStonesInRoom = (roomId) => {
+        let stonesInRoom = Util.data.getStonesInLocation(state, this.props.sphereId, roomId);
+        let stoneIdsInRoom = Object.keys(stonesInRoom);
+        if (stoneIdsInRoom.length > 0) {
+          let label = "CROWNSTONES NOT IN A ROOM";
+          if (roomId !== null) {
+            label = lang("CROWNSTONES_IN_", rooms[roomId].config.name.toUpperCase());
           }
-        })
-      }
-    };
 
-    roomIds.forEach((roomId) => {
-      renderStonesInRoom(roomId)
-    });
+          items.push({label: label, type: 'explanation', below: false});
+          stoneIdsInRoom.sort((a, b) => {
+            return stonesInRoom[a].config.name > stonesInRoom[b].config.name ? 1 : -1
+          });
 
-    renderStonesInRoom(null);
+          stoneIdsInRoom.forEach((stoneId) => {
+            let stone = stonesInRoom[stoneId];
+            if (stone.config.type !== STONE_TYPES.crownstoneUSB && stone.config.type !== STONE_TYPES.hub) {
+              this._pushCrownstoneItem(items, this.props.sphereId, stone, stoneId);
+            }
+          })
+        }
+      };
 
-    items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
+      roomIds.forEach((roomId) => {
+        renderStonesInRoom(roomId)
+      });
 
+      renderStonesInRoom(null);
+
+      items.push({label: lang("This_is_an_overview_of_al"), type: 'explanation', below: true});
+
+    }
+    else {
+      items.push({label: lang("There_are_no_Crownstones_"),  type:'largeExplanation', below:false});
+    }
 
     items.push({
       label: lang("Add_a_Crownstone"),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.blue.hex, fontWeight: 'bold'},
+      testID: 'AddCrownstone_button',
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
@@ -133,7 +138,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false} testID={"SphereCrownstoneOverview"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

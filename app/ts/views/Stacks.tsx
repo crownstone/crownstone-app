@@ -100,6 +100,8 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
+                  id: 'bottomTab_overview',
+                  testID: 'bottomTab_overview',
                   text: Languages.get("Tabs","Overview")(),
                   icon: require('../../assets/images/icons/house.png'),
                 }
@@ -113,6 +115,8 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
+                  id: 'bottomTab_scenes',
+                  testID: 'bottomTab_scenes',
                   text: Languages.get("Tabs","Scenes")(),
                   icon: require('../../assets/images/icons/scenes.png'),
                 }
@@ -126,6 +130,8 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
+                  id: 'bottomTab_messages',
+                  testID: 'bottomTab_messages',
                   text: Languages.get("Tabs","Messages")(),
                   icon: require('../../assets/images/icons/mail.png'),
                 }
@@ -139,6 +145,8 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
+                  id: 'bottomTab_settings',
+                  testID: 'bottomTab_settings',
                   text: Languages.get("Tabs","Settings")(),
                   icon: require('../../assets/images/icons/cog.png'),
                 }

@@ -24,6 +24,8 @@ class BluenetContainer : NSObject {
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
 
+  open var launchArguments = [String]()
+  
   var watchStateManager: WatchStateManager!
   
   var localization : Localization!
@@ -36,6 +38,7 @@ class BluenetContainer : NSObject {
   var unverifiedSubscriptions = [voidCallback]()
     
   override init() {
+
     self.watchBridge = WatchBridge()
     self.watchStateManager = WatchStateManager()
     
@@ -186,6 +189,10 @@ class BluenetContainer : NSObject {
   // required to hook web urls
   @objc func handleUserActivity(_ userActivity: NSUserActivity) -> Bool {
       return GLOBAL_BLUENET.parseUserActivity(userActivity: userActivity)
+  }
+  
+  @objc func setLaunchArguments(_ arguments: [String])  {
+      GLOBAL_BLUENET.launchArguments = arguments
   }
 }
 

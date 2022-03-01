@@ -46,6 +46,7 @@ export class SphereInvitedUser extends Component<any, any> {
       label: lang("Resend_Invitation"),
       type:'button',
       style:{color:colors.iosBlue.hex},
+      testID:"ResendInvitation",
       icon: <IconButton name="ios-mail" size={23} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback: () => {
         Alert.alert(
@@ -78,6 +79,7 @@ export class SphereInvitedUser extends Component<any, any> {
       items.push({
         label: lang("Revoke_Invite"),
         type: 'button',
+        testID:"RevokeInvitation",
         icon: <IconButton name="md-trash" size={22} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
@@ -131,8 +133,8 @@ export class SphereInvitedUser extends Component<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={background.menu} hasNavBar={false}>
-                <ScrollView>
+      <Background image={background.menu} hasNavBar={false} testID={"SphereInvitedUser"}>
+        <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
               value={user && user.picture || undefined}

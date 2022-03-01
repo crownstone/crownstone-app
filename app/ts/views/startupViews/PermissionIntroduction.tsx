@@ -109,6 +109,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
             <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
           </View>,
         hasTextInputField: true,
+        textInputTestID: 'AI_name',
         placeholder: this.randomAiName,
         optionsBottom: true,
         testID:'permission_AI_setup',

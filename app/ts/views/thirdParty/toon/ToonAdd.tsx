@@ -291,7 +291,7 @@ export class ToonAdd extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false} testID={"ToonAdd"}>
         { content }
       </Background>
     );

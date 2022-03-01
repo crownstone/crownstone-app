@@ -99,12 +99,14 @@ export class RoomAddCore extends LiveComponent<any, any> {
         header:lang("Lets_make_a_room_"),
         subHeader: lang("What_would_you_like_to_ca"),
         hasTextInputField: true,
+        textInputTestID: 'RoomAdd_roomName',
         placeholder: lang("My_new_room"),
         options: [
           {
             label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
+            testID: 'RoomAdd_roomName_next',
             response: lang("Good_choice_"),
             onSelect: (result) => {
               let name = result.textfieldState;
@@ -135,6 +137,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
         header: lang("Lets_pick_an_icon_"),
         subHeader: lang("You_can_give_your_room_an"),
         explanation: lang("You_can_always_change_thi"),
+        testID: 'RoomAdd_icon',
         editableItem: (state, setState) => {
           return (
             <View style={{flex:1,flexDirection: Util.shortScreen() ? 'row' : 'column'}}>
@@ -151,7 +154,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
                     setState(newState);
                   }
                 });
-              }}>
+              }} testID={'RoomAdd_IconSelection'}>
                 <IconCircle
                   icon={state && state.icon || this.newRoomData.icon}
                   size={0.18*screenHeight}
@@ -191,7 +194,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
         },
 
         options: [
-          {label: lang("Create_room"), textAlign:'right', onSelect: (result) => {
+          {label: lang("Create_room"), textAlign:'right', testID:'RoomAdd_CreateRoom', onSelect: (result) => {
             let icon = result.customElementState.icon || this.newRoomData.icon;
             this.newRoomData.icon = icon;
             this.createRoom()

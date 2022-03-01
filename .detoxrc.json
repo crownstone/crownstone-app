@@ -3,9 +3,15 @@
   "runnerConfig": "./e2e/config.json",
   "skipLegacyWorkersInjection": true,
   "apps": {
-    "ios-debug": {
+    "ios-debug-english": {
       "type": "ios.app",
-      "binaryPath": "ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app"
+      "binaryPath": "ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app",
+      "launchArgs": {"localization": "en_us"}
+    },
+    "ios-debug-nederlands": {
+      "type": "ios.app",
+      "binaryPath": "ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app",
+      "launchArgs": {"localization": "nl_nl"}
     },
     "android-release": {
       "type": "android.apk",
@@ -32,9 +38,21 @@
     }
   },
   "configurations": {
-    "ios-debug": {
+    "ios-debug-english": {
       "device": "simulator",
-      "app": "ios-debug"
+      "app": "ios-debug-english",
+      "artifacts": {
+        "rootDir": "../crownstone-app-screenshots/ios-debug/english/",
+        "pathBuilder": "./e2e/config/pathBuilder.js"
+      }
+    },
+    "ios-debug-nederlands": {
+      "device": "simulator",
+      "app": "ios-debug-nederlands",
+      "artifacts": {
+        "rootDir": "../crownstone-app-screenshots/ios-debug/nederlands/",
+        "pathBuilder": "./e2e/config/pathBuilder.js"
+      }
     },
     "android-debug-device": {
       "device": "android-device",

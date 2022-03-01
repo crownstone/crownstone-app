@@ -101,7 +101,6 @@ export const AppUtil = {
   },
 
   _logOut: function(store, gracefulExit) {
-
     // Sentry.addBreadcrumb({
     //   category: 'logout',
     //   data: {

@@ -67,6 +67,7 @@ export class Dropdown extends Component<any, any> {
         label={item.label}
         value={item.value === undefined ? item.label : item.value}
         key={counter + "_dropdown_" + this.props.label}
+        testID={item.value === undefined ? item.label : item.value}
       />);
       counter += 1;
     });
@@ -166,7 +167,7 @@ export class Dropdown extends Component<any, any> {
               this.props.callback(this.state.value);
             }
             this.setState({open:!this.state.open});
-          }}>
+          }} testID={this.props.testID}>
             <View style={[styles.listView, {height: navBarHeight}]}>
               {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
               {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}

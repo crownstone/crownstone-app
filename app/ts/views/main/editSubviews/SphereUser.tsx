@@ -125,7 +125,7 @@ export class SphereUser extends LiveComponent<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={background.menu} hasNavBar={false}>
+      <Background image={background.menu} hasNavBar={false} testID={"SphereUser"}>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
