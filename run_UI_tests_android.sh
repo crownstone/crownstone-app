@@ -28,13 +28,13 @@ echo "Using $IP_ADDRESS as local IP address."
 
 ./scripts/set_demo_mode_android.sh on
 
-if [ "$REUSE" == "0" ]; then
+if [ "$REUSE" == "1" ]; then
+	${CLOUD_DIR}/scripts/reset_mocks.sh
+	detox test --configuration android-debug-device -l --reuse verbose
+else
 	${CLOUD_DIR}/reset.sh
 	detox build --configuration android-debug-device
 	detox test --configuration android-debug-device -l verbose
-else
-	${CLOUD_DIR}/scripts/reset_mocks.sh
-	detox test --configuration android-debug-device -l --reuse verbose
 fi
 
 ./scripts/set_demo_mode_android.sh off
