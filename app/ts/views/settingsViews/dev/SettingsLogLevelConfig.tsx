@@ -8,6 +8,7 @@ import { background, colors } from "../../styles";
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { CustomKeyboadAvoidingView } from "../../components/CustomKeyboadAvoidingView";
 
 
 export class SettingsLogLevelConfig extends LiveComponent<any, any> {
@@ -105,11 +106,11 @@ export class SettingsLogLevelConfig extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundNoNotification image={background.menu} >
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
+        <CustomKeyboadAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
           <ScrollView keyboardShouldPersistTaps="always">
             <ListEditableItems items={this._getItems()} separatorIndent={true} />
           </ScrollView>
-        </KeyboardAvoidingView>
+        </CustomKeyboadAvoidingView>
       </BackgroundNoNotification>
     );
   }

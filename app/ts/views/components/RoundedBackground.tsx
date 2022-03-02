@@ -22,6 +22,7 @@ import {
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 import { SceneConstants } from "../scenesViews/constants/SceneConstants";
+import { CustomKeyboadAvoidingView } from "./CustomKeyboadAvoidingView";
 
 
 export class RoundedBackground extends Component<{
@@ -62,7 +63,7 @@ export class RoundedBackground extends Component<{
         <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius: SceneConstants.roundness, overflow: 'hidden'}}>
           <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
             <View>
-            <KeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+            <CustomKeyboadAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
               { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
               { this.props.topImage ? <View style={[styles.fullscreen, {height:backgroundHeight, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
               <View style={[styles.fullscreen, {height:backgroundHeight}]}>
@@ -74,7 +75,7 @@ export class RoundedBackground extends Component<{
                 </View>
                 { hasTabBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
               </View>
-            </KeyboardAvoidingView>
+            </CustomKeyboadAvoidingView>
           </View>
         </View>
       </View>

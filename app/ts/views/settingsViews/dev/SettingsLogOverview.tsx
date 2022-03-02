@@ -11,6 +11,7 @@ import {core} from "../../../Core";
 import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
 import {FileUtil} from "../../../util/FileUtil";
+import { CustomKeyboadAvoidingView } from "../../components/CustomKeyboadAvoidingView";
 
 
 export class SettingsLogOverview extends LiveComponent<any, { logInformation: any[], logsLoaded: boolean, selectedUrls: string[] }> {
@@ -125,11 +126,11 @@ export class SettingsLogOverview extends LiveComponent<any, { logInformation: an
   render() {
     return (
       <BackgroundNoNotification image={background.menu} >
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
+        <CustomKeyboadAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
           <ScrollView keyboardShouldPersistTaps="always">
             <ListEditableItems items={this._getItems()} separatorIndent={true} />
           </ScrollView>
-        </KeyboardAvoidingView>
+        </CustomKeyboadAvoidingView>
       </BackgroundNoNotification>
     );
   }

@@ -15,6 +15,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
 import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
+import { CustomKeyboadAvoidingView } from "../../components/CustomKeyboadAvoidingView";
 
 
 export class SettingsLogging extends LiveComponent<any, any> {
@@ -221,11 +222,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundNoNotification image={background.menu} >
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
+        <CustomKeyboadAvoidingView behavior={Platform.OS == "ios" ? "position" : "height"}>
           <ScrollView keyboardShouldPersistTaps="always">
             <ListEditableItems items={this._getItems()} separatorIndent={true} />
           </ScrollView>
-        </KeyboardAvoidingView>
+        </CustomKeyboadAvoidingView>
       </BackgroundNoNotification>
     );
   }
@@ -262,7 +263,7 @@ const LOGGING_PROFILES = {
     log_scheduler:      LOG_LEVEL.error,
     log_ble:            LOG_LEVEL.error,
     log_dfu:            LOG_LEVEL.info,
-    log_events:         LOG_LEVEL.error,
+    log_events:         LOG_LEVEL.info,
     log_store:          LOG_LEVEL.info,
     log_cloud:          LOG_LEVEL.info,
     log_nav:            LOG_LEVEL.info,

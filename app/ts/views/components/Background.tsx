@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 import {
-  KeyboardAvoidingView, Platform, StatusBar,
+  Platform, StatusBar,
   View
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
@@ -22,6 +22,7 @@ import {
 } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
+import { CustomKeyboadAvoidingView } from "./CustomKeyboadAvoidingView";
 
 
 export class Background extends Component<{
@@ -65,7 +66,7 @@ export class Background extends Component<{
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
         <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
-        <KeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+        <CustomKeyboadAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
           { this.props.topImage ? <View style={[styles.fullscreen, {height:backgroundHeight, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
@@ -78,7 +79,7 @@ export class Background extends Component<{
             </View>
             { hasTabBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
           </View>
-        </KeyboardAvoidingView>
+        </CustomKeyboadAvoidingView>
       </View>
     );
   }
