@@ -2,6 +2,7 @@
 CLOUD_DIR="../cloud-test-container"
 
 export REUSE=0
+export IP_ADDRESS="0.0.0.0"
 export VERBOSE_ARG="info"
 
 while getopts i:r: flag

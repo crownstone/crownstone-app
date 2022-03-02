@@ -112,6 +112,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Tap_To_Toggle"),
       value: state.app.tapToToggleEnabled,
       type: 'switch',
+      testID: 'tapToToggle_switch',
       mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
       callback:(newValue) => {
         store.dispatch({

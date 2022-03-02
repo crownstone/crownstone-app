@@ -26,8 +26,8 @@ export class ViewStateWatcher extends Component<{onFocus?: () => void, onBlur?: 
   }
 
   componentWillUnmount() {
-    this.appearListener.remove()
-    this.disappearListener.remove()
+    this.appearListener.remove();
+    this.disappearListener.remove();
   }
 
   render() {

@@ -53,13 +53,13 @@ export const Settings_myAccount = () => {
   })
 
   test('should be able to change my last name', async () => {
-    await replaceText('lastName', 'Bond');
+    await replaceText('lastName', 'Blonde');
     await tapReturnKey('lastName');
     await delay(500);
 
     await Assistant.update();
 
-    if (Assistant.db.user.lastName !== "Bond") {
+    if (Assistant.db.user.lastName !== "Blonde") {
       throw new Error("Failed to change last name.");
     }
   })

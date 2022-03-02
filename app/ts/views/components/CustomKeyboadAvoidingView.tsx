@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated, Keyboard,
+  Animated, BackHandler, Keyboard,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -30,11 +30,9 @@ export class CustomKeyboadAvoidingView extends Component< any, { offset: any} > 
 
   subscriptions = [];
   keyboardSubscriptions = [];
-  reference;
 
   constructor(props) {
     super(props);
-    this.reference = React.createRef();
 
     this.state = {
       offset: new Animated.Value(0),
@@ -51,21 +49,21 @@ export class CustomKeyboadAvoidingView extends Component< any, { offset: any} > 
           offset = KEYBOARD_HEIGHT - (screenHeight - correctedData);
         }
 
-        if (this.props.enabled) {
+        // if (this.props.enabled) {
           this.state.offset.stopAnimation();
           Animated.timing(this.state.offset, { toValue: -offset, useNativeDriver: false, duration: 150 }).start()
-        }
+        // }
       }));
       this.subscriptions.push(core.eventBus.on('blur', (data) => {
-        if (this.props.enabled) {
+        // if (this.props.enabled) {
           this.state.offset.stopAnimation();
           Animated.timing(this.state.offset, { toValue: 0, useNativeDriver: false, duration: 150 }).start()
-        }
-        else {
-          if (this.state.offset._value !== 0) {
-            Animated.timing(this.state.offset, { toValue: 0, useNativeDriver: false, duration: 150 }).start()
-          }
-        }
+        // }
+        // else {
+        //   if (this.state.offset._value !== 0) {
+        //     Animated.timing(this.state.offset, { toValue: 0, useNativeDriver: false, duration: 150 }).start()
+        //   }
+        // }
       }));
     }
 
@@ -74,11 +72,20 @@ export class CustomKeyboadAvoidingView extends Component< any, { offset: any} > 
   componentWillUnmount() {
     this.state.offset.stopAnimation();
     for (let unsubscriber of this.subscriptions) { unsubscriber(); }
+    for (let subscription of this.keyboardSubscriptions) { subscription.remove(); }
   }
 
   render() {
+    let style = {};
+    if (this.props.style.position !== undefined) {
+      style = {...this.props.style, top: this.state.offset};
+    }
+    else {
+      style = {...this.props.style, position:'relative', top: this.state.offset};
+    }
+
     if (Platform.OS === 'android') {
-      return <Animated.View ref={this.reference} {...this.props} style={{...this.props.style, position:'relative', top: this.state.offset}} />;
+      return <Animated.View {...this.props} style={{...this.props.style, position:'absolute', top: this.state.offset}} />;
     }
     else {
       return <KeyboardAvoidingView {...this.props} />

@@ -5,12 +5,12 @@
   "apps": {
     "ios-debug-english": {
       "type": "ios.app",
-      "binaryPath": "ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app",
+      "binaryPath": "ios/build/Products/Debug-iphonesimulator/Crownstone.app",
       "launchArgs": {"localization": "en_us"}
     },
     "ios-debug-nederlands": {
       "type": "ios.app",
-      "binaryPath": "ios/build/Crownstone/Build/Products/Debug-iphonesimulator/Crownstone.app",
+      "binaryPath": "ios/build/Products/Debug-iphonesimulator/Crownstone.app",
       "launchArgs": {"localization": "nl_nl"}
     },
     "android-release": {

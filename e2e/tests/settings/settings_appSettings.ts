@@ -6,14 +6,14 @@ import {
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
-export const Settings_privacy = () => {
+export const Settings_appSettings = () => {
   test('should be on the SettingsOverview', async () => {
     await waitToStart('SettingsOverview');
   })
 
-  test('should be able to go the privacy screen', async () => {
-    await tap('privacy');
-    await waitToNavigate('SettingsPrivacy');
+  test('should be able to go the app settings screen', async () => {
+    await tap('appSettings');
+    await waitToNavigate('SettingsApp');
     await screenshot();
   })
 
