@@ -207,7 +207,13 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <RoundedBackground image={background.main} style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
+      <RoundedBackground
+        image={background.main}
+        style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}}
+        hideOrangeLine={true}
+        hideNotifications={true}
+        testID={'ScenesOverview'}
+      >
         {content}
       </RoundedBackground>
     );

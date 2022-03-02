@@ -21,7 +21,13 @@ import { BackgroundNoNotification } from "../../components/BackgroundNoNotificat
 export class SettingsBleTroubleshootingIOS extends Component<any, any> {
 
   render() {
-    let imageStyle = {marginTop:10, marginBottom:10, borderRadius:10, borderColor: colors.black.rgba(0.5), borderWidth: 1};
+    let imageStyle = {
+      marginTop:    10,
+      marginBottom: 10,
+      borderRadius: 10,
+      borderColor:  colors.black.rgba(0.5),
+      borderWidth:  1
+    };
 
     let imageWidth = 0.7*screenWidth;
     return (

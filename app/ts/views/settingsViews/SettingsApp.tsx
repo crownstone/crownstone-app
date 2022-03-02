@@ -141,6 +141,7 @@ export class SettingsApp extends LiveComponent<any, any> {
             value={-device.rssiOffset}
             explanation={this._getExplanation(-device.rssiOffset)}
             explanationHeight={this._getExplanationHeight(-device.rssiOffset)}
+            testID={"SliderBar_hide"}
           />
         )});
     }
@@ -157,6 +158,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
+      testID:"useIndoorLocalization",
       mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: (newValue) => {
         store.dispatch({

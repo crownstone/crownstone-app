@@ -25,6 +25,7 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -154,7 +155,10 @@ export class SettingsProfile extends LiveComponent<any, any> {
       __item: (
         <View style={{backgroundColor:'transparent'}}>
           <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
-            <TouchableHighlight onPress={() => { Linking.openURL('https://next.crownstone.rocks/user-data').catch(err => {})}}>
+            <TouchableHighlight
+              testID={"DataManagement"}
+              onPress={() => { Linking.openURL(`https://next.crownstone.rocks/user-data`).catch(err => {})}}
+            >
               <Text style={{fontSize:12, color:colors.blue3.hex}}>{ lang("DELETE_USER") }</Text>
             </TouchableHighlight>
           </View>

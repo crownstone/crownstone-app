@@ -50,22 +50,23 @@ class MapProviderClass {
         let change = data.change;
 
         if (
-          change.changeUsers         ||
-          change.changeLocations     ||
-          change.changeFingerprint   ||
-          change.changeSphereState   ||
-          change.changeSpheres       ||
-          change.changeSphereUsers   ||
-          change.stoneChangeBehaviours    ||
-          change.changeLocations     ||
-          change.changeStones        ||
-          change.changeHubs          ||
-          change.changeScenes        ||
-          change.changeStoneHandle   ||
-          change.changeDeviceData    ||
-          change.updatedToon         ||
-          change.updatedCloudIds     ||
-          change.updateStoneConfig   ||
+          change.userLogin             ||
+          change.changeUsers           ||
+          change.changeLocations       ||
+          change.changeFingerprint     ||
+          change.changeSphereState     ||
+          change.changeSpheres         ||
+          change.changeSphereUsers     ||
+          change.stoneChangeBehaviours ||
+          change.changeLocations       ||
+          change.changeStones          ||
+          change.changeHubs            ||
+          change.changeScenes          ||
+          change.changeStoneHandle     ||
+          change.changeDeviceData      ||
+          change.updatedToon           ||
+          change.updatedCloudIds       ||
+          change.updateStoneConfig     ||
           change.changeMessage
         ) {
           this.refreshAll();
@@ -80,6 +81,18 @@ class MapProviderClass {
       this.refreshAll();
       this.logMap();
     }
+  }
+
+  reset() {
+    this.stoneSphereHandleMap = {}
+    this.stoneHandleMap       = {}
+    this.stoneSummaryMap      = {}
+    this.stoneCIDMap          = {}
+    this.locationUIDMap       = {}
+    this.stoneIBeaconMap      = {}
+    this.cloudIdMap           = {}
+    this.cloud2localMap       = getSyncIdMap();
+    this.local2cloudMap       = getSyncIdMap();
   }
 
 

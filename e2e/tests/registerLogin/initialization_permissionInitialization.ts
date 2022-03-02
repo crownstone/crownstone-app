@@ -13,7 +13,7 @@ import {
 import {CONFIG} from "../../testSuite.e2e";
 
 
-export const PermissionInitialization = () => {
+export const Initialization_permissionInitialization = () => {
   test('should be on the PermissionIntroduction screen', async () => {
     await waitToNavigate('PermissionIntroduction');
   })

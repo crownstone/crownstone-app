@@ -171,11 +171,11 @@ export class SettingsOverview extends LiveComponent<any, any> {
         <View style={{backgroundColor:'transparent'}}>
           <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12, justifyContent:'center'}}>
             <Text style={{fontSize:12, color:'#444'}}>{ lang("Crownstone_") }</Text>
-            <TouchableHighlight onPress={() => { Linking.openURL('https://crownstone.rocks/terms-of-service/').catch(err => {})}}>
+            <TouchableHighlight testID={'TermsOfService'} onPress={() => { Linking.openURL('https://crownstone.rocks/terms-of-service/').catch(err => {})}}>
               <Text style={{fontSize:12, color:colors.blue3.hex}}>{ lang("terms_") }</Text>
             </TouchableHighlight>
             <Text style={{fontSize:12, color:'#444'}}>{ lang("__") }</Text>
-            <TouchableHighlight onPress={() => { Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {}) }}>
+            <TouchableHighlight testID={'PrivacyPolicy'} onPress={() => { Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {}) }}>
               <Text style={{fontSize:12, color:colors.blue3.hex}}>{ lang("privacy_policy") }</Text>
             </TouchableHighlight>
           </View>
@@ -189,7 +189,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundNoNotification image={background.menu} testID={"SettingsOverview"}>
-        <ScrollView>
+        <ScrollView testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
         </ScrollView>

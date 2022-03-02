@@ -1,5 +1,5 @@
 import {
-  $, delay, replaceText, screenshot, tap,
+  $, delay, goToSettingsTab, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -9,10 +9,9 @@ import { waitFor } from "detox";
 
 export const Settings_start = () => {
   test('should be able to go the settings tab', async () => {
-    await waitFor($('bottomTab_settings')).toBeVisible(100).withTimeout(8000);
-    await tap('bottomTab_settings');
-    await waitToNavigate('SettingsOverview');
+    await goToSettingsTab();
     await screenshot();
   })
 
 };
+

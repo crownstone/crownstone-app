@@ -13,7 +13,7 @@ import {
 import {CONFIG} from "../../testSuite.e2e";
 
 
-export const LoginUser = () => {
+export const Initialization_loginUser = () => {
   test('should be on the splash screen', async () => {
     await waitToNavigate('LoginSplash');
     await waitToShow('loginButton');

@@ -143,6 +143,7 @@ lang("_Whoops___We_could_not_re_body"),
     items.push({
       label: lang("Privacy_Policy"),
       type:'navigation',
+      testID:'PrivacyPolicy',
       icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
       callback: () => {
         Linking.openURL('https://crownstone.rocks/privacy-policy').catch(err => {});
@@ -158,7 +159,7 @@ lang("_Whoops___We_could_not_re_body"),
   render() {
     return (
       <BackgroundNoNotification image={background.menu} testID={"SettingsPrivacy"}>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always" testID={'SettingsPrivacy_scrollView'}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </BackgroundNoNotification>

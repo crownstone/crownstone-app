@@ -73,6 +73,9 @@ class BackgroundProcessHandlerClass {
     if (localizationOverride) {
       Languages.setLocale(localizationOverride);
     }
+
+    // initialize test overrides if required.
+    await TestingFramework.initialize(launchArguments);
   }
 
   async start() {
@@ -80,9 +83,6 @@ class BackgroundProcessHandlerClass {
 
       // get the launch arguments
       await this.parseLaunchArguments();
-
-      // initialize test overrides if required.
-      await TestingFramework.initialize();
 
       LOG.info("BackgroundProcessHandler: Starting the background processes.");
       // start the BLE things.

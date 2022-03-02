@@ -38,6 +38,7 @@ export class RoundedBackground extends Component<{
   image?:             any,
   topImage?:          any,
   keyboardAvoid?:     boolean,
+  testID?:            string,
 }, any> {
 
 
@@ -59,7 +60,7 @@ export class RoundedBackground extends Component<{
       <View style={{backgroundColor: colors.csBlueDarker.hex, flex:1}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
-      }}>
+      }} testID={this.props.testID}>
         <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius: SceneConstants.roundness, overflow: 'hidden'}}>
           <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
             <View>

@@ -252,13 +252,13 @@ export class Register extends LiveComponent<any, any> {
                   <Text style={{fontSize:13, color:'#444'}}>{ lang("By_registering__you_agree") }</Text>
                   <TouchableHighlight onPress={() => {
                     Linking.openURL('https://crownstone.rocks/terms-of-service/').catch((err) => {})
-                  }}>
+                  }} testID={"TermsOfService"}>
                     <Text style={{fontSize:13, color:colors.blue3.hex}}>{ lang("terms_") }</Text>
                   </TouchableHighlight>
                   <Text style={{fontSize:13, color:'#444'}}>{ lang("__") }</Text>
                   <TouchableHighlight onPress={() => {
                     Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
-                  }}>
+                  }} testID={"PrivacyPolicy"}>
                     <Text style={{fontSize:13, color:colors.blue3.hex}}>{ lang("privacy_policy") }</Text>
                   </TouchableHighlight>
                 </View>
@@ -370,7 +370,14 @@ export class Register extends LiveComponent<any, any> {
       textColor = this._interview.getTextColorFromCard() || textColor;
     }
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={false} hideNotifications={true} dimStatusBar={true} testID={"registerView"}>
+      <AnimatedBackground
+        fullScreen={true}
+        image={backgroundImage}
+        hideOrangeLine={false}
+        hideNotifications={true}
+        dimStatusBar={true}
+        testID={"registerView"}
+      >
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -379,9 +386,9 @@ export class Register extends LiveComponent<any, any> {
           style={{backgroundColor:'transparent', paddingTop:0}}
         />
         <Interview
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
+          ref={     (i) => { this._interview = i;    }}
+          getCards={ () => { return this.getCards(); }}
+          update={   () => { this.forceUpdate();     }}
           backButtonName={"Register"}
         />
       </AnimatedBackground>

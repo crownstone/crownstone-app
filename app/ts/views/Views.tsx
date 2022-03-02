@@ -123,9 +123,8 @@ import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
-import {TestConfiguration} from "./testingViews/TestConfiguration";
-import {SettingsLogLevelConfig} from "./settingsViews/dev/SettingsLogLevelConfig";
-import {SettingsLogOverview} from "./settingsViews/dev/SettingsLogOverview";
+import { SettingsLogLevelConfig }             from "./settingsViews/dev/SettingsLogLevelConfig";
+import { SettingsLogOverview }                from "./settingsViews/dev/SettingsLogOverview";
 
 
 export const Views = {
@@ -249,11 +248,6 @@ export const Views = {
   Processing:                       Processing,
   SimpleOverlay:                    SimpleOverlay,
   TextInputOverlay:                 TextInputOverlay,
-
-
-  // Testing
-  TestConfiguration:                TestConfiguration,
-
 
 
   // DEV

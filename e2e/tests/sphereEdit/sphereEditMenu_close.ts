@@ -9,7 +9,7 @@ import {Assistant, CONFIG} from "../../testSuite.e2e";
 export const SphereEditMenu_close = () => {
   test('should be able to go back via edit menu', async () => {
     await waitToStart('SphereEdit');
-    await tap('BackButton')
+    await tap('closeModal')
     await waitToNavigate('SphereOverview');
   })
 };

@@ -56,7 +56,7 @@ export class CollapsableBar extends Component<any, any> {
     let labelStyle = {paddingTop:paddingAmount, paddingBottom:paddingAmount};
 
     return (
-      <TouchableHighlight onPress={() => { this._handleClick() }}>
+      <TouchableHighlight onPress={() => { this._handleClick() }} testID={this.props.testID}>
         <View>
           <View style={[styles.listView, {flex: 1}]}>
             {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}

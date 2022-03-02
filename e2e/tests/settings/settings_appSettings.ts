@@ -7,6 +7,8 @@ import {
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const Settings_appSettings = () => {
+  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+
   test('should be on the SettingsOverview', async () => {
     await waitToStart('SettingsOverview');
   })
@@ -17,22 +19,25 @@ export const Settings_appSettings = () => {
     await screenshot();
   })
 
-  test('should be able disable/enable the sharing of location', async () => {
-    await tap('ShareLocation');
-    await tap('ShareLocation');
+  test('should be able enable tap-to-toggle globally', async () => {
+    await tap('tapToToggle_switch');
+    await screenshot()
+    await tap('SliderBar_hide');
+    await screenshot()
   })
 
-  test('should be able disable/enable the sharing of the switch state', async () => {
-    await tap('ShareSwitchState');
-    await tap('ShareSwitchState');
+  test('should be able disable indoor localization', async () => {
+    await tap('useIndoorLocalization');
+    await screenshot()
   })
 
-  test('should be able disable/enable the sharing of phone details', async () => {
-    await tap('SharePhoneDetails');
-    await delay(500);
-    await screenshot();
-    await tapSingularAlertButton();
-    await tap('SharePhoneDetails');
+  test('should be able disable tap-to-toggle globally', async () => {
+    await tap('tapToToggle_switch');
+    await screenshot()
+  })
+
+  test('should be able enable indoor localization', async () => {
+    await tap('useIndoorLocalization');
   })
 
   test('should be able to go back to the settings overview', async () => {

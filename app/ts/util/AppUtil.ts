@@ -11,6 +11,7 @@ import {Scheduler} from "../logic/Scheduler";
 import {core} from "../Core";
 import {NavigationUtil} from "./NavigationUtil";
 import {Stacks} from "../views/Stacks";
+import { MapProvider } from "../backgroundProcesses/MapProvider";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AppUtil", key)(a, b, c, d, e);
@@ -33,6 +34,7 @@ export const AppUtil = {
       core.eventBus.clearMostEvents();
       core.nativeBus.clearAllEvents();
       Scheduler.reset();
+      MapProvider.reset()
 
       core.eventBus.emit("showLoading", lang("Clearing_database___"));
 
@@ -47,6 +49,9 @@ export const AppUtil = {
       actions.push({__purelyLocal: true, __noEvents: true, type:'RESET_APP_SETTINGS'});
 
       core.store.batchDispatch(actions);
+
+      console.log("HERE", JSON.stringify(core.store.getState()))
+
       core.eventBus.emit("showLoading", lang("Getting_new_data___"));
       StoreManager.destroyActiveUser()
         .then(() => {

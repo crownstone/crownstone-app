@@ -29,12 +29,6 @@ let versionStyle : TextStyle = {
 
 export class LoginSplash extends Component<any, any> {
 
-  clicks = 0;
-  timeout;
-
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
-  }
 
   render() {
     console.log("LoginSplash render", deviceModel)
@@ -69,6 +63,7 @@ export class LoginSplash extends Component<any, any> {
               alignItems:'flex-start',
               justifyContent:'flex-end'
             }}
+            testID={"BuyButton"}
             onPress={() => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}) }}>
             <Text style={{
               fontSize: 14,
@@ -79,25 +74,12 @@ export class LoginSplash extends Component<any, any> {
               backgroundColor:'transparent'
             }}>{ lang("Buy_Crownstones_") }</Text>
           </TouchableOpacity>
-          <Pressable
-            onPress={() => { this._pressedVersion() }}
+          <View
             style={{position:'absolute', bottom:3, right:3}} testID={"VersionHiddenButton"}>
             <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
-          </Pressable>
+          </View>
         </View>
       </Background>
     )
-  }
-
-  async _pressedVersion() {
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => { this.clicks = 0; }, 200);
-    this.clicks++;
-    if (this.clicks >= 5) {
-      await TestingFramework.clear();
-      NavigationUtil.launchModal("TestConfiguration");
-      this.clicks = 0;
-      clearTimeout(this.timeout);
-    }
   }
 }

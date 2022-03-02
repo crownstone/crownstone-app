@@ -94,7 +94,7 @@ export function SliderBar(props) {
   );
 
   if (props.sliderHidden !== undefined) {
-    return <TouchableOpacity onPress={() => { setSliderHidden(!sliderHidden) }}>{content}</TouchableOpacity>
+    return <TouchableOpacity onPress={() => { setSliderHidden(!sliderHidden) }} testID={props.testID}>{content}</TouchableOpacity>
   }
   return content;
 

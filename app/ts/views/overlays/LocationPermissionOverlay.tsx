@@ -132,25 +132,27 @@ export class LocationPermissionOverlay extends Component<any, any> {
         visible={this.state.visible}
         overrideBackButton={false}
       >
-        <View style={{flex:1}} />
-        <Icon
-          name="ios-navigate"
-          size={Math.min(0.30*screenHeight, 0.5*screenWidth)}
-          color={colors.blue3.hex}
-        />
-        <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue3.hex, padding:5, textAlign:'center'}}>
-          {this._getTitle()}
-        </Text>
-        <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue3.hex, padding:5, textAlign:'center'}}>
-          {this._getText()}
-        </Text>
-        <View style={{flex:1}} />
-        {this.state.showRequestFailed ?
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
-          : this._getButton()
-        }
-        <View style={{flex:1}} />
+        <View style={{flex:1, alignItems:'center'}}>
+          <View style={{flex:1}} />
+          <Icon
+            name="ios-navigate"
+            size={Math.min(80,Math.min(0.30*screenHeight, 0.5*screenWidth))}
+            color={colors.blue3.hex}
+          />r
+          <View style={{flex:1}} />
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue3.hex, padding:5, textAlign:'center'}}>
+            {this._getTitle()}
+          </Text>
+          <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue3.hex, padding:5, textAlign:'center'}}>
+            {this._getText()}
+          </Text>
+          <View style={{flex:1}} />
+          {this.state.showRequestFailed ?
+            <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
+            : this._getButton()
+          }
+          <View style={{flex:1}} />
+        </View>
       </OverlayBox>
     );
   }

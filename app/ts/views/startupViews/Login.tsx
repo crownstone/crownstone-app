@@ -235,7 +235,7 @@ export class Login extends Component<any, any> {
                 autoCapitalize="none"
                 placeholderTextColor='#888'
                 value={this.state.email}
-                callback={(newValue) => { this.setState({email:newValue});}}
+                callback={(newValue: string) => { this.setState({email: newValue.trim()});}}
                 endCallback={() => { if (!this.state.password) {this.passwordInputRef.focus() }}}
               />
             </View>
@@ -328,8 +328,7 @@ export class Login extends Component<any, any> {
     CLOUD.setUserId(userId);
 
     // load the user into the database
-    const store = core.store;
-    store.dispatch({
+    core.store.dispatch({
       type:'USER_LOG_IN',
       data:{
         email:        this.state.email.toLowerCase(),
@@ -339,10 +338,10 @@ export class Login extends Component<any, any> {
       }
     });
 
-    this.downloadSettings(store, userId);
+    this.downloadSettings(userId);
   }
 
-  downloadSettings(store, userId) {
+  downloadSettings(userId) {
     let parts = 1/5;
     let promises = [];
 
@@ -350,7 +349,7 @@ export class Login extends Component<any, any> {
     promises.push(
       CLOUD.forUser(userId).getUserData()
         .then((userData) => {
-          store.dispatch({type:'USER_APPEND', data:{
+          core.store.dispatch({type:'USER_APPEND', data:{
             firstName: userData.firstName,
             lastName: userData.lastName,
             isNew: userData.new,
@@ -383,7 +382,7 @@ export class Login extends Component<any, any> {
       })
       .then((picturePath) => {
         LOG.info("Login: step 2");
-        store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
+        core.store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
         core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Handle_profile_picture_")});
       })
@@ -401,7 +400,7 @@ export class Login extends Component<any, any> {
         LOG.info("Login: step 4");
         this.progress += parts;
         core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
-        let state = store.getState();
+        let state = core.store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Creating_first_Sphere_")});
           return createNewSphere( state.user.firstName + "'s Sphere");
@@ -448,7 +447,7 @@ export class Login extends Component<any, any> {
         StoreManager.finalizeLogIn(userId).catch(() => {});
         BackgroundProcessHandler.userLoggedIn = true;
 
-        let state = store.getState();
+        let state = core.store.getState();
         if (state.user.isNew !== false) {
           // new users do not need to see the "THIS IS WHATS NEW" popup.
           core.store.dispatch({
@@ -462,7 +461,7 @@ export class Login extends Component<any, any> {
 
         // set a small delay so the user sees "done"
         setTimeout(() => {
-          state = store.getState();
+          state = core.store.getState();
           core.eventBus.emit('hideProgress');
 
           NavigationUtil.setRoot(Stacks.permissions());

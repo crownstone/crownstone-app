@@ -3,12 +3,12 @@ import {
   $, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
-  tapSingularAlertButton, waitToNavigate, waitToShow
+  tapSingularAlertButton, visitLink, waitToNavigate, waitToShow
 } from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
 
-export const TestRegisterNewUser = () => {
+export const Initialization_registerNewUser = () => {
   test('should be on the splash screen', async () => {
     await waitToNavigate('LoginSplash');
     await waitToShow('registerButton');
@@ -134,6 +134,16 @@ export const TestRegisterNewUser = () => {
       await tap("register-completeRegistration");
       await screenshot();
       await tapSingularAlertButton();
+    });
+
+    test('register: can view the terms of service', async () => {
+      await tapReturnKey("register-email");
+      await tapReturnKey("register-password");
+      await visitLink('TermsOfService');
+    });
+
+    test('register: can view the privacy policy', async () => {
+      await visitLink('PrivacyPolicy');
     });
   }
 

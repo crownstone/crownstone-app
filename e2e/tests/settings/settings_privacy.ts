@@ -1,12 +1,14 @@
 import {
-  $, delay, replaceText, screenshot, tap,
+  $, delay, replaceText, screenshot, scrollDownUntilVisible, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
-  tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
+  tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const Settings_privacy = () => {
+  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+
   test('should be on the SettingsOverview', async () => {
     await waitToStart('SettingsOverview');
   })
@@ -33,6 +35,11 @@ export const Settings_privacy = () => {
     await screenshot();
     await tapSingularAlertButton();
     await tap('SharePhoneDetails');
+  })
+
+  test('should be able to see the privacyPolicy', async () => {
+    await scrollDownUntilVisible('PrivacyPolicy','SettingsPrivacy_scrollView');
+    await visitLink("PrivacyPolicy");
   })
 
   test('should be able to go back to the settings overview', async () => {
