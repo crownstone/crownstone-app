@@ -613,13 +613,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (reactContext.currentActivity == null) {
 			Log.w(TAG, "No activity.")
 		}
-//		val activity = reactContext.currentActivity ?: return
-		val activity = reactContext.currentActivity
 
 		initBluenetPromise.success {
 			handler.post {
 //				bluenet.requestLocationPermission(activity)
-				bluenet.tryMakeScannerReady(activity)
+				bluenet.tryMakeScannerReady(reactContext.currentActivity)
 				sendLocationStatus()
 				sendBleStatus()
 			}
