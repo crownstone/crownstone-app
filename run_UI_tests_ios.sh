@@ -2,7 +2,6 @@
 CLOUD_DIR="../cloud-test-container"
 
 export REUSE=0
-export IP_ADDRESS="0.0.0.0"
 export VERBOSE_ARG="info"
 
 while getopts i:r: flag
@@ -28,6 +27,8 @@ if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	usage
 fi
 
+export IP_ADDRESS=$IP_ADDRESS
+
 echo "Using $IP_ADDRESS as local IP address."
 
 if [ -n "$VERBOSE" ]; then
@@ -38,7 +39,7 @@ fi
 
 if [ "$REUSE" == "0" ]; then
   ${CLOUD_DIR}/reset.sh
-  detox test --configuration ios-debug-english --loglevel "${VERBOSE_ARG}"
+  detox test --configuration ios-debug-nederlands --loglevel "${VERBOSE_ARG}"
 else
   ${CLOUD_DIR}/scripts/reset_mocks.sh
   detox test --configuration ios-debug-english --reuse --loglevel "${VERBOSE_ARG}"

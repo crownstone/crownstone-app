@@ -19,17 +19,17 @@ export const Settings_privacy = () => {
     await screenshot();
   })
 
-  test('should be able disable/enable the sharing of location', async () => {
+  test('should be able disable and enable the sharing of location', async () => {
     await tap('ShareLocation');
     await tap('ShareLocation');
   })
 
-  test('should be able disable/enable the sharing of the switch state', async () => {
+  test('should be able disable and enable the sharing of the switch state', async () => {
     await tap('ShareSwitchState');
     await tap('ShareSwitchState');
   })
 
-  test('should be able disable/enable the sharing of phone details', async () => {
+  test('should be able disable and enable the sharing of phone details', async () => {
     await tap('SharePhoneDetails');
     await delay(500);
     await screenshot();

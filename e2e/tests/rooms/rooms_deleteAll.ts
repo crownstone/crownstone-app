@@ -25,11 +25,12 @@ export const Rooms_deleteAll = () => {
       await tapAlertOKButton();
     }
 
-    await Assistant.update();
     await waitToNavigate("SphereOverview_addRoom");
+    await Assistant.update();
 
     if (await Assistant.getRoomCount() !== 0) {
-      throw "Not all rooms have been deleted on the cloud...";
+      console.error("Not all rooms have been deleted on the cloud...")
+      throw new Error("Not all rooms have been deleted on the cloud...");
     }
   })
 };

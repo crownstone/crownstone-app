@@ -18,9 +18,9 @@ export function androidIndexAlertButton(index: number = 0) {
   return element(by.type('androidx.appcompat.widget.AppCompatButton')).atIndex(index);
 }
 
-async function tapAlertButton(buttonElement) {
+async function tapAlertButton(buttonElement, timeout = 1000) {
   await delay(100);
-  await expect(buttonElement).toBeVisible();
+  await waitFor(buttonElement).toBeVisible().withTimeout(timeout);
   await buttonElement.tap()
   await delay(100);
 }

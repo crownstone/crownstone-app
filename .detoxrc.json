@@ -24,7 +24,7 @@
     }
   },
   "devices": {
-    "simulator": {
+    "simulator-iPhone13": {
       "type": "ios.simulator",
       "device": {
         "type": "iPhone 13"
@@ -39,18 +39,18 @@
   },
   "configurations": {
     "ios-debug-english": {
-      "device": "simulator",
+      "device": "simulator-iPhone13",
       "app": "ios-debug-english",
       "artifacts": {
-        "rootDir": "../crownstone-app-screenshots/ios-debug/english/",
+        "rootDir": "../crownstone-app-screenshots/ios/simulator/iPhone13/english/",
         "pathBuilder": "./e2e/config/pathBuilder.js"
       }
     },
     "ios-debug-nederlands": {
-      "device": "simulator",
+      "device": "simulator-iPhone13",
       "app": "ios-debug-nederlands",
       "artifacts": {
-        "rootDir": "../crownstone-app-screenshots/ios-debug/nederlands/",
+        "rootDir": "../crownstone-app-screenshots/ios/simulator/iPhone13/nederlands/",
         "pathBuilder": "./e2e/config/pathBuilder.js"
       }
     },

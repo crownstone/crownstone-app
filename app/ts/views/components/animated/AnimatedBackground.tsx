@@ -19,7 +19,7 @@ import {
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
-import { CustomKeyboadAvoidingView } from "../CustomKeyboadAvoidingView";
+import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 
 
 export class AnimatedBackground extends Component<{
@@ -94,7 +94,7 @@ export class AnimatedBackground extends Component<{
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
         <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
-        <CustomKeyboadAvoidingView style={[styles.fullscreen, {height:backgroundHeight}]}>
+        <CustomKeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight}]}>
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
             <BackgroundImage height={backgroundHeight} image={this.staticImage} />
           </View>
@@ -109,7 +109,7 @@ export class AnimatedBackground extends Component<{
             { this.props.children }
           </View>
           { hasTabBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
-        </CustomKeyboadAvoidingView>
+        </CustomKeyboardAvoidingView>
       </View>
     );
   }

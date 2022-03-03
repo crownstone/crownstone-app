@@ -26,6 +26,7 @@ export class TestingAssistant {
     await this._getActiveSphereId();
   }
 
+
   getSphereIdByName(name) {
     for (let sphereId in this.db.spheres) {
       if (this.db.spheres.data.data.name === name) {
@@ -57,7 +58,8 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
-    let locationIds = Object.keys(this.db.spheres[this.activeSphereId].locations);
+
+    let locationIds = Object.keys(this.db.spheres[this.activeSphereId].locations ?? {});
     return locationIds.length;
   }
 

@@ -26,7 +26,7 @@ import { core } from "../../Core";
 
 const KEYBOARD_HEIGHT = 450;
 
-export class CustomKeyboadAvoidingView extends Component< any, { offset: any} > {
+export class CustomKeyboardAvoidingView extends Component< any, { offset: any} > {
 
   subscriptions = [];
   keyboardSubscriptions = [];

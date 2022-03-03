@@ -54,6 +54,7 @@ export class TextEditInput extends Component<any, any> {
   }
 
   _focus() {
+    console.log("_focus")
     this.isInFocus   = true;
     this.initialized = true;
     this.blurValue   = undefined;
@@ -66,6 +67,7 @@ export class TextEditInput extends Component<any, any> {
   }
 
   _blur() {
+    console.log("_blur")
     if (this.initialized) {
       if (this.blurValue !== this.props.value || this.focusEmitted === true) {
         this.blurValue = this.props.value;

@@ -23,7 +23,7 @@ export const SphereEditMenu_sphereManagement = () => {
     await tapAlertCancelButton();
     await tap("LeaveSphere")
     await tapAlertOKButton();
-    await delay(500);
+    await delay(1000);
     await screenshot();
     await tapSingularAlertButton()
   })

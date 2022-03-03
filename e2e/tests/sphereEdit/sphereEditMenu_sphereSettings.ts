@@ -21,7 +21,7 @@ export const SphereEditMenu_sphereSettings = () => {
   test('should be able to change the sphere name', async () => {
     await replaceText("SphereName","My Home");
     await tapReturnKey("SphereName");
-    await delay(500);
+    await delay(1000);
   })
 
   if (CONFIG.ONLY_ESSENTIALS === false) {

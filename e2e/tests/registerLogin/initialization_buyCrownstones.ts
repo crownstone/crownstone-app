@@ -8,7 +8,7 @@ import {
   tapAlertOKButton,
   tapReturnKey,
   tapSingularAlertButton, visitLink,
-  waitToNavigate, waitToShow
+  waitToNavigate, waitToShow, waitToStart
 } from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
@@ -17,7 +17,7 @@ export const Initialization_buyCrownstones = () => {
   if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be on the splash screen', async () => {
-    await waitToNavigate('LoginSplash');
+    await waitToStart('LoginSplash');
     await waitToShow('BuyButton');
   })
 
