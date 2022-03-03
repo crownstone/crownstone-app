@@ -101,12 +101,15 @@ class BackgroundProcessHandlerClass {
 
       // we first setup the event listeners since these events can be fired by the this.startStore().
 
+
+      core.eventBus.on('userActivated', () => {
+        // clear the temporary data like state and disability of stones so no old data will be shown
+        prepareStoreForUser();
+      })
+
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedIn', () => {
-        // clear the temporary data like state and disability of stones so no old data will be shown
-        prepareStoreForUser();
-
         let state = core.store.getState();
         if (state.app.indoorLocalizationEnabled === false) {
           LOG.info("BackgroundProcessHandler: Set background processes to OFF");
@@ -442,6 +445,7 @@ class BackgroundProcessHandlerClass {
 
       DataUtil.verifyPicturesInDatabase(state);
 
+      core.eventBus.emit("userActivated");
       core.eventBus.emit("userLoggedIn");
       core.eventBus.emit("storePrepared");
       if (state.user.isNew === false) {

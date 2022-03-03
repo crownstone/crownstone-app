@@ -342,6 +342,8 @@ export class Login extends Component<any, any> {
   }
 
   downloadSettings(userId) {
+    core.eventBus.emit('userActivated');
+    
     let parts = 1/5;
     let promises = [];
 
