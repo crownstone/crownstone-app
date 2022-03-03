@@ -3,7 +3,6 @@ import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { Stacks } from "../../Stacks";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
 import { SetupHelper } from "../../../native/setup/SetupHelper";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
@@ -50,7 +49,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
     if (buttonId === 'back') {
       NavigationUtil.setRoot( Stacks.DEV_searchingForCrownstones() )
       FocusManager.stopScanning()
-      ConnectionManager.disconnect();
     }
   }
 

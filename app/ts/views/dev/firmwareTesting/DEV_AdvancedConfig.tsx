@@ -3,7 +3,6 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
 import { background, colors, styles } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
@@ -56,7 +55,6 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     if (buttonId === 'back') {
       NavigationUtil.setRoot( Stacks.DEV_searchingForCrownstones() )
       FocusManager.stopScanning()
-      ConnectionManager.disconnect();
     }
   }
 
