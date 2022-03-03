@@ -64,7 +64,7 @@ export class RoundedBackground extends Component<{
         <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius: SceneConstants.roundness, overflow: 'hidden'}}>
           <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
             <View>
-            <CustomKeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+            <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
               { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
               { this.props.topImage ? <View style={[styles.fullscreen, {height:backgroundHeight, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
               <View style={[styles.fullscreen, {height:backgroundHeight}]}>

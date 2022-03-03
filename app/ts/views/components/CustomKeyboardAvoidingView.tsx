@@ -76,7 +76,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
   }
 
   render() {
-    let style = {};
+    let style;
     if (this.props.style.position !== undefined) {
       style = {...this.props.style, top: this.state.offset};
     }
@@ -85,7 +85,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
     }
 
     if (Platform.OS === 'android') {
-      return <Animated.View {...this.props} style={{...this.props.style, position:'absolute', top: this.state.offset}} />;
+      return <Animated.View {...this.props} style={style} />;
     }
     else {
       return <KeyboardAvoidingView {...this.props} />

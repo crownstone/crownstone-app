@@ -94,7 +94,7 @@ export class AnimatedBackground extends Component<{
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
         <StatusBar barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
-        <CustomKeyboardAvoidingView style={[styles.fullscreen, {height:backgroundHeight}]}>
+        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight}}>
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
             <BackgroundImage height={backgroundHeight} image={this.staticImage} />
           </View>

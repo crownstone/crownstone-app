@@ -1,12 +1,9 @@
-import { FileUtil }                        from "../../util/FileUtil";
 import { CloudAddresses }                  from "../indirections/CloudAddresses";
 import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS } from "../../ExternalConfig";
 import { CameraLibrarySettings }           from "../indirections/CameraLibraryInterface";
 import { CrownstoneSSE }                   from "../../logic/SSE";
 import { BridgeMock }                      from "./BridgeMock";
 import { BridgeConfig }                    from "../../native/libInterface/BridgeConfig";
-import { BluenetPromiseWrapper }           from "../../native/libInterface/BluenetPromise";
-import { base_core }                       from "../../Base_core";
 
 
 export const TestingFramework = {
@@ -15,8 +12,8 @@ export const TestingFramework = {
 
   async initialize(json) {
     try {
-      CloudAddresses.cloud_v1                 = json.cloud_v1          || null;
-      CloudAddresses.cloud_v2                 = json.cloud_v2          || null;
+      CloudAddresses.cloud_v1                 = json.cloud_v1          || CLOUD_ADDRESS;
+      CloudAddresses.cloud_v2                 = json.cloud_v2          || CLOUD_V2_ADDRESS;
       CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary  || false;
       CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary || false;
       BridgeConfig.mockBluenet                = json.mockBluenet       || false;
