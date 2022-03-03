@@ -113,19 +113,15 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
       this.refresh();
       this.setRefreshTimeout();
       this.unsubscribe.push(NativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
-        console.log("Verified", data)
         this.update(data, 'verified');
       }))
       this.unsubscribe.push(NativeBus.on(NativeBus.topics.unverifiedAdvertisementData, (data: crownstoneAdvertisement) => {
-        console.log("unverifiedAdvertisementData", data)
         this.update(data, 'unverified');
       }))
       this.unsubscribe.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (data: crownstoneAdvertisement) => {
-        console.log("setupAdvertisement", data)
         this.update(data, 'setup');
       }))
       this.unsubscribe.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data : crownstoneAdvertisement) => {
-        console.log("dfuAdvertisement", data)
         this.startHFScanning();
         this.update(data, 'dfu');
       }))

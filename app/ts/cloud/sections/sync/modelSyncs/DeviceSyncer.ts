@@ -14,7 +14,7 @@ import {Platform} from 'react-native'
 import {Util} from "../../../../util/Util";
 import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
-import {LOG} from "../../../../logging/Log";
+import {LOG, LOGe} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
 import {base_core} from "../../../../Base_core";
 import {BluenetPromiseWrapper} from "../../../../native/libInterface/BluenetPromise";
@@ -90,7 +90,7 @@ export class DeviceSyncer extends SyncingBase {
                   })
                 })
                 .catch((err) => {
-                  console.log("Err getting trackingNumber", err?.message);
+                  LOGe.info("DeviceSyncer: Err getting trackingNumber", err?.message);
                 }))
             }
           }

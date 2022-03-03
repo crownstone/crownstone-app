@@ -58,11 +58,8 @@ export class PresenceSyncer extends SyncingSphereItemBase {
       }
     });
 
-    console.log("usersByLocation", usersByLocation)
 
     Object.keys(locationsInSphere).forEach((localLocationId) => {
-      console.log("LocalLocationId", localLocationId, usersByLocation[localLocationId])
-
       // check if the data from the cloud is already in the location;
       if (usersByLocation[localLocationId] === undefined) {
         // nobody here! PURGE!'
@@ -80,14 +77,10 @@ export class PresenceSyncer extends SyncingSphereItemBase {
       else {
         // we ARE NOT in the location according to our DB, but are according to the CLOUD.
         usersByLocation[localLocationId].forEach((userId) => {
-          console.log("Adding this user", localLocationId, userId);
-
           if (userId === this.userId) { return; }
 
-          console.log("locationsInSphere[localLocationId].presentUsers",locationsInSphere[localLocationId].presentUsers);
           if (locationsInSphere[localLocationId].presentUsers.indexOf(userId) === -1) {
             // enter user into the location!
-            console.log("UserEnter!")
             this.actions.push({
               type:       'USER_ENTER_LOCATION',
               sphereId:   this.localSphereId,

@@ -94,7 +94,7 @@ export const processStockCustomImage = function(targetName, picture, source) : P
 export const removeStockCustomImage = function(picture, source) {
   if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
     if (picture) {
-      FileUtil.safeDeleteFile(picture).catch((e) => {console.log("ER", e)});
+      FileUtil.safeDeleteFile(picture).catch((e) => {});
     }
   }
 };
