@@ -303,6 +303,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "ADD_ABILITY":
     case "REFRESH_ABILITIES":
     case "UPDATE_ABILITY":
+    case "UPDATE_ABILITY_PROPERTY":
       eventStatus['stoneChangeAbilities'] = affectedIds; break;
 
     case "MARK_ABILITY_AS_SYNCED":
@@ -332,7 +333,6 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "REMOVE_HUB":
       eventStatus['changeHubs'] = affectedIds; break;
 
-    case "UPDATE_ABILITY_PROPERTY":
     case "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD":
       break;
     default:
