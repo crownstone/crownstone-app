@@ -45,7 +45,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={background.main} hasNavBar={false}>
+      <Background image={background.main} hasNavBar={false} testID={"SphereAdd"}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <IconButton
@@ -59,18 +59,18 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
             <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
-              <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
+              <AddItem icon={'md-cube'} label={ lang("Room")} testID={"AddRoom"} callback={() => {
                 NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId, isModal: true });
               }} />
-              <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
+              <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} testID={"AddCrownstone_button"} callback={() => {
                 NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
               }} />
             </View>
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
+              <AddItem icon={'ios-body'} label={ lang("Person")} testID={"AddPerson"} callback={() => {
                 NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
               }} />
-              <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
+              <AddItem icon={'ios-link'} label={ lang("Something_else_")} testID={"AddSomethingElse"} callback={() => {
                 NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId, isModal: true})
               }} />
             </View>
@@ -87,7 +87,7 @@ function AddItem(props) {
   if (props.highlight) { usedIconSize = 1.3*iconSize}
 
   return (
-    <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }}>
+    <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }} testID={props.testID}>
       <IconButton
         name={props.icon}
         size={0.75*usedIconSize}

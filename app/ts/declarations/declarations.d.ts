@@ -212,6 +212,7 @@ interface interviewCard {
   optionsBottom?: boolean
   options: interviewOption[],
   testID?: string,
+  scrollViewtestID?: string,
 }
 
 interface interviewCards {

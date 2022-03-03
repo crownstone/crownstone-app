@@ -46,23 +46,26 @@ export class AddCrownstone extends LiveComponent<any, any> {
       start: {
         header:lang("Lets_add_a_Crownstone_"),
         subHeader:lang("What_sort_of_Crownstone_w"),
+        testID:'addCrownstone_selection',
+        scrollViewtestID:'addCrownstone_scrollView',
         optionsCenter: true,
         options: [
-          {label: lang("Plug"),                       image: {source: require('../../../assets/images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: lang("A_Plug_it_is_")},
-          {label: lang("Built_in_One"),               image: {source: require('../../../assets/images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: lang("Lets_add_a_Built_in_One_")},
-          {label: lang("Hub"),                        image: {source: require('../../../assets/images/addCrownstone/hub.png')},        nextCard: 'installingHub_step1' },
-          {label: lang("Guidestone"),                 image: {source: require('../../../assets/images/addCrownstone/guidestone.png')}, nextCard: 'installingGuidestone',        response: lang("Lets_add_a_Guidestone_")},
-          {label: lang("Crownstone_USB"),             image: {source: require('../../../assets/images/addCrownstone/crownstone_usb.png')}, nextCard: 'installingUSB',           response: lang("Lets_add_a_Crownstone_USB")},
-          {label: lang("I_dont_have_nCrownstones_y"), image: {source: require('../../../assets/images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: lang("Lets_buy_Crownstones_")},
+          {label: lang("Plug"),                       testID:'Plug',           image: {source: require('../../../assets/images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: lang("A_Plug_it_is_")},
+          {label: lang("Built_in_One"),               testID:'Built_in_One',   image: {source: require('../../../assets/images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: lang("Lets_add_a_Built_in_One_")},
+          {label: lang("Hub"),                        testID:'Hub',            image: {source: require('../../../assets/images/addCrownstone/hub.png')},        nextCard: 'installingHub_step1' },
+          {label: lang("Guidestone"),                 testID:'Guidestone',     image: {source: require('../../../assets/images/addCrownstone/guidestone.png')}, nextCard: 'installingGuidestone',        response: lang("Lets_add_a_Guidestone_")},
+          {label: lang("Crownstone_USB"),             testID:'Crownstone_USB', image: {source: require('../../../assets/images/addCrownstone/crownstone_usb.png')}, nextCard: 'installingUSB',           response: lang("Lets_add_a_Crownstone_USB")},
+          {label: lang("I_dont_have_nCrownstones_y"), testID:'BuyCrownstones', image: {source: require('../../../assets/images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: lang("Lets_buy_Crownstones_")},
         ]
       },
       buy: {
         textColor: colors.white.hex,
+        testID:'BuyCrownstonesCard',
         subHeader: lang("Tap_the_button_below_to_g"),
         backgroundImage: require('../../../assets/images/backgrounds/builtinDarkBackground.jpg'),
         optionsBottom: true,
         options: [
-          {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}); }},
+          {label: lang("Visit_the_Shop_"), testID:'toStore', textAlign:'right', onSelect: () => { Linking.openURL(Languages.activeLocale === 'nl_nl' ? 'https://shop.crownstone.rocks/?launch=nl&ref=app/addCrownstone' : 'https://shop.crownstone.rocks/?launch=en&ref=app/addCrownstone').catch(err => {}); }},
         ]
       },
       installingGuidestone: {
@@ -173,7 +176,14 @@ export class AddCrownstone extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true} testID={'AddCrownstone'}>
+      <AnimatedBackground
+        fullScreen={true}
+        image={backgroundImage}
+        hideNotifications={true}
+        hideOrangeLine={true}
+        dimStatusBar={true}
+        testID={'AddCrownstone'}
+      >
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -181,7 +191,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
             if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
-          backButtonName={"addCrownstone"}
+          backButtonName={"addCrownstone_backButton"}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

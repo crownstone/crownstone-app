@@ -311,7 +311,7 @@ function InterviewCard(props : {
   let card = props.card;
   return (
     <View testID={card.testID}>
-      <ScrollView style={{height: props.height || availableModalHeight}}>
+      <ScrollView style={{height: props.height || availableModalHeight}} testID={props.card.scrollViewtestID}>
         <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
           { header      && <Text style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text> }
           { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
