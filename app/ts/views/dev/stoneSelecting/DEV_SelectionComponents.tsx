@@ -84,7 +84,7 @@ export class CrownstoneEntry extends Component<any, any> {
     }
 
     let hasType = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.deviceType !== 'undefined' || false;
-    let hasCid = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.crownstoneId || false;
+    let hasCid  = this.props.item.data && this.props.item.data.serviceData && this.props.item.data.serviceData.crownstoneId || false;
 
     let str = "";
     if (sphere !== null) {

@@ -14,13 +14,13 @@ import { SlideInView } from "../../components/animated/SlideInView";
 import React from "react";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { Icon } from "../../components/Icon";
-import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
-import { CommandAPI } from "../../../logic/constellation/Commander";
+import {DevAppState, TESTING_SPHERE_ID} from "../../../backgroundProcesses/dev/DevAppState";
+import {tell} from "../../../logic/constellation/Tellers";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 const BLE_STATE_READY = "ready";
 const BLE_STATE_BUSY = "busy";
 
-const PROXY_OPTIONS = {keepConnectionOpen: true}
 
 export class DEV_FirmwareTest extends LiveComponent<{
   item: crownstoneAdvertisement,
@@ -34,8 +34,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
   }
 
   bleStateResetTimeout;
-  cachedCommand = null;
-  cachedCommandTimeout = null;
   unsubscribe = [];
 
   constructor(props) {
@@ -58,7 +56,10 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   componentDidMount() {
     this.unsubscribe.push(core.eventBus.on("FOCUS_RSSI_UPDATE", () => {
-      TopBarUtil.updateOptions(this.props.componentId, { title: FocusManager.name+ " [" + FocusManager.crownstoneState.stoneId + "] "+FocusManager.crownstoneState.rssiAverage})
+      TopBarUtil.updateOptions(this.props.componentId, {
+        title:   FocusManager.name+ " [" + FocusManager.crownstoneState.stoneId + "] "+FocusManager.crownstoneState.rssiAverage,
+        leftNav: {id: 'back', text:'Back'}
+      });
     }));
 
     this.unsubscribe.push(core.eventBus.on("FOCUS_UPDATE", () => {
@@ -71,7 +72,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
   }
 
 
-  async bleAction(action : (api: CommandAPI) => Promise<any> | void, failureHandler: () => void = () => {}) {
+  async bleAction(action : () => Promise<any> | void, failureHandler: () => void = () => {}) {
     if (this.state.bleState === BLE_STATE_BUSY) {
       return;
     }
@@ -79,84 +80,32 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
     try {
       let state = core.store.getState();
-      let api = await ConnectionManager.connect(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
-      await action(api);
-      await ConnectionManager.setDisconnectTimeout()
+      // Constellation depends on the MapProvider for ID resolving. This should cover that case along with the same code in the stoneSelector update method.
+      // The check here is required since setup might be done in the views using this class.
+      let sphereId = FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup;
+      if (sphereId === TESTING_SPHERE_ID) {
+        MapProvider.stoneHandleMap[this.props.handle] = {
+          id: null,
+          cid: 0,
+          handle: this.props.handle,
+          name: "devStone",
+          sphereId: TESTING_SPHERE_ID,
+          stone: {},
+          stoneConfig: {},
+        }
+      }
+      else {
+        if (MapProvider.stoneHandleMap[this.props.handle]?.sphereId === TESTING_SPHERE_ID) {
+          MapProvider.refreshAll();
+        }
+      }
+      await action();
+      this.setState({bleState: BLE_STATE_READY});
     }
     catch (err) {
       this.showBleError(err);
-      await ConnectionManager.disconnect()
-    }
-    finally {
-      this.setState({bleState: BLE_STATE_READY});
     }
   }
-
-  // bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, connect = true, immediate = false) {
-  //   clearTimeout(this.cachedCommandTimeout);
-  //
-  //   if (this.state.bleState === BLE_STATE_BUSY) {
-  //     if (immediate === false) {
-  //       console.log("BUSY, postponing")
-  //       this.cachedCommand = { action, props, type, resultHandler, connect, immediate };
-  //       this.cachedCommandTimeout = setTimeout(() => {
-  //         this.bleAction(
-  //           this.cachedCommand.action,
-  //           this.cachedCommand.props,
-  //           this.cachedCommand.type,
-  //           this.cachedCommand.resultHandler,
-  //           this.cachedCommand.connect,
-  //           this.cachedCommand.immediate,
-  //         );
-  //       }, 400);
-  //     }
-  //     return;
-  //   }
-  //
-  //   FocusManager.setUpdateFreeze(type);
-  //
-  //
-  //   let promise = null;
-  //   this.setState({bleState: BLE_STATE_BUSY});
-  //   let state = core.store.getState();
-  //
-  //   if (connect) {
-  //     ConnectionManager.connectWillStart(this.props.handle)
-  //     let proxy = BleUtil.getProxy(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
-  //     promise = proxy.performPriority(action, props, PROXY_OPTIONS)
-  //   }
-  //   else {
-  //     ConnectionManager.disconnect()
-  //     let actionPromise = () => {
-  //       if (immediate) {
-  //         return new Promise<void>((resolve, reject) => {
-  //           // @ts-ignore
-  //           action.apply(this, props).catch((err) => {});
-  //           setTimeout(() => {
-  //             resolve();
-  //           },100);
-  //         })
-  //       }
-  //       return action.apply(this, props);
-  //     };
-  //     promise = BlePromiseManager.registerPriority(actionPromise, { from: 'performing self contained action' })
-  //   }
-  //
-  //   // perform.
-  //   promise
-  //     .then((result) => {
-  //       resultHandler(result);
-  //       FocusManager.setFreezeTimeout(type);
-  //       this.setState({bleState: BLE_STATE_READY});
-  //       if (connect) { ConnectionManager.setDisconnectTimeout() }
-  //     })
-  //     .catch((err) => {
-  //       FocusManager.clearUpdateFreeze(type);
-  //       this.showBleError(err);
-  //       if (connect) { ConnectionManager.disconnect() }
-  //     })
-  // }
-
 
   _setupCrownstone() {
     if (this.state.bleState === BLE_STATE_BUSY) {
@@ -210,7 +159,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   showBleError(err) {
     clearTimeout(this.bleStateResetTimeout);
-    this.setState({ bleState: err });
+    this.setState({ bleState: err?.message });
     this.bleStateResetTimeout = setTimeout(() => {
       this.setState({ bleState: BLE_STATE_READY });
     }, 6000);
@@ -235,7 +184,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'button',
         style: { color: colors.blue.hex },
         callback: async () => {
-          await this.bleAction((api) => { api.restartCrownstone() })
+          await this.bleAction(() => { return tell(this.props.handle).restartCrownstone() })
         }
       });
       items.push({
@@ -255,14 +204,14 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'button',
         style: { color: colors.blue.hex },
         callback: async () => {
-          await this.bleAction((api) => { api.restartCrownstone() })
+          await this.bleAction(() => { return tell(this.props.handle).restartCrownstone() })
         }
       });
       items.push({
         label: "Factory Reset",
         type: 'button',
         callback: async () => {
-          await this.bleAction((api) => { api.commandFactoryReset() })
+          await this.bleAction(() => { return tell(this.props.handle).commandFactoryReset() })
         }
       });
       items.push({label: "Put your Crownstone back in setup mode.", type: 'explanation', below: true, color: explanationColor});
@@ -271,7 +220,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         label: "Recover",
         type: 'button',
         callback: async () => {
-          await this.bleAction((api) => { api.recover() })
+          await this.bleAction(() => { return tell(this.props.handle).recover() })
         }
       });
       items.push({label: "Recovery is possible in the first 30 seconds after power on.", type: 'explanation', below: true, color: explanationColor});
@@ -281,10 +230,20 @@ export class DEV_FirmwareTest extends LiveComponent<{
         label: "Back to normal mode",
         type: 'button',
         callback: async () => {
-          await this.bleAction((api) => { api.bootloaderToNormalMode() })
+          await this.bleAction(() => { return tell(this.props.handle).bootloaderToNormalMode() })
         }
       });
       items.push({label: "Put your Crownstone back into app mode.", type: 'explanation', below: true, color: explanationColor});
+    }
+    else {
+      items.push({
+        label: "Recover",
+        type: 'button',
+        callback: async () => {
+          await this.bleAction(() => { return tell(this.props.handle).recover() })
+        }
+      });
+      items.push({label: "Recovery is possible in the first 30 seconds after power on.", type: 'explanation', below: true, color: explanationColor});
     }
 
 
@@ -307,8 +266,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           min: 0,
           max: 100,
           callback: async (value) => {
-            await this.bleAction(async (api) => {
-              await api.setSwitchState(value)
+            await this.bleAction(async () => {
+              await tell(this.props.handle).setSwitchState(value)
               FocusManager.crownstoneState.switchStateValue = value;
               this.forceUpdate();
             })
@@ -322,8 +281,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
           callback: async (value) => {
-            await this.bleAction(async (api) => {
-              await api.setSwitchState(value ? 100 : 0)
+            await this.bleAction(async () => {
+              await tell(this.props.handle).setSwitchState(value ? 100 : 0)
               FocusManager.crownstoneState.switchStateValue = value ? 100 : 0;
               this.forceUpdate();
             })
@@ -340,8 +299,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           min: 0,
           max: 100,
           callback: async  (value) => {
-            await this.bleAction(async (api) => {
-              await api.multiSwitch(value)
+            await this.bleAction(async () => {
+              await tell(this.props.handle).multiSwitch(value)
               FocusManager.crownstoneState.switchStateValue = value;
               this.forceUpdate();
             })
@@ -355,8 +314,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
           callback: async (value) => {
-            await this.bleAction(async (api) => {
-              await api.multiSwitch(value ? 100 : 0)
+            await this.bleAction(async () => {
+              await tell(this.props.handle).multiSwitch(value ? 100 : 0)
               FocusManager.crownstoneState.switchStateValue = value ? 100 : 0;
               this.forceUpdate();
             })
@@ -369,8 +328,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         disabled: FocusManager.crownstoneState.relayState === null,
         value: FocusManager.crownstoneState.relayState === 1,
         callback: async (value) => {
-          await this.bleAction(async (api) => {
-            await api.switchRelay(value)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).switchRelay(value)
             FocusManager.crownstoneState.relayState = value ? 1 : 0;
             this.forceUpdate();
           })
@@ -386,8 +345,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           min: 0,
           max: 100,
           callback: async (value) => {
-            await this.bleAction(async (api) => {
-              await api.switchDimmer(value)
+            await this.bleAction(async () => {
+              await tell(this.props.handle).switchDimmer(value)
               FocusManager.crownstoneState.dimmerState = value;
               this.forceUpdate();
             })
@@ -402,8 +361,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           value: FocusManager.crownstoneState.dimmerState,
           setCallback: async (value) => {
             let num = Math.max(0, Math.min(100, Number(value)));
-            await this.bleAction(async (api) => {
-              await api.switchDimmer(num);
+            await this.bleAction(async () => {
+              await tell(this.props.handle).switchDimmer(num);
               FocusManager.crownstoneState.dimmerState = num;
               core.eventBus.emit("hideNumericOverlaySuccess");
               this.forceUpdate();
@@ -430,8 +389,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         disabled: FocusManager.crownstoneState.dimmingEnabled === null,
         value: FocusManager.crownstoneState.dimmingEnabled,
         callback: async (value) => {
-          await this.bleAction(async (api) => {
-            await api.allowDimming(value)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).allowDimming(value)
             FocusManager.crownstoneState.dimmingEnabled = value;
             this.forceUpdate();
           })
@@ -443,8 +402,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         disabled: FocusManager.crownstoneState.locked === null,
         value: FocusManager.crownstoneState.locked,
         callback: async (value) => {
-          await this.bleAction(async (api) => {
-            await api.lockSwitch(value)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).lockSwitch(value)
             FocusManager.crownstoneState.locked = value;
             this.forceUpdate();
           })
@@ -456,8 +415,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         disabled: FocusManager.crownstoneState.switchCraft === null,
         value: FocusManager.crownstoneState.switchCraft,
         callback: async (value) => {
-          await this.bleAction(async (api) => {
-            await api.setSwitchCraft(value)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setSwitchCraft(value)
             FocusManager.crownstoneState.switchCraft = value;
             this.forceUpdate();
           })
@@ -468,8 +427,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: async () => {
-          await this.bleAction(async (api) => {
-            await api.clearErrors({
+          await this.bleAction(async () => {
+            await tell(this.props.handle).clearErrors({
               dimmerOnFailure:    true,
               dimmerOffFailure:   true,
               temperatureDimmer:  true,
@@ -485,8 +444,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: async () => {
-          await this.bleAction(async (api) => {
-            await api.setTime()
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setTime()
           })
         }
       });
@@ -507,8 +466,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.macAddress,
         getter: async () => {
-          await this.bleAction(async (api) => {
-            let macAddress = await api.getMACAddress()
+          await this.bleAction(async () => {
+            let macAddress = await tell(this.props.handle).getMACAddress()
             FocusManager.crownstoneState.macAddress = macAddress;
             this.forceUpdate();
           })
@@ -521,8 +480,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.bootloaderVersion,
         getter: async () => {
-          await this.bleAction(async (api) => {
-            let bootloaderVersion = await api.getBootloaderVersion()
+          await this.bleAction(async () => {
+            let bootloaderVersion = await tell(this.props.handle).getBootloaderVersion()
             FocusManager.crownstoneState.bootloaderVersion = bootloaderVersion;
             this.forceUpdate();
           })
@@ -535,8 +494,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.firmwareVersion,
         getter: async () => {
-          await this.bleAction(async (api) => {
-            let firmwareVersion = await api.getFirmwareVersion()
+          await this.bleAction(async () => {
+            let firmwareVersion = await tell(this.props.handle).getFirmwareVersion()
             FocusManager.crownstoneState.firmwareVersion = firmwareVersion;
             this.forceUpdate();
           })
@@ -551,8 +510,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.hardwareVersion,
         getter: async () => {
-          await this.bleAction(async (api) => {
-            let hardwareVersion = await api.getHardwareVersion();
+          await this.bleAction(async () => {
+            let hardwareVersion = await tell(this.props.handle).getHardwareVersion();
             FocusManager.crownstoneState.hardwareVersion = hardwareVersion;
             this.forceUpdate();
           });
@@ -565,8 +524,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.resetCounter,
         getter: async () => {
-          await this.bleAction(async (api) => {
-            let resetCounter = await api.getResetCounter();
+          await this.bleAction(async () => {
+            let resetCounter = await tell(this.props.handle).getResetCounter();
             FocusManager.crownstoneState.resetCounter = resetCounter;
             this.forceUpdate();
           })
@@ -592,8 +551,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'button',
           style: { color: colors.red.hex },
           callback: async () => {
-            await this.bleAction(async (api) => {
-              await api.putInDFU()
+            await this.bleAction(async () => {
+              await tell(this.props.handle).putInDFU()
             })
           }
         });
