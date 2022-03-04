@@ -13,7 +13,7 @@ export class MirrorDatabase {
   accessToken : string;
   userId      : string;
 
-  spheres     : Record<string, SyncRequestResponse_Sphere> = {}; // this is the dump of cloud sync FULL
+  spheres     : Record<string, any> = {}; // this is the dump of cloud sync FULL
   user        : any = {};
 
   async login() {

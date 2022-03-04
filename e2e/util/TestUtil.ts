@@ -138,7 +138,7 @@ export function delay(ms) : Promise<void> {
 }
 
 export function Platform() {
-  return device.getPlatform()
+  return device.getPlatform();
 }
 export function isAndroid() {
   return device.getPlatform() === 'android';

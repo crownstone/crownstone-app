@@ -6,7 +6,9 @@
     "strictNullChecks": false,
     "rootDirs": ["../app/ts","./"]
   },
+  "exclude": [],
   "include": [
+    "./declarations/testTypes.d.ts",
     "../app/ts/declarations/*",
     "../app/ts/**/*",
     "../tests/**/*"

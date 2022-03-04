@@ -1,5 +1,6 @@
-import {SphereMockInterface} from "./SphereMockInterface";
-import {MirrorDatabase} from "./MirrorDatabase";
+import { SphereMockInterface } from "./SphereMockInterface";
+import { MirrorDatabase }      from "./MirrorDatabase";
+import { BleMocks }            from "./BleMocks";
 
 type cloudId = string;
 
@@ -7,10 +8,13 @@ export class TestingAssistant {
 
   activeSphereId : string = null;
   spheres        : Record<cloudId, SphereMockInterface> = {}
-  db             : any;
+  db             : MirrorDatabase;
+
+  ble            : BleMocks;
 
   constructor() {
-    this.db = new MirrorDatabase()
+    this.db  = new MirrorDatabase();
+    this.ble = new BleMocks();
   }
 
 
@@ -27,15 +31,10 @@ export class TestingAssistant {
   }
 
 
-  getSphereIdByName(name) {
-    for (let sphereId in this.db.spheres) {
-      if (this.db.spheres.data.data.name === name) {
-        return sphereId;
-      }
-    }
-  }
-
-
+  /**
+   * Gets the cloud ID of the sphere
+   * @param name
+   */
   getSphereIdMostRecent() {
     let creationTime = 0;
     let candidate = null;
@@ -47,6 +46,25 @@ export class TestingAssistant {
       }
     }
     return candidate;
+  }
+
+  /**
+   * Gets the cloud ID of the sphere
+   * @param name
+   */
+  async getActiveSphereLocalId() {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (this.activeSphereId) {
+      if (!this.spheres[this.activeSphereId].sphereLocalId) {
+        await this.spheres[this.activeSphereId].loadSphereData();
+      }
+      return this.spheres[this.activeSphereId].sphereLocalId || null;
+    }
+
+    return null;
   }
 
 

@@ -155,7 +155,7 @@ export class Interview extends Component<{
           currentIds.splice(this.activeCardIndex + 1);
 
           if (this.selectedOptions.length <= this.activeCardIndex) {
-            this.selectedOptions.push(selectedIndex)
+            this.selectedOptions.push(selectedIndex);
           }
           else {
             this.selectedOptions[this.activeCardIndex] = selectedIndex;

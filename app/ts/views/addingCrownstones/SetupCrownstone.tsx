@@ -533,7 +533,7 @@ export class SetupCrownstone extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true}>
+      <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true} testID={'SetupCrownstone'}>
         <KeepAwake />
         <Interview
           backButtonName={"setupCrownstone"}

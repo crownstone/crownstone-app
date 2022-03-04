@@ -1,6 +1,15 @@
 {
+    "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "../tsconfig.json",
+    "compilerOptions": {
+      "noImplicitAny": false,
+      "strictNullChecks": false,
+      "rootDirs": ["../app/ts","./"]
+    },
+    "exclude": [],
     "include": [
+      "./*",
+      "../tests/declarations/testTypes.d.ts",
       "../app/ts/declarations/*"
     ]
 }

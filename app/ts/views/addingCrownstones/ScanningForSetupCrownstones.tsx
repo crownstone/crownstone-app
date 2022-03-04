@@ -157,6 +157,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
       <View key={stoneId + '_setup_entry'}>
         <FadeIn style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <SetupDeviceEntry
+            testID={`SetupDeviceEntry${item.handle}`}
             key={stoneId + '_setup_element'}
             sphereId={this.props.sphereId}
             handle={item.handle}
@@ -213,7 +214,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     let informationStyle = {...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle};
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true} >
+      <Background hasNavBar={false} image={background.main} hideNotifications={true} testID={"ScanningForSetupCrownstones"}>
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}

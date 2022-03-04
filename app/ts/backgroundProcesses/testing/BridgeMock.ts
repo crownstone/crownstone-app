@@ -3,6 +3,7 @@ import {xUtil} from "../../util/StandAloneUtil";
 import {defaultHeaders} from "../../cloud/sections/cloudApiBase";
 import {BridgeConfig} from "../../native/libInterface/BridgeConfig";
 import {Bluenet_direct} from "../../native/libInterface/Bluenet";
+import { NotificationParser } from "../../notifications/NotificationParser";
 
 
 class BridgeMockClass {
@@ -21,7 +22,7 @@ class BridgeMockClass {
   }
 
   callBluenet(functionName: string, args: any[]) {
-    let data = { function: functionName, args, tStart: Date.now() };
+    let data = { function: functionName, args };
     fetch(`${BridgeConfig.mockBridgeUrl}callBluenet`, {method:"POST", headers: defaultHeaders as any, body: JSON.stringify(data)})
       .then(()     => { console.log("BridgeMock: Success performing mock callBluenet."); })
       .catch((err) => { console.log("BridgeMock: Error while performing mock callBluenet.", err?.message); })
@@ -51,6 +52,9 @@ class BridgeMockClass {
           Bluenet_direct[promise.functionName].apply(this, args);
           delete this.promiseCalls[event.callId];
         }
+        break;
+      case "notification":
+        NotificationParser.handle(event.data);
         break;
     }
   }

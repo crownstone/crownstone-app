@@ -23,7 +23,7 @@ import { STONE_TYPES } from "../../../Enums";
 import { tell } from "../../../logic/constellation/Tellers";
 
 
-export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?}, any> {
+export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?, testID?: string}, any> {
   baseHeight : any;
   setupEvents : any;
   rssiTimeout : any = null;
@@ -119,7 +119,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
     let wrapperStyle : ViewStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
     if (action) {
       return (
-        <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
+        <TouchableOpacity onPress={() => { action() }} style={wrapperStyle} testID={`setupPulse${this.props.handle}`}>
           {content}
         </TouchableOpacity>
       );
@@ -133,9 +133,9 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
   render() {
     let canSwitch = !(this.props.item.type === STONE_TYPES.guidestone || this.props.item.type === STONE_TYPES.crownstoneUSB || this.props.item.type === STONE_TYPES.hub);
     return (
-      <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1, overflow:'hidden'}}>
+      <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1, overflow:'hidden'}} testID={this.props.testID}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1, overflow:'hidden'}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center', overflow:'hidden'}} onPress={() => { this.props.callback(); }}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center', overflow:'hidden'}} testID={`selectSetupEntry${this.props.handle}`} onPress={() => { this.props.callback(); }}>
             {this._getIcon()}
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, overflow:'hidden'}} onPress={() => { this.props.callback(); }}>

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-class AdvertisementGenerator {
+export class AdvertisementGenerator {
 
 
   ibeaconArray() {
@@ -8,11 +8,15 @@ class AdvertisementGenerator {
     // Can ask the trackedCommand?
   }
 
-  normalAdvertisement(handle: string, sphereId: string) {
+  static genericAdvertisement(handle: string, rssi: number) {
+    return { handle, rssi };
+  }
+
+  static normalAdvertisement(handle: string, sphereId: string, rssi: number) {
     let adv =  {
       handle              : handle,
       name                : "CRWN",
-      rssi                : -60,
+      rssi                : rssi,
       referenceId         : sphereId, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
       isInDFUMode         : false,
       serviceData: getServiceData()
@@ -20,12 +24,12 @@ class AdvertisementGenerator {
     return adv;
   }
 
-  setupAdvertisement(handle: string, sphereId: string) {
+  static setupAdvertisement(handle: string, rssi: number) {
     let adv =  {
       handle              : handle,
       name                : "CRWN",
-      rssi                : -60,
-      referenceId         : sphereId, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
+      rssi                : rssi,
+      referenceId         : null, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
       isInDFUMode         : false,
       serviceData:  getServiceData({setupMode: true})
     }
