@@ -49,7 +49,7 @@ export class RoundedBackground extends Component<{
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) { hasTopBar = true; }
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) { hasTabBar = true; }
     if (hasTabBar && hasTopBar) { height = availableScreenHeight; }
-    else if (hasTopBar)         { height = availableModalHeight; }
+    else if (hasTopBar)         { height = availableModalHeight;  }
     return [height, hasTopBar, hasTabBar];
   }
 

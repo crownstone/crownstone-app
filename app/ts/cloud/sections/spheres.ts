@@ -149,7 +149,7 @@ export const spheres = {
   },
 
   getPresentPeople: function (ignoreDeviceId, background = true) {
-    return CLOUD._setupRequest('GET', '/Spheres/{id}/PresentPeople', {
+    return CLOUD._setupRequest('GET', '/Spheres/{id}/presentPeople', {
       data: { ignoreDeviceId: ignoreDeviceId },
       background : background
     }, 'query');

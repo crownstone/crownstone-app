@@ -91,16 +91,13 @@ export class SphereEditSettings extends LiveComponent<any, any> {
           if (sphereSettings.name !== newText) {
             if (this.validationState.sphereName === 'valid' && newText.trim().length >= 2) {
 
-              console.log("SHOW LOADING")
               core.eventBus.emit('showLoading', lang("Changing_sphere_name___"));
               CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
                 .then((result) => {
                   core.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: this.props.sphereId,  data: {name: newText}});
-                  console.log("HIDE LOADING")
                   core.eventBus.emit('hideLoading');
                 })
                 .catch((err) => {
-                  console.log("ERR HIDE LOADING")
                   core.eventBus.emit('hideLoading');
                 })
             }

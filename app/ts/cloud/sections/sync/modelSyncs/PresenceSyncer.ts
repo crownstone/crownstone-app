@@ -42,6 +42,7 @@ export class PresenceSyncer extends SyncingSphereItemBase {
 
     // go through all locations in the cloud.
     let usersByLocation = {};
+
     presentPeopleInCloud.forEach((user_in_cloud) => { // underscores so its visually different from locationInState
       let userId = user_in_cloud.userId;
       if (user_in_cloud.locations && user_in_cloud.locations.length > 0) {
@@ -56,6 +57,7 @@ export class PresenceSyncer extends SyncingSphereItemBase {
         });
       }
     });
+
 
     Object.keys(locationsInSphere).forEach((localLocationId) => {
       // check if the data from the cloud is already in the location;

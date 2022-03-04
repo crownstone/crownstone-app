@@ -57,7 +57,8 @@ export const DfuUtil = {
         let releaseNotes = newFirmwareDetails.releaseNotes;
         if (typeof releaseNotes === 'object') {
           // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
-          releaseNotes = releaseNotes[userConfig.language.split("_")[0]] ||
+          let userLanguage = Languages.activeLocale;
+          releaseNotes = releaseNotes[userLanguage.split("_")[0]] ||
                          releaseNotes['en'] ||
                          releaseNotes[Object.keys(releaseNotes)[0]];
         }

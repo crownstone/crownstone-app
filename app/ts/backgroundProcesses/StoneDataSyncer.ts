@@ -175,18 +175,16 @@ class StoneDataSyncerClass {
   }
 
   _syncAbility(sphereId, stoneId, initialAbility, abilityType: AbilityType) {
-    if (!initialAbility.syncedToCrownstone) {
-      switch (abilityType) {
-        case "dimming":
-          this._syncDimmingAbility( sphereId, stoneId, abilityType);
-          break;
-        case "switchcraft":
-          this._syncSwitchcraftAbility( sphereId, stoneId, abilityType);
-          break;
-        case "tapToToggle":
-          this._syncTapToToggle( sphereId, stoneId, abilityType);
-          break;
-      }
+    switch (abilityType) {
+      case "dimming":
+        this._syncDimmingAbility( sphereId, stoneId, abilityType);
+        break;
+      case "switchcraft":
+        this._syncSwitchcraftAbility( sphereId, stoneId, abilityType);
+        break;
+      case "tapToToggle":
+        this._syncTapToToggle( sphereId, stoneId, abilityType);
+        break;
     }
   }
 
@@ -196,7 +194,7 @@ class StoneDataSyncerClass {
 
 
   _syncDimmingAbility(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Setting ability trigger for dimming", sphereId, stoneId);
+    LOGi.info("StoneDataSyncer: Checking if dimming needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
     let stone = DataUtil.getStone(sphereId, stoneId);
     if (!stone)   { return; }
@@ -204,6 +202,7 @@ class StoneDataSyncerClass {
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
+      LOGi.info("StoneDataSyncer: Setting ability trigger for dimming", sphereId, stoneId);
       tell(stone).allowDimming(ability.enabledTarget)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
@@ -226,6 +225,7 @@ class StoneDataSyncerClass {
     if (!softOnSpeedProperty) { return; }
 
     if (softOnSpeedProperty.syncedToCrownstone === false) {
+      LOGi.info("StoneDataSyncer: Setting ability trigger for dimming:softOnSpeed", sphereId, stoneId);
       tell(stone).setSoftOnSpeed(Number(softOnSpeedProperty.valueTarget))
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
@@ -246,7 +246,7 @@ class StoneDataSyncerClass {
 
 
   _syncSwitchcraftAbility(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
+    LOGi.info("StoneDataSyncer: Checking if switchcraft needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
     let stone = DataUtil.getStone(sphereId, stoneId);
     if (!stone) { return }
@@ -254,6 +254,7 @@ class StoneDataSyncerClass {
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
+      LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
       tell(stone).setSwitchCraft(ability.enabledTarget)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
@@ -274,7 +275,7 @@ class StoneDataSyncerClass {
 
 
   _syncTapToToggle(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
+    LOGi.info("StoneDataSyncer: Checking if tap2toggle needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
     let stone = DataUtil.getStone(sphereId, stoneId);
     if (!stone) { return }
@@ -282,6 +283,7 @@ class StoneDataSyncerClass {
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
+      LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
       tell(stone).setTapToToggle(ability.enabledTarget)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle", sphereId, stoneId);
@@ -304,6 +306,7 @@ class StoneDataSyncerClass {
     if (!rssiOffsetProperty) { return; }
 
     if (rssiOffsetProperty.syncedToCrownstone === false) {
+      LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle:rssiOffsetProperty", sphereId, stoneId);
       tell(stone).setTapToToggleThresholdOffset(Number(rssiOffsetProperty.valueTarget))
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.valueTarget);

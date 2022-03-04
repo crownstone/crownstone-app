@@ -3,7 +3,6 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
-import { ConnectionManager } from "../../../backgroundProcesses/dev/ConnectionManager";
 import { core } from "../../../Core";
 import { background, colors, styles } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
@@ -15,6 +14,9 @@ import { ListEditableItems } from "../../components/ListEditableItems";
 import { IconButton } from "../../components/IconButton";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { CommandAPI } from "../../../logic/constellation/Commander";
+import {TESTING_SPHERE_ID} from "../../../backgroundProcesses/dev/DevAppState";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import {from, tell} from "../../../logic/constellation/Tellers";
 
 
 const BLE_STATE_READY = "ready";
@@ -53,7 +55,6 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     if (buttonId === 'back') {
       NavigationUtil.setRoot( Stacks.DEV_searchingForCrownstones() )
       FocusManager.stopScanning()
-      ConnectionManager.disconnect();
     }
   }
 
@@ -72,7 +73,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
   }
 
 
-  async bleAction(action : (api: CommandAPI) => Promise<any>, failureHandler: () => void = () => {}) {
+  async bleAction(action : () => Promise<any> | void, failureHandler: () => void = () => {}) {
     if (this.state.bleState === BLE_STATE_BUSY) {
       return;
     }
@@ -80,16 +81,30 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
     try {
       let state = core.store.getState();
-      let api = await ConnectionManager.connect(this.props.handle, FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup);
-      await action(api);
-      await ConnectionManager.disconnect()
+      // Constellation depends on the MapProvider for ID resolving. This should cover that case along with the same code in the stoneSelector update method.
+      // The check here is required since setup might be done in the views using this class.
+      let sphereId = FocusManager.crownstoneState.referenceId || state.devApp.sphereUsedForSetup;
+      if (sphereId === TESTING_SPHERE_ID) {
+        MapProvider.stoneHandleMap[this.props.handle] = {
+          id: null,
+          cid: 0,
+          handle: this.props.handle,
+          name: "devStone",
+          sphereId: TESTING_SPHERE_ID,
+          stone: {},
+          stoneConfig: {},
+        }
+      }
+      else {
+        if (MapProvider.stoneHandleMap[this.props.handle]?.sphereId === TESTING_SPHERE_ID) {
+          MapProvider.refreshAll();
+        }
+      }
+      await action();
+      this.setState({bleState: BLE_STATE_READY});
     }
     catch (err) {
       this.showBleError(err);
-      await ConnectionManager.disconnect()
-    }
-    finally {
-      this.setState({bleState: BLE_STATE_READY});
     }
   }
 
@@ -107,7 +122,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     items.push({label: "CONFIGS", type: 'explanation', color: explanationColor});
 
     let success = () => { core.eventBus.emit("hideNumericOverlaySuccess"); }
-    let failed = () => { core.eventBus.emit("hideNumericOverlayFailed"); }
+    let failed  = () => { core.eventBus.emit("hideNumericOverlayFailed"); }
 
     if (this.state.mode === 'unverified') {
       items.push({label: "Disabled for unverified Crownstone.", type: 'info'});
@@ -121,14 +136,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.switchCraftThreshold || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.switchCraftThreshold = await api.getSwitchcraftThreshold();
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.switchCraftThreshold = await from(this.props.handle).getSwitchcraftThreshold();
           })
           this.forceUpdate();
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setSwitchcraftThreshold(value);
+          await this.bleAction(async () => {
+            await from(this.props.handle).setSwitchcraftThreshold(value);
             success();
           }, failed);
         }
@@ -139,8 +154,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.maxChipTemp || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.maxChipTemp = await api.getMaxChipTemp();
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.maxChipTemp = await from(this.props.handle).getMaxChipTemp();
           })
           this.forceUpdate();
         },
@@ -152,14 +167,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerCurrentThreshold || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.dimmerCurrentThreshold = api.getDimmerCurrentThreshold()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.dimmerCurrentThreshold = from(this.props.handle).getDimmerCurrentThreshold()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setDimmerCurrentThreshold(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setDimmerCurrentThreshold(value);
             success();
           }, failed);
         }
@@ -170,14 +185,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempUpThreshold || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.dimmerTempUpThreshold = await api.getDimmerTempUpThreshold;
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.dimmerTempUpThreshold = await from(this.props.handle).getDimmerTempUpThreshold;
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setDimmerTempUpThreshold(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setDimmerTempUpThreshold(value);
             success();
           }, failed);
         }
@@ -188,14 +203,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempDownThreshold || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.dimmerTempDownThreshold = await api.getDimmerTempDownThreshold()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.dimmerTempDownThreshold = await from(this.props.handle).getDimmerTempDownThreshold()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setDimmerTempDownThreshold(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setDimmerTempDownThreshold(value);
             success();
           }, failed);
         }
@@ -207,14 +222,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.voltageZero || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.voltageZero = await api.getVoltageZero()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.voltageZero = await from(this.props.handle).getVoltageZero()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setVoltageZero(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setVoltageZero(value);
             success();
           }, failed);
         }
@@ -224,14 +239,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.currentZero || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.currentZero = await api.getCurrentZero()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.currentZero = await from(this.props.handle).getCurrentZero()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setSwitchcraftThreshold(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setSwitchcraftThreshold(value);
             success();
           }, failed);
         }
@@ -241,14 +256,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.powerZero || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.powerZero = await api.getPowerZero()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.powerZero = await from(this.props.handle).getPowerZero()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setPowerZero(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setPowerZero(value);
             success();
           }, failed);
         }
@@ -262,14 +277,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         digits: 6,
         value: FocusManager.crownstoneState.voltageMultiplier || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.voltageMultiplier = await api.getVoltageMultiplier()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.voltageMultiplier = await from(this.props.handle).getVoltageMultiplier()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setVoltageMultiplier(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setVoltageMultiplier(value);
             success();
           }, failed);
         }
@@ -280,14 +295,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         digits: 6,
         value: FocusManager.crownstoneState.currentMultiplier || null,
         getCallback: async () => {
-          await this.bleAction(async(api) => {
-            FocusManager.crownstoneState.currentMultiplier = await api.getCurrentMultiplier()
+          await this.bleAction(async () => {
+            FocusManager.crownstoneState.currentMultiplier = await from(this.props.handle).getCurrentMultiplier()
             this.forceUpdate();
           })
         },
         setCallback: async (value) => {
-          await this.bleAction(async(api) => {
-            await api.setCurrentMultiplier(value);
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setCurrentMultiplier(value);
             success();
           }, failed);
         }
@@ -301,8 +316,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: async () => {
-          await this.bleAction(async(api) => {
-            await api.setUartState(0)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setUartState(0)
           })
         }
       });
@@ -311,8 +326,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: async () => {
-          await this.bleAction(async(api) => {
-            await api.setUartState(1)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setUartState(1)
           })
         }
       });
@@ -321,8 +336,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         type: 'button',
         style: {color:colors.blue.hex},
         callback: async () => {
-          await this.bleAction(async(api) => {
-            await api.setUartState(3)
+          await this.bleAction(async () => {
+            await tell(this.props.handle).setUartState(3)
           })
         }
       });
@@ -336,8 +351,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         this.setState({debugInformation: null});
         let data : behaviourDebug = null;
         let formattedData : any = {};
-        await this.bleAction(async(api) => {
-          data = await api.getBehaviourDebugInformation()
+        await this.bleAction(async () => {
+          data = await from(this.props.handle).getBehaviourDebugInformation()
         });
         const mapBitmaskArray = (arr) => {
           let result = "None";

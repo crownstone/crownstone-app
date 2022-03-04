@@ -50,8 +50,6 @@ export const AppUtil = {
 
       core.store.batchDispatch(actions);
 
-      console.log("HERE", JSON.stringify(core.store.getState()))
-
       core.eventBus.emit("showLoading", lang("Getting_new_data___"));
       StoreManager.destroyActiveUser()
         .then(() => {

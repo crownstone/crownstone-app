@@ -39,7 +39,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
     super(props);
     let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
     this.state = {
-      softOnSpeed: Number(stone.abilities.dimming.properties.softOnSpeed.value)
+      softOnSpeed: Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget)
     }
   }
 

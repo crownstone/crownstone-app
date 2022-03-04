@@ -105,7 +105,6 @@ export class Processing extends Component<any, any> {
 
   componentDidMount() {
     if (OverlayManager.loadingState === false) {
-      console.log("closing after mount")
       this.setState({visible: false}, () => {NavigationUtil.closeOverlay(this.props.componentId);});
     }
     else {
