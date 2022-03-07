@@ -138,7 +138,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
             name="ios-navigate"
             size={Math.min(80,Math.min(0.30*screenHeight, 0.5*screenWidth))}
             color={colors.blue3.hex}
-          />r
+          />
           <View style={{flex:1}} />
           <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue3.hex, padding:5, textAlign:'center'}}>
             {this._getTitle()}
