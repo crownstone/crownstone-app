@@ -159,7 +159,12 @@ export async function visitLink(id) {
   await tap(id);
   await delay(CONFIG.LINK_DELAY);
   await screenshot();
-  await device.sendToHome();
+  if (isAndroid()) {
+    await device.pressBack();
+  }
+  else {
+    await device.sendToHome();
+  }
   await device.launchApp({ newInstance: false });
 }
 
