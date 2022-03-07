@@ -1,6 +1,6 @@
 import { by, device, expect, element, waitFor } from 'detox';
 import {
-  $, delay, replaceText, screenshot, tap,
+  $, backButtonOrTap, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, visitLink, waitToNavigate, waitToShow
@@ -23,7 +23,7 @@ export const Initialization_registerNewUser = () => {
 
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: back should work', async () => {
-      await tap('topBarLeftItem');
+      await backButtonOrTap('topBarLeftItem');
       await waitToNavigate('LoginSplash');
     });
 
@@ -63,7 +63,7 @@ export const Initialization_registerNewUser = () => {
     })
 
     test('register: should be able to go back 1 step', async () => {
-      await tap('topBarLeftItem');
+      await backButtonOrTap('topBarLeftItem');
       await waitToNavigate('register-Picture')
     });
 

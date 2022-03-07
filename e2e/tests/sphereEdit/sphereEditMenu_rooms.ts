@@ -1,5 +1,5 @@
 import {
-  $, delay, longPress, replaceText, screenshot, tap,
+  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -29,7 +29,7 @@ export const SphereEditMenu_rooms = () => {
     })
 
     test('should be able to cancel', async () => {
-      await tap('cancel')
+      await backButtonOrTap('cancel')
       await waitToNavigate('SphereEdit_RoomOverview');
       await tap('SphereEdit_roomOverview_rearrange')
       await waitToNavigate('SphereRoomArranger');
@@ -51,13 +51,13 @@ export const SphereEditMenu_rooms = () => {
     })
 
     test('should be able to rearrange rooms by press and holding', async () => {
-      await tap('BackButton');
+      await backButtonOrTap('BackButton');
       await waitToNavigate('SphereOverview');
       let roomIdToPress = await Assistant.getRoomId();
       await longPress(`RoomCircle${roomIdToPress}`);
       await delay(200);
       await screenshot();
-      await tap("cancel");
+      await backButtonOrTap("cancel");
       await delay(200);
       await expect($("cancel")).not.toBeVisible();
       await tap("edit");
@@ -77,7 +77,7 @@ export const SphereEditMenu_rooms = () => {
 
   if (CONFIG.ONLY_ESSENTIALS === false) {
     test('should be able to go back from add room', async () => {
-      await tap('topBarLeftItem');
+      await backButtonOrTap('topBarLeftItem');
       await waitToNavigate('SphereEdit_RoomOverview');
       await tap('SphereEdit_roomOverview_addRoom')
       await waitToNavigate('RoomAdd');
@@ -131,7 +131,7 @@ export const SphereEditMenu_rooms = () => {
   test('should be able to create a room', async () => {
     await tap('RoomAdd_CreateRoom');
     await waitToNavigate('RoomOverview');
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToNavigate('SphereOverview');
     await tap('edit');
     await waitToNavigate('SphereEdit');

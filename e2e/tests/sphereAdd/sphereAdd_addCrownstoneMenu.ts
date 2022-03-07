@@ -1,5 +1,5 @@
 import {
-  $, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, scrollDownUntilVisible, tap,
+  $, backButtonOrTap, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, scrollDownUntilVisible, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
@@ -17,7 +17,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   });
 
   test('should be able to go back from the AddCrownstone view', async () => {
-    await tap("topBarLeftItem");
+    await backButtonOrTap("topBarLeftItem");
     await waitToNavigate("SphereAdd");
     await tap("AddCrownstone_button");
     await waitToNavigate("AddCrownstone");
@@ -135,12 +135,12 @@ export const SphereAdd_addCrownstoneMenu = () => {
     await screenshot();
 
     await visitLink('toStore');
-    await tap("topBarLeftItem");
+    await backButtonOrTap("topBarLeftItem");
     await waitToNavigate('addCrownstone_selection');
   })
 
   test('should be able go back to the sphereAdd menu', async () => {
-    await tap("topBarLeftItem");
+    await backButtonOrTap("topBarLeftItem");
     await waitToNavigate('SphereAdd');
   })
 };
@@ -148,7 +148,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
 
 async function goBackToAdd() {
   await waitToNavigate("ScanningForSetupCrownstones");
-  await tap("closeModal");
+  await backButtonOrTap("closeModal");
   await waitToNavigate("SphereAdd");
   await tap("AddCrownstone_button");
   await waitToNavigate("AddCrownstone");

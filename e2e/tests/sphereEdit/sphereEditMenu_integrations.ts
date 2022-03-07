@@ -1,5 +1,5 @@
 import {
-  $, delay, longPress, replaceText, screenshot, tap,
+  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -24,7 +24,7 @@ export const SphereEditMenu_integrations = () => {
     await tap('Integration_Toon');
     await waitToNavigate('ToonAdd');
     await screenshot();
-    await tap('closeModal');
+    await backButtonOrTap('closeModal');
     await waitToNavigate('SphereIntegrations');
   })
 
@@ -32,7 +32,7 @@ export const SphereEditMenu_integrations = () => {
     await tap('Integration_Alexa');
     await waitToNavigate('AlexaOverview');
     await screenshot();
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToNavigate('SphereIntegrations');
   })
 
@@ -40,12 +40,12 @@ export const SphereEditMenu_integrations = () => {
     await tap('Integration_Google_Assistant');
     await waitToNavigate('GoogleAssistantOverview');
     await screenshot();
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToNavigate('SphereIntegrations');
   })
 
   test('should go back to the sphereEdit menu', async () => {
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToStart('SphereEdit');
   })
 };

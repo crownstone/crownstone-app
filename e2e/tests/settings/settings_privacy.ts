@@ -1,5 +1,5 @@
 import {
-  $, delay, replaceText, screenshot, scrollDownUntilVisible, tap,
+  $, backButtonOrTap, delay, replaceText, screenshot, scrollDownUntilVisible, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
@@ -43,7 +43,7 @@ export const Settings_privacy = () => {
   })
 
   test('should be able to go back to the settings overview', async () => {
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToNavigate('SettingsOverview')
   })
 

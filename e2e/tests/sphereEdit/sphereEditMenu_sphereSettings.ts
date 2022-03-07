@@ -1,5 +1,5 @@
 import {
-  $, delay, longPress, replaceText, screenshot, tap,
+  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -57,13 +57,13 @@ export const SphereEditMenu_sphereSettings = () => {
     test('should be able to go to the sphere users', async () => {
       await tap("SphereUser_button");
       await waitToNavigate("SphereUserOverview");
-      await tap("BackButton");
+      await backButtonOrTap("BackButton");
       await waitToNavigate("SphereEdit");
     })
   }
   else {
     test('should be able to back from the sphere settings', async () => {
-      await tap("BackButton");
+      await backButtonOrTap("BackButton");
       await waitToNavigate("SphereEdit");
     })
   }

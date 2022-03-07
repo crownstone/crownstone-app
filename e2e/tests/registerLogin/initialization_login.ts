@@ -1,6 +1,7 @@
 import { waitFor } from 'detox';
 import {
   $,
+  backButtonOrTap,
   delay,
   replaceText, screenshot,
   tap,
@@ -27,7 +28,7 @@ export const Initialization_loginUser = () => {
 
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('login: back should work', async () => {
-      await tap('topBarLeftItem')
+      await backButtonOrTap('topBarLeftItem')
       await waitToNavigate('LoginSplash');
       await tap('loginButton')
     });

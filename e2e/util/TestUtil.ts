@@ -188,3 +188,12 @@ export async function goToMessagesTab() {
   await tap('bottomTab_messages');
   await waitToNavigate('MessageInbox');
 }
+
+export async function backButtonOrTap(id) {
+  if (CONFIG.USE_ANDROID_BACK_BUTTON) {
+    await device.pressBack();
+  }
+  else {
+    await tap(id);
+  }
+}

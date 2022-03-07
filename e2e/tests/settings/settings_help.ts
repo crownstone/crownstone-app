@@ -1,5 +1,5 @@
 import {
-  $, delay, goToSettingsTab, replaceText, screenshot, scrollDownUntilVisible, tap,
+  $, backButtonOrTap, delay, goToSettingsTab, replaceText, screenshot, scrollDownUntilVisible, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
@@ -61,7 +61,7 @@ export const Settings_help = () => {
     await tap('bleTroubleShooting');
     await waitToNavigate('SettingsBleTroubleshooting');
     await screenshot();
-    await tap('closeModal');
+    await backButtonOrTap('closeModal');
     await waitToNavigate('SettingsFAQ');
   })
 
@@ -73,7 +73,7 @@ export const Settings_help = () => {
 
 
   test('should be able to go back to the settings overview', async () => {
-    await tap('BackButton');
+    await backButtonOrTap('BackButton');
     await waitToNavigate('SettingsOverview')
   })
 

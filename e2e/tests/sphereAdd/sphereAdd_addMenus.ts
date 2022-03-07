@@ -1,6 +1,6 @@
 
 import {
-  $, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, tap,
+  $, backButtonOrTap, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -16,7 +16,7 @@ export const SphereAdd_addMenus = () => {
     await tap("AddRoom");
     await waitToNavigate("RoomAdd");
     await screenshot();
-    await tap("topBarLeftItem");
+    await backButtonOrTap("topBarLeftItem");
     await waitToNavigate("SphereAdd");
   });
 
@@ -24,7 +24,7 @@ export const SphereAdd_addMenus = () => {
     await tap("AddPerson");
     await waitToNavigate("SphereUserInvite");
     await screenshot();
-    await tap("closeModal");
+    await backButtonOrTap("closeModal");
     await waitToNavigate("SphereAdd");
   });
 
@@ -32,7 +32,7 @@ export const SphereAdd_addMenus = () => {
     await tap("AddSomethingElse");
     await waitToNavigate("SphereIntegrations");
     await screenshot();
-    await tap("closeModal");
+    await backButtonOrTap("closeModal");
     await waitToNavigate("SphereAdd");
   });
 };
