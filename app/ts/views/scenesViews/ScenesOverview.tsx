@@ -140,7 +140,10 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
   getScenes(scenes, sphereId) {
     let sceneContent = [];
-    let idList = this.sortedList.getDraggableList();
+    let idList = [];
+    if (this.sortedList) {
+      idList = this.sortedList.getDraggableList();
+    }
     for (let i = 0; i < idList.length; i++) {
       let sceneId = idList[i];
       sceneContent.push(this.renderItem(scenes[sceneId], sphereId, sceneId))

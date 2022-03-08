@@ -110,7 +110,6 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getButton() {
     switch (this.state.notificationType) {
       case "manualPermissionRequired":
-      case "foreground":
         return (
           <TouchableOpacity
             onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
@@ -122,6 +121,20 @@ export class LocationPermissionOverlay extends Component<any, any> {
               borderColor: colors.blue3.rgba(0.5),
             }]}>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Request_Permission") }</Text>
+          </TouchableOpacity>
+        );
+      case "foreground":
+        return (
+          <TouchableOpacity
+            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
+            style={[styles.centered, {
+              width: 0.4 * screenWidth,
+              height: 36,
+              borderRadius: 18,
+              borderWidth: 2,
+              borderColor: colors.blue3.rgba(0.5),
+            }]}>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("toAppSettings") }</Text>
           </TouchableOpacity>
         );
       case "off":
@@ -153,7 +166,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
           <View style={{flex:1}} />
           <Icon
             name="ios-navigate"
-            size={Math.min(80,Math.min(0.30*screenHeight, 0.5*screenWidth))}
+            size={Math.min(120,Math.min(0.30*screenHeight, 0.5*screenWidth))}
             color={colors.blue3.hex}
           />
           <View style={{flex:1}} />

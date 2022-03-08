@@ -44,7 +44,7 @@ class BluenetContainer : NSObject {
     
     self.localization = Localization()
     
-    BluenetLib.setBluenetGlobals(viewController: nil, appName: "Crownstone")
+    BluenetLib.setBluenetGlobals(appName: "Crownstone")
     
     BluenetLib.LOG.setTimestampPrinting(newState: true)
     

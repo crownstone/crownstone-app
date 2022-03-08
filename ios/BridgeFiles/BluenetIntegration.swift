@@ -306,6 +306,7 @@ open class BluenetJS: RCTEventEmitter {
         GLOBAL_BLUENET.bluenet.startScanningForCrownstones()
     }
     
+  
     @objc func startScanningForCrownstonesUniqueOnly() {
         LOGGER.info("BluenetBridge: Called startScanningForCrownstonesUniqueOnly")
         GLOBAL_BLUENET.bluenet.startScanningForCrownstonesUniqueOnly()
@@ -329,6 +330,22 @@ open class BluenetJS: RCTEventEmitter {
     @objc func quitApp() {
         LOGGER.info("BluenetBridge: Called quitApp")
         exit(0)
+    }
+    
+    @objc func gotoOsAppSettings() {
+        LOGGER.info("BluenetBridge: Called gotoOsAppSettings")
+        if (Thread.isMainThread == true) {
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings)
+            }
+        }
+        else {
+            DispatchQueue.main.sync{
+                if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(appSettings)
+                }
+            }
+        }
     }
     
     @objc func resetBle() {

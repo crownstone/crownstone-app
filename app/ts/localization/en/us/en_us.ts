@@ -1010,7 +1010,8 @@ export default {
   LocationPermissionOverlay:{
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
     Request_Permission:                     function() { return "Request Permission" },
-    ManualPermissionRequired:               function() { return "You'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings." },
+    toAppSettings:                          function() { return "Go to app settings!" },
+    ManualPermissionRequired:               function() { return "You'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to Settings -> Crownstone -> Location -> Always." },
     Request_failed____Youll_h:              function() { return "Request failed... You'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to Settings -> Crownstone -> Location -> Always." },
     _Request_not_allowed______header:       function() { return "Request not allowed...." },
     _Request_not_allowed______body:         function() { return "Please ensure that the permission is set to always. If it is always already, please set it to while in use, and back to always." },
@@ -1021,7 +1022,7 @@ export default {
     Location_Services_are_dis:              function() { return "Location Services are disabled." },
     Location_permission_missi:              function() { return "Location permission missing." },
     Starting_Location_Service:              function() { return "Starting Location Services ..." },
-    Crownstone_cannot_react_t:              function() { return "Crownstone cannot react to your presence while the app is in the background with this permission." },
+    Crownstone_cannot_react_t:              function() { return "Crownstone cannot react to your presence while the app is in the background with this permission.\n\nYou'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to Settings -> Crownstone -> Location -> Always or tap the button below." },
     ManualPermission_body:                  function() { return "You will have to manually allow location permission. Go to your phone's settings -> apps -> Crownstone -> Permissions -> Enable (always)." },
     Everything_is_great_:                   function() { return "Everything is great!" },
     Without_location_services:              function() { return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function." },
