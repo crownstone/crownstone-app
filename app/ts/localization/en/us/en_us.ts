@@ -1023,7 +1023,7 @@ export default {
     Location_permission_missi:              function() { return "Location permission missing." },
     Starting_Location_Service:              function() { return "Starting Location Services ..." },
     Crownstone_cannot_react_t:              function() { return "Crownstone cannot react to your presence while the app is in the background with this permission.\n\nYou'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to Settings -> Crownstone -> Location -> Always or tap the button below." },
-    ManualPermission_body:                  function() { return "You will have to manually allow location permission. Go to your phone's settings -> apps -> Crownstone -> Permissions -> Enable (always)." },
+    ManualPermission_body:                  function() { return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly.\n\nYou will have to manually allow location permission. Go to your phone's settings -> apps -> Crownstone -> Permissions -> Enable (always)." },
     Everything_is_great_:                   function() { return "Everything is great!" },
     Without_location_services:              function() { return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function." },
     This_should_not_take_long:              function() { return "This should not take long!" },
