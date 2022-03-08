@@ -1,7 +1,7 @@
 import { waitFor } from 'detox';
 import {
   $,
-  backButtonOrTap,
+  checkBackAndForthOption,
   delay,
   replaceText, screenshot,
   tap,
@@ -9,7 +9,7 @@ import {
   tapAlertOKButton,
   tapReturnKey,
   tapSingularAlertButton,
-  waitToNavigate, waitToShow,
+  waitToNavigate, waitToShow
 } from "../../util/TestUtil";
 import {CONFIG} from "../../testSuite.e2e";
 
@@ -28,9 +28,12 @@ export const Initialization_loginUser = () => {
 
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('login: back should work', async () => {
-      await backButtonOrTap('topBarLeftItem')
-      await waitToNavigate('LoginSplash');
-      await tap('loginButton')
+      checkBackAndForthOption(
+        'topBarLeftItem',
+        'LoginSplash',
+        'loginButton',
+        'LoginView'
+      );
     });
 
     test('login: popup forgot password no email', async () => {

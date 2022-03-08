@@ -194,11 +194,16 @@ export async function goToMessagesTab() {
   await waitToNavigate('MessageInbox');
 }
 
-export async function backButtonOrTap(id) {
+
+export async function checkBackAndForthOption(backButtonId: string, backViewId: string, nextButtonId: string, endViewId: string) {
   if (CONFIG.USE_ANDROID_BACK_BUTTON) {
     await device.pressBack();
+    await waitToNavigate(backViewId);
+    await tap(nextButtonId);
+    await waitToNavigate(endViewId);
   }
-  else {
-    await tap(id);
-  }
+  await tap(backButtonId)
+  await waitToNavigate(backViewId);
+  await tap(nextButtonId);
+  await waitToNavigate(endViewId);
 }
