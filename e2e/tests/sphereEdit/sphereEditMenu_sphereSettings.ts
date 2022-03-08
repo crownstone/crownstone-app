@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
+  $, checkBackOption, delay, longPress, replaceText, screenshot, shouldBeOn, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -26,6 +26,7 @@ export const SphereEditMenu_sphereSettings = () => {
 
   if (CONFIG.ONLY_ESSENTIALS === false) {
     test('should be able to go to the accept the AI name', async () => {
+      await shouldBeOn("SphereEditSettings");
       await tap("SphereAI_button");
       await waitToNavigate("AiStart");
       await tap("AiStart_OK");
@@ -57,14 +58,13 @@ export const SphereEditMenu_sphereSettings = () => {
     test('should be able to go to the sphere users', async () => {
       await tap("SphereUser_button");
       await waitToNavigate("SphereUserOverview");
-      await backButtonOrTap("BackButton");
-      await waitToNavigate("SphereEdit");
+      await checkBackOption("BackButton","SphereEdit","SphereUser_button","SphereUserOverview");
     })
   }
   else {
     test('should be able to back from the sphere settings', async () => {
-      await backButtonOrTap("BackButton");
-      await waitToNavigate("SphereEdit");
+      await shouldBeOn("SphereEditSettings");
+      await checkBackOption("BackButton","SphereEdit","SphereEdit_settings","SphereEditSettings");
     })
   }
 };

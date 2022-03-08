@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
+  $, checkBackOption, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -46,7 +46,7 @@ export const SphereEditMenu_users = () => {
     await tap('SendInvitation');
     await screenshot();
     await tapSingularAlertButton();
-    await waitToNavigate('SphereUserInvite');
+    await waitToNavigate('SphereUserOverview');
   })
 
   test('should get the user invite detail view', async () => {
@@ -78,7 +78,11 @@ export const SphereEditMenu_users = () => {
   })
 
   test('should go back to Sphere Edit overview', async () => {
-    await backButtonOrTap("BackButton")
-    await waitToNavigate('SphereEdit');
+    await checkBackOption(
+      "BackButton",
+      'SphereEdit',
+      'SphereEdit_users',
+      'SphereUserOverview'
+    );
   })
 };

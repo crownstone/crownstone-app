@@ -22,46 +22,46 @@ export const Settings_help = () => {
   })
 
 
-  test('should be able to look at the questions', async () => {
-    for (let i = 1; i <= 9; i++) {
-      await scrollDownUntilVisible(`question${i}`, "SettingsFAQ_scrollview");
-      await tap(`question${i}`);
-      await delay(400);
-      await screenshot();
-    }
-  })
-
-  test('should be able to go to the Redownload screen', async () => {
-    await tap("Redownload");
-    await waitToNavigate("SettingsRedownloadFromCloud");
-    await screenshot();
-  })
-
-  test('should be able to redownload data', async () => {
-    await tap("ResetDatabase");
-    await delay(10000);
-    await boot();
-    await goToSettingsTab()
-    await waitToNavigate('SettingsOverview');
-    await tap('help');
-    await waitToNavigate('SettingsFAQ');
-  })
-
-  test('should be able to look at the rest of the questions', async () => {
-    for (let i = 10; i <= 14; i++) {
-      await scrollDownUntilVisible(`question${i}`, "SettingsFAQ_scrollview");
-      await tap(`question${i}`);
-      await delay(400);
-      await screenshot();
-    }
-  })
+  // test('should be able to look at the questions', async () => {
+  //   for (let i = 1; i <= 9; i++) {
+  //     await scrollDownUntilVisible(`question${i}`, "SettingsFAQ_scrollview");
+  //     await tap(`question${i}`);
+  //     await delay(400);
+  //     await screenshot();
+  //   }
+  // })
+  //
+  // test('should be able to go to the Redownload screen', async () => {
+  //   await tap("Redownload");
+  //   await waitToNavigate("SettingsRedownloadFromCloud");
+  //   await screenshot();
+  // })
+  //
+  // test('should be able to redownload data', async () => {
+  //   await tap("ResetDatabase");
+  //   await delay(10000);
+  //   await boot();
+  //   await goToSettingsTab()
+  //   await waitToNavigate('SettingsOverview');
+  //   await tap('help');
+  //   await waitToNavigate('SettingsFAQ');
+  // })
+  //
+  // test('should be able to look at the rest of the questions', async () => {
+  //   for (let i = 10; i <= 14; i++) {
+  //     await scrollDownUntilVisible(`question${i}`, "SettingsFAQ_scrollview");
+  //     await tap(`question${i}`);
+  //     await delay(400);
+  //     await screenshot();
+  //   }
+  // })
 
   test('should be able to go to the ble troubleshooting', async () => {
     await scrollDownUntilVisible('bleTroubleShooting', "SettingsFAQ_scrollview");
     await tap('bleTroubleShooting');
     await waitToNavigate('SettingsBleTroubleshooting');
     await screenshot();
-    await checkBackOption('BackButton', 'SettingsOverview', 'bleTroubleShooting', 'SettingsBleTroubleshooting');
+    await checkBackOption('closeModal', 'SettingsFAQ', 'bleTroubleShooting', 'SettingsBleTroubleshooting');
   })
 
 

@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
+  $, checkBackOption, delay, longPress, replaceText, screenshot, shouldBeOn, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -27,9 +27,8 @@ export const SphereEditMenu_crownstones_empty = () => {
   })
 
   test('should go back to the edit view', async () => {
-    await backButtonOrTap('topBarLeftItem')
-    await waitToNavigate('SphereCrownstoneOverview');
-    await backButtonOrTap('BackButton')
-    await waitToNavigate('SphereEdit');
+    await shouldBeOn("AddCrownstone");
+    await checkBackOption("topBarLeftItem","SphereCrownstoneOverview","AddCrownstone_button","AddCrownstone")
+    await checkBackOption("BackButton","SphereEdit","SphereEdit_crownstones","SphereCrownstoneOverview")
   })
 };

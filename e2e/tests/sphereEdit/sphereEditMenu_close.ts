@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, replaceText, screenshot, tap,
+  $, checkBackOption, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -9,7 +9,6 @@ import {Assistant, CONFIG} from "../../testSuite.e2e";
 export const SphereEditMenu_close = () => {
   test('should be able to go back via edit menu', async () => {
     await waitToStart('SphereEdit');
-    await backButtonOrTap('closeModal')
-    await waitToNavigate('SphereOverview');
+    await checkBackOption('closeModal', 'SphereOverview','edit','SphereEdit');
   })
 };

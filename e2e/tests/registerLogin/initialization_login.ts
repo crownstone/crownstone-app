@@ -28,7 +28,7 @@ export const Initialization_loginUser = () => {
 
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('login: back should work', async () => {
-      checkBackAndForthOption(
+      await checkBackAndForthOption(
         'topBarLeftItem',
         'LoginSplash',
         'loginButton',

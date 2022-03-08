@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, longPress, replaceText, screenshot, tap,
+  $, checkBackOption, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -24,28 +24,24 @@ export const SphereEditMenu_integrations = () => {
     await tap('Integration_Toon');
     await waitToNavigate('ToonAdd');
     await screenshot();
-    await backButtonOrTap('closeModal');
-    await waitToNavigate('SphereIntegrations');
+    await checkBackOption("closeModal","SphereIntegrations", "Integration_Toon", "ToonAdd");
   })
 
   test('should go to the Alexa overview', async () => {
     await tap('Integration_Alexa');
     await waitToNavigate('AlexaOverview');
     await screenshot();
-    await backButtonOrTap('BackButton');
-    await waitToNavigate('SphereIntegrations');
+    await checkBackOption("BackButton","SphereIntegrations", "Integration_Alexa", "AlexaOverview");
   })
 
   test('should go to the GoogleAssistant overview', async () => {
     await tap('Integration_Google_Assistant');
     await waitToNavigate('GoogleAssistantOverview');
     await screenshot();
-    await backButtonOrTap('BackButton');
-    await waitToNavigate('SphereIntegrations');
+    await checkBackOption("BackButton","SphereIntegrations", "Integration_Google_Assistant", "GoogleAssistantOverview");
   })
 
   test('should go back to the sphereEdit menu', async () => {
-    await backButtonOrTap('BackButton');
-    await waitToStart('SphereEdit');
+    await checkBackOption("BackButton","SphereEdit", "SphereEdit_integrations", "SphereIntegrations");
   })
 };
