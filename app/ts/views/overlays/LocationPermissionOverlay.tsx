@@ -110,19 +110,6 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getButton() {
     switch (this.state.notificationType) {
       case "manualPermissionRequired":
-        return (
-          <TouchableOpacity
-            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
-            style={[styles.centered, {
-              width: 0.4 * screenWidth,
-              height: 36,
-              borderRadius: 18,
-              borderWidth: 2,
-              borderColor: colors.blue3.rgba(0.5),
-            }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Request_Permission") }</Text>
-          </TouchableOpacity>
-        );
       case "foreground":
         return (
           <TouchableOpacity
