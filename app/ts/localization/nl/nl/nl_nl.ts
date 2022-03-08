@@ -1985,8 +1985,8 @@ export default {
     Without_location_services:              function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren. Zonder deze toestemming kan de app niet functioneren."; },
     This_should_not_take_long:              function() { return "Dit zou niet lang moeten duren!"; },
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
-    ManualPermission_title:                 function() { return "Toestemming vragen" },
-    ManualPermission_body:                  function() { return "Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)." },
+    ManualPermission_title:                 function() { return "Locatietoestemming ontbreekt." },
+    ManualPermission_body:                  function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)." },
   },
   LockOverlay:{
     __stringSameAsBaseLanguage: {
