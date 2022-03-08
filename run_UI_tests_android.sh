@@ -32,11 +32,11 @@ echo "Using $IP_ADDRESS as local IP address."
 
 if [ "$REUSE" == "1" ]; then
 	${CLOUD_DIR}/scripts/reset_mocks.sh
-	detox test --configuration android-debug-device -l --reuse verbose
+	detox test --configuration android-debug-device-english -l --reuse verbose
 else
 	${CLOUD_DIR}/reset.sh
-	detox build --configuration android-debug-device
-	detox test --configuration android-debug-device -l verbose
+	detox build --configuration android-debug-device-english
+	detox test --configuration android-debug-device-english -l verbose
 fi
 
 ./scripts/set_demo_mode_android.sh off

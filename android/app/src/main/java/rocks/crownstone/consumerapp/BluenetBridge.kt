@@ -16,6 +16,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
@@ -173,6 +174,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		appForeGround = true
 		initBluenetPromise.success {
 			handler.post {
+				// If the user allowed permission via settings menu, we can now try to make scanner ready.
+				// But don't give the activity, so there won't be any requests.
+				bluenet.tryMakeScannerReady(null)
+
 				updateScanner()
 				// When the GUI is killed, but the app is still running,
 				// the GUI needs to get the location and BLE status when the GUI is opened again.
@@ -405,10 +410,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			resolveCallback(callback, resultMap)
 			return
 		}
-		// List of expected launchArgs, assume they're all strings.
-		val keys = arrayOf("localization")
-		for (key in keys) {
+		// List of expected string launchArgs.
+		val stringKeys = arrayOf("localization", "cloud_v1", "cloud_v2", "mockBridgeUrl")
+		for (key in stringKeys) {
 			resultMap.putString(key, bundle.getString(key, ""))
+		}
+
+		// List of expected bool launchArgs.
+		val boolKeys = arrayOf("mockCameraLibrary", "mockImageLibrary", "mockBluenet")
+		for (key in boolKeys) {
+			resultMap.putBoolean(key, bundle.getBoolean(key, true))
 		}
 		resolveCallback(callback, resultMap)
 	}
@@ -553,7 +564,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "sendLocationStatus")
 		// "locationStatus" can be: "unknown", "off", "foreground", "on", "noPermission"
 		if (!bluenet.isLocationPermissionGranted()) {
-			sendEvent("locationStatus", "noPermission")
+			val activity = reactContext.currentActivity
+			if (activity == null || !bluenet.isLocationPermissionRequestable(activity)) {
+				sendEvent("locationStatus", "manualPermissionRequired")
+			}
+			else {
+				sendEvent("locationStatus", "noPermission")
+			}
 		}
 		else if (!bluenet.isLocationServiceEnabled()) {
 			sendEvent("locationStatus", "off")
@@ -604,20 +621,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun gotoOsAppSettings() {
+		val activity = reactContext.currentActivity
+		if (activity == null) {
+			Log.w(TAG, "No activity.")
+			return
+		}
+		val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + activity.packageName))
+		activity.startActivity(intent)
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun requestLocationPermission() {
 		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
 		// Should also ask for location services to be turned on.
 		// Always called when app starts.
 		// TODO: check if you can't continue the tutorial before giving or denying permission.
-		if (reactContext.currentActivity == null) {
+		val activity = reactContext.currentActivity
+		if (activity == null) {
 			Log.w(TAG, "No activity.")
 		}
 
 		initBluenetPromise.success {
 			handler.post {
 //				bluenet.requestLocationPermission(activity)
-				bluenet.tryMakeScannerReady(reactContext.currentActivity)
+				bluenet.tryMakeScannerReady(activity)
 				sendLocationStatus()
 				sendBleStatus()
 			}

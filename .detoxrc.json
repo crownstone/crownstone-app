@@ -17,9 +17,16 @@
       "type": "android.apk",
       "binaryPath": "android/app/build/outputs/apk/release/app-release.apk"
     },
-    "android-debug": {
+    "android-debug-english": {
       "type": "android.apk",
       "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "launchArgs": {"localization": "en_us"},
+      "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd .."
+    },
+    "android-debug-nederlands": {
+      "type": "android.apk",
+      "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "launchArgs": {"localization": "nl_nl"},
       "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd .."
     }
   },
@@ -54,9 +61,21 @@
         "pathBuilder": "./e2e/config/pathBuilder.js"
       }
     },
-    "android-debug-device": {
+    "android-debug-device-english": {
       "device": "android-device",
-      "app": "android-debug"
+      "app": "android-debug-english",
+      "artifacts": {
+        "rootDir": "../crownstone-app-screenshots/android/device/english/",
+        "pathBuilder": "./e2e/config/pathBuilder.js"
+      }
+    },
+    "android-debug-device-nederlands": {
+      "device": "android-device",
+      "app": "android-debug-nederlands",
+      "artifacts": {
+        "rootDir": "../crownstone-app-screenshots/android/device/nederlands/",
+        "pathBuilder": "./e2e/config/pathBuilder.js"
+      }
     }
   }
 }
