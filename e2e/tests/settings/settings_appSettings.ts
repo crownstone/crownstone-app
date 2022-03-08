@@ -1,5 +1,5 @@
 import {
-  $, backButtonOrTap, delay, replaceText, screenshot, tap,
+  $, checkBackOption, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -41,8 +41,7 @@ export const Settings_appSettings = () => {
   })
 
   test('should be able to go back to the settings overview', async () => {
-    await backButtonOrTap('BackButton');
-    await waitToNavigate('SettingsOverview')
+    await checkBackOption('BackButton', 'SettingsOverview', 'appSettings', 'SettingsApp');
   })
 
 };

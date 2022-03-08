@@ -1,8 +1,21 @@
 import {
-  $, backButtonOrTap, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, scrollDownUntilVisible, tap,
+  $, checkBackAndForthOption,
+  checkBackOption,
+  delay,
+  goToSettingsTab,
+  goToSphereOverviewTab,
+  replaceText,
+  screenshot,
+  scrollDownUntilVisible, shouldBeOn,
+  tap,
   tapAlertCancelButton,
-  tapAlertOKButton, tapReturnKey,
-  tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
+  tapAlertOKButton,
+  tapReturnKey,
+  tapSingularAlertButton,
+  visitLink,
+  waitToNavigate,
+  waitToShow,
+  waitToStart
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
@@ -17,13 +30,11 @@ export const SphereAdd_addCrownstoneMenu = () => {
   });
 
   test('should be able to go back from the AddCrownstone view', async () => {
-    await backButtonOrTap("topBarLeftItem");
-    await waitToNavigate("SphereAdd");
-    await tap("AddCrownstone_button");
-    await waitToNavigate("AddCrownstone");
+    await checkBackAndForthOption('topBarLeftItem', 'SphereAdd', 'AddCrownstone_button', 'AddCrownstone');
   });
 
   test('should be able to see all views for adding a plug', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Plug");
     await waitToNavigate("installingPlug");
     await screenshot();
@@ -35,6 +46,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a builtinOne, socket', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Built_in_One");
     await waitToNavigate("installingBuiltinOne_step1");
     await screenshot();
@@ -47,6 +59,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a builtinOne, ceilingLight', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Built_in_One");
     await waitToNavigate("installingBuiltinOne_step1");
     await tap("installingBuiltinOne_step1_ceilingNext");
@@ -58,6 +71,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a builtinOne, not Yet, socket', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Built_in_One");
     await waitToNavigate("installingBuiltinOne_step1");
     await tap("installingBuiltinOne_step1_notYetNext");
@@ -74,6 +88,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a builtinOne, not Yet, ceilingLight', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Built_in_One");
     await waitToNavigate("installingBuiltinOne_step1");
     await tap("installingBuiltinOne_step1_notYetNext");
@@ -89,6 +104,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a hub', async () => {
+    await shouldBeOn("AddCrownstone");
     await tap("Hub");
     await waitToNavigate("installingHub_step1");
     await screenshot();
@@ -107,6 +123,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a guidestone', async () => {
+    await shouldBeOn("AddCrownstone");
     await scrollDownUntilVisible('Guidestone', 'addCrownstone_scrollView')
     await tap("Guidestone");
     await waitToNavigate("installingGuidestone");
@@ -118,6 +135,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to see all views for adding a CrownstoneUSB', async () => {
+    await shouldBeOn("AddCrownstone");
     await scrollDownUntilVisible('Crownstone_USB', 'addCrownstone_scrollView')
     await tap("Crownstone_USB");
     await waitToNavigate("installingUSB");
@@ -129,27 +147,36 @@ export const SphereAdd_addCrownstoneMenu = () => {
   })
 
   test('should be able to buy Crownstones', async () => {
+    await shouldBeOn("AddCrownstone");
     await scrollDownUntilVisible('BuyCrownstones','addCrownstone_scrollView');
     await tap("BuyCrownstones");
     await waitToNavigate('BuyCrownstonesCard');
     await screenshot();
 
     await visitLink('toStore');
-    await backButtonOrTap("topBarLeftItem");
-    await waitToNavigate('addCrownstone_selection');
+
+    await checkBackOption("topBarLeftItem",'addCrownstone_selection', {restoreState: async () => {
+      await scrollDownUntilVisible('BuyCrownstones','addCrownstone_scrollView');
+      await tap("BuyCrownstones");
+      await waitToNavigate('BuyCrownstonesCard');
+    }});
   })
 
   test('should be able go back to the sphereAdd menu', async () => {
-    await backButtonOrTap("topBarLeftItem");
-    await waitToNavigate('SphereAdd');
+    await shouldBeOn("AddCrownstone");
+    await checkBackOption("topBarLeftItem",'SphereAdd', 'AddCrownstone_button', 'AddCrownstone');
   })
 };
 
 
 async function goBackToAdd() {
   await waitToNavigate("ScanningForSetupCrownstones");
-  await backButtonOrTap("closeModal");
-  await waitToNavigate("SphereAdd");
+  await checkBackOption("closeModal",'SphereAdd', {restoreState: async () => {
+    await tap("Plug");
+    await waitToNavigate("installingPlug");
+    await tap("installingPlugNext");
+    await waitToNavigate("ScanningForSetupCrownstones");
+  }});
   await tap("AddCrownstone_button");
   await waitToNavigate("AddCrownstone");
 }

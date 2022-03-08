@@ -61,7 +61,9 @@ class ActiveSphereManagerClass {
     let activeSphereId = state.app.activeSphere;
     let activeSphere = state.spheres[activeSphereId];
 
-    if (!activeSphere) {} // sphere is deleted
+    if (!activeSphere) {
+      // sphere is deleted
+    }
     else if (activeSphere.state.present === true) { // do not change active spheres if the sphere we're currently in is active.
       return;
     }

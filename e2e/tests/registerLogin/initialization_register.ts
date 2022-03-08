@@ -1,6 +1,6 @@
 import { by, device, expect, element, waitFor } from 'detox';
 import {
-  $, backButtonOrTap, delay, replaceText, screenshot, tap,
+  $, checkBackAndForthOption, checkBackOption, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, visitLink, waitToNavigate, waitToShow
@@ -23,13 +23,15 @@ export const Initialization_registerNewUser = () => {
 
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: back should work', async () => {
-      await backButtonOrTap('topBarLeftItem');
-      await waitToNavigate('LoginSplash');
+      await checkBackAndForthOption(
+        'topBarLeftItem',
+        'LoginSplash',
+        'registerButton',
+        'registerView'
+      );
     });
 
     test('register: should get popup if there is no name', async () => {
-      await tap('registerButton');
-      await waitToNavigate('registerView');
       await tap('register-acceptName');
       await screenshot();
       await tapSingularAlertButton();
@@ -58,13 +60,19 @@ export const Initialization_registerNewUser = () => {
   if (!CONFIG.ONLY_ESSENTIALS) {
     test('register: should accept no picture', async () => {
       await tap('register-acceptPicture');
-      await waitToNavigate('register-email')
+      await waitToNavigate('register-email');
       await screenshot();
     })
 
     test('register: should be able to go back 1 step', async () => {
-      await backButtonOrTap('topBarLeftItem');
-      await waitToNavigate('register-Picture')
+      await tapReturnKey("register-email");
+      await tapReturnKey("register-password");
+      await checkBackOption(
+        'topBarLeftItem',
+        'register-Picture',
+        'register-acceptPicture',
+        'register-email'
+      );
     });
 
     test('register: can cancel picture popup', async () => {
@@ -90,7 +98,7 @@ export const Initialization_registerNewUser = () => {
       await screenshot();
       await tapAlertCancelButton();
       await delay(300);
-      await expect($("PictureCircleRemove")).toBeVisible()
+      await expect($("PictureCircleRemove")).toBeVisible();
     });
 
     test('register: can remove picture again', async () => {

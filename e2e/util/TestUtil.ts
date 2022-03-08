@@ -72,6 +72,11 @@ export async function waitToShow(id, timeout = 1500) {
   await delay(100);
 }
 
+export async function shouldBeOn(id, timeout = 300) {
+  let item = $(id);
+  await waitFor(item).toBeVisible().withTimeout(timeout);
+}
+
 export async function waitToNavigate(id, timeout = 3000) {
   await delay(300);
   let item = $(id);
@@ -195,15 +200,58 @@ export async function goToMessagesTab() {
 }
 
 
-export async function checkBackAndForthOption(backButtonId: string, backViewId: string, nextButtonId: string, endViewId: string) {
+type promiseCallback = () => Promise<void>
+interface backAndForthCallbacks {
+  afterBack?:    promiseCallback,
+  afterForward?: promiseCallback,
+  restoreState?: promiseCallback
+}
+
+
+export async function checkBackAndForthOption(backButtonId: string, backViewId: string, forwardButtonIdOrCallbacks: string | backAndForthCallbacks, currentViewId?: string, callbacks?: backAndForthCallbacks) {
+  if (typeof forwardButtonIdOrCallbacks !== 'string') {
+    callbacks = forwardButtonIdOrCallbacks;
+  }
+
   if (isAndroid()) {
     await device.pressBack();
     await waitToNavigate(backViewId);
-    await tap(nextButtonId);
-    await waitToNavigate(endViewId);
+    if (callbacks?.afterBack) { await callbacks?.afterBack(); }
+    if (typeof forwardButtonIdOrCallbacks === 'string') {
+      await tap(forwardButtonIdOrCallbacks);
+      await waitToNavigate(currentViewId);
+    }
+    if (callbacks?.afterForward) { await callbacks?.afterForward(); }
+    if (callbacks?.restoreState) { await callbacks?.restoreState(); }
   }
   await tap(backButtonId)
   await waitToNavigate(backViewId);
-  await tap(nextButtonId);
-  await waitToNavigate(endViewId);
+  if (callbacks?.afterBack) { await callbacks?.afterBack(); }
+  if (typeof forwardButtonIdOrCallbacks === 'string') {
+    await tap(forwardButtonIdOrCallbacks);
+    await waitToNavigate(currentViewId);
+  }
+  if (callbacks?.afterForward) { await callbacks?.afterForward(); }
+}
+
+
+export async function checkBackOption(backButtonId: string, backViewId: string, forwardButtonIdOrCallbacks: string | backAndForthCallbacks, currentViewId?: string, callbacks?: backAndForthCallbacks) {
+  if (typeof forwardButtonIdOrCallbacks !== 'string') {
+    callbacks = forwardButtonIdOrCallbacks;
+  }
+
+  if (isAndroid()) {
+    await device.pressBack();
+    await waitToNavigate(backViewId);
+    if (callbacks?.afterBack) { await callbacks?.afterBack(); }
+    if (typeof forwardButtonIdOrCallbacks === 'string') {
+      await tap(forwardButtonIdOrCallbacks);
+      await waitToNavigate(currentViewId);
+    }
+    if (callbacks?.afterForward) { await callbacks?.afterForward(); }
+    if (callbacks?.restoreState) { await callbacks?.restoreState(); }
+  }
+  await tap(backButtonId)
+  await waitToNavigate(backViewId);
+  if (callbacks?.afterBack) { await callbacks?.afterBack(); }
 }
