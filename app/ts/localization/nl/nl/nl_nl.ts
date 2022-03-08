@@ -1903,11 +1903,9 @@ export default {
     __stringSameAsBaseLanguage: {
       New_Message_Found:                     false,
       New_Message_Found_n:                   false,
-      __Message_found___:                    false,
     },
     New_Message_Found:                      function() { return "Een inkomend berichtje!"; },
     New_Message_Found_n:                    function() { return "Een inkomend berichtje!"; },
-    __Message_found___:                     function() { return "  Nieuw berichtje!  "; },
   },
   LocalizationSetupStep1:{
     __stringSameAsBaseLanguage: {
@@ -1967,10 +1965,12 @@ export default {
       Without_location_services:             false,
       This_should_not_take_long:             false,
       ManualPermissionRequired:              false,
+      ManualPermission_title:                false,
+      ManualPermission_body:                 false,
     },
     Request_Permission:                     function() { return "Toestemming vragen"; },
     ManualPermissionRequired:               function() { return "Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon."; },
-    Request_failed____Youll_h:              function() { return "Het verzoek is mislukt... Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon."; },
+    Request_failed____Youll_h:              function() { return "Het verzoek is mislukt... Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Crownstone -> Locatie -> Altijd."; },
     _Request_not_allowed______header:       function() { return "Verzoek niet toegestaan..."; },
     _Request_not_allowed______body:         function() { return "Zorg ervoor dat de toestemming is ingesteld op altijd. Als dat al het geval is, zet hem dan op terwijl hij in gebruik is, en terug op altijd."; },
     _Request_not_allowed______left:         function() { return "Oké"; },
@@ -1984,6 +1984,8 @@ export default {
     Without_location_services:              function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren. Zonder deze toestemming kan de app niet functioneren."; },
     This_should_not_take_long:              function() { return "Dit zou niet lang moeten duren!"; },
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
+    ManualPermission_title:                 function() { return "Toestemming vragen" },
+    ManualPermission_body:                  function() { return "Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)." },
   },
   LockOverlay:{
     __stringSameAsBaseLanguage: {
@@ -4103,6 +4105,7 @@ export default {
       Enable_Developer_Mode:                 false,
       This_will_enable_certain_:             false,
       My_Account:                            false,
+      DELETE_USER:                           false,
     },
     _First_name_must_be_at_le_header:       function() { return "Voornaam moet minstens 1 letter bevatten"; },
     _First_name_must_be_at_le_body:         function() { return "Ook geen cijfers toegestaan."; },
@@ -4466,7 +4469,6 @@ export default {
       Rooms:                                 false,
       Crownstones:                           true,
       Users:                                 false,
-      Behaviour:                             true,
       Integrations:                          false,
       Settings:                              false,
       Sphere_Creation:                       false,
@@ -4485,7 +4487,6 @@ export default {
     Rooms:                                  function() { return "Kamers"; },
     Crownstones:                            function() { return "Crownstones"; },
     Users:                                  function() { return "Gebruikers"; },
-    Behaviour:                              function() { return "Behaviour"; },
     Integrations:                           function() { return "Integraties"; },
     Settings:                               function() { return "Instellingen"; },
     Welcome_:                               function() { return "Welkom!"; },

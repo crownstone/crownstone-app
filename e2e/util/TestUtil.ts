@@ -196,7 +196,7 @@ export async function goToMessagesTab() {
 
 
 export async function checkBackAndForthOption(backButtonId: string, backViewId: string, nextButtonId: string, endViewId: string) {
-  if (CONFIG.USE_ANDROID_BACK_BUTTON) {
+  if (isAndroid()) {
     await device.pressBack();
     await waitToNavigate(backViewId);
     await tap(nextButtonId);

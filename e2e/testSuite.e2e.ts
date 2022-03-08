@@ -33,10 +33,9 @@ import { SphereAdd_addMenus } from "./tests/sphereAdd/sphereAdd_addMenus";
 import { SphereAdd_setup_crownstone } from "./tests/sphereAdd/sphereAdd_setup_crownstone";
 
 export const CONFIG = {
-  IP_ADDRESS:              process.env.IP_ADDRESS,
-  ONLY_ESSENTIALS:         false,
-  LINK_DELAY:              3000,
-  USE_ANDROID_BACK_BUTTON: false,
+  IP_ADDRESS:      process.env.IP_ADDRESS,
+  ONLY_ESSENTIALS: false,
+  LINK_DELAY:      3000,
 };
 
 export const Assistant = new TestingAssistant();

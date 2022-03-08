@@ -179,6 +179,7 @@ const BluenetAPI = {
 
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
   getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
+  gotoOsAppSettings:                    () => {console.log("BluenetBridgeCall: gotoSystemSettings"); },
 
 };
 

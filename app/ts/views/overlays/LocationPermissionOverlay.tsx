@@ -79,6 +79,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
     switch (this.state.notificationType) {
       case "foreground":
         return lang("Only_while_in_app_permiss");
+      case "manualPermissionRequired":
+        return lang("ManualPermission_title");
       case "on":
         return lang("Location_Services_are_on_");
       case "off":
@@ -94,6 +96,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
     switch (this.state.notificationType) {
       case "foreground":
         return lang("Crownstone_cannot_react_t");
+      case "manualPermissionRequired":
+        return lang("ManualPermission_body");
       case "on":
         return lang("Everything_is_great_");
       case "off":
@@ -105,8 +109,21 @@ export class LocationPermissionOverlay extends Component<any, any> {
   }
   _getButton() {
     switch (this.state.notificationType) {
+      case "manualPermissionRequired":
       case "foreground":
-        return <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("ManualPermissionRequired") }</Text>
+        return (
+          <TouchableOpacity
+            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
+            style={[styles.centered, {
+              width: 0.4 * screenWidth,
+              height: 36,
+              borderRadius: 18,
+              borderWidth: 2,
+              borderColor: colors.blue3.rgba(0.5),
+            }]}>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Request_Permission") }</Text>
+          </TouchableOpacity>
+        );
       case "off":
       case "noPermission":
         return (
