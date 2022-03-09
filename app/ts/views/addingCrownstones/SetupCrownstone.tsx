@@ -219,7 +219,12 @@ export class SetupCrownstone extends LiveComponent<{
     let locationIds = Object.keys(locations);
     let locationElements = [];
     locationIds.forEach((locationId) => {
-      locationElements.push({id: locationId, name: locations[locationId].config.name, icon: locations[locationId].config.icon});
+      locationElements.push({
+        id: locationId,
+        name: locations[locationId].config.name,
+        icon: locations[locationId].config.icon,
+        cloudId: locations[locationId].config.cloudId
+      });
     });
     locationElements.sort((a,b) => { return a.name < b.name ? -1 : 1});
 
@@ -228,6 +233,7 @@ export class SetupCrownstone extends LiveComponent<{
       roomOptions.push({
         label: location.name,
         icon: location.icon,
+        testID: `crownstoneInLocation${location.cloudId}`,
         nextCard: 'waitToFinish',
         response: lang("Im_almost_done_"),
         onSelect: () => {
@@ -244,6 +250,7 @@ export class SetupCrownstone extends LiveComponent<{
     roomOptions.push({
       label: lang("add_a_new_room_"),
       icon: "md-cube",
+      testID:"createRoom",
       theme: 'create',
       onSelect: () => {
         NavigationUtil.navigate( "RoomAdd", {sphereId: sphereId, isModal: false});
@@ -253,6 +260,7 @@ export class SetupCrownstone extends LiveComponent<{
     let failedOptions = [
       {
         label: lang("OK__try_again_"),
+        testID:'addCrownstone_tryAgain',
         onSelect: (result) => {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
@@ -281,6 +289,7 @@ export class SetupCrownstone extends LiveComponent<{
       },
       {
         label: lang("Ill_try_again_later___"),
+        testID:'addCrownstone_tryLater',
         onSelect: (result) => { NavigationUtil.dismissModal(); }
       },
     ];
@@ -288,12 +297,14 @@ export class SetupCrownstone extends LiveComponent<{
     let successOptions = [
       {
         label: lang("Add_more_Crownstones_"),
+        testID:'addCrownstone_addMore',
         onSelect: (result) => {
           NavigationUtil.back();
         }
       },
       {
         label: lang("Take_me_to__",this.newCrownstoneState.location.name),
+        testID:'addCrownstone_goToRoom',
         onSelect: (result) => {
           NavigationUtil.dismissAllModalsAndNavigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
         }
@@ -303,6 +314,7 @@ export class SetupCrownstone extends LiveComponent<{
     let restorationCard = {
       header: lang("Restoring_Crownstone___"),
       subHeader: lang("This_should_only_take_a_m"),
+      testID:'addCrownstone_restoration',
       backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackground.jpg'),
       component: (
         <View style={{...styles.centered, flex:1}}>
@@ -314,6 +326,7 @@ export class SetupCrownstone extends LiveComponent<{
       options: [
         {
           label: lang("Aborting___Abort",this.abort),
+          testID: 'abort',
           onSelect: (result) => { this.abort = true; this.forceUpdate(); },
           dangerous: true,
         }
@@ -325,6 +338,7 @@ export class SetupCrownstone extends LiveComponent<{
         header: lang("Something_went_wrong__"),
         subHeader: lang("Please_verify_that_you_ar"),
         textColor: colors.white.hex,
+        testID:'addCrownstone_problemCloud',
         backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -340,6 +354,7 @@ export class SetupCrownstone extends LiveComponent<{
         header: lang("Something_went_wrong__"),
         subHeader: lang("Please_restart_the_Blueto"),
         textColor: colors.white.hex,
+        testID:'addCrownstone_problemBle',
         backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -354,6 +369,7 @@ export class SetupCrownstone extends LiveComponent<{
       problem: {
         header:lang("Something_went_wrong__"),
         subHeader: lang("Please_try_again_later_"),
+        testID:'addCrownstone_problem',
         textColor: colors.white.hex,
         backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
@@ -374,6 +390,7 @@ export class SetupCrownstone extends LiveComponent<{
       aborted: {
         header:lang("Aborted_"),
         subHeader: lang("The_Crownstone_was_not_ad"),
+        testID:'addCrownstone_aborted',
         textColor: colors.white.hex,
         backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
@@ -407,12 +424,15 @@ export class SetupCrownstone extends LiveComponent<{
         header:lang("Lets_get_started_"),
         subHeader: lang("What_shall_I_call_this_Cr"),
         hasTextInputField: true,
+        testID:'addCrownstone_namePhase',
+        textInputTestID:'crownstoneName',
         placeholder: namePlaceholder,
         options: [
           {
             label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
+            testID: 'name_next',
             dynamicResponse: (value) => { if (value.textfieldState === '') { return lang("Default_name_it_is_");} else { return lang("Thats_a_good_name_")}},
             onSelect: (result) => {
               let name = result.textfieldState;
@@ -432,6 +452,7 @@ export class SetupCrownstone extends LiveComponent<{
         header: lang("Lets_pick_an_icon_"),
         subHeader: lang("Lets_give_this_Crownstone"),
         explanation: lang("You_can_always_change_thi"),
+        testID: 'addCrownstone_iconPhase',
         editableItem: (state, setState) => {
           return (
             <TouchableOpacity onPress={() => {
@@ -442,7 +463,8 @@ export class SetupCrownstone extends LiveComponent<{
                   setState(newIcon);
                 }
               });
-            }}>
+            }}
+              testID={"crownstoneIcon"}>
               <IconCircle
                 icon={state || this.randomIcon}
                 size={0.5*screenWidth}
@@ -457,7 +479,7 @@ export class SetupCrownstone extends LiveComponent<{
           );
         },
         options: [
-          {label: lang("Next"), textAlign:'right', nextCard: 'rooms', response: lang("Cool__so_thatll_be_my_ico"),
+          {label: lang("Next"), testID:'icon_next', textAlign:'right', nextCard: 'rooms', response: lang("Cool__so_thatll_be_my_ico"),
             onSelect: (result) => {
               let icon = result.customElementState || this.randomIcon;
               this.newCrownstoneState.icon = icon;
@@ -466,6 +488,7 @@ export class SetupCrownstone extends LiveComponent<{
       },
       rooms: {
         header: lang("Lets_pick_a_room_"),
+        testID:'addCrownstone_roomPhase',
         subHeader: lang("In_which_room_did_you_put", xUtil.capitalize(this.newCrownstoneState.name)),
         optionsBottom: true,
         options: roomOptions
@@ -473,6 +496,7 @@ export class SetupCrownstone extends LiveComponent<{
       waitToFinish: {
         header: lang("Working_on_it_"),
         subHeader: lang("Setting_up_your_new_Crown"),
+        testID:'addCrownstone_waitToFinish',
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackground.jpg'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -491,6 +515,7 @@ export class SetupCrownstone extends LiveComponent<{
       },
       setupMore: {
         header:lang("Thats_it_"),
+        testID:'addCrownstone_setupMore',
         subHeader: lang("Would_you_like_to_setup_m"),
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         component: (
@@ -504,6 +529,7 @@ export class SetupCrownstone extends LiveComponent<{
       successWhileAborting: {
         header:lang("Setup_complete_"),
         subHeader: lang("This_Crownstone_was_added"),
+        testID:'addCrownstone_successWhileAborting',
         textColor: colors.white.hex,
         backgroundImage: require('../../../assets/images/backgrounds/somethingWrongBlue.jpg'),
         component: (
@@ -516,6 +542,7 @@ export class SetupCrownstone extends LiveComponent<{
       },
       iKnowThisOne: {
         header:lang("I_know_this_one_"),
+        testID:'addCrownstone_iKnowThisOne',
         subHeader: lang("This_Crownstone_was_alrea", this.newCrownstoneState.name,this.newCrownstoneState.location.name),
         backgroundImage: require('../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg'),
         optionsBottom: true,

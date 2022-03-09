@@ -336,6 +336,7 @@ export class Register extends LiveComponent<any, any> {
       password: sha1(this.user.password),
       firstName: this.user.firstName,
       lastName: this.user.lastName,
+      language: Languages.activeLocale
     })
       .then(() => {
         let imageName = getImageFileFromUser(this.user.email.toLowerCase());

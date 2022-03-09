@@ -12,7 +12,8 @@ export const user = {
       email: options.email,
       password: options.password,
       firstName: options.firstName,
-      lastName: options.lastName
+      lastName: options.lastName,
+      language: options.language,
     }}, 'body');
   },
 

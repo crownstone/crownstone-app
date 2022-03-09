@@ -147,6 +147,7 @@ interface MockedLib {
   putInDFU                      : (data?: any) => Promise<void>,
   performDFU                    : (data?: any) => Promise<void>,
   getHardwareVersion            : (data?: any) => Promise<void>,
+  getUICR                       : (data?: any) => Promise<void>,
   setupPutInDFU                 : (data?: any) => Promise<void>,
   toggleSwitchState             : (data?: any) => Promise<void>,
   bootloaderToNormalMode        : (data?: any) => Promise<void>,

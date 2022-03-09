@@ -56,7 +56,6 @@ export class SetupHelper {
    */
   async claim(sphereId, silent : boolean = false, commander : CommandAPI = null) : Promise<{id: string, familiarCrownstone: boolean}> {
     // things to be filled out during setup process
-    console.log("using commander", commander)
     this.macAddress      = undefined;
     this.cloudResponse   = undefined;
     this.firmwareVersion = undefined; // ie. 1.1.1

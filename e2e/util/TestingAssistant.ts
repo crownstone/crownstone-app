@@ -90,24 +90,40 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
-    let locationIds = Object.keys(this.db.spheres[this.activeSphereId].locations);
+    let sphere = this.db.spheres[this.activeSphereId];
+    let locationIds = Object.keys(sphere.locations);
     return locationIds[roomIndex];
   }
 
 
-  async doesRoomNameExists(name: string) : Promise<boolean> {
-    console.log('doesRoomNameExists', this.activeSphereId)
+  async getRoomIdByName(name: string) : Promise<string | null> {
     if (!this.activeSphereId) {
       await this._getActiveSphereId();
     }
-    console.log('doesRoomNameExists', this.activeSphereId)
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+    let locations = this.db.spheres[this.activeSphereId].locations;
+    for (let locationId in locations) {
+      if (locations[locationId].data.data.name === name) {
+        return locationId;
+      }
+    }
+    return null;
+  }
+
+
+  async doesRoomNameExists(name: string) : Promise<boolean> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
 
     if (!this.activeSphereId) {
       return false;
     }
 
     let locations = this.db.spheres[this.activeSphereId].locations;
-    console.log(locations)
     for (let locationId in locations) {
       if (locations[locationId].data.data.name === name) {
         return true;

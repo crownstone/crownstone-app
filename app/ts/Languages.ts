@@ -70,7 +70,6 @@ class LanguageManager {
         // return "#" + str;
       }
       return this.textSource[file][key](a,b,c,d,e);
-      // return "#" + str
     }
   }
 

@@ -13,22 +13,24 @@ const headers = {
 
 export class BleMocks {
 
-  for(handle: string) : { succeed: MockedLib, fail: MockedLibError } {
+  for(handle: string) : { succeed: MockedLib, fail: MockedLibError, disconnectEvent: () => Promise<void> } {
     return {
       succeed: this._getSuccessMethods(handle),
-      fail:    this._getErrorMethods(handle)
+      fail:    this._getErrorMethods(handle),
+      disconnectEvent: async () => {
+        return this._sendDisconnectEvent(handle);
+      }
     }
   }
-
 
   _getSuccessMethods(handle) : MockedLib {
     let res = {};
     for (let method of bluenetPromise_targetedMethods) {
       res[method] = async (data?: any) => {
+        await this.resolve(handle, method, data);
         if (method === 'phoneDisconnect' || method === 'disconnectCommand') {
           await this._sendDisconnectEvent(handle);
         }
-        await this.resolve(handle, method, data);
       }
     }
     // @ts-ignore
@@ -89,6 +91,13 @@ export class BleMocks {
     await this._sendAdvertisment(
       NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
       AdvertisementGenerator.genericAdvertisement(handle, rssi)
+    );
+  }
+
+  async sendSetupProgress(progress: number) {
+    await this._sendAdvertisment(
+      NATIVE_BUS_TOPICS.setupProgress,
+      progress
     );
   }
 

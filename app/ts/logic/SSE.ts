@@ -12,7 +12,7 @@ class Logger {
   }
   warn(...args) {
     LOGw.info(...args);
-    console.warn(...args);
+    console.log(...args);
   }
   info(...args) {
     LOGi.info(...args);
