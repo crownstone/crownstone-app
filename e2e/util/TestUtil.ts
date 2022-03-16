@@ -58,11 +58,16 @@ export async function longPress(id, duration= 2000, timeout = 1000) {
 }
 
 export async function tapReturnKey(id, timeout = 1000) {
-  await delay(100);
   let item = $(id);
-  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await waitToBeFocussed(id);
   await item.tapReturnKey()
   await delay(300);
+}
+
+export async function waitToBeFocussed(id, timeout = 1500) {
+  await waitToShow(id, timeout);
+  let item = $(id);
+  await waitFor(item).toBeFocused().withTimeout(timeout);
 }
 
 export async function waitToShow(id, timeout = 1500) {
