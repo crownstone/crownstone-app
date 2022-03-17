@@ -62,6 +62,16 @@ export const Initialization_loginUser = () => {
       await screenshot();
       await tapAlertCancelButton();
     });
+
+    test('login: popup no email', async () => {
+      await replaceText('login_email_address','');
+      await tapReturnKey('login_email_address')
+      await replaceText('login_password','');
+      await tapReturnKey('login_password');
+      await tap('login_big_button')
+      await screenshot();
+      await tapSingularAlertButton();
+    });
   }
 
   test('login: login', async () => {
