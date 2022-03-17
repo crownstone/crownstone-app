@@ -12,7 +12,7 @@
     "iosUiTests": "npx wdio ./tests_ui/testConfigs/iosSimulator.conf.js",
     "cleanTest": "jest --useStderr --no-cache --clearMocks",
     "maintainTranslations": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js",
-    "maintainTranslationsDelete": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js --deleteLines true",
+    "maintainTranslationsDelete": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js --deleteLines true --deleteFiles true",
     "missingStringCheck": "node ../crownstone-app-translation-tools/checkForMissingStrings.js",
     "translation": "open ../crownstone-app-translation-tools/interactive/serverInterface.html; node ../crownstone-app-translation-tools/interactive/server.js"
   },
