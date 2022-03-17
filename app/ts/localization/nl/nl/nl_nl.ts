@@ -763,7 +763,7 @@ export default {
       Resetting_hub___:                      false,
       The_hub_is_not_responding:             false,
       If_this_hub_is_broken__yo:             false,
-      uicr:                                  false,
+      uicr:                                  true,
     },
     _Are_you_sure___Removing__header:       function() { return "Weet je het zeker?"; },
     _Are_you_sure___Removing__body:         function() { return "Het verwijderen van een Crownstone uit de sfeer betekent dat de Crownstone wordt teruggezet naar de fabrieksinstellingen."; },
@@ -832,8 +832,8 @@ export default {
     Resetting_hub___:                       function() { return "Hub wordt gereset..."; },
     The_hub_is_not_responding:              function() { return "De hub reageert niet."; },
     If_this_hub_is_broken__yo:              function() { return "Als deze hub kapot is, kan je hem hardhandig uit je Sfeer halen. Wil je dat doen? Hij wordt dan niet in setupmodus gezet."; },
+    uicr:                                   function() { return "UICR: " + arguments[0] + ""; },
     __filename: "../js/views/deviceViews/DeviceEdit.tsx",
-    uicr:                                   function() { return "UICR: " + (arguments[0] || arguments[1]) },
   },
   DeviceEntry:{
     __stringSameAsBaseLanguage: {
@@ -1331,7 +1331,7 @@ export default {
       Heres_whats_new_:                      false,
       There_is_an_update_availab:            false,
       ____but_need_to_be_in_you:             false,
-      DFU_Introduction:                      false,
+      DFU_Introduction:                      true,
       Version:                               false,
     },
     Not_right_now___:                       function() { return "Niet op dit moment..."; },
@@ -1344,9 +1344,9 @@ export default {
     Heres_whats_new_:                       function() { return "Dit is er nieuw!"; },
     There_is_an_update_availab:             function() { return "Er is een software update beschikbaar voor je Crownstones!"; },
     ____but_need_to_be_in_you:              function() { return "... maar je moet wel in je Sphere zijn om te updaten."; },
+    DFU_Introduction:                       function() { return "Update"; },
+    Version:                                function() { return "Versie " + arguments[0] + ""; },
     __filename: "../js/views/overlays/DfuOverlay.tsx",
-    DFU_Introduction:                       function() { return "Update" },
-    Version:                                function() { return "Version " + arguments[0]  },
   },
   DfuScanning:{
     __stringSameAsBaseLanguage: {
@@ -1679,8 +1679,8 @@ export default {
     Factory_reset_hub__:                    function() { return "Fabrieksinstellingen terugzetten."; },
     Initialize_hub_:                        function() { return "Initializeer hub!"; },
     Fix_now__:                              function() { return "Oplossen!"; },
+    The_hub_did_not_report:                 function() { return "De hub heeft het afgelopen half uur niets tegen de cloud gezegd. Verbind de hub met het internet aub."; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/js/views/hubViews/HubOverview.tsx",
-    The_hub_did_not_report:                 function() { return "The hub has not reported to the cloud in over half an hour. Please reconnect the hub to the internet." },
   },
   HueAdd:{
     __stringSameAsBaseLanguage: {
@@ -1969,7 +1969,7 @@ export default {
       toAppSettings:                         false,
     },
     Request_Permission:                     function() { return "Toestemming vragen"; },
-    toAppSettings:                          function() { return "Naar de app settings!" },
+    toAppSettings:                          function() { return "Naar de app settings!"; },
     Request_failed____Youll_h:              function() { return "Het verzoek is mislukt... Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Crownstone -> Locatie -> Altijd."; },
     _Request_not_allowed______header:       function() { return "Verzoek niet toegestaan..."; },
     _Request_not_allowed______body:         function() { return "Zorg ervoor dat de toestemming is ingesteld op altijd. Als dat al het geval is, zet hem dan op terwijl hij in gebruik is, en terug op altijd."; },
@@ -1983,9 +1983,9 @@ export default {
     Everything_is_great_:                   function() { return "Alles gaat goed!"; },
     Without_location_services:              function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren. Zonder deze toestemming kan de app niet functioneren."; },
     This_should_not_take_long:              function() { return "Dit zou niet lang moeten duren!"; },
+    ManualPermission_title:                 function() { return "Locatietoestemming ontbreekt."; },
+    ManualPermission_body:                  function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)."; },
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
-    ManualPermission_title:                 function() { return "Locatietoestemming ontbreekt." },
-    ManualPermission_body:                  function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)." },
   },
   LockOverlay:{
     __stringSameAsBaseLanguage: {
@@ -2468,7 +2468,7 @@ export default {
       Permission_denied:                     false,
       I_need_permission_to_use_:             false,
       OK:                                    true,
-      Camera:                                false,
+      Camera:                                true,
       Photo_Library:                         false,
     },
     _Delete_this_picture__arg_header:       function() { return "Deze afbeelding verwijderen?"; },
@@ -2478,9 +2478,9 @@ export default {
     Permission_denied:                      function() { return "Geen toestemming..."; },
     I_need_permission_to_use_:              function() { return "Ik heb toestemming nodig om de camera te mogen gebruiken. Zet de toestemming aan en probeer het nog eens."; },
     OK:                                     function() { return "OK"; },
+    Camera:                                 function() { return "Camera"; },
+    Photo_Library:                          function() { return "Fotobibliotheek"; },
     __filename: "../js/views/components/PictureCircle.tsx",
-    Camera:                                 function() { return "Camera" },
-    Photo_Library:                          function() { return "Photo Library" },
   },
   PlaceFloatingCrownstonesInRoom:{
     __stringSameAsBaseLanguage: {
@@ -4124,7 +4124,7 @@ export default {
     Last_Name:                              function() { return "Achternaam"; },
     Email:                                  function() { return "E-mail"; },
     Change_Password:                        function() { return "Wachtwoord wijzigen"; },
-    DELETE_USER:                            function() { return "Download of verwijder gebruikersdata" },
+    DELETE_USER:                            function() { return "Download of verwijder gebruikersdata"; },
     Enable_Developer_Mode:                  function() { return "Activeer de ontwikkelaarsmodus"; },
     This_will_enable_certain_:              function() { return "Dit maakt bepaalde functies mogelijk die nuttig zijn voor ontwikkelaars. Alleen gebruiken als je weet wat je doet."; },
     My_Account:                             function() { return "Mijn Account"; },
@@ -4332,8 +4332,8 @@ export default {
     Crownstone_Hub:                         function() { return "Crownstone Hub"; },
     Pairing_with_hub:                       function() { return "Hub toevoegen"; },
     Setup_the_hub:                          function() { return "Hub toevoegen"; },
+    You_are_all_finished:                   function() { return "Klaar!"; },
     __filename: "../../js/views/addingCrownstones/SetupHub.tsx",
-    You_are_all_finished:                   function() { return "You're all finished!" },
   },
   SetupShared:{
     __stringSameAsBaseLanguage: {
@@ -4913,8 +4913,8 @@ export default {
     __stringSameAsBaseLanguage: {
       Set_:                                  false,
     },
+    Set_:                                   function() { return "OK"; },
     __filename: "../../js/views/overlays/TextInputOverlay.tsx",
-    Set_:                                   function() { return "Set!" },
   },
   ToonAdd:{
     __stringSameAsBaseLanguage: {
