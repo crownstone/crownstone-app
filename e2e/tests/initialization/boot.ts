@@ -13,6 +13,7 @@ export async function boot() {
 
   let allArguments = {
     detoxEnableSynchronization: 0,
+    detoxURLBlacklistRegex: ' "http.*"',
     ...launchArguments,
     "cloud_v1"          : `http://${CONFIG.IP_ADDRESS}:3000/api/`,
     "cloud_v2"          : `http://${CONFIG.IP_ADDRESS}:3050/api/`,
