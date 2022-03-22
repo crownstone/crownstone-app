@@ -177,8 +177,8 @@ class NavStateManager {
     if (this.handleIfAlreadyOpen(componentId, name)) { return; }
 
     LOGi.nav("addView: incoming data", componentId, name);
-    LOGi.nav("addView: active: ", this.activeTab);
-    LOGi.nav("addView: Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
+    LOGi.nav("addView: activeTab: ", this.activeTab);
+    LOGi.nav("addView: views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
 
     if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
       let overlayIndex = this.overlayIncomingNames.indexOf(name);
@@ -512,7 +512,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
   if (topBarComponentNames.indexOf(componentName) === -1) {
     LOGi.nav("VIEW DID APPEAR", componentId, componentName);
     if (tabBarComponentNames.indexOf(componentName) !== -1) {
-      NavState.switchTab(componentId, componentName)
+      NavState.switchTab(componentId, componentName);
     }
     NavState.addView(componentId, componentName);
   }
@@ -647,9 +647,9 @@ export const NavigationUtil = {
       });
   },
 
-  dismissModalAndBack: function() {
+  dismissModalAndBack: async function() {
     // addSentryLog("dismissModalAndBack", "null");
-    NavigationUtil.baseStackBack();
+    await NavigationUtil.baseStackBack();
     NavigationUtil.dismissModal();
   },
 
@@ -841,12 +841,13 @@ export const NavigationUtil = {
     // addSentryLog("baseStackBack", backFrom);
     LOGi.nav("Going back baseStackBack", backFrom);
     try {
-      await Navigation.pop(backFrom)
+      await Navigation.pop(backFrom);
+      LOGi.nav("Going back baseStackBack ", backFrom, " done on the native side, updating state...");
       NavState.popView();
-      LOGi.nav("Going back baseStackBack ", backFrom, " success!")
+      LOGi.nav("Going back baseStackBack ", backFrom, " success!");
     }
     catch (err) {
-      LOGw.nav("Going back baseStackBack ", backFrom, " FAILED!", err?.message)
+      LOGw.nav("Going back baseStackBack ", backFrom, " FAILED!", err?.message);
     }
   },
 
