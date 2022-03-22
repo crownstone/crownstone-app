@@ -3327,10 +3327,10 @@ detox@*:
     yargs "^16.0.3"
     yargs-unparser "^2.0.0"
 
-detox@^19.4.5:
-  version "19.4.5"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-19.4.5.tgz#81b1cadaec5c0f7dc53798d65242ff19f4da8412"
-  integrity sha512-kMHxNn3I9uTxOzIX4CTymI9qHRLn90xzuM/QhqHNeUH3AEDFtUmlJpcL86GmPO/VLWafcJScia9jqUiKveNAqg==
+detox@^19.5.7:
+  version "19.5.7"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-19.5.7.tgz#81179f3d1f75088c2eb9bf52d7e21fa72a1c2c3a"
+  integrity sha512-vLd5eySM/zjaWLJGgbtx4g7qA3JZLCZHVz4n/AphNFFW3T3qiyh7HfIYeoBoZanjjyC1k3iuw2UshpBRlHZuGA==
   dependencies:
     ajv "^8.6.3"
     bunyan "^1.8.12"

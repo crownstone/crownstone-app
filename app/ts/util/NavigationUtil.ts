@@ -239,6 +239,7 @@ class NavStateManager {
     }
     return lastItem(this.views[this.activeTab]);
   }
+
   getCurrentlyActiveViewData() {
     if (this.views[this.activeTab].length === 0) {
       return null;
@@ -252,8 +253,8 @@ class NavStateManager {
       this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
     }
     else {
-      LOGw.nav("Maybe something is wrong?");
-      console.warn("Maybe something is wrong?")
+      LOGw.nav("Maybe something is wrong during popView?");
+      console.warn("Maybe something is wrong during popView?")
     }
   }
 
@@ -264,7 +265,7 @@ class NavStateManager {
       }
       else {
         LOGw.nav("Maybe wanted to dismiss the modal?");
-        console.warn("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?");
       }
     }
     else {
@@ -272,8 +273,8 @@ class NavStateManager {
         this.views[this.activeTab].pop();
       }
       else {
-        LOGw.nav("Maybe something is wrong?");
-        console.warn("Maybe something is wrong?")
+        LOGw.nav("Maybe something is wrong during pop?");
+        console.warn("Maybe something is wrong during pop?");
       }
     }
 
@@ -287,7 +288,7 @@ class NavStateManager {
       }
       else {
         LOGw.nav("Maybe wanted to dismiss the modal?");
-        console.warn("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?");
       }
     }
     else {
@@ -298,8 +299,8 @@ class NavStateManager {
         this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
       }
       else {
-        LOGw.nav("Maybe something is wrong?");
-        console.warn("Maybe something is wrong?")
+        LOGw.nav("Maybe something is wrong during _setActiveIds?");
+        console.warn("Maybe something is wrong during _setActiveIds?");
       }
     }
   }
@@ -314,8 +315,8 @@ class NavStateManager {
      return lastItem(this.views[this.activeTab]).id;
     }
     else {
-      LOGw.nav("Maybe something is wrong?");
-      console.warn("Maybe something is wrong?")
+      LOGw.nav("Maybe something is wrong during _getViewId?");
+      console.warn("Maybe something is wrong during _getViewId?");
     }
   }
 
@@ -423,8 +424,8 @@ class NavStateManager {
         }
       }
       else {
-        LOGw.nav("Maybe something is wrong?");
-        console.warn("Maybe something is wrong?")
+        LOGw.nav("Maybe something is wrong during backTo? activeTab", this.activeTab, this.views);
+        console.warn("Maybe something is wrong during backTo?", this.activeTab, this.views);
       }
     }
 
@@ -519,7 +520,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
   core.eventBus.emit("VIEW_DID_DISAPPEAR", componentId);
-  LOGi.nav("VIEW DID DISAPPEAR", componentId, componentName)
+  LOGi.nav("VIEW DID DISAPPEAR", componentId, componentName);
 });
 
 
@@ -631,8 +632,9 @@ export const NavigationUtil = {
   },
 
   dismissModal: function() {
-    LOGi.nav("CALLING dismissModal");
+    LOGi.nav("CALLING dismissModal start");
     let backFrom = NavState.getActiveComponent();
+    LOGi.nav("CALLING dismissModal on", backFrom);
     // addSentryLog("dismissModal", backFrom);
     NavState.modalDismissed();
     return Navigation.dismissModal(backFrom)
