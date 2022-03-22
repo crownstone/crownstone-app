@@ -204,7 +204,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       }
     });
 
-    if (state.user.developer) {
+    if (state.user.developer && room.config.fingerprintRaw) {
       let hash = sha1(room.config.fingerprintRaw);
       let h1 = Number(`0x${hash.substr(0, 10)}`);
       let h2 = Number(`0x${hash.substr(10, 10)}`);
