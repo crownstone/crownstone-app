@@ -3,11 +3,11 @@ CLOUD_DIR="../cloud-test-container"
 
 BUILD_APP=0
 export REUSE=0
-while getopts i:r:b flag
+while getopts i:rb flag
 do
     case "${flag}" in
         i) IP_ADDRESS=${OPTARG};;
-        r) REUSE=${OPTARG};;
+        r) REUSE=1;;
 	b) BUILD_APP=1
     esac
 done
@@ -34,13 +34,13 @@ echo "Using $IP_ADDRESS as local IP address."
 
 if [ "$REUSE" == "1" ]; then
 	${CLOUD_DIR}/scripts/reset_mocks.sh
-	detox test --configuration android-debug-device-english -l --reuse verbose
+	detox test --configuration android-debug-device-english --reuse
 else
 	${CLOUD_DIR}/reset.sh
 	if [ "$BUILD_APP" == "1" ]; then
 		detox build --configuration android-debug-device-english
 	fi
-	detox test --configuration android-debug-device-english -l verbose
+	detox test --configuration android-debug-device-english
 fi
 
 ./scripts/set_demo_mode_android.sh off
