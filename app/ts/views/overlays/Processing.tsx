@@ -18,6 +18,7 @@ import { styles, colors , screenHeight} from '../styles'
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
+import { LOGi } from "../../logging/Log";
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;
@@ -105,6 +106,7 @@ export class Processing extends Component<any, any> {
 
   componentDidMount() {
     if (OverlayManager.loadingState === false) {
+      LOGi.nav("ProcessingOverlay: Closing before showing the overlay", this.props.componentId);
       this.setState({visible: false}, () => {NavigationUtil.closeOverlay(this.props.componentId);});
     }
     else {

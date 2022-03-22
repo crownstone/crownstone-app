@@ -536,7 +536,6 @@ export const NavigationUtil = {
   showOverlay(target, props) {
     // // addSentryLog("showOverlay", target);
     LOGi.nav("I WANT TO SHOW THIS OVERLAY", target);
-
     LOGi.nav("is this overlay open?", target, NavState.isThisOverlayOpen(target));
 
     if (NavState.isThisOverlayOpen(target)) {
@@ -568,7 +567,6 @@ export const NavigationUtil = {
   },
 
   closeOverlay(componentId) {
-    // // addSentryLog("componentId", componentId);
     NavState.closeOverlay(componentId);
     Navigation.dismissOverlay(componentId);
   },
