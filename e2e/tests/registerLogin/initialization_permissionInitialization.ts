@@ -2,6 +2,8 @@ import { waitFor } from 'detox';
 import {
   $,
   delay,
+  isAndroid,
+  isIos,
   replaceText, screenshot,
   tap,
   tapAlertCancelButton,
@@ -21,13 +23,22 @@ export const Initialization_permissionInitialization = () => {
   test('accept localization permissions', async () => {
     await screenshot();
     await tap('permission_i_understand')
-    await waitToNavigate('permission_Notifications_view')
+    if (isIos()) {
+      await waitToNavigate('permission_Notifications_view')
+    }
+    else {
+      await waitToNavigate('permission_AI_setup')
+    }
   })
-  test('accept notifications permissions', async () => {
-    await screenshot();
-    await tap('permission_sounds_fair')
-    await waitToNavigate('permission_AI_setup')
-  })
+
+  if (isIos()) {
+    test('accept notifications permissions', async () => {
+      await screenshot();
+      await tap('permission_sounds_fair')
+      await waitToNavigate('permission_AI_setup')
+    })
+  }
+
   test('set AI Name', async () => {
     await replaceText('AI_name','James');
     await tapReturnKey('AI_name')
