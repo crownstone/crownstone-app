@@ -1,12 +1,14 @@
 # Set to dir with the cloud test container repo.
 CLOUD_DIR="../cloud-test-container"
 
+BUILD_APP=0
 export REUSE=0
-while getopts i:r: flag
+while getopts i:r:b flag
 do
     case "${flag}" in
         i) IP_ADDRESS=${OPTARG};;
         r) REUSE=${OPTARG};;
+	b) BUILD_APP=1
     esac
 done
 
@@ -35,9 +37,10 @@ if [ "$REUSE" == "1" ]; then
 	detox test --configuration android-debug-device-english -l --reuse verbose
 else
 	${CLOUD_DIR}/reset.sh
-	detox build --configuration android-debug-device-english
+	if [ "$BUILD_APP" == "1" ]; then
+		detox build --configuration android-debug-device-english
+	fi
 	detox test --configuration android-debug-device-english -l verbose
 fi
 
 ./scripts/set_demo_mode_android.sh off
-
