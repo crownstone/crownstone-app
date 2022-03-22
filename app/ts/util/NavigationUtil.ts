@@ -43,7 +43,8 @@ class NavStateManager {
   modals : componentInfo[][] = [];
   views : views = {};
 
-  overlayIncomingNames : string[] = [];
+  overlayIncomingNames : string[]   = [];
+  prematurelyClosedIncomingOverlays = {};
   activeTab = null;
 
   baseTab = null;
@@ -180,7 +181,10 @@ class NavStateManager {
     LOGi.nav("addView: activeTab: ", this.activeTab);
     LOGi.nav("addView: views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
 
-    if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
+    if (this.prematurelyClosedIncomingOverlays[name]) {
+      this._removeOverlay(name);
+    }
+    else if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
       let overlayIndex = this.overlayIncomingNames.indexOf(name);
       this.overlayIncomingNames.splice(overlayIndex,1);
 
@@ -188,7 +192,6 @@ class NavStateManager {
       // we use this layer to catch incoming overlay views so that they do not contaminate the underlaying modal and view stacks.
       this.overlayNames[name] = {id:componentId, name: name};
       this.overlayId[componentId] = {id:componentId, name: name};
-      return;
     }
     else if (this.expectedNewModals.indexOf(name) !== -1) {
       this.modals.push([])
@@ -343,16 +346,23 @@ class NavStateManager {
   }
 
   closeOverlay(componentId) {
-    LOGi.nav("will close this overlay: componentId=", componentId, "overlayId=", this.overlayId);
+    LOGi.nav("will close this overlay: componentId:", componentId, "overlayId:", this.overlayId);
     if (this.overlayId[componentId] !== undefined) {
-      LOGi.nav("actually closing names=", this.overlayNames);
+      LOGi.nav("actually closing names:", this.overlayNames);
       let name = this.overlayId[componentId].name;
       delete this.overlayId[componentId];
       delete this.overlayNames[name];
     }
     else if (this.overlayIncomingNames.indexOf(componentId) !== -1) {
       LOGi.nav("cancelling the opening of the overlay", componentId);
-      let index = this.overlayIncomingNames.indexOf(componentId);
+      this.prematurelyClosedIncomingOverlays[componentId] = true;
+    }
+  }
+
+  _removeOverlay(componentId) {
+    delete this.prematurelyClosedIncomingOverlays[componentId];
+    let index = this.overlayIncomingNames.indexOf(componentId);
+    if (index !== -1) {
       this.overlayIncomingNames.splice(index,1);
     }
   }
