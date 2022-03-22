@@ -212,7 +212,7 @@ class NavStateManager {
           this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
           this.isViewNameAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
         ) {
-          LOGi.nav("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
+          LOGw.nav("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
           return;
         }
       }
@@ -248,6 +248,7 @@ class NavStateManager {
   }
 
   popView() {
+    LOGi.nav("Will popView on tab", this.activeTab, "views:", this.views);
     if (this.views[this.activeTab].length > 0) {
       this.views[this.activeTab].pop();
       this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
@@ -642,7 +643,7 @@ export const NavigationUtil = {
         LOGi.nav("DISMISS Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        LOGi.nav("DISMISS Going back from ", backFrom, " FAILED!", err?.message)
+        LOGw.nav("DISMISS Going back from ", backFrom, " FAILED!", err?.message)
       });
   },
 
@@ -830,29 +831,28 @@ export const NavigationUtil = {
         LOGi.nav("Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        LOGi.nav("Going back from ", backFrom, " FAILED!", err?.message)
+        LOGw.nav("Going back from ", backFrom, " FAILED!", err?.message)
       })
   },
 
 
-  baseStackBack() {
+  async baseStackBack() {
     let backFrom = NavState._getViewId();
     // addSentryLog("baseStackBack", backFrom);
     LOGi.nav("Going back baseStackBack", backFrom);
-    Navigation.pop(backFrom)
-      .then(() => {
-        NavState.popView();
-        LOGi.nav("Going back baseStackBack ", backFrom, " success!")
-      })
-      .catch((err) => {
-        LOGi.nav("Going back baseStackBack ", backFrom, " FAILED!", err?.message)
-      })
+    try {
+      await Navigation.pop(backFrom)
+      NavState.popView();
+      LOGi.nav("Going back baseStackBack ", backFrom, " success!")
+    }
+    catch (err) {
+      LOGw.nav("Going back baseStackBack ", backFrom, " FAILED!", err?.message)
+    }
   },
 
 
   backTo(target) {
     // addSentryLog("backTo", target);
-
     let componentId = NavState.backTo(target);
     if (componentId) {
       Navigation.popTo(componentId)
