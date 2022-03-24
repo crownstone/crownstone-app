@@ -1,6 +1,6 @@
 
 import {
-  $, delay, goToSettingsTab, replaceText, screenshot, scrollDownUntilVisible, tap,
+  $, delay, goToSettingsTab, isIos, replaceText, screenshot, scrollDownUntilVisible, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToDisappear, waitToNavigate, waitToShow, waitToStart
@@ -40,8 +40,10 @@ export const Settings_logOut = () => {
     await tap('login_big_button')
     await waitToNavigate('PermissionIntroduction', 15000);
     await tap('permission_i_understand')
-    await waitToNavigate('permission_Notifications_view');
-    await tap('permission_sounds_fair')
+    if (isIos()) {
+      await waitToNavigate('permission_Notifications_view');
+      await tap('permission_sounds_fair')
+    }
     await waitToNavigate('SphereOverview', 15000);
     await goToSettingsTab()
   })
