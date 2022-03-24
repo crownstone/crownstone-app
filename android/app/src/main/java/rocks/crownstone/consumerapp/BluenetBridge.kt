@@ -127,7 +127,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	fun destroy() {
 		stopKovenant() // Stop thread(s)
-		bluenet.destroy()
+		if (::bluenet.isInitialized) {
+			bluenet.destroy()
+		}
 		reactContext.currentActivity?.finish()
 		reactContext.runOnUiQueueThread {
 			reactContext.destroy()
