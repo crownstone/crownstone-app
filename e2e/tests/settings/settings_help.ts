@@ -32,6 +32,7 @@ export const Settings_help = () => {
   })
 
   test('should be able to go to the Redownload screen', async () => {
+    await scrollDownUntilVisible(`Redownload`, "SettingsFAQ_scrollview");
     await tap("Redownload");
     await waitToNavigate("SettingsRedownloadFromCloud");
     await screenshot();
@@ -39,7 +40,8 @@ export const Settings_help = () => {
 
   test('should be able to redownload data', async () => {
     await tap("ResetDatabase");
-    await delay(10000);
+    await waitToNavigate('Processing_text');
+    await delay(9000);
     await boot();
     await goToSettingsTab()
     await waitToNavigate('SettingsOverview');
