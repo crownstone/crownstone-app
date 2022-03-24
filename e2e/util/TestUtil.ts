@@ -104,11 +104,11 @@ export async function waitToStart(id, timeout = 8000) {
 }
 
 export async function scrollDownUntilVisible( itemId, scrollViewId ) {
-  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down');
+  await waitFor(element(by.id(itemId))).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down');
 }
 
 export async function scrollUpUntilVisible( itemId, scrollViewId ) {
-  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up');
+  await waitFor(element(by.id(itemId))).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up');
 }
 
 export async function swipeNext( itemId ) {
