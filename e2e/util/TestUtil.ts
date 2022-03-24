@@ -3,7 +3,8 @@ import fs from "fs"
 import { CONFIG } from "../testSuite.e2e";
 
 export function $(id) {
-  return element(by.id(id))
+  // Always take index 0, in some views there are buttons with the same tag overlapping.
+  return element(by.id(id)).atIndex(0)
 }
 export function iosSingleAlertButton() {
   return element(by.type('_UIAlertControllerActionView')).atIndex(0)
