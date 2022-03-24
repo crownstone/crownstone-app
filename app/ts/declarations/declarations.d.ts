@@ -5,6 +5,8 @@
 //   export default createResizedImage;
 // }
 
+type timestamp = number;
+
 declare const global: {
   __DEV__: boolean,
 };

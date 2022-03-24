@@ -17,6 +17,7 @@ interface componentInfo {
   name: string,
 }
 
+const OVERLAY_APPEARING_TIMEWINDOW = 2000; // 2seconds
 
 /**
  * This class mimics the state of the navigation.
@@ -44,7 +45,7 @@ class NavStateManager {
   views : views = {};
 
   overlayIncomingNames : string[]   = [];
-  prematurelyClosedIncomingOverlays = {};
+  prematurelyClosedIncomingOverlays : Record<string, timestamp> = {};
   activeTab = null;
 
   baseTab = null;
@@ -182,9 +183,17 @@ class NavStateManager {
     LOGi.nav("addView: views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
 
     if (this.prematurelyClosedIncomingOverlays[name]) {
-      this._removeOverlay(name);
+      LOGi.nav("addView: this overlay was expected to come in and was already closed before it opened.", name);
+      delete this.prematurelyClosedIncomingOverlays[name];
+      if (Date.now() - this.prematurelyClosedIncomingOverlays[name] < OVERLAY_APPEARING_TIMEWINDOW) {
+        LOGi.nav("addView: expected overlay appeared in less than 2 seconds. This is correct, returning addView function now.", name);
+        this._removeOverlay(name);
+        return;
+      }
+      LOGw.nav("addView: expected overlay appeared after more than 2 seconds. This should not have happened. Cleaning up and resuming addView method..", name);
     }
-    else if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
+
+    if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
       let overlayIndex = this.overlayIncomingNames.indexOf(name);
       this.overlayIncomingNames.splice(overlayIndex,1);
 
@@ -354,8 +363,8 @@ class NavStateManager {
       delete this.overlayNames[name];
     }
     else if (this.overlayIncomingNames.indexOf(componentId) !== -1) {
-      LOGi.nav("cancelling the opening of the overlay", componentId);
-      this.prematurelyClosedIncomingOverlays[componentId] = true;
+      LOGi.nav("Cancelling the opening of the overlay:", componentId, "If it appears in the next 2 seconds it will be discarded immediately.");
+      this.prematurelyClosedIncomingOverlays[componentId] = Date.now();
     }
   }
 
