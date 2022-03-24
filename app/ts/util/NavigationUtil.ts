@@ -109,7 +109,7 @@ class NavStateManager {
    * This returns the id of the active view. We call it component since it can also be a modal.
    */
   getActiveComponent() {
-    LOGd.nav("Getting the active component. ActiveModal=", this.activeModal, "activeView=", this.activeView);
+    LOGd.nav("NavStateManager: Getting the active component. ActiveModal=", this.activeModal, "activeView=", this.activeView);
 
     if (this.activeModal !== null) {
       return this.activeModal;
@@ -178,19 +178,19 @@ class NavStateManager {
   addView(componentId : string, name : string) {
     if (this.handleIfAlreadyOpen(componentId, name)) { return; }
 
-    LOGi.nav("addView: incoming data", componentId, name);
-    LOGi.nav("addView: activeTab: ", this.activeTab);
-    LOGi.nav("addView: views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
+    LOGi.nav("NavStateManager: addView: incoming data", componentId, name);
+    LOGi.nav("NavStateManager: addView: activeTab: ", this.activeTab);
+    LOGi.nav("NavStateManager: addView: views:", this.views, "Modals:", this.modals, "overlayNames:", this.overlayNames, "overlayIncomingNames:", this.overlayIncomingNames, 'prematurelyClosedIncomingOverlays:', this.prematurelyClosedIncomingOverlays);
 
     if (this.prematurelyClosedIncomingOverlays[name]) {
-      LOGi.nav("addView: this overlay was expected to come in and was already closed before it opened.", name);
+      LOGi.nav("NavStateManager: addView: this overlay was expected to come in and was already closed before it opened.", name);
       delete this.prematurelyClosedIncomingOverlays[name];
       if (Date.now() - this.prematurelyClosedIncomingOverlays[name] < OVERLAY_APPEARING_TIMEWINDOW) {
-        LOGi.nav("addView: expected overlay appeared in less than 2 seconds. This is correct, returning addView function now.", name);
+        LOGi.nav("NavStateManager: addView: expected overlay appeared in less than 2 seconds. This is correct, returning addView function now.", name);
         this._removeOverlay(name);
         return;
       }
-      LOGw.nav("addView: expected overlay appeared after more than 2 seconds. This should not have happened. Cleaning up and resuming addView method..", name);
+      LOGw.nav("NavStateManager: addView: expected overlay appeared after more than 2 seconds. This should not have happened. Cleaning up and resuming addView method..", name);
     }
 
     if (this.overlayIncomingNames.length > 0 && this.overlayIncomingNames.indexOf(name) !== -1) {
@@ -224,7 +224,7 @@ class NavStateManager {
           this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
           this.isViewNameAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
         ) {
-          LOGw.nav("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
+          LOGw.nav("NavStateManager: IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
           return;
         }
       }
@@ -232,7 +232,7 @@ class NavStateManager {
       this.activeView[this.activeTab] = componentId;
     }
 
-    LOGi.nav("addView: After processing Views::", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
+    LOGi.nav("NavStateManager: addView: After processing Views::", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
   }
 
   isTargetViewNameCurrentlyActive(targetName) {
@@ -260,14 +260,14 @@ class NavStateManager {
   }
 
   popView() {
-    LOGi.nav("Will popView on tab", this.activeTab, "views:", this.views);
+    LOGi.nav("NavStateManager: Will popView on tab", this.activeTab, "views:", this.views);
     if (this.views[this.activeTab].length > 0) {
       this.views[this.activeTab].pop();
       this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
     }
     else {
-      LOGw.nav("Maybe something is wrong during popView?");
-      console.warn("Maybe something is wrong during popView?")
+      LOGw.nav("NavStateManager: Maybe something is wrong during popView?");
+      console.warn("NavStateManager: Maybe something is wrong during popView?")
     }
   }
 
@@ -277,8 +277,8 @@ class NavStateManager {
         lastItem(this.modals).pop();
       }
       else {
-        LOGw.nav("Maybe wanted to dismiss the modal?");
-        console.warn("Maybe wanted to dismiss the modal?");
+        LOGw.nav("NavStateManager: Maybe wanted to dismiss the modal?");
+        console.warn("NavStateManager: Maybe wanted to dismiss the modal?");
       }
     }
     else {
@@ -286,8 +286,8 @@ class NavStateManager {
         this.views[this.activeTab].pop();
       }
       else {
-        LOGw.nav("Maybe something is wrong during pop?");
-        console.warn("Maybe something is wrong during pop?");
+        LOGw.nav("NavStateManager: Maybe something is wrong during pop?");
+        console.warn("NavStateManager: Maybe something is wrong during pop?");
       }
     }
 
@@ -300,8 +300,8 @@ class NavStateManager {
         this.activeModal = lastItem(lastItem(this.modals)).id;
       }
       else {
-        LOGw.nav("Maybe wanted to dismiss the modal?");
-        console.warn("Maybe wanted to dismiss the modal?");
+        LOGw.nav("NavStateManager: Maybe wanted to dismiss the modal?");
+        console.warn("NavStateManager: Maybe wanted to dismiss the modal?");
       }
     }
     else {
@@ -312,8 +312,8 @@ class NavStateManager {
         this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
       }
       else {
-        LOGw.nav("Maybe something is wrong during _setActiveIds?");
-        console.warn("Maybe something is wrong during _setActiveIds?");
+        LOGw.nav("NavStateManager: Maybe something is wrong during _setActiveIds?");
+        console.warn("NavStateManager: Maybe something is wrong during _setActiveIds?");
       }
     }
   }
@@ -328,8 +328,8 @@ class NavStateManager {
      return lastItem(this.views[this.activeTab]).id;
     }
     else {
-      LOGw.nav("Maybe something is wrong during _getViewId?");
-      console.warn("Maybe something is wrong during _getViewId?");
+      LOGw.nav("NavStateManager: Maybe something is wrong during _getViewId?");
+      console.warn("NavStateManager: Maybe something is wrong during _getViewId?");
     }
   }
 
@@ -355,15 +355,15 @@ class NavStateManager {
   }
 
   closeOverlay(componentId) {
-    LOGi.nav("will close this overlay: componentId:", componentId, "overlayId:", this.overlayId);
+    LOGi.nav("NavStateManager: will close this overlay: componentId:", componentId, "overlayId:", this.overlayId);
     if (this.overlayId[componentId] !== undefined) {
-      LOGi.nav("actually closing names:", this.overlayNames);
+      LOGi.nav("NavStateManager: actually closing names:", this.overlayNames);
       let name = this.overlayId[componentId].name;
       delete this.overlayId[componentId];
       delete this.overlayNames[name];
     }
     else if (this.overlayIncomingNames.indexOf(componentId) !== -1) {
-      LOGi.nav("Cancelling the opening of the overlay:", componentId, "If it appears in the next 2 seconds it will be discarded immediately.");
+      LOGi.nav("NavStateManager: Cancelling the opening of the overlay:", componentId, "If it appears in the next 2 seconds it will be discarded immediately.");
       this.prematurelyClosedIncomingOverlays[componentId] = Date.now();
     }
   }
@@ -377,7 +377,7 @@ class NavStateManager {
   }
 
   isThisOverlayOpen(targetName) {
-    LOGi.nav("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
+    LOGi.nav("NavStateManager: @isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingNames", this.overlayIncomingNames);
     return this.overlayNames[targetName] !== undefined || this.overlayIncomingNames.indexOf(targetName) !== -1;
   }
 
@@ -395,7 +395,7 @@ class NavStateManager {
   }
 
   resetState() {
-    LOGi.nav("RESETTING STATE");
+    LOGi.nav("NavStateManager: RESETTING STATE");
     this.activeModal = null;
     this.activeView  = {};
     this.overlayNames = {};
@@ -444,8 +444,8 @@ class NavStateManager {
         }
       }
       else {
-        LOGw.nav("Maybe something is wrong during backTo? activeTab", this.activeTab, this.views);
-        console.warn("Maybe something is wrong during backTo?", this.activeTab, this.views);
+        LOGw.nav("NavStateManager: Maybe something is wrong during backTo? activeTab", this.activeTab, this.views);
+        console.warn("NavStateManager: Maybe something is wrong during backTo?", this.activeTab, this.views);
       }
     }
 
@@ -453,8 +453,8 @@ class NavStateManager {
       this._setActiveIds();
     }
 
-    LOGi.nav("IN BACK TO active: ", this.activeTab);
-    LOGi.nav("IN BACK TO Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
+    LOGi.nav("NavStateManager: IN BACK TO active: ", this.activeTab);
+    LOGi.nav("NavStateManager: IN BACK TO Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
 
     return targetId;
   }

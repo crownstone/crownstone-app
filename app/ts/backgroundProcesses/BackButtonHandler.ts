@@ -62,7 +62,7 @@ class BackButtonHandlerClass {
 
 
       let areOnBaseTab = NavState.isOnBaseTab();
-      LOGd.nav("BackButtonHandlerClass: check if we are ont he base tab", areOnBaseTab);
+      LOGd.nav("BackButtonHandlerClass: check if we are on the base tab", areOnBaseTab);
       if (!areOnBaseTab) {
         NavigationUtil.navigateToBaseTab()
         return true;

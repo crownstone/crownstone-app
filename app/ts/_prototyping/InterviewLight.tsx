@@ -163,6 +163,8 @@ export class InterviewLight extends Component<any, any> {
             ref={(c) => {
               this._carousel = c;
             }}
+            enableMomentum={true}
+            decelerationRate={0.9}
             data={this.state.slides}
             renderItem={({ item, index }) => {
               return <InterviewCard

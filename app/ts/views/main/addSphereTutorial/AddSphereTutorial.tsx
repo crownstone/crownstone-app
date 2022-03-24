@@ -45,6 +45,8 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
         <View style={{flex:1, width:screenWidth}}>
         <Carousel
           useScrollView={true}
+          enableMomentum={true}
+          decelerationRate={0.9}
           ref={(c) => { this._carousel = c; }}
           data={components}
           removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
