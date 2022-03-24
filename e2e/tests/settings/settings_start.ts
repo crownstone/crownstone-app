@@ -12,6 +12,5 @@ export const Settings_start = () => {
     await goToSettingsTab();
     await screenshot();
   })
-
 };
 
