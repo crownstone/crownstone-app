@@ -172,6 +172,8 @@ export const SphereAdd_addCrownstoneMenu = () => {
 async function goBackToAdd() {
   await waitToNavigate("ScanningForSetupCrownstones");
   await checkBackOption("closeModal",'SphereAdd', {restoreState: async () => {
+    await tap("AddCrownstone_button");
+    await waitToNavigate("AddCrownstone");
     await tap("Plug");
     await waitToNavigate("installingPlug");
     await tap("installingPlugNext");
