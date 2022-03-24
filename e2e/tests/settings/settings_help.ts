@@ -32,6 +32,7 @@ export const Settings_help = () => {
   })
 
   test('should be able to go to the Redownload screen', async () => {
+    await scrollDownUntilVisible(`Redownload`, "SettingsFAQ_scrollview");
     await tap("Redownload");
     await waitToNavigate("SettingsRedownloadFromCloud");
     await screenshot();
