@@ -1,5 +1,5 @@
 import {
-  $, checkBackAndForthOption, checkBackOption, delay, longPress, replaceText, screenshot, shouldBeOn, tap,
+  $, checkBackAndForthOption, checkBackOption, delay, isIos, longPress, replaceText, screenshot, shouldBeOn, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -54,17 +54,22 @@ export const SphereEditMenu_rooms = () => {
       await screenshot();
     })
 
-    test('should be able to rearrange rooms by press and holding', async () => {
+    test('should be able to rearrange rooms by press and holding (iOS only)', async () => {
       await shouldBeOn('RoomOverview')
       await tap('BackButton');
       await waitToNavigate('SphereOverview');
-      let roomIdToPress = await Assistant.getRoomId();
-      await longPress(`RoomCircle${roomIdToPress}`);
-      await delay(200);
-      await screenshot();
-      await tap("cancel");
-      await delay(200);
-      await expect($("cancel")).not.toBeVisible();
+      
+      if (isIos()) {
+        // Longpress on android does not support a custom duration, so it can't perform this test.
+        let roomIdToPress = await Assistant.getRoomId();
+        await longPress(`RoomCircle${roomIdToPress}`);
+        await delay(200);
+        await screenshot();
+        await tap("cancel");
+        await delay(200);
+        await expect($("cancel")).not.toBeVisible();
+      }
+
       await tap("edit");
       await waitToNavigate('SphereEdit');
       await tap('SphereEdit_rooms')

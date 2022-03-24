@@ -71,7 +71,7 @@ Navigation.events().registerAppLaunchedListener(() => {
   if (Platform.OS === 'android') {
     defaultOptions.topBar["leftButtonColor"]  = "#fff";
     defaultOptions.topBar["rightButtonColor"] = "#fff";
-    defaultOptions.topBar["backButton"]       = { color: "#fff" };
+    defaultOptions.topBar["backButton"]       = { color: "#fff", testID: "BackButton" };
   }
 
   Navigation.setDefaultOptions(defaultOptions);

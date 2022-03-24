@@ -56,9 +56,15 @@ export const SphereEditMenu_sphereSettings = () => {
     })
 
     test('should be able to go to the sphere users', async () => {
+      await shouldBeOn("SphereEditSettings");
       await tap("SphereUser_button");
       await waitToNavigate("SphereUserOverview");
-      await checkBackOption("BackButton","SphereEdit","SphereUser_button","SphereUserOverview");
+      await checkBackOption("BackButton","SphereEdit", { restoreState: async () => {
+        await tap("SphereEdit_settings");
+        await waitToNavigate('SphereEditSettings');
+        await tap("SphereUser_button");
+        await waitToNavigate("SphereUserOverview");
+      }});
     })
   }
   else {
