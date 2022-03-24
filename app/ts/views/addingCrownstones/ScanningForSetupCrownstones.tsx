@@ -27,6 +27,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
 import { STONE_TYPES } from "../../Enums";
+import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 
 export class ScanningForSetupCrownstones extends LiveComponent<{
   sphereId: string,
@@ -65,6 +66,8 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     this.setupEvents.push(core.eventBus.on("setupStoneChange",     () => { this.setState({showNothingYet: false}) }));
     this.setupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this._startNothingYetTimeout() }));
     this._startNothingYetTimeout();
+
+    BackButtonHandler.override(this.props.componentId, () => { NavigationUtil.dismissModal(); })
   }
 
   _startActiveScanning() {
@@ -150,6 +153,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     clearTimeout(this.noScansAtAllTimeout);
     clearTimeout(this.extendedNoScansAtAllTimeout);
     clearTimeout(this.nearUnknownCrownstoneTimeout);
+    BackButtonHandler.clearOverride(this.props.componentId);
   }
 
   _renderer(item, index, stoneId) {
