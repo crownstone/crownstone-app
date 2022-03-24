@@ -286,7 +286,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       if (nextStep >= 0.95) {
         this.props.onHold();
         this._clearHold();
-      } else {
+      }
+      else {
         this.touchAnimation = requestAnimationFrame(() => { this._onHoldProgress(); });
       }
     }

@@ -239,6 +239,8 @@ export class Interview extends Component<{
         ref={(c) => {
           this._carousel = c;
         }}
+        enableMomentum={true}
+        decelerationRate={0.9}
         removeClippedSubviews={Platform.OS === 'android' ? false : undefined /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
