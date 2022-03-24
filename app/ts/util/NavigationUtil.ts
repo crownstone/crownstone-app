@@ -184,12 +184,12 @@ class NavStateManager {
 
     if (this.prematurelyClosedIncomingOverlays[name]) {
       LOGi.nav("NavStateManager: addView: this overlay was expected to come in and was already closed before it opened.", name);
-      delete this.prematurelyClosedIncomingOverlays[name];
       if (Date.now() - this.prematurelyClosedIncomingOverlays[name] < OVERLAY_APPEARING_TIMEWINDOW) {
         LOGi.nav("NavStateManager: addView: expected overlay appeared in less than 2 seconds. This is correct, returning addView function now.", name);
         this._removeOverlay(name);
         return;
       }
+      delete this.prematurelyClosedIncomingOverlays[name];
       LOGw.nav("NavStateManager: addView: expected overlay appeared after more than 2 seconds. This should not have happened. Cleaning up and resuming addView method..", name);
     }
 
