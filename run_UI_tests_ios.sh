@@ -5,18 +5,18 @@ export REUSE=0
 export VERBOSE_ARG="info"
 export LANGUAGE="en"
 
-while getopts i:r:v:l: flag
+while getopts i:l:rv flag
 do
     case "${flag}" in
         i) IP_ADDRESS=${OPTARG};;
-        r) REUSE=${OPTARG};;
-        v) VERBOSE=${OPTARG};;
+        r) REUSE=1;;
+        v) VERBOSE=1;;
         l) LANGUAGE=${OPTARG};;
     esac
 done
 
 usage () {
-	echo "Usage: $0 -i [local_IP_address] -r [reuse 1|0] -v [verbose 1|0] -l [language en|nl]"
+	echo "Usage: $0 -i [local_IP_address] -r [reuse] -v [verbose] -l [language en|nl]"
 	exit 1
 }
 
