@@ -601,7 +601,7 @@ export class SetupHub extends LiveComponent<{
       <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true}>
         <KeepAwake />
         <Interview
-          backButtonName={"setupHub"}
+          backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

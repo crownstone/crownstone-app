@@ -390,7 +390,7 @@ export class Register extends LiveComponent<any, any> {
           ref={     (i) => { this._interview = i;    }}
           getCards={ () => { return this.getCards(); }}
           update={   () => { this.forceUpdate();     }}
-          backButtonName={"Register"}
+          backButtonOverrideViewNameOrId={this.props.componentId}
         />
       </AnimatedBackground>
     );
