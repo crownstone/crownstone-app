@@ -32,6 +32,8 @@ fi
 
 if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	echo "There are multiple matches for your IP address, please provide your IP address as argument."
+	echo "IP addresses found:"
+	echo "$IP_ADDRESS"
 	usage
 fi
 
@@ -49,7 +51,6 @@ else
 	${CLOUD_DIR}/reset.sh
 fi
 
-${CLOUD_DIR}/reset.sh
 if [ "$BUILD_APP" == "1" ]; then
 	echo "Building app"
 	detox build --configuration android-debug-device-english
