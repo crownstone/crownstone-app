@@ -9,7 +9,7 @@ import {
   scrollDownUntilVisible, shouldBeOn,
   tap,
   tapAlertCancelButton,
-  tapAlertOKButton,
+  tapAlertOKButton, tapPossibleDuplicate,
   tapReturnKey,
   tapSingularAlertButton,
   visitLink,
@@ -182,7 +182,7 @@ async function goBackToAdd(backAndForth = false) {
     }});
   }
   else {
-    await tap("closeModal");
+    await tapPossibleDuplicate("closeModal");
     await waitToNavigate("SphereAdd");
   }
   await tap("AddCrownstone_button");
