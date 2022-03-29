@@ -218,37 +218,40 @@ export class RoomEdit extends LiveComponent<any, any> {
     if (state.app.indoorLocalizationEnabled) {
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
-        items.push({label: lang("INDOOR_LOCALIZATION"), type: 'explanation',  below:false});
-        // if a fingerprint is already present:
-        if (room.config.fingerprintRaw) {
-          items.push({
-            label: lang("Retrain_Room"),
-            type: 'navigation',
-            testID:'roomRetrain',
-            icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
-            callback: () => {
-            Alert.alert(
-              lang("_Retrain_Room__Only_do_th_header"),
-              lang("_Retrain_Room__Only_do_th_body"),
-              [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
-                            {
-              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
-            ])
-          }});
-          items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
-        }
-        else {
-          items.push({
-            label: lang("Teach__to_find_you_",ai),
-            type: 'navigation',
-            icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />,
-            testID:'roomTrain',
-            callback: () => {
-              NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId});
-            }
-          });
-          items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
-        }
+        NavigationUtil.launchModal( "RoomTrainingStep1",{sphereId: this.props.sphereId, locationId: this.props.locationId});
+
+
+        // items.push({label: lang("INDOOR_LOCALIZATION"), type: 'explanation',  below:false});
+        // // if a fingerprint is already present:
+        // if (room.config.fingerprintRaw) {
+        //   items.push({
+        //     label: lang("Retrain_Room"),
+        //     type: 'navigation',
+        //     testID:'roomRetrain',
+        //     icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
+        //     callback: () => {
+        //     Alert.alert(
+        //       lang("_Retrain_Room__Only_do_th_header"),
+        //       lang("_Retrain_Room__Only_do_th_body"),
+        //       [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
+        //                     {
+        //       text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+        //     ])
+        //   }});
+        //   items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
+        // }
+        // else {
+        //   items.push({
+        //     label: lang("Teach__to_find_you_",ai),
+        //     type: 'navigation',
+        //     icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />,
+        //     testID:'roomTrain',
+        //     callback: () => {
+        //       NavigationUtil.launchModal( "RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId});
+        //     }
+        //   });
+        //   items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
+        // }
       }
       else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
         items.push({label: lang("You_can_only_train_this_r"), type: 'explanation',  below:false});

@@ -1,4 +1,3 @@
-type timestamp = number;
 
 interface SphereData {
   id: string,

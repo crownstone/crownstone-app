@@ -125,6 +125,8 @@ import { TextInputOverlay }                   from "./overlays/TextInputOverlay"
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
 import { SettingsLogLevelConfig }             from "./settingsViews/dev/SettingsLogLevelConfig";
 import { SettingsLogOverview }                from "./settingsViews/dev/SettingsLogOverview";
+import { RoomTrainingStep1 } from "./roomViews/RoomTrainingStep1";
+import { RoomTrainingStep1_train } from "./roomViews/RoomTrainingStep1_train";
 
 
 export const Views = {
@@ -179,6 +181,8 @@ export const Views = {
   RoomIconSelection:                 RoomIconSelection,
   RoomOverview:                      RoomOverview,
   RoomTraining:                      RoomTraining,
+  RoomTrainingStep1:                 RoomTrainingStep1,
+  RoomTrainingStep1_train:           RoomTrainingStep1_train,
   RoomTraining_roomSize:             RoomTraining_roomSize,
   SelectFromList:                    SelectFromList,
   SettingsApp:                       SettingsApp,

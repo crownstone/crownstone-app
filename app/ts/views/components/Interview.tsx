@@ -94,7 +94,7 @@ export class Interview extends Component<{
 
   componentWillUnmount() {
     if (this.props.backButtonName) {
-      BackButtonHandler.clearOverride(this.props.backButtonName)
+      BackButtonHandler.clearOverride(this.props.backButtonName);
     }
   }
 
@@ -127,7 +127,7 @@ export class Interview extends Component<{
       this._carousel.snapToItem(this.activeCardIndex- 1);
     }
     else {
-      return false
+      return false;
     }
   }
 

@@ -10,22 +10,31 @@ import { Background } from "../components/Background";
 import { background, colors, screenHeight, screenWidth, styles } from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Button } from "../components/Button";
+import { TrainingData } from "./trainingComponents/TrainingData";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining", key)(a,b,c,d,e);
 }
 
-export class RoomTraining extends LiveComponent<any, any> {
+export class RoomTrainingStep1_train extends LiveComponent<any, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
     return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
   }
 
+  trainingData
 
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
+
+    this.trainingData = new TrainingData(this.props.sphereId, this.props.locationId);
+
+    this.trainingData.tick = () => {
+      let pattern = [0, 400]
+      // Vibration.vibrate(pattern, false);
+    }
+
   }
 
   navigationButtonPressed({buttonId}) {
@@ -34,9 +43,11 @@ export class RoomTraining extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
+    this.trainingData.start();
   }
 
   componentWillUnmount() {
+    this.trainingData.stop();
   }
 
 
@@ -48,23 +59,13 @@ export class RoomTraining extends LiveComponent<any, any> {
       <Background hasNavBar={false} image={background.main}>
         <KeepAwake />
         <View style={{height:30}}/>
-        <Text style={styles.boldExplanation}>{"In order for me to know when you are in this room, I need to learn a bit more about it."}</Text>
-        <Text style={styles.explanation}>{"By walking around the room, I can listen for the Crownstone signals and recognise the room afterwards."}</Text>
+        <Text style={styles.header}>{"Listening..."}</Text>
 
         <View style={{flex:1}}/>
         <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
         <View style={{flex:1}}/>
 
-        <Text style={styles.explanation}>{"I'll guide you in this process once we start."}</Text>
-        <Text style={styles.explanation}>{"Are you ready?"}</Text>
-        <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
-          <Button
-            backgroundColor={colors.blue.rgba(0.5)}
-            icon={"ios-play"}
-            label={ "Let's go! "}
-            callback={() => { NavigationUtil.navigate('RoomTrainingStep1', this.props); }}
-          />
-        </View>
+        <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!."}</Text>
       </Background>
     );
   }
