@@ -3,8 +3,7 @@ import fs from "fs"
 import { CONFIG } from "../testSuite.e2e";
 
 export function $(id) {
-  // Always take index 0, in some views there are buttons with the same tag overlapping.
-  return element(by.id(id)).atIndex(0);
+  return element(by.id(id));
 }
 
 export function getWithPossibleDuplicates(id) {
