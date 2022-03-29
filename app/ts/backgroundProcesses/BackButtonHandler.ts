@@ -9,6 +9,9 @@ class BackButtonHandlerClass {
 
   /**
    * Override the back button action from a modal or view. Does not work for overlays
+   *
+   * The name is either the name of the view or the componentId. A custom name will not work!
+   *
    * If the callback return false, the override falls through
    * @param viewName
    * @param callback
@@ -38,8 +41,11 @@ class BackButtonHandlerClass {
 
       let activeViewData = NavState.getCurrentlyActiveComponentData();
       LOGd.nav("BackButtonHandlerClass: check if activeViewData", activeViewData,  this.overrides);
-      if (activeViewData && this.overrides[activeViewData.name] !== undefined) {
-        if (this.overrides[activeViewData.name]() !== false) {
+      if (activeViewData) {
+        if (this.overrides[activeViewData.name] !== undefined && this.overrides[activeViewData.name]() !== false) {
+          return true;
+        }
+        if (this.overrides[activeViewData.id] !== undefined && this.overrides[activeViewData.id]() !== false) {
           return true;
         }
       }

@@ -25,7 +25,7 @@ class FastFailure {
           status: "failed",
           title: test.name,
         }
-      ], cfg as any,{noStackTrace:false}))
+      ], cfg as any,{noStackTrace:false}));
       process.exit()
     }
   }

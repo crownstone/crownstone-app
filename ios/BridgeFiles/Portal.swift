@@ -63,6 +63,7 @@ class BluenetContainer : NSObject {
     #else
       self.devEnvironment = false
     #endif
+    
     #if CS_DEBUG
       self.devEnvironment = true
     #endif

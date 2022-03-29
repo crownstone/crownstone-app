@@ -48,7 +48,7 @@ let explanationStyle : TextStyle = {
 
 export class Interview extends Component<{
   getCards() : interviewCards,
-  backButtonName?: string,
+  backButtonOverrideViewNameOrId?: string,
   height? : number,
   scrollEnabled? : boolean,
   update?() : void,
@@ -85,16 +85,16 @@ export class Interview extends Component<{
 
 
   componentDidMount() {
-    if (this.props.backButtonName) {
-      BackButtonHandler.override(this.props.backButtonName, () => {
+    if (this.props.backButtonOverrideViewNameOrId) {
+      BackButtonHandler.override(this.props.backButtonOverrideViewNameOrId, () => {
         return this.back();
       });
     }
   }
 
   componentWillUnmount() {
-    if (this.props.backButtonName) {
-      BackButtonHandler.clearOverride(this.props.backButtonName);
+    if (this.props.backButtonOverrideViewNameOrId) {
+      BackButtonHandler.clearOverride(this.props.backButtonOverrideViewNameOrId);
     }
   }
 

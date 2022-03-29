@@ -148,7 +148,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           style={{backgroundColor:'transparent', paddingTop:0}}
         />
         <Interview
-          backButtonName={"dfuFinished"}
+          backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return getCardsCallback() }}
           update={   () => { this.forceUpdate() }}

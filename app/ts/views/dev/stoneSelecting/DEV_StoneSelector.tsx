@@ -94,7 +94,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
       this.startScanning();
       this.refresh();
     }
-    BackButtonHandler.override('DEV_APP_MAIN', () => {
+    BackButtonHandler.override(this.props.componentId, () => {
       Alert.alert(
 "You MUST kill the app, not just go back.",
 "Everything will be effed-up if you don't kill the app.",

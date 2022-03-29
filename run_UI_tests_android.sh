@@ -32,6 +32,8 @@ fi
 
 if [ `echo "$IP_ADDRESS" | wc -l` -gt 1 ]; then
 	echo "There are multiple matches for your IP address, please provide your IP address as argument."
+	echo "IP addresses found:"
+	echo "$IP_ADDRESS"
 	usage
 fi
 
@@ -39,17 +41,31 @@ export IP_ADDRESS=$IP_ADDRESS
 
 echo "Using $IP_ADDRESS as local IP address."
 
+# Your local IP address needs to be added as security exception.
+if grep "includeSubdomains=\"true\">${IP_ADDRESS}<" android/app/src/main/res/xml/network_security_config.xml; then
+	echo "Found your local IP address in security exceptions"
+else
+	echo "Adding your local IP address to security exceptions, rebuild required"
+	sed -i -re "s/<\/domain-config>/\t<domain includeSubdomains=\"true\">${IP_ADDRESS}<\/domain>\n<\/domain-config>/" android/app/src/main/res/xml/network_security_config.xml
+	BUILD_APP=1
+fi
+
+
 ./scripts/set_demo_mode_android.sh on
 
+REUSE_FLAG=""
 if [ "$REUSE" == "1" ]; then
-	${CLOUD_DIR}/scripts/reset_mocks.sh
-	detox test --configuration android-debug-device-english --reuse --loglevel "$LOG_LEVEL"
+        REUSE_FLAG="--reuse"
+        ${CLOUD_DIR}/scripts/reset_mocks.sh
 else
 	${CLOUD_DIR}/reset.sh
-	if [ "$BUILD_APP" == "1" ]; then
-		detox build --configuration android-debug-device-english
-	fi
-	detox test --configuration android-debug-device-english --loglevel "$LOG_LEVEL"
 fi
+
+if [ "$BUILD_APP" == "1" ]; then
+	echo "Building app"
+	detox build --configuration android-debug-device-english
+fi
+
+detox test --configuration android-debug-device-english $REUSE_FLAG --loglevel "$LOG_LEVEL"
 
 ./scripts/set_demo_mode_android.sh off

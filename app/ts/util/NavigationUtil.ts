@@ -613,7 +613,7 @@ export const NavigationUtil = {
       // reset the NavState
       NavState.setRoot();
 
-      LOGi.nav("NavigationUtil: ----------------------_____SET ROOT", rootStack);
+      LOGi.nav("NavigationUtil: -------------------------- SET ROOT", rootStack);
       // check if we have a tabBar setup.
       tabBarComponentNames = [];
       loadNamesFromStack(rootStack);
