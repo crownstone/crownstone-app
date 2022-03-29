@@ -41,15 +41,20 @@ echo "Using $IP_ADDRESS as local IP address."
 
 ./scripts/set_demo_mode_android.sh on
 
+REUSE_FLAG=""
 if [ "$REUSE" == "1" ]; then
-	${CLOUD_DIR}/scripts/reset_mocks.sh
-	detox test --configuration android-debug-device-english --reuse --loglevel "$LOG_LEVEL"
+        REUSE_FLAG="--reuse"
+        ${CLOUD_DIR}/scripts/reset_mocks.sh
 else
 	${CLOUD_DIR}/reset.sh
-	if [ "$BUILD_APP" == "1" ]; then
-		detox build --configuration android-debug-device-english
-	fi
-	detox test --configuration android-debug-device-english --loglevel "$LOG_LEVEL"
 fi
+
+${CLOUD_DIR}/reset.sh
+if [ "$BUILD_APP" == "1" ]; then
+	echo "Building app"
+	detox build --configuration android-debug-device-english
+fi
+
+detox test --configuration android-debug-device-english $REUSE_FLAG --loglevel "$LOG_LEVEL"
 
 ./scripts/set_demo_mode_android.sh off
