@@ -41,6 +41,16 @@ export IP_ADDRESS=$IP_ADDRESS
 
 echo "Using $IP_ADDRESS as local IP address."
 
+# Your local IP address needs to be added as security exception.
+if grep "includeSubdomains=\"true\">${IP_ADDRESS}<" android/app/src/main/res/xml/network_security_config.xml; then
+	echo "Found your local IP address in security exceptions"
+else
+	echo "Adding your local IP address to security exceptions, rebuild required"
+	sed -i -re "s/<\/domain-config>/\t<domain includeSubdomains=\"true\">${IP_ADDRESS}<\/domain>\n<\/domain-config>/" android/app/src/main/res/xml/network_security_config.xml
+	BUILD_APP=1
+fi
+
+
 ./scripts/set_demo_mode_android.sh on
 
 REUSE_FLAG=""
