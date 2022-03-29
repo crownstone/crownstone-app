@@ -186,7 +186,6 @@ export class AddCrownstone extends LiveComponent<any, any> {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
       textColor = this._interview.getTextColorFromCard() || textColor;
     }
-
     return (
       <AnimatedBackground
         fullScreen={true}
@@ -203,7 +202,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
             if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
-          backButtonName={"addCrownstone_backButton"}
+          backButtonName={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

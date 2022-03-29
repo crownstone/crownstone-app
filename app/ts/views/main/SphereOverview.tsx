@@ -190,12 +190,12 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     let setRearrangeRooms = (value) => {
       if (value === true) {
-        BackButtonHandler.override("RoomRearrangement", () => {
+        BackButtonHandler.override(this.props.componentId, () => {
           core.eventBus.emit("reset_positions" + this.viewId);
         })
       }
       else {
-        BackButtonHandler.clearOverride("RoomRearrangement")
+        BackButtonHandler.clearOverride(this.props.componentId)
       }
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
     };
@@ -239,7 +239,6 @@ export class SphereOverview extends LiveComponent<any, any> {
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
     let backgroundOverride = background.main;
-
 
     LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
