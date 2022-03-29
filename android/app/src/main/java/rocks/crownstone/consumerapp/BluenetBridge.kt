@@ -612,7 +612,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun isDevelopmentEnvironment(callback: Callback) {
 		// Return whether this is app is for development
 		Log.i(TAG, "isDevelopmentEnvironment")
-		resolveCallback(callback, false)
+		resolveCallback(callback, BuildConfig.DEBUG)
 	}
 
 	@ReactMethod

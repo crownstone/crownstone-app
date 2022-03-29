@@ -42,7 +42,7 @@ export const SphereAdd_addCrownstoneMenu = () => {
     await waitToNavigate("ScanningForSetupCrownstones");
     await screenshot();
 
-    await goBackToAdd();
+    await goBackToAdd(true);
   })
 
   test('should be able to see all views for adding a builtinOne, socket', async () => {
@@ -169,16 +169,22 @@ export const SphereAdd_addCrownstoneMenu = () => {
 };
 
 
-async function goBackToAdd() {
+async function goBackToAdd(backAndForth = false) {
   await waitToNavigate("ScanningForSetupCrownstones");
-  await checkBackOption("closeModal",'SphereAdd', {restoreState: async () => {
-    await tap("AddCrownstone_button");
-    await waitToNavigate("AddCrownstone");
-    await tap("Plug");
-    await waitToNavigate("installingPlug");
-    await tap("installingPlugNext");
-    await waitToNavigate("ScanningForSetupCrownstones");
-  }});
+  if (backAndForth) {
+    await checkBackOption("closeModal",'SphereAdd', {restoreState: async () => {
+      await tap("AddCrownstone_button");
+      await waitToNavigate("AddCrownstone");
+      await tap("Plug");
+      await waitToNavigate("installingPlug");
+      await tap("installingPlugNext");
+      await waitToNavigate("ScanningForSetupCrownstones");
+    }});
+  }
+  else {
+    await tap("closeModal");
+    await waitToNavigate("SphereAdd");
+  }
   await tap("AddCrownstone_button");
   await waitToNavigate("AddCrownstone");
 }
