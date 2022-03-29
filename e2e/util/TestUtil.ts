@@ -4,16 +4,23 @@ import { CONFIG } from "../testSuite.e2e";
 
 export function $(id) {
   // Always take index 0, in some views there are buttons with the same tag overlapping.
-  return element(by.id(id)).atIndex(0)
+  return element(by.id(id)).atIndex(0);
 }
+
+export function getWithPossibleDuplicates(id) {
+  // Always take index 0, in some views there are buttons with the same tag overlapping.
+  return element(by.id(id)).atIndex(0);
+}
+
+
 export function iosSingleAlertButton() {
-  return element(by.type('_UIAlertControllerActionView')).atIndex(0)
+  return element(by.type('_UIAlertControllerActionView')).atIndex(0);
 }
 export function iosIndexAlertButton(index: number = 0) {
-  return element(by.type('_UIAlertControllerActionView')).atIndex(index)
+  return element(by.type('_UIAlertControllerActionView')).atIndex(index);
 }
 export function androidSingleAlertButton() {
-  return element(by.type('androidx.appcompat.widget.AppCompatButton'))
+  return element(by.type('androidx.appcompat.widget.AppCompatButton'));
 }
 export function androidIndexAlertButton(index: number = 0) {
   return element(by.type('androidx.appcompat.widget.AppCompatButton')).atIndex(index);
@@ -22,7 +29,7 @@ export function androidIndexAlertButton(index: number = 0) {
 async function tapAlertButton(buttonElement, timeout = 1000) {
   await delay(100);
   await waitFor(buttonElement).toBeVisible().withTimeout(timeout);
-  await buttonElement.tap()
+  await buttonElement.tap();
   await delay(100);
 }
 
@@ -30,7 +37,7 @@ export async function replaceText(id, text, timeout = 1000) {
   await delay(100);
   let item = $(id);
   await waitFor(item).toBeVisible().withTimeout(timeout);
-  await item.replaceText(text)
+  await item.replaceText(text);
   await delay(100);
 }
 
@@ -50,6 +57,14 @@ export async function tap(id, timeout = 1000) {
   await delay(200);
 }
 
+export async function tapPossibleDuplicate(id, timeout = 1000) {
+  await delay(100);
+  let item = getWithPossibleDuplicates(id);
+  await waitFor(item).toBeVisible(100).withTimeout(timeout);
+  await item.tap();
+  await delay(200);
+}
+
 export async function longPress(id, duration= 2000, timeout = 1000) {
   await delay(100);
   let item = $(id);
@@ -61,14 +76,8 @@ export async function longPress(id, duration= 2000, timeout = 1000) {
 export async function tapReturnKey(id, timeout = 1000) {
   let item = $(id);
   await waitToShow(id);
-  await item.tapReturnKey()
+  await item.tapReturnKey();
   await delay(300);
-}
-
-export async function waitToBeFocussed(id, timeout = 1500) {
-  await waitToShow(id, timeout);
-  let item = $(id);
-  await expect(item).toBeFocused();
 }
 
 export async function waitToShow(id, timeout = 1500) {
@@ -104,11 +113,11 @@ export async function waitToStart(id, timeout = 8000) {
 }
 
 export async function scrollDownUntilVisible( itemId, scrollViewId ) {
-  await waitFor(element(by.id(itemId))).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down');
+  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down');
 }
 
 export async function scrollUpUntilVisible( itemId, scrollViewId ) {
-  await waitFor(element(by.id(itemId))).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up');
+  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up');
 }
 
 export async function swipeNext( itemId ) {
@@ -230,7 +239,8 @@ export async function checkBackAndForthOption(backButtonId: string, backViewId: 
     if (callbacks?.afterForward) { await callbacks?.afterForward(); }
     if (callbacks?.restoreState) { await callbacks?.restoreState(); }
   }
-  await tap(backButtonId)
+  // back button ID might not be unique due to stacked views both having topbars
+  await tapPossibleDuplicate(backButtonId)
   await waitToNavigate(backViewId);
   if (callbacks?.afterBack) { await callbacks?.afterBack(); }
   if (typeof forwardButtonIdOrCallbacks === 'string') {
@@ -257,7 +267,8 @@ export async function checkBackOption(backButtonId: string, backViewId: string, 
     if (callbacks?.afterForward) { await callbacks?.afterForward(); }
     if (callbacks?.restoreState) { await callbacks?.restoreState(); }
   }
-  await tap(backButtonId)
+  // back button ID might not be unique due to stacked views both having topbars
+  await tapPossibleDuplicate(backButtonId)
   await waitToNavigate(backViewId);
   if (callbacks?.afterBack) { await callbacks?.afterBack(); }
 }

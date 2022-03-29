@@ -182,7 +182,7 @@ export const SphereAdd_setup_crownstone = () => {
     await Assistant.ble.for(handle2).succeed.getUICR(UICR_DATA);
     await Assistant.ble.for(handle2).succeed.setupCrownstone();
     await Assistant.ble.for(handle2).disconnectEvent();
-    await waitToNavigate('addCrownstone_setupMore')
+    await waitToNavigate('addCrownstone_setupMore');
   })
 
   test("should show an error screen if setup fails", async () => {
