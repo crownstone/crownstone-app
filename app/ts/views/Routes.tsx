@@ -45,7 +45,12 @@ export const loadRoutes = function() {
 
 Navigation.events().registerAppLaunchedListener(() => {
   let defaultOptions : Options = {
+    statusBar: {
+      visible: true,
+      drawBehind: false,
+    },
     topBar: {
+      drawBehind: false,
       background: { color: colors.csBlueDarker.hex },
       title: {
         color: colors.white.hex,
