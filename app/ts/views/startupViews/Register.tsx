@@ -204,7 +204,7 @@ export class Register extends LiveComponent<any, any> {
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
                 autoCompleteType={'username'}
-                autofocus={true}
+                autofocus={Platform.OS != "android"}
                 testID={'register-email'}
                 autoCapitalize={'none'}
                 focussed={this.focussingIndex === 0 || undefined}
