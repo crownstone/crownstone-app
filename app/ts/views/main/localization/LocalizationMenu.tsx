@@ -59,6 +59,8 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       behaviourEnabledState = sphere.state.smartHomeEnabled === true
     }
 
+
+    // TODO: Add check if there is any behaviour
     items.push({ label: "BEHAVIOUR", type: 'largeExplanation' });
     items.push({
       label: "Disable behaviour",
@@ -73,6 +75,37 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       }
     });
     items.push({label: "You can disable behaviour so your house reverts to a normal, dumb, home. This is often used if you have guests. Guests prefer not to be left in the dark...",  type:'explanation', below: true});
+
+    // in case no behaviour
+    // items.push({ label: "BEHAVIOUR", type: 'largeExplanation' });
+    // items.push({
+    //   label: "Disable behaviour",
+    //   type: 'switch',
+    //   disabled: true,
+    //   testID: 'Disable_behaviour',
+    //   largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+    //   value: !behaviourEnabledState,
+    //   callback: (newState) => {
+    //     SphereStateManager.userSetSmartHomeState(this.props.sphereId, !newState);
+    //     core.eventBus.emit("showLoading",newState === true ? "Disabling behaviour..." : "Enabling behaviour...");
+    //     setTimeout(() => { core.eventBus.emit("hideLoading"); }, 4000);
+    //   }
+    // });
+    // items.push({label: "No Crownstones have behaviour at the moment...",  type:'explanation', below: true});
+
+
+    // If training is not complete
+    // items.push({ label: "Localization", type: 'largeExplanation', alreadyPadded: true });
+    // items.push({
+    //   label: "Setup localization",
+    //   type: 'navigation',
+    //   testID: 'ImproveLocalization',
+    //   largeIcon: <IconButton name='c1-locationPin1' buttonSize={55} size={30} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+    //   callback: () => {
+    //     NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
+    //   }
+    // });
+    // items.push({label: "Is the localization not working correctly? This will take you through the steps to identify the problem and improve the localization!",  type:'explanation', below: true});
 
     items.push({ label: "Localization", type: 'largeExplanation', alreadyPadded: true });
     items.push({

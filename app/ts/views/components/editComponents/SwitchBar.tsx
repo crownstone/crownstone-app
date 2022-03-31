@@ -70,6 +70,10 @@ export class SwitchBar extends Component<any, any> {
   _getButton(navBarHeight, fontColor) {
     let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle];
 
+    if (this.props.disabled) {
+      style.push({backgroundColor: colors.lightGray.rgba(0.3)})
+      fontColor = colors.black.rgba(0.3);
+    }
 
     let helpColor = colors.black.rgba(0.5);
     if (this.props.experimental) {
@@ -79,9 +83,9 @@ export class SwitchBar extends Component<any, any> {
 
     return (
       <View style={style}>
-        {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+        {this.props.largeIcon  !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
         {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
-        {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
+        {this.props.icon       !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
         {this.props.iconIndent === true ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]} /> : undefined }
         <Animated.Text style={[styles.listTextLarge, this.props.style, {color: fontColor}]}>{this.props.label}</Animated.Text>
         <View style={{flex:1}} />
