@@ -19,6 +19,7 @@ let defaultSettings : LocationData = {
     fingerprintParsed: null,
     fingerprintUpdatedAt: 1,
   },
+  fingerprints: [],
   presentUsers: [],
   layout: {
     x: null,

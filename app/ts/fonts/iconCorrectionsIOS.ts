@@ -449,6 +449,9 @@ const fiHSIconsCorrectionsIOS = {
 const fiEIconsCorrectionsIOS = {
 
 };
+const ion5CorrectionsIOS = {
+  'ion5-add':                     {change: false, top: -0.00, left: 0.00},
+};
 
 
 
@@ -458,6 +461,7 @@ export const iconCorrectionsIOS = {
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
   ionicons: ioniconCorrectionsIOS,
+  ionicons5: ion5CorrectionsIOS,
   evilIcons: evilIconsCorrectionsIOS,
   fiCS1: fiCS1IconsCorrectionsIOS,
   fiHS:  fiHSIconsCorrectionsIOS,

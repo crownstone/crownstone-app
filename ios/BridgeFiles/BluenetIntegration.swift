@@ -134,6 +134,7 @@ open class BluenetJS: RCTEventEmitter {
             }
         })
         
+
         // forward the navigation event stream to react native
         GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
             var returnArray = [NSDictionary]()
@@ -145,6 +146,7 @@ open class BluenetJS: RCTEventEmitter {
                 }
             }
             self.sendEvent(withName: "iBeaconAdvertisement", body: returnArray)
+
         })
         GLOBAL_BLUENET.bluenetLocalizationOn("enterRegion", {data -> Void in
             print("BluenetBridge: enterRegion")
@@ -180,6 +182,22 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     
+    @objc func vibrate(_ type: String) {
+        switch type {
+        case "error":
+            Vibration.error.vibrate()
+        case "success":
+            Vibration.success.vibrate()
+        case "warning":
+            Vibration.warning.vibrate()
+        case "medium":
+            Vibration.medium.vibrate()
+        case "heavy":
+            Vibration.heavy.vibrate()
+        default:
+            break
+        }
+    }
     
     @objc func clearKeySets() {
         GLOBAL_BLUENET.bluenet.loadKeysets(encryptionEnabled: true, keySets: [])

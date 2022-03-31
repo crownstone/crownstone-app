@@ -27,6 +27,7 @@
 		FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F321CCF07000811933 /* RssiRowController.swift */; };
 		FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F221CCF07000811933 /* SwitchRowController.swift */; };
 		FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F121CCF07000811933 /* SliderRowController.swift */; };
+		FA4ADDE127F450D4005FB0CA /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4ADDE027F450D4005FB0CA /* Haptics.swift */; };
 		FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB31EAE320F001C625D /* BluenetIntegration.swift */; };
 		FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB41EAE320F001C625D /* JSONUtils.swift */; };
 		FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB61EAE320F001C625D /* NativeBridge.m */; };
@@ -339,6 +340,20 @@
 			remoteGlobalIDString = A5B49761F8D1EB12585DD45CAA2E489F;
 			remoteInfo = "React-logger";
 		};
+		FA4ADE1A27F450D4005FB0CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 51BA97E8B5085EFFB47BC9C0B785CEA7;
+			remoteInfo = "lottie-ios";
+		};
+		FA4ADE1C27F450D4005FB0CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0F8D5091C801A6ECB9A173DA0E385A29;
+			remoteInfo = "lottie-react-native";
+		};
 		FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -517,6 +532,7 @@
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
 		FA4722BD21DE7473008795C5 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
+		FA4ADDE027F450D4005FB0CA /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Crownstone-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA570EB31EAE320F001C625D /* BluenetIntegration.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = BluenetIntegration.swift; sourceTree = "<group>"; tabWidth = 4; };
 		FA570EB41EAE320F001C625D /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
@@ -761,6 +777,7 @@
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
 				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
 				FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */,
+				FA4ADDE027F450D4005FB0CA /* Haptics.swift */,
 			);
 			path = BridgeFiles;
 			sourceTree = "<group>";
@@ -783,6 +800,8 @@
 				FA39A4952743C7AE00A63C79 /* fmt */,
 				FA274E822410144F00D7C858 /* glog */,
 				FA39A4972743C7AE00A63C79 /* HMSegmentedControl */,
+				FA4ADE1B27F450D4005FB0CA /* lottie-ios */,
+				FA4ADE1D27F450D4005FB0CA /* lottie-react-native */,
 				FA274E842410144F00D7C858 /* Pods-Crownstone */,
 				FA9F56A9263AE19600A8219A /* Pods-Crownstone-CrownstoneTests */,
 				FACF166A26160CB500A9163F /* RCT-Folly */,
@@ -1414,6 +1433,22 @@
 			remoteRef = FA39A4982743C7AE00A63C79 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA4ADE1B27F450D4005FB0CA /* lottie-ios */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "lottie-ios";
+			path = "liblottie-ios.a";
+			remoteRef = FA4ADE1A27F450D4005FB0CA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA4ADE1D27F450D4005FB0CA /* lottie-react-native */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "lottie-react-native";
+			path = "liblottie-react-native.a";
+			remoteRef = FA4ADE1C27F450D4005FB0CA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA5C2BBD24165FEC00358011 /* RNCPushNotificationIOS */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1743,6 +1778,7 @@
 				FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */,
 				FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
+				FA4ADDE127F450D4005FB0CA /* Haptics.swift in Sources */,
 				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
 				FA59A6A5224CE5D300D58C9F /* AppDelegate_old.swift in Sources */,

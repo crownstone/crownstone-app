@@ -119,20 +119,6 @@ export class SphereEditSettings extends LiveComponent<any, any> {
       });
     }
 
-    let ai = Util.data.getAiName(state, this.props.sphereId);
-
-    items.push({label: lang("PERSONAL_ARTIFICIAL_INTEL"),  type:'explanation', below:false});
-    items.push({
-      label: ai,
-      type: spherePermissions.editSphere ? 'navigation' : 'info',
-      testID: 'SphereAI_button',
-      icon: <IconButton name='c1-brain' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-      callback: () => {
-        NavigationUtil.navigate( "AiStart", {sphereId: this.props.sphereId, canGoBack: true});
-      }
-    });
-    items.push({label: lang("_will_do__very_best_help_"),  type:'explanation', style:{paddingBottom:0}, below:true});
-
 
     items.push({label: lang("SPHERE_LOCATION"),  type:'explanation', below:false});
     items.push({

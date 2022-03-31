@@ -937,4 +937,4 @@ let ionicons3Glyphmap = {
   "md-woman": 62378
 };
 
-export const Ionicons3 = VectorIcons.createIconSet(ionicons3Glyphmap,  'Ionicons', 'Ionicons3.ttf');
+export const Ionicons3 = VectorIcons.createIconSet(ionicons3Glyphmap,  'Ionicons3', 'Ionicons3.ttf');

@@ -19,8 +19,6 @@ let defaultSettings : SphereData = {
     uid: null,
     cloudId: null,
 
-    aiName: null,
-
     latitude: null,
     longitude: null,
 
@@ -72,7 +70,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         let newState = {...state};
         newState.name        = update(action.data.name,        newState.name);
         newState.uid         = update(action.data.uid,         newState.uid);
-        newState.aiName      = update(action.data.aiName,      newState.aiName);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
         newState.cloudId     = update(action.data.cloudId,     newState.cloudId);
 

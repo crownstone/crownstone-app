@@ -10,15 +10,6 @@ export const Stacks = {
     }
   },
 
-  aiStart: function(props) : StackData {
-    return {
-      stack: {
-        children: [
-          { component: {name: "AiStart", passProps: props} },
-        ],
-      },
-    }
-  },
 
   tutorial: function() : StackData {
     return {

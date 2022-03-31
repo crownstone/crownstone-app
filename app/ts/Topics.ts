@@ -1,5 +1,3 @@
-
-
 export const NATIVE_BUS_TOPICS : NativeBusTopics = {
   setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
   dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneBaseAdvertisement
@@ -35,4 +33,8 @@ export const NATIVE_BUS_TOPICS : NativeBusTopics = {
 
   connectedToPeripheral:       "connectedToPeripheral",       // date type = string (handle). Sent immediately after connect, before service discovery.
   disconnectedFromPeripheral:  "disconnectedFromPeripheral",  // date type = string (handle). Sent after disconnect cleanup. Can be called multiple times.
+}
+
+export const TOPICS = {
+  datapointCollected: 'datapointCollected',
 }

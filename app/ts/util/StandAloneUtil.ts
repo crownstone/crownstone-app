@@ -8,11 +8,16 @@ export const xUtil = {
     })
   },
 
-  pad: function(str) {
-    if (Number(str) < 10) {
-      return '0' + str;
+  pad: function(str : string | number, paddedLength : number= 2) {
+    let num = Number(str);
+
+    let newStr = String(str);
+    for (let i = 1; i < paddedLength; i++) {
+      if (num < Math.pow(10,i)) {
+        newStr = '0' + newStr;
+      }
     }
-    return str;
+    return newStr;
   },
 
 

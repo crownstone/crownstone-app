@@ -15,35 +15,44 @@ import {styles} from '../../styles'
 export class AnimatedCircle extends Component<any, any> {
   color1 : string;
   color2 : string;
+  size  : number;
   value : number;
 
   constructor(props) {
     super(props);
     this.color1 = props.color;
     this.color2 = props.color;
-    this.state = {colorPhase: new Animated.Value(0)};
+    this.state = {colorPhase: new Animated.Value(0), size: new Animated.Value(this.props.size)};
     this.value = 0;
+    this.size = this.props.size;
   }
 
   shouldComponentUpdate(nextProps) {
-    let change = false;
+    let changeColor = false;
+    let changeSize = false;
     if (this.value === 0) {
       if (nextProps.color !== this.color1) {
-        change = true;
+        changeColor = true;
         this.color2 = nextProps.color;
       }
     }
     else {
       if (nextProps.color !== this.color2) {
-        change = true;
+        changeColor = true;
         this.color1 = nextProps.color;
       }
     }
 
-    if (change) {
+    if (changeColor) {
       let newValue = this.value === 0 ? 1 : 0;
-      Animated.timing(this.state.colorPhase, {toValue: newValue, useNativeDriver: false, duration: this.props.duration || 300}).start();
+      Animated.timing(this.state.colorPhase, {toValue: newValue, useNativeDriver: false, duration: this.props.duration || 300, delay: this.props.delay}).start();
       this.value = newValue;
+    }
+
+    if (nextProps.size !== this.size) {
+      changeSize = true;
+      this.size = nextProps.size;
+      Animated.spring(this.state.size, {toValue: this.size, friction: 2, useNativeDriver: false, delay: this.props.delay}).start()
     }
     return true;
   }
@@ -56,9 +65,9 @@ export class AnimatedCircle extends Component<any, any> {
     let size = this.props.size;
     let content = (
       <Animated.View style={[{
-        width:size,
-        height:size,
-        borderRadius:0.5*size,
+        width:        this.state.size,
+        height:       this.state.size,
+        borderRadius: this.state.size,
         backgroundColor: backgroundColor,
         borderWidth: this.props.borderWidth,
         borderColor: this.props.borderColor

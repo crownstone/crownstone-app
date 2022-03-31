@@ -215,7 +215,6 @@ export class RoomTraining_old extends LiveComponent<any, any> {
 
   render() {
     let state  = core.store.getState();
-    let aiName = Util.data.getAiName(state, this.props.sphereId);
     let roomName = 'this room';
     let sphere = state.spheres[this.props.sphereId];
     if (sphere) {
@@ -253,7 +252,7 @@ export class RoomTraining_old extends LiveComponent<any, any> {
       );
     }
     else if (this.state.phase === 2) {
-      content = <RoomTraining_finished ai={aiName} quit={ quitMethod } />
+      content = <RoomTraining_finished quit={ quitMethod } />
     }
 
     return (

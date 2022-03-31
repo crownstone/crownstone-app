@@ -26,8 +26,6 @@ interface SphereDataConfig {
   uid: number,
   cloudId: string,
 
-  aiName: string,
-
   latitude: number | null,
   longitude: number | null,
 
@@ -137,11 +135,23 @@ interface LocationData {
   id: string,
   config: LocationDataConfig
   presentUsers: string[],
+  fingerprints: FingerprintData[]
   layout: {
     x: number,
     y: number,
     setOnThisDevice: boolean,
     updatedAt: timestamp,
+  }
+}
+
+interface FingerprintData {
+  type: string,
+  timestamp: number,
+  data: {
+    dt: number,   // diff from timestamp
+    data: {
+      [id: string]: number
+    }[]
   }
 }
 

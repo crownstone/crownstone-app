@@ -158,8 +158,6 @@ export class RoomEdit extends LiveComponent<any, any> {
     const state = store.getState();
     const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
-    let ai = state.spheres[this.props.sphereId].config.aiName;
-
     let items = [];
 
     items.push({label: lang("ROOM_SETTINGS"),  type:'explanation', below:false});

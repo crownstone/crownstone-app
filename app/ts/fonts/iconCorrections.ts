@@ -10,6 +10,7 @@ export const iconCorrections = {
   c2:        Platform.OS === 'android' ? iconCorrectionsAndroid.c2        : iconCorrectionsIOS.c2,
   c3:        Platform.OS === 'android' ? iconCorrectionsAndroid.c3        : iconCorrectionsIOS.c3,
   ionicons:  Platform.OS === 'android' ? iconCorrectionsAndroid.ionicons  : iconCorrectionsIOS.ionicons,
+  ionicons5: Platform.OS === 'android' ? iconCorrectionsAndroid.ionicons5 : iconCorrectionsIOS.ionicons5,
   evilIcons: Platform.OS === 'android' ? iconCorrectionsAndroid.evilIcons : iconCorrectionsIOS.evilIcons,
   fiCS1:     Platform.OS === 'android' ? iconCorrectionsAndroid.fiCS1     : iconCorrectionsIOS.fiCS1,
   fiHS:      Platform.OS === 'android' ? iconCorrectionsAndroid.fiHS      : iconCorrectionsIOS.fiHS,

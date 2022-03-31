@@ -181,9 +181,10 @@ export class SmartHomeStateButton extends Component<any, any> {
           }
           else {
             Alert.alert(
-lang("_Youre_not_in_the_Sphere__header"),
-lang("_Youre_not_in_the_Sphere__body"),
-[{text:lang("_Youre_not_in_the_Sphere__left")}])
+              lang("_Youre_not_in_the_Sphere__header"),
+              lang("_Youre_not_in_the_Sphere__body"),
+      [{text:lang("_Youre_not_in_the_Sphere__left")}]
+            );
           }
         }}>
           { contentData.explanation }

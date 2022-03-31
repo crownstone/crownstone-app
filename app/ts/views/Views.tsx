@@ -9,7 +9,6 @@ import * as React from 'react';
 import { AddSphereTutorial }                  from "../views/main/addSphereTutorial/AddSphereTutorial";
 import { AlexaOverview }                      from "../views/thirdParty/alexa/AlexaOverview";
 
-import { AiStart }                            from '../views/startupViews/AiStart'
 import { AddItemsToSphere }                   from '../views/main/AddItemsToSphere'
 import { DeviceOverview }                     from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                         from '../views/deviceViews/DeviceEdit'
@@ -125,8 +124,8 @@ import { TextInputOverlay }                   from "./overlays/TextInputOverlay"
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
 import { SettingsLogLevelConfig }             from "./settingsViews/dev/SettingsLogLevelConfig";
 import { SettingsLogOverview }                from "./settingsViews/dev/SettingsLogOverview";
-import { RoomTrainingStep1 } from "./roomViews/RoomTrainingStep1";
-import { RoomTrainingStep1_train } from "./roomViews/RoomTrainingStep1_train";
+import { RoomTrainingStep1 }                  from "./roomViews/RoomTrainingStep1";
+import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep1_train";
 
 
 export const Views = {
@@ -146,7 +145,6 @@ export const Views = {
 
   AddItemsToSphere:                  AddItemsToSphere,
   AddSphereTutorial:                 AddSphereTutorial,
-  AiStart:                           AiStart,
   AlexaOverview:                     AlexaOverview,
   GoogleAssistantOverview:           GoogleAssistantOverview,
   // CameraRollView:                    CameraRollView,

@@ -75,7 +75,7 @@ export class SphereEdit extends LiveComponent<any, any> {
             createNewSphere(state.user.firstName + "'s Sphere")
               .then((localSphereId) => {
                 setTimeout(() => {
-                  NavigationUtil.setRoot(Stacks.aiStart({localSphereId}));
+                  NavigationUtil.setRoot(Stacks.loggedIn());
                 }, 100)
               })
               .catch((err) => {

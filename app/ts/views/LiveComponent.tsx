@@ -27,7 +27,10 @@ export class LiveComponent<a, b> extends Component<a, b> {
     })
 
     let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
-      Navigation.mergeOptions(props.componentId, {});
+      // leave this commented out for Android.
+      // It could clear the drawbehind of the statusbar/topbar, causing it to draw behind the statusbar
+
+      // Navigation.mergeOptions(props.componentId, {});
       this.forceUpdate();
     });
 

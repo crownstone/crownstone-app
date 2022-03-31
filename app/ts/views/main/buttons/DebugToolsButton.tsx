@@ -17,6 +17,7 @@ import { core } from "../../../Core";
 import { LocalizationLogger } from "../../../backgroundProcesses/dev/LocalizationLogger";
 import { SHARE_DATA_TYPE, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
 import { Scheduler } from "../../../logic/Scheduler";
+import { SphereOverviewButton } from "./SphereOverviewButton";
 
 export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string}) {
   let state = core.store.getState();
@@ -49,38 +50,28 @@ export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: bool
 
 
     return (
-      <HiddenFadeInView visible={props.arrangingRooms === false && props.inSphere} style={buttonStyle}>
-        <TouchableOpacity onPress={() => {
+      <SphereOverviewButton
+        icon={'ios-bug'}
+        iconScale={1.1}
+        callback={() => {
           core.eventBus.emit("showPopup", {buttons: [
-            {close: false, text:"The last minute, I've been in ...",     callback: () => { selectRecentRoom(props.sphereId, 1); }},
-            {close: false, text:"The last 2 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 2); }},
-            {close: false, text:"The last 5 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 5); }},
-            {close: false, text:"The last 10 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 10); }},
-            {close: false, text:"The last 15 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 15); }},
-            {close: false, text:"The last 30 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 30); }},
-            {close: false, text:"The last hour, I've been in ...",       callback: () => { selectRecentRoom(props.sphereId, 60); }},
-            {text:"Reset collection!",                                   callback: () => {
-              LocalizationLogger.resetMeasurement();
-              Alert.alert("Cache reset successful","New measurements are coming in again... starting now!",[{text:"Nice!"}])
-            }},
-          ]})
-        }}>
-          <View style={viewStyle}>
-            <View style={{
-              width: innerRadius,
-              height: innerRadius,
-              borderRadius: 0.5 * innerRadius,
-              borderColor: iconColor,
-              borderWidth: 2.5,
-              backgroundColor: 'transparent',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <Icon name="ios-bug" size={size} color={iconColor}/>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </HiddenFadeInView>
+              {close: false, text:"The last minute, I've been in ...",     callback: () => { selectRecentRoom(props.sphereId, 1); }},
+              {close: false, text:"The last 2 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 2); }},
+              {close: false, text:"The last 5 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 5); }},
+              {close: false, text:"The last 10 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 10); }},
+              {close: false, text:"The last 15 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 15); }},
+              {close: false, text:"The last 30 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 30); }},
+              {close: false, text:"The last hour, I've been in ...",       callback: () => { selectRecentRoom(props.sphereId, 60); }},
+              {text:"Reset collection!",                                   callback: () => {
+                  LocalizationLogger.resetMeasurement();
+                  Alert.alert("Cache reset successful","New measurements are coming in again... starting now!",[{text:"Nice!"}])
+                }},
+            ]})
+        }}
+        testID={"DebugToolsButton"}
+        visible={props.arrangingRooms === false && props.inSphere}
+        position={'bottom-left'}
+      />
     );
   }
   return <View />;

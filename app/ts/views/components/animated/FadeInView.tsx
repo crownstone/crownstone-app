@@ -72,17 +72,17 @@ export class FadeInView extends Component<any, any> {
       // this will be the processing view after initialization.
       if (this.state.show === true) {
         return (
-          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
+          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID} pointerEvents={this.props.pointerEvents}>
             {this.props.children}
           </Animated.View>
         );
       }
-      return <View testID={this.props.testID} />;
+      return <View testID={this.props.testID}  pointerEvents={this.props.pointerEvents} />;
 
     }
     else {
       return (
-        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
+        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID} pointerEvents={this.props.pointerEvents}>
           {this.props.children}
         </Animated.View>
       );

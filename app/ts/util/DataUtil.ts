@@ -441,16 +441,6 @@ export const DataUtil = {
   },
 
 
-  getAiName: function(state, sphereId) : string {
-    if (sphereId) {
-      return state.spheres[sphereId].config.aiName || 'AI';
-    }
-    else {
-      return 'AI';
-    }
-  },
-
-
 
   getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
     let items = [];

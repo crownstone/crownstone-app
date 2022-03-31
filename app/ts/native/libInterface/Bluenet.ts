@@ -7,6 +7,8 @@ import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
 export let Bluenet;
 export let Bluenet_direct; // used for UI testing
 
+type vibrationType = "error" | "success" | "warning" |  "medium" | "heavy";
+
 const BluenetAPI = {
   clearTrackedBeacons:      () => { console.log("BluenetBridgeCall: clearTrackedBeacons: "); },        // called through BluenetPromiseWrapper --> must be promise.
   rerouteEvents:            () => { console.log("BluenetBridgeCall: rerouteEvents:       "); },
@@ -180,6 +182,7 @@ const BluenetAPI = {
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
   getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
   gotoOsAppSettings:                    () => {console.log("BluenetBridgeCall: gotoSystemSettings"); },
+  vibrate:                              (type: vibrationType) => {console.log("BluenetBridgeCall: vibrate"); },
 
 };
 

@@ -45,7 +45,7 @@ export class RoomTrainingStep1 extends LiveComponent<any, any> {
   render() {
     let location = Get.location(this.props.sphereId, this.props.locationId);
     return (
-      <Background hasNavBar={false} image={background.main}>
+      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
         <KeepAwake />
         <View style={{height:30}}/>
         <Text style={styles.header}>{"Locating the room, step 1."}</Text>

@@ -3231,7 +3231,7 @@ export default {
     _Retrain_Room__Only_do_th_body:         function() { return "Doe dit alleen als je problemen ondervindt met de lokalisatie."; },
     _Retrain_Room__Only_do_th_left:         function() { return "Annuleren"; },
     _Retrain_Room__Only_do_th_right:        function() { return "Oké"; },
-    _Are_you_sure___Removing__header:       function() { return "Weet je her zeker?"; },
+    _Are_you_sure___Removing__header:       function() { return "Weet je het zeker?"; },
     _Are_you_sure___Removing__body:         function() { return "Als je deze kamer weggooit moet je de Crownstones daarna in andere kamers stoppen."; },
     _Are_you_sure___Removing__left:         function() { return "Annuleren"; },
     _Are_you_sure___Removing__right:        function() { return "Verwijderen"; },

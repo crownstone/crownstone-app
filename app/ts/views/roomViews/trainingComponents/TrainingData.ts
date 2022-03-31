@@ -1,7 +1,8 @@
 import { NativeBus } from "../../../native/libInterface/NativeBus";
-import { NATIVE_BUS_TOPICS } from "../../../Topics";
+import { NATIVE_BUS_TOPICS, TOPICS } from "../../../Topics";
 import { core } from "../../../Core";
 import { KNNsigmoid } from "../../../logic/classifiers/knn";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 interface trainingData {
   timestamp: timestamp,
@@ -21,7 +22,7 @@ export class TrainingData {
   sphereId:   string;
   locationId: string;
 
-  tick = () => {};
+  tick = (amountOfPoints : number) => {};
 
   constructor(sphereId: string, locationId: string) {
     this.sphereId   = sphereId;
@@ -48,40 +49,24 @@ export class TrainingData {
       this.availableDevices[id] = true;
     }
 
+    this.sortedDeviceIds = Object.keys(this.availableDevices).sort();
+
     this._process(datapoint);
 
     this.trainingData.push(datapoint);
-    this.tick();
+
+
+    this.tick(this.trainingData.length);
   }
 
   _process(datapoint: trainingData) {
-    let processed : processedData = {};
-    for (let deviceId in datapoint.devices) {
-      processed[deviceId] = KNNsigmoid(datapoint.devices[deviceId]);
-    }
-
-    console.log(processed)
-
-    let minDistance = Infinity;
-    let c = 0
-    for (let existingData of this.processedData) {
-      let d = 0;
-      for (let deviceId in this.availableDevices) {
-        let x = processed[deviceId] ?? 1;
-        let y = existingData[deviceId] ?? 1;
-        d += 2 * (x*x + y*y - 1.95 * x * y);
-      }
-      if (d < minDistance) {
-        minDistance = d;
-        console.log(d, c, existingData)
-      }
-      c++;
-    }
-
-    console.log('distance', minDistance, this.processedData.length);
-    this.processedData.push(processed);
-
   }
+
+
+  abort() {
+    this.stop();
+  }
+
 
   stop() {
     this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });

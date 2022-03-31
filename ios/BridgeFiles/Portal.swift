@@ -67,7 +67,7 @@ class BluenetContainer : NSObject {
     #if CS_DEBUG
       self.devEnvironment = true
     #endif
-    
+
   }
   
   func subscribedToNearest() -> Bool {

@@ -324,7 +324,7 @@ PODS:
     - React
   - RNUncontrolledDatePickerIOS (1.0.0):
     - React
-  - RNVectorIcons (9.0.0):
+  - RNVectorIcons (9.1.0):
     - React-Core
   - Yoga (1.14.0)
 
@@ -544,7 +544,7 @@ SPEC CHECKSUMS:
   RNShare: edd621a71124961e29a7ba43a84bd1c6f9980d88
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNUncontrolledDatePickerIOS: fe14888be90717d80d179ff4b3fd04e4046e3600
-  RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
+  RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   Yoga: 32a18c0e845e185f4a2a66ec76e1fd1f958f22fa
 
 PODFILE CHECKSUM: 382e6377e085efeea6e38f2c00813bc5e98b1247

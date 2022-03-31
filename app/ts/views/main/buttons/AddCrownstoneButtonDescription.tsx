@@ -21,7 +21,7 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
     if (Util.narrowScreen()) { fontSize = 17; }
 
 
-    let outerRadius = 0.15*screenWidth + 12;
+    let outerRadius = 55;
     return (
       <HiddenFadeInView
         visible={this.props.visible}
@@ -43,7 +43,7 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
         <Icon name={"md-arrow-round-forward"} size={20} color={colors.blue.blend(colors.green, 0.5).hex} style={{padding:5}} />
         <Icon name={"md-arrow-round-forward"} size={20} color={colors.blue.hex} style={{padding:5}} />
         <View style={{width:5}} />
-        <View style={{width:outerRadius,height: outerRadius}} />
+        <View style={{width:outerRadius, height: outerRadius}} />
     </HiddenFadeInView>
   );
   }

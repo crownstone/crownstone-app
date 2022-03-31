@@ -67,7 +67,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
                 .then((localSphereId) => {
                   core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: localSphereId}});
                   NavigationUtil.dismissAllModals();
-                  NavigationUtil.setRoot(Stacks.aiStart({localSphereId}));
+                  NavigationUtil.setRoot(Stacks.loggedIn());
                 })
                 .catch((err) => {
                   Alert.alert(lang("Whoops"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
