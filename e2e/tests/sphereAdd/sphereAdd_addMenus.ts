@@ -1,6 +1,6 @@
 
 import {
-  $, checkBackOption, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, screenshot, shouldBeOn, tap,
+  $, checkBackOption, delay, goToSettingsTab, goToSphereOverviewTab, replaceText, scrollDownUntilVisible, screenshot, shouldBeOn, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -23,10 +23,15 @@ export const SphereAdd_addMenus = () => {
 
   test('should be able to go to the addUser view', async () => {
     await shouldBeOn('SphereAdd');
+    await scrollDownUntilVisible("AddPerson", "SphereAddScrollView");
     await tap("AddPerson");
     await waitToNavigate("SphereUserInvite");
     await screenshot();
-    await checkBackOption('closeModal','SphereAdd','AddPerson','SphereUserInvite')
+    await checkBackOption("closeModal","SphereAdd", { restoreState: async () => {
+      await scrollDownUntilVisible("AddPerson", "SphereAddScrollView");
+      await tap("AddPerson");
+      await waitToNavigate('SphereUserInvite');
+    }});
     await waitToNavigate("SphereAdd");
   });
 
@@ -35,7 +40,11 @@ export const SphereAdd_addMenus = () => {
     await tap("AddSomethingElse");
     await waitToNavigate("SphereIntegrations");
     await screenshot();
-    await checkBackOption('closeModal','SphereAdd','AddSomethingElse','SphereIntegrations')
+    await checkBackOption("closeModal","SphereAdd", { restoreState: async () => {
+      await scrollDownUntilVisible("AddSomethingElse", "SphereAddScrollView");
+      await tap("AddSomethingElse");
+      await waitToNavigate('SphereIntegrations');
+    }});
     await waitToNavigate("SphereAdd");
   });
 };

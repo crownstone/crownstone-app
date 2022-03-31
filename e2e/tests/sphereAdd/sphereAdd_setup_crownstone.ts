@@ -94,6 +94,7 @@ export const SphereAdd_setup_crownstone = () => {
     await shouldBeOn('addCrownstone_roomPhase');
     await screenshot();
     let locationId = await Assistant.getRoomId(0)
+    await scrollDownUntilVisible(`crownstoneInLocation${locationId}`, "addCrownstone_roomPhase_scroll");
     await tap(`crownstoneInLocation${locationId}`);
     await waitToNavigate("addCrownstone_waitToFinish")
     await screenshot();
@@ -156,6 +157,7 @@ export const SphereAdd_setup_crownstone = () => {
     await shouldBeOn("addCrownstone_iconPhase");
     await tap("icon_next");
     await waitToNavigate('addCrownstone_roomPhase');
+    await scrollDownUntilVisible("createRoom", "addCrownstone_roomPhase_scroll");
     await tap('createRoom');
     await waitToNavigate('RoomAdd');
     await replaceText('RoomAdd_roomName', "Garage");
@@ -197,7 +199,8 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("addCrownstone_iconPhase");
     await tap("icon_next");
     await waitToNavigate('addCrownstone_roomPhase');
-    let locationId = await Assistant.getRoomId(0)
+    let locationId = await Assistant.getRoomId(0);
+    await scrollDownUntilVisible(`crownstoneInLocation${locationId}`, "addCrownstone_roomPhase_scroll");
     await tap(`crownstoneInLocation${locationId}`);
     await Assistant.ble.for(handle3).succeed.connect('setup');
     await Assistant.ble.for(handle3).disconnectEvent();

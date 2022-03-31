@@ -46,7 +46,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
 
     return (
       <Background image={background.main} hasNavBar={false} testID={"SphereAdd"}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <ScrollView testID={"SphereAddScrollView"} contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <IconButton
               name="c1-sphere"

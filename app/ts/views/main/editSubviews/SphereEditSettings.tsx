@@ -279,7 +279,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={background.menu} hasNavBar={false} testID={"SphereEditSettings"}>
-        <ScrollView>
+        <ScrollView testID={"SphereEditSettingsScrollView"}>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>
