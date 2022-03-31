@@ -84,7 +84,6 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
 
 function AddItem(props) {
   let usedIconSize = iconSize;
-  if (props.highlight) { usedIconSize = 1.3*iconSize}
 
   return (
     <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }} testID={props.testID}>

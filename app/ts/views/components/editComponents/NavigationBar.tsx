@@ -70,9 +70,9 @@ export class NavigationBar extends Component<any, any> {
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
 
           {this.props.value !== undefined && this.props.valueRight !== true ?
-            <Text numberOfLines={1} style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+            <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
             :
-            <Text numberOfLines={1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+            <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
           }
           {this.props.subtext ? <Text style={[{fontSize:12, color:colors.iosBlue.hex}, this.props.subtextStyle]}>{this.props.subtext}</Text> : undefined}
           {this.props.value !== undefined ?

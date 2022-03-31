@@ -40,7 +40,7 @@ import { SmartHomeStateButton }     from "./buttons/SmartHomeStateButton";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { DebugToolsButton }         from "./buttons/DebugToolsButton";
-import { NewLocalizationButton } from "./buttons/NewLocalizationButton";
+import { LocalizationButton }       from "./buttons/LocalizationButton";
 
 
 const ZOOM_LEVELS = {
@@ -106,6 +106,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         change.hubLocationUpdated            ||
         change.stoneLocationUpdated          ||
         change.updateStoneCoreConfig         ||
+        change.changeSphereSmartHomeState    ||
         change.updateSphereUser              ||
         change.changeStones                  ||
         change.changeHubs                    ||
@@ -294,10 +295,11 @@ export class SphereOverview extends LiveComponent<any, any> {
           { this._getAddButtonDescription(activeSphereId, noStones) }
           <AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-          <NewLocalizationButton
+          <LocalizationButton
             sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false && Permissions.inSphere(activeSphereId).canDisableBehaviour }
+            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false }
           />
+          { activeSphere.state.smartHomeEnabled === false &&  <SmartHomeStateButton sphereId={activeSphereId} visible={true} /> }
           <DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
         </AnimatedBackground>
       );

@@ -2603,6 +2603,7 @@ export default {
     __filename: "../../js/backgroundProcesses/UpdateCenter.tsx",
     Update_available_:                      function() { return "Update available!" },
   },
+  LocalizationMenu: {},
   ZoomInstructionOverlay:{
     __filename: "../js/views/main/ZoomInstructionOverlay.tsx",
     You_can_go_to_the_sphere_:              function() { return "You can go to the sphere overview just by zooming out!" },

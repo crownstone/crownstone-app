@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  ActivityIndicator, Alert,
+  ActivityIndicator, Alert, Animated,
   Text,
   TouchableOpacity, View
 } from "react-native";
@@ -17,31 +17,25 @@ import { Icon } from "../../components/Icon";
 import { Component } from "react";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { SphereStateManager } from "../../../backgroundProcesses/SphereStateManager";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { AnimatedCircle } from "../../components/animated/AnimatedCircle";
+import { Circle } from "../../components/Circle";
+import { BorderCircle } from "../../components/BorderCircle";
 import { SphereOverviewButton } from "./SphereOverviewButton";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
-export class SmartHomeStateButton extends Component<any, any> {
+export class LocalizationButton extends Component<any, any> {
 
   render() {
     return (
       <SphereOverviewButton
-        testID="SmartHomeStateButton"
+        testID="LocalizationButton"
         visible={this.props.visible}
-        innerColor={colors.csOrange.hex}
-        borderColor={colors.csOrange.rgba(0.5)}
-        icon={"c1-brain"}
-        position={"top-right-2"}
+        icon={"c1-locationPin1"}
+        position={"top-right"}
         callback={() => {
-          Alert.alert(
-            "Behaviour is disabled.",
-            "Do you want to re-enable it?",
-            [{text:"No", style:"cancel"}, {text:"Yes", onPress:() => {
-                NavigationUtil.launchModal( "LocalizationMenu",{sphereId: this.props.sphereId});
-            }}]
-          );
+          NavigationUtil.launchModal( "LocalizationMenu",{sphereId: this.props.sphereId});
         }}
       />
     );
   }
-
 }

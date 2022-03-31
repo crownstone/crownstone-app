@@ -34,8 +34,9 @@ export class SphereOverviewButton extends Component<{
   iconScale?: number,
   highlight?: boolean,
   customIcon?: any,
-  position: "top-right" | "top-left" | "bottom-left" | "bottom-right",
-
+  position:     "top-right" | "top-right-2" | "top-left" | "bottom-left" | "bottom-right",
+  borderColor?: string,
+  innerColor?:  string,
 }, any> {
 
   outerColor  : string;
@@ -50,12 +51,13 @@ export class SphereOverviewButton extends Component<{
   highlightSize : number;
   iconSize      : number;
 
+
   constructor(props) {
     super(props);
 
     this.outerColor  = colors.white.rgba(0.75);
-    this.borderColor = colors.csBlue.hex;
-    this.innerColor  = colors.csBlue.hex;
+    this.borderColor = this.props.borderColor ?? colors.csBlue.hex;
+    this.innerColor  = this.props.innerColor  ?? colors.csBlue.hex;
     this.iconColor   = colors.white.hex;
 
     this.rippleColor   = colors.white.rgba(0.6);
@@ -119,24 +121,21 @@ export class SphereOverviewButton extends Component<{
 
 
   render() {
-    // if (this.props.highlight) {
-    //   this.outerColor  = colors.blue.rgba(0.75);
-    //   this.borderColor = colors.white.hex;
-    //   this.innerColor  = colors.blue.hex;
-    //
-    //   this.size *= 1.2;
-    //   this.iconSize *= 1.2;
-    // }
-
     let style : ViewStyle = {};
+    let innerStyle : ViewStyle = null;
+    let padding = 6;
     switch (this.props.position) {
+      case "top-right-2":  style = {top: SPHERE_OVERVIEW_BUTTON_SIZE + padding, right: 0}; innerStyle = {top: 0, right: 0}; break;
       case "top-right":    style = {top: 0,    right: 0,}; break;
       case "top-left":     style = {top: 0,    left:  0,}; break;
       case "bottom-left":  style = {bottom: 0, left:  0,}; break;
       case "bottom-right": style = {bottom: 0, right: 0,}; break;
     }
 
-    let padding = 6;
+    if (innerStyle === null) {
+      innerStyle = style;
+    }
+
 
     if (!this.props.visible) {
       return <View />;
@@ -150,11 +149,13 @@ export class SphereOverviewButton extends Component<{
       alignItems: 'center',
       justifyContent:'center',
       overflow:"visible",
-    }
+    };
+
+
 
     return (
       <View style={wrapperStyle}>
-        <View style={wrapperStyle} pointerEvents={'none'}>
+        <View style={{...wrapperStyle, ...innerStyle}} pointerEvents={'none'}>
           <AnimatedCircle size={this.rippleSize} color={this.rippleColor} />
         </View>
         <TouchableOpacity
