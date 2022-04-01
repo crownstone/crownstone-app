@@ -37,8 +37,8 @@ export function NativeEnhancer({ getState }) {
     if (evaluateFingerprint) {
       let sphereId = action.sphereId;
       if (sphereId) {
-        let canUseWithOldState = canUseIndoorLocalizationInSphere(oldState, sphereId);
-        let canUseWithNewState = canUseIndoorLocalizationInSphere(newState, sphereId);
+        let canUseWithOldState = canUseIndoorLocalizationInSphere(sphereId, oldState);
+        let canUseWithNewState = canUseIndoorLocalizationInSphere(sphereId, newState);
 
         if (canUseWithOldState === false && canUseWithNewState === true) {
           LOG.info("Starting indoor localization from nativeEnhancer");

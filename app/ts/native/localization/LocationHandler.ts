@@ -80,7 +80,7 @@ class LocationHandlerClass {
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
+    if (canUseIndoorLocalizationInSphere(enteringSphereId) === true) {
       LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
       Bluenet.startIndoorLocalization();
     }

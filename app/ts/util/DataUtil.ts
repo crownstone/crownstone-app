@@ -14,6 +14,38 @@ import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConst
 
 export const DataUtil = {
 
+
+  /**
+   * Does any stone in this sphere have behaviour?
+   * @param sphereId
+   */
+  isBehaviourUsed: function(sphereId: string) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+
+    for (let stoneId in sphere.stones) {
+      let stone = sphere.stones[stoneId];
+      for (let behaviourId in stone.behaviours) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+
+  /**
+   * Are you in the sphere at the moment?
+   * @param sphereId
+   */
+  inSphere: function(sphereId: string) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+
+    return sphere.state.present;
+  },
+
+
   /**
    * Call a callback on all stones in all spheres
    * @param state
@@ -765,7 +797,10 @@ export const prepareStoreForUser = function() {
 };
 
 
-export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+export const canUseIndoorLocalizationInSphere = function (sphereId: string, state = null) {
+  if (state === null) {
+    state = core.store.getState();
+  }
   if (state.app.indoorLocalizationEnabled === false) {
     return false;
   }
@@ -775,18 +810,19 @@ export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
     return false;
 
   // are there enough?
-  let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state,sphereId);
+  let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
   // do we need more fingerprints?
-  let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+  let requiresFingerprints = requireMoreFingerprints(sphereId);
 
   // we have enough and we do not need more fingerprints.
   return !requiresFingerprints && enoughForLocalization;
 };
 
 
-export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
-  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+export const enoughCrownstonesForIndoorLocalization = function(sphereId) {
+  let state = core.store.getState();
+  if (!(state?.spheres?.[sphereId]?.stones)) {
     return false;
   }
 
@@ -794,8 +830,9 @@ export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) 
 };
 
 
-export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
-  if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+export const enoughCrownstonesInLocationsForIndoorLocalization = function(sphereId) {
+  let state = core.store.getState();
+  if (!(state?.spheres?.[sphereId]?.stones)) {
     return false;
   }
 
@@ -812,20 +849,17 @@ export const enoughCrownstonesInLocationsForIndoorLocalization = function(state,
 };
 
 
-export const requireMoreFingerprints = function (state, sphereId) {
-  // if we do not have a sphereId return false
-  if (!sphereId || !state)
-    return true;
+export const requireMoreFingerprints = function (sphereId : string) : boolean {
+  let state = core.store.getState();
+  let sphere = Get.sphere(sphereId);
+  if (!sphere) { return false; }
 
-  // do we need more fingerprints?
-  let requiresFingerprints = false;
-  if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
-    let locationIds = Object.keys(state.spheres[sphereId].locations);
-    locationIds.forEach((locationId) => {
-      if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
-        requiresFingerprints = true;
-      }
-    });
+  for (let locationId in sphere.locations) {
+    let location = sphere.locations[locationId];
+    if (Object.keys(location.fingerprints).length === 0) {
+      return true;
+    }
   }
-  return requiresFingerprints;
+  return false;
+
 };

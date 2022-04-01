@@ -19,13 +19,22 @@ let defaultSettings : LocationData = {
     fingerprintParsed: null,
     fingerprintUpdatedAt: 1,
   },
-  fingerprints: [],
+  fingerprints: {},
   presentUsers: [],
   layout: {
     x: null,
     y: null,
     setOnThisDevice: false,
     updatedAt: 0,
+  }
+};
+
+let fingerprintReducer = (state = {}, action : any = {}) => {
+  switch (action.type) {
+    case 'REFRESH_DEFAULTS':
+      return {};
+    default:
+      return state;
   }
 };
 
@@ -161,6 +170,7 @@ let combinedLocationReducer = combineReducers({
   id:           idReducerGenerator("ADD_LOCATION", "locationId"),
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
+  fingerprints: fingerprintReducer,
   layout:       layoutReducer
 });
 

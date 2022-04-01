@@ -81,7 +81,7 @@ export class RoomExplanation extends Component<any, any> {
  * @param locationId
  */
 function shouldShowTrainingButton(state, sphereId, locationId) {
-  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);
+  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
   let sphere = state.spheres[sphereId];
   if (!sphere) { return false; }
 

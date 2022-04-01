@@ -214,7 +214,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
     // here we do the training if required and possible.
     if (state.app.indoorLocalizationEnabled) {
-      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
+      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(this.props.sphereId);
       if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
         NavigationUtil.launchModal( "RoomTrainingStep1",{sphereId: this.props.sphereId, locationId: this.props.locationId});
 

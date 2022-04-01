@@ -315,7 +315,7 @@ lang("_Indoor_localization_is_c_body"),
 
 
 function getTopBarProps(state, props, viewingRemotely) {
-  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, props.sphereId);
+  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(props.sphereId);
   let sphere = state.spheres[props.sphereId];
   if (!sphere) { return }
   let location = sphere.locations[props.locationId];

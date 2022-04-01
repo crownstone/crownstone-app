@@ -130,12 +130,12 @@ interface StoneDataConfig {
   updatedAt: timestamp,
 }
 
-
+type FingerprintId = string;
 interface LocationData {
   id: string,
   config: LocationDataConfig
   presentUsers: string[],
-  fingerprints: FingerprintData[]
+  fingerprints: Record<FingerprintId, FingerprintData>,
   layout: {
     x: number,
     y: number,
@@ -145,10 +145,13 @@ interface LocationData {
 }
 
 interface FingerprintData {
+  id: string,
   type: string,
-  timestamp: number,
+  cloudId: string,
+  createdAt: number,
+  crownstonesAtCreation: string[], // maj_min as id representing the Crownstone. Crownstones removed afterwards are removed from this list.
   data: {
-    dt: number,   // diff from timestamp
+    dt: number,   // diff from createdAt
     data: {
       [id: string]: number
     }[]

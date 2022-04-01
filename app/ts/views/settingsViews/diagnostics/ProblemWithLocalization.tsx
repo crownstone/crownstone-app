@@ -86,9 +86,9 @@ export class ProblemWithLocalization extends Component<any, any> {
   _getLocalizationInfo() {
     let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId();
-    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, presentSphereId);
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, presentSphereId);
-    let requiresFingerprints = requireMoreFingerprints(state, presentSphereId);
+    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(presentSphereId);
+    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(presentSphereId);
+    let requiresFingerprints = requireMoreFingerprints(presentSphereId);
 
     let stones = state.spheres[presentSphereId].stones;
     let stoneIds = Object.keys(stones);
@@ -268,7 +268,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
-      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId) && stone.config.locationId !== null;
+      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId) && stone.config.locationId !== null;
 
       if (canDoIndoorLocalization) {
         return (

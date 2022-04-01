@@ -93,9 +93,9 @@ export class StatusCommunication extends LiveComponent<any, any> {
       return <View />;
     }
 
-    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, currentSphereId);
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphereId);
-    let requiresFingerprints = requireMoreFingerprints(state, currentSphereId);
+    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(currentSphereId);
+    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
+    let requiresFingerprints = requireMoreFingerprints(currentSphereId);
     let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
 
     let generalStyle : TextStyle = {

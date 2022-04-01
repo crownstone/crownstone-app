@@ -1,4 +1,3 @@
-
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {

@@ -88,7 +88,7 @@ export class RoomTraining_old extends LiveComponent<any, any> {
     clearTimeout(this.noSignalTimeout);
 
     let state = core.store.getState();
-    if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
+    if (canUseIndoorLocalizationInSphere(this.props.sphereId) === true) {
       LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }

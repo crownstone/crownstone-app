@@ -127,13 +127,17 @@ import { SettingsLogOverview }                from "./settingsViews/dev/Settings
 import { RoomTrainingStep1 }                  from "./roomViews/RoomTrainingStep1";
 import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep1_train";
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
+import { SetupLocalization } from "./main/localization/SetupLocalization";
 
 
 export const Views = {
   Initializer:                       Initializer,
 
   AddCrownstone:                     AddCrownstone,
+
   LocalizationMenu:                  LocalizationMenu,
+  SetupLocalization:                 SetupLocalization,
+
   SetupCrownstone:                   SetupCrownstone,
   SetupHub:                          SetupHub,
   ScanningForSetupCrownstones:       ScanningForSetupCrownstones,

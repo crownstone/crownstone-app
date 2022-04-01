@@ -51,20 +51,13 @@ export class SphereOverviewButton extends Component<{
   highlightSize : number;
   iconSize      : number;
 
+  animationInterval = null;
+  animationTimeout = null;
 
   constructor(props) {
     super(props);
 
-    this.outerColor  = colors.white.rgba(0.75);
-    this.borderColor = this.props.borderColor ?? colors.csBlue.hex;
-    this.innerColor  = this.props.innerColor  ?? colors.csBlue.hex;
-    this.iconColor   = colors.white.hex;
-
-    this.rippleColor   = colors.white.rgba(0.6);
-    this.rippleSize    = 0.5*SPHERE_OVERVIEW_BUTTON_SIZE;
-    this.size          = SPHERE_OVERVIEW_BUTTON_SIZE;
-    this.highlightSize = SPHERE_OVERVIEW_BUTTON_SIZE;
-    this.iconSize      = SPHERE_OVERVIEW_BUTTON_ICON_SIZE * (this.props.iconScale ?? 1);
+    this.setDefaultStyle();
   }
 
   componentDidMount() {
@@ -78,6 +71,9 @@ export class SphereOverviewButton extends Component<{
   }
 
   animate() {
+    clearInterval(this.animationInterval);
+    clearTimeout(this.animationTimeout);
+
     let pulse = () => {
       this.size = 1.3*SPHERE_OVERVIEW_BUTTON_SIZE;
       this.rippleSize = 2*SPHERE_OVERVIEW_BUTTON_SIZE;
@@ -88,7 +84,7 @@ export class SphereOverviewButton extends Component<{
       this.borderColor = colors.lightBlue.hex;
       this.innerColor  = colors.blue.hex;
       this.forceUpdate()
-      setTimeout(() => {
+      this.animationTimeout = setTimeout(() => {
         this.outerColor  = colors.white.rgba(0.75);
         this.borderColor = colors.csBlue.hex;
         this.innerColor  = colors.csBlueDarker.hex;
@@ -99,12 +95,29 @@ export class SphereOverviewButton extends Component<{
         this.forceUpdate()
       },800)
     }
-    setInterval(pulse,1600);
+    this.animationInterval = setInterval(pulse,1600);
     pulse();
   }
 
   stopAnimation() {
+    clearInterval(this.animationInterval);
+    clearTimeout(this.animationTimeout);
 
+    this.setDefaultStyle();
+    this.forceUpdate();
+  }
+
+  setDefaultStyle() {
+    this.outerColor  = colors.white.rgba(0.75);
+    this.borderColor = this.props.borderColor ?? colors.csBlue.hex;
+    this.innerColor  = this.props.innerColor  ?? colors.csBlue.hex;
+    this.iconColor   = colors.white.hex;
+
+    this.rippleColor   = colors.white.rgba(0.6);
+    this.rippleSize    = 0.5*SPHERE_OVERVIEW_BUTTON_SIZE;
+    this.size          = SPHERE_OVERVIEW_BUTTON_SIZE;
+    this.highlightSize = SPHERE_OVERVIEW_BUTTON_SIZE;
+    this.iconSize      = SPHERE_OVERVIEW_BUTTON_ICON_SIZE * (this.props.iconScale ?? 1);
   }
 
   shouldComponentUpdate(nextProps, nextState, nextContext): boolean {
@@ -114,7 +127,6 @@ export class SphereOverviewButton extends Component<{
     else if (nextProps.highlight !== true && this.props.highlight === true) {
       this.stopAnimation();
     }
-
 
     return true;
   }

@@ -61,32 +61,50 @@ export class NavigationBar extends Component<any, any> {
       outputRange: ['rgba(255, 255, 255, 1.0)',  colors.green.rgba(0.8)]
     });
 
+    let fontColor = colors.black.hex;
+
+    if (this.props.disabled) {
+      backgroundColor = colors.lightGray.rgba(0.3)
+      fontColor = colors.black.rgba(0.3);
+    }
+
+    let content = (
+      <Animated.View style={[styles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
+        {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+        {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
+        {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
+
+        {this.props.value !== undefined && this.props.valueRight !== true ?
+          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listText, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
+          :
+          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
+        }
+        {this.props.subtext ? <Text style={[{fontSize:12, color:colors.iosBlue.hex}, this.props.subtextStyle, {color: fontColor}]}>{this.props.subtext}</Text> : undefined}
+        {this.props.value !== undefined ?
+          this.props.valueRight ?
+            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            :
+            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+          :
+          <View style={{flex:1}} />
+        }
+
+        {this.props.disabled !== true &&
+          <View style={{ paddingTop: 3 }}>
+            {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'}/> :
+              <Icon name="ios-arrow-forward" size={18} color={'#888'}/>}
+          </View>
+        }
+      </Animated.View>
+    );
+
+    if (this.props.disabled) {
+      return content;
+    }
 
     return (
-      <TouchableHighlight onPress={() => {this.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
-        <Animated.View style={[styles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
-          {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
-          {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
-          {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
-
-          {this.props.value !== undefined && this.props.valueRight !== true ?
-            <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
-            :
-            <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
-          }
-          {this.props.subtext ? <Text style={[{fontSize:12, color:colors.iosBlue.hex}, this.props.subtextStyle]}>{this.props.subtext}</Text> : undefined}
-          {this.props.value !== undefined ?
-            this.props.valueRight ?
-              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
-              :
-              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
-            :
-            <View style={{flex:1}} />
-          }
-          <View style={{paddingTop:3}}>
-            {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} />}
-          </View>
-        </Animated.View>
+      <TouchableHighlight onPress={() => { this.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
+        {content}
       </TouchableHighlight>
     );
   }

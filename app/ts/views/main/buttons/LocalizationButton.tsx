@@ -22,16 +22,24 @@ import { Circle } from "../../components/Circle";
 import { BorderCircle } from "../../components/BorderCircle";
 import { SphereOverviewButton } from "./SphereOverviewButton";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { DataUtil, enoughCrownstonesForIndoorLocalization, requireMoreFingerprints } from "../../../util/DataUtil";
 
 export class LocalizationButton extends Component<any, any> {
 
   render() {
+    let inSphere = DataUtil.inSphere(this.props.sphereId);
+    let enoughCrownstones = enoughCrownstonesForIndoorLocalization(this.props.sphereId);
+    let trainingRequired  = requireMoreFingerprints(this.props.sphereId);
+
+    let highlight = inSphere && enoughCrownstones && trainingRequired;
+
     return (
       <SphereOverviewButton
         testID="LocalizationButton"
         visible={this.props.visible}
         icon={"c1-locationPin1"}
         position={"top-right"}
+        highlight={highlight}
         callback={() => {
           NavigationUtil.launchModal( "LocalizationMenu",{sphereId: this.props.sphereId});
         }}

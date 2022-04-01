@@ -34,7 +34,7 @@ export const LocalNotifications = {
         if (localLocationId) {
           // check if you're in this location or if you can't be in a location due to disabled localization
           // return if we do NOT have to deliver the message RIGHT NOW
-          let canDoLocalization = canUseIndoorLocalizationInSphere(state, messageData.localSphereId);
+          let canDoLocalization = canUseIndoorLocalizationInSphere(messageData.localSphereId);
           if (canDoLocalization && Util.data.getUserLocationIdInSphere(state, messageData.localSphereId, state.user.userId) !== localLocationId) {
             // we will deliver this message on moving to the other room.
             return false;

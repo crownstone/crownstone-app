@@ -26,9 +26,6 @@ import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
 
-let ALERT_TYPES = {
-  fingerprintNeeded : 'fingerPrintNeeded'
-};
 
 
 class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any}> {
@@ -39,8 +36,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   outerDiameter: number;
   iconSize: number;
   textSize: number;
-
-  showAlert: string = null;
 
   animationStarted: boolean;
   animating: boolean;
@@ -210,31 +205,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     }
   }
 
-  _getAlertIcon() {
-    let alertSize = this.outerDiameter*0.30;
-    return (
-      <View style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}>
-        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
-      </View>
-    )
-  }
-
   render() {
     const state = core.store.getState();
 
-    // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
-    if (state.app.indoorLocalizationEnabled) {
-      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-      this.showAlert = null;
-      if (this.props.viewingRemotely !== true) {
-        if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-          this.showAlert = ALERT_TYPES.fingerprintNeeded;
-        }
-      }
-    }
-    else {
-      this.showAlert = null;
-    }
 
     this.renderState = state;
     const animatedStyle = {
@@ -252,7 +225,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       >
         <View>
           {this.getCircle()}
-          {this.showAlert !== null ? this._getAlertIcon() : undefined}
           {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
         </View>
       </Animated.View>
@@ -346,17 +318,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.state.opacity.setValue(1);
 
     if (this.touching === true) {
-      if (this.showAlert !== null) {
-        if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
-          if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
-            handled = true;
-            NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-          }
-        }
-      }
-      if (handled === false) {
-        NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-      }
+      NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     }
     this._clearHold();
   }

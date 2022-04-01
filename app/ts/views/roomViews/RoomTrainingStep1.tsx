@@ -18,13 +18,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 export class RoomTrainingStep1 extends LiveComponent<any, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
+    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: false});
   }
 
 
   constructor(props) {
     super(props);
     this.state = {
+
     };
   }
 
@@ -48,7 +49,7 @@ export class RoomTrainingStep1 extends LiveComponent<any, any> {
       <Background hasNavBar={false} image={background.main} hideNotifications={true}>
         <KeepAwake />
         <View style={{height:30}}/>
-        <Text style={styles.header}>{"Locating the room, step 1."}</Text>
+        <Text style={styles.header}>{"Initial training session"}</Text>
         <Text style={styles.boldExplanation}>{"First we will walk around the room with the phone in your hand, arm stretched out."}</Text>
         <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>
 

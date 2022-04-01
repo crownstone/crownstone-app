@@ -84,10 +84,10 @@ export const SphereUtil = {
     let sphereIsPresent = sphere.state.present;
 
     // are there enough in total?
-    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state, sphereId);
+    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(sphereId);
 
     // do we need more fingerprints?
-    let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+    let requiresFingerprints = requireMoreFingerprints(sphereId);
 
     let noRooms = (sphereId ? Object.keys(sphere.locations).length : 0) == 0;
 
@@ -116,7 +116,7 @@ export const SphereUtil = {
           [{text: 'OK'}]
         );
       }
-      else if (enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId)) {
+      else if (enoughCrownstonesInLocationsForIndoorLocalization(sphereId)) {
         core.eventBus.emit("showLocalizationSetupStep2", sphereId);
       }
     };

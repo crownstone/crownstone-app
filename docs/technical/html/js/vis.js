@@ -6295,7 +6295,7 @@ Queue.extend = function (object, options) {
 
 /**
  * Destroy the queue. The queue will first flush all queued actions, and in
- * case it has extended an object, will restore the original object.
+ * case it has extended an object, will setDefaultStyle the original object.
  */
 Queue.prototype.destroy = function () {
   this.flush();
@@ -10583,7 +10583,7 @@ Core.prototype._startAutoResize = function () {
     if (me.dom.root) {
       // check whether the frame is resized
       // Note: we compare offsetWidth here, not clientWidth. For some reason,
-      // IE does not restore the clientWidth from 0 to the actual width after
+      // IE does not setDefaultStyle the clientWidth from 0 to the actual width after
       // changing the timeline's container display style from none to visible
       if (me.dom.root.offsetWidth != me.props.lastWidth || me.dom.root.offsetHeight != me.props.lastHeight) {
         me.props.lastWidth = me.dom.root.offsetWidth;
@@ -13764,7 +13764,7 @@ var Configurator = function () {
         _this5._update(colorString, path);
       });
 
-      // on close of the colorpicker, restore the callback.
+      // on close of the colorpicker, setDefaultStyle the callback.
       this.colorPicker.setCloseCallback(function () {
         div.onclick = function () {
           _this5._showColorPicker(value, div, path);
@@ -14760,7 +14760,7 @@ var Edge = function () {
       var viaNode = this.edgeType.getViaNode();
       var arrowData = {};
 
-      // restore edge targets to defaults
+      // setDefaultStyle edge targets to defaults
       this.edgeType.fromPoint = this.edgeType.from;
       this.edgeType.toPoint = this.edgeType.to;
 
@@ -19115,7 +19115,7 @@ ItemSet.prototype._onDragEnd = function (event) {
             itemData[dataset._fieldId] = id; // ensure the item contains its id (can be undefined)
             dataset.update(itemData);
           } else {
-            // restore original values
+            // setDefaultStyle original values
             props.item.setData(props.data);
 
             me.body.emitter.emit('_change');
@@ -19288,7 +19288,7 @@ ItemSet.prototype._onGroupDragEnd = function (event) {
           order: me.options.groupOrder
         });
 
-        // restore original order
+        // setDefaultStyle original order
         if (!util.equalArray(newOrder, me.groupTouchParams.originalOrder)) {
           var origOrder = me.groupTouchParams.originalOrder;
           var numGroups = Math.min(origOrder.length, newOrder.length);
@@ -20239,7 +20239,7 @@ BoxItem.prototype._updateDomComponentsSizes = function (sizes) {
   this.width = sizes.box.width;
   this.height = sizes.box.height;
 
-  // restore previous position
+  // setDefaultStyle previous position
   if (this.options.rtl) {
     this.dom.box.style.right = sizes.previous.right;
   } else {
@@ -26861,7 +26861,7 @@ var EdgeBase = function () {
           this._circle(ctx, values, x, y, radius);
         }
 
-        // restore the dash settings.
+        // setDefaultStyle the dash settings.
         ctx.setLineDash([0]);
         ctx.lineDashOffset = 0;
         ctx.restore();
@@ -40873,7 +40873,7 @@ Timeline.prototype.setOptions = function (options) {
         var selection = this.getSelection();
         this.setItems(null); // remove all
         this.setItems(itemsData); // add all
-        this.setSelection(selection); // restore selection
+        this.setSelection(selection); // setDefaultStyle selection
       }
     }
   }
@@ -45827,7 +45827,7 @@ var CircularImage = function (_CircleImageBase) {
       ctx.clip();
       // draw the image
       this._drawImageAtPosition(ctx, values);
-      // restore so we can again draw on the full canvas
+      // setDefaultStyle so we can again draw on the full canvas
       ctx.restore();
 
       this._drawImageLabel(ctx, x, y, selected, hover);
@@ -50459,7 +50459,7 @@ For the hashes, the id's of the nodes/edges are used as key.
 Member `network.clustering` contains the following items:
 
 - `clusteredNodes` - hash with values: { clusterId: <id of cluster>, node: <node instance>}
-- `clusteredEdges` - hash with values: restore information for given edge
+- `clusteredEdges` - hash with values: setDefaultStyle information for given edge
 
 
 Due to nesting of clusters, these members can contain cluster nodes and edges as well.
@@ -50526,7 +50526,7 @@ var ClusterEngine = function () {
 
     this.body = body;
     this.clusteredNodes = {}; // key: node id, value: { clusterId: <id of cluster>, node: <node instance>}
-    this.clusteredEdges = {}; // key: edge id, value: restore information for given edge
+    this.clusteredEdges = {}; // key: edge id, value: setDefaultStyle information for given edge
 
     this.options = {};
     this.defaultOptions = {};
@@ -52468,7 +52468,7 @@ var CanvasRenderer = function () {
         this.body.emitter.emit("afterDrawing", ctx);
         ctx.closePath();
 
-        // restore original scaling and translation
+        // setDefaultStyle original scaling and translation
         ctx.restore();
         if (hidden === true) {
           ctx.clearRect(0, 0, w, h);
@@ -52505,7 +52505,7 @@ var CanvasRenderer = function () {
         }
       }
 
-      // restore original scaling and translation
+      // setDefaultStyle original scaling and translation
       ctx.restore();
     }
 
@@ -53034,7 +53034,7 @@ var Canvas = function () {
           oldHeight: Math.round(oldHeight / this.pixelRatio)
         });
 
-        // restore the camera on change.
+        // setDefaultStyle the camera on change.
         this._setCameraState();
       }
 
@@ -54043,7 +54043,7 @@ var InteractionHandler = function () {
       var selection = this.drag.selection;
       if (selection && selection.length) {
         selection.forEach(function (s) {
-          // restore original xFixed and yFixed
+          // setDefaultStyle original xFixed and yFixed
           s.node.options.fixed.x = s.xFixed;
           s.node.options.fixed.y = s.yFixed;
         });
@@ -54873,7 +54873,7 @@ var SelectionHandler = function () {
       if (this.options.selectable === true) {
         var obj = this.getNodeAt(pointer) || this.getEdgeAt(pointer);
 
-        // unselect after getting the objects in order to restore width and height.
+        // unselect after getting the objects in order to setDefaultStyle width and height.
         this.unselectAll();
 
         if (obj !== undefined) {
@@ -58274,7 +58274,7 @@ var ManipulationSystem = function () {
   }, {
     key: 'showManipulatorToolbar',
     value: function showManipulatorToolbar() {
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
 
       // reset global variables
@@ -58360,7 +58360,7 @@ var ManipulationSystem = function () {
         this.enableEditMode();
       }
 
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
 
       this.inMode = 'addNode';
@@ -58392,7 +58392,7 @@ var ManipulationSystem = function () {
         this.enableEditMode();
       }
 
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
       var node = this.selectionHandler._getSelectedNode();
       if (node !== undefined) {
@@ -58437,7 +58437,7 @@ var ManipulationSystem = function () {
         this.enableEditMode();
       }
 
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
 
       this.inMode = 'addEdge';
@@ -58473,7 +58473,7 @@ var ManipulationSystem = function () {
         this.enableEditMode();
       }
 
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
 
       this.inMode = 'editEdge';
@@ -58555,7 +58555,7 @@ var ManipulationSystem = function () {
         this.enableEditMode();
       }
 
-      // restore the state of any bound functions or events, remove control nodes, restore physics
+      // setDefaultStyle the state of any bound functions or events, remove control nodes, setDefaultStyle physics
       this._clean();
 
       this.inMode = 'delete';
@@ -58708,7 +58708,7 @@ var ManipulationSystem = function () {
   }, {
     key: '_createEditButton',
     value: function _createEditButton() {
-      // restore everything to it's original state (if applicable)
+      // setDefaultStyle everything to it's original state (if applicable)
       this._clean();
 
       // reset the manipulationDOM
@@ -58749,13 +58749,13 @@ var ManipulationSystem = function () {
       // remove temporary nodes and edges
       this._cleanupTemporaryNodesAndEdges();
 
-      // restore overloaded UI functions
+      // setDefaultStyle overloaded UI functions
       this._unbindTemporaryUIs();
 
       // remove the temporaryEventFunctions
       this._unbindTemporaryEvents();
 
-      // restore the physics if required
+      // setDefaultStyle the physics if required
       this.body.emitter.emit('restorePhysics');
     }
 

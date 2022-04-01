@@ -14,7 +14,7 @@ import { Line, Svg } from "react-native-svg";
 
 export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string, noCrownstones: boolean}) {
   if (Permissions.inSphere(props.sphereId).addRoom) {
-    let setupIcon = props.noCrownstones && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
+    let highLight = props.noCrownstones && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
 
     return (
       <SphereOverviewButton
@@ -23,7 +23,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
         position={"bottom-right"}
         testID={"AddToSphereButton"}
         callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: props.sphereId}); }}
-        highlight={setupIcon}
+        highlight={highLight}
       />
     );
   }

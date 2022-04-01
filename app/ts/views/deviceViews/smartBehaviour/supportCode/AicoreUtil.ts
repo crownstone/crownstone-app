@@ -545,10 +545,10 @@ export const AicoreUtil = {
       let state = core.store.getState();
 
       // are there enough?
-      let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);
+      let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
       // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+      let requiresFingerprints = requireMoreFingerprints(sphereId);
 
       if (enoughForLocalization === false) {
         Alert.alert(
