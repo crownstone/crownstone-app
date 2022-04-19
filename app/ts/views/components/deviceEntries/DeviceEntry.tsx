@@ -55,9 +55,8 @@ export class DeviceEntry extends Component<{
   showMeshMessageTimeout;
 
   // these are used to determine persisting the switchstate.
-  actualState = 0;
   storedSwitchState = 0;
-  storeSwitchState = false;
+  planToStoreSwitchState = false;
   storeSwitchStateTimeout = null;
 
   revertToNormalViewTimeout = null;
@@ -67,7 +66,6 @@ export class DeviceEntry extends Component<{
     let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     let switchState = stone.state.state;
-    this.actualState = switchState;
     this.storedSwitchState = switchState;
     this.state = {
       pendingCommand:  false,
@@ -107,7 +105,7 @@ export class DeviceEntry extends Component<{
 
   componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
-    if (this.storeSwitchState) {
+    if (this.planToStoreSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);
       this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }
@@ -221,13 +219,12 @@ export class DeviceEntry extends Component<{
   }
 
   _planStoreAction(state) {
-    this.actualState = state;
-    this.storeSwitchState = true;
+    this.planToStoreSwitchState = true;
     clearTimeout(this.storeSwitchStateTimeout);
     this.storeSwitchStateTimeout = setTimeout(() => {
-      this.storeSwitchState = false;
+      this.planToStoreSwitchState = false;
       this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
-    }, 3000);
+    }, 2500);
   }
 
 
@@ -241,7 +238,7 @@ export class DeviceEntry extends Component<{
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
-    let WrapperElement : any = TouchableOpacity;
+    let WrapperElement     : any = TouchableOpacity;
     let IconWrapperElement : any = TouchableOpacity;
     let switchViewActive = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
     if (this.props.allowDeviceOverview === false) {

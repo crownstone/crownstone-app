@@ -17,7 +17,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 export const StoneUtil = {
 
-  multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) : Promise<void> {
+  multiSwitch: async function (stone : any, newState : number, allowMeshRelay: boolean = true, transient = false) : Promise<number> {
     let data = {state: newState};
     if (newState === 0) {
       data['currentUsage'] = 0;
@@ -33,9 +33,11 @@ export const StoneUtil = {
       stoneId: stone.id,
       data: data
     });
+
+    return newState;
   },
 
-  turnOn: async function (stone : any, allowMeshRelay: boolean = true) {
+  turnOn: async function (stone : any, allowMeshRelay: boolean = true) : Promise<number> {
     let sphereId = Get.sphereId(stone.id);
     if (!sphereId) { throw new Error("NO_SPHERE_ID"); }
     await tell(stone).turnOn(allowMeshRelay);
@@ -47,10 +49,11 @@ export const StoneUtil = {
       stoneId: stone.id,
       data: {state: expectedState}
     });
+
     return expectedState;
   },
 
-  turnOff: async function (stone : any, allowMeshRelay: boolean = true) {
+  turnOff: async function (stone : any, allowMeshRelay: boolean = true) : Promise<number> {
     return StoneUtil.multiSwitch(stone, 0, allowMeshRelay);
   },
 

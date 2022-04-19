@@ -40,6 +40,8 @@ import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 import { tell } from "../../logic/constellation/Tellers";
 import { DebugIcon } from "../components/DebugIcon";
+import { StoneUtil } from "../../util/StoneUtil";
+import { LOGe } from "../../logging/Log";
 
 
 export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
@@ -52,7 +54,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
   // these are used to determine persisting the switchstate.
   storedSwitchState = 0;
-  storeSwitchState = false;
+  planToStoreSwitchState = false;
   storeSwitchStateTimeout = null;
 
   constructor(props) {
@@ -132,19 +134,14 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
-    // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
-    // If there is no connection being kept open, this command will not do anything.
-    const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-
-    if (this.storeSwitchState) {
+    if (this.planToStoreSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);
       this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }
   }
 
 
-  _switch(stone, state) {
+  async _switch(stone, state) {
     if (state === 0 && this.state.switchIsOn === true) {
       this.setState({switchIsOn: false});
     }
@@ -152,17 +149,18 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       this.setState({switchIsOn: true});
     }
 
-    tell(stone).multiSwitch(state).catch((err) => { })
+    await StoneUtil.multiSwitch(stone, state,true, true).catch(() => {});
+    this._planStoreAction();
   }
 
 
   _planStoreAction() {
-    this.storeSwitchState = true;
+    this.planToStoreSwitchState = true;
     clearTimeout(this.storeSwitchStateTimeout);
     this.storeSwitchStateTimeout = setTimeout(() => {
-      this.storeSwitchState = false;
+      this.planToStoreSwitchState = false;
       this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
-    }, 3000);
+    }, 2500);
   }
 
   _getButton(stone) {
@@ -322,26 +320,24 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
     if (stoneCanSwitch && stone.config.locked === false) {
       content = (
-        <TouchableOpacity onPress={() => {
-          if (this.state.switchIsOn) {
-            // switch off
-            this._switch(stone, 0);
-            core.eventBus.emit("DeviceOverviewSetSwitchState", 0);
-          }
-          else {
-            this.setState({switchIsOn: true});
-            tell(stone).turnOn()
-              .then((result) => {
-                let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
-                core.store.dispatch({
-                  type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
-                  sphereId: this.props.sphereId,
-                  stoneId: this.props.stoneId,
-                  data: {state: expectedState}
-                });
-                core.eventBus.emit("DeviceOverviewSetSwitchState", expectedState);
-                this._planStoreAction();
+        <TouchableOpacity onPress={ async () => {
+          try {
+            if (this.state.switchIsOn) {
+              // switch off
+              await StoneUtil.turnOff(stone, true).catch(() => {
               });
+              core.eventBus.emit("DeviceOverviewSetSwitchState", 0);
+              this.storedSwitchState = 0;
+            }
+            else {
+              this.setState({ switchIsOn: true });
+              let expectedState = await StoneUtil.turnOn(stone, true)
+              core.eventBus.emit("DeviceOverviewSetSwitchState", expectedState);
+              this.storedSwitchState = expectedState;
+            }
+          }
+          catch (err) {
+            LOGe.info("DeviceOverview: Failed to switch crownstone", stone.config.name, stone.config.uid, err?.message);
           }
         }}>{content}</TouchableOpacity>
       )
