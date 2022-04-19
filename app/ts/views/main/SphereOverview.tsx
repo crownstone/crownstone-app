@@ -12,7 +12,7 @@ import {
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
-import { LOG }                      from '../../logging/Log'
+import { LOG, LOGd, LOGi } from "../../logging/Log";
 import {
   availableScreenHeight, background,
   colors,
@@ -131,7 +131,9 @@ export class SphereOverview extends LiveComponent<any, any> {
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.state);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true}))
+    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true});
+    LOGd.info("HubOverview: MergeOptions", newOptions);
+    Navigation.mergeOptions(this.props.componentId, newOptions);
   }
 
 

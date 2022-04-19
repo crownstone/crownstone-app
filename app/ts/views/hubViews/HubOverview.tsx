@@ -23,7 +23,7 @@ import {DataUtil} from "../../util/DataUtil";
 import {Button} from "../components/Button";
 import {Get} from "../../util/GetUtil";
 import {HubReplyError} from "./HubEnums";
-import {LOGe, LOGi, LOGw} from "../../logging/Log";
+import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
 import {Scheduler} from "../../logic/Scheduler";
 import {CLOUD} from "../../cloud/cloudAPI";
 // import { WebRtcClient } from "../../logic/WebRtcClient";
@@ -105,7 +105,9 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+    LOGd.info("HubOverview: MergeOptions", newOptions);
+    Navigation.mergeOptions(this.props.componentId, newOptions);
   }
 
   componentWillUnmount() {

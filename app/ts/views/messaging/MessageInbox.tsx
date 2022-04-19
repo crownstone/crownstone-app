@@ -32,6 +32,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { Navigation } from "react-native-navigation";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { LOGd, LOGi } from "../../logging/Log";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -112,6 +113,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     if (activeSphere) {
       let sphere = state.spheres[activeSphere];
       if (sphere.state.newMessageFound) {
+        LOGd.info("MessageInbox: MergeOptions 1");
         Navigation.mergeOptions(this.props.componentId, {
           bottomTab: {
             badge: '1'
@@ -127,6 +129,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     if (activeSphere) {
       MessageCenter.newMessageStateInSphere(activeSphere, false);
     }
+    LOGd.info("MessageInbox: MergeOptions 2");
     Navigation.mergeOptions(this.props.componentId, {
       bottomTab: {
         badge: ''

@@ -5,6 +5,7 @@ import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButto
 import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
 import {statusBarHeight, topBarHeight} from "../views/styles";
+import { LOGd, LOGi } from "../logging/Log";
 
 interface topBarOptionConfig {
   backButton?:        boolean,
@@ -16,11 +17,15 @@ interface topBarOptionConfig {
 export const TopBarUtil = {
 
   updateOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
+    let newOptions = TopBarUtil.getOptions(props, {...config, partialUpdate: true});
+    LOGd.info("TopBarUtil: MergeOptions 1", newOptions);
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}));
   },
 
   replaceOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
+    let newOptions = TopBarUtil.getOptions(props, {...config, partialUpdate: false});
+    LOGd.info("TopBarUtil: MergeOptions 2", newOptions);
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}));
   },
 
   getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {

@@ -27,6 +27,7 @@ import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
 import {SlideFadeInView} from "../components/animated/SlideFadeInView";
 import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
+import { LOGd } from "../../logging/Log";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -346,8 +347,11 @@ lang("_Indoor_localization_is_c_body"),
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+    LOGd.info("RoomOverview: MergeOptions", newOptions);
+    Navigation.mergeOptions(this.props.componentId, newOptions);
   }
+
 
 
   render() {

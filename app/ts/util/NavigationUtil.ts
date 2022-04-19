@@ -714,6 +714,7 @@ export const NavigationUtil = {
    */
   setViewBackSwipeEnabled(state) {
     let componentId = NavState.getActiveComponent();
+    LOGi.info("NavigationUtil: MergeOptions 1");
     Navigation.mergeOptions(componentId, {popGesture: state});
   },
 
@@ -782,6 +783,7 @@ export const NavigationUtil = {
   navigateTab: function(currentTabIndex) {
     let activeView = NavState.getActiveComponent();
     LOGi.nav("NavigationUtil: Navigating from ",activeView, "to tab index", currentTabIndex);
+    LOGi.info("NavigationUtil: MergeOptions 2");
     Navigation.mergeOptions(activeView, {
       bottomTabs: {
         currentTabIndex: currentTabIndex
@@ -838,6 +840,7 @@ export const NavigationUtil = {
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
       LOGi.nav(tabBarComponentNames, tabIndex);
       NavState.activeTab = tabBarComponentNames[tabIndex];
+      LOGi.info("NavigationUtil: MergeOptions 3");
       Navigation.mergeOptions('bottomTabs', {
         bottomTabs: {
           currentTabIndex: tabIndex

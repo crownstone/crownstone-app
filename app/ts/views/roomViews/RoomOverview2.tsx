@@ -33,6 +33,7 @@ import { HubEntry } from "../components/deviceEntries/HubEntry";
 import { FadeInView } from "../components/animated/FadeInView";
 import { RoomUtil } from "../../util/RoomUtil";
 import { DeviceEntry2 } from "../components/deviceEntries/DeviceEntry2";
+import { LOGd, LOGi } from "../../logging/Log";
 
 
 
@@ -260,7 +261,9 @@ lang("_Indoor_localization_is_c_body"),
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+    LOGd.info("RoomOverview: MergeOptions", newOptions);
+    Navigation.mergeOptions(this.props.componentId, newOptions);
   }
 
 

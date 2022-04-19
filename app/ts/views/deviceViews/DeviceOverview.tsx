@@ -41,7 +41,7 @@ import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 import { tell } from "../../logic/constellation/Tellers";
 import { DebugIcon } from "../components/DebugIcon";
 import { StoneUtil } from "../../util/StoneUtil";
-import { LOGe } from "../../logging/Log";
+import { LOGd, LOGe, LOGi } from "../../logging/Log";
 
 
 export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
@@ -129,7 +129,9 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE)
+    LOGd.info("DeviceOverview: MergeOptions", newOptions);
+    Navigation.mergeOptions(this.props.componentId, newOptions);
   }
 
   componentWillUnmount() {
