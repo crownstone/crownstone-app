@@ -180,7 +180,9 @@ export class UserLayer extends LiveComponent<any, any> {
     });
 
     return (
-      <View style={{
+      <View
+        pointerEvents={'none'}
+        style={{
         width: this.props.width,
         height: this.props.height,
         position: 'absolute',

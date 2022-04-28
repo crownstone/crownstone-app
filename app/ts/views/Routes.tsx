@@ -58,13 +58,13 @@ Navigation.events().registerAppLaunchedListener(() => {
     },
     bottomTabs: {
       titleDisplayMode: "alwaysShow",
-      backgroundColor: colors.csBlueDarker.hex,
+      backgroundColor: "transparent",
     },
     bottomTab: {
-      textColor: colors.white.hex,
+      textColor: colors.csBlue.hex,
       selectedTextColor: colors.blue.hex,
       fontSize: 11,
-      iconColor: colors.white.hex,
+      iconColor: colors.csBlue.hex,
       selectedIconColor: colors.blue.hex,
     },
     layout: {

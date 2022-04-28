@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Text,
+  Text, TouchableOpacity,
   View,
   ViewStyle
 } from "react-native";
@@ -14,12 +14,14 @@ import {
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import { screenWidth, availableScreenHeight, colors, overviewStyles } from "../styles";
+import { screenWidth, availableScreenHeight, colors, overviewStyles, styles } from "../styles";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
+import { Get } from "../../util/GetUtil";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class Sphere extends Component<any, any> {
@@ -28,17 +30,17 @@ export class Sphere extends Component<any, any> {
     const state = core.store.getState();
 
     let viewingRemotely = true;
-    let currentSphere = this.props.sphereId;
+    let sphereId = this.props.sphereId;
 
-    let sphereIsPresent = state.spheres[currentSphere].state.present;
+    let sphereIsPresent = state.spheres[sphereId].state.present;
     if (sphereIsPresent ||  DfuStateHandler.areDfuStonesAvailable()) {
       viewingRemotely = false;
     }
 
-    let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
-    let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
+    let noRoomsCurrentSphere = (sphereId ? Object.keys(state.spheres[sphereId].locations).length : 0) == 0;
+    let noStones = (sphereId ? Object.keys(state.spheres[sphereId].stones).length : 0) == 0;
     let floatingStones = Object.keys(DataUtil.getStonesInLocation(state, this.props.sphereId, null)).length;
-    let availableStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length - floatingStones : 0);
+    let availableStones = (sphereId ? Object.keys(state.spheres[sphereId].stones).length - floatingStones : 0);
 
     // on screen buttons are 0.11*screenWidth high.
     let viewStyle : ViewStyle = {
@@ -76,20 +78,28 @@ export class Sphere extends Component<any, any> {
 
 
     let shouldShowStatusCommunication = noStones === false && this.props.arrangingRooms === false
-
+    let sphere = Get.sphere(sphereId);
     return (
-      <View style={{width: screenWidth, flex:1}}>
-        { shouldShowStatusCommunication ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+      <View style={{flex:1}}>
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
         <RoomLayer
           viewId={this.props.viewId}
-          sphereId={currentSphere}
+          sphereId={sphereId}
           viewingRemotely={viewingRemotely}
           multipleSpheres={this.props.multipleSpheres}
           zoomOutCallback={this.props.zoomOutCallback}
           setRearrangeRooms={this.props.setRearrangeRooms}
           arrangingRooms={this.props.arrangingRooms}
         />
-        { shouldShowStatusCommunication ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+        <View style={{position:'absolute', top:0, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+          <TouchableOpacity onPress={() => {}} style={{paddingLeft:19}}>
+            <Icon name={'enty-menu'} size={24} color={colors.csBlue.hex} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { }}>
+            <Text style={styles.viewHeader}>{sphere.config.name}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

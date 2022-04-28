@@ -12,7 +12,7 @@ import {
 
 
 import { RoomCircle }        from '../components/RoomCircle'
-import { availableScreenHeight, screenWidth } from "../styles";
+import { availableScreenHeight, screenWidth, topBarHeight } from "../styles";
 import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
@@ -79,7 +79,10 @@ export class RoomLayer extends LiveComponent<any, any> {
         pos={{x: nodePosition.x, y: nodePosition.y}}
         viewingRemotely={this.props.viewingRemotely}
         key={locationId || 'floating'}
+        showHoldAnimation={!this.props.arrangingRooms}
+        allowTap={!this.props.arrangingRooms}
         onHold={() => { this.props.setRearrangeRooms(true); }}
+        touch={() => { this._forceViewRef.nodeTouch(locationId); }}
       />
     );
   }
@@ -108,13 +111,14 @@ export class RoomLayer extends LiveComponent<any, any> {
 
 
   render() {
-    let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
-    let offset = 2;
+    let height = availableScreenHeight; // 1 is for the bottom light line above the navbar
+    let offset = 0;
 
     if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
       offset += 64;
     }
     height -= offset;
+
 
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
@@ -128,8 +132,8 @@ export class RoomLayer extends LiveComponent<any, any> {
         <ForceDirectedView
           ref={(r) => { this._forceViewRef = r }}
           viewId={this.props.viewId}
-          topOffset={0.3*this._baseRadius}
-          bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
+          topOffset={0.5*this._baseRadius}
+          bottomOffset={0.1*this._baseRadius}
           drawToken={this.props.sphereId}
           nodeIds={roomData.roomIdArray}
           initialPositions={roomData.initialPositions}

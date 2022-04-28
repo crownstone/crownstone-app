@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
 import Ionicons  from 'react-native-vector-icons/dist/Ionicons';
 import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
 
@@ -92,6 +93,15 @@ export class Icon extends Component<any, any> {
 
       let correctedName = this.props.name.substr(5);
       return <Ionicons {...this.props} name={correctedName} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+    }
+    else if (prefix5 == 'enty-') {
+      let correction = iconCorrections.entypo[this.props.name];
+      if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
+        offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
+      }
+
+      let correctedName = this.props.name.substr(5);
+      return <Entypo {...this.props} name={correctedName} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
     else {
       let correction = iconCorrections.ionicons[this.props.name];

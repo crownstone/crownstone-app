@@ -7,6 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  SafeAreaView,
   Text, View
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
@@ -16,7 +17,7 @@ import { LOG }                      from '../../logging/Log'
 import {
   availableScreenHeight, background,
   colors,
-  overviewStyles
+  overviewStyles, styles
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
@@ -41,6 +42,7 @@ import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphere
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { DebugToolsButton }         from "./buttons/DebugToolsButton";
 import { LocalizationButton }       from "./buttons/LocalizationButton";
+import { SideBarWrapper }           from "../components/animated/SideBarWrapper";
 
 
 const ZOOM_LEVELS = {
@@ -48,11 +50,15 @@ const ZOOM_LEVELS = {
   room: 'room'
 };
 
+export const SPHERE_ID_STORE = {
+  activeSphereId: null
+}
+
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
-    getTopBarProps(core.store.getState(), props, {});
-    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+    // getTopBarProps(core.store.getState(), props, {});
+    // return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
   unsubscribeEvents : any;
@@ -85,6 +91,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
+    this.unsubscribeEvents.push(core.eventBus.on("VIEW_SPHERES", () => { this.setState({zoomLevel: ZOOM_LEVELS.sphere}); }));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -133,7 +140,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.state);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true}))
+    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true}))
   }
 
 
@@ -253,13 +260,15 @@ export class SphereOverview extends LiveComponent<any, any> {
       }
 
       let activeSphere = state.spheres[activeSphereId];
+      SPHERE_ID_STORE.activeSphereId = activeSphereId;
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       backgroundOverride = background.main;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
+        SPHERE_ID_STORE.activeSphereId = null;
+        // backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
       }
       else {
         // handle the case where there are no rooms added:
@@ -286,21 +295,39 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
       }
 
+      SPHERE_ID_STORE.activeSphereId = activeSphereId;
+
+      // return (
+      //   <SideBarWrapper>
+      //
+      //   </SideBarWrapper>
+      // );
+
 
       return (
-        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere} testID={"SphereOverview"}>
-          { this._getAddButtonDescription(activeSphereId, noStones) }
-          { this._getContent(state, amountOfSpheres, activeSphereId) }
-          { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
-          { this._getAddButtonDescription(activeSphereId, noStones) }
-          <AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
-          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-          <LocalizationButton
-            sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false }
-          />
-          { activeSphere.state.smartHomeEnabled === false &&  <SmartHomeStateButton sphereId={activeSphereId} visible={true} /> }
-          <DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
+        <AnimatedBackground
+          image={backgroundOverride}
+          hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}
+          hideOrangeLine
+          hasTopBar={false}
+          testID={"SphereOverview"}
+        >
+          <SafeAreaView style={{flexGrow:1}}>
+            <View style={{flex:1}}>
+              {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
+              { this._getContent(state, amountOfSpheres, activeSphereId) }
+              {/*{ this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }*/}
+              {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
+              {/*<AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />*/}
+              <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
+              {/*<LocalizationButton*/}
+              {/*  sphereId={activeSphereId}*/}
+              {/*  visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false }*/}
+              {/*/>*/}
+              {/*{ activeSphere.state.smartHomeEnabled === false &&  <SmartHomeStateButton sphereId={activeSphereId} visible={true} /> }*/}
+              {/*<DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />*/}
+            </View>
+          </SafeAreaView>
         </AnimatedBackground>
       );
     }

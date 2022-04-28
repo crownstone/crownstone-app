@@ -128,6 +128,7 @@ import { RoomTrainingStep1 }                  from "./roomViews/RoomTrainingStep
 import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep1_train";
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
 import { SetupLocalization } from "./main/localization/SetupLocalization";
+import { SphereOverviewSideBar } from "./sidebars/SphereOverviewSideBar";
 
 
 export const Views = {
@@ -268,5 +269,9 @@ export const Views = {
   DEV_RawAdvertisements:         DEV_RawAdvertisements,
   DEV_PresenceMocking:           DEV_PresenceMocking,
   DEV_UserData:                  DEV_UserData,
+
+  // Sidebars
+
+  SphereOverviewSideBar:         SphereOverviewSideBar,
 
 };

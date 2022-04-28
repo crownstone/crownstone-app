@@ -359,6 +359,10 @@ const ion5CorrectionsAndroid = {
 
 };
 
+const entypoCorrections = {
+
+};
+
 
 
 
@@ -366,6 +370,7 @@ export const iconCorrectionsAndroid = {
   c1: c1CorrectionsAndroid,
   c2: c2CorrectionsAndroid,
   c3: c3CorrectionsAndroid,
+  entypo: entypoCorrections,
   ionicons: ioniconCorrectionsAndroid,
   ionicons5: ion5CorrectionsAndroid,
   evilIcons: evilIconsCorrectionsAndroid,

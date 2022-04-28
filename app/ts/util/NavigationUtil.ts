@@ -53,6 +53,8 @@ class NavStateManager {
   // ugly hack to ensure that android back buttons sometimes dismiss modals instead of going back in the history
   forcedRootModalStackViews = {};
 
+  sideBarShown = false;
+
   /**
    * Load the default initial tabname into the views so we have something to navigate from
    */
@@ -522,10 +524,13 @@ class NavStateManager {
 export const NavState = new NavStateManager();
 
 let loadNamesFromStack = (stack) => {
-  if (stack && stack.bottomTabs && stack.bottomTabs.children) {
+  if (stack?.bottomTabs?.children) {
     stack.bottomTabs.children.forEach((child) => {
-      if (child && child.stack && child.stack.children) {
+      if (child?.stack?.children) {
         tabBarComponentNames.push(child.stack.children[0].component.name);
+      }
+      else if (child?.sideMenu?.center?.stack?.children) {
+        tabBarComponentNames.push(child.sideMenu.center.stack.children[0].component.name);
       }
     })
   }
@@ -537,7 +542,10 @@ export let topBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
+  if (componentId === 'SphereOverviewSideBar') { return; }
+
   core.eventBus.emit("VIEW_DID_APPEAR", componentId);
+  console.log("registerComponentDidAppearListener", { componentId, componentName })
   if (topBarComponentNames.indexOf(componentName) === -1) {
     LOGi.nav("VIEW DID APPEAR", componentId, componentName);
     if (tabBarComponentNames.indexOf(componentName) !== -1) {
@@ -545,6 +553,14 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
     }
     NavState.addView(componentId, componentName);
   }
+});
+// Listen for componentDidAppear screen events
+Navigation.events().registerComponentWillAppearListener(({ componentId, componentName }) => {
+  console.log('registerComponentWillAppearListener', componentId, componentName)
+});
+// Listen for componentDidAppear screen events
+Navigation.events().registerCommandListener((data, args) => {
+  console.log('registerCommandListener', data, args)
 });
 
 // Listen for componentDidAppear screen events
@@ -889,6 +905,7 @@ export const NavigationUtil = {
       throw new Error("CAN NOT FIND THIS COMPONENT " + target);
     }
   },
+
 };
 
 /**

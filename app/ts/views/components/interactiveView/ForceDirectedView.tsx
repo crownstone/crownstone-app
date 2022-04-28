@@ -25,7 +25,6 @@ import {
 import { colors, screenWidth, availableScreenHeight} from "../../styles";
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
-import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
@@ -90,8 +89,7 @@ export class ForceDirectedView extends Component<{
   frameHeight : number = availableScreenHeight;
 
   boundingBoxData : any = {};
-  _shownDoubleTap = false;
-  _clearScheduledDoubleTapGesture = () => {};
+  _clearRecenterAction = () => {};
 
   _dragInitialX = 0;
   _dragInitialY = 0;
@@ -123,73 +121,8 @@ export class ForceDirectedView extends Component<{
     this.init();
   }
 
-  _convertToScreenSpace(x,y) {
-    let convertedY = y - (this.props.height - this.frameHeight) - (this.props.heightOffset || 0);
-
-    // center of the view in absolute coordinates
-    let cx = 0.5*screenWidth;
-    let cy = 0.5*this.frameHeight;
-
-    // x = 0 on the left, y = 0 on the top. These offsets are the corrections from the center to 0,0.
-    // the view can be larger than the visible area.
-    let offsetX = (this.viewWidth - screenWidth)*0.5;
-    let offsetY = (this.viewHeight - this.frameHeight)*0.5;
-
-    // we correct for the current pan offset
-    let x2 = x - this._panOffset.x;
-    let y2 = convertedY - this._panOffset.y;
-
-    // we calculate the distance from the center
-    let dx2 = x2 - cx;
-    let dy2 = y2 - cy;
-
-    // since scaling is done about the center AFTER the pan, we correct for the scaling now.
-    let dx1 = dx2 / this._currentScale;
-    let dy1 = dy2 / this._currentScale;
-
-    // final coordinates on the view are the center coordinates plus the offset from the center (scale corrected) plus the offset from the pan.
-    // these are the coordinates we can use to match the absolute positions of the roomCircles, or "nodes"
-    let x1 = cx + dx1 + offsetX;
-    let y1 = cy + dy1 + offsetY;
-
-    return {x: x1, y: y1}
-  }
-
-  _findPress(x,y) {
-    let convertedPosition = this._convertToScreenSpace(x,y);
-    let x1 = convertedPosition.x;
-    let y1 = convertedPosition.y;
-
-    let nodeIds = Object.keys(this.nodes);
-    let diameter = 2*this.props.nodeRadius;
-    let found = false;
-    // we iterate over all nodes backwards so the ones that are overlapping the others are selected first.
-    for(let i = nodeIds.length-1; i >= 0; i--) {
-      let node = this.nodes[nodeIds[i]];
-      if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
-        found = true;
-
-        // null is a special ID since it implies a floating crownstone. This null is not a string, but actual null.
-        let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
-
-
-        let nodeData = {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)};
-        // if we select a new node, animate it popping up and turning a bit translucent.
-        if (this._pressedNodeData === false || this._pressedNodeData.nodeId !== nodeIds[i]) {
-          if (this.props.allowDrag) {
-            core.eventBus.emit('nodeTouchedAllowDrag'+this.props.viewId+nodeId, nodeData);
-          }
-          else {
-            core.eventBus.emit('nodeTouched'+this.props.viewId+nodeId, nodeData);
-          }
-        }
-
-        return nodeData; // --> _pressedNodeData
-      }
-    }
-
-    // nothing is selected.
-    return false;
+  nodeTouch(nodeId: string) {
+    this._pressedNodeData = {nodeId};
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -266,7 +199,7 @@ export class ForceDirectedView extends Component<{
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
       onStartShouldSetPanResponder:        (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
       onMoveShouldSetPanResponder:         (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture:  (evt, gestureState) => true,
       onPanResponderTerminationRequest:    (evt, gestureState) => true,
@@ -277,9 +210,9 @@ export class ForceDirectedView extends Component<{
         this._totalMovedX = 0;
         this._totalMovedY = 0;
 
-        this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0);
         this._validTap = true;
-        this._clearScheduledDoubleTapGesture()
+        this._clearRecenterAction()
+        return false
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -291,7 +224,6 @@ export class ForceDirectedView extends Component<{
           this._totalMovedY += Math.abs(gestureState.dy);
           this._multiTouch = false;
 
-
           if (this._draggingNode !== false && this.props.allowDrag) {
             let nodeId = this._draggingNode.nodeId;
             let newX = this._dragInitialX + gestureState.dx / this._currentScale;
@@ -302,11 +234,10 @@ export class ForceDirectedView extends Component<{
             this.nodes[nodeId].y = newY;
           }
           else if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
-            this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0);
+            core.eventBus.emit('userDragEvent' + this.props.viewId);
             if (this._pressedNodeData !== false) {
               // do nothing
               if (this.props.allowDrag) {
-                core.eventBus.emit('nodeDragging' + this.props.viewId + this._pressedNodeData.nodeId, this._pressedNodeData);
                 this._draggingNode = this._pressedNodeData;
                 this._dragInitialX = this.nodes[this._pressedNodeData.nodeId].x;
                 this._dragInitialY = this.nodes[this._pressedNodeData.nodeId].y;
@@ -325,6 +256,7 @@ export class ForceDirectedView extends Component<{
           this._clearTap();
           this._multiTouchUsed = true;
           let distance = getDistance(evt.nativeEvent.touches);
+          core.eventBus.emit('viewWasMultitapped' + this.props.viewId);
           if (this._multiTouch === false) {
             this._initialDistance = distance;
             this._multiTouch = true;
@@ -340,16 +272,12 @@ export class ForceDirectedView extends Component<{
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        let showRecenterGesture = () => {
+        let recenterAnimation = () => {
           if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
-            this._clearScheduledDoubleTapGesture();
-            this._clearScheduledDoubleTapGesture = Scheduler.scheduleCallback(() => {
-              if (this._shownDoubleTap === false) {
-                core.eventBus.emit("showDoubleTapGesture" + this.props.viewId);
-                this._shownDoubleTap = true;
-              }
+            this._clearRecenterAction();
+            this._clearRecenterAction = Scheduler.scheduleCallback(() => {
               this._recenter();
-              this._clearScheduledDoubleTapGesture = () => {};
+              this._clearRecenterAction = () => {};
             }, 400);
           }
         };
@@ -364,7 +292,7 @@ export class ForceDirectedView extends Component<{
               this._panOffset.y = this._currentPan.y;
               this.state.pan.setOffset({x: this._currentPan.x, y: this._currentPan.y});
               this.state.pan.setValue({x: 0, y: 0});
-              showRecenterGesture()
+              recenterAnimation()
             });
           }
           else {
@@ -374,7 +302,7 @@ export class ForceDirectedView extends Component<{
             this.state.pan.setValue({x: 0, y: 0});
 
             if (this._validTap === false) {
-              showRecenterGesture();
+              recenterAnimation();
             }
           }
         }
@@ -391,7 +319,7 @@ export class ForceDirectedView extends Component<{
             this._recenter();
           }
           else {
-            showRecenterGesture();
+            recenterAnimation();
           }
 
           this._lastTapLocation = this._pressedNodeData && this._pressedNodeData.nodeId || false;
@@ -400,15 +328,7 @@ export class ForceDirectedView extends Component<{
 
         this.state.opacity.setValue(1);
 
-        if (this._pressedNodeData !== false) {
-          if (this.props.allowDrag) {
-            core.eventBus.emit('nodeWasTappedAllowDrag'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
-          }
-          else {
-            core.eventBus.emit('nodeWasTapped'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
-          }
-        }
-        else {
+        if (this._pressedNodeData === false) {
           core.eventBus.emit('viewWasTapped'+this.props.viewId, this._pressedNodeData);
         }
 
@@ -441,28 +361,25 @@ export class ForceDirectedView extends Component<{
 
 
         // reset touch state variables
-        this._multiTouch = false;
-        this._draggingNode = false;
+        this._multiTouch      = false;
+        this._pressedNodeData = false;
+        this._draggingNode    = false;
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
         // should be cancelled
       },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // Returns whether this component should block native components from becoming the JS
-        // responder. Returns true by default. Is currently only supported on android.
-        return true;
-      },
+      // onShouldBlockNativeResponder: (evt, gestureState) => {
+      //   // Returns whether this component should block native components from becoming the JS
+      //   // responder. Returns true by default. Is currently only supported on android.
+      //   return true;
+      // },
     });
   }
 
   componentDidMount() {
     this.unsubscribeGestureEvents = [];
-    this.unsubscribeGestureEvents.push(core.eventBus.on('showDoubleTapGesture'+this.props.viewId, () => {
-      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 5000)
-    }));
-
     this.unsubscribeGestureEvents.push(core.eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
       this.recenterOnStable = true;
       this.physicsEngine.unfixNodes()
@@ -573,9 +490,7 @@ export class ForceDirectedView extends Component<{
   }
 
   _clearTap() {
-    if (this._pressedNodeData !== false) {
-      core.eventBus.emit('nodeReleased'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
-    }
+    core.eventBus.emit('viewReleased'+this.props.viewId);
 
     this._validTap = false;
     this._pressedNodeData = false;
@@ -891,7 +806,6 @@ export class ForceDirectedView extends Component<{
     }
   }
 
-
   render() {
     const layout = this.state.pan.getLayout();
     let scale = this.state.scale;
@@ -911,12 +825,11 @@ export class ForceDirectedView extends Component<{
         nodes:this.nodes,
       });
     });
-
     return (
       <View
         ref={(v) => { this._viewRef = v; }}
         {...this._panResponder.panHandlers}
-        style={{backgroundColor: 'transparent', width: screenWidth, height:this.props.height, position: 'absolute', top: 0, left: 0, verflow:'hidden'}}
+        style={{flex:1, alignItems:'center', justifyContent:'center'}}
         testID={this.props.testID}
       >
         <Animated.View
@@ -927,16 +840,12 @@ export class ForceDirectedView extends Component<{
               width:    this.viewWidth,
               height:   this.viewHeight,
               opacity:  this.state.opacity,
-              position: 'relative',
-              top:      -(this.viewHeight - this.frameHeight)*0.5,
-              left:     -(this.viewWidth  - screenWidth)*0.5,
             }
           ]}>
           { this.getEdges() }
           { this.getNodes() }
           { children }
         </Animated.View>
-        <AnimatedDoubleTap width={screenWidth} height={this.props.height} eventBus={eventBus} />
       </View>
     );
   }

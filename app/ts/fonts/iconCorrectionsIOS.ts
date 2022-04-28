@@ -453,6 +453,10 @@ const ion5CorrectionsIOS = {
   'ion5-add':                     {change: false, top: -0.00, left: 0.00},
 };
 
+const entypoCorrections = {
+
+};
+
 
 
 
@@ -460,6 +464,7 @@ export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
+  entypo: entypoCorrections,
   ionicons: ioniconCorrectionsIOS,
   ionicons5: ion5CorrectionsIOS,
   evilIcons: evilIconsCorrectionsIOS,

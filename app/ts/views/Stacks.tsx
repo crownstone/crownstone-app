@@ -1,4 +1,5 @@
 import { Languages } from "../Languages";
+import { colors } from "./styles";
 
 export const Stacks = {
 
@@ -42,42 +43,6 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
-    // return {
-    //   bottomTabs: {
-    //     id: 'bottomTabs',
-    //     children: [
-    //       {
-    //         stack: {
-    //           children: [
-    //             // { component: {name: "SettingsApp"} },
-    //             // { component: {name: "SetupHub"} },
-    //             { component: {name: "HubOverview", passProps: {"sphereId": "1e35534b-73ef-3695-df55-db27218dcb98", "stoneId": "5fc654eae2b8ba0004e3f5b3",} }},
-    //           ],
-    //           options: {
-    //             bottomTab: {
-    //               text: Languages.get("Tabs","Overview")(),
-    //               icon: require('../../assets/images/icons/house.png'),
-    //             }
-    //           }
-    //         }
-    //       },
-    //       {
-    //         stack: {
-    //           children: [
-    //             { component: {name: "SettingsOverview"} },
-    //           ],
-    //           options: {
-    //             bottomTab: {
-    //               text: Languages.get("Tabs","Settings")(),
-    //               icon: require('../../assets/images/icons/cog.png'),
-    //             }
-    //           }
-    //         }
-    //       },
-    //     ]
-    //   }
-    // }
-
     return {
       bottomTabs: {
         id: 'bottomTabs',
@@ -85,11 +50,10 @@ export const Stacks = {
           {
             stack: {
               children: [
-                // { component: {name: "SettingsApp"} },
                 { component: {name: "SphereOverview"} },
-                // { component: {name: "DeviceOverview", passProps: {sphereId: "18232301-e0f1-eb16-1de3-73a837d0ceb7", stoneId: "2517a0f9-c1f-79d2-7462-5708dd1d2cf0"}} },
               ],
               options: {
+                topBar: {visible: false, drawBehind:true},
                 bottomTab: {
                   id: 'bottomTab_overview',
                   testID: 'bottomTab_overview',
