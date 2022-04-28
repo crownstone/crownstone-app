@@ -32,7 +32,6 @@ import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 import { LockedStateUI } from "../components/LockedStateUI";
 import { STONE_TYPES } from "../../Enums";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { Navigation } from "react-native-navigation";
 import { DeviceError } from "./DeviceError";
 import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
@@ -127,7 +126,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {

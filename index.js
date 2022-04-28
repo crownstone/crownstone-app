@@ -5,7 +5,6 @@ LogBox.ignoreLogs([
 ])
 
 import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";
-import { loadRoutes } from "./app/js/views/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";
 import Bugsnag from "@bugsnag/react-native";
 
@@ -15,6 +14,10 @@ if (USE_ERROR_REPORTING) {
   Bugsnag.start();
 }
 
-loadRoutes();
 BackgroundProcessHandler.start();
 
+import {AppRegistry} from 'react-native';
+import { App } from "./app/js/views/Routes";
+
+
+AppRegistry.registerComponent('Crownstone', () => App);

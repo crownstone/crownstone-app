@@ -127,8 +127,8 @@ import { SettingsLogOverview }                from "./settingsViews/dev/Settings
 import { RoomTrainingStep1 }                  from "./roomViews/RoomTrainingStep1";
 import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep1_train";
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
-import { SetupLocalization } from "./main/localization/SetupLocalization";
-import { SphereOverviewSideBar } from "./sidebars/SphereOverviewSideBar";
+import { SetupLocalization }                  from "./main/localization/SetupLocalization";
+import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 
 
 export const Views = {

@@ -1,7 +1,16 @@
 import {Languages} from "../../Languages"
 import * as React from 'react';
 import {Component} from 'react';
-import {Alert, Image, Platform, ScrollView, Text, TouchableHighlight, TouchableOpacity, View} from "react-native";
+import {
+  Alert,
+  Image,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View
+} from "react-native";
 import DeviceInfo from 'react-native-device-info';
 
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
@@ -23,6 +32,7 @@ import {Stacks} from "../Stacks";
 import {base_core} from "../../Base_core";
 // import * as Sentry from "@sentry/react-native";
 import {BackgroundProcessHandler} from "../../backgroundProcesses/BackgroundProcessHandler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Login", key)(a,b,c,d,e);
@@ -211,12 +221,13 @@ export class Login extends Component<any, any> {
   }
 
   render() {
-    let factor = 0.24;
+    let factor = 0.2;
     if (screenHeight < 500) {
       factor = 0.15
     }
     return (
       <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true} testID={"LoginView"}>
+        <SafeAreaView>
         <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
@@ -225,7 +236,6 @@ export class Login extends Component<any, any> {
             <View style={{flex:3, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
-                autoCompleteType={'email'}
                 ref={(input) => { this.emailInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
                 placeholder={lang("emailemail_address")}
@@ -242,7 +252,6 @@ export class Login extends Component<any, any> {
             <View style={{height:10, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
-                autoCompleteType={'password'}
                 autoCapitalize={"none"}
                 ref={(input) => { this.passwordInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
@@ -270,6 +279,7 @@ export class Login extends Component<any, any> {
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>
         </ScrollView>
+        </SafeAreaView>
       </Background>
     );
   }
@@ -435,13 +445,6 @@ export class Login extends Component<any, any> {
 
     Promise.all(promises)
       .then(() => {
-        // Sentry.addBreadcrumb({
-        //   category: 'login',
-        //   data: {
-        //     state:'finished'
-        //   }
-        // });
-
         LOG.info("Login: finished promises");
         core.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});
 
@@ -466,7 +469,7 @@ export class Login extends Component<any, any> {
           state = core.store.getState();
           core.eventBus.emit('hideProgress');
 
-          NavigationUtil.setRoot(Stacks.permissions());
+          this.props.setAppState(true, false);
         }, 100);
       })
       .catch((err) => {

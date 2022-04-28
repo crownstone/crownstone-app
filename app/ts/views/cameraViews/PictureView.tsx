@@ -23,7 +23,6 @@
 // import { TopbarImitation } from "../components/TopbarImitation";
 // import { Icon } from "../components/Icon";
 // import { FileUtil } from "../../util/FileUtil";
-// import { Navigation } from "react-native-navigation";
 //
 // export class PictureView extends Component<any, any> {
 //   static options = {

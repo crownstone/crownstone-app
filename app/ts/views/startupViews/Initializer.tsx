@@ -40,13 +40,13 @@ export class Initializer extends Component<any, any> {
 
 
       if (BackgroundProcessHandler.userLoggedInReady) {
-        NavigationUtil.setRoot(Stacks.loggedIn());
+        this.props.setAppState(true, true);
       }
       else if (BackgroundProcessHandler.userLoggedIn) {
-        NavigationUtil.setRoot(Stacks.permissions());
+        this.props.setAppState(true, false);
       }
       else {
-        NavigationUtil.setRoot(Stacks.newUser());
+        this.props.setAppState(false, false);
       }
     };
 

@@ -14,7 +14,6 @@ import {NavigationUtil} from "../../util/NavigationUtil";
 import {xUtil} from "../../util/StandAloneUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {AnimatedCircle} from "../components/animated/AnimatedCircle";
-import {Navigation} from "react-native-navigation";
 import {Util} from "../../util/Util";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {AlternatingContent} from "../components/animated/AlternatingContent";
@@ -105,7 +104,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {

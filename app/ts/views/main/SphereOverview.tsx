@@ -32,7 +32,6 @@ import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
-import { Navigation }               from "react-native-navigation";
 import { TopBarUtil }               from "../../util/TopBarUtil";
 import { DataUtil }                 from "../../util/DataUtil";
 import { RoomAddCore }              from "../roomViews/RoomAddCore";

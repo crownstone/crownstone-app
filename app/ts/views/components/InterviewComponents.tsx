@@ -248,7 +248,6 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
-        autoCompleteType={'password'}
         autoCapitalize={"none"}
         testID={props.testID}
         secureTextEntry={Platform.OS === 'android' ? true : passwordSecureDisplay  }
@@ -277,7 +276,7 @@ export function InterviewPasswordInput(props: {autofocus?, placeholder, value, c
 }
 
 
-export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?, testID?, autoCompleteType?}) {
+export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?, testID?}) {
   const inputElement = useRef(null)
   if (props.focussed === true) {
     inputElement.current.focus()
@@ -285,7 +284,6 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
-        autoCompleteType={props.autoCompleteType}
         autoCapitalize={props.autoCapitalize}
         ref={inputElement}
         focussed={props.focussed}

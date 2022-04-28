@@ -32,12 +32,12 @@ export class LoginSplash extends Component<any, any> {
 
   render() {
     console.log("LoginSplash render", deviceModel)
-    let factor = 0.25;
+    let factor = 0.2;
 
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideNotifications={true} testID={"LoginSplash"}>
+      <Background fullScreen={true} image={background.main} hideNotifications={true} testID={"LoginSplash"}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
-          <View style={{flex:0.5}} />
+          <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
           <View style={{flex:2}} />
           <View style={loginStyles.loginButtonContainer}>

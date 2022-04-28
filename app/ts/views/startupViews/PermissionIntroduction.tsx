@@ -24,6 +24,7 @@ import { LOG } from "../../logging/Log";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { ScaledImage } from "../components/ScaledImage";
 import { Util } from "../../util/Util";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export class PermissionIntroduction extends LiveComponent<any, any> {
@@ -51,7 +52,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
                 if (Platform.OS === 'android') {
                   core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
                   core.eventBus.emit("userLoggedInFinished");
-                  NavigationUtil.setRoot(Stacks.loggedIn());
+                  this.props.setAppState(true, true);
                   return;
                 }
                 return 'notifications';
@@ -76,7 +77,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
               NotificationHandler.request();
               core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
               core.eventBus.emit("userLoggedInFinished");
-              NavigationUtil.setRoot(Stacks.loggedIn());
+              this.props.setAppState(true, true);
             }
           },
         ]
@@ -94,7 +95,8 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true} testID={"PermissionIntroduction"}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} testID={"PermissionIntroduction"}>
+        <SafeAreaView>
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
           height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
@@ -102,6 +104,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

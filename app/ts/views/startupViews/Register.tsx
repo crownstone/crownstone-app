@@ -20,6 +20,7 @@ import {InterviewPasswordInput, InterviewTextInput} from "../components/Intervie
 import {FileUtil} from "../../util/FileUtil";
 import {Icon} from "../components/Icon";
 import {base_core} from "../../Base_core";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Register", key)(a,b,c,d,e);
@@ -203,7 +204,6 @@ export class Register extends LiveComponent<any, any> {
           return (
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
-                autoCompleteType={'username'}
                 autofocus={true}
                 testID={'register-email'}
                 autoCapitalize={'none'}
@@ -376,9 +376,9 @@ export class Register extends LiveComponent<any, any> {
         image={backgroundImage}
         hideOrangeLine={false}
         hideNotifications={true}
-        dimStatusBar={true}
         testID={"registerView"}
       >
+        <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -392,6 +392,7 @@ export class Register extends LiveComponent<any, any> {
           update={   () => { this.forceUpdate();     }}
           backButtonOverrideViewNameOrId={this.props.componentId}
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

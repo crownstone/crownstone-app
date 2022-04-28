@@ -65,15 +65,10 @@ export class Background extends Component<{
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar translucent={false} barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
+        <StatusBar translucent={false} barStyle={"dark-content"} />
         <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
-          { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
-          { this.props.topImage ? <View style={[styles.fullscreen, {height:backgroundHeight, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
+          <BackgroundImage height={backgroundHeight} image={this.props.image} />
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
-            { this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
-            { this.props.dimStatusBar             && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
-            { this.props.paddStatusBar            && Platform.OS !== 'android' ? <View style={styles.statusBarPadding} /> : undefined }
-            <NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />
             <View style={{flex:1, overflow:'hidden'}}>
               { this.props.children }
             </View>

@@ -17,7 +17,6 @@ import {LiveComponent} from "../LiveComponent";
 import {core} from "../../Core";
 import {NavigationUtil} from "../../util/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
-import {Navigation} from "react-native-navigation";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {xUtil} from "../../util/StandAloneUtil";
 import {Icon} from "../components/Icon";
@@ -346,7 +345,7 @@ lang("_Indoor_localization_is_c_body"),
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
 

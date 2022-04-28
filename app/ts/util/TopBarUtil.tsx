@@ -1,5 +1,4 @@
 import {Languages} from "../Languages";
-import {Navigation} from "react-native-navigation";
 import {Platform} from "react-native";
 import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButton";
 import {ScaledImage} from "../views/components/ScaledImage";
@@ -16,11 +15,11 @@ interface topBarOptionConfig {
 export const TopBarUtil = {
 
   updateOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
+    // Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
   },
 
   replaceOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
+    // Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
   },
 
   getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {
