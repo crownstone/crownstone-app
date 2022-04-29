@@ -50,6 +50,7 @@ import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
+import DeviceInfo from "react-native-device-info";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -90,9 +91,10 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
-
+      console.log("STARTINGS")
       BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
-        base_core.sessionMemory.developmentEnvironment = result;
+        base_core.sessionMemory.developmentEnvironment = result || DeviceInfo.isEmulatorSync();
+        console.log("isDevelopmentEnvironment", base_core.sessionMemory.developmentEnvironment)
       });
 
       // hook into the back button handler for android.

@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Text, TouchableOpacity,
+  Text, TextStyle, TouchableOpacity,
   View,
   ViewStyle
 } from "react-native";
@@ -21,7 +21,7 @@ import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import {Navigation} from "../RootNavigation";
 
 
 export class Sphere extends Component<any, any> {
@@ -86,22 +86,49 @@ export class Sphere extends Component<any, any> {
           viewId={this.props.viewId}
           sphereId={sphereId}
           viewingRemotely={viewingRemotely}
-          multipleSpheres={this.props.multipleSpheres}
           zoomOutCallback={this.props.zoomOutCallback}
           setRearrangeRooms={this.props.setRearrangeRooms}
           arrangingRooms={this.props.arrangingRooms}
         />
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
         <View style={{position:'absolute', top:0, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-          <TouchableOpacity onPress={() => {}} style={{paddingLeft:19}}>
-            <Icon name={'enty-menu'} size={24} color={colors.csBlue.hex} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { }}>
-            <Text style={styles.viewHeader}>{sphere.config.name}</Text>
-          </TouchableOpacity>
+          { this.props.arrangingRooms ? <ArrangingHeader viewId={this.props.viewId} setRearrangeRooms={this.props.setRearrangeRooms}/> : <SphereHeader sphere={sphere} /> }
         </View>
       </View>
     );
   }
+}
 
+
+function SphereHeader({sphere}) {
+  return (
+    <React.Fragment>
+      <TouchableOpacity onPress={() => { Navigation.openDrawer() }} style={{paddingLeft:19}}>
+        <Icon name={'enty-menu'} size={24} color={colors.csBlue.hex} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => { Navigation.openDrawer() }}>
+        <Text style={styles.viewHeader}>{sphere.config.name}</Text>
+      </TouchableOpacity>
+    </React.Fragment>
+  )
+}
+
+
+function ArrangingHeader({viewId, setRearrangeRooms}) {
+  let buttonStyle : TextStyle = {
+    fontSize:16, fontWeight: 'bold', color: colors.white.hex,
+  }
+  return (
+    <React.Fragment>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:20}}>
+        <Text style={buttonStyle}>Cancel</Text>
+      </TouchableOpacity>
+      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{"Move the rooms!"}</Text>
+      </View>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:20}}>
+        <Text style={buttonStyle}>Save</Text>
+      </TouchableOpacity>
+    </React.Fragment>
+  )
 }

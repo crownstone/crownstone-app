@@ -204,6 +204,7 @@ export class ForceDirectedView extends Component<{
       onMoveShouldSetPanResponderCapture:  (evt, gestureState) => true,
       onPanResponderTerminationRequest:    (evt, gestureState) => true,
       onPanResponderGrant:                 (evt, gestureState) => {
+        core.eventBus.emit("viewWasTouched" + this.props.viewId)
         this.state.pan.stopAnimation();
         // gestureState.d{x,y} will be set to zero now
         this._multiTouchUsed = false;
@@ -364,6 +365,7 @@ export class ForceDirectedView extends Component<{
         this._multiTouch      = false;
         this._pressedNodeData = false;
         this._draggingNode    = false;
+        core.eventBus.emit('viewReleased'+this.props.viewId);
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
@@ -490,8 +492,6 @@ export class ForceDirectedView extends Component<{
   }
 
   _clearTap() {
-    core.eventBus.emit('viewReleased'+this.props.viewId);
-
     this._validTap = false;
     this._pressedNodeData = false;
   }

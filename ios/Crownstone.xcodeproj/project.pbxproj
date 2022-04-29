@@ -48,7 +48,6 @@
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAB44C9D276A279200E36078 /* BluenetLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44C9C276A279200E36078 /* BluenetLocalization */; };
 		FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA0276A28B300E36078 /* BluenetLib */; };
-		FAB44CA3276A28BD00E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA2276A28BD00E36078 /* BluenetLib */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -70,6 +69,7 @@
 		FADC2B3A25F7B519000AE5A7 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */; };
 		FADC2B3B25F7B519000AE5A7 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */; };
 		FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */; };
+		FAEEF10D281BDC8E00868171 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAEEF10C281BDC8E00868171 /* BluenetLib */; };
 		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
 /* End PBXBuildFile section */
 
@@ -256,13 +256,6 @@
 			remoteGlobalIDString = D5C775614AC76D44CECB6BE08B022F1F;
 			remoteInfo = ReactCommon;
 		};
-		FA274EB72410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FE615D58A030F19B5EB89E2F52F5B59A;
-			remoteInfo = ReactNativeNavigation;
-		};
 		FA274EB92410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -325,13 +318,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = F4BDA69E3BCB0166D49FB679ABADCA00;
 			remoteInfo = fmt;
-		};
-		FA39A4962743C7AE00A63C79 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAF47B8D3BA5B9248FB8BA7EFB248038;
-			remoteInfo = HMSegmentedControl;
 		};
 		FA39A4982743C7AE00A63C79 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -437,6 +423,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = CC9CF62342D0D8A46D8176D06AABE411;
 			remoteInfo = "react-native-image-picker";
+		};
+		FAEEF107281BDBF400868171 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 52FCF98CEFF94C742080B6965D537AD0;
+			remoteInfo = "react-native-safe-area-context";
+		};
+		FAEEF109281BDBF400868171 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 50B5347C9A6E93B7D4CFC3673BA6FB7E;
+			remoteInfo = RNScreens;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -583,8 +583,8 @@
 		FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../app/assets/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../app/assets/fonts/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Black.ttf"; path = "../app/assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
-		FADE935A27D2156600C2D8E6 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "bluenet-lib"; path = "../../XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHandler.swift; sourceTree = "<group>"; };
+		FAEEF10B281BDC1900868171 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../../Dropbox/Crownstone/Projects/XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -619,7 +619,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAB44CA3276A28BD00E36078 /* BluenetLib in Frameworks */,
+				FAEEF10D281BDC8E00868171 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,7 +799,6 @@
 				FA274E7E2410144F00D7C858 /* FBReactNativeSpec */,
 				FA39A4952743C7AE00A63C79 /* fmt */,
 				FA274E822410144F00D7C858 /* glog */,
-				FA39A4972743C7AE00A63C79 /* HMSegmentedControl */,
 				FADDB9A22812D84100BDB969 /* lottie-ios */,
 				FADDB9A42812D84100BDB969 /* lottie-react-native */,
 				FA274E842410144F00D7C858 /* Pods-Crownstone */,
@@ -819,6 +818,7 @@
 				FA274E9A2410144F00D7C858 /* react-native-image-resizer */,
 				FA274E9C2410144F00D7C858 /* react-native-keep-awake */,
 				FA274E9E2410144F00D7C858 /* react-native-maps */,
+				FAEEF108281BDBF400868171 /* react-native-safe-area-context */,
 				FA274EA02410144F00D7C858 /* react-native-slider */,
 				FAB44C63276A244500E36078 /* react-native-splash-screen */,
 				FACF166E26160CB500A9163F /* React-perflogger */,
@@ -831,13 +831,13 @@
 				FA274EB22410144F00D7C858 /* React-RCTText */,
 				FA274EB42410144F00D7C858 /* React-RCTVibration */,
 				FA274EB62410144F00D7C858 /* ReactCommon */,
-				FA274EB82410144F00D7C858 /* ReactNativeNavigation */,
 				FA274EBA2410144F00D7C858 /* RNCAsyncStorage */,
 				FABC9F1B274E979C00831B7F /* RNCPicker */,
 				FA5C2BBD24165FEC00358011 /* RNCPushNotificationIOS */,
 				FA274EBC2410144F00D7C858 /* RNDeviceInfo */,
 				FA274EBE2410144F00D7C858 /* RNFS */,
 				FA345D9424111FEA00C288D3 /* RNLocalize */,
+				FAEEF10A281BDBF400868171 /* RNScreens */,
 				FAC6D17B24BCAA8A007AA96F /* RNShare */,
 				FA274EC02410144F00D7C858 /* RNSVG */,
 				FA274EC22410144F00D7C858 /* RNUncontrolledDatePickerIOS */,
@@ -931,7 +931,7 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FADE935A27D2156600C2D8E6 /* bluenet-lib */,
+				FAEEF10B281BDC1900868171 /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -1057,7 +1057,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FAB44CA2276A28BD00E36078 /* BluenetLib */,
+				FAEEF10C281BDC8E00868171 /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1337,14 +1337,6 @@
 			remoteRef = FA274EB52410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA274EB82410144F00D7C858 /* ReactNativeNavigation */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = ReactNativeNavigation;
-			path = libReactNativeNavigation.a;
-			remoteRef = FA274EB72410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274EBA2410144F00D7C858 /* RNCAsyncStorage */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1415,14 +1407,6 @@
 			name = fmt;
 			path = libfmt.a;
 			remoteRef = FA39A4942743C7AE00A63C79 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FA39A4972743C7AE00A63C79 /* HMSegmentedControl */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = HMSegmentedControl;
-			path = libHMSegmentedControl.a;
-			remoteRef = FA39A4962743C7AE00A63C79 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA39A4992743C7AE00A63C79 /* React-logger */ = {
@@ -1527,6 +1511,22 @@
 			name = "react-native-image-picker";
 			path = "libreact-native-image-picker.a";
 			remoteRef = FAE05691243765B0003BE780 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAEEF108281BDBF400868171 /* react-native-safe-area-context */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "react-native-safe-area-context";
+			path = "libreact-native-safe-area-context.a";
+			remoteRef = FAEEF107281BDBF400868171 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAEEF10A281BDBF400868171 /* RNScreens */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNScreens;
+			path = libRNScreens.a;
+			remoteRef = FAEEF109281BDBF400868171 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -2152,7 +2152,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2207,7 +2207,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2542,7 +2542,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = BluenetLib;
 		};
-		FAB44CA2276A28BD00E36078 /* BluenetLib */ = {
+		FAEEF10C281BDC8E00868171 /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BluenetLib;
 		};

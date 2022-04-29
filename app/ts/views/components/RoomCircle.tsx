@@ -15,16 +15,13 @@ import {
 import { styles, colors } from '../styles'
 import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-
-
-import {IconCircle} from "./IconCircle";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
+import {Navigation} from "../RootNavigation";
 
 
 
@@ -53,6 +50,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   touchTimeout = null;
   touchAnimation = null;
   disableTouch = false;
+
+  cleanupRequired = false;
 
   constructor(props) {
     super(props);
@@ -117,7 +116,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     });
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
-      this.handleTouchReleased();
+      this.cleanupRequired = false;
     }));
 
 
@@ -127,6 +126,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
+      this.handleTouchReleased();
       this.disableTouch = false;
     }));
 
@@ -143,8 +143,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     cancelAnimationFrame(this.touchAnimation);
     this.unsubscribeStoreEvents();
   }
-
-
 
 
   _getColor() {
@@ -218,7 +216,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     return (
       <TouchableOpacity
-        onPressIn={(e)  => { this.props.touch(); this.handleTouch(); }}
+        onPressIn={(e)   => { this.props.touch(); this.handleTouch(); }}
+        onPressOut={(e)  => { if (this.cleanupRequired) { this.handleTouchReleased() }}}
         onPress={() => { this.handleTap() }}
         activeOpacity={1.0}
       >
@@ -243,14 +242,17 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.state.opacity.stopAnimation();
 
     this.scaledUp = true;
+    this.cleanupRequired = true;
 
-    let tapAnimations = [];
-    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
-    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
-    Animated.parallel(tapAnimations).start();
+    if (this.props.allowTap) {
+      let tapAnimations = [];
+      tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
+      tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
+      Animated.parallel(tapAnimations).start();
 
-    this.touching = true;
-    this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+      this.touching = true;
+      this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+    }
   }
 
   _onHoldAnimation() {
@@ -290,15 +292,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   handleTouchReleased() {
     if (this.scaledUp) {
       // stop any animation this node was doing.
-      this.state.scale.stopAnimation();
-      this.state.opacity.stopAnimation();
-
-      this.scaledUp = false;
-
-      let revertAnimations = [];
-      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
-      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
-      Animated.parallel(revertAnimations).start();
+      this.revertSize();
     }
 
     this._clearHold();
@@ -306,24 +300,25 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
   handleDragging() {
     // stop any animation this node was doing.
+    this.revertSize();
+
+    this._clearHold();
+  }
+
+  revertSize() {
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
-
-    this.scaledUp = false;
 
     let revertAnimations = [];
     revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, useNativeDriver: false, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
-    Animated.parallel(revertAnimations).start();
-
-    this._clearHold();
+    Animated.parallel(revertAnimations).start(() => {this.scaledUp = false;});
   }
 
   handleTap() {
     if (!this.props.allowTap) { return; }
 
     this.scaledUp = false;
-    let handled = false;
 
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();

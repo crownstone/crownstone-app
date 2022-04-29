@@ -27,7 +27,7 @@ export class AnimatedBackground extends Component<{
   hideOrangeLine?:           boolean,
   orangeLineAboveStatusBar?: boolean,
   hasNavBar?:                boolean,
-  darkStatusBar?:            boolean,
+  lightStatusbar?:           boolean,
 
   duration?:          number,
   dimStatusBar?:      boolean,
@@ -93,7 +93,7 @@ export class AnimatedBackground extends Component<{
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar translucent={false} barStyle={"dark-content"} />
+        <StatusBar translucent={false} barStyle={this.props.lightStatusbar ? 'light-content' : "dark-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>

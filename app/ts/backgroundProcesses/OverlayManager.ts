@@ -38,7 +38,7 @@ class OverlayManagerClass {
       core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
       core.eventBus.on('showLockOverlay',      (data) => { NavigationUtil.showOverlay('LockOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
-      core.eventBus.on('showLoading',          (data) => { console.log("HERE"); this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
+      core.eventBus.on('showLoading',          (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('hideLoading',          () => {     this.loadingState = false; })
       core.eventBus.on('showProgress',         (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('showCustomOverlay',    (data) => { NavigationUtil.showOverlay('SimpleOverlay', {data: data}); })

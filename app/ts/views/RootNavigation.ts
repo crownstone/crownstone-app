@@ -2,9 +2,15 @@
 
 import { createNavigationContainerRef } from '@react-navigation/native';
 
-export const navigationRef = createNavigationContainerRef()
+export const navigationRef       = createNavigationContainerRef();
+export const tabBarNavigationContainer = {navigator: null};
+export const drawerNavigationContainer = {navigator: null};
 
 export const Navigation = {
+  root: navigationRef,
+  tab: tabBarNavigationContainer,
+  drawer: drawerNavigationContainer,
+
 
   navigate(name: string, params?: any) {
     if (navigationRef.isReady()) {
@@ -24,7 +30,22 @@ export const Navigation = {
 
   popTo(target) {
     Navigation.navigate(target)
-  }
+  },
 
+  openDrawer() {
+    drawerNavigationContainer.navigator.openDrawer();
+    drawerNavigationContainer.navigator.setOptions({ swipeEnabled: true });
+  },
+
+  closeDrawer(onlyDisableSwipe = false) {
+    if (!onlyDisableSwipe) {
+      drawerNavigationContainer.navigator.closeDrawer();
+    }
+    drawerNavigationContainer.navigator.setOptions({ swipeEnabled: false });
+  },
+
+  setTabBarOptions(options) {
+    tabBarNavigationContainer.navigator.setOptions(options);
+  }
 }
 

@@ -488,7 +488,8 @@ export const DataUtil = {
     return items;
   },
 
-  getLayoutDataRooms: function(state, sphereId) {
+  getLayoutDataRooms: function(sphereId) {
+    let state = core.store.getState();
     let initialPositions = {};
     let sphere = state.spheres[sphereId];
     let rooms = sphere.locations;

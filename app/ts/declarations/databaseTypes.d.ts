@@ -3,7 +3,7 @@ type locationId   = string;
 type stoneId      = string;
 type sceneId      = string;
 type sphereUserId = string;
-
+type databaseId   = string;
 
 interface SyncEvent {
   id: string,
@@ -328,9 +328,83 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'UPDATE_SPHERE_USER'                      |
                       'SPHERE_USER_REPAIR_PICTURE'              |
                       'REFRESH_DEFAULTS'                        |
-                      'REMOVE_SPHERE_USER'                      
-  
+                      'REMOVE_SPHERE_USER'
 
 
+
+interface AffectedIds {
+  locationIds: Record<databaseId, true>,
+  sphereIds:   Record<databaseId, true>,
+  stoneIds:    Record<databaseId, true>,
+  messageIds:  Record<databaseId, true>,
+  toonIds:     Record<databaseId, true>,
+  hubIds:      Record<databaseId, true>,
+  id:          Record<databaseId, true>
+}
+
+type DatabaseEventType = 'updateActiveSphere' |
+  'updateAppState'                  |
+  'userPositionUpdate'              |
+  'changeUsers'                     |
+  'changeFingerprint'               |
+  'addLocation'                     |
+  'changeLocations'                 |
+  'updateLocationConfig'            |
+  'removeLocation'                  |
+  'changeLocationPositions'         |
+  'changeSphereState'               |
+  'changeSphereSmartHomeState'      |
+  'addSphere'                       |
+  'changeSpheres'                   |
+  'changeSphereConfig'              |
+  'removeSphere'                    |
+  'addSphereUser'                   |
+  'changeSphereUsers'               |
+  'updateSphereUser'                |
+  'removeSphereUser'                |
+  'changeSphereUserPresence'        |
+  'changeStoneHandle'               |
+  'addStone'                        |
+  'changeStones'                    |
+  'updateStoneIdentificationConfig' |
+  'updateStoneCoreConfig'           |
+  'updateStoneConfig'               |
+  'stoneLocationUpdated'            |
+  'updateStoneSwitchState'          |
+  'updateStoneState'                |
+  'powerUsageUpdated'               |
+  'stoneUsageUpdated'               |
+  'removeStone'                     |
+  'userLogin'                       |
+  'changeUserData'                  |
+  'changeUserDeveloperStatus'       |
+  'changeDeveloperData'             |
+  'changeDeviceData'                |
+  'changeMessageState'              |
+  'addedMessage'                    |
+  'changeMessage'                   |
+  'iChangedMessage'                 |
+  'changeScenes'                    |
+  'updateScene'                     |
+  'changeAppSettings'               |
+  'updatedToon'                     |
+  'updatedCloudIds'                 |
+  'stoneUsageUpdatedTransient'      |
+  'updatedSphereKeys'               |
+  'stoneChangeBehaviours'           |
+  'stoneChangeAbilities'            |
+  'stoneSyncedAbilities'            |
+  'firmwareVersionsAvailable'       |
+  'newTrackingNumberSet'            |
+  'deviceTrackingTokenCycled'       |
+  'deviceTrackingTokenTried'        |
+  'hubLocationUpdated'              |
+  'updateHubConfig'                 |
+  'changeHubs'                      |
+  'totalAffectedIds'
+
+type DatabaseChangeEventData = {
+  [key in DatabaseEventType]?: AffectedIds;
+};
 
 

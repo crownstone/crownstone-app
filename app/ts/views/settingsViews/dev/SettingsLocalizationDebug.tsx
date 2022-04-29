@@ -188,7 +188,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
       return <View style={{flex: 1}} ><Text>{ "You have to be in a Sphere" }</Text></View>;
     }
     else {
-      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);
+      let roomData = Util.data.getLayoutDataRooms(sphereId);
       return (
         <BackgroundNoNotification image={require('../../../../assets/images/backgrounds/blueprintBackgroundDesaturated_noLine.jpg')}>
           <View style={{

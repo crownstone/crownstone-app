@@ -144,7 +144,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
       let activeSphere = core.store.getState().spheres[this.props.sphereId];
       this.viewingRemotely = !activeSphere.state.present;
 
-      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
+      let roomData = Util.data.getLayoutDataRooms(this.props.sphereId);
       return (
         <Background image={require('../../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')} hasNavBar={false} testID={'SphereRoomArranger'}>
           <ForceDirectedView

@@ -38,7 +38,6 @@ export class Initializer extends Component<any, any> {
         core.eventBus.emit("userLoggedInFinished");
       }
 
-
       if (BackgroundProcessHandler.userLoggedInReady) {
         this.props.setAppState(true, true);
       }

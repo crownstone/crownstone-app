@@ -352,6 +352,7 @@ lang("_Indoor_localization_is_c_body"),
   render() {
     const store = core.store;
     const state = store.getState();
+    console.log(this.props)
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = sphere.locations[this.props.locationId];

@@ -107,8 +107,8 @@ export class SphereLevel extends LiveComponent<any, any> {
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
           testID={"SphereOverview_SphereLevel"}
         />
-        <View style={{position:'absolute', top:0}}>
-          <Text style={styles.viewHeader}>{"Select a sphere:"}</Text>
+        <View style={{position:'absolute', top:0, left:18}}>
+          <Text style={styles.viewHeaderLight}>{"Where to go?"}</Text>
         </View>
       </View>
     );

@@ -1,10 +1,14 @@
 // In App.js in a new project
 
 import * as React from 'react';
-import { View, Text, TouchableOpacity } from "react-native";
+import { Image, View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { navigationRef } from "./RootNavigation";
+import {
+  drawerNavigationContainer,
+  navigationRef,
+  tabBarNavigationContainer,
+} from "./RootNavigation";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Component } from "react";
 import { Bluenet } from "../native/libInterface/Bluenet";
@@ -133,13 +137,17 @@ import { LocalizationMenu }                   from "./main/localization/Localiza
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 import { core } from "../Core";
+import {createDrawerNavigator} from "@react-navigation/drawer";
+import {colors} from "./styles";
+import {Languages} from "../Languages";
 
 
 function HomeScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <TouchableOpacity onPress={() => {
-        core.eventBus.emit("showLoading","Test")
+        core.eventBus.emit("showLoading","Test");
+        setTimeout(() => { core.eventBus.emit("hideLoading")}, 1000)
       }}><Text>Home Screen</Text>
       </TouchableOpacity>
     </View>
@@ -171,8 +179,10 @@ function OverlaysScreen() {
 }
 
 
-const Stack = createNativeStackNavigator();
-const Tabs  = createBottomTabNavigator();
+const SubStack  = createNativeStackNavigator();
+const Stack  = createNativeStackNavigator();
+const Tab    = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 export class App extends Component<any, any> {
 
@@ -236,12 +246,94 @@ function Permissions(setAppState) {
 function LoggedIn(setAppState) {
   return (
     <React.Fragment>
-      <Stack.Group>
-        <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:false}} />
-      </Stack.Group>
+      <Stack.Screen name="TabNavigator" options={{headerShown: false}}>
+        { props => <TabNavigator {...props} setAppState={setAppState} />}
+      </Stack.Screen>
       { Modals() }
     </React.Fragment>
   );
+}
+
+function TabNavigator(props) {
+  return (
+    <Tab.Navigator
+      screenOptions={{headerShown:false, tabBarActiveTintColor: colors.blue.hex, tabBarInactiveTintColor: colors.csBlue.hex}}>
+      <Tab.Screen name="SphereOverviewTab"
+                  options={{
+                    tabBarStyle:{position:"absolute", backgroundColor:'transparent', borderTopColor: 'transparent'},
+                    tabBarLabel: Languages.get("Tabs","Overview")(),
+                    tabBarIcon: ({focused, color, size}) => { return <Image source={require('../../assets/images/icons/house.png')} style={{tintColor:color}} /> }
+                  }}
+      >
+        {tabBarProps => { tabBarNavigationContainer.navigator = tabBarProps.navigation; return <SphereOverviewTab {...tabBarProps} /> }}
+      </Tab.Screen>
+      <Tab.Screen name="ScenesTab"
+                  component={ScenesTab}
+                  options={{
+                    tabBarLabel: Languages.get("Tabs","Scenes")(),
+                    tabBarIcon: ({focused, color, size}) => { return <Image source={require('../../assets/images/icons/scenes.png')} style={{tintColor:color}} /> }
+                  }}/>
+      <Tab.Screen name="MessagesTab"
+                  component={MessagesTab}
+                  options={{
+                    tabBarLabel: Languages.get("Tabs","Messages")(),
+                    tabBarIcon: ({focused, color, size}) => { return <Image source={require('../../assets/images/icons/mail.png')} style={{tintColor:color}} /> }
+                  }}/>
+      <Tab.Screen name="SettingsTab"
+                  component={SettingsTab}
+                  options={{
+                    tabBarLabel: Languages.get("Tabs","Settings")(),
+                    tabBarIcon: ({focused, color, size}) => { return <Image source={require('../../assets/images/icons/cog.png')} style={{tintColor:color}} /> }
+                  }}/>
+    </Tab.Navigator>
+  );
+}
+
+function SphereOverviewTab(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="DrawerNavigator" options={{headerShown: false}}>
+        { props => <SphereOverviewDrawer {...props} />}
+      </Stack.Screen>
+      <Stack.Screen name="RoomOverview" component={RoomOverview} />
+    </Stack.Navigator>
+  )
+}
+
+function SphereOverviewDrawer(props) {
+  return (
+    <Drawer.Navigator
+      initialRouteName="SphereOverview"
+      drawerContent={(props) => <SphereOverviewSideBar {...props} />}
+      screenOptions={{swipeEnabled:false, overlayColor:'transparent'}}
+    >
+      <Drawer.Screen name="SphereOverview" options={{headerShown: false}}>
+        { drawerProps => { drawerNavigationContainer.navigator = drawerProps.navigation; return <SphereOverview {...drawerProps} /> }}
+      </Drawer.Screen>
+    </Drawer.Navigator>
+  );
+}
+
+function SettingsTab(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="SettingsOverview" component={SettingsOverview} />
+    </Stack.Navigator>
+  )
+}
+function ScenesTab(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ScenesOverview" component={ScenesOverview} />
+    </Stack.Navigator>
+  )
+}
+function MessagesTab(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="MessageInbox" component={MessageInbox} />
+    </Stack.Navigator>
+  )
 }
 
 function Modals() {
@@ -251,7 +343,6 @@ function Modals() {
     </Stack.Group>
   );
 }
-
 
 function Overlays() {
   return (
@@ -279,3 +370,4 @@ function Overlays() {
     </Stack.Group>
   );
 }
+

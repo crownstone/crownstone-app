@@ -7,7 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  SafeAreaView,
   Text, View
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
@@ -41,7 +40,8 @@ import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphere
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { DebugToolsButton }         from "./buttons/DebugToolsButton";
 import { LocalizationButton }       from "./buttons/LocalizationButton";
-import { SideBarWrapper }           from "../components/animated/SideBarWrapper";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Navigation} from "../RootNavigation";
 
 
 const ZOOM_LEVELS = {
@@ -71,17 +71,18 @@ export class SphereOverview extends LiveComponent<any, any> {
     this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false, arrangingRooms: false };
     this.viewId = xUtil.getUUID();
     ActiveSphereManager.updateActiveSphere();
+
   }
 
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit') {
-      let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
-      NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
-    }
-    if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
-    if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
-    if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
-  }
+  // navigationButtonPressed({ buttonId }) {
+  //   if (buttonId === 'edit') {
+  //     let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
+  //     NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
+  //   }
+  //   if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
+  //   if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
+  //   if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
+  // }
 
   componentDidMount() {
     // watch for setup stones
@@ -90,7 +91,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
-    this.unsubscribeEvents.push(core.eventBus.on("VIEW_SPHERES", () => { this.setState({zoomLevel: ZOOM_LEVELS.sphere}); }));
+    this.unsubscribeEvents.push(core.eventBus.on("VIEW_SPHERES", this._zoomOut));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -126,6 +127,9 @@ export class SphereOverview extends LiveComponent<any, any> {
         this._updateNavBar();
       }
     });
+
+    core.eventBus.emit("showLoading", 'test');
+    setTimeout(() => { core.eventBus.emit("hideLoading")}, 1000)
   }
 
   componentWillUnmount() {
@@ -143,67 +147,91 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
-  _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
-    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
-      if (amountOfSpheres > 1) {
-        return <SphereChangeButton visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
-          let newState = {zoomLevel: ZOOM_LEVELS.sphere};
+  // _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
+  //   if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+  //     if (amountOfSpheres > 1) {
+  //       return <SphereChangeButton visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
+  //         let newState = {zoomLevel: ZOOM_LEVELS.sphere};
+  //
+  //         if (state.app.hasZoomedOutForSphereOverview === false) {
+  //           this._getInstructionScreen();
+  //         }
+  //
+  //         this.setState(newState, () => { this._updateNavBar(); })
+  //       }}/>
+  //     }
+  //   }
+  // }
+  //
+  //
+  // _getAddButtonDescription(activeSphereId, noCrownstonesYet: boolean) {
+  //   if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+  //     return <AddCrownstoneButtonDescription visible={
+  //       noCrownstonesYet && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false
+  //     } />;
+  //   }
+  // }
 
-          if (state.app.hasZoomedOutForSphereOverview === false) {
-            this._getInstructionScreen();
-          }
+  _zoomIn = () => {
+    const state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
 
-          this.setState(newState, () => { this._updateNavBar(); })
-        }}/>
+    if (!activeSphereId) { return; }
+
+    Navigation.setTabBarOptions({
+      tabBarActiveTintColor: colors.blue.hex,
+      tabBarInactiveTintColor: colors.csBlue.hex
+    })
+    if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+      this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
+    }
+  }
+
+  _zoomOut = () => {
+    const state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let amountOfSpheres = Object.keys(state.spheres).length;
+
+    if (!activeSphereId) { return; }
+    if (this.state.arrangingRooms === true) { return; }
+
+    if (amountOfSpheres > 1) {
+      if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+        // tell the app the user has done this and we don't need to tell him any more.
+        if (state.app.hasZoomedOutForSphereOverview === false) {
+          core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
+        }
+        Navigation.setTabBarOptions({
+          tabBarActiveTintColor: colors.csOrange.hex,
+          tabBarInactiveTintColor: colors.white.hex
+        });
+        this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
+      }
+      else { // this is for convenience, it's not accurate but it'll do
+        this._zoomIn()
       }
     }
   }
 
 
-  _getAddButtonDescription(activeSphereId, noCrownstonesYet: boolean) {
-    if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-      return <AddCrownstoneButtonDescription visible={
-        noCrownstonesYet && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false
-      } />;
-    }
-  }
-
-
-  _getContent(state, amountOfSpheres, activeSphereId) {
-    let zoomOutCallback = () => {
-      if (!activeSphereId) { return; }
-      if (this.state.arrangingRooms === true) { return; }
-
-      if (amountOfSpheres > 1) {
-        if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-          // tell the app the user has done this and we don't need to tell him any more.
-          if (state.app.hasZoomedOutForSphereOverview === false) {
-            core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
-          }
-          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
-        }
-        else { // this is for convenience, it's not accurate but it'll do
-          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
-        }
-      }
-    };
-
-    let zoomInCallback = () => {
-      if (!activeSphereId) { return; }
-
-      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
-      }
-    };
-
+  _getContent(activeSphereId) {
     let setRearrangeRooms = (value) => {
       if (value === true) {
         BackButtonHandler.override(this.props.componentId, () => {
           core.eventBus.emit("reset_positions" + this.viewId);
-        })
+        });
+        Navigation.setTabBarOptions({
+          tabBarActiveTintColor: colors.csOrange.hex,
+          tabBarInactiveTintColor: colors.white.hex
+        });
+
       }
       else {
-        BackButtonHandler.clearOverride(this.props.componentId)
+        BackButtonHandler.clearOverride(this.props.componentId);
+        Navigation.setTabBarOptions({
+          tabBarActiveTintColor: colors.blue.hex,
+          tabBarInactiveTintColor: colors.csBlue.hex
+        })
       }
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
     };
@@ -213,8 +241,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         <Sphere
           viewId={this.viewId}
           sphereId={activeSphereId}
-          multipleSpheres={amountOfSpheres > 1}
-          zoomOutCallback={zoomOutCallback}
+          zoomOutCallback={this._zoomOut}
           setRearrangeRooms={setRearrangeRooms}
           arrangingRooms={this.state.arrangingRooms}
         />
@@ -228,10 +255,10 @@ export class SphereOverview extends LiveComponent<any, any> {
 
             // request latest location data.
             CLOUD.syncUsers();
-            this.setState({zoomLevel:ZOOM_LEVELS.room}, () => {  this._updateNavBar(); });
+            this._zoomIn();
           }}
-          zoomInCallback={zoomInCallback}
-          zoomOutCallback={zoomOutCallback}
+          zoomInCallback={this._zoomIn}
+          zoomOutCallback={this._zoomOut}
         />
       );
     }
@@ -243,7 +270,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 
   render() {
     const state = core.store.getState();
-
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
     let backgroundOverride = background.main;
@@ -253,7 +279,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       if (!activeSphereId) {
         return (
           <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
-            { this._getContent(state, amountOfSpheres, activeSphereId) }
+            { this._getContent(activeSphereId) }
           </AnimatedBackground>
         );
       }
@@ -267,7 +293,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         SPHERE_ID_STORE.activeSphereId = null;
-        // backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
+        backgroundOverride = require("../../../assets/images/backgrounds/darkBackground3.jpg");
       }
       else {
         // handle the case where there are no rooms added:
@@ -290,22 +316,16 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          backgroundOverride = require('../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')
+          backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
         }
       }
 
       SPHERE_ID_STORE.activeSphereId = activeSphereId;
 
-      // return (
-      //   <SideBarWrapper>
-      //
-      //   </SideBarWrapper>
-      // );
-
-
       return (
         <AnimatedBackground
           image={backgroundOverride}
+          lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
           hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}
           hideOrangeLine
           hasTopBar={false}
@@ -314,7 +334,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           <SafeAreaView style={{flexGrow:1}}>
             <View style={{flex:1}}>
               {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
-              { this._getContent(state, amountOfSpheres, activeSphereId) }
+              { this._getContent(activeSphereId) }
               {/*{ this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }*/}
               {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
               {/*<AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />*/}

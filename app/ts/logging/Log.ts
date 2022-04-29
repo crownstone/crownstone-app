@@ -32,8 +32,6 @@ class Logger {
 
   queue = [];
 
-  blocked = false;
-
   constructor(level) {
     this.level = level;
     switch(this.level) {

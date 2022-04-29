@@ -22,7 +22,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
-
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 
 
@@ -83,95 +84,102 @@ export class StatusCommunication extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = core.store;
-    const state = store.getState();
+    return <StatusCommunicationRender {...this.props} />
+  }
+}
 
-    let currentSphereId = this.props.sphereId;
+function StatusCommunicationRender(props) {
+  let tabBarHeight = useBottomTabBarHeight();
+  let insets       = useSafeAreaInsets();
 
-    // it can happen on deletion of spheres that the app will crash here.
-    if (!(state && state.spheres && state.spheres[currentSphereId])) {
-      return <View />;
-    }
+  const store = core.store;
+  const state = store.getState();
 
-    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(currentSphereId);
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
-    let requiresFingerprints = requireMoreFingerprints(currentSphereId);
-    let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
+  let currentSphereId = props.sphereId;
 
-    let generalStyle : TextStyle = {
-      position:'absolute',
-      bottom: 0,
-      justifyContent: 'center',
-      alignItems: 'center',
-      opacity: this.props.opacity || 1,
-      left: addButtonShown ? (0.11 * screenWidth) + 5: 0,   // 0.11*screenwidth is the width of the add icon
-      width: addButtonShown ? (1 - (0.11 * 2)) * screenWidth - 10 : screenWidth,
-      height: 50,
-      overflow: 'hidden',
-      flexDirection:'column',
-    };
-
-    if (this.props.viewingRemotely === true) {
-      return (
-        <View style={generalStyle} pointerEvents={'none'}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
-        </View>
-      );
-    }
-    else if (this.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
-      return (
-        <View style={generalStyle} pointerEvents={'none'}>
-          <View style={inRangeStyle}>
-            <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisibleCrownstones) }</Text>
-            <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          </View>
-          <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
-        </View>
-      )
-    }
-    else if (this.amountOfVisibleCrownstones > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
-      return (
-        <View style={generalStyle} pointerEvents={'none'}>
-          <View style={inRangeStyle}>
-            <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisibleCrownstones) }</Text>
-            <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          </View>
-          <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
-        </View>
-      )
-    }
-    else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
-      return (
-        <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_all_rooms_have_been_t") }</Text>
-        </View>
-      )
-    }
-    else if (!enoughForLocalizationInLocations && enoughForLocalization) {
-      return (
-        <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_enough_Crownstones_pl") }</Text>
-        </View>
-      )
-    }
-    else if (this.amountOfVisibleCrownstones > 0) {
-      return (
-        <View style={[generalStyle, {flexDirection:'row'}]} pointerEvents={'none'} >
-          <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisibleCrownstones) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
-        </View>
-      )
-    }
-    else { //if (this.amountOfVisibleCrownstones === 0) {
-      return (
-        <View style={generalStyle} pointerEvents={'none'}>
-          <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
-        </View>
-      )
-    }
+  // it can happen on deletion of spheres that the app will crash here.
+  if (!(state && state.spheres && state.spheres[currentSphereId])) {
+    return <View />;
   }
 
+  let enoughForLocalization = enoughCrownstonesForIndoorLocalization(currentSphereId);
+  let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
+  let requiresFingerprints = requireMoreFingerprints(currentSphereId);
+  let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
+
+  let generalStyle : TextStyle = {
+    position:'absolute',
+    bottom: tabBarHeight - insets.bottom,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: props.opacity || 1,
+    left: addButtonShown ? (0.11 * screenWidth) + 5: 0,   // 0.11*screenwidth is the width of the add icon
+    width: addButtonShown ? (1 - (0.11 * 2)) * screenWidth - 10 : screenWidth,
+    height: 50,
+    overflow: 'hidden',
+    flexDirection:'column',
+  };
+
+  if (props.viewingRemotely === true) {
+    return (
+      <View style={generalStyle} pointerEvents={'none'}>
+        <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
+      </View>
+    );
+  }
+  else if (this.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    return (
+      <View style={generalStyle} pointerEvents={'none'}>
+        <View style={inRangeStyle}>
+          <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisibleCrownstones) }</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        </View>
+        <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
+      </View>
+    )
+  }
+  else if (this.amountOfVisibleCrownstones > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    return (
+      <View style={generalStyle} pointerEvents={'none'}>
+        <View style={inRangeStyle}>
+          <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisibleCrownstones) }</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        </View>
+        <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
+      </View>
+    )
+  }
+  else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    return (
+      <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
+        <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_all_rooms_have_been_t") }</Text>
+      </View>
+    )
+  }
+  else if (!enoughForLocalizationInLocations && enoughForLocalization) {
+    return (
+      <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
+        <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_enough_Crownstones_pl") }</Text>
+      </View>
+    )
+  }
+  else if (this.amountOfVisibleCrownstones > 0) {
+    return (
+      <View style={[generalStyle, {flexDirection:'row'}]} pointerEvents={'none'} >
+        <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisibleCrownstones) }</Text>
+        <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+      </View>
+    )
+  }
+  else { //if (this.amountOfVisibleCrownstones === 0) {
+    return (
+      <View style={generalStyle} pointerEvents={'none'}>
+        <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
+      </View>
+    )
+  }
 }
+
 
 let inRangeStyle : TextStyle = {
   flexDirection:'row',

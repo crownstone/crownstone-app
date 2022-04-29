@@ -100,7 +100,7 @@ const BluenetAPI = {
 
   isPeripheralReady:           () => { console.log("BluenetBridgeCall: isPeripheralReady"); },
   setSwitchState:              () => { console.log("BluenetBridgeCall: setSwitchState"); },
-  isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); },
+  isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); return true; },
   clearErrors:                 () => { console.log("BluenetBridgeCall: clearErrors"); },
   broadcastSwitch:             () => { console.log("BluenetBridgeCall: broadcastSwitch"); },
   addBehaviour:                () => { console.log("BluenetBridgeCall: addBehaviour"); },
