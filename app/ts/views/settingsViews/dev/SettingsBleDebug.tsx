@@ -9,7 +9,7 @@ import { background, colors } from "../../styles";
 import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 

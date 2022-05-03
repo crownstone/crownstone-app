@@ -18,7 +18,7 @@ import { SceneCreateNewItem }     from "./supportComponents/SceneCreateNewItem";
 import { SceneIntroduction,
          ScenesWithoutSpheres }   from "./supportComponents/SceneIntroduction";
 import { SceneItem }              from "./supportComponents/SceneItem";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { ScaledImage } from "../components/ScaledImage";
 import { RoundedBackground } from "../components/RoundedBackground";

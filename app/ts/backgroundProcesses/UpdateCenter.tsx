@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { core } from "../Core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
 import { DfuUtil } from "../util/DfuUtil";
 import { LOG } from "../logging/Log";
 import { Permissions } from "./PermissionManager";

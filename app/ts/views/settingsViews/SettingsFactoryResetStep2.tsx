@@ -11,7 +11,7 @@ import {LOG, LOGe} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {tell} from "../../logic/constellation/Tellers";

@@ -22,7 +22,7 @@ import {getRandomRoomIcon} from "./RoomIconSelection";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
 import { Get } from "../../util/GetUtil";

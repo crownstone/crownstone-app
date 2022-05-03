@@ -16,7 +16,7 @@ import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight, statusBarHeight } from "../styles";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 export class ListOverlay extends LiveComponent<any, any> {
   customContent : () => Component;

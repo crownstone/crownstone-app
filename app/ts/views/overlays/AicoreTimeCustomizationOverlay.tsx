@@ -12,7 +12,7 @@ import { core } from "../../Core";
 import { ScaledImage } from "../components/ScaledImage";
 import { AicoreTimeCustomization } from "../deviceViews/smartBehaviour/supportComponents/AicoreTimeCustomization";
 import { xUtil } from "../../util/StandAloneUtil";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {View} from "react-native";
 
 export class AicoreTimeCustomizationOverlay extends Component<any, any> {

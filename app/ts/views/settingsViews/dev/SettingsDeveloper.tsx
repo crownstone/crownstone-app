@@ -11,7 +11,7 @@ import { background, colors, screenWidth } from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../Core";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Scheduler } from "../../../logic/Scheduler";
 import { Util } from "../../../util/Util";

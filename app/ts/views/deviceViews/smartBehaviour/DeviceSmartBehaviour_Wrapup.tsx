@@ -18,7 +18,7 @@ import {
 } from "../../styles";
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import {
   LargeDeleteWeekdayElement,
   WeekDayListLarge

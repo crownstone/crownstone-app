@@ -20,7 +20,7 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 

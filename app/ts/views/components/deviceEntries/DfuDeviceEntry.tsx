@@ -17,7 +17,7 @@ import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
 import { tell } from "../../../logic/constellation/Tellers";
 

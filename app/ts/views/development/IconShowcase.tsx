@@ -10,7 +10,7 @@ import { background, colors, screenWidth } from "../styles";
 import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
 import {iconCorrections} from "../../fonts/iconCorrections";
 import {DebugIconSelection} from "./DebugIconSelection";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import {

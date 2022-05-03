@@ -19,7 +19,7 @@ import { Background } from "../components/Background";
 import { FadeIn } from "../components/animated/FadeInView";
 import KeepAwake from 'react-native-keep-awake';
 import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";

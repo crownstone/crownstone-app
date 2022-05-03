@@ -22,7 +22,7 @@ import { background, colors, screenWidth } from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";

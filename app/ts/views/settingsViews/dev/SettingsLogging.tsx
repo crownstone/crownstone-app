@@ -10,7 +10,7 @@ import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import {clearLogs, getAppLogFileData} from "../../../logging/LogUtil";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
 import Share from "react-native-share";

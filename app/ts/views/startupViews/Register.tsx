@@ -11,7 +11,7 @@ import {emailChecker, getImageFileFromUser, processImage} from "../../util/Util"
 import {background, colors, screenHeight, screenWidth, styles} from "../styles";
 
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Interview} from "../components/Interview";
 import {AnimatedBackground} from "../components/animated/AnimatedBackground";
 import {TopbarImitation} from "../components/TopbarImitation";

@@ -14,7 +14,7 @@ import MapView, { Marker } from "react-native-maps";
 import { Util } from "../../../util/Util";
 import { BehaviourSubmitButton } from "../../deviceViews/smartBehaviour/supportComponents/BehaviourSubmitButton";
 import { ActivityIndicator, TouchableOpacity, View, ViewStyle } from "react-native";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Icon } from "../../components/Icon";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 

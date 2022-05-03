@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SceneSelectCrownstones", key)(a,b,c,d,e);
 }
 import { LiveComponent } from "../LiveComponent";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Alert, Platform, View } from "react-native";
 import { availableModalHeight, colors } from "../styles";
 import { Interview } from "../components/Interview";

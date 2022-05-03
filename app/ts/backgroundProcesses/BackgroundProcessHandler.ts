@@ -82,8 +82,6 @@ class BackgroundProcessHandlerClass {
   async start() {
     if (!this.started) {
 
-      OverlayManager.init();
-
       // get the launch arguments
       await this.parseLaunchArguments();
 

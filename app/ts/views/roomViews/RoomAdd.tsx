@@ -13,7 +13,7 @@ import {
 
 import { background, colors} from "../styles";
 
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { RoomAddCore } from "./RoomAddCore";
 import { Background } from "../components/Background";

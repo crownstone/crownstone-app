@@ -27,10 +27,11 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { Navigation } from "react-native-navigation";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -111,11 +112,11 @@ export class MessageInbox extends LiveComponent<any, any> {
     if (activeSphere) {
       let sphere = state.spheres[activeSphere];
       if (sphere.state.newMessageFound) {
-        // Navigation.mergeOptions(this.props.componentId, {
-        //   bottomTab: {
-        //     badge: '1'
-        //   }
-        // })
+        Navigation.mergeOptions(this.props.componentId, {
+          bottomTab: {
+            badge: '1'
+          }
+        });
       }
     }
   }
@@ -126,11 +127,11 @@ export class MessageInbox extends LiveComponent<any, any> {
     if (activeSphere) {
       MessageCenter.newMessageStateInSphere(activeSphere, false);
     }
-    // Navigation.mergeOptions(this.props.componentId, {
-    //   bottomTab: {
-    //     badge: ''
-    //   }
-    // });
+    Navigation.mergeOptions(this.props.componentId, {
+      bottomTab: {
+        badge: ''
+      }
+    });
   }
 
 

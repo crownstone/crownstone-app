@@ -22,7 +22,7 @@ import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { AnimatedScaledImage } from "../components/animated/AnimatedScaledImage";
 import { Icon } from "../components/Icon";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { STONE_TYPES } from "../../Enums";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";

@@ -14,7 +14,7 @@ import { core } from "../../Core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
 import { colors, screenHeight, screenWidth, styles } from "../styles";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";

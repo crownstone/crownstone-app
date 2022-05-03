@@ -19,7 +19,7 @@ import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 

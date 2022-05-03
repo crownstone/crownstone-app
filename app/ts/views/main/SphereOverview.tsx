@@ -25,7 +25,7 @@ import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
 import {ZoomInstructionOverlay, ZoomInstructionsFooter} from "./ZoomInstructionOverlay";
 import { core }                     from "../../Core";
-import { NavigationUtil }           from "../../util/NavigationUtil";
+import { NavigationUtil }           from "../../util/navigation/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
@@ -40,8 +40,10 @@ import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphere
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { DebugToolsButton }         from "./buttons/DebugToolsButton";
 import { LocalizationButton }       from "./buttons/LocalizationButton";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Navigation} from "../RootNavigation";
+import { SafeAreaView }             from "react-native-safe-area-context";
+import { Navigation }               from "react-native-navigation";
+import { SideBarView } from "../components/animated/SideBarView";
+import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 
 
 const ZOOM_LEVELS = {
@@ -56,6 +58,7 @@ export const SPHERE_ID_STORE = {
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
+    return {topBar:{visible:false}}
     // getTopBarProps(core.store.getState(), props, {});
     // return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
@@ -127,9 +130,6 @@ export class SphereOverview extends LiveComponent<any, any> {
         this._updateNavBar();
       }
     });
-
-    core.eventBus.emit("showLoading", 'test');
-    setTimeout(() => { core.eventBus.emit("hideLoading")}, 1000)
   }
 
   componentWillUnmount() {
@@ -178,10 +178,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     if (!activeSphereId) { return; }
 
-    Navigation.setTabBarOptions({
-      tabBarActiveTintColor: colors.blue.hex,
-      tabBarInactiveTintColor: colors.csBlue.hex
-    })
+    NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
     if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
       this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
     }
@@ -201,10 +198,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         if (state.app.hasZoomedOutForSphereOverview === false) {
           core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
         }
-        Navigation.setTabBarOptions({
-          tabBarActiveTintColor: colors.csOrange.hex,
-          tabBarInactiveTintColor: colors.white.hex
-        });
+        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
         this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
       }
       else { // this is for convenience, it's not accurate but it'll do
@@ -220,18 +214,12 @@ export class SphereOverview extends LiveComponent<any, any> {
         BackButtonHandler.override(this.props.componentId, () => {
           core.eventBus.emit("reset_positions" + this.viewId);
         });
-        Navigation.setTabBarOptions({
-          tabBarActiveTintColor: colors.csOrange.hex,
-          tabBarInactiveTintColor: colors.white.hex
-        });
+        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
 
       }
       else {
         BackButtonHandler.clearOverride(this.props.componentId);
-        Navigation.setTabBarOptions({
-          tabBarActiveTintColor: colors.blue.hex,
-          tabBarInactiveTintColor: colors.csBlue.hex
-        })
+        NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
       }
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
     };
@@ -268,7 +256,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
   }
 
-  render() {
+  getContent() {
     const state = core.store.getState();
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
@@ -316,7 +304,8 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
+          backgroundOverride = require('../../../assets/images/backgrounds/darkBackground3.jpg')
+          // backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
         }
       }
 
@@ -361,6 +350,16 @@ export class SphereOverview extends LiveComponent<any, any> {
         </AnimatedBackground>
       );
     }
+  }
+
+
+  render() {
+    return (
+      <SideBarView
+        content={this.getContent()}
+        sideMenu={<SphereOverviewSideBar />}
+      />
+    )
   }
 }
 

@@ -16,7 +16,7 @@ import { AnimatedLoadingBar } from '../components/animated/AnimatedLoadingBar'
 import { HiddenFadeInView }         from '../components/animated/FadeInView'
 import { styles, colors , screenHeight} from '../styles'
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
 import { LOGi } from "../../logging/Log";
 

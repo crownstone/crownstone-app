@@ -26,7 +26,7 @@ import {TopbarImitation} from "../components/TopbarImitation";
 import {Icon} from "../components/Icon";
 import {FileUtil} from "../../util/FileUtil";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {createNewSphere} from "../../util/CreateSphere";
 import {Stacks} from "../Stacks";
 import {base_core} from "../../Base_core";
@@ -469,7 +469,7 @@ export class Login extends Component<any, any> {
           state = core.store.getState();
           core.eventBus.emit('hideProgress');
 
-          this.props.setAppState(true, false);
+          NavigationUtil.setRoot(Stacks.permissions());
         }, 100);
       })
       .catch((err) => {

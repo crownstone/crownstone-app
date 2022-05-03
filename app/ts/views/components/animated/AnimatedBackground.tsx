@@ -20,6 +20,7 @@ import {
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
 export class AnimatedBackground extends Component<{
@@ -93,7 +94,7 @@ export class AnimatedBackground extends Component<{
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar translucent={false} barStyle={this.props.lightStatusbar ? 'light-content' : "dark-content"} />
+        <StatusBar translucent={true} barStyle={"dark-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>

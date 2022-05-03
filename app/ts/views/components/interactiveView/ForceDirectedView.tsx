@@ -829,14 +829,18 @@ export class ForceDirectedView extends Component<{
       <View
         ref={(v) => { this._viewRef = v; }}
         {...this._panResponder.panHandlers}
-        style={{flex:1, alignItems:'center', justifyContent:'center'}}
+        style={{
+          flex:1, alignItems:'center',
+          justifyContent:'center',
+          // backgroundColor:colors.red.rgba(0.2)
+        }}
         testID={this.props.testID}
       >
         <Animated.View
           style={
           [animatedStyle,
             {
-              // backgroundColor: colors.green.rgba(0.2),
+              // backgroundColor: colors.green.rgba(0.3),
               width:    this.viewWidth,
               height:   this.viewHeight,
               opacity:  this.state.opacity,

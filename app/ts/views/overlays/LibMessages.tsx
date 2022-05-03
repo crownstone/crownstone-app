@@ -14,7 +14,7 @@ import {
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import {colors, screenHeight, screenWidth, styles} from '../styles'
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 export class LibMessages extends Component<any, any> {
 

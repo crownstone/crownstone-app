@@ -1,6 +1,10 @@
 import {Languages} from "../../../../Languages"
 import React, {Component, useState} from 'react';
-import {Alert, Platform, Text, TextStyle, TimePickerAndroid, TouchableOpacity, View} from "react-native";
+import {Alert, Platform, Text, TextStyle, TouchableOpacity, View} from "react-native";
+// import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import {colors, screenWidth} from "../../../styles";
 import Slider from '@react-native-community/slider';
 
@@ -100,9 +104,6 @@ export class AicoreTimeCustomization extends Component<any,any> {
 }
 
 
-
-
-
 function TimePart(props : {
   finalLabel:string,
   initialLabel:string,
@@ -112,6 +113,7 @@ function TimePart(props : {
   visible: boolean,
   instantEdit: boolean,
 }) {
+  const [showTime, setShowTime] = useState(false);
   const [type, setType] = useState(props.timeObj.getType());
   const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
@@ -198,6 +200,18 @@ function TimePart(props : {
             : undefined
           );
           if (Platform.OS === 'android') {
+            let date = new Date();
+            date.setHours(time.hours);
+            date.setMinutes(time.minutes);
+            const onChange = (event, date) => {
+              let hours = date.getHours();
+              let minutes = date.getMinutes();
+
+              setTime({hours, minutes});
+              props.timeObj.setTime(hours, minutes);
+              setFinished(true);
+              props.setFinished(true);
+            }
             elements.push(
               <View key={"clockUI"}>
                 <FadeIn index={index++}>
@@ -207,21 +221,35 @@ function TimePart(props : {
                     padding:15,
                     alignItems:'flex-start'
                   }} onPress={() => {
-                      TimePickerAndroid.open({
-                        hour: time.hours,
-                        minute: time.minutes,
-                        is24Hour: true,
-                      })
-                        .then((data) => {
-                          if (data.action === 'timeSetAction') {
-                            setTime({hours:data.hour, minutes:data.minute});
-                            props.timeObj.setTime(data.hour, data.minute);
-                            setFinished(true);
-                            props.setFinished(true);
-                          }
-                        })
-                        .catch((err) => { LOGe.info("AicoreTimeCustomization: Could not pick time for android.", err?.message) })
+                    setShowTime(true);
+
+                      // let date = new Date();
+                      // date.setHours(time.hours);
+                      // date.setMinutes(time.minutes);
+                      // DateTimePickerAndroid.open({
+                      //   value: date,
+                      //   mode:'time',
+                      //   is24Hour: true,
+                      //   onChange: (event, date) => {
+                      //     let hours = date.getHours();
+                      //     let minutes = date.getMinutes();
+                      //
+                      //     setTime({hours, minutes});
+                      //     props.timeObj.setTime(hours, minutes);
+                      //     setFinished(true);
+                      //     props.setFinished(true);
+                      //   }
+                      // })
                   }}>
+                    { showTime &&
+                        <DateTimePicker
+                          testID="dateTimePicker"
+                          value={date}
+                          mode={'time'}
+                          is24Hour={true}
+                          onChange={onChange}
+                        />
+                      }
                     <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>{ lang("TAP_TIME_TO_CHANGE") }</Text>
                     <Text style={{fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6)}}>
                       { time.hours + ":" + (time.minutes < 10 ? '0' + time.minutes : time.minutes) }

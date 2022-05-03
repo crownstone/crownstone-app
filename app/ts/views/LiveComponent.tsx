@@ -1,7 +1,8 @@
 import * as React from 'react'; import { Component} from "react";
 import { AppState } from 'react-native';
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
 import { core } from "../Core";
+import { Navigation } from "react-native-navigation";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {
@@ -55,7 +56,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
 
     let buttonPress = this.navigationButtonPressed;
     if (props.componentId) {
-      // this.___navListener = Navigation.events().bindComponent(this);
+      this.___navListener = Navigation.events().bindComponent(this);
 
       this.navigationButtonPressed = (data) => {
         buttonPress.call(this,data);

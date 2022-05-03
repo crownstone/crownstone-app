@@ -22,7 +22,7 @@ import { core } from "../../../Core";
 import { Background } from "../../components/Background";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { SlideInView } from "../../components/animated/SlideInView";
 import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";

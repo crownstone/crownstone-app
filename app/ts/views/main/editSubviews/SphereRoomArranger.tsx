@@ -20,7 +20,7 @@ import { ForceDirectedView } from "../../components/interactiveView/ForceDirecte
 import { Background } from "../../components/Background";
 import { Util } from "../../../util/Util";
 import { Icon } from "../../components/Icon";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 

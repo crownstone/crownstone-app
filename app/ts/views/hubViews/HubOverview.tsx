@@ -10,7 +10,7 @@ import {TopBarUtil} from "../../util/TopBarUtil";
 import {availableScreenHeight, background, colors, deviceStyles, screenWidth, styles} from "../styles";
 import {ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View} from "react-native";
 import {Icon} from "../components/Icon";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {xUtil} from "../../util/StandAloneUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {AnimatedCircle} from "../components/animated/AnimatedCircle";
@@ -28,6 +28,7 @@ import {CLOUD} from "../../cloud/cloudAPI";
 // import { WebRtcClient } from "../../logic/WebRtcClient";
 import {DebugIcon} from "../components/DebugIcon";
 import {HubTransferNext} from "../../cloud/sections/newSync/transferrers/HubTransferNext";
+import { Navigation } from "react-native-navigation";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("HubOverview", key)(a,b,c,d,e);
@@ -104,7 +105,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {

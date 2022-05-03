@@ -19,7 +19,7 @@ import { background, colors } from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsFAQ extends Component<any, any> {

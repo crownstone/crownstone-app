@@ -1,5 +1,5 @@
 import { core } from "../Core";
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
 import { Alert } from "react-native";
 import { LOGe, LOGi } from "../logging/Log";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";

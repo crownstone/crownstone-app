@@ -4,6 +4,7 @@ import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButto
 import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
 import {statusBarHeight, topBarHeight} from "../views/styles";
+import { Navigation } from "react-native-navigation";
 
 interface topBarOptionConfig {
   backButton?:        boolean,
@@ -15,11 +16,11 @@ interface topBarOptionConfig {
 export const TopBarUtil = {
 
   updateOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    // Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
   },
 
   replaceOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    // Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
   },
 
   getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {

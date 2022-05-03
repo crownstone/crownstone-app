@@ -16,7 +16,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {OverlayUtil} from "../overlays/OverlayUtil";

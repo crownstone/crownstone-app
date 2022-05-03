@@ -15,7 +15,7 @@ import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
 import {LiveComponent} from "../LiveComponent";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {xUtil} from "../../util/StandAloneUtil";
@@ -26,11 +26,12 @@ import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
 import {SlideFadeInView} from "../components/animated/SlideFadeInView";
 import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
+import { Component, JSXElementConstructor } from "react";
+import { Navigation } from "react-native-navigation";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
-
 
 export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean }> {
   static options(props) {
@@ -345,7 +346,7 @@ lang("_Indoor_localization_is_c_body"),
 
   _updateNavBar() {
     getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
-    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
 

@@ -13,7 +13,7 @@ import {
 import { Background }  from '../components/Background'
 import { background, colors, screenWidth } from "../styles";
 
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { DevIconSelection } from "./DevIconSelection";

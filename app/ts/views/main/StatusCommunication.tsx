@@ -17,13 +17,12 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import { colors, screenWidth, overviewStyles } from "../styles";
+import { colors, screenWidth, overviewStyles, tabBarHeight } from "../styles";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 
@@ -89,9 +88,6 @@ export class StatusCommunication extends LiveComponent<any, any> {
 }
 
 function StatusCommunicationRender(props) {
-  let tabBarHeight = useBottomTabBarHeight();
-  let insets       = useSafeAreaInsets();
-
   const store = core.store;
   const state = store.getState();
 
@@ -106,6 +102,8 @@ function StatusCommunicationRender(props) {
   let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
   let requiresFingerprints = requireMoreFingerprints(currentSphereId);
   let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
+
+  let insets = useSafeAreaInsets()
 
   let generalStyle : TextStyle = {
     position:'absolute',

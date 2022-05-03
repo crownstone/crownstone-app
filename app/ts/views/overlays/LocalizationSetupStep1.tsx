@@ -22,7 +22,7 @@ import Svg,{
   Defs,
   Stop
 } from 'react-native-svg';
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { ScaledImage } from "../components/ScaledImage";
 
 

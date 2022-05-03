@@ -1,6 +1,6 @@
 import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { core } from "../../../Core";

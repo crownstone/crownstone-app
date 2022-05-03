@@ -12,7 +12,7 @@ import {
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
 import { background, colors} from "../styles";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
 

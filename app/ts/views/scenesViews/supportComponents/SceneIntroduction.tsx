@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { Image, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { colors, deviceStyles, screenWidth, styles } from "../../styles";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Icon } from "../../components/Icon";
 import * as React from "react";
 

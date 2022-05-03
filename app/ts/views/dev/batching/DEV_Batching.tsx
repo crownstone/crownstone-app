@@ -20,7 +20,7 @@ import {Background} from "../../components/Background";
 import {LiveComponent} from "../../LiveComponent";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {tell} from "../../../logic/constellation/Tellers";
 
 const RNFS = require('react-native-fs');

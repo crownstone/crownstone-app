@@ -7,7 +7,7 @@ import { colors } from "../../../styles";
 import { Alert } from "react-native";
 import { Button } from "../../../components/Button";
 import * as React from "react";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { DataUtil } from "../../../../util/DataUtil";
 import { StoneUtil } from "../../../../util/StoneUtil";
 import { BehaviourCopySuccessPopup } from "../DeviceSmartBehaviour";

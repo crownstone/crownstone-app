@@ -17,7 +17,7 @@ import { Icon } from "../../components/Icon";
 import { Component } from "react";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { SphereStateManager } from "../../../backgroundProcesses/SphereStateManager";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SphereOverviewButton } from "./SphereOverviewButton";
 
 export class SmartHomeStateButton extends Component<any, any> {

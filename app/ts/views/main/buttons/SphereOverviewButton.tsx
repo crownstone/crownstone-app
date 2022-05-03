@@ -20,7 +20,7 @@ import { SphereStateManager } from "../../../backgroundProcesses/SphereStateMana
 import { AnimatedCircle } from "../../components/animated/AnimatedCircle";
 import { Circle } from "../../components/Circle";
 import { BorderCircle } from "../../components/BorderCircle";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
 
 export const SPHERE_OVERVIEW_BUTTON_SIZE      = 0.11*screenWidth;

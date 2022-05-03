@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SceneAdd", key)(a,b,c,d,e);
 }
 import { LiveComponent } from "../LiveComponent";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { core } from "../../Core";
 import { Alert, Platform, Switch, Text, TouchableOpacity, View, ViewStyle } from "react-native";

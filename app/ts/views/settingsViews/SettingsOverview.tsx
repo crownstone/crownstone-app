@@ -10,7 +10,7 @@ import {background, colors, styles} from "../styles";
 import DeviceInfo from 'react-native-device-info';
 import {core} from "../../Core";
 import {TopBarUtil} from "../../util/TopBarUtil";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {AppUtil} from "../../util/AppUtil";
 import {LOGe} from "../../logging/Log";
 import {IconButton} from "../components/IconButton";

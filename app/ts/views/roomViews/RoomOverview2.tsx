@@ -22,7 +22,7 @@
 // import { RoomDeleted }            from "../static/RoomDeleted";
 // import { LiveComponent }          from "../LiveComponent";
 // import { core } from "../../Core";
-// import { NavigationUtil } from "../../util/NavigationUtil";
+// import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 // import { TopBarUtil } from "../../util/TopBarUtil";
 // import { xUtil } from "../../util/StandAloneUtil";
 // import { Background } from "../components/Background";

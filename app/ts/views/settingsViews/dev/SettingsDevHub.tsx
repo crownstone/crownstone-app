@@ -9,7 +9,7 @@ import { DebugIcon } from "../../components/DebugIcon";
 import { DataUtil } from "../../../util/DataUtil";
 import { HUB_API } from "../../../cloud/localHub/HubApi";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
 
 export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: string }, any> {

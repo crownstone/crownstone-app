@@ -12,7 +12,7 @@ import {LOGe} from '../../../logging/Log'
 import {background, colors, screenWidth} from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {

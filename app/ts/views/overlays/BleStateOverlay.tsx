@@ -14,7 +14,7 @@ import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class BleStateOverlay extends Component<any, any> {

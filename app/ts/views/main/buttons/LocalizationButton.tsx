@@ -21,7 +21,7 @@ import { AnimatedCircle } from "../../components/animated/AnimatedCircle";
 import { Circle } from "../../components/Circle";
 import { BorderCircle } from "../../components/BorderCircle";
 import { SphereOverviewButton } from "./SphereOverviewButton";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { DataUtil, enoughCrownstonesForIndoorLocalization, requireMoreFingerprints } from "../../../util/DataUtil";
 
 export class LocalizationButton extends Component<any, any> {

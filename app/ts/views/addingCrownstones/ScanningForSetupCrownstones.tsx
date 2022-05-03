@@ -17,7 +17,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn} from "../components/animated/FadeInView";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BleUtil } from "../../util/BleUtil";
 import KeepAwake from 'react-native-keep-awake';
