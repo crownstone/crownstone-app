@@ -20,6 +20,7 @@
     "@bugsnag/react-native": "^7.11.0",
     "@react-native-async-storage/async-storage": "^1.15.11",
     "@react-native-community/blur": "^3.6.0",
+    "@react-native-community/datetimepicker": "^5.1.0",
     "@react-native-community/picker": "^1.8.1",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-community/slider": "^4.1.12",

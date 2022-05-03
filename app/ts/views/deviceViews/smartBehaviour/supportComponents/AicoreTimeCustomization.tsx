@@ -47,7 +47,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
     this.toTime = new AicoreTimeData();
     let toFinished = this.toTime.insertAicoreTimeTo(this.props.timeData);
 
-    this.state = { fromFinished: fromFinished, toFinished: toFinished, instantEdit: fromFinished && toFinished, showTime: false };
+    this.state = { fromFinished: fromFinished, toFinished: toFinished, instantEdit: fromFinished && toFinished };
   }
 
   render() {
@@ -116,6 +116,7 @@ function TimePart(props : {
   visible: boolean,
   instantEdit: boolean,
 }) {
+  const [showTime, setShowTime] = useState(false);
   const [type, setType] = useState(props.timeObj.getType());
   const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
@@ -206,13 +207,17 @@ function TimePart(props : {
             date.setHours(time.hours);
             date.setMinutes(time.minutes);
             const onChange = (event, date) => {
-              let hours = date.getHours();
-              let minutes = date.getMinutes();
-
-              setTime({hours, minutes});
-              props.timeObj.setTime(hours, minutes);
-              setFinished(true);
-              props.setFinished(true);
+              if (date) {
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+  
+                setTime({hours, minutes});
+  
+                props.timeObj.setTime(hours, minutes);
+                setFinished(true);
+                props.setFinished(true);
+              }
+              setShowTime(false);
             }
             elements.push(
               <View key={"clockUI"}>
@@ -223,27 +228,9 @@ function TimePart(props : {
                     padding:15,
                     alignItems:'flex-start'
                   }} onPress={() => {
-                    this.setState({showTime: true})
-
-                      // let date = new Date();
-                      // date.setHours(time.hours);
-                      // date.setMinutes(time.minutes);
-                      // DateTimePickerAndroid.open({
-                      //   value: date,
-                      //   mode:'time',
-                      //   is24Hour: true,
-                      //   onChange: (event, date) => {
-                      //     let hours = date.getHours();
-                      //     let minutes = date.getMinutes();
-                      //
-                      //     setTime({hours, minutes});
-                      //     props.timeObj.setTime(hours, minutes);
-                      //     setFinished(true);
-                      //     props.setFinished(true);
-                      //   }
-                      // })
+                      setShowTime(true);
                   }}>
-                    { this.state.showTime &&
+                    { showTime &&
                         <DateTimePicker
                           testID="dateTimePicker"
                           value={date}
@@ -251,7 +238,7 @@ function TimePart(props : {
                           is24Hour={true}
                           onChange={onChange}
                         />
-                      }
+                    }
                     <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>{ lang("TAP_TIME_TO_CHANGE") }</Text>
                     <Text style={{fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6)}}>
                       { time.hours + ":" + (time.minutes < 10 ? '0' + time.minutes : time.minutes) }
