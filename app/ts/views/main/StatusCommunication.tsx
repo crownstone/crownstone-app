@@ -22,6 +22,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 
@@ -102,9 +103,11 @@ function StatusCommunicationRender(props) {
   let requiresFingerprints = requireMoreFingerprints(currentSphereId);
   let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
 
+  let insets = useSafeAreaInsets()
+
   let generalStyle : TextStyle = {
     position:'absolute',
-    bottom: 5,
+    bottom: tabBarHeight - insets.bottom,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: props.opacity || 1,

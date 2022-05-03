@@ -65,12 +65,6 @@ export const Stacks = {
                   text: Languages.get("Tabs", "Overview")(),
                   icon: require('../../assets/images/icons/house.png'),
                 },
-                sideMenu: {
-                  left: {
-                    enabled: false,
-                    visible: false,
-                  },
-                },
               }
             }
           },

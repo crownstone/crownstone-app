@@ -90,7 +90,7 @@ export class AnimatedBackground extends Component<{
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = this.getHeight();
     return (
-      <SafeAreaProvider style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
@@ -110,7 +110,7 @@ export class AnimatedBackground extends Component<{
             { this.props.children }
           </View>
         </CustomKeyboardAvoidingView>
-      </SafeAreaProvider>
+      </View>
     );
   }
 }

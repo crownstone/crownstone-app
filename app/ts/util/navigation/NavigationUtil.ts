@@ -399,9 +399,6 @@ export const NavigationUtil = {
         iconColor: baseColor,
         selectedIconColor: selectedColor,
       }}
-    Navigation.mergeOptions("bottomTabs", options);
-    Navigation.mergeOptions("SphereOverviewSideBar", options);
-    Navigation.mergeOptions("overviewSideMenuStack", options);
     Navigation.mergeOptions("SphereOverview", options);
     Navigation.mergeOptions("ScenesOverview", options);
     Navigation.mergeOptions("MessageInbox", options);

@@ -42,6 +42,8 @@ import { DebugToolsButton }         from "./buttons/DebugToolsButton";
 import { LocalizationButton }       from "./buttons/LocalizationButton";
 import { SafeAreaView }             from "react-native-safe-area-context";
 import { Navigation }               from "react-native-navigation";
+import { SideBarView } from "../components/animated/SideBarView";
+import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 
 
 const ZOOM_LEVELS = {
@@ -254,7 +256,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
   }
 
-  render() {
+  getContent() {
     const state = core.store.getState();
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
@@ -348,6 +350,16 @@ export class SphereOverview extends LiveComponent<any, any> {
         </AnimatedBackground>
       );
     }
+  }
+
+
+  render() {
+    return (
+      <SideBarView
+        content={this.getContent()}
+        sideMenu={<SphereOverviewSideBar />}
+      />
+    )
   }
 }
 

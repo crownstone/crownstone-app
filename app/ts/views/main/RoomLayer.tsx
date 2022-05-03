@@ -210,6 +210,8 @@ export function RoomLayer(props) {
     );
   }
 
+  let insets = useSafeAreaInsets()
+
   let height = availableScreenHeight; // 1 is for the bottom light line above the navbar
   let offset = 0;
 
@@ -231,8 +233,8 @@ export function RoomLayer(props) {
       <ForceDirectedView
         ref={forceViewRef}
         viewId={props.viewId}
-        topOffset={0.5*baseRadius}
-        bottomOffset={bottomOffset}
+        topOffset={0}
+        bottomOffset={tabBarHeight - insets.bottom}
         drawToken={props.sphereId}
         nodeIds={roomData.roomIdArray}
         initialPositions={roomData.initialPositions}
