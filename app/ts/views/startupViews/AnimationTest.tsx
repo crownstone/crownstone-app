@@ -6,7 +6,7 @@ import {StoreManager} from '../../database/storeManager'
 import {BackgroundProcessHandler} from '../../backgroundProcesses/BackgroundProcessHandler'
 import {Splash} from "./Splash";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Stacks} from "../Stacks";
 import {stylesUpdateConstants} from "../../views/styles";
 import {Bluenet} from "../../native/libInterface/Bluenet";

@@ -11,7 +11,7 @@ import {StoneUtil} from "../../../util/StoneUtil";
 import {xUtil} from "../../../util/StandAloneUtil";
 import {STONE_TYPES} from "../../../Enums";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
 import {safeStoreUpdate} from "../../deviceViews/DeviceOverview";

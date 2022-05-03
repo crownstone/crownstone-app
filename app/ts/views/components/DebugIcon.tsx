@@ -1,5 +1,5 @@
 import { TouchableOpacity, View, ViewStyle } from "react-native";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Icon } from "./Icon";
 import { colors } from "../styles";
 import * as React from "react";

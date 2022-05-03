@@ -18,7 +18,7 @@ import {
   screenWidth
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { Button } from "../../components/Button";
 

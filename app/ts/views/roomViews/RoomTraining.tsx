@@ -8,7 +8,7 @@ import { LiveComponent } from "../LiveComponent";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { Background } from "../components/Background";
 import { background, colors, screenHeight, screenWidth, styles } from "../styles";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Button } from "../components/Button";
 
 function lang(key,a?,b?,c?,d?,e?) {

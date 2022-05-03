@@ -10,7 +10,7 @@ import * as React from "react";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { FileUtil } from "../../util/FileUtil";
 import { processStockCustomImage} from "../../util/Util";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { ScrollView } from "react-native";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { xUtil } from "../../util/StandAloneUtil";

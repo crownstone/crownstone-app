@@ -14,7 +14,7 @@ import {
 
 import { OverlayBox }                                from '../components/overlays/OverlayBox'
 import { styles, colors, screenWidth } from '../styles'
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 export class LocalizationSetupStep2 extends Component<any, any> {
   constructor(props) {

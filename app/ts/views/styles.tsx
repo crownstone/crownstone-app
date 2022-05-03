@@ -3,6 +3,7 @@ import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 import { LOG } from "../logging/Log";
+import { Navigation } from "react-native-navigation";
 
 export const deviceModel = DeviceInfo.getModel();
 export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 1') !== -1;
@@ -15,6 +16,10 @@ export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isModernIosMode
 
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height; // initial guess
+
+
+//TODO: Utilize these constants
+export const UIconstants = Navigation.constantsSync()
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
@@ -36,19 +41,19 @@ export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
   }
 }
 export const stylesUpdateConstants = () =>  {
-  // return Navigation.constants()
-  //   .then((constants) => {
-  //     let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
-  //     statusBarHeight = tmpStatusBarHeight;
-  //
-  //     topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
-  //     tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
-  //
-  //     availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-  //     availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
-  //
-  //     LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'),'constants', constants)
-  //   })
+  return Navigation.constants()
+    .then((constants) => {
+      let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
+      statusBarHeight = tmpStatusBarHeight;
+
+      topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
+      tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
+
+      availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+      availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+      LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'),'constants', constants)
+    })
 }
 
 

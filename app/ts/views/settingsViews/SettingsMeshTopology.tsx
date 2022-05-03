@@ -21,7 +21,7 @@
 // import { Icon } from "../components/Icon";
 // import { xUtil } from "../../util/StandAloneUtil";
 // import { core } from "../../Core";
-// import { NavigationUtil } from "../../util/NavigationUtil";
+// import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 // import { TopBarUtil } from "../../util/TopBarUtil";
 // import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 // import { BackgroundNoNotification } from "../components/BackgroundNoNotification";

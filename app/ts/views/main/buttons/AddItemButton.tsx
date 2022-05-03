@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { SPHERE_OVERVIEW_BUTTON_ICON_SIZE, SphereOverviewButton } from "./SphereOverviewButton";

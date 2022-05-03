@@ -15,7 +15,7 @@ import {
   deviceStyles,
   screenWidth, styles
 } from "../../styles";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { ScaledImage } from "../../components/ScaledImage";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../util/StandAloneUtil";

@@ -16,7 +16,7 @@ import { Icon } from './Icon';
 import { colors, topBarHeight, statusBarHeight} from '../styles'
 
 import {topBarStyle} from "./topbar/TopbarStyles";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 let barHeight = topBarHeight - statusBarHeight;
 

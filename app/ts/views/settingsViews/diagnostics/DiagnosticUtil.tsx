@@ -19,7 +19,7 @@ import {IconButton} from "../../components/IconButton";
 import {Icon} from "../../components/Icon";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import { diagnosticStyles } from "./DiagnosticStyles";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Stacks } from "../../Stacks";
 
 

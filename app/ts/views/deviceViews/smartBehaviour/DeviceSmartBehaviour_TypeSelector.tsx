@@ -11,7 +11,7 @@ import {
 
 import { colors, screenHeight, screenWidth } from "../../styles";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Interview } from "../../components/Interview";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { TopbarImitation } from "../../components/TopbarImitation";

@@ -18,7 +18,7 @@ import {Util} from "../../util/Util";
 
 import {CLOUD} from "../../cloud/cloudAPI";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {LiveComponent} from "../LiveComponent";
 import {background} from "../styles";

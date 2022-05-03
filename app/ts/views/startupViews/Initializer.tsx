@@ -5,7 +5,7 @@ import {StoreManager} from '../../database/storeManager'
 import {BackgroundProcessHandler} from '../../backgroundProcesses/BackgroundProcessHandler'
 import {Splash} from "./Splash";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Stacks} from "../Stacks";
 import {stylesUpdateConstants} from "../../views/styles";
 import {Bluenet} from "../../native/libInterface/Bluenet";
@@ -39,13 +39,13 @@ export class Initializer extends Component<any, any> {
       }
 
       if (BackgroundProcessHandler.userLoggedInReady) {
-        this.props.setAppState(true, true);
+        NavigationUtil.setRoot(Stacks.loggedIn());
       }
       else if (BackgroundProcessHandler.userLoggedIn) {
-        this.props.setAppState(true, false);
+        NavigationUtil.setRoot(Stacks.permissions());
       }
       else {
-        this.props.setAppState(false, false);
+        NavigationUtil.setRoot(Stacks.newUser());
       }
     };
 

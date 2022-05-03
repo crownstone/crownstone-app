@@ -15,7 +15,7 @@ import {
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight, statusBarHeight, styles } from "../styles";
 import { ScaledImage } from "../components/ScaledImage";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import Slider from "@react-native-community/slider";
 import { Icon } from "../components/Icon";
 

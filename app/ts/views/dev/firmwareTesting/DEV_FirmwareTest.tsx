@@ -2,7 +2,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { Stacks } from "../../Stacks";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { core } from "../../../Core";
 import { SetupHelper } from "../../../native/setup/SetupHelper";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";

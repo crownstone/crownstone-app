@@ -17,7 +17,7 @@ import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;

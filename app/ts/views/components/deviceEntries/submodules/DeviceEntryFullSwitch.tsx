@@ -15,7 +15,7 @@
 // } from "react-native";
 // import Slider from "@react-native-community/slider";
 // import LinearGradient from 'react-native-linear-gradient';
-// import { NavigationUtil } from "../../../../util/NavigationUtil";
+// import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 // import { StoneAvailabilityTracker } from "../../../../native/advertisements/StoneAvailabilityTracker";
 // import { colors, screenHeight, screenWidth, styles } from "../../../styles";
 // import { AlternatingContent } from "../../animated/AlternatingContent";

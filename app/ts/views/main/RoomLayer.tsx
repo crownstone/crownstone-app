@@ -10,18 +10,16 @@ import {
 
 
 import { RoomCircle }            from '../components/RoomCircle'
-import { availableScreenHeight, screenWidth, topBarHeight } from "../styles";
+import { availableScreenHeight, screenWidth, tabBarHeight, topBarHeight } from "../styles";
 import { UserLayer }             from './UserLayer';
 import { ForceDirectedView }     from "../components/interactiveView/ForceDirectedView";
 import { Util }                  from "../../util/Util";
 import { core }                  from "../../Core";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 import {Component}               from "react";
-import {useEvent} from "../components/hooks/eventHooks";
-import {useDatabaseChange} from "../components/hooks/databaseHooks";
-import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {useNavigation} from "@react-navigation/native";
+import {useEvent}                from "../components/hooks/eventHooks";
+import {useDatabaseChange}       from "../components/hooks/databaseHooks";
+import {useSafeAreaInsets}       from "react-native-safe-area-context";
 
 // export class RoomLayer extends Component<any, any> {
 //   state:any; // used to avoid warnings for setting state values
@@ -160,7 +158,6 @@ import {useNavigation} from "@react-navigation/native";
 
 
 export function RoomLayer(props) {
-  const navigation = useNavigation();
   const forceViewRef = React.useRef(null);
 
   const storePositions = () => {
@@ -188,8 +185,6 @@ export function RoomLayer(props) {
   useEvent("reset_positions" + props.viewId, resetPositions);
   useDatabaseChange('changeLocations');
   useDatabaseChange(['changeStones','stoneLocationUpdated','changeLocations','changeLocationPositions']);
-  let tabBarHeight = useBottomTabBarHeight();
-  let insets       = useSafeAreaInsets();
 
   const baseRadius = 0.15 * screenWidth;
   const renderRoomCircle = (locationId, nodePosition) => {
@@ -203,7 +198,6 @@ export function RoomLayer(props) {
         pos={{x: nodePosition.x, y: nodePosition.y}}
         viewingRemotely={props.viewingRemotely}
         key={locationId || 'floating'}
-        navigation={navigation}
         showHoldAnimation={!props.arrangingRooms}
         allowTap={!props.arrangingRooms}
         onHold={() => {
@@ -232,7 +226,7 @@ export function RoomLayer(props) {
     for (let roomId in roomData.initialPositions) {
       roomData.initialPositions[roomId].fixed = roomData.initialPositions[roomId].x !== null;
     }
-    let bottomOffset = 0.1*baseRadius + tabBarHeight - insets.bottom;
+    let bottomOffset = 0.5*baseRadius;
     return (
       <ForceDirectedView
         ref={forceViewRef}

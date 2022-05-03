@@ -16,12 +16,11 @@ import { styles, colors } from '../styles'
 import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
-import {Navigation} from "../RootNavigation";
 
 
 

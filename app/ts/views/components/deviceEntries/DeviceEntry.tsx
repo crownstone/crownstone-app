@@ -13,7 +13,7 @@ import {SlideFadeInView, SlideSideFadeInView} from "../animated/SlideFadeInView"
 import {xUtil} from "../../../util/StandAloneUtil";
 import {STONE_TYPES} from "../../../Enums";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
 import Slider from "@react-native-community/slider";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";

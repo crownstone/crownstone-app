@@ -19,7 +19,7 @@ import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
   static options(props) {
@@ -141,11 +141,11 @@ export class SphereEditSettings extends LiveComponent<any, any> {
       icon: <IconButton name='c1-people' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         core.eventBus.emit("highlight_nav_field", "sphereEdit_users");
-        NavigationUtil.back().then(() => {
-          setTimeout(() => {
-            NavigationUtil.navigate("SphereUserOverview", { sphereId: this.props.sphereId });
-          },100);
-        })
+        // NavigationUtil.back().then(() => {
+        //   setTimeout(() => {
+        //     NavigationUtil.navigate("SphereUserOverview", { sphereId: this.props.sphereId });
+        //   },100);
+        // })
       }
     });
 

@@ -21,7 +21,7 @@ import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
-import {Navigation} from "../RootNavigation";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class Sphere extends Component<any, any> {
@@ -103,10 +103,10 @@ export class Sphere extends Component<any, any> {
 function SphereHeader({sphere}) {
   return (
     <React.Fragment>
-      <TouchableOpacity onPress={() => { Navigation.openDrawer() }} style={{paddingLeft:19}}>
+      <TouchableOpacity onPress={() => { NavigationUtil.openDrawer() }} style={{paddingLeft:19}}>
         <Icon name={'enty-menu'} size={24} color={colors.csBlue.hex} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { Navigation.openDrawer() }}>
+      <TouchableOpacity onPress={() => { NavigationUtil.openDrawer() }}>
         <Text style={styles.viewHeader}>{sphere.config.name}</Text>
       </TouchableOpacity>
     </React.Fragment>

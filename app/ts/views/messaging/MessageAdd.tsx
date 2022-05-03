@@ -22,7 +22,7 @@ import { ProfilePicture } from "../components/ProfilePicture";
 import {MessageUtil} from "../../util/MessageUtil";
 
 import { xUtil } from "../../util/StandAloneUtil";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";

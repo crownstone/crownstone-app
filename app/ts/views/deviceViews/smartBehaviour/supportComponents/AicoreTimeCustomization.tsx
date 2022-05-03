@@ -47,7 +47,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
     this.toTime = new AicoreTimeData();
     let toFinished = this.toTime.insertAicoreTimeTo(this.props.timeData);
 
-    this.state = { fromFinished: fromFinished, toFinished: toFinished, instantEdit: fromFinished && toFinished, showTime: false };
+    this.state = { fromFinished: fromFinished, toFinished: toFinished, instantEdit: fromFinished && toFinished };
   }
 
   render() {
@@ -104,9 +104,6 @@ export class AicoreTimeCustomization extends Component<any,any> {
 }
 
 
-
-
-
 function TimePart(props : {
   finalLabel:string,
   initialLabel:string,
@@ -116,6 +113,7 @@ function TimePart(props : {
   visible: boolean,
   instantEdit: boolean,
 }) {
+  const [showTime, setShowTime] = useState(false);
   const [type, setType] = useState(props.timeObj.getType());
   const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
@@ -223,7 +221,7 @@ function TimePart(props : {
                     padding:15,
                     alignItems:'flex-start'
                   }} onPress={() => {
-                    this.setState({showTime: true})
+                    setShowTime(true);
 
                       // let date = new Date();
                       // date.setHours(time.hours);
@@ -243,7 +241,7 @@ function TimePart(props : {
                       //   }
                       // })
                   }}>
-                    { this.state.showTime &&
+                    { showTime &&
                         <DateTimePicker
                           testID="dateTimePicker"
                           value={date}

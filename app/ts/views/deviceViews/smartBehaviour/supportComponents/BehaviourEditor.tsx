@@ -26,7 +26,7 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { DataUtil } from "../../../../util/DataUtil";

@@ -50,23 +50,34 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "SphereOverview"} },
+                {
+                  component: {
+                    id: 'SphereOverview',
+                    name: "SphereOverview"
+                  }
+                },
               ],
               options: {
-                topBar: {visible: false, drawBehind:true},
+                topBar: { visible: false, drawBehind: true },
                 bottomTab: {
                   id: 'bottomTab_overview',
                   testID: 'bottomTab_overview',
-                  text: Languages.get("Tabs","Overview")(),
+                  text: Languages.get("Tabs", "Overview")(),
                   icon: require('../../assets/images/icons/house.png'),
-                }
+                },
+                sideMenu: {
+                  left: {
+                    enabled: false,
+                    visible: false,
+                  },
+                },
               }
             }
           },
           {
             stack: {
               children: [
-                { component: {name: "ScenesOverview"} },
+                { component: {id: 'ScenesOverview', name: "ScenesOverview"} },
               ],
               options: {
                 bottomTab: {
@@ -81,7 +92,7 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "MessageInbox"} },
+                { component: {id: 'MessageInbox',name: "MessageInbox"} },
               ],
               options: {
                 bottomTab: {
@@ -96,7 +107,7 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "SettingsOverview"} },
+                { component: {id: 'SettingsOverview',name: "SettingsOverview"} },
               ],
               options: {
                 bottomTab: {

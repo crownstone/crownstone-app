@@ -47,8 +47,6 @@ import { SettingsFactoryResetStep2 }          from '../views/settingsViews/Setti
 import { SettingsFAQ }                        from "../views/settingsViews/SettingsFAQ";
 import { SettingsLocalizationDebug }          from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                    from "../views/settingsViews/dev/SettingsLogging";
-// import { SettingsMeshOverview }               from '../views/settingsViews/SettingsMeshOverview'
-// import { SettingsMeshTopology}                from '../views/settingsViews/SettingsMeshTopology'
 import { SettingsMeshTopologyHelp }           from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsOverview }                   from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }                    from '../views/settingsViews/SettingsProfile'
@@ -130,6 +128,13 @@ import { LocalizationMenu }                   from "./main/localization/Localiza
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 
+export function NavWrap(Child) {
+  return function (props) {
+    let params = props?.route?.params ?? {};
+    let childProps = {...props, ...params};
+    return <Child {...childProps} />;
+  }
+}
 
 export const Views = {
   Initializer:                       Initializer,
@@ -154,8 +159,6 @@ export const Views = {
   AddSphereTutorial:                 AddSphereTutorial,
   AlexaOverview:                     AlexaOverview,
   GoogleAssistantOverview:           GoogleAssistantOverview,
-  // CameraRollView:                    CameraRollView,
-  // PictureView:                       PictureView,
   HubOverview:                       HubOverview,
   HubEdit:                           HubEdit,
   DeviceEdit:                        DeviceEdit,
@@ -204,8 +207,6 @@ export const Views = {
   SettingsLogging:                   SettingsLogging,
   SettingsLogLevelConfig:            SettingsLogLevelConfig,
   SettingsLogOverview:               SettingsLogOverview,
-  // SettingsMeshOverview:              SettingsMeshOverview,
-  // SettingsMeshTopology:              SettingsMeshTopology,
   SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,
   SettingsOverview:                  SettingsOverview,
   SettingsPrivacy:                   SettingsPrivacy,
@@ -242,36 +243,37 @@ export const Views = {
 
   // Overlays:
 
-  AicoreTimeCustomizationOverlay:   AicoreTimeCustomizationOverlay,
-  BleStateOverlay:                  BleStateOverlay,
-  DimLevelOverlay:                  DimLevelOverlay,
-  ErrorOverlay:                     ErrorOverlay,
-  LibMessages:                      LibMessages,
-  ListOverlay:                      ListOverlay,
-  LocalizationSetupStep1:           LocalizationSetupStep1,
-  LocalizationSetupStep2:           LocalizationSetupStep2,
-  LocationPermissionOverlay:        LocationPermissionOverlay,
-  LockOverlay:                      LockOverlay,
-  NumericOverlay:                   NumericOverlay,
-  OptionPopup:                      OptionPopup,
-  Processing:                       Processing,
-  SimpleOverlay:                    SimpleOverlay,
-  TextInputOverlay:                 TextInputOverlay,
+  AicoreTimeCustomizationOverlay:    AicoreTimeCustomizationOverlay,
+  BleStateOverlay:                   BleStateOverlay,
+  DimLevelOverlay:                   DimLevelOverlay,
+  ErrorOverlay:                      ErrorOverlay,
+  LibMessages:                       LibMessages,
+  ListOverlay:                       ListOverlay,
+  LocalizationSetupStep1:            LocalizationSetupStep1,
+  LocalizationSetupStep2:            LocalizationSetupStep2,
+  LocationPermissionOverlay:         LocationPermissionOverlay,
+  LockOverlay:                       LockOverlay,
+  NumericOverlay:                    NumericOverlay,
+  OptionPopup:                       OptionPopup,
+  Processing:                        Processing,
+  SimpleOverlay:                     SimpleOverlay,
+  TextInputOverlay:                  TextInputOverlay,
 
 
   // DEV
-  DEV_FirmwareTest:              DEV_FirmwareTest,
-  DEV_AdvancedConfig:            DEV_AdvancedConfig,
-  DEV_DFU:                       DEV_DFU,
-  DEV_Batching:                  DEV_Batching,
-
-  DEV_StoneSelector:             DEV_StoneSelector,
-  DEV_RawAdvertisements:         DEV_RawAdvertisements,
-  DEV_PresenceMocking:           DEV_PresenceMocking,
-  DEV_UserData:                  DEV_UserData,
+  DEV_FirmwareTest:                  DEV_FirmwareTest,
+  DEV_AdvancedConfig:                DEV_AdvancedConfig,
+  DEV_DFU:                           DEV_DFU,
+  DEV_Batching:                      DEV_Batching,
+  DEV_StoneSelector:                 DEV_StoneSelector,
+  DEV_RawAdvertisements:             DEV_RawAdvertisements,
+  DEV_PresenceMocking:               DEV_PresenceMocking,
+  DEV_UserData:                      DEV_UserData,
 
   // Sidebars
 
-  SphereOverviewSideBar:         SphereOverviewSideBar,
-
+  SphereOverviewSideBar:            SphereOverviewSideBar,
 };
+
+
+

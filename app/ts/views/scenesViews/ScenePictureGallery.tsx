@@ -9,7 +9,7 @@ import React from "react";
 import { FlatList, Image, Text, View, TextStyle, TouchableHighlight} from "react-native";
 import { colors, screenWidth} from "../styles";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Button } from "../components/Button";
 import { SelectPicture } from "../components/PictureCircle";
 import {

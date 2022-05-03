@@ -20,7 +20,7 @@ import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { useState } from "react";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
 import { xUtil } from "../../../util/StandAloneUtil";

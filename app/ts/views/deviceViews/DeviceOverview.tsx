@@ -24,7 +24,7 @@ import {
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
 import { DeviceMenuIcon } from "./DeviceMenuIcon";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { DimmerSlider, DIMMING_INDICATOR_SIZE, DIMMING_INDICATOR_SPACING } from "../components/DimmerSlider";
@@ -39,6 +39,7 @@ import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 import { tell } from "../../logic/constellation/Tellers";
 import { DebugIcon } from "../components/DebugIcon";
+import { Navigation } from "react-native-navigation";
 
 
 export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
@@ -126,7 +127,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
   _updateNavBar() {
     getTopBarProps(this.props);
-    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {

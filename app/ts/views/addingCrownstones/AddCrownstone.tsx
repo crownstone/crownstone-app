@@ -12,7 +12,7 @@ import {
 import { background, colors } from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";

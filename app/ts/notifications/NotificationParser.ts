@@ -1,5 +1,5 @@
 import {core} from "../Core";
-import {NavigationUtil} from "../util/NavigationUtil";
+import {NavigationUtil} from "../util/navigation/NavigationUtil";
 import {CLOUD} from "../cloud/cloudAPI";
 import {LocalNotifications} from "./LocalNotifications";
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";

@@ -17,7 +17,7 @@ import {
 } from "../styles";
 import { core } from "../../Core";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Stacks } from "../Stacks";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { LOG } from "../../logging/Log";
@@ -52,7 +52,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
                 if (Platform.OS === 'android') {
                   core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
                   core.eventBus.emit("userLoggedInFinished");
-                  this.props.setAppState(true, true);
+                  NavigationUtil.setRoot(Stacks.loggedIn());
                   return;
                 }
                 return 'notifications';
@@ -77,7 +77,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
               NotificationHandler.request();
               core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
               core.eventBus.emit("userLoggedInFinished");
-              this.props.setAppState(true, true);
+              NavigationUtil.setRoot(Stacks.loggedIn());
             }
           },
         ]

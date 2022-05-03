@@ -18,7 +18,7 @@ import { Background }   from '../components/Background'
 import { colors, screenWidth, screenHeight, background } from "../styles";
 import { Icon }         from '../components/Icon';
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import {Get} from "../../util/GetUtil";

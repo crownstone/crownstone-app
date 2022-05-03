@@ -17,7 +17,7 @@ import { IconButton }   from "../../components/IconButton";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
 export class DeviceUpdate extends Component<any, any> {
 

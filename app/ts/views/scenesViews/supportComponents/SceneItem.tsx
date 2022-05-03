@@ -13,7 +13,7 @@ import { Icon }                                           from "../../components
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";

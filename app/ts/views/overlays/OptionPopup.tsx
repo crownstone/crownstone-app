@@ -18,7 +18,7 @@ import { HiddenFadeInView }   from '../components/animated/FadeInView'
 import { SlideInFromBottomView }  from '../components/animated/SlideInFromBottomView'
 import { styles, screenHeight, screenWidth, tabBarMargin } from "../styles";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class OptionPopup extends Component<any, any> {

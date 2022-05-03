@@ -20,7 +20,7 @@ import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { SliderBar } from "../../../components/editComponents/SliderBar";
 import { Explanation } from "../../../components/editComponents/Explanation";

@@ -17,7 +17,7 @@ import { styles, colors , screenHeight, screenWidth, availableScreenHeight } fro
 import { Util } from "../../util/Util";
 import {ErrorContent} from "../content/ErrorContent";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 let SEE_THROUGH_OPACITY = 0.33;

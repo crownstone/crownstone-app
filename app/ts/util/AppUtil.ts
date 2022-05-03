@@ -9,7 +9,7 @@ import {Util} from "./Util";
 // import * as Sentry from "@sentry/react-native";
 import {Scheduler} from "../logic/Scheduler";
 import {core} from "../Core";
-import {NavigationUtil} from "./NavigationUtil";
+import {NavigationUtil} from "./navigation/NavigationUtil";
 import {Stacks} from "../views/Stacks";
 import { MapProvider } from "../backgroundProcesses/MapProvider";
 

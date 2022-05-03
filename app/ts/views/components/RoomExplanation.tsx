@@ -15,7 +15,7 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
 } from "../../util/DataUtil";
 import { colors } from '../styles'
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.

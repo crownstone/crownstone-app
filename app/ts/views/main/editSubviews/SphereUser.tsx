@@ -11,7 +11,7 @@ import {background, screenWidth} from "../../styles";
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
