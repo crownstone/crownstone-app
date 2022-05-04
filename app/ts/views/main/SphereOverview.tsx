@@ -19,31 +19,23 @@ import {
   overviewStyles, styles
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
-import { SphereChangeButton }       from "./buttons/SphereChangeButton";
-import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
-import {ZoomInstructionOverlay, ZoomInstructionsFooter} from "./ZoomInstructionOverlay";
 import { core }                     from "../../Core";
 import { NavigationUtil }           from "../../util/navigation/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
-import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
-import { TopBarUtil }               from "../../util/TopBarUtil";
 import { DataUtil }                 from "../../util/DataUtil";
 import { RoomAddCore }              from "../roomViews/RoomAddCore";
 import { Background }               from "../components/Background";
-import { SmartHomeStateButton }     from "./buttons/SmartHomeStateButton";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
-import { DebugToolsButton }         from "./buttons/DebugToolsButton";
-import { LocalizationButton }       from "./buttons/LocalizationButton";
 import { SafeAreaView }             from "react-native-safe-area-context";
-import { Navigation }               from "react-native-navigation";
 import { SideBarView } from "../components/animated/SideBarView";
 import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
+import {useRef} from "react";
 
 
 const ZOOM_LEVELS = {
@@ -56,7 +48,7 @@ export const SPHERE_ID_STORE = {
 }
 
 
-export class SphereOverview extends LiveComponent<any, any> {
+export class SphereOverviewContent extends LiveComponent<any, any> {
   static options(props) {
     return {topBar:{visible:false}}
     // getTopBarProps(core.store.getState(), props, {});
@@ -74,6 +66,8 @@ export class SphereOverview extends LiveComponent<any, any> {
     this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false, arrangingRooms: false };
     this.viewId = xUtil.getUUID();
     ActiveSphereManager.updateActiveSphere();
+
+    console.log("CONSTRUCT SPHERE OVERVIEW")
 
   }
 
@@ -232,6 +226,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           zoomOutCallback={this._zoomOut}
           setRearrangeRooms={setRearrangeRooms}
           arrangingRooms={this.state.arrangingRooms}
+          openSideMenu={this.props.openSideMenu}
         />
       )
     }
@@ -252,17 +247,12 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
   }
 
-  _getInstructionScreen() {
-    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
-  }
-
-  getContent() {
+  render() {
     const state = core.store.getState();
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
     let backgroundOverride = background.main;
 
-    LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
@@ -351,17 +341,24 @@ export class SphereOverview extends LiveComponent<any, any> {
       );
     }
   }
-
-
-  render() {
-    return (
-      <SideBarView
-        content={this.getContent()}
-        sideMenu={<SphereOverviewSideBar />}
-      />
-    )
-  }
 }
+
+export function SphereOverview(props) {
+  LOG.info("RENDERING_OVERVIEW");
+  let sideBarRef = useRef(null);
+
+  return (
+    <SideBarView
+      ref={sideBarRef}
+      content={ <SphereOverviewContent {...props} openSideMenu={() => { sideBarRef.current.open()}} closeSideMenu={() => { sideBarRef.current.close()}}/>}
+      sideMenu={<SphereOverviewSideBar            openSideMenu={() => { sideBarRef.current.open()}} closeSideMenu={() => { sideBarRef.current.close()}}/>}
+    />
+  )
+}
+
+
+
+
 
 function getTopBarProps(state, props, viewState) {
   let { sphereId, sphere } = SphereUtil.getActiveSphere(state);

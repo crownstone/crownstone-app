@@ -8,14 +8,6 @@ import { SPHERE_ID_STORE } from "../main/SphereOverview";
 import { core } from "../../Core";
 
 export function SphereOverviewSideBar(props) {
-  let [lastStatus, setLastStatus] = React.useState(null);
-  // let status = useDrawerStatus()
-  // if (status === 'closed' && lastStatus !== 'closed') {
-    // Navigation.closeDrawer(true);
-  // }
-  // if (lastStatus !== status) { setLastStatus(status); }
-  // let tabBarHeight = useBottomTabBarHeight();
-
   let factor = 0.25;
 
   const state = core.store.getState();
@@ -27,13 +19,14 @@ export function SphereOverviewSideBar(props) {
       <Image source={require('../../../assets/images/crownstoneLogo.png')} style={{width:factor * 300, height: factor*300, tintColor: colors.white.hex}}/>
       <View style={{height:50}}/>
 
-      {amountOfSpheres > 1 && <SideMenuLink label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
+      {amountOfSpheres > 1 &&
+        <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
 
-      <SideMenuLink label={"Add items"}     callback={() => { NavigationUtil.navigate( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
-      <SideMenuLink label={"Localization"}  callback={() => { NavigationUtil.navigate( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.navigate( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.navigate( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} />
       <View style={{height:50}}/>
-      <SideMenuLink label={"Settings"}      callback={() => { NavigationUtil.navigate( "SphereEdit", { sphereId: SPHERE_ID_STORE.activeSphereId }) }} size={25} icon={'ios-cog'}         />
-      <SideMenuLink label={"Developer"}     callback={() => { }} size={22} icon={'ios-bug'}         />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Settings"}      callback={() => { NavigationUtil.navigate( "SphereEdit", { sphereId: SPHERE_ID_STORE.activeSphereId }) }} size={25} icon={'ios-cog'}         />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"}     callback={() => { }} size={22} icon={'ios-bug'}         />
 
       <View style={{flex:1}}/>
       <Text style={{color: colors.white.rgba(0.5)}}>{"App v"+DeviceInfo.getReadableVersion()}</Text>
@@ -42,7 +35,7 @@ export function SphereOverviewSideBar(props) {
 }
 
 
-function SideMenuLink({ label, callback, icon, size }) {
+function SideMenuLink({ label, callback, icon, size, closeSideMenu }) {
   let linkStyle : TextStyle = {
     color: colors.white.hex,
     fontSize: 20,
@@ -51,8 +44,8 @@ function SideMenuLink({ label, callback, icon, size }) {
   }
   return (
     <TouchableOpacity style={{flexDirection:'row', height:50, alignItems:'center'}} onPress={() => {
-      // NavigationUtil.closeDrawer();
-      callback()
+      closeSideMenu();
+      callback();
     }}>
       <View style={{width: 25, height:50, justifyContent:'center', alignItems:'center'}}>
         <Icon name={icon} color={colors.white.hex} size={size} />

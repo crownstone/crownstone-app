@@ -4,10 +4,10 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AnimatedBackground", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react'; import {Component, useEffect, useState} from 'react';
 import {
   Animated, Platform, SafeAreaView, StatusBar,
-  View, Text
+  View, Text, AppState, NativeEventSubscription
 } from "react-native";
 
 import {
@@ -18,12 +18,9 @@ import {
   updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
-import { NotificationLine } from "../NotificationLine";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
-
-export class AnimatedBackground extends Component<{
+interface AnimatedBackgroundProps {
   hideNotifications?:        boolean,
   hideOrangeLine?:           boolean,
   orangeLineAboveStatusBar?: boolean,
@@ -39,7 +36,10 @@ export class AnimatedBackground extends Component<{
   testID?:            string,
   topImage?:          any,
   keyboardAvoid?:     boolean,
-}, any> {
+  children?:any
+}
+
+export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> {
   staticImage : any;
   animatedImage : any;
   backgroundOpacity  : number = 0;
@@ -67,6 +67,7 @@ export class AnimatedBackground extends Component<{
         this.staticImage = nextProps.image;
       }
     }
+
     if (imageChanged) {
       let newValue = this.backgroundOpacity === 0 ? 1 : 0;
       Animated.timing(this.state.fade, {toValue: newValue, useNativeDriver: false, duration: nextProps.duration || 500}).start();
@@ -76,25 +77,14 @@ export class AnimatedBackground extends Component<{
   }
 
 
-  getHeight() : [number, boolean, boolean] {
-    let hasTopBar = false;
-    let hasTabBar = false;
-    let height = screenHeight;
-    if (this.props.hasTopBar !== false && this.props.fullScreen !== true) { hasTopBar = true; }
-    if (this.props.hasNavBar !== false && this.props.fullScreen !== true) { hasTabBar = true; }
-    if (hasTabBar && hasTopBar) { height = availableScreenHeight; }
-    else if (hasTopBar)         { height = availableModalHeight; }
-    return [height, hasTopBar, hasTabBar];
-  }
-
   render() {
-    let [backgroundHeight, hasTopBar, hasTabBar] = this.getHeight();
+    let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
     return (
       <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar translucent={true} barStyle={"dark-content"} />
+        <StatusBar translucent={true} barStyle={this.props.lightStatusbar ? "light-content" : "dark-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>
@@ -113,4 +103,16 @@ export class AnimatedBackground extends Component<{
       </View>
     );
   }
+}
+
+
+function getHeight(props) : [number, boolean, boolean] {
+  let hasTopBar = false;
+  let hasTabBar = false;
+  let height = screenHeight;
+  if (props.hasTopBar !== false && props.fullScreen !== true) { hasTopBar = true; }
+  if (props.hasNavBar !== false && props.fullScreen !== true) { hasTabBar = true; }
+  if (hasTabBar && hasTopBar) { height = availableScreenHeight; }
+  else if (hasTopBar)         { height = availableModalHeight; }
+  return [height, hasTopBar, hasTabBar];
 }

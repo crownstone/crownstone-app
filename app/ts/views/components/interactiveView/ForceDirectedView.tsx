@@ -119,6 +119,7 @@ export class ForceDirectedView extends Component<{
     }
 
     this.init();
+    console.log("INITI")
   }
 
   nodeTouch(nodeId: string) {
