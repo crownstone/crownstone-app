@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Text, View
+  Text, View, StatusBar,
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
@@ -36,6 +36,7 @@ import { SafeAreaView }             from "react-native-safe-area-context";
 import { SideBarView } from "../components/animated/SideBarView";
 import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 import {useRef} from "react";
+import {NavBarBlur} from "../components/NavBarBlur";
 
 
 const ZOOM_LEVELS = {
@@ -50,7 +51,7 @@ export const SPHERE_ID_STORE = {
 
 export class SphereOverviewContent extends LiveComponent<any, any> {
   static options(props) {
-    return {topBar:{visible:false}}
+    return {topBar:{visible:false}, statusBar:{style:'light'}}
     // getTopBarProps(core.store.getState(), props, {});
     // return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
@@ -294,8 +295,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          backgroundOverride = require('../../../assets/images/backgrounds/darkBackground3.jpg')
-          // backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
+          backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
         }
       }
 
@@ -312,20 +312,11 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         >
           <SafeAreaView style={{flexGrow:1}}>
             <View style={{flex:1}}>
-              {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
               { this._getContent(activeSphereId) }
-              {/*{ this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }*/}
-              {/*{ this._getAddButtonDescription(activeSphereId, noStones) }*/}
-              {/*<AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />*/}
               <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-              {/*<LocalizationButton*/}
-              {/*  sphereId={activeSphereId}*/}
-              {/*  visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false }*/}
-              {/*/>*/}
-              {/*{ activeSphere.state.smartHomeEnabled === false &&  <SmartHomeStateButton sphereId={activeSphereId} visible={true} /> }*/}
-              {/*<DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />*/}
             </View>
           </SafeAreaView>
+          <NavBarBlur />
         </AnimatedBackground>
       );
     }
@@ -344,7 +335,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 }
 
 export function SphereOverview(props) {
-  LOG.info("RENDERING_OVERVIEW");
   let sideBarRef = useRef(null);
 
   return (
@@ -356,7 +346,7 @@ export function SphereOverview(props) {
   )
 }
 
-
+SphereOverview.options = (props) => { return {statusBar:{style:'dark'}} }
 
 
 

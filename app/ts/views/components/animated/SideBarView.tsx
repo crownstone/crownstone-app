@@ -15,7 +15,7 @@ export class SideBarView extends Component<any, any> {
   }
 
   open() {
-    let animation = Animated.timing(this.state.leftOffset, {toValue: 0.7*screenWidth, useNativeDriver: false, duration: DURATION});
+    let animation = Animated.timing(this.state.leftOffset, {toValue: 0.75*screenWidth, useNativeDriver: false, duration: DURATION});
     this.setState({open: true});
     animation.start();
   }
@@ -35,8 +35,8 @@ export class SideBarView extends Component<any, any> {
         <View style={styles.fullscreen}>
           <View style={{flex:1}}>{this.props.sideMenu}</View>
         </View>
-        <Animated.View style={[styles.fullscreen, {left: this.state.leftOffset, overflow:"hidden", backgroundColor:"#f00"}]}>
-          <TouchableOpacity activeOpacity={1} style={{flex:1, backgroundColor:"#0f0"}} onPress={(e) => { this.close(); }}>
+        <Animated.View style={[styles.fullscreen, {left: this.state.leftOffset, overflow:"hidden"}]}>
+          <TouchableOpacity activeOpacity={1} style={{flex:1}} onPressIn={(e) => { this.close(); }}>
             <View pointerEvents={this.state.open ? 'none' : undefined} style={{flex:1}}>
               {this.props.content}
             </View>

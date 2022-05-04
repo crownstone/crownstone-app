@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import {Component, useEffect, useState} from 'react';
 import {
-  Animated, Platform, SafeAreaView, StatusBar,
+  Animated, Platform, SafeAreaView,
   View, Text, AppState, NativeEventSubscription
 } from "react-native";
 
@@ -84,7 +84,6 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar translucent={true} barStyle={this.props.lightStatusbar ? "light-content" : "dark-content"} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>

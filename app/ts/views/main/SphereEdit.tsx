@@ -13,7 +13,6 @@ import {
 import { ListEditableItems } from '../components/ListEditableItems'
 import { IconButton }        from '../components/IconButton'
 import { background, colors } from "./../styles";
-import { Permissions }       from "../../backgroundProcesses/PermissionManager";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
 import { core }              from "../../Core";

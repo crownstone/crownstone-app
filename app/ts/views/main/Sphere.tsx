@@ -21,6 +21,10 @@ import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
+import {SphereOverviewButton} from "./buttons/SphereOverviewButton";
+import {AddIconSVG} from "./buttons/AddItemButton";
+import {CustomButtom} from "./buttons/CustomButtom";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -88,7 +92,10 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
       />
       { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       <View style={{position:'absolute', top:0, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-        { arrangingRooms ? <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> : <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/> }
+        { arrangingRooms ?
+          <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
+          <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/>
+        }
       </View>
     </View>
   );
@@ -104,25 +111,41 @@ function SphereHeader({sphere, openSideMenu}) {
       <TouchableOpacity onPress={() => { openSideMenu() }}>
         <Text style={styles.viewHeader}>{sphere.config.name}</Text>
       </TouchableOpacity>
+      <View style={{flex:1}} />
+      <EditTopButton callback={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} />
     </React.Fragment>
+  );
+}
+
+
+export function EditTopButton(props) {
+  return (
+    <CustomButtom
+      visible={true}
+      position="custom"
+      icon={"md-create"}
+      iconScale={1.3}
+      iconColor={colors.csBlue.hex}
+      style={{position:'absolute', top:-10, right:10}}
+      testID={props.testId}
+      callback={props.callback}
+      highlight={props.highlight ?? false}
+    />
   )
 }
 
 
 function ArrangingHeader({viewId, setRearrangeRooms}) {
-  let buttonStyle : TextStyle = {
-    fontSize:16, fontWeight: 'bold', color: colors.white.hex,
-  }
   return (
     <React.Fragment>
       <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:20}}>
-        <Text style={buttonStyle}>Cancel</Text>
+        <Text style={styles.viewButton}>Cancel</Text>
       </TouchableOpacity>
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
         <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{"Move the rooms!"}</Text>
       </View>
       <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:20}}>
-        <Text style={buttonStyle}>Save</Text>
+        <Text style={styles.viewButton}>Save</Text>
       </TouchableOpacity>
     </React.Fragment>
   )

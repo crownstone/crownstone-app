@@ -9,7 +9,6 @@ import {
   Animated, BackHandler, Keyboard,
   KeyboardAvoidingView,
   Platform,
-  StatusBar,
   View
 } from "react-native";
 

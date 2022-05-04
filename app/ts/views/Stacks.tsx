@@ -74,6 +74,11 @@ export const Stacks = {
                 { component: {id: 'ScenesOverview', name: "ScenesOverview"} },
               ],
               options: {
+                topBar: { visible: false, drawBehind: true },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind:true
+                },
                 bottomTab: {
                   id: 'bottomTab_scenes',
                   testID: 'bottomTab_scenes',
@@ -86,24 +91,16 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {id: 'MessageInbox',name: "MessageInbox"} },
-              ],
-              options: {
-                bottomTab: {
-                  id: 'bottomTab_messages',
-                  testID: 'bottomTab_messages',
-                  text: Languages.get("Tabs","Messages")(),
-                  icon: require('../../assets/images/icons/mail.png'),
-                }
-              }
-            }
-          },
-          {
-            stack: {
-              children: [
                 { component: {id: 'SettingsOverview',name: "SettingsOverview"} },
               ],
               options: {
+                topBar: {
+
+                },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind: true
+                },
                 bottomTab: {
                   id: 'bottomTab_settings',
                   testID: 'bottomTab_settings',

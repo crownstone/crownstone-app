@@ -13,6 +13,7 @@ import {CancelButton} from "../views/components/topbar/CancelButton";
 import {OverlayManager} from "../backgroundProcesses/OverlayManager";
 import {NavigationUtil, topBarComponentNames} from "../util/navigation/NavigationUtil";
 import React from "react";
+import {IconShowcase} from "./development/IconShowcase";
 
 
 let viewsLoaded = false;
@@ -48,7 +49,6 @@ Navigation.events().registerAppLaunchedListener(() => {
     statusBar: {
       visible:    true,
       drawBehind: true,
-      style:      'dark'
     },
     topBar: {
       drawBehind: false,

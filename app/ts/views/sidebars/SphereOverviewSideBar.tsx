@@ -22,35 +22,41 @@ export function SphereOverviewSideBar(props) {
       {amountOfSpheres > 1 &&
         <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
 
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.navigate( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.navigate( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} />
+      <SideMenuLink closeSideMenu={props.closeSideMenu}
+                    label={"Messages"}
+                    callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+                    iconImage={<Image source={require('../../../assets/images/icons/mail.png')} style={{tintColor: colors.white.hex}} />}
+      />
       <View style={{height:50}}/>
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Settings"}      callback={() => { NavigationUtil.navigate( "SphereEdit", { sphereId: SPHERE_ID_STORE.activeSphereId }) }} size={25} icon={'ios-cog'}         />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Settings"}      callback={() => { NavigationUtil.launchModal( "SphereEdit", { sphereId: SPHERE_ID_STORE.activeSphereId }) }} size={25} icon={'ios-cog'}         />
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"}     callback={() => { }} size={22} icon={'ios-bug'}         />
 
       <View style={{flex:1}}/>
       <Text style={{color: colors.white.rgba(0.5)}}>{"App v"+DeviceInfo.getReadableVersion()}</Text>
+      <View style={{height: tabBarHeight + 5}} />
     </View>
   );
 }
 
 
-function SideMenuLink({ label, callback, icon, size, closeSideMenu }) {
+function SideMenuLink(props) {
   let linkStyle : TextStyle = {
     color: colors.white.hex,
     fontSize: 20,
     fontWeight: '400',
-    paddingLeft:10,
+    paddingLeft:15,
   }
   return (
     <TouchableOpacity style={{flexDirection:'row', height:50, alignItems:'center'}} onPress={() => {
-      closeSideMenu();
-      callback();
+      props.closeSideMenu();
+      props.callback();
     }}>
       <View style={{width: 25, height:50, justifyContent:'center', alignItems:'center'}}>
-        <Icon name={icon} color={colors.white.hex} size={size} />
+        {props.iconImage ?? <Icon name={props.icon} color={colors.white.hex} size={props.size} /> }
       </View>
-      <Text style={linkStyle}>{label}</Text>
+      <Text style={linkStyle}>{props.label}</Text>
     </TouchableOpacity>
   );
 }

@@ -18,12 +18,13 @@ export class Separator extends Component<any, any> {
     if (this.props.opacity !== undefined && this.props.opacity !== null) {
       opacity = this.props.opacity;
     }
+
     if (this.props.fullLength === true)
-      return <View style={[styles.separator,{ backgroundColor: this.props.color || colors.black.rgba(opacity*0.25) }]} />;
+      return <View style={[styles.separator,{ backgroundColor: this.props.color || styles.separator.color.rgba(opacity*0.25) }]} />;
     else {
       return (
         <View style={{backgroundColor:'#fff'}}>
-          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end', backgroundColor: this.props.color || colors.black.rgba(opacity*0.25)}]}/>
+          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end', backgroundColor: this.props.color || styles.separator.color.rgba(opacity*0.25)}]}/>
         </View>
       );
     }

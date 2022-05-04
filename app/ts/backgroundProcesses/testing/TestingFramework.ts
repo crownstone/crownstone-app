@@ -11,6 +11,8 @@ export const TestingFramework = {
   SSE: null,
 
   async initialize(json) {
+    if (!json) { return; }
+
     try {
       CloudAddresses.cloud_v1                 = json.cloud_v1          || CLOUD_ADDRESS;
       CloudAddresses.cloud_v2                 = json.cloud_v2          || CLOUD_V2_ADDRESS;

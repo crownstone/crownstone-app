@@ -4,7 +4,7 @@ import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButto
 import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
 import {statusBarHeight, topBarHeight} from "../views/styles";
-import { Navigation } from "react-native-navigation";
+import {Navigation, Options} from "react-native-navigation";
 
 interface topBarOptionConfig {
   backButton?:        boolean,
@@ -23,7 +23,7 @@ export const TopBarUtil = {
     Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
   },
 
-  getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {
+  getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) : Options {
     if (props === null) { return; }
 
     let leftButtons = [];
@@ -124,7 +124,7 @@ export const TopBarUtil = {
       });
     }
 
-    let results = { topBar: { drawBehind: false } }
+    let results : Options = { topBar: { drawBehind: false } }
 
     if (config.backButton) {
       if (Platform.OS === 'android') {
@@ -135,19 +135,19 @@ export const TopBarUtil = {
     }
 
     if (config.partialUpdate) {
-      results.topBar["title"]        = {text: props.title};
-      results.topBar["rightButtons"] = rightButtons;
-      results.topBar["leftButtons"]  = leftButtons;
+      results.topBar.title        = {text: props.title};
+      results.topBar.rightButtons = rightButtons;
+      results.topBar.leftButtons  = leftButtons;
     }
     else {
-      if (props.title)             { results.topBar["title"]        = {text: props.title}; }
-      if (rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons;        }
-      if (leftButtons.length  > 0) { results.topBar["leftButtons"]  = leftButtons;         }
+      if (props.title)             { results.topBar.title        = {text: props.title}; }
+      if (rightButtons.length > 0) { results.topBar.rightButtons = rightButtons;        }
+      if (leftButtons.length  > 0) { results.topBar.leftButtons  = leftButtons;         }
     }
 
     if (config.clearEmptyButtons) {
-      if (!results.topBar['rightButtons']) { results.topBar['rightButtons'] = []; }
-      if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
+      if (!results.topBar.rightButtons) { results.topBar.rightButtons = []; }
+      if (!results.topBar.leftButtons)  { results.topBar.leftButtons  = []; }
     }
 
     // console.log("Setting Topbar Options", JSON.stringify(results, null, 2))

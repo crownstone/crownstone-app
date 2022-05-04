@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform, StatusBar,
+  Platform,
   View
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
@@ -23,6 +23,7 @@ import {
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 import { CustomKeyboardAvoidingView } from "./CustomKeyboardAvoidingView";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 
 export class Background extends Component<{
@@ -61,7 +62,7 @@ export class Background extends Component<{
     let overrideStyle = this.props.style || {};
 
     return (
-      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+      <SafeAreaProvider style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
@@ -74,7 +75,7 @@ export class Background extends Component<{
             { hasTabBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
           </View>
         </CustomKeyboardAvoidingView>
-      </View>
+      </SafeAreaProvider>
     );
   }
 }

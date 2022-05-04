@@ -4,8 +4,8 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ScenesOverview", key)(a,b,c,d,e);
 }
 import * as React                 from 'react';
-import { Text, View, Alert, ScrollView } from "react-native";
-import { screenWidth, colors, background } from "../styles";
+import {Text, View, Alert, ScrollView, TouchableOpacity} from "react-native";
+import {screenWidth, colors, background, styles, tabBarHeight, topBarHeight, statusBarHeight} from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../Core";
 import { TopBarUtil }             from "../../util/TopBarUtil";
@@ -22,6 +22,13 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { ScaledImage } from "../components/ScaledImage";
 import { RoundedBackground } from "../components/RoundedBackground";
+import { Background } from "../components/Background";
+import {Icon} from "../components/Icon";
+import {EditTopButton} from "../main/Sphere";
+import {Get} from "../../util/GetUtil";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {BlurView} from "@react-native-community/blur";
+import {NavBarBlur} from "../components/NavBarBlur";
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
@@ -76,32 +83,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
     );
   }
 
-  navigationButtonPressed({ buttonId }) {
-    let updateTopBar = () => {
-      getTopBarProps(this.props, this.state);
-      TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
-    }
-    if (buttonId === 'edit') {
-      let state = core.store.getState();
-      let activeSphereId = state.app.activeSphere;
-      if (Permissions.inSphere(activeSphereId).canCreateScenes == false) {
-        Alert.alert(lang("You_do_not_have_permissio"),lang("Ask_an_admin_in_your_Sphe"), [{text:lang("OK")}]);
-        return;
-      }
-
-      this.localEventBus.emit("ChangeInEditMode", true);
-      this.setState({ editMode: true  }, updateTopBar);
-      BackButtonHandler.override(className, () => {
-        BackButtonHandler.clearOverride(className);
-        this.localEventBus.emit("ChangeInEditMode", false);
-        this.setState({ editMode: false  }, updateTopBar);
-      })
-    }
-    if (buttonId === 'done') {
-      this.localEventBus.emit("ChangeInEditMode", false);
-      BackButtonHandler.clearOverride(className);
-      this.setState({ editMode: false }, updateTopBar); }
-  }
 
   componentDidMount(): void {
     // tell the component exactly when it should redraw
@@ -151,9 +132,33 @@ export class ScenesOverview extends LiveComponent<any, any> {
     return sceneContent;
   }
 
+  setEditMode = () => {
+    let state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    if (Permissions.inSphere(activeSphereId).canCreateScenes == false) {
+      Alert.alert(lang("You_do_not_have_permissio"),lang("Ask_an_admin_in_your_Sphe"), [{text:lang("OK")}]);
+      return;
+    }
+
+    this.localEventBus.emit("ChangeInEditMode", true);
+    this.setState({ editMode: true  });
+    BackButtonHandler.override(className, () => {
+      BackButtonHandler.clearOverride(className);
+      this.localEventBus.emit("ChangeInEditMode", false);
+      this.setState({ editMode: false  });
+    })
+  }
+
+  endEditMode = () => {
+    this.localEventBus.emit("ChangeInEditMode", false);
+    BackButtonHandler.clearOverride(className);
+    this.setState({ editMode: false });
+  }
+
   render() {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
+    let sphere = Get.sphere(activeSphereId);
 
     let content;
 
@@ -168,41 +173,37 @@ export class ScenesOverview extends LiveComponent<any, any> {
         let scenesComponents = this.getScenes(scenes, activeSphereId);
         // Permissions.inSphere(activeSphereId).canCreateScenes
         content = (
-          <View style={{ flexGrow: 1, alignItems:'center' }}>
-            <ScrollView contentContainerStyle={{flexGrow:1}}>
-              <View style={{flexGrow: 1, paddingVertical: 15, width: screenWidth, alignItems:'center'}}>
-                <SlideFadeInView visible={this.state.editMode && Permissions.inSphere(activeSphereId).canCreateScenes} height={95}>
-                  <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphereId }) }} isFirst={false} />
-                </SlideFadeInView>
-                <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
-                  <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth}}>
-                    <View style={{flex:1}} />
-                    <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
-                    <ScaledImage source={require("../../../assets/images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
-                  </View>
-                </SlideFadeInView>
-                {scenesComponents}
+          <View style={{flexGrow: 1,paddingTop:topBarHeight - statusBarHeight, paddingVertical: 15, width: screenWidth, alignItems:'center', paddingBottom: tabBarHeight+10}}>
+            <SlideFadeInView visible={this.state.editMode && Permissions.inSphere(activeSphereId).canCreateScenes} height={95}>
+              <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphereId }) }} isFirst={false} />
+            </SlideFadeInView>
+            <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
+              <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth}}>
+                <View style={{flex:1}} />
+                <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
+                <ScaledImage source={require("../../../assets/images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
               </View>
-            </ScrollView>
-            {/*<DraggableFlatList*/}
-            {/*  showsVerticalScrollIndicator={false}*/}
-            {/*  data={["add", ...this.state.data, "spacer"]}*/}
-            {/*  onRelease={() => { this.localEventBus.emit("END_DRAG" );}}*/}
-            {/*  renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}*/}
-            {/*  keyExtractor={(item : any, index) => `draggable-item-${item}`}*/}
-            {/*  onDragEnd={({ data }) => {*/}
-            {/*    let dataToUse = [];*/}
-            {/*    for (let i = 0; i < data.length; i++) {*/}
-            {/*      if (scenes[data[i]] !== undefined) {*/}
-            {/*        dataToUse.push(data[i]);*/}
-            {/*      }*/}
-            {/*    }*/}
-            {/*    this.setState({ data: dataToUse }); this.sortedList.update(dataToUse as string[])}}*/}
-            {/*  activationDistance={10}*/}
-            {/*  style={{paddingTop: hintShown ? 10 : 20}}*/}
-            {/*/>*/}
+            </SlideFadeInView>
+            {scenesComponents}
           </View>
-         );
+        );
+          {/*<DraggableFlatList*/}
+          {/*  showsVerticalScrollIndicator={false}*/}
+          {/*  data={["add", ...this.state.data, "spacer"]}*/}
+          {/*  onRelease={() => { this.localEventBus.emit("END_DRAG" );}}*/}
+          {/*  renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}*/}
+          {/*  keyExtractor={(item : any, index) => `draggable-item-${item}`}*/}
+          {/*  onDragEnd={({ data }) => {*/}
+          {/*    let dataToUse = [];*/}
+          {/*    for (let i = 0; i < data.length; i++) {*/}
+          {/*      if (scenes[data[i]] !== undefined) {*/}
+          {/*        dataToUse.push(data[i]);*/}
+          {/*      }*/}
+          {/*    }*/}
+          {/*    this.setState({ data: dataToUse }); this.sortedList.update(dataToUse as string[])}}*/}
+          {/*  activationDistance={10}*/}
+          {/*  style={{paddingTop: hintShown ? 10 : 20}}*/}
+          {/*/>*/}
        }
      }
      else {
@@ -210,18 +211,48 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <RoundedBackground
+      <Background
         image={background.main}
-        style={{borderTopRightRadius:SceneConstants.roundness, borderTopLeftRadius:SceneConstants.roundness, backgroundColor: colors.white.hex}}
+        fullScreen={true}
         hideOrangeLine={true}
         hideNotifications={true}
         testID={'ScenesOverview'}
       >
-        {content}
-      </RoundedBackground>
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          {content}
+        </ScrollView>
+        <BlurView
+          blurType="xlight"
+          blurAmount={4}
+          style={{position:'absolute', top:0, height: topBarHeight, width:screenWidth, paddingBottom: 10}}
+        >
+          <View style={{flex:1}} />
+          <SceneHeader editMode={this.state.editMode} setEditMode={this.setEditMode} endEditMode={this.endEditMode} />
+        </BlurView>
+        <NavBarBlur xlight line/>
+      </Background>
     );
   }
 }
+
+function SceneHeader({editMode, setEditMode, endEditMode}) {
+  return (
+    <View style={{flexDirection:'row'}}>
+      <Text style={styles.viewHeader}>{'Scenes'}</Text>
+      <View style={{flex:1}} />
+      {editMode ?
+        <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end', paddingBottom: 4}} onPress={endEditMode}>
+          <Text style={{...styles.viewButton, color: colors.csBlue.hex}}>Done</Text>
+        </TouchableOpacity>
+        :
+        <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end', paddingBottom: 4}} onPress={setEditMode}>
+          <Icon name={'md-create'} size={25} color={colors.csBlue.hex}/>
+        </TouchableOpacity>
+      }
+    </View>
+  );
+}
+
 
 
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
+import {Dimensions, PixelRatio, Platform, StyleSheet, TextStyle} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 import { LOG } from "../logging/Log";
@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
   },
   listView: {
     flexDirection: 'row',
-    backgroundColor: colors.white.hex,
+    backgroundColor: colors.white.rgba(0.5),
     paddingLeft:15,
     paddingRight:15,
     alignItems: 'center',
@@ -218,6 +218,7 @@ export const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: colors.black.rgba(0.25),
+    color: colors.black
   },
   topExplanation: {
     paddingTop:20
@@ -321,9 +322,14 @@ export const styles = StyleSheet.create({
   legendText: {fontSize:12, textAlign:'center', paddingTop:10},
   viewHeader: { fontSize: 30, fontWeight: 'bold', paddingLeft: 15, color: colors.csBlue.hex},
   viewHeaderLight: { fontSize: 30, fontWeight: 'bold', paddingLeft: 15, color: colors.white.hex},
+  viewButton: { fontSize:16, fontWeight: 'bold', color: colors.white.hex },
 });
 
 let textColor = colors.csBlueDark;
+
+export const menuStyles = StyleSheet.create({
+
+})
 
 
 export const deviceStyles = StyleSheet.create({
