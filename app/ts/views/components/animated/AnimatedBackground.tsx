@@ -19,6 +19,7 @@ import {
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 interface AnimatedBackgroundProps {
   hideNotifications?:        boolean,
@@ -33,6 +34,7 @@ interface AnimatedBackgroundProps {
   fullScreen?:        boolean,
   hasTopBar?:         boolean,
   image?:             any,
+  viewWrapper?:       boolean,
   testID?:            string,
   topImage?:          any,
   keyboardAvoid?:     boolean,
@@ -79,8 +81,9 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
+    let Wrapper = this.props.viewWrapper ? View : SafeAreaProvider;
     return (
-      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+      <Wrapper style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
@@ -99,7 +102,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
             { this.props.children }
           </View>
         </CustomKeyboardAvoidingView>
-      </View>
+      </Wrapper>
     );
   }
 }

@@ -303,10 +303,10 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
       return (
         <AnimatedBackground
+          viewWrapper
           image={backgroundOverride}
           lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
           hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}
-          hideOrangeLine
           hasTopBar={false}
           testID={"SphereOverview"}
         >
@@ -316,7 +316,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
               <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
             </View>
           </SafeAreaView>
-          <NavBarBlur />
+          { this.state.zoomLevel === ZOOM_LEVELS.room && !this.state.arrangingRooms && <NavBarBlur /> }
         </AnimatedBackground>
       );
     }
@@ -336,6 +336,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 export function SphereOverview(props) {
   let sideBarRef = useRef(null);
+
 
   return (
     <SideBarView

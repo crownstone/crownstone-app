@@ -3,6 +3,7 @@ import { Component } from "react";
 import { Animated, TouchableOpacity, View } from "react-native";
 import { screenWidth, styles } from "../../styles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import {InvisiblePressable} from "../InvisiblePressable";
 
 const DURATION = 300;
 
@@ -31,16 +32,16 @@ export class SideBarView extends Component<any, any> {
 
   render() {
     return (
-      <SafeAreaProvider style={{flex:1}}>
+      <SafeAreaProvider style={{flex:1}} >
         <View style={styles.fullscreen}>
           <View style={{flex:1}}>{this.props.sideMenu}</View>
         </View>
         <Animated.View style={[styles.fullscreen, {left: this.state.leftOffset, overflow:"hidden"}]}>
-          <TouchableOpacity activeOpacity={1} style={{flex:1}} onPressIn={(e) => { this.close(); }}>
-            <View pointerEvents={this.state.open ? 'none' : undefined} style={{flex:1}}>
+          <InvisiblePressable onPressIn={() => { this.close(); }} disabled={!this.state.open}>
+            <View pointerEvents={this.state.open ? 'none' : 'auto'} style={{flex:1}}>
               {this.props.content}
             </View>
-          </TouchableOpacity>
+          </InvisiblePressable>
         </Animated.View>
       </SafeAreaProvider>
     );
