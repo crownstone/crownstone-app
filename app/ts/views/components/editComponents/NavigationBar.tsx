@@ -6,13 +6,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  TouchableHighlight,
   Text,
-  View
+  View, TouchableOpacity
 } from 'react-native';
 
 import { Icon } from '../Icon';
-import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE, menuStyles} from '../../styles'
 import { core } from "../../../Core";
 
 
@@ -58,33 +57,33 @@ export class NavigationBar extends Component<any, any> {
 
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
-      outputRange: ['rgba(255, 255, 255, 1.0)',  colors.green.rgba(0.8)]
+      outputRange: [menuStyles.listView.backgroundColor,  colors.green.rgba(0.8)]
     });
 
     let fontColor = colors.black.hex;
 
     if (this.props.disabled) {
-      backgroundColor = colors.lightGray.rgba(0.3)
-      fontColor = colors.black.rgba(0.3);
+      backgroundColor = menuStyles.disabledListView.backgroundColor;
+      fontColor = menuStyles.disabledListView.color;
     }
 
     let content = (
-      <Animated.View style={[styles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
+      <Animated.View style={[menuStyles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
         {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
         {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
         {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
 
         {this.props.value !== undefined && this.props.valueRight !== true ?
-          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listText, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
+          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[menuStyles.listText, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
           :
-          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
+          <Text numberOfLines={this.props.numberOfLines ?? 1} style={[menuStyles.listTextLarge, this.props.labelStyle, this.props.style, {color: fontColor}]}>{this.props.label}</Text>
         }
-        {this.props.subtext ? <Text style={[{fontSize:12, color:colors.iosBlue.hex}, this.props.subtextStyle, {color: fontColor}]}>{this.props.subtext}</Text> : undefined}
+        {this.props.subtext ? <Text style={[menuStyles.subText, this.props.subtextStyle, {color: fontColor}]}>{this.props.subtext}</Text> : undefined}
         {this.props.value !== undefined ?
           this.props.valueRight ?
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
             :
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
           :
           <View style={{flex:1}} />
         }
@@ -103,9 +102,9 @@ export class NavigationBar extends Component<any, any> {
     }
 
     return (
-      <TouchableHighlight onPress={() => { this.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
+      <TouchableOpacity onPress={() => { this.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
         {content}
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 }

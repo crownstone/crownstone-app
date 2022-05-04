@@ -21,6 +21,8 @@ import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SliderBar } from "../components/editComponents/SliderBar";
 import {DataUtil} from "../../util/DataUtil";
+import {Icon} from "../components/Icon";
+import {NavBarBlur} from "../components/NavBarBlur";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -93,8 +95,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       type: 'dropdown',
       label: lang("Language"),
       buttons: false,
-      mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
-                              buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+      icon: <Icon name="md-globe" size={28} color={ colors.green.hex } />,
       value: state.user.language || Languages.defaultLanguage,
       dropdownHeight: 130,
       items: dropDownItems,
@@ -113,7 +114,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       value: state.app.tapToToggleEnabled,
       type: 'switch',
       testID: 'tapToToggle_switch',
-      mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      icon: <Icon name="md-color-wand" size={25} color={colors.purple.hex} />,
       callback:(newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
@@ -130,7 +131,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           <SliderBar
             label={ lang("Sensitivity")}
             sliderHidden={true}
-            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}} />}
+            icon={<Icon name="ios-options" size={25} color={colors.darkPurple.hex} />}
             callback={(value) => {
               let deviceId = Util.data.getCurrentDeviceId(state);
               core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: -value}})
@@ -159,7 +160,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
       testID:"useIndoorLocalization",
-      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      icon: <Icon name="c1-locationPin1" size={22} color={colors.blue.hex}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
@@ -211,10 +212,11 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={!this.props.modal} testID={"SettingsApp"}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsApp"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
+        <NavBarBlur xlight />
       </BackgroundNoNotification>
     );
   }

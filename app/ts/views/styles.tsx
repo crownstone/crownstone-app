@@ -218,7 +218,6 @@ export const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: colors.black.rgba(0.25),
-    color: colors.black
   },
   topExplanation: {
     paddingTop:20
@@ -328,7 +327,50 @@ export const styles = StyleSheet.create({
 let textColor = colors.csBlueDark;
 
 export const menuStyles = StyleSheet.create({
-
+  disabledListView: {
+    backgroundColor: colors.lightGray.rgba(0.5),
+    color: colors.black.rgba(0.3)
+  },
+  listView: {
+    flexDirection: 'row',
+    backgroundColor: colors.white.rgba(0.7),
+    paddingLeft:15,
+    paddingRight:15,
+    alignItems: 'center',
+  },
+  collapsableContent: {
+    fontSize: 15,
+    paddingLeft:25,
+    paddingRight: 20,
+    paddingTop: 10
+  },
+  listText:{
+    width:(1/3)*screenWidth,
+    fontSize: 16,
+  },
+  valueText:{
+    fontSize: 16,
+  },
+  listTextLarge:{
+    flex:10,
+    fontSize: 16,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: colors.white.hex,
+  },
+  subText: {
+    fontSize:12,
+    color:colors.iosBlue.hex
+  },
+  explanationText: {
+    fontSize:13,
+    color: colors.darkGray.hex,
+  },
+  largeExplanationText: {
+    fontSize:15,
+    color: colors.darkGray.hex,
+  }
 })
 
 
@@ -426,7 +468,7 @@ export const overviewStyles = StyleSheet.create({
 
 export const background = {
   main                   : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
-  menu                   : require('../../assets/images/backgrounds/menuBackground.jpg'),
+  menu                   : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'), //require('../../assets/images/backgrounds/menuBackground.jpg'),
   lightBlurLighter       : require('../../assets/images/backgrounds/lightBackground2_blur_lighter.jpg'),
   lightBlurBW            : require('../../assets/images/backgrounds/lightBackground2_blur_bw.jpg'),
   detailsDark            : require('../../assets/images/backgrounds/darkBackground4.jpg'),

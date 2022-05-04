@@ -49,7 +49,7 @@ export class SeparatedItemList extends Component<any, any> {
         }
       }
       else if (isItemEditable == true && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
-        renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity} />);
+        renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
       }
 
       renderItems.push(this.props.renderer(item, index, itemId));
@@ -57,7 +57,7 @@ export class SeparatedItemList extends Component<any, any> {
       if (nextItem === undefined) {
         if (isItemEditable) {
           if (this.props.bottomSeparator !== false && this.props.boundingSeparators !== false) {
-            renderItems.push(<Separator key={index + 'bottom_separator'} fullLength={true}  opacity={this.props.boundingOpacity || this.props.bottomOpacity} />);
+            renderItems.push(<Separator key={index + 'bottom_separator'} fullLength={true} />);
           }
         }
       }
@@ -66,7 +66,7 @@ export class SeparatedItemList extends Component<any, any> {
 
     if (Array.isArray(items)) {
       if (items.length == 0 && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
-        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity}/>);
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
       }
 
       items.forEach((item, index) => {
@@ -82,7 +82,7 @@ export class SeparatedItemList extends Component<any, any> {
     else if (typeof items === 'object') {
       let keys = Object.keys(items).sort();
       if (keys.length == 0 && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
-        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity} />);
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
       }
       keys.forEach((itemId, index) => {
         iterator(

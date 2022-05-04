@@ -5,7 +5,7 @@ import * as React from 'react';
 import {Alert, Linking, Platform, ScrollView, Text, TouchableHighlight, View} from "react-native";
 
 import {ListEditableItems} from '../components/ListEditableItems'
-import {background, colors, styles} from "../styles";
+import {background, colors, screenWidth, styles, tabBarHeight} from "../styles";
 
 import DeviceInfo from 'react-native-device-info';
 import {core} from "../../Core";
@@ -16,6 +16,9 @@ import {LOGe} from "../../logging/Log";
 import {IconButton} from "../components/IconButton";
 import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {getDevAppItems} from "./dev/SettingsDeveloper";
+import {BlurView} from "@react-native-community/blur";
+import {NavBarBlur} from "../components/NavBarBlur";
+import {Icon} from "../components/Icon";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
@@ -56,7 +59,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id: 'My Account',
       label: lang("My_Account"),
       testID: 'myAccount',
-      mediumIcon: <IconButton name={'ios-body'} buttonSize={40} size={30} color={colors.white.hex} buttonStyle={{backgroundColor:colors.purple.hex}}/>,
+      icon: <Icon name={'ios-body'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
       callback: () => {
         NavigationUtil.navigate( "SettingsProfile");
@@ -66,7 +69,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       id:'Privacy',
       label: lang("Privacy"),
       testID: 'privacy',
-      mediumIcon: <IconButton name={'ios-eye'} buttonSize={40} size={32} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkPurple.hex}}/>,
+      icon: <Icon name={'ios-eye'} size={32} color={colors.darkPurple.hex} />,
       type: 'navigation',
       callback:() => {
         NavigationUtil.navigate( "SettingsPrivacy");
@@ -80,7 +83,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("App_Settings"),
       type: 'navigation',
       testID: 'appSettings',
-      mediumIcon: <IconButton name={'ios-cog'} buttonSize={40} size={35} color={colors.white.hex} buttonStyle={{backgroundColor:colors.green.hex}}/>,
+      icon: <Icon name={'ios-cog'} size={35} color={colors.green.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsApp");
       }
@@ -92,7 +95,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("Diagnostics"),
       type:'navigation',
       testID: 'diagnostics',
-      mediumIcon: <IconButton name={'md-analytics'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.csBlue.hex}}/>,
+      icon: <Icon name={'md-analytics'} size={28} color={colors.csBlue.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsDiagnostics");
       }
@@ -102,7 +105,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("Help"),
       type:'navigation',
       testID:'help',
-      mediumIcon: <IconButton name={'ios-help-circle'} buttonSize={40} size={30} color={colors.white.hex} buttonStyle={{backgroundColor:colors.csBlueLight.hex}}/>,
+      icon: <Icon name={'ios-help-circle'} size={30} color={colors.csBlueLight.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsFAQ");
       }
@@ -114,7 +117,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("Log_Out"),
       type:'button',
       testID:'logOut',
-      mediumIcon: <IconButton name={'md-log-out'} buttonSize={40} size={32} color={colors.white.hex} buttonStyle={{backgroundColor:colors.menuRed.hex}}/>,
+      icon: <Icon name={'md-log-out'} size={28} color={colors.menuRed.hex} />,
       callback: () => {
         Alert.alert(
           lang("_Log_out__Are_you_sure__I_header"),
@@ -133,7 +136,8 @@ export class SettingsOverview extends LiveComponent<any, any> {
         type:'button',
         label: lang("Force_Quit"),
         testID:'forceQuit',
-        mediumIcon:  <IconButton name={'md-remove-circle'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkRed.hex}}/>,
+        color: colors.darkRed.hex,
+        icon:  <Icon name={'md-remove-circle'} size={28} color={colors.darkRed.hex} />,
         callback: () => {
           Alert.alert(
             lang("_Are_you_sure___Crownston_header"),
@@ -161,10 +165,6 @@ export class SettingsOverview extends LiveComponent<any, any> {
     }
 
 
-    items.push({type:'explanation',
-      __item: (
-        <View style={{flex:1}} />
-      )});
     items.push({
       type: 'explanation',
       __item: (
@@ -188,11 +188,11 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} testID={"SettingsOverview"}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsOverview"}>
         <ScrollView testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
-          <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
         </ScrollView>
+        <NavBarBlur />
       </BackgroundNoNotification>
     );
   }

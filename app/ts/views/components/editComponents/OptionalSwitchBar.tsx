@@ -13,15 +13,15 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { styles, colors, screenWidth } from '../../styles'
+import {styles, colors, screenWidth, menuStyles} from '../../styles'
 import { Icon } from '../Icon'
 
 export class OptionalSwitchBar extends Component<any, any> {
   render() {
     return (
-      <View style={[styles.listView, {height:this.props.barHeight, paddingRight:0}]}>
+      <View style={[menuStyles.listView, {height:this.props.barHeight, paddingRight:0}]}>
         {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
-        <Text style={styles.listTextLarge}>{this.props.label}</Text>
+        <Text style={menuStyles.listTextLarge}>{this.props.label}</Text>
         <View style={{flex:1}} />
         { this.props.value !== null ?
           <Switch

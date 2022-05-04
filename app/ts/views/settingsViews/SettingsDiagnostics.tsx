@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { background, colors, deviceStyles, screenWidth } from "../styles";
+import {background, colors, deviceStyles, screenWidth, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -28,6 +28,7 @@ import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import {NavBarBlur} from "../components/NavBarBlur";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -192,13 +193,14 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu}>
+      <BackgroundNoNotification image={background.menu} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: 30 }}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: tabBarHeight + 30 }}>
             <Text style={deviceStyles.header}>{ lang("Diagnostics") }</Text>
             { this.getContent() }
           </View>
         </ScrollView>
+        <NavBarBlur xlight />
       </BackgroundNoNotification>
     );
   }

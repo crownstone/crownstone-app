@@ -14,7 +14,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE, menuStyles} from "../../styles";
 
 export class SwitchBar extends Component<any, any> {
 
@@ -68,16 +68,16 @@ export class SwitchBar extends Component<any, any> {
   }
 
   _getButton(navBarHeight, fontColor) {
-    let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle];
+    let style = [menuStyles.listView, {height: navBarHeight}, this.props.wrapperStyle];
 
     if (this.props.disabled) {
       style.push({backgroundColor: colors.lightGray.rgba(0.3)})
-      fontColor = colors.black.rgba(0.3);
+      fontColor = menuStyles.disabledListView.color;
     }
 
     let helpColor = colors.black.rgba(0.5);
     if (this.props.experimental) {
-      style =  [styles.listView,{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, backgroundColor:"transparent"}];
+      style =  [menuStyles.listView,{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, backgroundColor:"transparent"}];
       helpColor = colors.white.hex;
     }
 
@@ -87,7 +87,7 @@ export class SwitchBar extends Component<any, any> {
         {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
         {this.props.icon       !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
         {this.props.iconIndent === true ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]} /> : undefined }
-        <Animated.Text style={[styles.listTextLarge, this.props.style, {color: fontColor}]}>{this.props.label}</Animated.Text>
+        <Animated.Text style={[menuStyles.listTextLarge, this.props.style, {color: fontColor}]}>{this.props.label}</Animated.Text>
         <View style={{flex:1}} />
         {
           this.props.hasHelp ? <TouchableOpacity onPress={() => {this.props.onHelp(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>

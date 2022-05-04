@@ -63,7 +63,7 @@ export class ListOverlay extends LiveComponent<any, any> {
     let items = this.getItems();
     let elements = [];
     if (this.state.separator) {
-      elements.push(<Separator opacity={0.35} key={"listOverlay_Separator_first"}/>)
+      elements.push(<Separator key={"listOverlay_Separator_first"}/>)
     }
     items.forEach((item, i) => {
       let isSelected = this.selection.indexOf(item.id) !== -1;
@@ -94,7 +94,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       );
 
       if (this.state.separator) {
-        elements.push(<Separator opacity={0.35} key={"listOverlay_seperator_" + i}/>)
+        elements.push(<Separator key={"listOverlay_seperator_" + i}/>)
       }
     });
 

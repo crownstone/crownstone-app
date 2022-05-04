@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   View
 } from 'react-native';
-import {styles, screenWidth} from '../../styles'
+import {styles, screenWidth, menuStyles} from '../../styles'
 import { TextEditInput } from './TextEditInput'
 
 export class TextBlob extends Component<any, any> {
@@ -28,7 +28,7 @@ export class TextBlob extends Component<any, any> {
 
   render() {
     return (
-      <View style={[styles.listView, {height:this.props.barHeight, paddingTop:5}]}>
+      <View style={[menuStyles.listView, {height:this.props.barHeight, paddingTop:5}]}>
         <TextEditInput
           submitOnEnter={true}
           blurOnSubmit={true}

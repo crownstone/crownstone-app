@@ -8,13 +8,13 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   
   DatePickerIOS,
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
 import { SlideFadeInView }  from '../animated/SlideFadeInView'
-import { styles} from '../../styles'
+import {menuStyles, styles} from '../../styles'
 
 
 export class TimePicker extends Component<any, any> {
@@ -29,12 +29,12 @@ export class TimePicker extends Component<any, any> {
     };
     return (
       <View>
-        <TouchableHighlight onPress={() => {this.props.setActiveElement()}}>
-          <View style={[styles.listView, {height:this.props.barHeight}]}>
-            <Text style={[styles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
+        <TouchableOpacity onPress={() => {this.props.setActiveElement()}}>
+          <View style={[menuStyles.listView, {height:this.props.barHeight}]}>
+            <Text style={[menuStyles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
             <Text style={[{flex:1, fontSize:16, textAlign:'right'}, this.props.valueStyle]}>{formatTime(this.props.value)}</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         <SlideFadeInView height={216} visible={this.props.activeElement == this.props.elementIndex} >
           <View style={{flex:1, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}} >
             <DatePickerIOS
