@@ -30,10 +30,9 @@ export class StatusCommunication extends LiveComponent<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
 
-  amountOfVisibleCrownstones = 0;
   constructor(props) {
     super(props);
-    this.amountOfVisibleCrownstones = this._getAmountOfCrownstones();
+    this.state = {amountOfVisibleCrownstones: this._getAmountOfCrownstones()};
   }
 
   componentDidMount() {
@@ -55,9 +54,8 @@ export class StatusCommunication extends LiveComponent<any, any> {
 
   _checkIfRedrawIsRequired() {
     let amountOfVisibleCrownstones = this._getAmountOfCrownstones();
-    if (this.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
-      this.amountOfVisibleCrownstones = amountOfVisibleCrownstones;
-      this.forceUpdate();
+    if (this.state.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
+      this.setState({amountOfVisibleCrownstones: amountOfVisibleCrownstones})
     }
   }
 
@@ -83,7 +81,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
   }
 
   render() {
-    return <StatusCommunicationRender {...this.props} />
+    return <StatusCommunicationRender {...this.props} amountOfVisibleCrownstones={this.state.amountOfVisibleCrownstones} />
   }
 }
 
@@ -125,22 +123,22 @@ function StatusCommunicationRender(props) {
       </View>
     );
   }
-  else if (this.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+  else if (props.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
     return (
       <View style={generalStyle} pointerEvents={'none'}>
         <View style={inRangeStyle}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisibleCrownstones) }</Text>
+          <Text style={descriptionTextStyle}>{ lang("I_see_",props.amountOfVisibleCrownstones) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
         <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
       </View>
     )
   }
-  else if (this.amountOfVisibleCrownstones > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+  else if (props.amountOfVisibleCrownstones > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
     return (
       <View style={generalStyle} pointerEvents={'none'}>
         <View style={inRangeStyle}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisibleCrownstones) }</Text>
+          <Text style={descriptionTextStyle}>{ lang("I_see_only_",props.amountOfVisibleCrownstones) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
         <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
@@ -161,15 +159,15 @@ function StatusCommunicationRender(props) {
       </View>
     )
   }
-  else if (this.amountOfVisibleCrownstones > 0) {
+  else if (props.amountOfVisibleCrownstones > 0) {
     return (
       <View style={[generalStyle, {flexDirection:'row'}]} pointerEvents={'none'} >
-        <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisibleCrownstones) }</Text>
+        <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",props.amountOfVisibleCrownstones) }</Text>
         <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
       </View>
     )
   }
-  else { //if (this.amountOfVisibleCrownstones === 0) {
+  else { //if (props.amountOfVisibleCrownstones === 0) {
     return (
       <View style={generalStyle} pointerEvents={'none'}>
         <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>

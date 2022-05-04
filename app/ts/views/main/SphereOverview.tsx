@@ -51,7 +51,7 @@ export const SPHERE_ID_STORE = {
 
 export class SphereOverviewContent extends LiveComponent<any, any> {
   static options(props) {
-    return {topBar:{visible:false}, statusBar:{style:'light'}}
+    return {topBar:{visible:false}}
     // getTopBarProps(core.store.getState(), props, {});
     // return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
