@@ -23,20 +23,20 @@ import {Icon} from "../components/Icon";
 import {Background} from "../components/Background";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
-import {SlideFadeInView} from "../components/animated/SlideFadeInView";
+import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
 import { Component, JSXElementConstructor } from "react";
 import { Navigation } from "react-native-navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BackIcon, EditDone, EditIcon, SettingsIcon } from "../components/EditIcon";
+import { BackIcon, EditDone, EditIcon, SettingsIconLeft } from "../components/EditIcon";
 import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 
-export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean }> {
+export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean }> {
   static options(props) {
     getTopBarProps(core.store.getState(), props, true);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
@@ -73,45 +73,46 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     this.state = {
       switchView: false,
       scrollEnabled: true,
-      editMode: false
+      editMode: false,
+      dimMode: false,
     };
 
     this.viewingRemotelyInitial = this.viewingRemotely;
   }
 
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit')  { NavigationUtil.launchModal( "RoomEdit",{ sphereId: this.props.sphereId, locationId: this.props.locationId }); }
-    if (buttonId === 'train') {
-      if (core.store.getState().app.indoorLocalizationEnabled === false) {
-        Alert.alert(
-lang("_Indoor_localization_is_c_header"),
-lang("_Indoor_localization_is_c_body"),
-[{text: lang("_Indoor_localization_is_c_left") }]);
-        return
-      }
-
-      if (this.viewingRemotely === true) {
-        Alert.alert(
-          lang("_Youre_not_in_the_Sphere__header"),
-          lang("_Youre_not_in_the_Sphere__body"),
-          [{ text: lang("_Youre_not_in_the_Sphere__left") }])
-        return
-      }
-
-      const store = core.store;
-      const state = store.getState();
-      const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
-      if (room && room.config.fingerprintRaw) {
-        Alert.alert(
-          lang("_Retrain_Room__Only_do_th_header"),
-          lang("_Retrain_Room__Only_do_th_body"),
-          [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
-            {
-              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
-          ])
-      }
-    }
-  }
+//   navigationButtonPressed({ buttonId }) {
+//     if (buttonId === 'edit')  { NavigationUtil.launchModal( "RoomEdit",{ sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+//     if (buttonId === 'train') {
+//       if (core.store.getState().app.indoorLocalizationEnabled === false) {
+//         Alert.alert(
+// lang("_Indoor_localization_is_c_header"),
+// lang("_Indoor_localization_is_c_body"),
+// [{text: lang("_Indoor_localization_is_c_left") }]);
+//         return
+//       }
+//
+//       if (this.viewingRemotely === true) {
+//         Alert.alert(
+//           lang("_Youre_not_in_the_Sphere__header"),
+//           lang("_Youre_not_in_the_Sphere__body"),
+//           [{ text: lang("_Youre_not_in_the_Sphere__left") }])
+//         return
+//       }
+//
+//       const store = core.store;
+//       const state = store.getState();
+//       const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+//       if (room && room.config.fingerprintRaw) {
+//         Alert.alert(
+//           lang("_Retrain_Room__Only_do_th_header"),
+//           lang("_Retrain_Room__Only_do_th_body"),
+//           [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
+//             {
+//               text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+//           ])
+//       }
+//     }
+//   }
 
 
   componentDidMount() {
@@ -228,19 +229,18 @@ lang("_Indoor_localization_is_c_body"),
     }
     else if (item.type === 'stone') {
       return (
-        <View key={id + '_entry'}>
-          <DeviceEntry
-            sphereId={this.props.sphereId}
-            stoneId={id}
-            viewingRemotely={this.viewingRemotely}
-            setSwitchView={(value) => { this.setState({switchView: value })}}
-            switchView={this.state.switchView}
-            nearestInSphere={id === this.nearestStoneIdInSphere}
-            nearestInRoom={id === this.nearestStoneIdInRoom}
-            toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
-            amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
-          />
-        </View>
+        <DeviceEntry
+          key={id + '_entry'}
+          sphereId={this.props.sphereId}
+          stoneId={id}
+          viewingRemotely={this.viewingRemotely}
+          switchView={this.state.switchView}
+          editMode={this.state.editMode}
+          // nearestInSphere={id === this.nearestStoneIdInSphere}
+          // nearestInRoom={id === this.nearestStoneIdInRoom}
+          // toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
+          // amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+        />
       );
     }
     else if (item.type === 'hub') {
@@ -379,9 +379,6 @@ lang("_Indoor_localization_is_c_body"),
     }
 
     let {itemArray, ids} = this._getItemList(stones, hubs);
-    this._setNearestStoneInRoom(ids);
-    this._setNearestStoneInSphere(sphere.stones);
-
     let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
     if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
       explanation = lang("No_Crownstones_in_reach__")
@@ -441,8 +438,10 @@ lang("_Indoor_localization_is_c_body"),
             </View>
           </SlideFadeInView>
         </SafeAreaView>
+
         <TopBarBlur xxlight>
           <RoomHeader
+            sphereId={this.props.sphereId}
             location={location}
             editMode={this.state.editMode}
             setEditMode={() => { this.setState({editMode: true})}}
@@ -453,56 +452,29 @@ lang("_Indoor_localization_is_c_body"),
       </Background>
     );
   }
-
-  _setNearestStoneInRoom(ids) {
-    let rssi = -1000;
-    for (let i = 0; i < ids.length; i++) {
-      let stoneRssi = StoneAvailabilityTracker.getAvgRssi(ids[i]);
-      if (stoneRssi > rssi) {
-        rssi = stoneRssi;
-        this.nearestStoneIdInRoom = ids[i];
-      }
-    }
-  }
-
-  _setNearestStoneInSphere(allStones) {
-    let rssi = -1000;
-    let stoneIds = Object.keys(allStones);
-    for (let i = 0; i < stoneIds.length; i++) {
-      let stoneRssi = StoneAvailabilityTracker.getAvgRssi(stoneIds[i]);
-      if (stoneRssi > rssi) {
-        rssi = stoneRssi;
-        this.nearestStoneIdInSphere = stoneIds[i];
-      }
-    }
-  }
 }
 
 
 
-function RoomHeader({editMode, setEditMode, endEditMode, location}) {
 
-  if (editMode) {
-    return (
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
-        <View style={{alignItems:'center', justifyContent:'center'}}>
-          <Text style={styles.viewHeader}>{location.config.name}</Text>
-        </View>
-        <SettingsIcon />
-        <View style={{flex:1}} />
-        <EditDone onPress={endEditMode} />
-      </View>
-    )
-  }
 
+function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
+  let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, location: location.id})};
   return (
     <View style={{flexDirection:'row', alignItems:'center'}}>
-      <BackIcon />
-      <View style={{alignItems:'center', justifyContent:'center'}}>
+      <SlideSideFadeInView visible={!editMode} width={53}><BackIcon /></SlideSideFadeInView>
+      <SlideSideFadeInView visible={editMode} width={15} />
+      <TouchableOpacity
+        activeOpacity={editMode ? 0.2 : 1.0}
+        style={{alignItems:'center', justifyContent:'center'}}
+        onPress={launchEditModal}
+      >
         <Text style={styles.viewHeader}>{location.config.name}</Text>
-      </View>
+      </TouchableOpacity>
+      <SlideSideFadeInView visible={editMode} width={60}><SettingsIconLeft onPress={launchEditModal}/></SlideSideFadeInView>
       <View style={{flex:1}} />
-      <EditIcon onPress={setEditMode} />
+      <SlideSideFadeInView visible={editMode} width={80}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
+      <SlideSideFadeInView visible={!editMode} width={100}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>
     </View>
   )
 }

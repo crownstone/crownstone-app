@@ -88,7 +88,7 @@ export class SphereEdit extends LiveComponent<any, any> {
         items.push({label: lang("Sphere_Creation"),  type:'explanation'});
         items.push({
           label: lang("Create_a_new_Sphere"),
-          icon: <Icon plussize={30} addIcon={true} name="c1-sphere" size={40} color={colors.green.hex} buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
+          icon: <Icon name="c1-sphere" size={25} color={colors.csBlueLight.hex}/>,
           type: 'navigation',
           callback: () => {
             NavigationUtil.navigate( "AddSphereTutorial");
@@ -115,7 +115,7 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Crownstones"),
       type: 'navigation',
       testID: 'SphereEdit_crownstones',
-      icon: <Icon name='c2-crownstone' size={30}  color={colors.purple.hex}/>,
+      icon: <Icon name='c2-crownstone' size={30}  color={colors.black.hex}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
       }

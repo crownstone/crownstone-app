@@ -22,6 +22,7 @@ import {LOGe} from "../../../logging/Log";
 import { Get } from "../../../util/GetUtil";
 import { BlurView } from "@react-native-community/blur";
 import { SceneConstants } from "../../scenesViews/constants/SceneConstants";
+import { BackIcon,  SettingsIconRight } from "../EditIcon";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceEntry", key)(a,b,c,d,e);
@@ -33,6 +34,8 @@ const PADDING_RIGHT = 15;
 export class DeviceEntry extends Component<{
   sphereId: string,
   stoneId: string,
+  editMode?: boolean,
+
 
   viewingRemotely: boolean,
 
@@ -164,7 +167,7 @@ export class DeviceEntry extends Component<{
     }
 
 
-    let wrapperStyle : ViewStyle = {width: 75, alignItems:'flex-end', justifyContent:'center'};
+    let wrapperStyle : ViewStyle = {width: 75, alignItems:'flex-end', justifyContent:'center', paddingRight:15};
     if (action) {
       return (
         <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
@@ -246,17 +249,21 @@ export class DeviceEntry extends Component<{
           marginBottom: 12,
           borderRadius: SceneConstants.roundness,
           alignItems:'center',
-          paddingHorizontal: 15,
+          paddingLeft: 15,
       }}>
         <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} />
         <View style={{paddingLeft:15, flex:1}}>
           <Text style={rowstyles.title}>{stone.config.name}</Text>
-          <Text style={{ fontSize:13, fontStyle:'italic' }}>{'200 W'}</Text>
+          <Text style={{ fontSize:13, fontStyle:'italic' }}>{this.props.editMode ? 'Hold to drag!' : '200 W'}</Text>
         </View>
+        <SlideSideFadeInView visible={this.props.editMode} width={60}>
+          <SettingsIconRight style={{height:55}}/>
+        </SlideSideFadeInView>
         {
           canSwitch === true &&
-          this._getControl(stone)
+          <SlideSideFadeInView visible={!this.props.editMode} width={75} style={{alignItems:'flex-end'}}>{this._getControl(stone)}</SlideSideFadeInView>
         }
+
       </BlurView>
       // <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:'transparent'}]}>
       //   <View style={{flexDirection: 'row', paddingRight: 0, paddingLeft: 0, flex: 1}}>

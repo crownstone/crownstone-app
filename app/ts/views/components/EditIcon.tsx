@@ -1,15 +1,22 @@
 import { Icon } from "./Icon";
-import { colors, styles } from "../styles";
-import { Text, TouchableOpacity } from "react-native";
+import { colors, statusBarHeight, styles, tabBarHeight, topBarHeight } from "../styles";
+import { Text, TouchableOpacity, ViewStyle } from "react-native";
 import * as React from "react";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 let color = colors.black.hex;
 
+function getRightStyle(style : ViewStyle = {}) : ViewStyle {
+  return {paddingHorizontal: 15, height: 35, justifyContent: 'center', alignItems:'flex-end',...style}
+}
+function getLeftStyle(style : ViewStyle = {}) : ViewStyle {
+  return {paddingHorizontal: 15, height: 35, justifyContent: 'center', alignItems:'flex-start', ...style}
+}
+
 export function MenuButton(props) {
   return (
-    <TouchableOpacity onPress={props.onPress} style={{paddingHorizontal:15}}>
+    <TouchableOpacity onPress={props.onPress} style={getLeftStyle()}>
       <Icon name={'enty-menu'} size={25} color={color} />
     </TouchableOpacity>
   );
@@ -17,32 +24,41 @@ export function MenuButton(props) {
 
 export function EditIcon(props) {
   return (
-    <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end'}} onPress={props.onPress}>
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
       <Icon name={'md-create'} size={25} color={color}/>
     </TouchableOpacity>
   );
 }
 
 
-export function SettingsIcon(props) {
+export function SettingsIconLeft(props) {
   return (
-    <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end'}} onPress={props.onPress}>
-      <Icon name={'ios-cog'} size={25} color={color}/>
+    <TouchableOpacity style={getLeftStyle(props.style)} onPress={props.onPress}>
+      <Icon name={'ios-cog'} size={30} color={color}/>
+    </TouchableOpacity>
+  );
+}
+
+
+export function SettingsIconRight(props) {
+  return (
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
+      <Icon name={'ios-cog'} size={30} color={color}/>
     </TouchableOpacity>
   );
 }
 
 export function EditDone(props) {
   return (
-    <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end'}} onPress={props.onPress}>
-      <Text style={{...styles.viewButton, color: color}}>Done</Text>
+    <TouchableOpacity style={getRightStyle()} onPress={props.onPress}>
+      <Text style={{...styles.viewButton, color: color, textAlign:'right'}}>Done</Text>
     </TouchableOpacity>
   );
 }
 
 export function BackIcon(props) {
   return (
-    <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end'}} onPress={() => {
+    <TouchableOpacity style={getLeftStyle()} onPress={() => {
       if (props.modal) {
         NavigationUtil.dismissModal();
       }

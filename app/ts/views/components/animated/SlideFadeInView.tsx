@@ -70,7 +70,7 @@ export class SlideSideFadeInView extends Component<{visible, width, delay?, dura
 
     this.state = {
       viewOpacity: new Animated.Value(props.visible ? 1 : 0),
-      viewWidth:  new Animated.Value(props.visible ? (props.width || (props.style && props.style.width)) : 0)
+      viewWidth:   new Animated.Value(props.visible ? (props.width || (props.style && props.style.width)) : 0)
     };
     this.width =  props.width || (props.style && props.style.width);
     this.visible = props.visible || false;
