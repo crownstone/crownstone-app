@@ -157,7 +157,8 @@ export const Util = {
     return screenHeight < 600;
   },
 
-  canUpdate: function(stone, state) {
+  canUpdate: function(stone : StoneData) {
+    let state = core.store.getState();
     // only admins are allowed to update
     if (Permissions.activeSphere().seeUpdateCrownstone) {
       if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER) {

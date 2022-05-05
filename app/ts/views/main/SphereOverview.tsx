@@ -83,6 +83,9 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
   // }
 
   componentDidMount() {
+
+    setTimeout(() => { NavigationUtil.navigate("RoomOverview", {"sphereId": "8ff9e7d8-eb39-86a9-b85d-544227c5e967",
+      "locationId": "8f32296f-e7a5-c33c-c524-eaff6384e596"})}, 200)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
@@ -310,12 +313,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
           hasTopBar={false}
           testID={"SphereOverview"}
         >
-          <SafeAreaView style={{flexGrow:1}}>
-            <View style={{flex:1}}>
-              { this._getContent(activeSphereId) }
-              <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-            </View>
-          </SafeAreaView>
+          { this._getContent(activeSphereId) }
+          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
           { this.state.zoomLevel === ZOOM_LEVELS.room && !this.state.arrangingRooms && <NavBarBlur /> }
         </AnimatedBackground>
       );

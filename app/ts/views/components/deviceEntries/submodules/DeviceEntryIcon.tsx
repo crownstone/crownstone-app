@@ -10,77 +10,52 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 
 
-export function DeviceEntryIcon({stone, stoneId, state, overrideStoneState}) {
+export function DeviceEntryIcon({stone, stoneId}) {
   let customStyle = {};
 
   let size = 60;
 
-  let color = colors.csBlueDarkerDesat.hex;
-  if (StoneAvailabilityTracker.isDisabled(stoneId) !== true) {
-    if (overrideStoneState !== undefined) {
-      color = (overrideStoneState > 0 ? colors.green.hex : colors.menuBackground.hex)
-    }
-    else {
-      color = (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
-    }
+  let color = colors.csBlueDark.rgba(0.5);
+  if (StoneAvailabilityTracker.isDisabled(stoneId) !== true || true) {
+    color = colors.black.hex;
   }
 
   if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
     if (stone.errors.hasError === true) {
       return (
-        <View style={[{
-          width:size,
-          height:size,
-          borderRadius:0.5*size,
-          backgroundColor: colors.csOrange.hex,
-          borderWidth: 0,
-        }, styles.centered]}>
-          <AlternatingContent
-            style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
-              <Icon name={stone.config.icon} size={35} color={'#fff'} />,
-            ]}
-          />
-        </View>
+        <AlternatingContent
+          style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
+          fadeDuration={500}
+          switchDuration={2000}
+          contentArray={[
+            <Icon name={'ios-warning'} size={40} color={colors.menuRed.hex} style={{backgroundColor:'transparent'}} />,
+            <Icon name={stone.config.icon} size={35} color={colors.menuRed.hex} />,
+          ]}
+        />
       );
     }
     else if (
       stone.config.firmwareVersion && (
-      Util.canUpdate(stone, state) === true ||
+      Util.canUpdate(stone) === true ||
       xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
     ) {
       return (
-        <View style={[{
-          width:size,
-          height:size,
-          borderRadius:size*0.5,
-          backgroundColor: colors.white.hex,
-          borderWidth: 2,
-          borderColor: color,
-          justifyContent:'center', alignItems:'center'
-        }, styles.centered]}>
-          <AlternatingContent
-            style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
-              <Icon name={stone.config.icon} size={35} color={color} />,
-            ]} />
-        </View>
+        <AlternatingContent
+          style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
+          fadeDuration={500}
+          switchDuration={2000}
+          contentArray={[
+            <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
+            <Icon name={stone.config.icon} size={35} color={color} />,
+          ]} />
       );
     }
   }
   else {
-    customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
+    customStyle = {borderWidth:1, borderColor: 'transparent'}
   }
 
   return (
-    <AnimatedCircle size={size} color={color} style={customStyle}>
-      <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
-    </AnimatedCircle>
+      <Icon name={stone.config.icon} size={35} color={color} />
   );
 }

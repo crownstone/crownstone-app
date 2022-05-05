@@ -19,7 +19,8 @@ export function SceneCreateNewItem({callback, isFirst}) {
       flexDirection:'row', borderRadius: 10, overflow:'hidden',
       backgroundColor: "transparent",
       width:screenWidth - 2*SceneConstants.padding, height: SceneConstants.sceneHeight,
-      alignItems:'center', marginBottom: 15
+      alignItems:'center', marginBottom: 15,
+      alignSelf:'center',
     }}>
       <TouchableOpacity
         activeOpacity={1}

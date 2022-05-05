@@ -5,7 +5,7 @@ import {ActivityIndicator, Animated, Platform, Switch, Text, TouchableOpacity, V
 
 import {Icon} from '../Icon';
 import {Util} from '../../../util/Util'
-import {colors, screenWidth, styles} from "../../styles";
+import { colors, rowstyles, screenWidth, styles } from "../../styles";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
 import {StoneUtil} from "../../../util/StoneUtil";
 import {DeviceEntrySubText} from "./DeviceEntrySubText";
@@ -19,6 +19,9 @@ import Slider from "@react-native-community/slider";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
 import {safeStoreUpdate} from "../../deviceViews/DeviceOverview";
 import {LOGe} from "../../../logging/Log";
+import { Get } from "../../../util/GetUtil";
+import { BlurView } from "@react-native-community/blur";
+import { SceneConstants } from "../../scenesViews/constants/SceneConstants";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceEntry", key)(a,b,c,d,e);
@@ -78,16 +81,6 @@ export class DeviceEntry extends Component<{
   }
 
   componentDidMount() {
-    // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(core.eventBus.on('showErrorInOverview', (stoneId) => {
-      if (stoneId === this.props.stoneId) {
-        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90, useNativeDriver: false }).start();
-        setTimeout(() => {
-          Animated.timing(this.state.backgroundColor, { toValue: 0, useNativeDriver: false, duration: 2500 }).start();
-        }, 5000);
-      }
-    }));
-
     this.unsubscribe.push(core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
       if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
@@ -152,7 +145,7 @@ export class DeviceEntry extends Component<{
   _getControl(stone) {
     let content;
     let action = null;
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false || true) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state > 0} disabled={true} />;
         action = () => { this._basePressed(); }
@@ -171,7 +164,7 @@ export class DeviceEntry extends Component<{
     }
 
 
-    let wrapperStyle : ViewStyle = {width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'};
+    let wrapperStyle : ViewStyle = {width: 75, alignItems:'flex-end', justifyContent:'center'};
     if (action) {
       return (
         <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
@@ -188,11 +181,11 @@ export class DeviceEntry extends Component<{
     NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
-  _getExplanationText(state, useSwitchView, stone) {
+  _getExplanationText(state, stone) {
     let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
     let explanation = null;
 
-    let updateAvailable = stone.config.firmwareVersion && (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
+    let updateAvailable = stone.config.firmwareVersion && (Util.canUpdate(stone) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
 
     if (this.props.hideExplanation !== true) {
       if (state.app.hasSeenDeviceSettings === false) {
@@ -233,111 +226,117 @@ export class DeviceEntry extends Component<{
 
   render() {
     let state = core.store.getState();
-    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
 
-    let useControl = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
-    let backgroundColor = this.state.backgroundColor.interpolate({
-      inputRange: [0,10],
-      outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
-    });
+    let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    canSwitch = canSwitch && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION);
 
-    let WrapperElement : any = TouchableOpacity;
-    let IconWrapperElement : any = TouchableOpacity;
-    let switchViewActive = this.props.switchView && stone.abilities.dimming.enabledTarget && !StoneAvailabilityTracker.isDisabled(this.props.stoneId);
-    if (this.props.allowDeviceOverview === false) {
-      WrapperElement = View
-    }
-    if (this.props.allowSwitchView === false) {
-      IconWrapperElement = WrapperElement
-      switchViewActive = false;
-    }
-
-    let switchViewExplanation = !switchViewActive && this.props.switchView;
-    let height = this.props.height || 80;
-    let sliderWidth = screenWidth - 20 - 60 - 30;
-    let explanationText = this._getExplanationText(state, switchViewActive, stone);
-
+    stone.state.state = Math.random() > 0.5 ? 1 : 0;
 
     return (
-      <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
-        <View style={{flexDirection: 'row', paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <IconWrapperElement style={{justifyContent: 'center'}} onPress={() => {
-            if (this.props.allowSwitchView === false) {
-              return this._basePressed();
-            }
-
-            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
-              stone.config.firmwareVersion &&
-              (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
-            ) {
-              NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
-              return;
-            }
-
-            clearTimeout(this.revertToNormalViewTimeout);
-            if (this.props.switchView === false && this.props.amountOfDimmableCrownstonesInLocation === 0) {
-              this.revertToNormalViewTimeout = setTimeout(() => { this.props.setSwitchView(false); }, 3000);
-            }
-            this.props.setSwitchView(!this.props.switchView);
-          }}>
-            <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
-          </IconWrapperElement>
-          <WrapperElement
-            activeOpacity={ switchViewActive ? 1 : 0.2 }
-            style={{flex: 1, justifyContent: 'center'}}
-            onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
-          >
-            <View style={{justifyContent:'center'}}>
-              <View style={{paddingLeft:20, paddingTop:10}}>
-                <Text style={{fontSize: 17}}>{stone.config.name}</Text>
-                <SlideFadeInView visible={!switchViewActive} height={25 + (explanationText ? 15 : 0)}>
-                  <DeviceEntrySubText
-                    statusTextOverride={this.props.statusText}
-                    statusText={this.state.statusText}
-                    deviceType={stone.config.type}
-                    rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
-                    disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
-                    currentUsage={stone.state.currentUsage}
-                    nearestInSphere={this.props.nearestInSphere}
-                    nearestInRoom={this.props.nearestInRoom}
-                  />
-                  { explanationText }
-                </SlideFadeInView>
-              </View>
-              <SlideFadeInView visible={switchViewActive} height={50}>
-                <View style={{paddingLeft: 20}}>
-                  <Slider
-                    style={{ width: sliderWidth, height: 40 }}
-                    minimumValue={0}
-                    maximumValue={100}
-                    step={1}
-                    value={this.state.percentage}
-                    onSlidingStart={   () => {
-                      NavigationUtil.setViewBackSwipeEnabled(false);
-                      this.props.toggleScrollView(false);
-                    }}
-                    onSlidingComplete={() => {
-                      NavigationUtil.setViewBackSwipeEnabled(true);
-                      this.props.toggleScrollView(true);
-                    }}
-                    minimumTrackTintColor={colors.green.rgba(0.75)}
-                    maximumTrackTintColor={Platform.OS === 'android' ? colors.black.rgba(0.25) : colors.black.rgba(0.05) }
-                    onValueChange={(value) => { this._switch(stone, value); this.setState({percentage: value})}}
-                  />
-                  <View style={{position:'absolute', top:-10, left:0,  height:60, width: Math.max(0,(sliderWidth-30)* 0.01*  this.state.percentage) , backgroundColor:"transparent"}} />
-                  <View style={{position:'absolute', top:-10, right:0, height:60, width: Math.max(0,(sliderWidth-30)*(1-0.01*this.state.percentage)), backgroundColor:"transparent"}} />
-                </View>
-              </SlideFadeInView>
-            </View>
-          </WrapperElement>
-          {useControl === true && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ?
-            <SlideSideFadeInView visible={!switchViewActive} width={75} style={{justifyContent: 'center' }}>
-              {this._getControl(stone)}
-            </SlideSideFadeInView>
-            : <View style={{ width: 15 }}/>
-          }
+      <BlurView
+        blurType={"light"}
+        blurAmount={5}
+        style={{
+          flexDirection:'row',
+          height: 70,
+          flex:1,
+          backgroundColor: colors.white.rgba(0.4),
+          marginHorizontal: 12,
+          marginBottom: 12,
+          borderRadius: SceneConstants.roundness,
+          alignItems:'center',
+          paddingHorizontal: 15,
+      }}>
+        <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} />
+        <View style={{paddingLeft:15, flex:1}}>
+          <Text style={rowstyles.title}>{stone.config.name}</Text>
+          <Text style={{ fontSize:13, fontStyle:'italic' }}>{'200 W'}</Text>
         </View>
-      </Animated.View>
+        {
+          canSwitch === true &&
+          this._getControl(stone)
+        }
+      </BlurView>
+      // <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:'transparent'}]}>
+      //   <View style={{flexDirection: 'row', paddingRight: 0, paddingLeft: 0, flex: 1}}>
+      //     <IconWrapperElement style={{justifyContent: 'center'}} onPress={() => {
+      //       if (this.props.allowSwitchView === false) {
+      //         return this._basePressed();
+      //       }
+      //
+      //       if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
+      //         stone.config.firmwareVersion &&
+      //         (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
+      //       ) {
+      //         NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
+      //         return;
+      //       }
+      //
+      //       clearTimeout(this.revertToNormalViewTimeout);
+      //       if (this.props.switchView === false && this.props.amountOfDimmableCrownstonesInLocation === 0) {
+      //         this.revertToNormalViewTimeout = setTimeout(() => { this.props.setSwitchView(false); }, 3000);
+      //       }
+      //       this.props.setSwitchView(!this.props.switchView);
+      //     }}>
+      //       <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={undefined} />
+      //     </IconWrapperElement>
+      //     <WrapperElement
+      //       activeOpacity={ switchViewActive ? 1 : 0.2 }
+      //       style={{flex: 1, justifyContent: 'center'}}
+      //       onPress={() => { if (switchViewActive === false) { this._basePressed(); }}}
+      //     >
+      //       <View style={{justifyContent:'center'}}>
+      //         <View style={{paddingLeft:20, paddingTop:10}}>
+      //           <Text style={{fontSize: 17}}>{stone.config.name}</Text>
+      //           <SlideFadeInView visible={!switchViewActive} height={25 + (explanationText ? 15 : 0)}>
+      //             <DeviceEntrySubText
+      //               statusTextOverride={this.props.statusText}
+      //               statusText={this.state.statusText}
+      //               deviceType={stone.config.type}
+      //               rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
+      //               disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
+      //               currentUsage={stone.state.currentUsage}
+      //               nearestInSphere={this.props.nearestInSphere}
+      //               nearestInRoom={this.props.nearestInRoom}
+      //             />
+      //             { explanationText }
+      //           </SlideFadeInView>
+      //         </View>
+      //         <SlideFadeInView visible={switchViewActive} height={50}>
+      //           <View style={{paddingLeft: 20}}>
+      //             <Slider
+      //               style={{ width: sliderWidth, height: 40 }}
+      //               minimumValue={0}
+      //               maximumValue={100}
+      //               step={1}
+      //               value={this.state.percentage}
+      //               onSlidingStart={   () => {
+      //                 NavigationUtil.setViewBackSwipeEnabled(false);
+      //                 this.props.toggleScrollView(false);
+      //               }}
+      //               onSlidingComplete={() => {
+      //                 NavigationUtil.setViewBackSwipeEnabled(true);
+      //                 this.props.toggleScrollView(true);
+      //               }}
+      //               minimumTrackTintColor={colors.green.rgba(0.75)}
+      //               maximumTrackTintColor={Platform.OS === 'android' ? colors.black.rgba(0.25) : colors.black.rgba(0.05) }
+      //               onValueChange={(value) => { this._switch(stone, value); this.setState({percentage: value})}}
+      //             />
+      //             <View style={{position:'absolute', top:-10, left:0,  height:60, width: Math.max(0,(sliderWidth-30)* 0.01*  this.state.percentage) , backgroundColor:"transparent"}} />
+      //             <View style={{position:'absolute', top:-10, right:0, height:60, width: Math.max(0,(sliderWidth-30)*(1-0.01*this.state.percentage)), backgroundColor:"transparent"}} />
+      //           </View>
+      //         </SlideFadeInView>
+      //       </View>
+      //     </WrapperElement>
+      //     {canSwitch === true && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ?
+      //       <SlideSideFadeInView visible={!switchViewActive} width={75} style={{justifyContent: 'center' }}>
+      //         {this._getControl(stone)}
+      //       </SlideSideFadeInView>
+      //       : <View style={{ width: 15 }}/>
+      //     }
+      //   </View>
+      // </Animated.View>
     );
   }
 }

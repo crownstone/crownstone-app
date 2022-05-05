@@ -20,22 +20,22 @@ import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcess
 import { Util } from "../../../util/Util";
 import { tell } from "../../../logic/constellation/Tellers";
 
-export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
+export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dragAction, isBeingDragged }) {
   const [editMode, setEditMode] = useState(stateEditMode);
-  // const [drag, setDrag] = useState(isBeingDragged);
+  const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
   const [available, setAvailable] = useState(core.bleState.bleAvailable && core.bleState.bleBroadcastAvailable);
 
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { return Util.bleWatcherEffect(setAvailable); });
-  // useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
+  useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
   let color = colors.white.hex;
   let subtext = getLocationSubtext(sphereId, scene);
 
   if (activated) { subtext = lang("Setting_the_scene_"); }
   if (editMode)  { subtext = lang("Tap_to_edit_"); }
-  // if (drag)      { subtext = "Drag me up or down!"; }
+  if (drag)      { subtext = "Drag me up or down!"; }
 
   let image = getScenePictureSource(scene);
 
@@ -47,7 +47,9 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
       backgroundColor: 'transparent',
       width: screenWidth - 2*SceneConstants.padding,
       height: SceneConstants.sceneHeight,
-      alignItems:'center', marginBottom: 15
+      alignItems:'center',
+      marginBottom: SceneConstants.marginBottom,
+      alignSelf:'center'
     }}>
       <TouchableOpacity
         activeOpacity={editMode ? 0.7 : 0.3}
@@ -65,9 +67,14 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
             NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId});
           }
         }}
-        // onLongPress={dragAction}
+        onLongPress={() => {
+          if (editMode === true) {
+            dragAction();
+            setDrag(true);
+          }
+        }}
       >
-      {/*<SlideSideFadeInView visible={drag} width={40} />*/}
+      <SlideSideFadeInView visible={drag} width={40} />
         { image ? <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
          : <MissingImage /> }
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>

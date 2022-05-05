@@ -9,6 +9,7 @@ let buttonWidth = 80;
 
 export let SceneConstants = {
   roundness:   10,
+  marginBottom: 15,
   sceneHeight: sceneHeight,
   sceneImageWidth: sceneImageWidth,
   padding:     padding,

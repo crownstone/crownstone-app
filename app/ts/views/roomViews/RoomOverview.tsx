@@ -1,12 +1,12 @@
 import {Languages} from "../../Languages"
 import * as React from 'react';
-import {Alert, Image, ScrollView, Text, View} from "react-native";
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
 import {SeparatedItemList} from '../components/SeparatedItemList'
 
 import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
-import {background, colors, screenHeight, screenWidth, styles} from "../styles";
+import { background, colors, screenHeight, screenWidth, statusBarHeight, styles, topBarHeight } from "../styles";
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry} from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
@@ -28,12 +28,15 @@ import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
 import { Component, JSXElementConstructor } from "react";
 import { Navigation } from "react-native-navigation";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BackIcon, EditDone, EditIcon, SettingsIcon } from "../components/EditIcon";
+import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 
-export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean }> {
+export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean }> {
   static options(props) {
     getTopBarProps(core.store.getState(), props, true);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
@@ -69,7 +72,8 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
     this.state = {
       switchView: false,
-      scrollEnabled: true
+      scrollEnabled: true,
+      editMode: false
     };
 
     this.viewingRemotelyInitial = this.viewingRemotely;
@@ -349,11 +353,14 @@ lang("_Indoor_localization_is_c_body"),
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
+  _getStones(itemArray : any[], ids) {
+    return itemArray.map((item, index) => { return this._renderer(item, index, ids[index]); })
+  }
+
 
   render() {
     const store = core.store;
     const state = store.getState();
-    console.log(this.props)
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = sphere.locations[this.props.locationId];
@@ -379,44 +386,70 @@ lang("_Indoor_localization_is_c_body"),
     if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
       explanation = lang("No_Crownstones_in_reach__")
     }
+
+
+    let backgrouds = [
+      require("../../../assets/images/backgrounds/locationBackgrounds/darkRed.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/red.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/orange.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/green.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/blue.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/csBlue.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/darkBlue.jpg"),
+      require("../../../assets/images/backgrounds/locationBackgrounds/yellow.jpg"),
+      require("../../../assets/images/backgrounds/builtinDarkBackground.jpg"),
+      require("../../../assets/images/backgrounds/builtinOneBackground.jpg"),
+      require("../../../assets/images/backgrounds/twilight.png"),
+      require("../../../assets/images/backgrounds/ceilingLightBackground.jpg"),
+      require("../../../assets/images/backgrounds/darkBackground3.jpg"),
+      require("../../../assets/images/backgrounds/plugBackground.jpg"),
+      require("../../../assets/images/backgrounds/backgroundHD.jpg"),
+      require("../../../assets/images/backgrounds/smartTimer.jpg"),
+      require("../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg"),
+      require("../../../assets/images/backgrounds/kitten.jpg"),
+      require("../../../assets/images/backgrounds/upgradeBackground.jpg"),
+    ];
+
     return (
-      <Background image={background.main} testID={"RoomOverview"}>
-        <View>
-          { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
-          <LocationFlavourImage location={location} />
-        </View>
-        <View style={{height:2, width:screenWidth, backgroundColor: colors.blue.hex}} />
-        <ScrollView scrollEnabled={this.state.scrollEnabled}>
-          <View style={{width:screenWidth}}>
-            <RoomExplanation
-              state={state}
-              explanation={ this.props.explanation }
-              sphereId={    this.props.sphereId }
-              locationId={  this.props.locationId }
-            />
-            <SeparatedItemList
-              items={itemArray}
-              ids={ids}
-              separatorIndent={false}
-              renderer={this._renderer.bind(this)}
-            />
-            <View style={{height:80}} />
-          </View>
-        </ScrollView>
-        <SlideFadeInView
-          visible={this.state.switchView}
-          style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
-          height={80}
-          pointerEvents={'none'}
-        >
-          <View style={{
-            backgroundColor:colors.black.rgba(0.25),
-            borderRadius:30,
-            padding:10,
-            alignItems:'center', justifyContent:'center'}}>
-            <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
-          </View>
-        </SlideFadeInView>
+      <Background image={backgrouds[Math.floor(Math.random()*backgrouds.length)]} fullScreen={true} testID={"RoomOverview"}>
+        <SafeAreaView style={{flex:1, paddingTop: topBarHeight- statusBarHeight}}>
+          <ScrollView scrollEnabled={this.state.scrollEnabled}>
+            <View style={{width:screenWidth}}>
+              <RoomExplanation
+                state={state}
+                explanation={ this.props.explanation }
+                sphereId={    this.props.sphereId }
+                locationId={  this.props.locationId }
+              />
+              <View style={{height:15}} />
+              { this._getStones(itemArray, ids) }
+              <View style={{height:80}} />
+            </View>
+          </ScrollView>
+          <SlideFadeInView
+            visible={this.state.switchView}
+            style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
+            height={80}
+            pointerEvents={'none'}
+          >
+            <View style={{
+              backgroundColor:colors.black.rgba(0.25),
+              borderRadius:30,
+              padding:10,
+              alignItems:'center', justifyContent:'center'}}>
+              <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
+            </View>
+          </SlideFadeInView>
+        </SafeAreaView>
+        <TopBarBlur xxlight>
+          <RoomHeader
+            location={location}
+            editMode={this.state.editMode}
+            setEditMode={() => { this.setState({editMode: true})}}
+            endEditMode={() => {this.setState({editMode: false})}}
+          />
+        </TopBarBlur>
+        <NavBarBlur xxlight line/>
       </Background>
     );
   }
@@ -443,6 +476,35 @@ lang("_Indoor_localization_is_c_body"),
       }
     }
   }
+}
+
+
+
+function RoomHeader({editMode, setEditMode, endEditMode, location}) {
+
+  if (editMode) {
+    return (
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+          <Text style={styles.viewHeader}>{location.config.name}</Text>
+        </View>
+        <SettingsIcon />
+        <View style={{flex:1}} />
+        <EditDone onPress={endEditMode} />
+      </View>
+    )
+  }
+
+  return (
+    <View style={{flexDirection:'row', alignItems:'center'}}>
+      <BackIcon />
+      <View style={{alignItems:'center', justifyContent:'center'}}>
+        <Text style={styles.viewHeader}>{location.config.name}</Text>
+      </View>
+      <View style={{flex:1}} />
+      <EditIcon onPress={setEditMode} />
+    </View>
+  )
 }
 
 export function LocationFlavourImage(props : {location: any, height?: number}) {

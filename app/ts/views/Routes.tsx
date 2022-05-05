@@ -14,7 +14,7 @@ import {OverlayManager} from "../backgroundProcesses/OverlayManager";
 import {NavigationUtil, topBarComponentNames} from "../util/navigation/NavigationUtil";
 import React from "react";
 import {IconShowcase} from "./development/IconShowcase";
-
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 let viewsLoaded = false;
 
@@ -25,15 +25,15 @@ export const loadRoutes = function() {
 
   // register all views
   Object.keys(Views).forEach((viewId) => {
-    Navigation.registerComponent(viewId,    () => Views[viewId]);
+    Navigation.registerComponent(viewId,    () => gestureHandlerRootHOC(Views[viewId]));
   });
 
   // register all custom components used by the navigator:
-  Navigation.registerComponent("topbarCancelButton",       () => CancelButton);
-  Navigation.registerComponent("topbarLeftButton",         () => TopbarLeftButtonNav);
-  Navigation.registerComponent("topbarRightMoreButton",    () => TopbarRightMoreButton);
-  Navigation.registerComponent("topbarButton",             () => TopbarButton);
-  Navigation.registerComponent("topbarEmptyButton",        () => TopbarEmptyButton);
+  Navigation.registerComponent("topbarCancelButton",       () => gestureHandlerRootHOC(CancelButton));
+  Navigation.registerComponent("topbarLeftButton",         () => gestureHandlerRootHOC(TopbarLeftButtonNav));
+  Navigation.registerComponent("topbarRightMoreButton",    () => gestureHandlerRootHOC(TopbarRightMoreButton));
+  Navigation.registerComponent("topbarButton",             () => gestureHandlerRootHOC(TopbarButton));
+  Navigation.registerComponent("topbarEmptyButton",        () => gestureHandlerRootHOC(TopbarEmptyButton));
 
   topBarComponentNames.push("topbarCancelButton");
   topBarComponentNames.push("topbarLeftButton");
@@ -62,10 +62,10 @@ Navigation.events().registerAppLaunchedListener(() => {
       backgroundColor: "transparent",
     },
     bottomTab: {
-      textColor: colors.csBlue.hex,
+      textColor: colors.black.hex,
       selectedTextColor: colors.blue.hex,
       fontSize: 11,
-      iconColor: colors.csBlue.hex,
+      iconColor: colors.black.hex,
       selectedIconColor: colors.blue.hex,
     },
     layout: {

@@ -25,6 +25,9 @@ import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {SphereOverviewButton} from "./buttons/SphereOverviewButton";
 import {AddIconSVG} from "./buttons/AddItemButton";
 import {CustomButtom} from "./buttons/CustomButtom";
+import { EditIcon, MenuButton } from "../components/EditIcon";
+import { TopBarBlur } from "../components/NavBarBlur";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -80,73 +83,57 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   let shouldShowStatusCommunication = noStones === false && arrangingRooms === false
   let sphere = Get.sphere(sphereId);
   return (
-    <View style={{flex:1}}>
-      { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
-      <RoomLayer
-        viewId={viewId}
-        sphereId={sphereId}
-        viewingRemotely={viewingRemotely}
-        zoomOutCallback={zoomOutCallback}
-        setRearrangeRooms={setRearrangeRooms}
-        arrangingRooms={arrangingRooms}
-      />
-      { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
-      <View style={{position:'absolute', top:0, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+    <React.Fragment>
+      <SafeAreaView style={{flexGrow:1}}>
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+        <RoomLayer
+          viewId={viewId}
+          sphereId={sphereId}
+          viewingRemotely={viewingRemotely}
+          zoomOutCallback={zoomOutCallback}
+          setRearrangeRooms={setRearrangeRooms}
+          arrangingRooms={arrangingRooms}
+        />
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+      </SafeAreaView>
+      <TopBarBlur disabled={arrangingRooms}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
           <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/>
         }
-      </View>
-    </View>
+      </TopBarBlur>
+    </React.Fragment>
   );
 }
 
 
 function SphereHeader({sphere, openSideMenu}) {
   return (
-    <React.Fragment>
-      <TouchableOpacity onPress={() => { openSideMenu() }} style={{paddingLeft:19}}>
-        <Icon name={'enty-menu'} size={24} color={colors.csBlue.hex} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => { openSideMenu() }}>
+    <View style={{flexDirection: 'row', alignItems:'center'}}>
+      <MenuButton onPress={openSideMenu} />
+      <TouchableOpacity onPress={() => { openSideMenu() }} style={{alignItems:'center', justifyContent:'center'}}>
         <Text style={styles.viewHeader}>{sphere.config.name}</Text>
       </TouchableOpacity>
       <View style={{flex:1}} />
-      <EditTopButton callback={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} />
-    </React.Fragment>
+      <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} />
+    </View>
   );
 }
 
 
-export function EditTopButton(props) {
-  return (
-    <CustomButtom
-      visible={true}
-      position="custom"
-      icon={"md-create"}
-      iconScale={1.3}
-      iconColor={colors.csBlue.hex}
-      style={{position:'absolute', top:-10, right:10}}
-      testID={props.testId}
-      callback={props.callback}
-      highlight={props.highlight ?? false}
-    />
-  )
-}
-
 
 function ArrangingHeader({viewId, setRearrangeRooms}) {
   return (
-    <React.Fragment>
-      <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:20}}>
+    <View style={{flexDirection: 'row', alignItems:'center'}}>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:15}}>
         <Text style={styles.viewButton}>Cancel</Text>
       </TouchableOpacity>
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
         <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{"Move the rooms!"}</Text>
       </View>
-      <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:20}}>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:15}}>
         <Text style={styles.viewButton}>Save</Text>
       </TouchableOpacity>
-    </React.Fragment>
+    </View>
   )
 }

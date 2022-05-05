@@ -413,7 +413,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       stoneCanSwitch = false;
     }
 
-    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (
       <Background image={background.main}>

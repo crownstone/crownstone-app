@@ -23,12 +23,14 @@ import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { ScaledImage } from "../components/ScaledImage";
 import { RoundedBackground } from "../components/RoundedBackground";
 import { Background } from "../components/Background";
-import {Icon} from "../components/Icon";
-import {EditTopButton} from "../main/Sphere";
-import {Get} from "../../util/GetUtil";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {BlurView} from "@react-native-community/blur";
-import {NavBarBlur} from "../components/NavBarBlur";
+import { Icon } from "../components/Icon";
+import { Get } from "../../util/GetUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BlurView } from "@react-native-community/blur";
+import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
+import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
+import { EditDone, EditIcon } from "../components/EditIcon";
+
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
@@ -42,6 +44,9 @@ export class ScenesOverview extends LiveComponent<any, any> {
   unsubscribeStoreEvents = null;
   sortedList : SortedList = null;
 
+  parentRef
+  childRef
+
   constructor(props) {
     super(props);
 
@@ -51,10 +56,11 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     this.state = {
       editMode: false,
-      data: data,
-      invalidationkey:'ImHereForTheDraggable'
+      dragging: false,
+      data: data
     }
-
+    this.parentRef = React.createRef();
+    this.childRef  = React.createRef();
     this.localEventBus = new EventBusClass('localScenesOverview');
   }
 
@@ -67,22 +73,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
     return data;
   }
-
-  renderItem(scene, sphereId, sceneId) {
-    return (
-      <SceneItem
-        key={sceneId}
-        scene={scene}
-        sceneId={sceneId}
-        sphereId={sphereId}
-        stateEditMode={this.state.editMode}
-        // dragAction={drag}
-        eventBus={this.localEventBus}
-        // isBeingDragged={isBeingDragged}
-      />
-    );
-  }
-
 
   componentDidMount(): void {
     // tell the component exactly when it should redraw
@@ -119,19 +109,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
     this.localEventBus.clearAllEvents();
   }
 
-  getScenes(scenes, sphereId) {
-    let sceneContent = [];
-    let idList = [];
-    if (this.sortedList) {
-      idList = this.sortedList.getDraggableList();
-    }
-    for (let i = 0; i < idList.length; i++) {
-      let sceneId = idList[i];
-      sceneContent.push(this.renderItem(scenes[sceneId], sphereId, sceneId))
-    }
-    return sceneContent;
-  }
-
   setEditMode = () => {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
@@ -155,12 +132,34 @@ export class ScenesOverview extends LiveComponent<any, any> {
     this.setState({ editMode: false });
   }
 
+
+  renderDraggableItem = (id: string, index: number, drag: () => void, isActive: boolean) => {
+    let state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let scene = Get.scene(activeSphereId, id);
+    if (!scene) { return <View/> }
+    return (
+      <SceneItem
+        key={id}
+        scene={scene}
+        sceneId={scene}
+        sphereId={activeSphereId}
+        stateEditMode={this.state.editMode}
+        dragAction={drag}
+        eventBus={this.localEventBus}
+        isBeingDragged={isActive}
+      />
+    );
+  }
+
+
   render() {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
     let sphere = Get.sphere(activeSphereId);
 
     let content;
+    let hintShown = false
 
     if (activeSphereId && state.spheres[activeSphereId]) {
       let scenes = state.spheres[activeSphereId].scenes;
@@ -170,45 +169,50 @@ export class ScenesOverview extends LiveComponent<any, any> {
       }
       else {
         let showHint = sceneIds.length < HINT_THRESHOLD && Permissions.inSphere(activeSphereId).canCreateScenes === true;
-        let scenesComponents = this.getScenes(scenes, activeSphereId);
-        // Permissions.inSphere(activeSphereId).canCreateScenes
+
+        let data = [...this.state.data];
+
         content = (
-          <View style={{flexGrow: 1,paddingTop:topBarHeight - statusBarHeight, paddingVertical: 15, width: screenWidth, alignItems:'center', paddingBottom: tabBarHeight+10}}>
-            <SlideFadeInView visible={this.state.editMode && Permissions.inSphere(activeSphereId).canCreateScenes} height={95}>
-              <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphereId }) }} isFirst={false} />
-            </SlideFadeInView>
-            <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
-              <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth}}>
-                <View style={{flex:1}} />
-                <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
-                <ScaledImage source={require("../../../assets/images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}} tintColor={colors.black.rgba(0.5)} />
-              </View>
-            </SlideFadeInView>
-            {scenesComponents}
-          </View>
+          <React.Fragment>
+            <NestableScrollContainer
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight + 15, paddingBottom: 2*tabBarHeight}}
+            >
+              <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
+                <AddHint />
+              </SlideFadeInView>
+              <SlideFadeInView visible={this.state.editMode && Permissions.inSphere(activeSphereId).canCreateScenes} height={95}>
+                <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphereId }) }} isFirst={false} />
+              </SlideFadeInView>
+              <NestableDraggableFlatList
+                activationDistance={this.state.dragging ? 5 : 120}
+                data={data}
+                onDragBegin={() => { this.setState({dragging: true}); }}
+                onRelease={() => {
+                  this.localEventBus.emit("END_DRAG" );
+                }}
+                renderItem={({ item, index, drag, isActive }) => { return this.renderDraggableItem( item, index, drag, isActive ); }}
+                keyExtractor={(item : any, index) => `draggable-item-${item}`}
+                onDragEnd={({ data }) => {
+                  let dataToUse = [];
+                  for (let i = 0; i < data.length; i++) {
+                    if (scenes[data[i]] !== undefined) {
+                      dataToUse.push(data[i]);
+                    }
+                  }
+                  this.setState({ data: dataToUse, dragging:false }); this.sortedList.update(dataToUse as string[]);
+                }}
+              />
+            </NestableScrollContainer>
+          </React.Fragment>
         );
-          {/*<DraggableFlatList*/}
-          {/*  showsVerticalScrollIndicator={false}*/}
-          {/*  data={["add", ...this.state.data, "spacer"]}*/}
-          {/*  onRelease={() => { this.localEventBus.emit("END_DRAG" );}}*/}
-          {/*  renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}*/}
-          {/*  keyExtractor={(item : any, index) => `draggable-item-${item}`}*/}
-          {/*  onDragEnd={({ data }) => {*/}
-          {/*    let dataToUse = [];*/}
-          {/*    for (let i = 0; i < data.length; i++) {*/}
-          {/*      if (scenes[data[i]] !== undefined) {*/}
-          {/*        dataToUse.push(data[i]);*/}
-          {/*      }*/}
-          {/*    }*/}
-          {/*    this.setState({ data: dataToUse }); this.sortedList.update(dataToUse as string[])}}*/}
-          {/*  activationDistance={10}*/}
-          {/*  style={{paddingTop: hintShown ? 10 : 20}}*/}
-          {/*/>*/}
-       }
-     }
-     else {
+      }
+    }
+    else {
       content = <ScenesWithoutSpheres />;
     }
+
+
 
     return (
       <Background
@@ -218,18 +222,11 @@ export class ScenesOverview extends LiveComponent<any, any> {
         hideNotifications={true}
         testID={'ScenesOverview'}
       >
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
-          {content}
-        </ScrollView>
-        <BlurView
-          blurType="xlight"
-          blurAmount={4}
-          style={{position:'absolute', top:0, height: topBarHeight, width:screenWidth, paddingBottom: 10}}
-        >
-          <View style={{flex:1}} />
+        {content}
+        <TopBarBlur xlight>
           <SceneHeader editMode={this.state.editMode} setEditMode={this.setEditMode} endEditMode={this.endEditMode} />
-        </BlurView>
-        <NavBarBlur xlight line/>
+        </TopBarBlur>
+        <NavBarBlur xlight/>
       </Background>
     );
   }
@@ -237,22 +234,32 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
 function SceneHeader({editMode, setEditMode, endEditMode}) {
   return (
-    <View style={{flexDirection:'row'}}>
+    <View style={{flexDirection:'row', paddingLeft: 15, alignItems:'center'}}>
       <Text style={styles.viewHeader}>{'Scenes'}</Text>
       <View style={{flex:1}} />
       {editMode ?
-        <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end', paddingBottom: 4}} onPress={endEditMode}>
-          <Text style={{...styles.viewButton, color: colors.csBlue.hex}}>Done</Text>
-        </TouchableOpacity>
+        <EditDone onPress={endEditMode} />
         :
-        <TouchableOpacity style={{paddingHorizontal: 15, justifyContent: 'flex-end', paddingBottom: 4}} onPress={setEditMode}>
-          <Icon name={'md-create'} size={25} color={colors.csBlue.hex}/>
-        </TouchableOpacity>
+        <EditIcon onPress={setEditMode} />
       }
     </View>
   );
 }
 
+
+function AddHint(props) {
+  return (
+    <View style={{flexDirection:"row", alignItems:'flex-end', width: screenWidth, paddingBottom: 15}}>
+      <View style={{flex:1}} />
+      <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>{lang("Add_more_scenes_by_tappin")}</Text>
+      <ScaledImage
+        source={require("../../../assets/images/lineDrawings/arrow.png")}
+        sourceHeight={195} sourceWidth={500} targetHeight={27} style={{marginRight:30}}
+        tintColor={colors.black.rgba(0.5)}
+      />
+    </View>
+  );
+}
 
 
 

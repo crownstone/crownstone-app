@@ -533,7 +533,7 @@ lang("_Something_went_wrong_____Pleas_body"),
 
     let updateAvailable = stone &&
       stone.config.firmwareVersion &&
-      ((Util.canUpdate(stone, state) === true) ||
+      ((Util.canUpdate(stone) === true) ||
         xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
 

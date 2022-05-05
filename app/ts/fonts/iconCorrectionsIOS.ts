@@ -458,6 +458,11 @@ const entypoCorrections = {
 };
 
 
+const fontAwesome5Corrections = {
+
+};
+
+
 
 
 export const iconCorrectionsIOS = {
@@ -465,6 +470,7 @@ export const iconCorrectionsIOS = {
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
   entypo: entypoCorrections,
+  fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsIOS,
   ionicons5: ion5CorrectionsIOS,
   evilIcons: evilIconsCorrectionsIOS,

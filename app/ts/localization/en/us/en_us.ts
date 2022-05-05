@@ -1827,7 +1827,7 @@ export default {
     _Are_you_sure___Do_you_wa_left:         function() { return "Cancel" },
     _Are_you_sure___Do_you_wa_right:        function() { return "OK" },
     Setting_the_scene_:                     function() { return "Setting the scene!" },
-    Tap_to_edit_:                           function() { return "Tap to edit!" },
+    Tap_to_edit_:                           function() { return "Hold to drag!" },
     All_rooms:                              function() { return "All rooms" },
     Multiple_rooms:                         function() { return "Multiple rooms" },
     _and_:                                  function() { return " and " },

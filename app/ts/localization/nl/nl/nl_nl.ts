@@ -3536,7 +3536,7 @@ export default {
     _Are_you_sure___Do_you_wa_left:         function() { return "Nee"; },
     _Are_you_sure___Do_you_wa_right:        function() { return "Ja"; },
     Setting_the_scene_:                     function() { return "Scène wordt ingesteld!"; },
-    Tap_to_edit_:                           function() { return "Klik hier om aan te passen!"; },
+    Tap_to_edit_:                           function() { return "Indrukken om te slepen!"; },
     All_rooms:                              function() { return "Alle kamers"; },
     Multiple_rooms:                         function() { return "Meerdere kamers"; },
     _and_:                                  function() { return " en "; },

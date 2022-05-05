@@ -102,7 +102,7 @@ export let colors : colorInterface = {
   iosBlueDark:          {hex:'#002e5c'},
   lightBlue:            {hex:'#a9d0f1'},
   lightBlue2:           {hex:'#77c2f7'},
-  blinkColor1:          {hex:'#2daeff'},
+  blinkColor1:          {hex:'#41b5ff'},
   blinkColor2:          {hex:'#a5dcff'},
   random: () => {}
 };
@@ -319,8 +319,8 @@ export const styles = StyleSheet.create({
   header: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:18, fontWeight:'bold'},
   title: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:30, fontWeight:'bold'},
   legendText: {fontSize:12, textAlign:'center', paddingTop:10},
-  viewHeader: { fontSize: 30, fontWeight: 'bold', paddingLeft: 15, color: colors.csBlue.hex},
-  viewHeaderLight: { fontSize: 30, fontWeight: 'bold', paddingLeft: 15, color: colors.white.hex},
+  viewHeader: { fontSize: 30, fontWeight: 'bold', color: colors.black.hex},
+  viewHeaderLight: { fontSize: 30, fontWeight: 'bold', color: colors.white.hex},
   viewButton: { fontSize:16, fontWeight: 'bold', color: colors.white.hex },
 });
 
@@ -371,7 +371,16 @@ export const menuStyles = StyleSheet.create({
     fontSize:15,
     color: colors.darkGray.hex,
   }
-})
+});
+
+
+export const rowstyles = StyleSheet.create({
+  title: {
+    fontSize: 16,
+    fontWeight:'bold',
+    color: colors.black.hex,
+  }
+});
 
 
 export const deviceStyles = StyleSheet.create({

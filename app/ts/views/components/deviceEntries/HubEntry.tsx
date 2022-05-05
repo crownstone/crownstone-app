@@ -179,7 +179,7 @@ export class HubEntry extends Component<{
 
             if (stone && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
               stone.config.firmwareVersion &&
-              (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
+              (Util.canUpdate(stone) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
             ) {
               NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
               return;
@@ -192,7 +192,7 @@ export class HubEntry extends Component<{
             this.props.setSwitchView(!this.props.switchView);
           }}>
             {stone ?
-              <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={1} /> :
+              <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} /> :
               <IconCircle icon={'c1-router'} size={60} backgroundColor={colors.green.hex} color={'#ffffff'} />
             }
           </IconWrapperElement>
