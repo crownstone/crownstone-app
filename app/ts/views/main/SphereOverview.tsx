@@ -72,23 +72,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   }
 
-  // navigationButtonPressed({ buttonId }) {
-  //   if (buttonId === 'edit') {
-  //     let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
-  //     NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
-  //   }
-  //   if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
-  //   if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
-  //   if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
-  // }
-
   componentDidMount() {
-
-    setTimeout(() => { NavigationUtil.navigate("RoomOverview",
-      {
-        "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
-        "locationId": "8e9e1990-9ae7-76db-f054-5d82ede4947"
-      })}, 200)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];

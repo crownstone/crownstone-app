@@ -33,9 +33,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   iconSize: number;
   textSize: number;
 
-  animationStarted: boolean;
-  animating: boolean;
-  animatedMoving: boolean;
+  animationStarted = false;
+  animating = false;
+  animatedMoving = false;
 
   previousCircle: any;
   color: any;
@@ -49,6 +49,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   touchTimeout = null;
   touchAnimation = null;
   disableTouch = false;
+  moveDetected = false;
+  tapRegistered = false;
+  tapStart : number = 0;
 
   cleanupRequired = false;
 
@@ -82,10 +85,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.iconSize = props.radius * 0.8;
     this.textSize = props.radius * 0.25;
 
-    this.animationStarted = false;
-    this.animating = false;
-    this.animatedMoving = false;
-
     this.previousCircle = undefined;
 
     // set the usage initially
@@ -116,6 +115,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
       this.cleanupRequired = false;
+      this.moveDetected    = false;
     }));
 
 
@@ -125,11 +125,13 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
+      console.log("viewReleased")
       this.handleTouchReleased();
       this.disableTouch = false;
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('userDragEvent' + this.props.viewId, (data) => {
+      this.moveDetected = true;
       this.handleDragging();
     }));
   }
@@ -143,13 +145,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.unsubscribeStoreEvents();
   }
 
-
-  _getColor() {
-    if (this.props.viewingRemotely === true) {
-      return colors.green.rgba(0.5);
-    }
-    return colors.green.rgba(0.75);
-  }
 
   getIcon() {
     let icon = core.store.getState()?.spheres[this.props.sphereId]?.locations[this.props.locationId]?.config?.icon || null;
@@ -215,9 +210,17 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     return (
       <TouchableOpacity
-        onPressIn={(e)   => { this.props.touch(); this.handleTouch(); }}
-        onPressOut={(e)  => { if (this.cleanupRequired) { this.handleTouchReleased() }}}
-        onPress={() => { this.handleTap() }}
+        onPressIn={(e)   => {
+          this.props.touch();
+          this.handleTouch();
+        }}
+        onPressOut={(e)  => {
+          this.checkIfTapped()
+          if (this.cleanupRequired) {
+            this.handleTouchReleased()
+          }
+        }}
+        onPress={() => {console.log(Date.now(), "onPress");  this.handleTap() }}
         activeOpacity={1.0}
       >
       <Animated.View
@@ -233,8 +236,20 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     )
   }
 
+  checkIfTapped() {
+    setTimeout(() => {
+      if (Date.now() - this.tapStart < 500) {
+        if (this.moveDetected === false && this.tapRegistered === false) {
+          this.handleTap();
+        }
+      }
+    })
+  }
+
   handleTouch() {
     if (this.disableTouch) { return; }
+
+    this.tapStart = Date.now();
 
     // stop any animation this node was doing.
     this.state.scale.stopAnimation();
@@ -245,9 +260,10 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     if (this.props.allowTap) {
       let tapAnimations = [];
+      this.animating = true;
       tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
       tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
-      Animated.parallel(tapAnimations).start();
+      Animated.parallel(tapAnimations).start(() => { this.animating = false; });
 
       this.touching = true;
       this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
@@ -305,13 +321,18 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   revertSize() {
-    this.state.scale.stopAnimation();
-    this.state.opacity.stopAnimation();
+    if (this.animating) {
+      this.state.scale.stopAnimation();
+      this.state.opacity.stopAnimation();
+    }
+
+    if (this.state.scale._value === 1 && this.state.opacity._value === 1) { return; }
 
     let revertAnimations = [];
+    this.animating = true;
     revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, useNativeDriver: false, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
-    Animated.parallel(revertAnimations).start(() => {this.scaledUp = false;});
+    Animated.parallel(revertAnimations).start(() => {this.animating = false; this.scaledUp = false;});
   }
 
   handleTap() {
@@ -326,6 +347,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.state.opacity.setValue(1);
 
     NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+    this.tapRegistered = true;
+    setTimeout(() => { this.tapRegistered = false; });
     this._clearHold();
   }
 }

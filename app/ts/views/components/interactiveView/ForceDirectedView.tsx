@@ -198,12 +198,13 @@ export class ForceDirectedView extends Component<{
     // configure the pan responder
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
-      onStartShouldSetPanResponder:        (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder:         (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture:  (evt, gestureState) => true,
-      onPanResponderTerminationRequest:    (evt, gestureState) => true,
+      onStartShouldSetPanResponder:        (evt, gestureState) => { return true; },
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => { return false; },
+      onMoveShouldSetPanResponder:         (evt, gestureState) => { return true; },
+      onMoveShouldSetPanResponderCapture:  (evt, gestureState) => { return true; },
+      onPanResponderTerminationRequest:    (evt, gestureState) => { return true; },
       onPanResponderGrant:                 (evt, gestureState) => {
+        // console.log("onPanResponderGrant", )
         core.eventBus.emit("viewWasTouched" + this.props.viewId)
         this.state.pan.stopAnimation();
         // gestureState.d{x,y} will be set to zero now
@@ -216,6 +217,7 @@ export class ForceDirectedView extends Component<{
         return false
       },
       onPanResponderMove: (evt, gestureState) => {
+        // console.log("onPanResponderMove", )
         // The most recent move distance is gestureState.move{X,Y}
 
         // The accumulated gesture distance since becoming responder is
@@ -273,6 +275,7 @@ export class ForceDirectedView extends Component<{
       },
 
       onPanResponderRelease: (evt, gestureState) => {
+        // console.log("onPanResponderRelease")
         let recenterAnimation = () => {
           if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
             this._clearRecenterAction();
@@ -359,8 +362,6 @@ export class ForceDirectedView extends Component<{
           Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70, useNativeDriver: false }).start(() => { this._currentScale = this._minScale; });
         }
 
-
-
         // reset touch state variables
         this._multiTouch      = false;
         this._pressedNodeData = false;
@@ -369,6 +370,7 @@ export class ForceDirectedView extends Component<{
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
+        // console.log("onPanResponderTerminate")
         // Another component has become the responder, so this gesture
         // should be cancelled
       },
