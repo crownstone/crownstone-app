@@ -14,6 +14,7 @@ import {
 
 import { IconCircle }  from '../IconCircle'
 import {menuStyles, styles} from '../../styles'
+import {IconCircleEdit} from "../IconCircleEdit";
 
 
 export class IconEdit extends Component<any, any> {
@@ -23,9 +24,7 @@ export class IconEdit extends Component<any, any> {
         <View style={[menuStyles.listView, { justifyContent:'flex-start', alignItems:'center', height: this.props.barHeightLarge}]}>
           <Text style={[menuStyles.listText,{height:this.props.barHeightLarge - 20}]}>{this.props.label}</Text>
           <TouchableOpacity onPress={() => {this.props.setActiveElement(); this.props.callback()}} testID={this.props.testID}>
-            <View>
-              <IconCircle icon={this.props.value} showEdit={true} />
-            </View>
+            <IconCircleEdit icon={this.props.value} showEdit={true} />
           </TouchableOpacity>
         </View>
       </View>

@@ -44,7 +44,7 @@ Navigation.events().registerComponentWillAppearListener(({ componentId, componen
 });
 // Listen for componentDidAppear screen events
 Navigation.events().registerCommandListener((data, args) => {
-  // console.log('registerCommandListener', data, JSON.stringify(args, null, 2))
+  console.log('registerCommandListener', data, JSON.stringify(args, null, 2))
 });
 
 // Listen for componentDidAppear screen events

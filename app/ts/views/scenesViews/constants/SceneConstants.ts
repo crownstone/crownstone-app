@@ -18,7 +18,6 @@ export let SceneConstants = {
   textWidth:   screenWidth - 2*padding - sceneImageWidth - buttonWidth - 10
 }
 
-
 export const PICTURE_GALLERY_TYPES = {
   STOCK: "STOCK",
   CUSTOM: "CUSTOM",

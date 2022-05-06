@@ -8,7 +8,7 @@ import {SeparatedItemList} from '../components/SeparatedItemList'
 import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
 import {
   background,
-  colors,
+  colors, RoomStockBackground,
   screenHeight,
   screenWidth,
   statusBarHeight,
@@ -323,41 +323,25 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     let hubs   = DataUtil.getHubsInLocation(  state, this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
-    if (location.config.picture) {
+    console.log(location.config.picture, location.config.pictureSource)
+
+    if (location.config.picture && location.config.pictureSource === "CUSTOM") {
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
+    }
+    else if (location.config.pictureSource === "STOCK") {
+      backgroundImage = RoomStockBackground[location.config.picture];
     }
 
     let {itemArray, ids} = this._getItemList(stones, hubs);
     let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
     if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
-      explanation = lang("No_Crownstones_in_reach__")
+      explanation = lang("No_Crownstones_in_reach__");
     }
 
 
-    let backgrouds = [
-      require("../../../assets/images/backgrounds/locationBackgrounds/darkRed.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/red.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/orange.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/green.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/blue.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/csBlue.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/darkBlue.jpg"),
-      require("../../../assets/images/backgrounds/locationBackgrounds/yellow.jpg"),
-      require("../../../assets/images/backgrounds/builtinDarkBackground.jpg"),
-      require("../../../assets/images/backgrounds/builtinOneBackground.jpg"),
-      require("../../../assets/images/backgrounds/twilight.png"),
-      require("../../../assets/images/backgrounds/ceilingLightBackground.jpg"),
-      require("../../../assets/images/backgrounds/darkBackground3.jpg"),
-      require("../../../assets/images/backgrounds/plugBackground.jpg"),
-      require("../../../assets/images/backgrounds/backgroundHD.jpg"),
-      require("../../../assets/images/backgrounds/smartTimer.jpg"),
-      require("../../../assets/images/backgrounds/fadedLightBackgroundGreen.jpg"),
-      require("../../../assets/images/backgrounds/kitten.jpg"),
-      require("../../../assets/images/backgrounds/upgradeBackground.jpg"),
-    ];
-
+    console.log("backgroundImage",backgroundImage)
     return (
-      <Background image={backgrouds[Math.floor(Math.random()*backgrouds.length)]} fullScreen={true} testID={"RoomOverview"}>
+      <Background image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
         <ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>
           <View style={{width:screenWidth}}>
             <RoomExplanation
@@ -423,12 +407,12 @@ function DimmerSwitch({dimMode, setDimMode}) {
         </SlideFadeInView>
       </BlurView>
     </TouchableOpacity>
-  )
+  );
 }
 
 
 function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
-  let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, location: location.id})};
+  let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id})};
   return (
     <View style={{flexDirection:'row', alignItems:'center'}}>
       <SlideSideFadeInView visible={!editMode} width={53}><BackIcon /></SlideSideFadeInView>

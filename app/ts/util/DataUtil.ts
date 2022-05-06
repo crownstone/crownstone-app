@@ -568,9 +568,11 @@ export const DataUtil = {
       let scenes      = spheres[sphereId].scenes;
       let sphereUsers = spheres[sphereId].users;
 
+
       Object.keys(locations).forEach((locationId) => {
-        if (locations[locationId].config.picture || !locations[locationId].config.picture && locations[locationId].config.pictureId) {
-          pictures.push({picturePath: locations[locationId].config.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
+        let locationConfig = locations[locationId].config;
+        if (locationConfig.pictureSource !== "STOCK" && (locationConfig.picture || !locationConfig.picture && locationConfig.pictureId)) {
+          pictures.push({picturePath: locationConfig.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
         }
       });
       Object.keys(sphereUsers).forEach((userId) => {

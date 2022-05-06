@@ -11,6 +11,8 @@ let defaultSettings : LocationData = {
     picture: null,
     pictureTaken: null,
     pictureId: null,
+    pictureSource: null,
+
     cloudId: null,
     updatedAt: 1,
 
@@ -121,16 +123,19 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'LOCATION_UPDATE_PICTURE':
       if (action.data) {
         let newState = {...state};
-        newState.picture   = update(action.data.picture,    newState.picture  );
-        newState.pictureId = update(action.data.pictureId,  newState.pictureId);
+        newState.picture       = update(action.data.picture,       newState.picture);
+        newState.pictureId     = update(action.data.pictureId,     newState.pictureId);
+        newState.pictureSource = update(action.data.pictureSource, newState.pictureSource);
         return newState;
       }
       return state;
     case 'LOCATION_REPAIR_PICTURE':
       newState = {...state};
-      newState.picture    = null;
-      newState.pictureId  = null;
-      newState.updatedAt  = 0;
+      if (newState.pictureSource !== "STOCK") {
+        newState.picture = null;
+        newState.pictureId = null;
+        newState.updatedAt = 0;
+      }
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.config);

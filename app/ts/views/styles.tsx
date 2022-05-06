@@ -482,3 +482,16 @@ export const background = {
   lightBlurBW            : require('../../assets/images/backgrounds/lightBackground2_blur_bw.jpg'),
   detailsDark            : require('../../assets/images/backgrounds/darkBackground4.jpg'),
 }
+
+export const RoomStockBackground = {
+  darkRed  : require('../../assets/images/backgrounds/locationBackgrounds/darkRed.jpg'),
+  red      : require('../../assets/images/backgrounds/locationBackgrounds/red.jpg'),
+  orange   : require('../../assets/images/backgrounds/locationBackgrounds/orange.jpg'),
+  yellow   : require('../../assets/images/backgrounds/locationBackgrounds/yellow.jpg'),
+  blue     : require('../../assets/images/backgrounds/locationBackgrounds/blue.jpg'),
+  csBlue   : require('../../assets/images/backgrounds/locationBackgrounds/csBlue.jpg'),
+  darkBlue : require('../../assets/images/backgrounds/locationBackgrounds/darkBlue.jpg'),
+  green    : require('../../assets/images/backgrounds/locationBackgrounds/green.jpg'),
+
+  base     : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
+}

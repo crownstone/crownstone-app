@@ -72,7 +72,14 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   }
 
+
   componentDidMount() {
+
+    // setTimeout(() => { NavigationUtil.navigate("RoomOverview",
+    //   {
+    //     "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
+    //     "locationId": "55fc598f-53c1-7a0e-82c5-730daf962e8b"
+    //   })}, 200)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];

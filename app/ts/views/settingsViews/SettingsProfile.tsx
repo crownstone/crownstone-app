@@ -24,10 +24,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
-import {NavBarBlur} from "../components/NavBarBlur";
-import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
