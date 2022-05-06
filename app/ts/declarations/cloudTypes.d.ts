@@ -191,14 +191,15 @@ interface SpherePresentPeople {
 
 
 interface cloud_Location {
-  name:      string,
-  uid:       number,
-  icon:      string,
-  id:        string,
-  imageId?:  string,
-  sphereId:  string,
-  updatedAt: string,
-  createdAt: string,
+  name:          string,
+  uid:           number,
+  icon:          string,
+  id:            string,
+  imageId?:      string,
+  stockPicture?: string,
+  sphereId:      string,
+  updatedAt:     string,
+  createdAt:     string,
 }
 
 
@@ -206,6 +207,7 @@ interface cloud_Location_settable {
   name?: string,
   uid?:  number,
   icon?: string,
+  stockPicture?:    string,
   updatedAt?: string,
 }
 
@@ -289,7 +291,7 @@ interface cloud_Message {
 interface cloud_Scene {
   id:              string,
   name:            string,
-  stockPicture?:    string,
+  stockPicture?:   string,
   customPictureId?: string,
   data:            string | {[stoneUID: string]:number},
   sphereId:        string,
@@ -300,7 +302,6 @@ interface cloud_Scene {
 interface cloud_Scene_settable {
   name?:            string,
   stockPicture?:    string,
-  customPictureId?: string,
   data?:            string,
   updatedAt?:       string | number
 }

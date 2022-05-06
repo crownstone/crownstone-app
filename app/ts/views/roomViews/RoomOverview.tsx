@@ -8,7 +8,7 @@ import {SeparatedItemList} from '../components/SeparatedItemList'
 import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
 import {
   background,
-  colors, RoomStockBackground,
+  colors, getRoomStockImage, RoomStockBackground,
   screenHeight,
   screenWidth,
   statusBarHeight,
@@ -327,7 +327,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
     }
     else if (location.config.pictureSource === "STOCK") {
-      backgroundImage = RoomStockBackground[location.config.picture];
+      backgroundImage = getRoomStockImage(location.config.picture);
     }
 
     let {itemArray, ids} = this._getItemList(stones, hubs);
@@ -336,8 +336,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       explanation = lang("No_Crownstones_in_reach__");
     }
 
-
-    console.log("backgroundImage",backgroundImage)
     return (
       <Background image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
         <ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>

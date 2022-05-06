@@ -497,3 +497,8 @@ export const RoomStockBackground = {
 
   base       : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
 }
+
+
+export function getRoomStockImage(key) {
+  return RoomStockBackground[key] ?? RoomStockBackground.base;
+}

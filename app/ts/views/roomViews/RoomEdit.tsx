@@ -14,7 +14,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {background, colors, RoomStockBackground} from "./../styles";
+import {background, colors, getRoomStockImage, RoomStockBackground} from "./../styles";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { FileUtil } from "../../util/FileUtil";
@@ -193,7 +193,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       type: 'pictureSelect',
       testID: 'roomPicture',
       stock: this.state.pictureSource === "STOCK",
-      value: this.state.pictureSource === "STOCK" ? RoomStockBackground[this.state.picture] : this.state.picture,
+      value: this.state.pictureSource === "STOCK" ? getRoomStockImage(this.state.picture) : this.state.picture,
       pictureSource: this.state.pictureSource,
       customPictureSelector:() => {
         NavigationUtil.launchModal('RoomPictureSelection', {
@@ -207,6 +207,7 @@ export class RoomEdit extends LiveComponent<any, any> {
               if (this.pictureTaken) {
                 this.removePictureQueue.push(this.state.picture);
               }
+              this.pictureTaken = false;
               this.setState({picture: name, pictureSource: pictureSource});
             }
           }})
@@ -262,8 +263,19 @@ export class RoomEdit extends LiveComponent<any, any> {
             }});
         })
     }
+    else if (this.state.pictureSource === "STOCK" && room.config.pictureSource !== this.state.pictureSource || room.config.picture !== this.state.picture) {
+      core.store.dispatch({
+        type:'UPDATE_LOCATION_CONFIG',
+        sphereId: this.props.sphereId,
+        locationId: this.props.locationId,
+        data: {
+          picture: this.state.picture,
+          pictureTaken: Date.now(),
+          pictureId: null,
+          pictureSource: "STOCK",
+        }});
+    }
     // TODO: take stock into account
-
 
 
     // // Picture CANNOT be null, will always be stock.

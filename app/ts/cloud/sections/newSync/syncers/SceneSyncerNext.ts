@@ -55,6 +55,7 @@ export class SceneSyncerNext extends SyncSphereInterface<SceneData, SceneData, c
       SceneTransferNext.mapLocalToCloud(scene)
     );
 
+    // the actual uploading of the image is not done in the syncer, this is done with a syncEvent (see the cloudEnhancer and the syncEvents.ts)
     if (scene.pictureSource === "STOCK" && cloudData.stockPicture === null) {
       this.transferPromises.push(CLOUD.forScene(this.localId).downloadSceneCustomPicture().catch((err) => {}));
     }
