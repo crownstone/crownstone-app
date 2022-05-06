@@ -323,8 +323,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     let hubs   = DataUtil.getHubsInLocation(  state, this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
-    console.log(location.config.picture, location.config.pictureSource)
-
     if (location.config.picture && location.config.pictureSource === "CUSTOM") {
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
     }

@@ -165,7 +165,7 @@ interface LocationDataConfig {
   picture:      string,
   pictureTaken: timestamp,
   pictureId:    string | null,
-  pictureSource: PICTURE_TYPE,
+  pictureSource: PICTURE_SOURCE,
 
   cloudId:      string | null,
   updatedAt:    timestamp,
@@ -255,7 +255,7 @@ interface SceneData {
   name:          string,
   picture:       string,
   pictureId:     string,
-  pictureSource: PICTURE_TYPE,
+  pictureSource: PICTURE_SOURCE,
   cloudId:       string | null,
   data:          { [key: number] : number }, // stoneUID: switchState
   updatedAt:     number
@@ -275,4 +275,4 @@ interface ToonData {
   updatedAt:               number,
 }
 
-type PICTURE_TYPE = "STOCK" | "CUSTOM";
+type PICTURE_SOURCE = "STOCK" | "CUSTOM";

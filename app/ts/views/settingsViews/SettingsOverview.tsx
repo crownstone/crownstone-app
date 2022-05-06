@@ -7,19 +7,14 @@ import {Alert, Linking, Platform, ScrollView, Text, TouchableHighlight, View} fr
 import {ListEditableItems} from '../components/ListEditableItems'
 import {background, colors, screenWidth, styles, tabBarHeight} from "../styles";
 
-import DeviceInfo from 'react-native-device-info';
 import {core} from "../../Core";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {AppUtil} from "../../util/AppUtil";
 import {LOGe} from "../../logging/Log";
-import {IconButton} from "../components/IconButton";
-import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {getDevAppItems} from "./dev/SettingsDeveloper";
-import {BlurView} from "@react-native-community/blur";
-import {NavBarBlur, TopBarBlur} from "../components/NavBarBlur";
 import {Icon} from "../components/Icon";
-import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
+import {SettingsNavbarBackground} from "../components/SettingsBackground";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);

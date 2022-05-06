@@ -113,6 +113,8 @@ export class EditableItem extends Component<any, any> {
         return <ButtonBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'buttonGetValue':
         return <ButtonGetValue barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'custom':
+        return this.props.item;
       case 'checkbar':
         return <CheckBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'collapsable':

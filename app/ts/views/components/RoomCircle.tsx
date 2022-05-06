@@ -227,13 +227,11 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
         style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}
         testID={`RoomCircle${room?.config?.cloudId}`}
       >
-        <View>
-          {this.getCircle()}
-          {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
-        </View>
+        {this.getCircle()}
+        {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
       </Animated.View>
       </TouchableOpacity>
-    )
+    );
   }
 
   checkIfTapped() {

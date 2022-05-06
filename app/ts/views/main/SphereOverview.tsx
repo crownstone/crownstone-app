@@ -74,12 +74,16 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-
-    // setTimeout(() => { NavigationUtil.launchModal("RoomEdit",
-    //   {
-    //     "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
-    //     "locationId": "55fc598f-53c1-7a0e-82c5-730daf962e8b"
-    //   })}, 200)
+    setTimeout(() => { NavigationUtil.launchModal("RoomPictureSelection",
+      {
+        "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
+        "locationId": "76e8cc0d-f2ee-eb18-a317-386fa9445091",
+        "name": "Wc Beneden",
+        "icon": "c1-manWomanSign",
+        "picture": "darkBlue",
+        "pictureId": null,
+        "pictureSource": "STOCK"
+      })}, 200)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];

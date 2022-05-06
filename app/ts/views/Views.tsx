@@ -126,6 +126,7 @@ import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
+import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -186,6 +187,7 @@ export const Views = {
   RoomAdd:                           RoomAdd,
   RoomEdit:                          RoomEdit,
   RoomIconSelection:                 RoomIconSelection,
+  RoomPictureSelection:              RoomPictureSelection,
   RoomOverview:                      RoomOverview,
   RoomTraining:                      RoomTraining,
   RoomTrainingStep1:                 RoomTrainingStep1,

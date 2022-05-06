@@ -14,10 +14,10 @@ import {
 } from "react-native";
 
 import { IconCircle }  from './IconCircle'
-import { Icon } from './Icon';
-import { styles, colors} from '../styles'
+import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { xUtil } from "../../util/StandAloneUtil";
 import {SelectPicture} from "./PictureCircle";
+import {EditCornerIcon} from "./IconCircleEdit";
 
 export class PicturePreview extends Component<any, any> {
   triggerOptions() {
@@ -29,18 +29,19 @@ export class PicturePreview extends Component<any, any> {
   }
 
   render() {
-    let size = this.props.size || 60;
+    let size = this.props.size || 70;
     if (this.props.value || this.props.imageURI) {
       let imageURI = this.props.imageURI ||
                      typeof this.props.value === "number" && this.props.value ||
                      {uri:xUtil.preparePictureURI(this.props.value)};
+
       let borderWidth = this.props.borderWidth || size / 30;
       let innerSize = size - 2*borderWidth;
+      let height = (screenHeight/screenWidth) * size;
       return (
         <TouchableOpacity
           onPress={() => {
             if (this.props.stock) {
-              this.props.removePicture();
               this.triggerOptions();
             }
             else {
@@ -55,28 +56,12 @@ export class PicturePreview extends Component<any, any> {
             }
           }}
           style={{
-            height:size,
-            width:size,
-            borderRadius: 0.5*size,
-            backgroundColor: colors.white.hex,
             alignItems:'center',
             justifyContent:'center',
           }}
           testID={this.props.testID_remove || "PictureCircleRemove"}>
-            <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={imageURI} />
-            <View style={[{
-              position: 'absolute',
-              top: 0,
-              right: 2,
-              width:size/3,
-              height:size/3,
-              borderRadius:size/6,
-              backgroundColor: colors.blue3.hex,
-              borderColor: colors.white.hex,
-              borderWidth: borderWidth
-              }, styles.centered]}>
-                <Icon name={'md-remove'} size={size/5} color={'#ffffff'} />
-            </View>
+            <Image style={{width:innerSize, height:height, borderRadius: 5}} source={imageURI} />
+            <EditCornerIcon size={80/3} />
         </TouchableOpacity>
       );
     }

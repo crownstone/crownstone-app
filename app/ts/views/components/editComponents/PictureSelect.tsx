@@ -18,8 +18,8 @@ export class PictureSelect extends Component<any, any> {
   render() {
       return (
         <View style={{flex:1}}>
-          <View style={[menuStyles.listView, { justifyContent:'flex-start', alignItems:'center', height:this.props.barHeightLarge}]}>
-            <Text style={[menuStyles.listText,{height:this.props.barHeightLarge - 20}]}>{this.props.label}</Text>
+          <View style={[menuStyles.listView, { alignItems:'flex-start', paddingVertical:15}]}>
+            <Text style={[menuStyles.listText,{height: undefined}]}>{this.props.label}</Text>
             <PicturePreview {...this.props} />
           </View>
         </View>

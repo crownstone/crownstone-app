@@ -26,29 +26,6 @@ import { styles, colors} from '../styles'
  * }
  */
 export class IconCircleEdit extends Component<{icon, size?, iconSize?, color?, borderColor?, outerBorderWidth?, borderWidth?, backgroundColor?, showAdd?, showEdit?, style?}, any> {
-  _getEditIcon(parentSize) {
-    if (this.props.showEdit === true) {
-      let size = parentSize/3;
-
-      let borderWidth = this.props.borderWidth || size / 10;
-
-
-      return (
-        <View style={[{
-          position:'absolute', top:-0.5*size, right:-0.5*size,
-          width:size,
-          height:size,
-          borderRadius:size,
-          backgroundColor: colors.green.hex,
-          borderColor: '#ffffff',
-          borderWidth: borderWidth
-        }, styles.centered]}>
-          <Icon name={'md-create'} size={parentSize/5} color={'#ffffff'} />
-        </View>
-      );
-    }
-  }
-
   _getAddIcon(parentSize) {
     if (this.props.showAdd === true) {
       let size = parentSize/3;
@@ -84,9 +61,36 @@ export class IconCircleEdit extends Component<{icon, size?, iconSize?, color?, b
     return (
       <View style={this.props.style}>
         { this._getMainIcon(size) }
-        { this._getEditIcon(size) }
+        { this.props.showEdit && <EditCornerIcon size={size/3} /> }
         { this._getAddIcon(size) }
       </View>
     );
   }
+}
+
+export function EditCornerIcon(props: {size: number, inner?: boolean}) {
+  return <CornerIcon {...props} name={'md-create'} />
+}
+
+export function SelectedCornerIcon(props: {size: number, inner?: boolean}) {
+  return <CornerIcon {...props} name={'fa5-check'} iconSize={props.size*0.45} />
+}
+
+
+export function CornerIcon(props: {name: string, size: number, inner?: boolean, iconSize?: number}) {
+  let borderWidth = props.size / 10;
+  let factor = props.inner ? 0.2 : -0.5;
+  return (
+    <View style={[{
+      position:'absolute', top: factor*props.size, right: factor*props.size,
+      width:props.size,
+      height:props.size,
+      borderRadius:props.size,
+      backgroundColor: colors.green.hex,
+      borderColor: '#ffffff',
+      borderWidth: borderWidth
+    }, styles.centered]}>
+      <Icon name={props.name} size={props.iconSize ?? props.size*0.6} color={'#ffffff'} />
+    </View>
+  );
 }

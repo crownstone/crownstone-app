@@ -14,7 +14,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { background, colors } from "./../styles";
+import {background, colors, RoomStockBackground} from "./../styles";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { FileUtil } from "../../util/FileUtil";
@@ -23,6 +23,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsBackground} from "../components/SettingsBackground";
 import {Get} from "../../util/GetUtil";
+import {Icon} from "../components/Icon";
 
 
 
@@ -43,12 +44,13 @@ export class RoomEdit extends LiveComponent<any, any> {
 
     const room  = Get.location(this.props.sphereId, this.props.locationId);
 
+
     this.state = {
-      name:      room.config.name,
-      icon:      room.config.icon,
-      picture:   room.config.picture,
-      pictureId: room.config.pictureId,
-      pictureType: "STOCK"
+      name:        room.config.name,
+      icon:        room.config.icon,
+      picture:     room.config.picture,
+      pictureId:   room.config.pictureId,
+      pictureSource: room.config.pictureSource,
     };
   }
 
@@ -169,6 +171,8 @@ export class RoomEdit extends LiveComponent<any, any> {
         this.setState({name: newText});
       }
     });
+
+
     items.push({
       label: lang("Icon"),
       type: 'icon',
@@ -188,15 +192,26 @@ export class RoomEdit extends LiveComponent<any, any> {
       label: lang("Picture"),
       type: 'pictureSelect',
       testID: 'roomPicture',
-      value: this.state.icon,
-      callback: () => {
-        NavigationUtil.navigate( "RoomIconSelection",{
-          icon: this.state.icon,
-          callback: (newIcon) => {
-            this.setState({icon: newIcon});
-          }
-        })
-      }});
+      stock: this.state.pictureSource === "STOCK",
+      value: this.state.pictureSource === "STOCK" ? RoomStockBackground[this.state.picture] : this.state.picture,
+      pictureSource: this.state.pictureSource,
+      customPictureSelector:() => {
+        NavigationUtil.launchModal('RoomPictureSelection', {
+          ...this.props, ...this.state,
+          selectImage: (name, pictureSource) => {
+            if (pictureSource === "CUSTOM") {
+              this.pictureTaken = true;
+              this.setState({picture: name, pictureSource: pictureSource});
+            }
+            else {
+              if (this.pictureTaken) {
+                this.removePictureQueue.push(this.state.picture);
+              }
+              this.setState({picture: name, pictureSource: pictureSource});
+            }
+          }})
+      },
+      });
 
 
     if (Permissions.inSphere(this.props.sphereId).removeRoom) {
@@ -205,7 +220,6 @@ export class RoomEdit extends LiveComponent<any, any> {
         label: lang("Remove_Room"),
         type: 'button',
         testID: 'roomRemove',
-        icon: <IconButton name="ios-trash" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
             lang("_Are_you_sure___Removing__header"),
@@ -228,9 +242,7 @@ export class RoomEdit extends LiveComponent<any, any> {
   }
 
   _updateRoom() {
-    const store = core.store;
-    const state = store.getState();
-    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+    const room  = Get.location(this.props.sphereId, this.props.locationId);
 
     // remove all pictures that have been attempted except the one we will use.
     this._removeUnusedPictures();
@@ -245,23 +257,28 @@ export class RoomEdit extends LiveComponent<any, any> {
             data: {
               picture: picture,
               pictureTaken: Date.now(),
-              pictureId: null
+              pictureId: null,
+              pictureSource: "CUSTOM",
             }});
         })
     }
+    // TODO: take stock into account
 
-    if (room.config.picture !== this.state.picture && this.state.picture === null) {
-      this._removePicture(room.config.picture);
-      core.store.dispatch({
-        type:'UPDATE_LOCATION_CONFIG',
-        sphereId: this.props.sphereId,
-        locationId: this.props.locationId,
-        data: {
-          picture: null,
-          pictureTaken: null,
-          pictureId: null
-        }});
-    }
+
+
+    // // Picture CANNOT be null, will always be stock.
+    // if (room.config.picture !== this.state.picture && this.state.picture === null) {
+    //   this._removePicture(room.config.picture);
+    //   core.store.dispatch({
+    //     type:'UPDATE_LOCATION_CONFIG',
+    //     sphereId: this.props.sphereId,
+    //     locationId: this.props.locationId,
+    //     data: {
+    //       picture: null,
+    //       pictureTaken: null,
+    //       pictureId: null
+    //     }});
+    // }
 
 
     if (room.config.name !== this.state.name || room.config.icon !== this.state.icon) {
