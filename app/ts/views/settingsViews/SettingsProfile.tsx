@@ -18,7 +18,7 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { background, colors, screenWidth } from "./../styles";
+import {background, colors, screenWidth, tabBarHeight} from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
@@ -273,10 +273,12 @@ export class SettingsProfile extends LiveComponent<any, any> {
             </View>
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          { !this.state.showDevMenu &&
+            <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
+              <View style={{width:screenWidth, height:80, backgroundColor: 'transparent'}} />
+            </TouchableWithoutFeedback>
+          }
         </ScrollView>
-        { !this.state.showDevMenu && <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
-          <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
-        </TouchableWithoutFeedback>}
       </SettingsNavbarBackground>
     );
   }
