@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View,Image, ViewStyle } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight, background,
@@ -15,7 +15,6 @@ import {
   deviceStyles,
   screenWidth
 } from "../../styles";
-import { LocationFlavourImage } from "../../roomViews/RoomOverview";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
@@ -374,3 +373,21 @@ function LocationRow({location}) {
     </View>
   )
 }
+
+function LocationFlavourImage(props : {location: any, height?: number}) {
+  let location = props.location;
+  let usedHeight = props.height || 120;
+  if (location.config.picture) {
+    return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
+  }
+  else {
+    return (
+      <View style={{width:screenWidth, height: usedHeight, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
+        <Image source={require("../../../../assets/images/backgrounds/RoomBannerBackground.jpg")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
+        <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
+        <Icon size={usedHeight*0.75} color={colors.white.rgba(0.75)} name={location.config.icon} />
+      </View>
+    )
+  }
+}
+

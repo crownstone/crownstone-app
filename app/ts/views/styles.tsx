@@ -388,7 +388,7 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 25,
     fontWeight:'bold',
-    textAlign:'center',
+    textAlign:'center', 
   },
   subHeader: {
     paddingTop:10,
