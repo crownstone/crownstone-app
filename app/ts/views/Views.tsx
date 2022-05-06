@@ -47,7 +47,6 @@ import { SettingsFactoryResetStep2 }          from '../views/settingsViews/Setti
 import { SettingsFAQ }                        from "../views/settingsViews/SettingsFAQ";
 import { SettingsLocalizationDebug }          from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                    from "../views/settingsViews/dev/SettingsLogging";
-import { SettingsMeshTopologyHelp }           from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsOverview }                   from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }                    from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }                    from '../views/settingsViews/SettingsPrivacy'
@@ -207,7 +206,6 @@ export const Views = {
   SettingsLogging:                   SettingsLogging,
   SettingsLogLevelConfig:            SettingsLogLevelConfig,
   SettingsLogOverview:               SettingsLogOverview,
-  SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,
   SettingsOverview:                  SettingsOverview,
   SettingsPrivacy:                   SettingsPrivacy,
   SettingsProfile:                   SettingsProfile,

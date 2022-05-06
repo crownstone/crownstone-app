@@ -409,35 +409,33 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
     return (
       <Background image={backgrouds[Math.floor(Math.random()*backgrouds.length)]} fullScreen={true} testID={"RoomOverview"}>
-        <SafeAreaView style={{flex:1, paddingTop: topBarHeight- statusBarHeight}}>
-          <ScrollView scrollEnabled={this.state.scrollEnabled}>
-            <View style={{width:screenWidth}}>
-              <RoomExplanation
-                state={state}
-                explanation={ this.props.explanation }
-                sphereId={    this.props.sphereId }
-                locationId={  this.props.locationId }
-              />
-              <View style={{height:15}} />
-              { this._getStones(itemArray, ids) }
-              <View style={{height:80}} />
-            </View>
-          </ScrollView>
-          <SlideFadeInView
-            visible={this.state.switchView}
-            style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
-            height={80}
-            pointerEvents={'none'}
-          >
-            <View style={{
-              backgroundColor:colors.black.rgba(0.25),
-              borderRadius:30,
-              padding:10,
-              alignItems:'center', justifyContent:'center'}}>
-              <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
-            </View>
-          </SlideFadeInView>
-        </SafeAreaView>
+        <ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>
+          <View style={{width:screenWidth}}>
+            <RoomExplanation
+              state={state}
+              explanation={ this.props.explanation }
+              sphereId={    this.props.sphereId }
+              locationId={  this.props.locationId }
+            />
+            <View style={{height:15}} />
+            { this._getStones(itemArray, ids) }
+            <View style={{height:80}} />
+          </View>
+        </ScrollView>
+        <SlideFadeInView
+          visible={this.state.switchView}
+          style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
+          height={80}
+          pointerEvents={'none'}
+        >
+          <View style={{
+            backgroundColor:colors.black.rgba(0.25),
+            borderRadius:30,
+            padding:10,
+            alignItems:'center', justifyContent:'center'}}>
+            <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
+          </View>
+        </SlideFadeInView>
 
         <TopBarBlur xxlight>
           <RoomHeader

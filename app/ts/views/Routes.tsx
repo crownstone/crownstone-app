@@ -51,10 +51,10 @@ Navigation.events().registerAppLaunchedListener(() => {
       drawBehind: true,
     },
     topBar: {
-      drawBehind: false,
-      background: { color: colors.csBlueDarker.hex },
+      drawBehind: true,
+      background: { color: 'transparent'},
       title: {
-        color: colors.white.hex,
+        color: colors.black.hex,
       },
     },
     bottomTabs: {

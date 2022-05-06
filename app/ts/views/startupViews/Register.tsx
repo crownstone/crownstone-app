@@ -374,7 +374,6 @@ export class Register extends LiveComponent<any, any> {
       <AnimatedBackground
         fullScreen={true}
         image={backgroundImage}
-        hideOrangeLine={false}
         hideNotifications={true}
         testID={"registerView"}
       >

@@ -13,6 +13,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {core} from "../../../Core";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereUser", key)(a,b,c,d,e);
@@ -125,7 +126,7 @@ export class SphereUser extends LiveComponent<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereUser"}>
+      <SettingsBackground testID={"SphereUser"}>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
@@ -135,7 +136,7 @@ export class SphereUser extends LiveComponent<any, any> {
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

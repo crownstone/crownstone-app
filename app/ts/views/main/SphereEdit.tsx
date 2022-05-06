@@ -22,6 +22,7 @@ import { LiveComponent }     from "../LiveComponent";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import {Stacks} from "../Stacks";
 import {Icon} from "../components/Icon";
+import {SettingsBackground} from "../components/SettingsBackground";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {
@@ -187,19 +188,20 @@ export class SphereEdit extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={'SphereEdit'}>
+      <SettingsBackground testID={'SphereEdit'}>
         <ScrollView testID={"SphereEditScrollView"}>
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(core.store, true) }}
             title={ lang("Syncing_with_the_Cloud___")}
-            titleColor={colors.darkGray.hex}
-            colors={[colors.csBlue.hex]}
-            tintColor={colors.csBlue.hex}
+            titleColor={colors.black.hex}
+            colors={[colors.black.hex]}
+            tintColor={colors.black.hex}
+            progressViewOffset={-70}
           />
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsBackground>
     );
   }
 }

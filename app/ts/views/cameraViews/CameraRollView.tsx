@@ -26,7 +26,7 @@
 //   render() {
 //    return (
 //      <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
-//        <Background fullScreen={true} hideNotifications={true} hideOrangeLine={true}  dimStatusBar={true}>
+//        <Background fullScreen={true} hideNotifications={true} hideOrangeLine={true} >
 //          <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
 //            <TopbarImitation
 //              leftStyle={{color: colors.white.hex}}

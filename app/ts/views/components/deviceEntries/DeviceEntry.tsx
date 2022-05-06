@@ -151,11 +151,9 @@ export class DeviceEntry extends Component<{
     if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false || true) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state > 0} disabled={true} />;
-        action = () => { this._basePressed(); }
       }
       else if (stone.config.locked) {
         content = <Icon name={'md-lock'} color={colors.black.rgba(0.2)} size={32} />;
-        action = () => { this._basePressed(); }
       }
       else if (this.state.pendingCommand === true) {
         content = <ActivityIndicator animating={true} size='large' color={colors.black.rgba(0.5)} />;
@@ -180,37 +178,6 @@ export class DeviceEntry extends Component<{
     }
   }
 
-  _basePressed() {
-    NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-  }
-
-  _getExplanationText(state, stone) {
-    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
-    let explanation = null;
-
-    let updateAvailable = stone.config.firmwareVersion && (Util.canUpdate(stone) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
-
-    if (this.props.hideExplanation !== true) {
-      if (state.app.hasSeenDeviceSettings === false) {
-        explanation = <Text style={explanationStyle}>{  lang("Tap_me_for_more_") }</Text>;
-      }
-      else if (state.app.hasSeenSwitchView !== true && this.props.amountOfDimmableCrownstonesInLocation > 1 && stone.errors.hasError !== true && !updateAvailable) {
-        explanation = <Text style={explanationStyle}>{ lang("Tap_icon_to_quickly_dim_y") }</Text>;
-      }
-    }
-
-    if (explanation) {
-      return (
-        <View style={{height:15}}>
-          {explanation}
-        </View>
-      )
-    }
-    return null;
-  }
-
-
-
   async _switch(stone, state) {
     await StoneUtil.multiSwitch(stone, state,true, true).catch(() => {});
     this._planStoreAction(state);
@@ -228,13 +195,10 @@ export class DeviceEntry extends Component<{
 
 
   render() {
-    let state = core.store.getState();
     let stone = Get.stone(this.props.sphereId, this.props.stoneId);
 
     let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     canSwitch = canSwitch && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION);
-
-    stone.state.state = Math.random() > 0.5 ? 1 : 0;
 
     return (
       <BlurView
@@ -257,13 +221,12 @@ export class DeviceEntry extends Component<{
           <Text style={{ fontSize:13, fontStyle:'italic' }}>{this.props.editMode ? 'Hold to drag!' : '200 W'}</Text>
         </View>
         <SlideSideFadeInView visible={this.props.editMode} width={60}>
-          <SettingsIconRight style={{height:55}}/>
+          <SettingsIconRight style={{height:55}} onPress={() => {  NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely}); }}/>
         </SlideSideFadeInView>
         {
           canSwitch === true &&
           <SlideSideFadeInView visible={!this.props.editMode} width={75} style={{alignItems:'flex-end'}}>{this._getControl(stone)}</SlideSideFadeInView>
         }
-
       </BlurView>
       // <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:'transparent'}]}>
       //   <View style={{flexDirection: 'row', paddingRight: 0, paddingLeft: 0, flex: 1}}>

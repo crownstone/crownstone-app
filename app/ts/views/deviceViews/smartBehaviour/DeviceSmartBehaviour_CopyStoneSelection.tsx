@@ -151,7 +151,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
     }
 
     return (
-      <Background image={background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
+      <Background image={background.lightBlurLighter} fullScreen={true} hideNotifications={true}>
         <TopbarImitation
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}

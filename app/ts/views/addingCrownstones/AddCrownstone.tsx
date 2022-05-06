@@ -191,8 +191,6 @@ export class AddCrownstone extends LiveComponent<any, any> {
         fullScreen={true}
         image={backgroundImage}
         hideNotifications={true}
-        hideOrangeLine={true}
-        dimStatusBar={true}
         testID={'AddCrownstone'}
       >
         <TopbarImitation

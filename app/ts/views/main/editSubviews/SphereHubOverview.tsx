@@ -20,6 +20,7 @@ import { HubEntry } from "../../components/deviceEntries/HubEntry";
 import { STONE_TYPES } from "../../../Enums";
 import { LiveComponent } from "../../LiveComponent";
 import { Get } from "../../../util/GetUtil";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 
@@ -156,11 +157,11 @@ export class SphereHubOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereHubOverview"}>
+      <SettingsBackground testID={"SphereHubOverview"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

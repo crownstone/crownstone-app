@@ -17,6 +17,7 @@ import { ActivityIndicator, TouchableOpacity, View, ViewStyle } from "react-nati
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Icon } from "../../components/Icon";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 export class SphereEditMap extends LiveComponent<any, any> {
   static options(props) {
@@ -123,7 +124,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
 
 
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereEditMap"}>
+      <SettingsBackground testID={"SphereEditMap"}>
         <MapView
           ref={(r) => { this.map = r }}
           style={{flex:1}}
@@ -159,7 +160,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
             testID={'UseLocation'}
           />
         </View>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

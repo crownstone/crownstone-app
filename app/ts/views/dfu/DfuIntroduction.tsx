@@ -118,7 +118,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={false} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}

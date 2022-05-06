@@ -27,6 +27,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
 import {NavBarBlur} from "../components/NavBarBlur";
+import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -240,7 +241,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} hideNotifications={true} testID={"SettingsProfile"}>
+      <SettingsNavbarBackground testID={"SettingsProfile"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
@@ -279,8 +280,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
         { !this.state.showDevMenu && <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
           <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
         </TouchableWithoutFeedback>}
-        <NavBarBlur xlight />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

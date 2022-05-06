@@ -21,6 +21,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import {Icon} from "../../components/Icon";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
   static options(props) {
@@ -265,11 +266,11 @@ export class SphereEditSettings extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereEditSettings"}>
+      <SettingsBackground testID={"SphereEditSettings"}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

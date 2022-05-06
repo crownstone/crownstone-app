@@ -20,6 +20,7 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { STONE_TYPES } from "../../../Enums";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 
@@ -138,11 +139,11 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereCrownstoneOverview"}>
+      <SettingsBackground testID={"SphereCrownstoneOverview"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

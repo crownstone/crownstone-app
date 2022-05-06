@@ -23,6 +23,7 @@ import { SliderBar } from "../components/editComponents/SliderBar";
 import {DataUtil} from "../../util/DataUtil";
 import {Icon} from "../components/Icon";
 import {NavBarBlur} from "../components/NavBarBlur";
+import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -212,12 +213,11 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsApp"}>
+      <SettingsNavbarBackground testID={"SettingsApp"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-        <NavBarBlur xlight />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

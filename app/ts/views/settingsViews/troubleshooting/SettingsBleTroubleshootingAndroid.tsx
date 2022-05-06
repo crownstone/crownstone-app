@@ -14,6 +14,7 @@ import {IconButton} from "../../components/IconButton";
 import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 
@@ -25,11 +26,9 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsBleTroubleshooting"}>
+      <SettingsBackground testID={"SettingsBleTroubleshooting"}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <View style={{height:20}} />
-            <Text style={styles.title}>{ lang("Troubleshooting") }</Text>
             <View style={{height:20}} />
             <IconButton name="ios-bluetooth" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />
             <View style={{height:20}} />
@@ -45,7 +44,7 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsBackground>
     );
   }
 }

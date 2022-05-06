@@ -206,7 +206,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}

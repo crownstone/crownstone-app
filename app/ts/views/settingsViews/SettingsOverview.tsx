@@ -17,8 +17,9 @@ import {IconButton} from "../components/IconButton";
 import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {getDevAppItems} from "./dev/SettingsDeveloper";
 import {BlurView} from "@react-native-community/blur";
-import {NavBarBlur} from "../components/NavBarBlur";
+import {NavBarBlur, TopBarBlur} from "../components/NavBarBlur";
 import {Icon} from "../components/Icon";
+import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
@@ -188,12 +189,11 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} testID={"SettingsOverview"}>
+      <SettingsNavbarBackground>
         <ScrollView testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-        <NavBarBlur />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

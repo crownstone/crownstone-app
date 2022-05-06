@@ -14,11 +14,13 @@ import {
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { setupStyle, NextButton } from './SetupShared'
-import { background, screenHeight } from "./../styles";
+import {background, screenHeight, topBarHeight} from "./../styles";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
   static options(props) {
@@ -28,8 +30,9 @@ export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
   render() {
     let imageSize = 0.40;
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.main}>
-        <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
+      <SettingsBackground>
+        <SafeAreaView style={{flex:1}}>
+          <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.text]}>{ lang("If_youre_physically_next_") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information]}>{ lang("Please_take_the_Crownston") }</Text>
@@ -38,6 +41,7 @@ export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
             <Image source={require('../../../assets/images/lineDrawings/pluggingInPlugRetry.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
           </View>
           <View style={{flex:1}} />
+
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
             <NextButton onPress={ () => {
@@ -46,8 +50,8 @@ export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
               setTimeout(() => { core.eventBus.emit("StartFactoryResetProcess"); }, 1000)
             }} />
           </View>
-        </View>
-      </BackgroundNoNotification>
+        </SafeAreaView>
+      </SettingsBackground>
     )
   }
 }
