@@ -18,7 +18,7 @@ import {
   tabBarHeight,
   colors,
   screenWidth,
-  updateScreenHeight, availableScreenHeight, availableModalHeight
+  availableScreenHeight, availableModalHeight
 } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
@@ -61,10 +61,7 @@ export class Background extends Component<{
     let overrideStyle = this.props.style || {};
 
     return (
-      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
-        let {x, y, width, height} = event.nativeEvent.layout;
-        updateScreenHeight(height, hasTopBar, hasTabBar);
-      }} testID={this.props.testID}>
+      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} testID={this.props.testID}>
         <StatusBar translucent={false} barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
         <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           { this.props.image    ? <BackgroundImage height={backgroundHeight} image={this.props.image} /> : undefined }
