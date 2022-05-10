@@ -21,6 +21,25 @@ export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
 
 
+let constantsUpdated = false;
+export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
+  if (Platform.OS === 'android' && constantsUpdated === false) {
+    let heightOffset = 0;
+    if (topBarAvailable) { heightOffset += topBarHeight; }
+    if (tabBarAvailable) { heightOffset += tabBarHeight; }
+
+    let totalHeight = height + heightOffset;
+    if (totalHeight > 0 && totalHeight !== screenHeight && totalHeight > 0.5 * Dimensions.get('screen').height) {
+      screenHeight = totalHeight;
+
+      availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+      availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+      constantsUpdated = true;
+    }
+  }
+}
+
 export const stylesUpdateConstants = () =>  {
   return Navigation.constants()
     .then((constants) => {

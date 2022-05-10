@@ -15,7 +15,7 @@ import {
   screenHeight,
   screenWidth,
   colors,
-  availableScreenHeight, availableModalHeight
+  updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
@@ -89,7 +89,10 @@ export class AnimatedBackground extends Component<{
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = this.getHeight();
     return (
-      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} testID={this.props.testID}>
+      <View style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+        let {x, y, width, height} = event.nativeEvent.layout;
+        updateScreenHeight(height, hasTopBar, hasTabBar);
+      }} testID={this.props.testID}>
         <StatusBar translucent={false} barStyle={this.props.darkStatusBar ? "dark-content" : "light-content"} />
         <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight}}>
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
