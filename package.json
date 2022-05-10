@@ -25,7 +25,7 @@
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-community/slider": "^4.1.12",
     "crownstone-sse": "5.0.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "node-hue-api": "^4.0.9",
     "react": "^17.0.2",
     "react-native": "0.66.4",
