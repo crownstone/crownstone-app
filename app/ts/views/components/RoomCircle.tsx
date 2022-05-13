@@ -240,7 +240,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
           this.handleTap();
         }
       }
-    })
+    }, 25);
   }
 
   handleTouch() {
@@ -345,7 +345,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     this.tapRegistered = true;
-    setTimeout(() => { this.tapRegistered = false; });
+    setTimeout(() => { this.tapRegistered = false; }, 50);
     this._clearHold();
   }
 }

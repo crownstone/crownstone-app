@@ -96,7 +96,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
         />
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </SafeAreaView>
-      <TopBarBlur disabled={arrangingRooms}>
+      <TopBarBlur disabledBlur={arrangingRooms}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
           <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/>
