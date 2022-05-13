@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import {Component, useEffect, useState} from 'react';
 import {
   Animated, Platform, SafeAreaView,
-  View, Text, AppState, NativeEventSubscription
+  View, Text, AppState, NativeEventSubscription, StatusBar
 } from "react-native";
 
 import {
@@ -21,25 +21,7 @@ import {BackgroundImage} from "../BackgroundImage";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 
-interface AnimatedBackgroundProps {
-  hideNotifications?:        boolean,
-  hideOrangeLine?:           boolean,
-  orangeLineAboveStatusBar?: boolean,
-  hasNavBar?:                boolean,
-  lightStatusbar?:           boolean,
 
-  duration?:          number,
-  dimStatusBar?:      boolean,
-  paddStatusBar?:     boolean,
-  fullScreen?:        boolean,
-  hasTopBar?:         boolean,
-  image?:             any,
-  viewWrapper?:       boolean,
-  testID?:            string,
-  topImage?:          any,
-  keyboardAvoid?:     boolean,
-  children?:any
-}
 
 export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> {
   staticImage : any;
@@ -87,6 +69,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
+        <StatusBar barStyle={this.props.lightStatusbar ? 'light-content' : 'dark-content'} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>
@@ -94,9 +77,6 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
           <BackgroundImage height={backgroundHeight} image={this.animatedImage} />
         </Animated.View>
         <CustomKeyboardAvoidingView style={{flex:1}}>
-          {/*{ this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }*/}
-          { this.props.dimStatusBar  && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
-          {/*{ this.props.paddStatusBar            && Platform.OS !== 'android' ? <View style={styles.statusBarPadding} /> : undefined }*/}
           {/*<NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />*/}
           <View style={{flex:1}}>
             { this.props.children }
@@ -108,7 +88,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 }
 
 
-function getHeight(props) : [number, boolean, boolean] {
+export function getHeight(props) : [number, boolean, boolean] {
   let hasTopBar = false;
   let hasTabBar = false;
   let height = screenHeight;

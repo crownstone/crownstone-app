@@ -334,8 +334,7 @@ export const menuStyles = StyleSheet.create({
   listView: {
     flexDirection: 'row',
     backgroundColor: colors.white.rgba(0.7),
-    paddingLeft:15,
-    paddingRight:15,
+    paddingHorizontal:15,
     alignItems: 'center',
   },
   collapsableContent: {
@@ -388,7 +387,7 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 25,
     fontWeight:'bold',
-    textAlign:'center',
+    textAlign:'center', 
   },
   subHeader: {
     paddingTop:10,
@@ -481,4 +480,25 @@ export const background = {
   lightBlurLighter       : require('../../assets/images/backgrounds/lightBackground2_blur_lighter.jpg'),
   lightBlurBW            : require('../../assets/images/backgrounds/lightBackground2_blur_bw.jpg'),
   detailsDark            : require('../../assets/images/backgrounds/darkBackground4.jpg'),
+}
+
+export const RoomStockBackground = {
+  darkRed    : require('../../assets/images/backgrounds/locationBackgrounds/darkRed.jpg'),
+  red        : require('../../assets/images/backgrounds/locationBackgrounds/red.jpg'),
+  orange     : require('../../assets/images/backgrounds/locationBackgrounds/orange.jpg'),
+  yellow     : require('../../assets/images/backgrounds/locationBackgrounds/yellow.jpg'),
+  blue       : require('../../assets/images/backgrounds/locationBackgrounds/blue.jpg'),
+  csBlue     : require('../../assets/images/backgrounds/locationBackgrounds/csBlue.jpg'),
+  darkBlue   : require('../../assets/images/backgrounds/locationBackgrounds/darkBlue.jpg'),
+  darkGreen  : require('../../assets/images/backgrounds/locationBackgrounds/darkGreen.jpg'),
+  green2     : require('../../assets/images/backgrounds/locationBackgrounds/green2.jpg'),
+  green      : require('../../assets/images/backgrounds/locationBackgrounds/green.jpg'),
+  lightGreen : require('../../assets/images/backgrounds/locationBackgrounds/lightGreen.jpg'),
+
+  base       : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
+}
+
+
+export function getRoomStockImage(key) {
+  return RoomStockBackground[key] ?? RoomStockBackground.base;
 }

@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import {background, colors, deviceStyles, screenWidth, tabBarHeight} from "../styles";
+import {availableScreenHeight, background, colors, deviceStyles, screenWidth, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -29,6 +29,8 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {NavBarBlur} from "../components/NavBarBlur";
+import {SettingsNavbarBackground} from "../components/SettingsBackground";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -107,7 +109,7 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   getIntroduction() {
     return (
-      <Animated.View style={{flexGrow:1, alignItems:'center', justifyContent:'center', position:'relative', left: this.state.leftOffset, opacity: this.state.opacity}}>
+      <Animated.View style={{flex:1, alignItems:'center', justifyContent:'center', position:'relative', left: this.state.leftOffset, opacity: this.state.opacity}}>
         <View style={{flex:1}} />
         <IconButton name="md-analytics" buttonSize={0.27*screenWidth} size={0.21*screenWidth} radius={0.05*screenWidth}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
         <View style={{flex:0.5}} />
@@ -193,15 +195,11 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false}>
-        <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: tabBarHeight + 30 }}>
-            <Text style={deviceStyles.header}>{ lang("Diagnostics") }</Text>
-            { this.getContent() }
-          </View>
+      <SettingsNavbarBackground>
+        <ScrollView contentContainerStyle={{minHeight:availableScreenHeight}}>
+          { this.getContent() }
         </ScrollView>
-        <NavBarBlur xlight />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

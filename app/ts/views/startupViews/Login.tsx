@@ -226,7 +226,7 @@ export class Login extends Component<any, any> {
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true} testID={"LoginView"}>
+      <Background fullScreen={true} image={background.main} hideNotifications={true} keyboardAvoid={true} testID={"LoginView"}>
         <SafeAreaView>
         <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>

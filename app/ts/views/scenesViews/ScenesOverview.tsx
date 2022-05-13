@@ -218,7 +218,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
       <Background
         image={background.main}
         fullScreen={true}
-        hideOrangeLine={true}
         hideNotifications={true}
         testID={'ScenesOverview'}
       >

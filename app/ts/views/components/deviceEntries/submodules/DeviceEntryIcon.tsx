@@ -1,8 +1,6 @@
 import * as React from "react";
-import { AnimatedCircle } from "../../animated/AnimatedCircle";
 import { Icon } from "../../Icon";
 import { AlternatingContent } from "../../animated/AlternatingContent";
-import { View } from "react-native";
 import { StoneAvailabilityTracker } from "../../../../native/advertisements/StoneAvailabilityTracker";
 import { colors, styles } from "../../../styles";
 import { Util } from "../../../../util/Util";
@@ -11,8 +9,6 @@ import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 
 
 export function DeviceEntryIcon({stone, stoneId}) {
-  let customStyle = {};
-
   let size = 60;
 
   let color = colors.csBlueDark.rgba(0.5);
@@ -47,12 +43,10 @@ export function DeviceEntryIcon({stone, stoneId}) {
           contentArray={[
             <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
             <Icon name={stone.config.icon} size={35} color={color} />,
-          ]} />
+          ]}
+        />
       );
     }
-  }
-  else {
-    customStyle = {borderWidth:1, borderColor: 'transparent'}
   }
 
   return (

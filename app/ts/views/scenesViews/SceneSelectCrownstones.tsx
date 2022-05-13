@@ -67,7 +67,7 @@ lang("_Select_at_least_one______body"),
     let backgroundImage = require('../../../assets/images/backgrounds/plugBackgroundFade.jpg');
     let textColor = colors.white.hex;
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Cancel")}

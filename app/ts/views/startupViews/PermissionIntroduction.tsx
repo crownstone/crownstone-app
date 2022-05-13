@@ -95,7 +95,7 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} testID={"PermissionIntroduction"}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} testID={"PermissionIntroduction"}>
         <SafeAreaView>
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}

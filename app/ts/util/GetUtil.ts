@@ -1,6 +1,5 @@
 import { core } from "../Core";
 
-
 export const Get = {
 
   activeSphere() : SphereData | null {

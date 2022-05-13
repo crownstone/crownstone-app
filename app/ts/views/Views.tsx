@@ -47,7 +47,6 @@ import { SettingsFactoryResetStep2 }          from '../views/settingsViews/Setti
 import { SettingsFAQ }                        from "../views/settingsViews/SettingsFAQ";
 import { SettingsLocalizationDebug }          from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                    from "../views/settingsViews/dev/SettingsLogging";
-import { SettingsMeshTopologyHelp }           from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsOverview }                   from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }                    from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }                    from '../views/settingsViews/SettingsPrivacy'
@@ -127,6 +126,7 @@ import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
+import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -187,6 +187,7 @@ export const Views = {
   RoomAdd:                           RoomAdd,
   RoomEdit:                          RoomEdit,
   RoomIconSelection:                 RoomIconSelection,
+  RoomPictureSelection:              RoomPictureSelection,
   RoomOverview:                      RoomOverview,
   RoomTraining:                      RoomTraining,
   RoomTrainingStep1:                 RoomTrainingStep1,
@@ -207,7 +208,6 @@ export const Views = {
   SettingsLogging:                   SettingsLogging,
   SettingsLogLevelConfig:            SettingsLogLevelConfig,
   SettingsLogOverview:               SettingsLogOverview,
-  SettingsMeshTopologyHelp:          SettingsMeshTopologyHelp,
   SettingsOverview:                  SettingsOverview,
   SettingsPrivacy:                   SettingsPrivacy,
   SettingsProfile:                   SettingsProfile,

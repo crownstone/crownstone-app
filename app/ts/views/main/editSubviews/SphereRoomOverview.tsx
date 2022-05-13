@@ -22,6 +22,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 export class SphereRoomOverview extends LiveComponent<any, any> {
@@ -132,13 +133,12 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    let backgroundImage = background.menu;
     return (
-      <Background image={backgroundImage} hasNavBar={false} testID={'SphereEdit_RoomOverview'}>
+      <SettingsBackground testID={'SphereEdit_RoomOverview'}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

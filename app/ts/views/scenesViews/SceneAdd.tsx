@@ -307,7 +307,7 @@ lang("_Select_at_least_one______body"),
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}

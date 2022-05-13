@@ -82,8 +82,8 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
 
   render() {
     let size = this.props.size || 60;
-    let borderWidth = this.props.outerBorderWidth || this.props.borderWidth || size / 30;
-    let borderColor = this.props.borderColor || this.props.color || colors.menuBackground.hex;
+    let borderWidth = this.props.outerBorderWidth ?? this.props.borderWidth ?? size / 30;
+    let borderColor = this.props.borderColor ?? this.props.color ?? colors.menuBackground.hex;
     if (borderWidth > 0) {
       let innerSize = size - 2 * borderWidth;
       return (

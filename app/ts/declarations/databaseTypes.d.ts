@@ -23,17 +23,6 @@ interface SortedListData {
   updatedAt: number,
 }
 
-interface SceneData {
-  id:            string,
-  name:          string,
-  picture:       string,
-  pictureId:     string,
-  pictureSource: "STOCK" | "CUSTOM", // PICTURE_GALLERY_TYPES
-  cloudId:       string | null,
-  data:          { [key: number] : number }, // stoneUID: switchState
-  updatedAt:     number
-}
-
 interface EncryptionKeyData {
   id: string,
   key: string,

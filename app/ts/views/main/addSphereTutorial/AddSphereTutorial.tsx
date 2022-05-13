@@ -9,8 +9,7 @@ import {
   StyleSheet,
   View
 } from "react-native";
-import { Background } from "../../components/Background";
-import { background, colors, screenWidth } from "../../styles";
+import { colors, screenWidth } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
@@ -19,6 +18,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 export class AddSphereTutorial extends LiveComponent<any, any> {
   static options(props) {
@@ -41,7 +41,7 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
   render() {
     let components = this._getContent();
     return (
-      <Background hasNavBar={false} image={background.main} testID={"AddSphereTutorial"}>
+      <SettingsBackground testID={"AddSphereTutorial"}>
         <View style={{flex:1, width:screenWidth}}>
         <Carousel
           useScrollView={true}
@@ -75,7 +75,7 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
           />
         </HiddenFadeInView>
         </View>
-      </Background>
+      </SettingsBackground>
     )
   }
 

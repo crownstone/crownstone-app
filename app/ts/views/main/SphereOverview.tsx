@@ -72,20 +72,18 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   }
 
-  // navigationButtonPressed({ buttonId }) {
-  //   if (buttonId === 'edit') {
-  //     let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
-  //     NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
-  //   }
-  //   if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
-  //   if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
-  //   if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
-  // }
 
   componentDidMount() {
-
-    setTimeout(() => { NavigationUtil.navigate("RoomOverview", {"sphereId": "8ff9e7d8-eb39-86a9-b85d-544227c5e967",
-      "locationId": "8f32296f-e7a5-c33c-c524-eaff6384e596"})}, 200)
+    setTimeout(() => { NavigationUtil.launchModal("RoomPictureSelection",
+      {
+        "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
+        "locationId": "76e8cc0d-f2ee-eb18-a317-386fa9445091",
+        "name": "Wc Beneden",
+        "icon": "c1-manWomanSign",
+        "picture": "darkBlue",
+        "pictureId": null,
+        "pictureSource": "STOCK"
+      })}, 200)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];

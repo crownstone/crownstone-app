@@ -124,7 +124,7 @@ export const TopBarUtil = {
       });
     }
 
-    let results : Options = { topBar: { drawBehind: false } }
+    let results : Options = { topBar: { drawBehind: true } }
 
     if (config.backButton) {
       if (Platform.OS === 'android') {

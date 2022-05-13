@@ -18,15 +18,13 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { background, colors, screenWidth } from "./../styles";
+import {background, colors, screenWidth, tabBarHeight} from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
-import {NavBarBlur} from "../components/NavBarBlur";
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -240,7 +238,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={false} hideNotifications={true} testID={"SettingsProfile"}>
+      <SettingsNavbarBackground testID={"SettingsProfile"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
@@ -275,12 +273,13 @@ export class SettingsProfile extends LiveComponent<any, any> {
             </View>
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          { !this.state.showDevMenu &&
+            <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
+              <View style={{width:screenWidth, height:80, backgroundColor: 'transparent'}} />
+            </TouchableWithoutFeedback>
+          }
         </ScrollView>
-        { !this.state.showDevMenu && <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
-          <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
-        </TouchableWithoutFeedback>}
-        <NavBarBlur xlight />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

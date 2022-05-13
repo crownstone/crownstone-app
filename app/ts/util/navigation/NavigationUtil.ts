@@ -29,7 +29,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
   if (componentId === 'SphereOverviewSideBar') { return; }
 
   core.eventBus.emit("VIEW_DID_APPEAR", componentId);
-  console.log("registerComponentDidAppearListener", { componentId, componentName })
+  // console.log("registerComponentDidAppearListener", { componentId, componentName })
   if (topBarComponentNames.indexOf(componentName) === -1) {
     LOGi.nav("VIEW DID APPEAR", componentId, componentName);
     if (tabBarComponentNames.indexOf(componentName) !== -1) {
@@ -40,7 +40,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 });
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentWillAppearListener(({ componentId, componentName }) => {
-  console.log('registerComponentWillAppearListener', componentId, componentName)
+  // console.log('registerComponentWillAppearListener', componentId, componentName)
 });
 // Listen for componentDidAppear screen events
 Navigation.events().registerCommandListener((data, args) => {

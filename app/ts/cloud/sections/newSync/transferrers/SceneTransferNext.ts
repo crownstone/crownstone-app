@@ -17,9 +17,6 @@ export const SceneTransferNext : TransferSphereTool<SceneData, SceneData, cloud_
     if (localData.pictureSource === "STOCK") {
       result.stockPicture = localData.picture;
     }
-    else {
-      result.customPictureId = localData.pictureId;
-    }
 
     return result;
   },

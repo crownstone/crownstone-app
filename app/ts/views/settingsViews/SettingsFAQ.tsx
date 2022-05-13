@@ -15,12 +15,13 @@ import {
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {background, colors, menuStyles} from "../styles";
+import {background, colors, menuStyles, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import {SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class SettingsFAQ extends Component<any, any> {
   static options(props) {
@@ -255,11 +256,11 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} testID={"SettingsFAQ"}>
-        <ScrollView testID={'SettingsFAQ_scrollview'}>
+      <SettingsNavbarBackground testID={"SettingsFAQ"}>
+        <ScrollView testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

@@ -14,17 +14,29 @@ export const LocationTransferNext : TransferSphereTool<LocationData, LocationDat
       icon:      localData.config.icon,
       updatedAt: new Date(localData.config.updatedAt).toISOString(),
     };
+
+    if (localData.config.pictureSource === "STOCK") {
+      result.stockPicture = localData.config.picture;
+    }
+
     return result;
   },
 
   mapCloudToLocal(cloudLocation: cloud_Location) : Partial<LocationDataConfig> {
-    return {
-      name:         cloudLocation.name,
-      icon:         cloudLocation.icon,
-      uid:          cloudLocation.uid,
-      cloudId:      cloudLocation.id,
-      updatedAt:    new Date(cloudLocation.updatedAt).valueOf()
+    let result : Partial<LocationDataConfig> =  {
+      name:          cloudLocation.name,
+      icon:          cloudLocation.icon,
+      uid:           cloudLocation.uid,
+      cloudId:       cloudLocation.id,
+      pictureSource: cloudLocation.imageId ? "CUSTOM" : "STOCK", // PICTURE_GALLERY_TYPES
+      updatedAt:     new Date(cloudLocation.updatedAt).valueOf()
     }
+
+    if (cloudLocation.stockPicture) {
+      result.picture = cloudLocation.stockPicture;
+    }
+
+    return result;
   },
 
 
