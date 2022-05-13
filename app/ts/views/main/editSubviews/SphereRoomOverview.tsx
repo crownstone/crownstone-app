@@ -76,7 +76,10 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   _getRearrangeItem() {
     return (
       <TouchableHighlight key={'rearrangeItem_entry'} onPress={() => {
-        NavigationUtil.navigate( "SphereRoomArranger", {sphereId: this.props.sphereId});
+        NavigationUtil.dismissModal()
+        core.eventBus.emit("SET_ARRANGING_ROOMS");
+
+        // NavigationUtil.navigate( "SphereRoomArranger", {sphereId: this.props.sphereId});
       }} testID={"SphereEdit_roomOverview_rearrange"}>
         <View style={[styles.listView, {paddingRight:5}]}>
           <RoomList

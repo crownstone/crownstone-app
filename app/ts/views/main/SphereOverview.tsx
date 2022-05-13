@@ -89,6 +89,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
     this.unsubscribeEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
+    this.unsubscribeEvents.push(core.eventBus.on("SET_ARRANGING_ROOMS", () => { this.setRearrangeRooms(true) }));
+
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
     this.unsubscribeEvents.push(core.eventBus.on("VIEW_SPHERES", this._zoomOut));
 
@@ -98,7 +100,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
       if (change.removeSphere) {
         ActiveSphereManager.clearActiveSphere();
-        this._updateNavBar();
         this.setState({zoomLevel: ZOOM_LEVELS.sphere});
         return;
       }
@@ -123,7 +124,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         change.changeLocations
       ) {
         this.forceUpdate();
-        this._updateNavBar();
       }
     });
   }
@@ -135,12 +135,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
     NAVBAR_PARAMS_CACHE = null;
   }
 
-
-
-  _updateNavBar() {
-    getTopBarProps(core.store.getState(), this.props, this.state);
-    // Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true}))
-  }
 
 
   // _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
@@ -176,7 +170,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
     NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
     if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-      this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
+      this.setState({zoomLevel: ZOOM_LEVELS.room});
     }
   }
 
@@ -195,7 +189,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
           core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
         }
         NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
-        this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
+        this.setState({zoomLevel: ZOOM_LEVELS.sphere});
       }
       else { // this is for convenience, it's not accurate but it'll do
         this._zoomIn()
@@ -204,29 +198,29 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
   }
 
 
+  setRearrangeRooms(value) {
+    if (value === true) {
+      BackButtonHandler.override(this.props.componentId, () => {
+        core.eventBus.emit("reset_positions" + this.viewId);
+      });
+      NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
+
+    }
+    else {
+      BackButtonHandler.clearOverride(this.props.componentId);
+      NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
+    }
+    this.setState({arrangingRooms: value});
+  }
+
   _getContent(activeSphereId) {
-    let setRearrangeRooms = (value) => {
-      if (value === true) {
-        BackButtonHandler.override(this.props.componentId, () => {
-          core.eventBus.emit("reset_positions" + this.viewId);
-        });
-        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
-
-      }
-      else {
-        BackButtonHandler.clearOverride(this.props.componentId);
-        NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
-      }
-      this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
-    };
-
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere && activeSphereId) {
       return (
         <Sphere
           viewId={this.viewId}
           sphereId={activeSphereId}
           zoomOutCallback={this._zoomOut}
-          setRearrangeRooms={setRearrangeRooms}
+          setRearrangeRooms={(value) => { this.setRearrangeRooms(value); }}
           arrangingRooms={this.state.arrangingRooms}
           openSideMenu={this.props.openSideMenu}
         />
