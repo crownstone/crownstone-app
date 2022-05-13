@@ -187,7 +187,6 @@ export class RoomEdit extends LiveComponent<any, any> {
       })
     }});
 
-
     items.push({
       label: lang("Picture"),
       type: 'pictureSelect',

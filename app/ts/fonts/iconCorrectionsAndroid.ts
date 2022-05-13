@@ -365,6 +365,9 @@ const entypoCorrections = {
 const fontAwesome5Corrections = {
 
 };
+const materialIconsCorrections = {
+
+};
 
 
 
@@ -373,6 +376,7 @@ export const iconCorrectionsAndroid = {
   c1: c1CorrectionsAndroid,
   c2: c2CorrectionsAndroid,
   c3: c3CorrectionsAndroid,
+  materialIcons: materialIconsCorrections,
   entypo: entypoCorrections,
   fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsAndroid,

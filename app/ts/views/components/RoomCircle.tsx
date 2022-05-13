@@ -125,7 +125,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
-      console.log("viewReleased")
       this.handleTouchReleased();
       this.disableTouch = false;
     }));

@@ -41,25 +41,13 @@ export class PicturePreview extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => {
-            if (this.props.stock) {
-              this.triggerOptions();
-            }
-            else {
-              Alert.alert(
-                lang("_Delete_this_picture__arg_header"),
-                lang("_Delete_this_picture__arg_body"),
-                [
-                  {text:lang("_Delete_this_picture__arg_left")},
-                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}
-                ]
-              )
-            }
+            this.triggerOptions();
           }}
           style={{
             alignItems:'center',
             justifyContent:'center',
           }}
-          testID={this.props.testID_remove || "PictureCircleRemove"}>
+          testID={this.props.testID_remove || "PictureRemove"}>
             <Image style={{width:innerSize, height:height, borderRadius: 5}} source={imageURI} />
             <EditCornerIcon size={80/3} />
         </TouchableOpacity>

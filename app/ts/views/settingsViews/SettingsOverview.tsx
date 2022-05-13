@@ -79,7 +79,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("App_Settings"),
       type: 'navigation',
       testID: 'appSettings',
-      icon: <Icon name={'ios-cog'} size={35} color={colors.green.hex} />,
+      icon: <Icon name={'ios-cog'} size={30} color={colors.green.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsApp");
       }
@@ -91,7 +91,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("Diagnostics"),
       type:'navigation',
       testID: 'diagnostics',
-      icon: <Icon name={'md-analytics'} size={28} color={colors.csBlue.hex} />,
+      icon: <Icon name={'ma-sync-problem'} size={28} color={colors.csBlue.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsDiagnostics");
       }
@@ -101,7 +101,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       label: lang("Help"),
       type:'navigation',
       testID:'help',
-      icon: <Icon name={'ios-help-circle'} size={30} color={colors.csBlueLight.hex} />,
+      icon: <Icon name={'ion5-md-help-circle-outline'} size={30} color={colors.csBlueLight.hex} />,
       callback: () => {
         NavigationUtil.navigate( "SettingsFAQ");
       }

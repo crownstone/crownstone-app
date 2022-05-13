@@ -452,13 +452,13 @@ const fiEIconsCorrectionsIOS = {
 const ion5CorrectionsIOS = {
   'ion5-add':                     {change: false, top: -0.00, left: 0.00},
 };
-
 const entypoCorrections = {
 
 };
-
-
 const fontAwesome5Corrections = {
+
+};
+const materialIconsCorrections = {
 
 };
 
@@ -469,6 +469,7 @@ export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
+  materialIcons: materialIconsCorrections,
   entypo: entypoCorrections,
   fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsIOS,

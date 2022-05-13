@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomEdit", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {Alert, ScrollView, Image, View, Text, TouchableOpacity} from 'react-native';
+import { Alert, ScrollView, Image, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 const sha1 = require('sha-1');
 
 
@@ -14,33 +14,51 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsBackground} from "../components/SettingsBackground";
 import {Get} from "../../util/GetUtil";
-import {colors, menuStyles, RoomStockBackground, screenHeight, screenWidth} from "../styles";
+import {
+  colors,
+  getRoomStockImage,
+  menuStyles,
+  RoomStockBackground,
+  screenHeight,
+  screenWidth,
+  styles
+} from "../styles";
 import {Icon} from "../components/Icon";
 import {SelectedCornerIcon} from "../components/IconCircleEdit";
 import {SelectPicture} from "../components/PictureCircle";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { Component } from "react";
 
 
 export class RoomPictureSelection extends LiveComponent<{
+  picture: string,
   selectImage: (name:string, source: PICTURE_SOURCE) => void,
   sphereId: sphereId,
   locationId: locationId
 }, any> {
-
-
   static options(props) {
     return TopBarUtil.getOptions({title: "Select Image", closeModal: true});
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = { selecting: false };
+  }
+
   _getItems() {
     let items = [];
-    let room = Get.location(this.props.sphereId, this.props.locationId);
 
     items.push({
       type:"navigation",
       icon: <Icon name={'ion5-camera'} size={26} color={colors.csBlue.hex} />,
       label:'Custom background picture',
       callback: () => {
-        SelectPicture((uri) => { this.props.selectImage(uri, "CUSTOM"); })
+        this.setState({selecting:true});
+        SelectPicture((uri) => {
+          this.props.selectImage(uri, "CUSTOM");
+          setTimeout(() => { NavigationUtil.dismissModal(); }, 500);
+        });
       }
     })
     items.push({
@@ -51,8 +69,11 @@ export class RoomPictureSelection extends LiveComponent<{
     items.push({
       type:"custom",
       item: <ImageSelector
-        picture={room.config.picture}
-        callback={(name) => { this.props.selectImage(name, "STOCK"); }}/>
+        picture={this.props.picture}
+        callback={(name) => {
+          this.props.selectImage(name, "STOCK");
+          NavigationUtil.dismissModal();
+        }}/>
     })
 
     
@@ -65,6 +86,11 @@ export class RoomPictureSelection extends LiveComponent<{
         <ScrollView testID={'RoomPictureSelection_scrollview'}>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
+        { this.state.selecting &&
+          <View style={{...styles.fullscreen, ...styles.centered, backgroundColor: colors.black.rgba(0.5) }}>
+            <ActivityIndicator size={"large"} />
+          </View>
+        }
       </SettingsBackground>
     );
   }
@@ -85,7 +111,6 @@ function ImageSelector({picture, callback}) {
       columnIndex = 0;
     }
   }
-
   return (
     <View style={[menuStyles.listView,{flexDirection: 'column', paddingBottom: 10, paddingHorizontal: 0}]}>
       {rows.map((rowData, index) => { return <ImageRow key={"imageRow"+index} data={rowData} selectedName={picture} callback={callback} /> })}
@@ -94,7 +119,6 @@ function ImageSelector({picture, callback}) {
 }
 
 function ImageRow({data, selectedName, callback}) {
-  console.log(data, selectedName)
   return (
     <View style={{paddingHorizontal:5, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
       {data.map((key) => <RoomImage name={key} selected={selectedName === key} callback={callback}/> )}
