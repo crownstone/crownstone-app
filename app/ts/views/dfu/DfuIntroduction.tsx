@@ -18,6 +18,7 @@ import { core } from "../../Core";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
@@ -119,6 +120,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+        <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -132,6 +134,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
           getCards={ () => { return (this.state.inSphere ?  this.getCards() : this.getNotInSphereCard() ); }}
           update={   () => { this.forceUpdate() }}
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

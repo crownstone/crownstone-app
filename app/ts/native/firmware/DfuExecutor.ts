@@ -13,6 +13,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {SessionManager} from "../../logic/constellation/SessionManager";
 import {CommandAPI} from "../../logic/constellation/Commander";
 import {claimBluetooth} from "../../logic/constellation/Tellers";
+import {Get} from "../../util/GetUtil";
 
 
 export const DfuExecutionInformation = {
@@ -93,7 +94,7 @@ export class DfuExecutor {
     this.sessionUUID = xUtil.getUUID();
 
     let state = core.store.getState();
-    this.stone = StoneUtil.getStoneObject(this.sphereId, this.stoneId);
+    this.stone = Get.stone(this.sphereId, this.stoneId);
     this.handle = this.stone.config.handle;
     this.hardwareVersion = this.stone.config.hardwareVersion;
     this.userConfig = state.user;

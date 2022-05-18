@@ -21,6 +21,7 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 import {HubHelper} from "../../native/setup/HubHelper";
 import {LOGe, LOGi} from "../../logging/Log";
 import {Get} from "../../util/GetUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupHub", key)(a,b,c,d,e);
@@ -600,12 +601,14 @@ export class SetupHub extends LiveComponent<{
     return (
       <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true}>
         <KeepAwake />
+        <SafeAreaView>
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

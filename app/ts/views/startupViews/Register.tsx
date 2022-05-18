@@ -378,19 +378,19 @@ export class Register extends LiveComponent<any, any> {
         testID={"registerView"}
       >
         <SafeAreaView>
-        <TopbarImitation
-          leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : lang("Back")}
-          leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
-          leftButtonStyle={{width: 300}}
-          style={{backgroundColor:'transparent', paddingTop:0}}
-        />
-        <Interview
-          ref={     (i) => { this._interview = i;    }}
-          getCards={ () => { return this.getCards(); }}
-          update={   () => { this.forceUpdate();     }}
-          backButtonOverrideViewNameOrId={this.props.componentId}
-        />
+          <TopbarImitation
+            leftStyle={{color: textColor}}
+            left={Platform.OS === 'android' ? null : lang("Back")}
+            leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
+            leftButtonStyle={{width: 300}}
+            style={{backgroundColor:'transparent', paddingTop:0}}
+          />
+          <Interview
+            ref={     (i) => { this._interview = i;    }}
+            getCards={ () => { return this.getCards(); }}
+            update={   () => { this.forceUpdate();     }}
+            backButtonOverrideViewNameOrId={this.props.componentId}
+          />
         </SafeAreaView>
       </AnimatedBackground>
     );

@@ -21,6 +21,7 @@ import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { Button } from "../../components/Button";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 /**
@@ -112,7 +113,7 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
     });
 
     return (
-      <Background image={background.main} hasNavBar={false}>
+      <SettingsBackground>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</Text>
@@ -145,7 +146,7 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
             <View style={{flex:3}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

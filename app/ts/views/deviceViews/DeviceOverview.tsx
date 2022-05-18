@@ -7,53 +7,38 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import { Background } from '../components/Background'
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { availableScreenHeight, background, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import { colors } from "../styles";
 import {
-  ActivityIndicator,
-  Text,
-  TextStyle,
+  Alert, ScrollView,
   TouchableOpacity,
   View,
   ViewStyle
 } from "react-native";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
-import { DeviceMenuIcon } from "./DeviceMenuIcon";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import { xUtil } from "../../util/StandAloneUtil";
-import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { DimmerSlider, DIMMING_INDICATOR_SIZE, DIMMING_INDICATOR_SPACING } from "../components/DimmerSlider";
-import { AnimatedCircle } from "../components/animated/AnimatedCircle";
-import { LockedStateUI } from "../components/LockedStateUI";
-import { STONE_TYPES } from "../../Enums";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { DeviceError } from "./DeviceError";
-import { Util } from "../../util/Util";
-import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
-import { AlternatingContent } from "../components/animated/AlternatingContent";
-import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
-import { tell } from "../../logic/constellation/Tellers";
-import { DebugIcon } from "../components/DebugIcon";
 import { Navigation } from "react-native-navigation";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {CLOUD} from "../../cloud/cloudAPI";
+import {LOG, LOGe} from "../../logging/Log";
+import {tell} from "../../logic/constellation/Tellers";
+import {SortingManager} from "../../logic/SortingManager";
+import {StoneUtil} from "../../util/StoneUtil";
+import {ListEditableItems} from "../components/ListEditableItems";
 
 
-export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
+export class  DeviceOverview extends LiveComponent<any, any> {
   static options(props) {
     getTopBarProps(props);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
   unsubscribeStoreEvents;
-
-  // these are used to determine persisting the switchstate.
-  storedSwitchState = 0;
-  storeSwitchState = false;
-  storeSwitchStateTimeout = null;
+  deleting = false
 
   constructor(props) {
     super(props);
@@ -67,10 +52,6 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
     if (!stone) {
       return;
     }
-
-    this.storedSwitchState = stone.state.state;
-
-    this.state = { switchIsOn: this.storedSwitchState > 0 }
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -105,10 +86,8 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
         !change.removeStone &&
         (
           change.changeAppSettings ||
-          change.stoneLocationUpdated    && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
-          change.changeStoneAvailability && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
-          change.stoneChangeBehaviours        && change.stoneChangeBehaviours.stoneIds[this.props.stoneId]        ||
-          change.updateStoneConfig       && change.updateStoneConfig.stoneIds[this.props.stoneId]
+          change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId]
         )
       ) {
         if (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
@@ -117,127 +96,17 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
         this.forceUpdate();
         return
       }
-      if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
-        if (this.state.switchIsOn && stone.state.state === 0 || this.state.switchIsOn === false && stone.state.state > 0) {
-          this.setState({ switchIsOn: stone.state.state > 0 })
-        }
-      }
     });
-  }
-
-  _updateNavBar() {
-    getTopBarProps(this.props);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
-    // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
-    // If there is no connection being kept open, this command will not do anything.
-    const state = core.store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-
-    if (this.storeSwitchState) {
-      clearTimeout(this.storeSwitchStateTimeout);
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
-    }
   }
 
 
-  _switch(stone, state) {
-    if (state === 0 && this.state.switchIsOn === true) {
-      this.setState({switchIsOn: false});
-    }
-    else if (state > 0 && this.state.switchIsOn === false) {
-      this.setState({switchIsOn: true});
-    }
 
-    tell(stone).multiSwitch(state).catch((err) => { })
-  }
-
-
-  _planStoreAction() {
-    this.storeSwitchState = true;
-    clearTimeout(this.storeSwitchStateTimeout);
-    this.storeSwitchStateTimeout = setTimeout(() => {
-      this.storeSwitchState = false;
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
-    }, 3000);
-  }
-
-  _getButton(stone) {
-    let border = 4;
-    let height = 50;
-    let width = screenWidth-50;
-    let innerHeight = height-2*border;
-    let innerWidth = width*0.5-1.4*border;
-    let innerStyle : ViewStyle = {height: innerHeight, width: innerWidth, borderRadius: 3, justifyContent:'center', padding: 10};
-    let textStyle : TextStyle = {color: colors.white.hex, fontSize: 18, fontWeight:'bold'};
-
-    let size = 0.22*availableScreenHeight;
-
-    let currentState = stone.state.state;
-
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-      return (
-        <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
-          <View style={{flex:2}} />
-          <Text style={deviceStyles.text}>{ lang("Searching___") }</Text>
-          <View style={{flex:1}} />
-          <Text style={[deviceStyles.subText, {textAlign:'center'}]}>{ lang("Once_I_hear_from_this_Cro") }</Text>
-          <View style={{flex:1}} />
-          <ActivityIndicator animating={true} size='small' color={colors.csBlue.hex} />
-          <View style={{flex:2}} />
-        </View>
-      );
-    }
-
-
-    if (stone.config.locked) {
-      return (
-        <LockedStateUI
-          size={0.3*screenHeight}
-          state={currentState}
-          stone={stone}
-          sphereId={this.props.sphereId}
-          stoneId={this.props.stoneId}
-          unlockCrownstone={  () => { return tell(stone).lockSwitch(false) }}
-          unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
-        />
-      );
-    }
-
-
-    if (stone.abilities.dimming.enabledTarget) {
-      return (
-        <DimmerSlider
-          stoneId={this.props.stoneId}
-          sphereId={this.props.sphereId}
-          callback={(percentage) => {
-            this._switch(stone, percentage);
-          }}/>
-      );
-    }
-    else {
-      return (
-        <View style={{ flexDirection:'row', height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
-          <TouchableOpacity style={{
-            ...innerStyle,
-            borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
-            backgroundColor: !this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
-          }} onPress={() => { this._switch(stone,0); }}>
-            <Text style={textStyle}>{ lang("OFF") }</Text>
-          </TouchableOpacity>
-          <View style={{width:border}} />
-          <TouchableOpacity style={{...innerStyle,
-            borderBottomRightRadius: 25, borderTopRightRadius: 25,
-            backgroundColor: this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
-          }} onPress={() => { this._switch(stone,100); }}>
-            <Text style={textStyle}>{ lang("ON") }</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+  _updateNavBar() {
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   _getLockIcon(stone) {
@@ -266,130 +135,125 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
 
 
 
-  _getSpecificInformation(stone) {
-    let label;
-    switch (stone.config.type) {
-      case STONE_TYPES.guidestone:
-        label = "Guidestone"; break;
-      case STONE_TYPES.crownstoneUSB:
-        label = "Crownstone USB"; break;
-      case STONE_TYPES.hub:
-        label = "Crownstone Hub"; break;
-      default:
-        label = stone.config.type;
-    }
-    let map = MapProvider.stoneSummaryMap[this.props.stoneId];
-    return (
-      <View style={{width:screenWidth, padding:30, ...styles.centered}}>
-        <Text style={deviceStyles.subHeader}>{ lang("Im_a__",label) }</Text>
-        { map  &&
-        <View style={{padding:30}}>
-          <Text style={deviceStyles.text}>{ lang("Currently__Im_in_the__",map.locationName) }</Text>
-        </View>
+  _getItems(stone: StoneData) {
+    let items = [];
+
+    items.push({type: 'explanation', label: "CROWNSTONE SETTINGS"});
+    items.push({
+      id: 'My Account',
+      label: "Appearence",
+      testID: 'Appearence',
+      icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
+      type: 'navigation',
+      callback: () => {
+        NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+      }
+    });
+    items.push({type: 'explanation', label: "Change name, icon, which room, etc", below: true});
+    items.push({
+      id: 'abilities',
+      label: lang("Abilities"),
+      testID: 'Appearence',
+      icon: <Icon name={'ios-school'} size={30} color={colors.green.hex} />,
+      type: 'navigation',
+      callback: () => {
+        NavigationUtil.navigate("DeviceAbilities", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+      }
+    });
+    items.push({type: 'explanation', label: "Enable dimming, switchcraft, etc.", below: true});
+    items.push({
+      id: 'behaviour',
+      label: lang("Behaviour"),
+      testID: 'Appearence',
+      icon: <Icon name={'c1-brain'} size={30} color={colors.csBlue.hex} />,
+      type: 'navigation',
+      callback: () => {
+        NavigationUtil.navigate("DeviceSmartBehaviour", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+      }
+    });
+    items.push({type: 'explanation', label: "Turn on if/when ...", below: true});
+
+
+    items.push({
+      id: 'lock',
+      label: stone.config.locked ? "Unlock Crownstone switch" : "Lock Crownstone switch",
+      testID: 'Appearence',
+      icon: <Icon name={'md-lock'} size={30} color={colors.blue.hex} />,
+      type: 'navigation',
+      callback: () => {
+        if (stone.config.locked) {
+          StoneUtil.lockCrownstone(this.props.sphereId, this.props.stoneId);
         }
-      </View>
-    )
+        else {
+          StoneUtil.unlockCrownstone(this.props.sphereId, this.props.stoneId);
+        }
+      }
+    });
+
+    items.push({label: lang("DANGER"), type: 'explanation', below: false});
+    items.push({
+      label: "Remove Crownstone",
+      mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
+      type: 'button',
+      callback: () => {
+        // if (hub) {
+        //   if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+        //     Alert.alert(lang("Cant_see_this_one_"),
+        //       lang("This_Crownstone_has_not_b"),
+        //       [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+        //         {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
+        //     )
+        //   }
+        //   else {
+        //     Alert.alert(
+        //       lang("Are_you_sure_you_want_to_"),
+        //       lang("This_cannot_be_undone_"),
+        //       [{text: "Delete", onPress: async () => {
+        //           core.eventBus.emit('showLoading', lang("Resetting_hub___"));
+        //           let helper = new HubHelper();
+        //           try {
+        //             await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
+        //             this._removeCrownstoneFromRedux();
+        //           }
+        //           catch(err) {
+        //             core.eventBus.emit('hideLoading');
+        //             if (err?.message === "HUB_REPLY_TIMEOUT") {
+        //               Alert.alert(lang("The_hub_is_not_responding"),
+        //                 lang("If_this_hub_is_broken__yo"),
+        //                 [{ text: lang("Delete_anyway"), onPress: () => {this._removeCrownstone(stone).catch((err) => {});} , style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}]);
+        //             }
+        //             else {
+        //               Alert.alert(
+        //                 lang("_Something_went_wrong_____header"),
+        //                 lang("_Something_went_wrong_____body"),
+        //                 [{text: lang("_Something_went_wrong_____left") }]);
+        //             }
+        //           }
+        //         }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
+        //   }
+        // }
+        // else {
+          core.eventBus.emit('hideLoading');
+          Alert.alert(
+            lang("_Are_you_sure___Removing__header"),
+            lang("_Are_you_sure___Removing__body"),
+            [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+              text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
+                this._removeCrownstone(stone).catch((err) => {});
+              }}]
+          )
+        }
+      // }
+    });
+    // if (hub) {
+    //   items.push({label: lang("Removing_this_Hub_"),  type:'explanation', below:true});
+    // }
+    // else {
+      items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
+    // }
+
+    return items;
   }
-
-
-  _getStoneIcon(stone, updateAvailable, stoneCanSwitch) {
-    let iconColor = colors.white.rgba(1);
-    let size = 0.25*availableScreenHeight;
-    let stateColor = this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex;
-
-    let content = <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
-
-    if (updateAvailable) {
-      return (
-        <TouchableOpacity
-          style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}
-          onPress={() => {
-            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
-          }}
-        >
-          <AlternatingContent
-            style={{width:screenWidth, height:size, justifyContent:'center', alignItems:'center'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={"c1-update-arrow"} />,
-              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />,
-            ]}
-          />
-        </TouchableOpacity>
-      )
-    }
-
-    if (stoneCanSwitch && stone.config.locked === false) {
-      content = (
-        <TouchableOpacity onPress={() => {
-          if (this.state.switchIsOn) {
-            // switch off
-            this._switch(stone, 0);
-            core.eventBus.emit("DeviceOverviewSetSwitchState", 0);
-          }
-          else {
-            this.setState({switchIsOn: true});
-            tell(stone).turnOn()
-              .then((result) => {
-                let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
-                core.store.dispatch({
-                  type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
-                  sphereId: this.props.sphereId,
-                  stoneId: this.props.stoneId,
-                  data: {state: expectedState}
-                });
-                core.eventBus.emit("DeviceOverviewSetSwitchState", expectedState);
-                this._planStoreAction();
-              });
-          }
-        }}>{content}</TouchableOpacity>
-      )
-    }
-
-    return (
-      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
-        {content}
-      </View>
-    )
-  }
-
-
-  _getMenuIcons(stone) {
-    let dimmerReady = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
-
-    return (
-      <View style={{
-        width:screenWidth,
-        alignItems:'center',
-        flexDirection:'row',
-        marginTop:15,
-        marginBottom: dimmerReady ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
-      }}>
-        <View style={{width:0.05*screenWidth}} />
-        <DeviceMenuIcon label={ lang("Abilities")} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
-          NavigationUtil.launchModal("DeviceAbilities", {
-            stoneId: this.props.stoneId,
-            sphereId: this.props.sphereId
-          })
-        }} />
-        <DeviceMenuIcon label={ lang("Behaviour")} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex} callback={() => {
-          NavigationUtil.launchModal("DeviceSmartBehaviour", {
-            stoneId: this.props.stoneId,
-            sphereId: this.props.sphereId
-          })
-        }} />
-        <DeviceMenuIcon label={ lang("Power_usage")} image={require("../../../assets/images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
-          NavigationUtil.launchModal("DevicePowerUsage", {
-            stoneId: this.props.stoneId,
-            sphereId: this.props.sphereId
-          })
-        }} />
-        <View style={{width:0.05*screenWidth}} />
-      </View>
-    );
-  }
-
 
 
   render() {
@@ -403,104 +267,168 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       return <StoneDeleted/>
     }
 
-    let hardwareError = stone.errors.hasError && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
-    if (hardwareError) {
-      return <DeviceError {...this.props} stone={stone} />
-    }
-
-    let stoneCanSwitch = true;
-    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB || stone.config.type === STONE_TYPES.hub) {
-      stoneCanSwitch = false;
-    }
-
-    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
-
     return (
-      <Background image={background.main}>
-        { stoneCanSwitch && this._getMenuIcons(stone) }
-        <View style={{flex:2}} />
-
-        {/* If the stone can't switch its a Guidestone or a Crownstone USB. */}
-        { !stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>{ lang("Hi_there_") }</Text></View> }
-
-        { this._getStoneIcon(stone, updateAvailable, stoneCanSwitch) }
-
-        {/* If the stone can't switch its a Guidestone or a Crownstone USB. The specific information is it telling you which device it is and where it lives. */}
-        { !stoneCanSwitch && this._getSpecificInformation(stone) }
-
-        <View style={{ flex: 2 }} />
-
-        {/* If the stone can't switch its a Guidestone or a Crownstone USB. It will not have a button. */}
-        { stoneCanSwitch && <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View> }
-
-        <View style={{ height: 40}} />
-        { stone.config.locked === false && stoneCanSwitch && Permissions.inSphere(this.props.sphereId).canLockCrownstone ? this._getLockIcon(stone) : undefined }
-        <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-      </Background>
+      <SettingsBackground>
+        <ScrollView testID={'DeviceOverview_scrollview'}>
+          <ListEditableItems items={this._getItems(stone)} />
+        </ScrollView>
+      </SettingsBackground>
     )
   }
-}
 
-export function DeviceIcon({ size, color, iconColor, icon}) {
-  let borderWidth = size*0.04;
-  let innerSize = size-1.5*borderWidth;
-  return (
-    <AnimatedCircle size={size} color={color} style={{alignItems:'center', justifyContent:'center'}}>
-      <AnimatedCircle size={innerSize} color={color} style={{borderRadius:0.5*innerSize, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
-        <Icon size={innerSize*0.63} name={icon} color={iconColor} />
-      </AnimatedCircle>
-    </AnimatedCircle>
-  );
+  async _removeCrownstone(stone) {
+    core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
+    let {discovered, mode} = await StoneUtil.discoverCrownstone(stone);
+    if (!discovered) {
+      core.eventBus.emit('hideLoading');
+      Alert.alert(
+        lang("_Cant_see_this_one___We_c_header"),
+        lang("_Cant_see_this_one___We_c_body"),
+        [
+          {
+            text:lang("_Cant_see_this_one___We_c_left"),
+            onPress: async () => {
+              await this._removeWithoutReset();
+              NavigationUtil.dismissModal();
+            }, style: 'destructive'
+          },
+          {
+            text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {}
+          }
+      ]);
+      return;
+    }
+
+    if (mode === 'setup') {
+      await this._removeWithoutReset();
+      NavigationUtil.dismissModal();
+      return;
+    }
+
+    try { await this._factoryResetCrownstone(stone); } catch (err) {
+      Alert.alert(
+        lang("_Encountered_a_problem____header"),
+        lang("_Encountered_a_problem____body"),
+        [
+          {text:lang("_Encountered_a_problem____left"), style:'destructive', onPress: async () => {
+            await this._removeWithoutReset();
+            NavigationUtil.dismissModal();
+          }},
+          {text:lang("_Encountered_a_problem____right")}
+        ]);
+      return;
+    }
+
+    // discovered Crownstone in operation mode
+    try { await this._removeCrownstoneFromCloud(); } catch (err) { return; }
+    this._removeCrownstoneFromRedux(true);
+  }
+
+  async _removeWithoutReset() {
+    try {
+      await this._removeCrownstoneFromCloud();
+      this._removeCrownstoneFromRedux(false);
+    }
+    catch(err) {}
+  }
+
+
+  async _removeCrownstoneFromCloud()  {
+    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
+    // let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+    // if (hub && hub.config.cloudId) {
+    //   CLOUD.deleteHub(hub.config.cloudId)
+    //     .catch((err) => {
+    //       return new Promise<void>((resolve, reject) => {
+    //         if (err && err?.status === 404) {
+    //           resolve();
+    //         }
+    //       })
+    //     })
+    // }
+    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
+      .catch((err) => {
+        return new Promise<void>((resolve, reject) => {
+          if (err && err?.status === 404) {
+            resolve();
+          }
+          else {
+            LOGe.info("COULD NOT DELETE IN CLOUD", err?.message);
+            reject();
+          }
+        })
+      })
+      .catch((err) => {
+        LOG.info("error while asking the cloud to remove this crownstone", err?.message);
+        core.eventBus.emit('hideLoading');
+        Alert.alert(
+          lang("_Encountered_Cloud_Issue__header"),
+          lang("_Encountered_Cloud_Issue__body"),
+          [{text:lang("_Encountered_Cloud_Issue__left")
+        }]);
+        throw err;
+      })
+  }
+
+
+  async _factoryResetCrownstone(stone) {
+    core.eventBus.emit('showLoading', lang("Factory_resetting_the_Cro"));
+    try {
+      await tell(stone).commandFactoryReset();
+    }
+    catch(err) {
+      LOGe.info("DeviceEdit: error during removeCloudReset, commandFactoryReset phase.", err?.message);
+      core.eventBus.emit('hideLoading');
+      throw err;
+    };
+  }
+
+
+  _removeCrownstoneFromRedux(factoryReset = false) {
+    // let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
+
+    // deleting makes sure we will not draw this page again if we delete it's source from the database.
+    this.deleting = true;
+
+    let labelText =  lang("I_have_removed_this_Crown");
+    // if (hub) {
+    //   labelText =  lang("I_have_removed_this_Hub");
+    // }
+    // else {
+    if (factoryReset === false) {
+      labelText =  lang("I_have_removed_this_Crowns");
+    }
+    // }
+
+    Alert.alert(
+      lang("_Success__arguments___OKn_header"),
+      lang("_Success__arguments___OKn_body",labelText),
+      [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
+          SortingManager.removeFromLists(this.props.stoneId);
+          core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          // if (hub) {
+          //   SortingManager.removeFromLists(hub.id);
+          //   core.store.dispatch({type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id});
+          // }
+        }}]
+    )
+  }
+
 }
 
 function getTopBarProps(props) {
   const state = core.store.getState();
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-  let spherePermissions = Permissions.inSphere(props.sphereId);
 
   NAVBAR_PARAMS_CACHE = {
     title: stone.config.name,
-  }
-
-  if (spherePermissions.editCrownstone) {
-    NAVBAR_PARAMS_CACHE["nav"] = {
-      id: 'deviceEdit',
-      text:  lang("Edit"),
-    }
+    closeModal: true,
   }
 
   return NAVBAR_PARAMS_CACHE;
 }
 
 
-/**
- * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
- */
-export function safeStoreUpdate(sphereId, stoneId, storedSwitchState) {
-  const state = core.store.getState();
-  const sphere = state.spheres[sphereId];
-  if (!sphere) { return storedSwitchState; }
-
-  const stone = sphere.stones[stoneId];
-  if (!stone) { return storedSwitchState; }
-
-  if (stone.state.state !== storedSwitchState) {
-    let data = {state: stone.state.state};
-    if (stone.state.state === 0) {
-      data['currentUsage'] = 0;
-    }
-    core.store.dispatch({
-      type: 'UPDATE_STONE_SWITCH_STATE',
-      sphereId: sphereId,
-      stoneId: stoneId,
-      data: data
-    });
-
-    return stone.state.state;
-  }
-
-  return storedSwitchState;
-}
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 

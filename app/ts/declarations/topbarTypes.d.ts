@@ -6,6 +6,8 @@ interface topbarOptions {
   leftText?: {id: string, text:string},
   disableBack? : boolean,
   cancelModal? : boolean,
+  cancelBack? : boolean,
+  backModal? : boolean,
   closeModal? : boolean,
   cancel? : boolean,
   leftNav?: topbarNavComponent,

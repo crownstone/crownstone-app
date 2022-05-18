@@ -56,6 +56,12 @@ class ActiveSphereManagerClass {
     }
   }
 
+  getActiveSphereId() {
+    let state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    return activeSphereId;
+  }
+
   _updateActiveSphere() {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;

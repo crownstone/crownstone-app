@@ -694,7 +694,7 @@ export default {
     Usually__Built_in_Crownst:              function() { return "Over het algemeen hebben de Inbouw Crownstones Tik-'m-aan uit staan. Als je het aanzet, kan je je telefoon dichtbij houden om te schakelen."; },
     __filename: "../../js/views/deviceViews/DeviceAbilities.tsx",
   },
-  DeviceEdit:{
+  DeviceEditAppearence:{
     __stringSameAsBaseLanguage: {
       _Are_you_sure___Removing__header:      false,
       _Are_you_sure___Removing__body:        false,
@@ -833,7 +833,7 @@ export default {
     The_hub_is_not_responding:              function() { return "De hub reageert niet."; },
     If_this_hub_is_broken__yo:              function() { return "Als deze hub kapot is, kan je hem hardhandig uit je Sfeer halen. Wil je dat doen? Hij wordt dan niet in setupmodus gezet."; },
     uicr:                                   function() { return "UICR: " + arguments[0] + ""; },
-    __filename: "../js/views/deviceViews/DeviceEdit.tsx",
+    __filename: "../js/views/deviceViews/DeviceEditAppearence.tsx",
   },
   DeviceEntry:{
     __stringSameAsBaseLanguage: {
@@ -952,6 +952,10 @@ export default {
     Im_a__:                                 function() { return "Ik ben een " + arguments[0] + "!"; },
     Currently__Im_in_the__:                 function() { return "Op dit moment ben ik in de " + arguments[0] + "."; },
     Hi_there_:                              function() { return "Hallo daar!"; },
+    _Encountered_a_problem____header:       function() { return "Er is iets mis gegaan." },
+    _Encountered_a_problem____body:         function() { return "Het lukte niet om deze Crownstone te herstellen naar de fabrieksinstellingen. Zorg dat je dichtbij bent en probeer het nog een keer. Als het blijft misgaan kan je ervoor kiezen om deze Crownstone uit je sfeer te halen zonder hem te resetten." },
+    _Encountered_a_problem____left:         function() { return "Forceer weggooien." },
+    _Encountered_a_problem____right:        function() { return "Nogmaals proberen!" },
     __filename: "../js/views/deviceViews/DeviceOverview.tsx",
   },
   DevicePowerUsage:{

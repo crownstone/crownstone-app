@@ -416,7 +416,7 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
       <TouchableOpacity
         activeOpacity={editMode ? 0.2 : 1.0}
         style={{alignItems:'center', justifyContent:'center'}}
-        onPress={launchEditModal}
+        onPress={editMode ? launchEditModal : () => {}}
       >
         <Text style={styles.viewHeader}>{location.config.name}</Text>
       </TouchableOpacity>

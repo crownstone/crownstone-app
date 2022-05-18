@@ -10,7 +10,6 @@ import {core} from "../../../Core";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
-import {safeStoreUpdate} from "../../deviceViews/DeviceOverview";
 import { Get } from "../../../util/GetUtil";
 import { BlurView } from "@react-native-community/blur";
 import { SceneConstants } from "../../scenesViews/constants/SceneConstants";
@@ -92,7 +91,7 @@ export class DeviceEntry extends Component<{
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
     if (this.storeSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
+      this.storedSwitchState = StoneUtil.safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }
     clearTimeout(this.showMeshMessageTimeout);
     clearTimeout(this.revertToNormalViewTimeout);
@@ -124,7 +123,7 @@ export class DeviceEntry extends Component<{
     clearTimeout(this.storeSwitchStateTimeout);
     this.storeSwitchStateTimeout = setTimeout(() => {
       this.storeSwitchState = false;
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
+      this.storedSwitchState = StoneUtil.safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }, 3000);
   }
 
@@ -166,7 +165,7 @@ export class DeviceEntry extends Component<{
           />
         </View>
         <SlideSideFadeInView visible={this.props.editMode} width={60}>
-          <SettingsIconRight style={{height:55}} onPress={() => {  NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely}); }}/>
+          <SettingsIconRight style={{height:55}} onPress={() => {  NavigationUtil.launchModal( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely}); }}/>
         </SlideSideFadeInView>
         <DeviceSwitchControl stone={stone} editMode={this.props.editMode} dimMode={this.props.dimMode} setPercentage={(value) => { this.setState({percentage: value})}} />
       </BlurView>

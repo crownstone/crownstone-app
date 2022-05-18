@@ -14,6 +14,7 @@ import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
 import { Text, TouchableOpacity, View } from "react-native";
+import {TopBarBlur} from "../components/NavBarBlur";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -102,14 +103,14 @@ export class SphereLevel extends LiveComponent<any, any> {
           nodeRadius={this._baseRadius}
           allowDrag={false}
           height={availableScreenHeight}
-          zoomInCallback={ this.props.zoomInCallback }
-          zoomOutCallback={ this.props.zoomOutCallback }
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
           testID={"SphereOverview_SphereLevel"}
         />
-        <View style={{position:'absolute', top:0, left:18}}>
-          <Text style={styles.viewHeaderLight}>{"Where to go?"}</Text>
-        </View>
+        <TopBarBlur disabledBlur>
+          <View style={{paddingHorizontal:15}}>
+            <Text style={styles.viewHeaderLight}>{"Where to go?"}</Text>
+          </View>
+        </TopBarBlur>
       </View>
     );
   }

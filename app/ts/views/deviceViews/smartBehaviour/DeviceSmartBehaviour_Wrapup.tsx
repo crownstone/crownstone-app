@@ -14,7 +14,7 @@ import {
   availableModalHeight, background,
   colors,
   deviceStyles,
-  screenWidth, styles
+  screenWidth, styles, tabBarHeight
 } from "../../styles";
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
@@ -33,6 +33,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 const behaviourStyle : TextStyle = {
   fontSize: 15,
@@ -554,9 +555,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
 
     return (
-      <Background image={background.main} hideNotifications={true} hasNavBar={false}>
+      <SettingsBackground>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: tabBarHeight }}>
             <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
 
@@ -630,7 +631,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             <View style={{height: 30}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

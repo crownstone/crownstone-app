@@ -51,6 +51,7 @@ import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
 import DeviceInfo from "react-native-device-info";
+import {StatusBarWatcher} from "./StatusBarWatcher";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -82,6 +83,7 @@ class BackgroundProcessHandlerClass {
   async start() {
     if (!this.started) {
 
+
       // get the launch arguments
       await this.parseLaunchArguments();
 
@@ -101,9 +103,11 @@ class BackgroundProcessHandlerClass {
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();
 
+      // init the statekeeper of the color of the statusbar
+      StatusBarWatcher.init();
+
+
       // we first setup the event listeners since these events can be fired by the this.startStore().
-
-
       core.eventBus.on('userActivated', () => {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser();

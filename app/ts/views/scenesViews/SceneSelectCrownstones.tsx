@@ -13,6 +13,7 @@ import * as React from "react";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { getStoneSelectionList } from "./SceneAdd";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export class SceneSelectCrownstones extends LiveComponent<any, any> {
   static options = {
@@ -68,6 +69,7 @@ lang("_Select_at_least_one______body"),
     let textColor = colors.white.hex;
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+        <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Cancel")}
@@ -88,6 +90,7 @@ lang("_Select_at_least_one______body"),
           update={   () => { this.forceUpdate() }}
           height={ this.props.height || availableModalHeight }
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

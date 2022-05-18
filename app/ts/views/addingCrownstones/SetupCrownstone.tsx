@@ -27,6 +27,7 @@ import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
@@ -562,12 +563,14 @@ export class SetupCrownstone extends LiveComponent<{
     return (
       <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true} testID={'SetupCrownstone'}>
         <KeepAwake />
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+        <SafeAreaView>
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

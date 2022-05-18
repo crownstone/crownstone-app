@@ -46,7 +46,12 @@ export const TopBarUtil = {
     if (props.closeModal !== undefined) {
       leftButtons.push(getLeftButton('closeModal', Languages.get("__UNIVERSAL", "Back")()));
     }
-
+    if (props.backModal !== undefined) {
+      leftButtons.push(getLeftButton('backModal', Languages.get("__UNIVERSAL", "Back")()));
+    }
+    if (props.cancelBack !== undefined) {
+      leftButtons.push(getLeftButton('cancelBack', Languages.get("__UNIVERSAL", "Back")()));
+    }
     if (props.cancelModal !== undefined) {
       leftButtons.push(getLeftButton('cancelModal', Languages.get("__UNIVERSAL", "Cancel")()));
     }

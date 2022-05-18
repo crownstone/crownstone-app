@@ -20,6 +20,7 @@ import {
 import {BackgroundImage} from "../BackgroundImage";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 import {SafeAreaProvider} from "react-native-safe-area-context";
+import {StatusBarWatcher} from "../../../backgroundProcesses/StatusBarWatcher";
 
 
 
@@ -64,12 +65,19 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
     let Wrapper = this.props.viewWrapper ? View : SafeAreaProvider;
+
+    if (this.props.lightStatusbar) {
+      StatusBarWatcher.setLightStatusBar();
+    }
+    else {
+      StatusBarWatcher.setDarkStatusBar();
+    }
+
     return (
       <Wrapper style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <StatusBar barStyle={this.props.lightStatusbar ? 'light-content' : 'dark-content'} />
         <View style={[styles.fullscreen, {height:backgroundHeight}]}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>

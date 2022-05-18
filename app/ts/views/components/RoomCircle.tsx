@@ -159,10 +159,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
         <Circle size={this.outerDiameter} color={colors.white.hex}>
           <Circle size={this.outerDiameter - (2/3)*innerOffset} color={colors.white.hex} borderColor={colors.lightGray.hex} borderWidth={ (1/3)*innerOffset }>
             <Circle size={this.innerDiameter} color={newColor}>
-              <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
               {this.getIcon()}
-              </View>
-              {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("_W",this.usage) }</Text>}
             </Circle>
           </Circle>
         </Circle>
@@ -219,7 +216,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
             this.handleTouchReleased()
           }
         }}
-        onPress={() => {console.log(Date.now(), "onPress");  this.handleTap() }}
+        onPress={() => { this.handleTap() }}
         activeOpacity={1.0}
       >
       <Animated.View

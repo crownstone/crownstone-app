@@ -97,13 +97,13 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} testID={"PermissionIntroduction"}>
         <SafeAreaView>
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
         </SafeAreaView>
       </AnimatedBackground>
     );

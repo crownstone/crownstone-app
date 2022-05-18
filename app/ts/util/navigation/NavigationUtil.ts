@@ -401,7 +401,7 @@ export const NavigationUtil = {
       }}
     Navigation.mergeOptions("SphereOverview", options);
     Navigation.mergeOptions("ScenesOverview", options);
-    Navigation.mergeOptions("MessageInbox", options);
+    Navigation.mergeOptions("PowerUsage", options);
     Navigation.mergeOptions("SettingsOverview", options);
   },
 

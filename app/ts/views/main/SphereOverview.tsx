@@ -75,6 +75,13 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   componentDidMount() {
     // watch for setup stones
+    setTimeout(() => {
+      NavigationUtil.launchModal("AddCrownstone", {sphereId:ActiveSphereManager.getActiveSphereId()});
+      // NavigationUtil.launchModal("DeviceOverview", {
+      //   "sphereId": "a11a77bb-dff9-e360-5776-c105b7f51c0",
+      //   "stoneId": "bfc42df6-710a-1462-891-45456886644",})
+    }, 500);
+
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
@@ -198,7 +205,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
     }
     else {
       BackButtonHandler.clearOverride(this.props.componentId);
-      NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
+      NavigationUtil.setTabBarOptions(colors.blue.hex, colors.black.hex);
     }
     this.setState({arrangingRooms: value});
   }
@@ -226,8 +233,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
             CLOUD.syncUsers();
             this._zoomIn();
           }}
-          zoomInCallback={this._zoomIn}
-          zoomOutCallback={this._zoomOut}
         />
       );
     }
@@ -329,42 +334,6 @@ export function SphereOverview(props) {
 }
 
 SphereOverview.options = (props) => { return {statusBar:{style:'dark'}} }
-
-
-
-function getTopBarProps(state, props, viewState) {
-  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
-  LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
-  if (viewState.arrangingRooms === true) {
-    NAVBAR_PARAMS_CACHE = {
-      title: lang("Move_rooms_around"),
-      cancel: true,
-      save:   true,
-    }
-  }
-  else if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
-    NAVBAR_PARAMS_CACHE = {
-      title: lang("Sphere_Overview"),
-      disableBack: true,
-    }
-  }
-  else {
-    if (sphereId === null) {
-      NAVBAR_PARAMS_CACHE = {
-        title: lang("Hello_there_"),
-        edit: true
-      }
-    }
-    else {
-      NAVBAR_PARAMS_CACHE = {
-        title: sphere.config.name,
-        edit: true,
-      }
-    }
-  }
-
-  return NAVBAR_PARAMS_CACHE;
-}
 
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;

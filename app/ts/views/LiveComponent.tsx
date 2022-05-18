@@ -59,8 +59,10 @@ export class LiveComponent<a, b> extends Component<a, b> {
       this.___navListener = Navigation.events().bindComponent(this);
 
       this.navigationButtonPressed = (data) => {
-        buttonPress.call(this,data);
+        buttonPress.call(this, data);
         if (data.buttonId === 'closeModal')  { NavigationUtil.dismissModal(); }
+        if (data.buttonId === 'cancelBack')  { NavigationUtil.back();         }
+        if (data.buttonId === 'backModal')   { NavigationUtil.back();         }
         if (data.buttonId === 'cancelModal') { NavigationUtil.dismissModal(); }
       }
     }

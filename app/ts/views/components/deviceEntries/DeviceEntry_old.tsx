@@ -17,7 +17,6 @@ import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
 import Slider from "@react-native-community/slider";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
-import {safeStoreUpdate} from "../../deviceViews/DeviceOverview";
 import {LOGe} from "../../../logging/Log";
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -109,7 +108,7 @@ export class DeviceEntry_old extends Component<{
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
     if (this.storeSwitchState) {
       clearTimeout(this.storeSwitchStateTimeout);
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
+      this.storedSwitchState = StoneUtil.safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }
     clearTimeout(this.showMeshMessageTimeout);
     clearTimeout(this.revertToNormalViewTimeout);
@@ -226,7 +225,7 @@ export class DeviceEntry_old extends Component<{
     clearTimeout(this.storeSwitchStateTimeout);
     this.storeSwitchStateTimeout = setTimeout(() => {
       this.storeSwitchState = false;
-      this.storedSwitchState = safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
+      this.storedSwitchState = StoneUtil.safeStoreUpdate(this.props.sphereId, this.props.stoneId, this.storedSwitchState);
     }, 3000);
   }
 

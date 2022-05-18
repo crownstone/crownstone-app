@@ -18,11 +18,12 @@ import {
 import { Background } from "../../components/Background";
 import { BehaviourEditor } from "./supportComponents/BehaviourEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: boolean, data: any, sphereId: string, stoneId: string, behaviourId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Edit_Behaviour",props.typeLabel), closeModal: props.isModal});
+    return TopBarUtil.getOptions({title: lang("Edit_Behaviour",props.typeLabel)});
   }
 
   render() {
@@ -33,7 +34,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: b
 
     let height = availableModalHeight;
     return (
-      <Background image={background.main} hideNotifications={true} hasNavBar={false}>
+      <SettingsBackground>
         <ScrollView style={{width:screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingVertical:30}}>
             <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
@@ -42,7 +43,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: b
             <BehaviourEditor {...this.props} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

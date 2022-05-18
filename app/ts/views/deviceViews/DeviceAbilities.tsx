@@ -28,11 +28,17 @@ import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {Get} from "../../util/GetUtil";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
-    const stone = core.store.getState().spheres[props.sphereId].stones[props.stoneId];
-    return TopBarUtil.getOptions({ title: stone.config.name, closeModal: true});
+    const stone = Get.stone(props.sphereId, props.stoneId);
+    return {
+      topBar: {
+        title: {text: stone?.config?.name},
+      }
+    }
   }
 
   unsubscribeStoreEvents;
@@ -71,7 +77,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
     let hasSwitchcraft = stone.config.type === STONE_TYPES.builtinOne;
     return (
-      <Background image={background.main} hasNavBar={false}>
+      <SettingsBackground>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
@@ -83,7 +89,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
                                 <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

@@ -16,6 +16,7 @@ import { colors , screenHeight} from '../styles'
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
+import {Icon} from "../components/Icon";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -154,11 +155,10 @@ export class BleStateOverlay extends Component<any, any> {
       >
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
-          <IconButton
+          <Icon
             name="ios-bluetooth"
             size={0.15*screenHeight}
-            color="#fff"
-            buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue3.hex, borderRadius: 0.03*screenHeight}}
+            color={colors.blue3.hex}
           />
           <View style={{flex:1}} />
           <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15, }}>{this._getTitle()}</Text>

@@ -24,6 +24,7 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 
@@ -150,7 +151,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
     }
 
     return (
-      <Background image={background.lightBlurLighter} fullScreen={true} hideNotifications={true}>
+      <SettingsBackground>
         <TopbarImitation
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
@@ -176,7 +177,7 @@ lang("_No_Crownstone_selected___body"),
             { this._getLocationStoneList() }
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

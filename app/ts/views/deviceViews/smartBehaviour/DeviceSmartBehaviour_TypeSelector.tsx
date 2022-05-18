@@ -20,6 +20,7 @@ import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -207,17 +208,19 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
-        <TopbarImitation
-          leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : lang("Back")}
-          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+        <SafeAreaView>
+          <TopbarImitation
+            leftStyle={{color: textColor}}
+            left={Platform.OS === 'android' ? null : lang("Back")}
+            leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
+            leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

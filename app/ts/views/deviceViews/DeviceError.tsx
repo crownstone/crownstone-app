@@ -14,7 +14,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { StoneUtil } from "../../util/StoneUtil";
 import { core } from "../../Core";
-import { DeviceIcon } from "./DeviceOverview";
+// import { DeviceIcon } from "./DeviceOverview";
 
 
 export class DeviceError extends Component<any, any> {
@@ -66,7 +66,7 @@ lang("_Stone_unavailable___You__body"),
 
     return (
       <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
-        <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
+        {/*<DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />*/}
       </View>
     )
   }

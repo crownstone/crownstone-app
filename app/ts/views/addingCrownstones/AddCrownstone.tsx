@@ -8,8 +8,9 @@ import * as React from 'react';
 import {
   Linking,
   Platform,
+  View,
 } from "react-native";
-import { background, colors } from "../styles";
+import {background, colors, statusBarHeight} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
@@ -190,21 +191,23 @@ export class AddCrownstone extends LiveComponent<any, any> {
       <AnimatedBackground
         fullScreen={true}
         image={backgroundImage}
-        hideNotifications={true}
         testID={'AddCrownstone'}
       >
-        <TopbarImitation
-          leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : lang("Back")}
-          leftAction={() => {
-            if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+        <View style={{flex:1, paddingTop: statusBarHeight}}>
+          <TopbarImitation
+            leftStyle={{color: textColor}}
+            left={Platform.OS === 'android' ? null : lang("Back")}
+            leftAction={() => {
+              if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
+            leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}}
+          />
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
+        </View>
       </AnimatedBackground>
     );
   }

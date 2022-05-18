@@ -26,6 +26,7 @@ import { processStockCustomImage, removeStockCustomImage } from "../../util/Util
 import { executeScene} from "./supportComponents/SceneItem";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./constants/SceneConstants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SCENE_ADD_CLASSNAME = "SceneAdd";
 
@@ -308,6 +309,7 @@ lang("_Select_at_least_one______body"),
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+        <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -324,6 +326,7 @@ lang("_Select_at_least_one______body"),
           update={   () => { this.forceUpdate() }}
           height={ this.props.height || availableModalHeight }
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }

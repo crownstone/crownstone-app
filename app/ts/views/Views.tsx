@@ -11,7 +11,7 @@ import { AlexaOverview }                      from "../views/thirdParty/alexa/Al
 
 import { AddItemsToSphere }                   from '../views/main/AddItemsToSphere'
 import { DeviceOverview }                     from '../views/deviceViews/DeviceOverview'
-import { DeviceEdit }                         from '../views/deviceViews/DeviceEdit'
+import { DeviceEditAppearence }               from '../views/deviceViews/DeviceEditAppearence'
 import { DeviceIconSelection }                from '../views/deviceViews/DeviceIconSelection'
 import { LoginSplash }                        from '../views/startupViews/LoginSplash'
 import { Login }                              from '../views/startupViews/Login'
@@ -127,6 +127,7 @@ import { LocalizationMenu }                   from "./main/localization/Localiza
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
+import {PowerUsage} from "./powerUsage/PowerUsage";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -161,7 +162,7 @@ export const Views = {
   GoogleAssistantOverview:           GoogleAssistantOverview,
   HubOverview:                       HubOverview,
   HubEdit:                           HubEdit,
-  DeviceEdit:                        DeviceEdit,
+  DeviceEditAppearence:              DeviceEditAppearence,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,
   DeviceOverview:                    DeviceOverview,
@@ -240,6 +241,7 @@ export const Views = {
   ScenePictureGallery:               ScenePictureGallery,
   SceneSelectCrownstones:            SceneSelectCrownstones,
 
+  PowerUsage:                        PowerUsage,
 
   // Overlays:
 

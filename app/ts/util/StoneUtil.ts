@@ -10,6 +10,8 @@ import {xUtil} from "./StandAloneUtil";
 import {AicoreUtil} from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 import {from, tell} from "../logic/constellation/Tellers";
 import {Get} from "./GetUtil";
+import {NavigationUtil} from "./navigation/NavigationUtil";
+import {BleUtil} from "./BleUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StoneUtil", key)(a,b,c,d,e);
@@ -61,24 +63,16 @@ export const StoneUtil = {
   // },
 
 
-  getStoneObject: function(sphereId, stoneId) {
-    let state = core.store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!sphere) { return null; }
-    let stone = sphere.stones[stoneId] || null;
-    return stone;
-  },
-
   checkFirmwareVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
-    if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
-    if (!stone) { Promise.reject(new Error("NO_STONE")) }
+    if (!stone) { stone = Get.stone(sphereId, stoneId) }
+    if (!stone) { throw new Error("NO_STONE") }
 
     return await from(stone).getFirmwareVersion()
   },
 
   checkBootloaderVersion: async function(sphereId, stoneId, stone?) : Promise<string>  {
-    if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
-    if (!stone) { Promise.reject(new Error("NO_STONE")) }
+    if (!stone) { stone = Get.stone(sphereId, stoneId) }
+    if (!stone) { throw new Error("NO_STONE") }
 
     return await from(stone).getBootloaderVersion()
   },
@@ -223,6 +217,88 @@ export const StoneUtil = {
         }
       }
     }
+  },
 
+
+  /**
+   * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
+   */
+  safeStoreUpdate(sphereId, stoneId, storedSwitchState) {
+    const state = core.store.getState();
+    const sphere = state.spheres[sphereId];
+    if (!sphere) { return storedSwitchState; }
+
+    const stone = sphere.stones[stoneId];
+    if (!stone) { return storedSwitchState; }
+
+    if (stone.state.state !== storedSwitchState) {
+      let data = {state: stone.state.state};
+      if (stone.state.state === 0) {
+        data['currentUsage'] = 0;
+      }
+      core.store.dispatch({
+        type: 'UPDATE_STONE_SWITCH_STATE',
+        sphereId: sphereId,
+        stoneId: stoneId,
+        data: data
+      });
+
+      return stone.state.state;
+    }
+
+    return storedSwitchState;
+  },
+
+
+  async lockCrownstone(sphereId, stoneId) {
+    try {
+      setLockCrownstoneState(sphereId, stoneId, lang("Locking_Crownstone___"), true);
+    }
+    catch (e) {
+      Alert.alert(
+        lang("_Im_sorry____Something_we_header"),
+        lang("_Im_sorry____Something_we_body"),
+        [{text:lang("_Im_sorry____Something_we_left")}]);
+    }
+  },
+
+  async unlockCrownstone(sphereId, stoneId) {
+    try {
+      setLockCrownstoneState(sphereId, stoneId, lang("Unlocking_Crownstone___"), false);
+    }
+    catch (e) {
+      Alert.alert(
+        lang("_Im_sorry____Something_we_header"),
+        lang("_Im_sorry____Something_we_body"),
+        [{text:lang("_Im_sorry____Something_we_left")}]);
+    }
+  },
+
+
+  async discoverCrownstone(stone: StoneData) : Promise<{discovered: boolean, mode?: 'setup' | 'operation'}> {
+    try {
+      let setupMode = await BleUtil.detectCrownstone(stone.config.handle);
+      return {discovered: true, mode: setupMode ? "setup" : "operation"};
+    }
+    catch (err) {
+      return {discovered: false};
+    }
   }
 };
+
+async function setLockCrownstoneState(sphereId: string, stoneId: string, label: string, lockState: boolean) {
+  let stone = Get.stone(sphereId, stoneId);
+
+  core.eventBus.emit("showLoading", label);
+  try {
+    await tell(stone).lockSwitch(lockState);
+    core.eventBus.emit("showLoading", lang("Done!"));
+    await Scheduler.delay(500);
+    core.eventBus.emit("hideLoading");
+    core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: sphereId, stoneId: stoneId, data: {locked: lockState}});
+  }
+  catch (e) {
+    core.eventBus.emit("hideLoading");
+    throw e;
+  }
+}

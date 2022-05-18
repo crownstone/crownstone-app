@@ -18,6 +18,7 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 import { TrackingNumberManager } from "../../backgroundProcesses/TrackingNumberManager";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export class DfuFinished extends LiveComponent<any, any> {
   static options = {
@@ -140,6 +141,7 @@ export class DfuFinished extends LiveComponent<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+        <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
@@ -153,6 +155,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           getCards={ () => { return getCardsCallback() }}
           update={   () => { this.forceUpdate() }}
         />
+        </SafeAreaView>
       </AnimatedBackground>
     );
   }
