@@ -117,8 +117,8 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
       return <SphereDeleted/>
     }
 
-    let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, null);
-    let hubs   = DataUtil.getHubsInLocation(  state, this.props.sphereId, null);
+    let stones = DataUtil.getStonesInLocation(this.props.sphereId, null);
+    let hubs   = DataUtil.getHubsInLocation(  this.props.sphereId, null);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     let { items, ids } = this._getItemList(stones, hubs);

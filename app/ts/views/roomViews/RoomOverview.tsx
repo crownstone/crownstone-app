@@ -1,9 +1,8 @@
 import {Languages} from "../../Languages"
 import * as React from 'react';
-import {Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View} from "react-native";
 
 import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
-import {SeparatedItemList} from '../components/SeparatedItemList'
 
 import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
 import {
@@ -26,7 +25,6 @@ import {LiveComponent} from "../LiveComponent";
 import {core} from "../../Core";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
-import {TopBarUtil} from "../../util/TopBarUtil";
 import {xUtil} from "../../util/StandAloneUtil";
 import {Background} from "../components/Background";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
@@ -34,17 +32,18 @@ import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
-import { Navigation } from "react-native-navigation";
 import { BackIcon, EditDone, EditIcon, SettingsIconLeft } from "../components/EditIcon";
 import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
-import {ScaledImage} from "../components/ScaledImage";
 import {Icon} from "../components/Icon";
 import {BlurView} from "@react-native-community/blur";
 import { NotificationFiller } from "../components/NotificationLine";
+import {SortingManager} from "../../logic/SortingManager";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
+
+const className = "RoomOverview";
 
 export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean }> {
   unsubscribeStoreEvents : any;
@@ -58,6 +57,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
   amountOfDimmableCrownstonesInLocation: number;
   amountOfActiveCrownstonesInLocation: number;
 
+  sortedList
   constructor(props) {
     super(props);
 
@@ -82,9 +82,23 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       dimMode: false,
     };
 
+    this.sortedList = SortingManager.getList(this.props.sphereOverview, className, this.props.locationId, this.getIdsInRoom());
+
     this.viewingRemotelyInitial = this.viewingRemotely;
   }
 
+  getIdsInRoom() {
+    let stones = DataUtil.getStonesInLocation(this.props.sphereId, this.props.locationId);
+    let hubs   = DataUtil.getHubsInLocation(  this.props.sphereId, this.props.locationId);
+    let ids = [];
+    for (let id in stones) { ids.push(id); }
+    for (let id in hubs)   {
+      if (!stones[hubs[id].config.linkedStoneId]) {
+        ids.push(id);
+      }
+    }
+    return ids;
+  }
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange",   (handle) => { this.forceUpdate(); }));
@@ -235,7 +249,8 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         }
       });
     }
-    else if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
+
+    if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
       // check if there are any setup stones that match the stones already in the database.
@@ -262,23 +277,15 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         }
       })
     }
+
     let shownStones = {};
     for (let [stoneId, stone] of Object.entries<StoneData>(stones)) {
       // do not show the same device twice
       let handle = stone.config.handle;
-      if (shownHandles[handle] === undefined) {
-        if (stone.abilities.dimming.enabledTarget) {
-          this.amountOfDimmableCrownstonesInLocation += 1;
-        }
-        if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
-          this.amountOfActiveCrownstonesInLocation += 1;
-        }
+      shownStones[stoneId] = true;
 
-        shownStones[stoneId] = true;
+      if (shownHandles[handle] === undefined) {
         tempStoneDataArray.push({type:'stone', data: stone, id: stoneId});
-      }
-      else {
-        shownStones[stoneId] = true;
       }
     }
 
@@ -307,7 +314,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     return itemArray.map((item, index) => { return this._renderer(item, index, ids[index]); })
   }
 
-
   render() {
     const store = core.store;
     const state = store.getState();
@@ -318,10 +324,10 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       return <RoomDeleted/>
     }
 
-    this.amountOfDimmableCrownstonesInLocation = 0;
-    this.amountOfActiveCrownstonesInLocation = 0;
-    let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
-    let hubs   = DataUtil.getHubsInLocation(  state, this.props.sphereId, this.props.locationId);
+    this.amountOfDimmableCrownstonesInLocation = DataUtil.getAmountOfDimmableStonesInLocation(this.props.sphereId, this.props.locationId);
+    this.amountOfActiveCrownstonesInLocation   = DataUtil.getAmountOfActiveStonesInLocation(this.props.sphereId, this.props.locationId);
+    let stones = DataUtil.getStonesInLocation(this.props.sphereId, this.props.locationId);
+    let hubs   = DataUtil.getHubsInLocation(  this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
 
     if (location.config.picture && location.config.pictureSource === "CUSTOM") {

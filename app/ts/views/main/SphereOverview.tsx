@@ -266,8 +266,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         }
 
         // retrofit: place all stones in a room.
-        let floatingStones = DataUtil.getStonesInLocation(state, activeSphereId, null);
-        let floatingHubs   = DataUtil.getHubsInLocation(state, activeSphereId, null);
+        let floatingStones = DataUtil.getStonesInLocation(activeSphereId, null);
+        let floatingHubs   = DataUtil.getHubsInLocation(activeSphereId, null);
         if (
           (Object.keys(floatingHubs).length > 0 || Object.keys(floatingStones).length > 0) &&
           Permissions.inSphere(activeSphereId).moveCrownstone

@@ -8,8 +8,8 @@ import { DataUtil } from "./DataUtil";
 export const RoomUtil = {
   getItemsInLocation: function(sphereId: string, locationId: string) : {itemArray:any[], ids: string[]} {
     let state = core.store.getState();
-    let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
-    let hubs   = DataUtil.getHubsInLocation(  state, sphereId, locationId);
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    let hubs   = DataUtil.getHubsInLocation(  sphereId, locationId);
 
     let stoneArray = [];
     let ids = [];

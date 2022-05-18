@@ -65,7 +65,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
         <RoomList
           icon={room.config.icon}
           name={room.config.name}
-          stoneCount={Object.keys(Util.data.getStonesInLocation(state, this.props.sphereId, roomId)).length}
+          stoneCount={Object.keys(Util.data.getStonesInLocation(this.props.sphereId, roomId)).length}
           showNavigationIcon={true}
         />
       </View>

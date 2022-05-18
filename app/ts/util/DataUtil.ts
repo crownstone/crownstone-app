@@ -9,6 +9,7 @@ import { FileUtil } from "./FileUtil";
 import * as RNLocalize from "react-native-localize";
 import { Get } from "./GetUtil";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
+import {StoneAvailabilityTracker} from "../native/advertisements/StoneAvailabilityTracker";
 
 
 
@@ -139,6 +140,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getAuthorizationTokenFromSphere: function(sphere: SphereData) : string | null {
     return sphere.keys[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key ?? null;
   },
@@ -157,6 +159,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getDevice: function(state) {
     let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
     if (state.devices && deviceId && state.devices[deviceId]) {
@@ -174,6 +177,7 @@ export const DataUtil = {
     return stone || null;
   },
 
+
   getHubByCloudId(sphereId, hubCloudId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -190,6 +194,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getHubByStoneId(sphereId, stoneId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -205,6 +210,7 @@ export const DataUtil = {
     }
     return null;
   },
+
 
   getAllHubsWithStoneId(sphereId, stoneId: string) : HubData[] {
     let results = [];
@@ -245,6 +251,7 @@ export const DataUtil = {
     return behaviour || null;
   },
 
+
   getLocation(sphereId, locationId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -265,6 +272,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getPresentSphereIds: function() : string[] {
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
@@ -276,8 +284,6 @@ export const DataUtil = {
     }
     return result;
   },
-
-
 
 
   getReferenceId: function(state) : string {
@@ -301,7 +307,38 @@ export const DataUtil = {
   },
 
 
-  getStonesInLocation: function(state : any, sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
+
+
+
+  getAmountOfDimmableStonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    let amount = 0;
+
+    for (let stoneId in stones) {
+      let stone = stones[stoneId];
+      if (stone.abilities.dimming.enabledTarget) {
+        amount += 1;
+      }
+    }
+
+    return amount;
+  },
+
+  getAmountOfActiveStonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    let amount = 0;
+
+    for (let stoneId in stones) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        amount += 1;
+      }
+    }
+    return amount;
+  },
+
+
+  getStonesInLocation: function(sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
+    let state = core.store.getState();
     let filteredStones = {};
     if (sphereId !== undefined) {
       let stones = state.spheres[sphereId].stones;
@@ -315,7 +352,8 @@ export const DataUtil = {
     return filteredStones;
   },
 
-  getHubsInLocation: function(state : any, sphereId : string, locationId?) : {[hubId: string]: HubData} {
+  getHubsInLocation: function(sphereId : string, locationId?) : {[hubId: string]: HubData} {
+    let state = core.store.getState();
     let filteredHubs = {};
     if (sphereId !== undefined) {
       for (let [hubId, hub] of Object.entries<HubData>(state.spheres[sphereId].hubs)) {
@@ -557,6 +595,7 @@ export const DataUtil = {
     return true;
   },
 
+
   verifyPicturesInDatabase(state) {
     let spheres = state.spheres;
     let pictures = [];
@@ -604,8 +643,8 @@ export const DataUtil = {
           core.store.batchDispatch(actions);
         }
       })
-
   },
+
 
   verifyDatabaseSphere(sphere) {
     if (sphere.keys) {
@@ -623,6 +662,7 @@ export const DataUtil = {
 
     return true;
   },
+
 
   verifyDatabaseStonesInSphere(sphere) {
     let stoneIds = Object.keys(sphere.stones);
@@ -643,6 +683,7 @@ export const DataUtil = {
     if (!location) { return null }
     return location.config.uid;
   },
+
 
   getDevicePreferences(sphereId = null) {
     let state = core.store.getState();
@@ -746,9 +787,9 @@ export const getPresentUsersInLocation = function(state, sphereId, locationId, a
 };
 
 
-export const getCurrentPowerUsageInLocation = function(state, sphereId, locationId) {
+export const getCurrentPowerUsageInLocation = function(sphereId, locationId) {
   let usage = 0;
-  let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
+  let stones = DataUtil.getStonesInLocation(sphereId, locationId);
   let stoneIds = Object.keys(stones);
 
   for (let i = 0; i < stoneIds.length; i++) {

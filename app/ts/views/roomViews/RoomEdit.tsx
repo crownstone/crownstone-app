@@ -116,7 +116,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       })
       .then(() => {
         let removeActions = [];
-        let stones = Util.data.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
+        let stones = Util.data.getStonesInLocation(this.props.sphereId, this.props.locationId);
         let stoneIds = Object.keys(stones);
         removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let i = 0; i < stoneIds.length; i++) {

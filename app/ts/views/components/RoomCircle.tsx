@@ -86,9 +86,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.textSize = props.radius * 0.25;
 
     this.previousCircle = undefined;
-
-    // set the usage initially
-    this.usage = getCurrentPowerUsageInLocation(core.store.getState(), props.sphereId, props.locationId);
   }
 
 
@@ -100,17 +97,12 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
         return;
       }
       // only redraw if the power usage changes or if the settings of the room change
-      let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
       if (state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
-      if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
-        this.usage = usage;
-        this.forceUpdate();
-      }
     });
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {

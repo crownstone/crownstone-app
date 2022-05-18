@@ -40,7 +40,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 
   let noRoomsCurrentSphere = (sphereId ? Object.keys(state.spheres[sphereId].locations).length : 0) == 0;
   let noStones = (sphereId ? Object.keys(state.spheres[sphereId].stones).length : 0) == 0;
-  let floatingStones = Object.keys(DataUtil.getStonesInLocation(state, sphereId, null)).length;
+  let floatingStones = Object.keys(DataUtil.getStonesInLocation(sphereId, null)).length;
   let availableStones = (sphereId ? Object.keys(state.spheres[sphereId].stones).length - floatingStones : 0);
 
   // on screen buttons are 0.11*screenWidth high.

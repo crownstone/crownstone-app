@@ -77,7 +77,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       });
 
       let renderStonesInRoom = (roomId) => {
-        let stonesInRoom = Util.data.getStonesInLocation(state, this.props.sphereId, roomId);
+        let stonesInRoom = Util.data.getStonesInLocation(this.props.sphereId, roomId);
         let stoneIdsInRoom = Object.keys(stonesInRoom);
         if (stoneIdsInRoom.length > 0) {
           let label = "CROWNSTONES NOT IN A ROOM";
