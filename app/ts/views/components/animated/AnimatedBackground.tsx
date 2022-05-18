@@ -85,7 +85,6 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
           <BackgroundImage height={backgroundHeight} image={this.animatedImage} />
         </Animated.View>
         <CustomKeyboardAvoidingView style={{flex:1}}>
-          {/*<NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />*/}
           <View style={{flex:1}}>
             { this.props.children }
           </View>

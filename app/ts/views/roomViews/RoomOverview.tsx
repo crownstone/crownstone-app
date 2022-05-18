@@ -40,6 +40,7 @@ import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import {ScaledImage} from "../components/ScaledImage";
 import {Icon} from "../components/Icon";
 import {BlurView} from "@react-native-community/blur";
+import { NotificationFiller } from "../components/NotificationLine";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -346,6 +347,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
               sphereId={    this.props.sphereId }
               locationId={  this.props.locationId }
             />
+            <NotificationFiller />
             <View style={{height:15}} />
             { this._getStones(itemArray, ids) }
             <View style={{height:80}} />
@@ -365,7 +367,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
             <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
           </View>
         </SlideFadeInView>
-        <TopBarBlur xxlight>
+        <TopBarBlur xxlight showNotifications={!this.state.editMode}>
           <RoomHeader
             sphereId={this.props.sphereId}
             location={location}

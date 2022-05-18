@@ -45,9 +45,7 @@ export class SphereLevel extends LiveComponent<any, any> {
     };
 
     this.unsubscribeEvents = [];
-
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
-
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 

@@ -2,6 +2,7 @@ import { colors, screenWidth, statusBarHeight, tabBarHeight, topBarHeight } from
 import { View, ViewStyle } from "react-native";
 import {BlurView} from "@react-native-community/blur";
 import * as React from "react";
+import {NotificationLine} from "./NotificationLine";
 
 
 export function NavBarBlur(props) {
@@ -26,41 +27,6 @@ export function NavBarBlur(props) {
   );
 }
 
-export function TopBarBlur(props) {
-  let backgroundColor = 'transparent';
-  if (props.xlight) {
-    backgroundColor = colors.white.rgba(0.4);
-  }
-  else if (props.xxlight) {
-    backgroundColor = colors.white.rgba(0.6);
-  }
-
-  let style : ViewStyle = {
-    position:'absolute',
-    top:0, height: topBarHeight, width:screenWidth,
-    paddingBottom: 8,
-    backgroundColor
-  };
-
-  if (props.disabledBlur) {
-    return (
-      <View style={style}>
-        <View style={{flex:1}} />
-        { props.children }
-      </View>
-    )
-  }
-
-  return (
-    <BlurView blurType={'light'} blurAmount={4} style={style}>
-      <View style={{flex:1}} />
-      { props.children }
-    </BlurView>
-  );
-}
-
-
-//
 // export function TopBarBlur(props) {
 //   let backgroundColor = 'transparent';
 //   if (props.xlight) {
@@ -71,7 +37,8 @@ export function TopBarBlur(props) {
 //   }
 //
 //   let style : ViewStyle = {
-//     height: topBarHeight, width:screenWidth,
+//     position:'absolute',
+//     top:0, height: topBarHeight, width:screenWidth,
 //     paddingBottom: 8,
 //     backgroundColor
 //   };
@@ -86,23 +53,49 @@ export function TopBarBlur(props) {
 //   }
 //
 //   return (
-//     <View style={{ position:'absolute', top:0 }}>
-//       <BlurView blurType={'light'} blurAmount={4} style={{ height: topBarHeight, width:screenWidth, paddingBottom: 8, backgroundColor }}>
-//         <View style={{flex:1}} />
-//         { props.children }
-//       </BlurView>
-//       <BlurView
-//         blurType={'light'}
-//         blurAmount={2}
-//         style={{
-//           width: screenWidth - 30,
-//           backgroundColor: colors.blue.rgba(0.5),
-//           marginHorizontal:15,
-//           height:50,
-//           borderRadius: 15,
-//           borderWidth: 3,
-//           borderColor: colors.white.rgba(0.8)
-//         }}/>
-//     </View>
+//     <BlurView blurType={'light'} blurAmount={4} style={style}>
+//       <View style={{flex:1}} />
+//       { props.children }
+//     </BlurView>
 //   );
 // }
+
+
+
+export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabledBlur?: boolean, children?: any, showNotifications?: boolean}) {
+  let backgroundColor = 'transparent';
+  if (props.xlight) {
+    backgroundColor = colors.white.rgba(0.4);
+  }
+  else if (props.xxlight) {
+    backgroundColor = colors.white.rgba(0.6);
+  }
+
+  let style : ViewStyle = {
+    height: topBarHeight, width:screenWidth,
+    paddingBottom: 8,
+    backgroundColor
+  };
+
+  if (props.disabledBlur) {
+    return (
+      <View style={{ position:'absolute', top:0 }}>
+        <View style={style}>
+        <View style={{flex:1}} />
+        { props.children }
+        </View>
+        <NotificationLine showNotifications={props.showNotifications}/>
+      </View>
+    )
+  }
+
+  return (
+    <View style={{ position:'absolute', top:0 }}>
+      <BlurView blurType={'light'} blurAmount={4} style={style}>
+        <View style={{flex:1}} />
+        { props.children }
+      </BlurView>
+      <NotificationLine showNotifications={props.showNotifications}/>
+    </View>
+  );
+}

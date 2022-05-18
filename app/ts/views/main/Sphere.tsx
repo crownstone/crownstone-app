@@ -22,9 +22,6 @@ import { core } from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
-import {SphereOverviewButton} from "./buttons/SphereOverviewButton";
-import {AddIconSVG} from "./buttons/AddItemButton";
-import {CustomButtom} from "./buttons/CustomButtom";
 import { EditIcon, MenuButton } from "../components/EditIcon";
 import { TopBarBlur } from "../components/NavBarBlur";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -96,7 +93,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
         />
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </SafeAreaView>
-      <TopBarBlur disabledBlur={arrangingRooms}>
+      <TopBarBlur disabledBlur={arrangingRooms} showNotifications={!arrangingRooms}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
           <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/>
