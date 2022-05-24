@@ -17,7 +17,7 @@ import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailab
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {OverlayUtil} from "../overlays/OverlayUtil";
 import {DataUtil} from "../../util/DataUtil";
-import {tell} from "../../logic/constellation/Tellers";
+import { from, tell } from "../../logic/constellation/Tellers";
 import {SettingsBackground} from "../components/SettingsBackground";
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -43,7 +43,6 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
         stoneName: stone.config.name,
         description: stone.config.description,
         stoneIcon: stone.config.icon,
-        locationId: stone.config.locationId,
 
         refreshingStoneVersions: false
       };
@@ -120,28 +119,6 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
       }
     });
 
-
-    let location = locations[this.state.locationId];
-    let locationLabel = lang("Not_in_a_room");
-    if (location !== undefined) {
-      locationLabel = location.config.name;
-    }
-    locationLabel += lang("__tap_to_change_")
-
-    items.push({label: hub ? "HUB IS IN ROOM" : lang("CROWNSTONE_IS_IN_ROOM"), type: 'explanation', below: false});
-    items.push({
-      label: locationLabel,
-      mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
-      type:  'button',
-      style: {color: colors.blue.hex},
-      callback: () => {
-        OverlayUtil.callRoomSelectionOverlay(this.props.sphereId, (roomId) => {
-          this.setState({locationId: roomId})
-        })
-      }
-    });
-
-
     return items;
   }
 
@@ -158,8 +135,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     if (
       stone.config.name           !== this.state.stoneName      ||
       stone.config.description    !== this.state.description    ||
-      stone.config.icon           !== this.state.stoneIcon      ||
-      stone.config.locationId     !== this.state.locationId
+      stone.config.icon           !== this.state.stoneIcon
     ) {
       actions.push({
         type:'UPDATE_STONE_CONFIG',
@@ -169,18 +145,16 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
           name:        this.state.stoneName,
           description: this.state.description,
           icon:        this.state.stoneIcon,
-          locationId:  this.state.locationId,
         }});
     }
 
-    if (hub && (stone.config.name !== this.state.stoneName || stone.config.locationId !== this.state.locationId)) {
+    if (hub && (stone.config.name !== this.state.stoneName)) {
       actions.push({
         type:'UPDATE_HUB_CONFIG',
         sphereId: this.props.sphereId,
         hubId: hub.id,
         data: {
           name:        this.state.stoneName,
-          locationId:  this.state.locationId,
         }});
     }
 
@@ -222,13 +196,13 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
           let uicr;
 
           let promises = [
-            tell(stone).getFirmwareVersion()
+            from(stone).getFirmwareVersion()
               .then((r) => { firmwareVersion = r }).catch((err) => { error = err; }),
-            tell(stone).getHardwareVersion()
+            from(stone).getHardwareVersion()
               .then((r) => { hardwareVersion = r }).catch((err) => { error = err; }),
-            tell(stone).getBootloaderVersion()
+            from(stone).getBootloaderVersion()
               .then((r) => { bootloaderVersion = r }).catch((err) => { error = err; }),
-            tell(stone).getUICR()
+            from(stone).getUICR()
               .then((r) => { uicr = r }).catch((err) => { error = err; }),
           ]
 

@@ -29,6 +29,9 @@ import {tell} from "../../logic/constellation/Tellers";
 import {SortingManager} from "../../logic/SortingManager";
 import {StoneUtil} from "../../util/StoneUtil";
 import {ListEditableItems} from "../components/ListEditableItems";
+import { IconButton } from "../components/IconButton";
+import { OverlayUtil } from "../overlays/OverlayUtil";
+import { Get } from "../../util/GetUtil";
 
 
 export class  DeviceOverview extends LiveComponent<any, any> {
@@ -149,7 +152,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
         NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
-    items.push({type: 'explanation', label: "Change name, icon, which room, etc", below: true});
+    items.push({type: 'explanation', label: "Change name, icon, etc.", below: true});
     items.push({
       id: 'abilities',
       label: lang("Abilities"),
@@ -173,6 +176,25 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     });
     items.push({type: 'explanation', label: "Turn on if/when ...", below: true});
 
+
+    let location = Get.location(this.props.sphereId, stone.config.locationId);
+    let locationLabel = lang("Not_in_a_room");
+    if (location !== undefined) {
+      locationLabel = location.config.name;
+    }
+
+    items.push({
+      label: locationLabel,
+      icon:  <Icon name="md-cube" size={23} color={colors.lightCsOrange.hex} />,
+      type:  'navigation',
+      style: {color: colors.blue.hex},
+      callback: () => {
+        OverlayUtil.callRoomSelectionOverlay(this.props.sphereId, (roomId) => {
+          this.setState({locationId: roomId})
+        })
+      }
+    });
+    items.push({type: 'explanation', label: "Move the Crownstone to another room", below: true});
 
     items.push({
       id: 'lock',

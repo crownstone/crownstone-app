@@ -34,7 +34,7 @@ export const OverlayUtil = {
                 icon={location.config.icon}
                 name={location.config.name}
                 hideSubtitle={true}
-                showNavigationIcon={false}
+                showNavigationIcon={true}
               />
           });
         });

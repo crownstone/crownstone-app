@@ -17,6 +17,7 @@ import { colors, screenWidth, screenHeight, statusBarHeight } from "../styles";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
 
 export class ListOverlay extends LiveComponent<any, any> {
   customContent : () => Component;
@@ -70,7 +71,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       elements.push(
         <TouchableOpacity
           key={"listOverlayElement_"+i}
-          style={{paddingLeft: 30, backgroundColor: isSelected ? this.themeColor : colors.white.hex}}
+          style={{backgroundColor: isSelected ? this.themeColor : colors.white.hex}}
           onPress={() => {
             if (this.state.allowMultipleSelections) {
               if (isSelected) {
@@ -149,23 +150,19 @@ export class ListOverlay extends LiveComponent<any, any> {
     }
 
     return (
-      <OverlayBox
+      <SimpleOverlayBox
         visible={this.state.visible}
-        hFlex={5} vFlex={5}
         overrideBackButton={false}
         canClose={true}
         scrollable={true}
         closeCallback={() => { this.close(); }}
         backgroundColor={colors.white.rgba(0.2)}
-        getDesignElement={(innerSize) => { return (
-          <ScaledImage source={this.state.image} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
-        );}}
         title={ customContent ? null : this.state.title }
         footerComponent={this._getSaveButton()}
       >
           { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback:() => { this.setState({showCustomContent: false}); }}) : this.getElements() }
           <View style={{height:50}} />
-      </OverlayBox>
+      </SimpleOverlayBox>
     );
   }
 }

@@ -38,6 +38,8 @@ import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 import {useRef} from "react";
 import {NavBarBlur} from "../components/NavBarBlur";
 import {OnScreenNotifications} from "../../notifications/OnScreenNotifications";
+import { OverlayUtil } from "../overlays/OverlayUtil";
+import { Get } from "../../util/GetUtil";
 
 
 const ZOOM_LEVELS = {
@@ -72,6 +74,11 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 
   componentDidMount() {
+    // setTimeout(() => {
+      // OverlayUtil.callRoomSelectionOverlay(Get.activeSphere().id, (roomId) => {
+      //   this.setState({locationId: roomId})
+      // })
+    // }, 400)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
@@ -313,7 +320,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 export function SphereOverview(props) {
   let sideBarRef = useRef(null);
-
 
   return (
     <SideBarView

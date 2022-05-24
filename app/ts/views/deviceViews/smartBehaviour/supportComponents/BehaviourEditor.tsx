@@ -357,7 +357,8 @@ export class BehaviourEditor extends LiveComponent<
         let items = [];
         Object.keys(sphere.locations).forEach((locationId) => {
           let location = sphere.locations[locationId];
-          items.push( {id: location.config.uid, component:<RoomList
+          items.push({id: location.config.uid, component:
+            <RoomList
               icon={location.config.icon}
               name={location.config.name}
               hideSubtitle={true}
