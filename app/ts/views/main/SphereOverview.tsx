@@ -75,9 +75,10 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   componentDidMount() {
     // setTimeout(() => {
-      // OverlayUtil.callRoomSelectionOverlay(Get.activeSphere().id, (roomId) => {
-      //   this.setState({locationId: roomId})
-      // })
+    //   // OverlayUtil.callRoomSelectionOverlay(Get.activeSphere().id, (roomId) => {
+    //   //   this.setState({locationId: roomId})
+    //   // })
+    //   core.eventBus.emit("showLoading", 'hello')
     // }, 400)
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
