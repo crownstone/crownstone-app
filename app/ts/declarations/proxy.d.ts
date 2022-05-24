@@ -1,5 +1,5 @@
 type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu"
-
+type handle = string;
 /**
  * All methods which will send a command to a Crownstone and fail due to there not being a connection will throw error "NOT_CONNECTED"
  *

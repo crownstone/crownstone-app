@@ -19,23 +19,23 @@ import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
 import { Util } from "../../../util/Util";
 import { tell } from "../../../logic/constellation/Tellers";
+import { useDraggable } from "../../components/hooks/draggableHooks";
 
 export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dragAction, isBeingDragged }) {
   const [editMode, setEditMode] = useState(stateEditMode);
-  const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
   const [available, setAvailable] = useState(core.bleState.bleAvailable && core.bleState.bleBroadcastAvailable);
 
+  let {dragging, triggerDrag} = useDraggable(isBeingDragged, eventBus, dragAction);
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { return Util.bleWatcherEffect(setAvailable); });
-  useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
   let color = colors.white.hex;
   let subtext = getLocationSubtext(sphereId, scene);
 
   if (activated) { subtext = lang("Setting_the_scene_"); }
   if (editMode)  { subtext = lang("Tap_to_edit_"); }
-  if (drag)      { subtext = "Drag me up or down!"; }
+  if (dragging)  { subtext = "Drag me up or down!"; }
 
   let image = getScenePictureSource(scene);
 
@@ -69,12 +69,11 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dr
         }}
         onLongPress={() => {
           if (editMode === true) {
-            dragAction();
-            setDrag(true);
+            triggerDrag()
           }
         }}
       >
-      <SlideSideFadeInView visible={drag} width={40} />
+      <SlideSideFadeInView visible={dragging} width={40} />
         { image ? <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
          : <MissingImage /> }
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>

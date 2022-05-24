@@ -11,6 +11,14 @@ import {CodedError} from "../../util/Errors";
 import {CommandAPI} from "../../logic/constellation/Commander";
 
 
+interface SetupTypeData {
+  name:    string,
+  icon:    string,
+  handle:  string,
+  type:    StoneType,
+  rawType: any
+}
+
 /**
  * This class keeps track of the Crownstones in setup state.
  */
@@ -18,7 +26,7 @@ class SetupStateHandlerClass {
   _uuid : string;
   _setupModeTimeouts : any;
   _stonesInSetupStateAdvertisements : any;
-  _stonesInSetupStateTypes: any;
+  _stonesInSetupStateTypes: Record<handle, SetupTypeData>;
   _currentSetupState : any;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
@@ -191,14 +199,14 @@ class SetupStateHandlerClass {
     }
   }
 
-  _getTypeData(advertisement : crownstoneAdvertisement) {
-    let payload = {};
-    if (     advertisement.serviceData.deviceType === 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,          rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,       rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,    rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,    rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB, rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'hub')           { payload = {name: 'Hub',                    icon: 'c1-router',       type:STONE_TYPES.hub,           rawType: advertisement.serviceData.deviceType }; }
+  _getTypeData(advertisement : crownstoneAdvertisement) : SetupTypeData {
+    let payload : SetupTypeData;
+    if (     advertisement.serviceData.deviceType === 'plug')          { payload = {name: 'Crownstone Plug',        handle: null, icon: 'c2-pluginFilled', type:STONE_TYPES.plug,          rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'builtin')       { payload = {name: 'Crownstone Builtin',     handle: null, icon: 'c2-crownstone',   type:STONE_TYPES.builtin,       rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload = {name: 'Crownstone Builtin One', handle: null, icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,    rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload = {name: 'Guidestone',             handle: null, icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,    rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload = {name: 'Crownstone USB',         handle: null, icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB, rawType: advertisement.serviceData.deviceType }; }
+    else if (advertisement.serviceData.deviceType === 'hub')           { payload = {name: 'Hub',                    handle: null, icon: 'c1-router',       type:STONE_TYPES.hub,           rawType: advertisement.serviceData.deviceType }; }
     else {
       LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
       return undefined;
@@ -259,7 +267,7 @@ class SetupStateHandlerClass {
     return helper.claim(sphereId, silent, commander);
   }
 
-  getSetupStones() {
+  getSetupStones() : Record<handle, SetupTypeData> {
     // make a copy of the data to make sure nothing can influence the data.
     return {...this._stonesInSetupStateTypes};
   }

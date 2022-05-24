@@ -1,12 +1,15 @@
 import * as React from 'react';
 import {core} from "../../../Core";
 
-export function useEvent(topic, callback) {
+export function useEvent(topic, callback, depencencies: any[] = []) {
+  useLocalEvent(core.eventBus, topic, callback);
+}
+
+export function useLocalEvent(eventBus, topic, callback, depencencies: any[] = []) {
   React.useEffect(() => {
-    let token = Math.round((Math.random()*1e8)).toString(36)
-    const unsubscribe = core.eventBus.on(topic, callback);
+    const unsubscribe = eventBus.on(topic, callback);
     return () => {
       unsubscribe();
     }
-  });
+  }, depencencies);
 }

@@ -47,16 +47,16 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   }
 
   _pushCrownstoneItem(items, sphereId, stone, stoneId) {
-    items.push({
-      __item: <DeviceEntry
-        stoneId={stoneId}
-        sphereId={sphereId}
-        allowSwitchView={false}
-        allowDeviceOverview={false}
-        viewingRemotely={false}
-        hideExplanation={true}
-      />
-    });
+    // items.push({
+    //   __item: <DeviceEntry
+    //     stoneId={stoneId}
+    //     sphereId={sphereId}
+    //     allowSwitchView={false}
+    //     allowDeviceOverview={false}
+    //     viewingRemotely={false}
+    //     hideExplanation={true}
+    //   />
+    // });
   }
   
   _getItems() {

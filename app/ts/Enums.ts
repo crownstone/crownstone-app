@@ -1,4 +1,4 @@
-export let STONE_TYPES = {
+export let STONE_TYPES : Record<string, StoneType> = {
   plug:          "PLUG",
   builtin:       "BUILTIN",
   builtinOne:    "BUILTIN_ONE",

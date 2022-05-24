@@ -236,9 +236,6 @@ interface GraphData {
   y: number,
 }
 
-type sphereId = string
-type stoneId  = string
-
 interface HubDataReply {
   protocolVersion: number,
   type:            string, // is the string name of the ReplyTypes. As of writing: success | error | dataReply
@@ -272,3 +269,5 @@ interface logFormat {
 interface sphereLogFormat {
   [key: string]: {[key: string] : {t: number, rssi: number, handle: string }}
 }
+
+type PartialRecord<K extends keyof any, T> = Partial<Record<K,T>>;

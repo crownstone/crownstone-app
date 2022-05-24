@@ -104,16 +104,16 @@ export class SphereHubOverview extends LiveComponent<any, any> {
           });
           break;
         case "dongle":
-          items.push({
-            __item: <DeviceEntry
-              stoneId={hubItem.id}
-              sphereId={this.props.sphereId}
-              statusText={locationString}
-              allowSwitchView={false}
-              viewingRemotely={false}
-              hideExplanation={true}
-            />
-          });
+          // items.push({
+          //   __item: <DeviceEntry
+          //     stoneId={hubItem.id}
+          //     sphereId={this.props.sphereId}
+          //     // statusText={locationString}
+          //     allowSwitchView={false}
+          //     viewingRemotely={false}
+          //     hideExplanation={true}
+          //   />
+          // });
           break;
         case "hubStone":
           items.push({

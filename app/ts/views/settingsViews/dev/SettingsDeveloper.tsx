@@ -36,6 +36,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
 import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
+import { SettingsCustomTopBarNavbarBackground, SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 
@@ -536,7 +537,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
+      <SettingsCustomTopBarNavbarBackground testID={"SettingsDev"}>
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
           titleObject={
@@ -549,14 +550,13 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           }
           leftAction={() => { NavigationUtil.back(); }}
         />
-        <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <SlideFadeInView visible={this.state.devAppVisible} height={120}>
             <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
           </SlideFadeInView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsCustomTopBarNavbarBackground>
     );
   }
 }

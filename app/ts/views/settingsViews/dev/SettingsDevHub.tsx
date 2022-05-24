@@ -10,6 +10,7 @@ import { DataUtil } from "../../../util/DataUtil";
 import { HUB_API } from "../../../cloud/localHub/HubApi";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 
 export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: string }, any> {
@@ -137,7 +138,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
 
 
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <SettingsNavbarBackground>
         <View style={{flex:0.25}} />
         <Text style={deviceStyles.header}>Hub developer options</Text>
         <View style={{flex:0.1}} />
@@ -145,7 +146,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
         <View style={{flex:0.1}} />
         <View style={{flex:0.25}} />
         <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

@@ -16,9 +16,9 @@ import { ForceDirectedView }     from "../components/interactiveView/ForceDirect
 import { Util }                  from "../../util/Util";
 import { core }                  from "../../Core";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
-import {Component}               from "react";
+import { Component, useState } from "react";
 import {useEvent}                from "../components/hooks/eventHooks";
-import {useDatabaseChange}       from "../components/hooks/databaseHooks";
+import { useDatabaseChange, useForceUpdate } from "../components/hooks/databaseHooks";
 import {useSafeAreaInsets}       from "react-native-safe-area-context";
 
 // export class RoomLayer extends Component<any, any> {
@@ -156,7 +156,7 @@ import {useSafeAreaInsets}       from "react-native-safe-area-context";
 //   }
 // }
 
-
+let int = null
 export function RoomLayer(props) {
   const forceViewRef = React.useRef(null);
 
@@ -183,7 +183,6 @@ export function RoomLayer(props) {
 
   useEvent("save_positions"  + props.viewId, storePositions);
   useEvent("reset_positions" + props.viewId, resetPositions);
-  useDatabaseChange('changeLocations');
   useDatabaseChange(['changeStones','stoneLocationUpdated','changeLocations','changeLocationPositions']);
 
   const baseRadius = 0.15 * screenWidth;

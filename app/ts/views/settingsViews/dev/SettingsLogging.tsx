@@ -15,6 +15,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
 import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 
 export class SettingsLogging extends LiveComponent<any, any> {
@@ -220,11 +221,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

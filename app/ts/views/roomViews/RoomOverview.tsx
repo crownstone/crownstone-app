@@ -37,7 +37,10 @@ import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import {Icon} from "../components/Icon";
 import {BlurView} from "@react-native-community/blur";
 import { NotificationFiller } from "../components/NotificationLine";
-import {SortingManager} from "../../logic/SortingManager";
+import { SortedList, SortingManager } from "../../logic/SortingManager";
+import { SceneCreateNewItem } from "../scenesViews/supportComponents/SceneCreateNewItem";
+import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
+import { EventBusClass } from "../../util/EventBus";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -45,7 +48,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 const className = "RoomOverview";
 
-export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean }> {
+interface RoomItemList {
+  id:             string,
+  handle?:        string,
+  name?:          string,
+  icon?:          string,
+  type:           'stone' | 'hub' | 'dfuStone' | 'setupStone',
+  data?:          any,
+  advertisement?: any,
+  deviceType?:    string,
+}
+
+export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -57,7 +71,9 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
   amountOfDimmableCrownstonesInLocation: number;
   amountOfActiveCrownstonesInLocation: number;
 
-  sortedList
+  localEventBus: EventBusClass;
+  sortedList : SortedList;
+
   constructor(props) {
     super(props);
 
@@ -75,15 +91,19 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       this.viewingRemotely = sphere.state.present === false;
     }
 
+    this.sortedList = SortingManager.getList(this.props.sphereId, className, this.props.locationId, this.getIdsInRoom());
     this.state = {
       switchView: false,
       scrollEnabled: true,
       editMode: false,
       dimMode: false,
+
+      dragging: false,
+      data: this.sortedList.getDraggableList(),
     };
 
-    this.sortedList = SortingManager.getList(this.props.sphereOverview, className, this.props.locationId, this.getIdsInRoom());
 
+    this.localEventBus = new EventBusClass("RoomOverview"+this.props.locationId);
     this.viewingRemotelyInitial = this.viewingRemotely;
   }
 
@@ -127,6 +147,8 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         (change.changeHubs)      ||
         (change.changeStones)
       ) {
+
+        this.sortedList.mustContain(this.getIdsInRoom());
         this.forceUpdate();
         return;
       }
@@ -134,16 +156,17 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
   }
 
   componentWillUnmount() {
+    this.localEventBus.clearAllEvents();
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
   }
 
-  _renderer(item, index, id) {
+  renderDraggableItem = (item: RoomItemList, index: number, drag: () => void, isActive: boolean) => {
+    let id = item.id;
     if (item.type === 'dfuStone') {
       return (
-        <View key={id + '_dfu_entry'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
+        <View key={id + '_item'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <DfuDeviceEntry
-            key={id + '_dfu_element'}
             sphereId={this.props.sphereId}
             handle={item.advertisement && item.advertisement.handle}
             name={item.data && item.data.name}
@@ -154,9 +177,8 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     }
     else if (item.type === 'setupStone') {
       return (
-        <View key={id + '_setup_entry'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
+        <View key={id + '_item'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <SetupDeviceEntry
-            key={id + '_setup_element'}
             sphereId={this.props.sphereId}
             handle={item.handle}
             item={item}
@@ -190,7 +212,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         <HubEntry
           sphereId={this.props.sphereId}
           stoneId={id}
-          key={id + '_entry'}
+          key={id + '_item'}
           viewingRemotely={this.viewingRemotely}
           setSwitchView={(value) => { this.setState({switchView: value })}}
           switchView={this.state.switchView}
@@ -204,12 +226,16 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     else if (item.type === 'stone') {
       return (
         <DeviceEntry
-          key={id + '_entry'}
+          key={id + '_item'}
           sphereId={this.props.sphereId}
           stoneId={id}
           viewingRemotely={this.viewingRemotely}
           dimMode={this.state.dimMode && !this.state.editMode}
           editMode={this.state.editMode}
+
+          isBeingDragged={isActive}
+          eventBus={this.localEventBus}
+          dragAction={drag}
         />
       );
     }
@@ -217,7 +243,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       return (
         <HubEntry
           sphereId={this.props.sphereId}
-          key={id + '_entry'}
+          key={id + '_item'}
           hubId={id}
           viewingRemotely={this.viewingRemotely}
           setSwitchView={(value) => { this.setState({switchView: value })}}
@@ -229,12 +255,10 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     }
   }
 
-  _getItemList(stones, hubs) {
-    let stoneArray = [];
-    let ids = [];
+  _getItemList(stones : Record<stoneId, StoneData>, hubs: Record<hubId, HubData>) : RoomItemList[] {
+    let stoneArray : RoomItemList[] = [];
     let stoneIds = Object.keys(stones);
     let shownHandles = {};
-    let tempStoneDataArray = [];
 
     if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
@@ -243,11 +267,11 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       dfuIds.forEach((dfuId) => {
         if (dfuStones[dfuId].data && dfuStones[dfuId].data.locationId === this.props.locationId) {
           shownHandles[dfuStones[dfuId].advertisement.handle] = true;
-          ids.push(dfuId);
           dfuStones[dfuId].type = 'dfuStone';
           stoneArray.push(dfuStones[dfuId]);
         }
       });
+
     }
 
     if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
@@ -262,13 +286,12 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           setupIds.forEach((setupId) => {
             if (setupStones[setupId].handle === handle) {
               shownHandles[handle] = true;
-              ids.push(stoneId);
               // we do not want to overwrite the type, but the type we're using in this view is also required. We rename the incoming type to deviceType.
-              let setupData = {...setupStones[setupId]};
-              setupData.deviceType = setupData.type;
+              let setupData = {...setupStones[setupId], deviceType: setupStones[setupId].type};
               stoneArray.push({
                 ...setupData,
                 type:'setupStone',
+                id: setupData.handle,
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon
               });
@@ -278,41 +301,26 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       })
     }
 
+    let idList = this.sortedList.getDraggableList();
     let shownStones = {};
-    for (let [stoneId, stone] of Object.entries<StoneData>(stones)) {
-      // do not show the same device twice
-      let handle = stone.config.handle;
-      shownStones[stoneId] = true;
+    for (let id of idList) {
+      let item = stones[id] ?? hubs[id];
 
-      if (shownHandles[handle] === undefined) {
-        tempStoneDataArray.push({type:'stone', data: stone, id: stoneId});
+      // stone
+      if ('handle' in item.config && shownHandles[item.config.handle] === undefined) {
+        shownStones[id] = true;
+        stoneArray.push({ type: 'stone', data: item, id: id });
       }
-    }
-
-    // sort the order of things by crownstone Id
-    tempStoneDataArray.sort((a,b) => { return a.data.config.uid - b.data.config.uid });
-
-
-    for (let [hubId, hub] of Object.entries<HubData>(hubs)) {
-      if (shownStones[hub.config.linkedStoneId] === undefined) {
+      else if ('linkedStoneId' in item.config && !shownStones[item.config.linkedStoneId]) {
         // do not show the same device twice
-        tempStoneDataArray.push({ type: 'hub', data: hub, id: hubId });
+        stoneArray.push({ type: 'hub', data: item, id: id });
       }
     }
 
-    tempStoneDataArray.forEach((tmpStoneData) => {
-      ids.push(tmpStoneData.id);
-      stoneArray.push(tmpStoneData);
-    });
-
-
-    return { itemArray: stoneArray, ids };
+    return stoneArray;
   }
 
 
-  _getStones(itemArray : any[], ids) {
-    return itemArray.map((item, index) => { return this._renderer(item, index, ids[index]); })
-  }
 
   render() {
     const store = core.store;
@@ -337,28 +345,66 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       backgroundImage = getRoomStockImage(location.config.picture);
     }
 
-    let {itemArray, ids} = this._getItemList(stones, hubs);
+    let itemArray = this._getItemList(stones, hubs);
+
     let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
     if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
       explanation = lang("No_Crownstones_in_reach__");
     }
 
+
     return (
       <Background image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
-        <ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>
-          <View style={{width:screenWidth}}>
-            <RoomExplanation
-              state={state}
-              explanation={ this.props.explanation }
-              sphereId={    this.props.sphereId }
-              locationId={  this.props.locationId }
-            />
-            <NotificationFiller />
-            <View style={{height:15}} />
-            { this._getStones(itemArray, ids) }
-            <View style={{height:80}} />
-          </View>
-        </ScrollView>
+
+        <NestableScrollContainer
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight + 15, paddingBottom: 2*tabBarHeight}}
+        >
+          <NestableDraggableFlatList
+            activationDistance={this.state.dragging ? 5 : 120}
+            data={itemArray}
+            onDragBegin={() => { this.setState({dragging: true}); }}
+            onRelease={() => {
+              this.localEventBus.emit("END_DRAG" );
+            }}
+            renderItem={({ item, index, drag, isActive }) => { return this.renderDraggableItem( item, index, drag, isActive ); }}
+            keyExtractor={(item : any, index) => `${item.id}_item`}
+            onDragEnd={({ data }) => {
+              let dataToUse = [];
+
+              let ids = this.getIdsInRoom();
+              let idMap = {};
+              for (let id of ids) { idMap[id] = true; }
+
+              for (let i = 0; i < data.length; i++) {
+                if (idMap[data[i].id] !== undefined) {
+                  dataToUse.push(data[i].id);
+                }
+              }
+              console.log(dataToUse);
+              this.sortedList.update(dataToUse as string[]);
+              this.setState({ dragging:false });
+            }}
+          />
+        </NestableScrollContainer>
+
+
+
+        {/*<ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>*/}
+        {/*  <View style={{width:screenWidth}}>*/}
+        {/*    <NotificationFiller />*/}
+        {/*    <RoomExplanation*/}
+        {/*      state={state}*/}
+        {/*      explanation={ this.props.explanation }*/}
+        {/*      sphereId={    this.props.sphereId }*/}
+        {/*      locationId={  this.props.locationId }*/}
+        {/*    />*/}
+        {/*    <View style={{height:15}} />*/}
+        {/*    { this._getStones(itemArray, ids) }*/}
+        {/*    <View style={{height:80}} />*/}
+        {/*  </View>*/}
+        {/*</ScrollView>*/}
+
         <SlideFadeInView
           visible={this.state.switchView}
           style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
@@ -373,6 +419,9 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
             <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
           </View>
         </SlideFadeInView>
+
+
+
         <TopBarBlur xxlight showNotifications={!this.state.editMode}>
           <RoomHeader
             sphereId={this.props.sphereId}

@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {core} from "../../../Core";
+import { useEvent } from "./eventHooks";
 
 
-function useForceUpdate(){
+export function useForceUpdate(){
   const [value, setValue] = React.useState(0); // integer state
   return () => setValue(value => (value + 1)%100); // update the state to force render
 }
 
-type filter = DatabaseEventType | Record<DatabaseEventType, databaseId>
+type filter = DatabaseEventType | PartialRecord<DatabaseEventType, databaseId>
 
 // filter = {changeStones: "id"}
 // filter = "changeStones"
@@ -15,17 +16,13 @@ type filter = DatabaseEventType | Record<DatabaseEventType, databaseId>
 export function useDatabaseChange(filters: filter | filter[], callback: () => void = null) {
   const forceUpdate = useForceUpdate();
 
-  React.useEffect(() => {
-    const unsubscribeStoreEvent = core.eventBus.on('databaseChange', (data) => {
-      let change = data.change;
+  useEvent('databaseChange', (data) => {
+    let change = data.change;
 
-      if (checkFilter(change, filters)) {
-        if (callback !== null) { callback();    }
-        else                   { forceUpdate(); }
-      }
-    });
-
-    return unsubscribeStoreEvent();
+    if (checkFilter(change, filters)) {
+      if (callback !== null) { callback();    }
+      else                   { forceUpdate(); }
+    }
   });
 }
 

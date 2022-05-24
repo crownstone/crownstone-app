@@ -11,15 +11,21 @@ import { Background } from "./Background";
 import { background } from "../styles";
 import {NavBarBlur, TopBarBlur} from "./NavBarBlur";
 
-
-export class SettingsBackground extends Component<{
+interface SettingsBackgroundProps {
   style?:             any,
   hasNavBar?:         boolean,
   image?:             any,
   testID?:            string,
   keyboardAvoid?:     boolean,
-}, any> {
+}
+interface SettingsNavbarBackgroundProps {
+  style?:             any,
+  image?:             any,
+  testID?:            string,
+  keyboardAvoid?:     boolean,
+}
 
+export class SettingsBackground extends Component<SettingsBackgroundProps, any> {
   render() {
     return <Background {...{
       ...this.props,
@@ -35,14 +41,30 @@ export class SettingsBackground extends Component<{
   }
 }
 
-export class SettingsNavbarBackground extends Component<{
-  style?:             any,
-  image?:             any,
-  testID?:            string,
-  keyboardAvoid?:     boolean,
-}, any> {
+export class SettingsCustomTopBarBackground extends Component<SettingsBackgroundProps, any> {
 
+  render() {
+    return <Background {...{
+      ...this.props,
+      hasNavBar:false,
+      hasTopBar:false,
+      hideNotifications: true,
+      image: background.menu
+    }}>
+      { this.props.children }
+      { this.props.hasNavBar && <NavBarBlur /> }
+    </Background>
+  }
+}
+
+export class SettingsNavbarBackground extends Component<SettingsNavbarBackgroundProps, any> {
   render() {
     return <SettingsBackground {...{...this.props, hasNavBar:true}}/>
   }
 }
+export class SettingsCustomTopBarNavbarBackground extends Component<SettingsNavbarBackgroundProps, any> {
+  render() {
+    return <SettingsCustomTopBarBackground {...{...this.props, hasNavBar:true}}/>
+  }
+}
+

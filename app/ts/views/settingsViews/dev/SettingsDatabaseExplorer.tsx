@@ -10,6 +10,7 @@ import { core } from "../../../Core";
 import { background, colors, screenWidth } from "../../styles";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
 import { StoreManager } from "../../../database/storeManager";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 const viewStyle : ViewStyle = {
   width: screenWidth,
@@ -131,11 +132,11 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="always">
           {this._getItems(this.dbState, this.expanded, '', 'BASE', 0) }
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }
