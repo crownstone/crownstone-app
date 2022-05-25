@@ -6,6 +6,7 @@ import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
 
 import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
 import {
+  availableScreenHeight,
   background,
   colors, getRoomStockImage, RoomStockBackground,
   screenHeight,
@@ -355,12 +356,18 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
     return (
       <Background image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
-
         <NestableScrollContainer
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight + 15, paddingBottom: 2*tabBarHeight}}
+          contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight, paddingBottom: 2*tabBarHeight}}
         >
+          <NotificationFiller />
+          <RoomExplanation
+            explanation={ this.props.explanation }
+            sphereId={    this.props.sphereId }
+            locationId={  this.props.locationId }
+          />
           <NestableDraggableFlatList
+            containerStyle={{minHeight: availableScreenHeight, paddingTop: 10}}
             activationDistance={this.state.dragging ? 5 : 120}
             data={itemArray}
             onDragBegin={() => { this.setState({dragging: true}); }}
@@ -381,29 +388,11 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
                   dataToUse.push(data[i].id);
                 }
               }
-              console.log(dataToUse);
               this.sortedList.update(dataToUse as string[]);
               this.setState({ dragging:false });
             }}
           />
         </NestableScrollContainer>
-
-
-
-        {/*<ScrollView scrollEnabled={this.state.scrollEnabled} contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight}}>*/}
-        {/*  <View style={{width:screenWidth}}>*/}
-        {/*    <NotificationFiller />*/}
-        {/*    <RoomExplanation*/}
-        {/*      state={state}*/}
-        {/*      explanation={ this.props.explanation }*/}
-        {/*      sphereId={    this.props.sphereId }*/}
-        {/*      locationId={  this.props.locationId }*/}
-        {/*    />*/}
-        {/*    <View style={{height:15}} />*/}
-        {/*    { this._getStones(itemArray, ids) }*/}
-        {/*    <View style={{height:80}} />*/}
-        {/*  </View>*/}
-        {/*</ScrollView>*/}
 
         <SlideFadeInView
           visible={this.state.switchView}

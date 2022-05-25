@@ -1,23 +1,18 @@
 import * as React from 'react';
-import { Component, useEffect, useMemo, useRef, useState } from "react";
-import {ActivityIndicator, Animated, Platform, Switch, Text, TouchableOpacity, View, ViewStyle} from "react-native";
+import { useRef, useState } from "react";
+import { Text, TouchableOpacity, View} from "react-native";
 
-import { colors, rowstyles, screenWidth, styles } from "../../styles";
+import {appStyleConstants, colors, rowstyles} from "../../styles";
 import {StoneUtil} from "../../../util/StoneUtil";
-import {SlideFadeInView, SlideSideFadeInView} from "../animated/SlideFadeInView";
-import {xUtil} from "../../../util/StandAloneUtil";
-import {core} from "../../../Core";
+import {SlideSideFadeInView} from "../animated/SlideFadeInView";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
-import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
 import { Get } from "../../../util/GetUtil";
 import { BlurView } from "@react-native-community/blur";
-import { SceneConstants } from "../../scenesViews/constants/SceneConstants";
-import { BackIcon,  SettingsIconRight } from "../EditIcon";
+import { SettingsIconRight } from "../EditIcon";
 import {DeviceDimSlider, DeviceDimTopPadding, DeviceSwitchControl} from "./submodules/DeviceEntrySwitchControls";
 import {DevicePowerUsage} from "./submodules/DeviceLabels";
-import { EventBusClass } from "../../../util/EventBus";
-import { useDatabaseChange, useForceUpdate } from "../hooks/databaseHooks";
+import { useDatabaseChange } from "../hooks/databaseHooks";
 import { DraggableProps, useDraggable } from "../hooks/draggableHooks";
 import { useCleanup } from "../hooks/timerHooks";
 
@@ -79,7 +74,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
           backgroundColor: colors.white.rgba(0.4),
           marginHorizontal: 12,
           marginBottom: 12,
-          borderRadius: SceneConstants.roundness,
+          borderRadius: appStyleConstants.roundness,
           alignItems:'center',
           paddingLeft: 15,
         }}>

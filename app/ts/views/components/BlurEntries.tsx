@@ -4,8 +4,7 @@ import { DraggableProps, useDraggable } from "./hooks/draggableHooks";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SlideSideFadeInView }          from "./animated/SlideFadeInView";
 import { BlurView }                     from "@react-native-community/blur";
-import { colors, rowstyles }            from "../styles";
-import { SceneConstants }               from "../scenesViews/constants/SceneConstants";
+import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styles";
 import { SettingsIconRight }            from "./EditIcon";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
@@ -55,7 +54,7 @@ export function BlurEntry(props: BlurEntryProps) {
         backgroundColor: colors.white.rgba(0.4),
         marginHorizontal: 12,
         marginBottom: 12,
-        borderRadius: SceneConstants.roundness,
+        borderRadius: appStyleConstants.roundness,
         alignItems:'center',
         paddingLeft: 15,
       }}>
@@ -92,3 +91,33 @@ export function renderPropItem(item: ReactHOC | React.ComponentElement<any, any>
   return item;
 }
 
+
+export function BlurMessageBar(props) {
+  return (
+    <BlurView
+      blurType={'light'}
+      blurAmount={2}
+      style={{
+        ...styles.centered,
+        width: props.width ?? screenWidth - 30,
+        marginHorizontal:15,
+        marginTop: props.marginTop,
+        flexDirection:'row',
+        height: props.height ?? 60,
+        borderRadius: appStyleConstants.roundness,
+        borderWidth: 2,
+        borderColor: props.borderColor ?? colors.white.hex,
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.6)
+      }}>
+      {props.children}
+    </BlurView>
+  )
+}
+
+export function TouchableBlurMessageBar(props) {
+  return (
+    <TouchableOpacity onPress={props.onPress}>
+      <BlurMessageBar {...props} />
+    </TouchableOpacity>
+  )
+}

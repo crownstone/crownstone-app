@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SceneItem", key)(a,b,c,d,e);
 }
 import { default as React, useEffect, useState }          from "react";
-import { colors, screenWidth, styles }                    from "../../styles";
+import {appStyleConstants, colors, screenWidth, styles} from "../../styles";
 import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST, SceneConstants } from "../constants/SceneConstants";
 import { SlideSideFadeInView }                            from "../../components/animated/SlideFadeInView";
@@ -42,7 +42,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dr
   return (
     <View style={{
       flexDirection:'row',
-      borderRadius: SceneConstants.roundness,
+      borderRadius: appStyleConstants.roundness,
       overflow:'hidden',
       backgroundColor: 'transparent',
       width: screenWidth - 2*SceneConstants.padding,

@@ -7,15 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text,
-  TouchableOpacity,
-  View
 } from "react-native";
 
 import {
   enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
 } from "../../util/DataUtil";
-import { colors } from '../styles'
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {BlurMessageBar, TouchableBlurMessageBar} from "./BlurEntries";
+import {core} from "../../Core";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -27,11 +26,10 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
  */
 export class RoomExplanation extends Component<any, any> {
   render() {
-    let state = this.props.state;
+    let state = core.store.getState();
     let sphereId = this.props.sphereId;
     let locationId = this.props.locationId;
     let explanation = this.props.explanation;
-    let boldExplanation = false;
 
     // check if we have special cases
     let amountOfStonesInRoom = getAmountOfStonesInLocation(state, sphereId, locationId);
@@ -46,29 +44,27 @@ export class RoomExplanation extends Component<any, any> {
 
     if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
-      boldExplanation = true;
       buttonCallback = () => { NavigationUtil.launchModal( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
     }
 
     if (explanation === undefined) {
-      return <View />
+      return <React.Fragment />
     }
-    else if (buttonCallback !== undefined) {
+
+    let label = <Text style={{fontSize: 15, fontWeight: 'bold', textAlign:'center'}}>{explanation}</Text>;
+
+    if (buttonCallback !== undefined) {
       return (
-        <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderTopWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-            <Text style={{fontSize: 15, fontWeight: boldExplanation ? 'bold' : undefined, color: colors.csBlueDark.hex, textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </TouchableOpacity>
+        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10}>
+          {label}
+        </TouchableBlurMessageBar>
       );
     }
     else {
       return (
-        <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderTopWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-            <Text style={{fontSize: 15,  textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </View>
+        <BlurMessageBar marginTop={10}>
+          {label}
+        </BlurMessageBar>
       );
     }
   }

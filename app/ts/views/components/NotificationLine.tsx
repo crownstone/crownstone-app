@@ -2,16 +2,17 @@ import { LiveComponent }          from "../LiveComponent";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { colors, screenWidth, styles } from "../styles";
-import { IconButton } from "./IconButton";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 import { core } from "../../Core";
-import {BlurView} from "@react-native-community/blur";
 import {Icon} from "./Icon";
 import {ActiveSphereManager} from "../../backgroundProcesses/ActiveSphereManager";
 import {useEvent} from "./hooks/eventHooks";
 import {useState} from "react";
+import {BlurMessageBar} from "./BlurEntries";
 
+
+const NotificationPadding = 10;
 
 export class NotificationLine extends LiveComponent<{showNotifications?: boolean}, any> {
 
@@ -51,28 +52,16 @@ export class NotificationLine extends LiveComponent<{showNotifications?: boolean
       notifications.push(
         <TouchableOpacity
           key={notificationId}
-          style={{...styles.centered, height: 60, width: screenWidth}}
+          style={{...styles.centered, width: screenWidth}}
           onPress={() => { notification.callback(); }}
         >
-          <BlurView
-            blurType={'light'}
-            blurAmount={2}
-            style={{
-              ...styles.centered,
-              width: screenWidth - 30,
-              marginHorizontal:15,
-              flexDirection:'row', height: 59,
-              borderRadius: 15,
-              borderWidth: 3,
-              borderColor: colors.white.rgba(0.9),
-              backgroundColor: notification.backgroundColor || defaultColor.rgba(0.5)
-            }}>
-            <View style={{flex:1}}/>
+          <BlurMessageBar
+            backgroundColor={notification.backgroundColor || defaultColor.rgba(0.5)}
+          >
             { notification.icon ? <Icon name={notification.icon} size={notification.iconSize || 34} color={ colors.black.hex } /> : undefined }
             { notification.icon ? <View style={{width:10}}/> : undefined }
             <Text style={{color: colors.black.hex, fontSize: 17, fontWeight:'bold'}}>{notification.label}</Text>
-            <View style={{flex:1}}/>
-          </BlurView>
+          </BlurMessageBar>
         </TouchableOpacity>
       )
     }
@@ -81,8 +70,8 @@ export class NotificationLine extends LiveComponent<{showNotifications?: boolean
     return (
       <SlideFadeInView
         visible={this.hasNotifications}
-        height={Math.max(1, Object.keys(availableNotifications).length) * 60 + 14}
-        style={{paddingTop:10}}
+        height={Math.max(1, Object.keys(availableNotifications).length) * (60 + NotificationPadding)}
+        style={{paddingTop: NotificationPadding, justifyContent:'space-between'}}
       >
         {notifications}
       </SlideFadeInView>
@@ -109,7 +98,7 @@ export function NotificationFiller(props) {
   return (
     <SlideFadeInView
       visible={hasNotifications}
-      height={Math.max(1, Object.keys(availableNotifications).length) * 60 + 14}
+      height={Math.max(1, Object.keys(availableNotifications).length) * (60 + NotificationPadding)}
     />
   )
 }

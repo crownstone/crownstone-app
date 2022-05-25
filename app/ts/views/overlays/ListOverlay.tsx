@@ -160,7 +160,7 @@ export class ListOverlay extends LiveComponent<any, any> {
         title={ customContent ? null : this.state.title }
         footerComponent={this._getSaveButton()}
       >
-          { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback:() => { this.setState({showCustomContent: false}); }}) : this.getElements() }
+          { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback: () => { this.setState({showCustomContent: false}); }}) : this.getElements() }
           <View style={{height:50}} />
       </SimpleOverlayBox>
     );

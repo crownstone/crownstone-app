@@ -5,7 +5,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React                 from 'react';
 import {Text, View, Alert, ScrollView, TouchableOpacity} from "react-native";
-import {screenWidth, colors, background, styles, tabBarHeight, topBarHeight, statusBarHeight} from "../styles";
+import {
+  screenWidth,
+  colors,
+  background,
+  styles,
+  tabBarHeight,
+  topBarHeight,
+  statusBarHeight,
+  availableScreenHeight
+} from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../Core";
 import { TopBarUtil }             from "../../util/TopBarUtil";
@@ -182,6 +191,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
                 <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphereId }) }} isFirst={false} />
               </SlideFadeInView>
               <NestableDraggableFlatList
+                containerStyle={{minHeight: availableScreenHeight}}
                 activationDistance={this.state.dragging ? 5 : 120}
                 data={data}
                 onDragBegin={() => { this.setState({dragging: true}); }}

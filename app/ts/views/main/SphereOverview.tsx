@@ -12,14 +12,12 @@ import {
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
-import { LOG }                      from '../../logging/Log'
 import {
   availableScreenHeight, background,
   colors,
   overviewStyles, screenWidth, styles
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
-import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
 import { core }                     from "../../Core";
 import { NavigationUtil }           from "../../util/navigation/NavigationUtil";
@@ -32,14 +30,11 @@ import { RoomAddCore }              from "../roomViews/RoomAddCore";
 import { Background }               from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
-import { SafeAreaView }             from "react-native-safe-area-context";
 import { SideBarView } from "../components/animated/SideBarView";
 import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 import {useRef} from "react";
 import {NavBarBlur} from "../components/NavBarBlur";
-import {OnScreenNotifications} from "../../notifications/OnScreenNotifications";
-import { OverlayUtil } from "../overlays/OverlayUtil";
-import { Get } from "../../util/GetUtil";
+import {DebugNotifications} from "../../DebugCalls";
 
 
 const ZOOM_LEVELS = {
@@ -74,11 +69,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   OverlayUtil.callRoomSelectionOverlay(Get.activeSphere().id, (roomId) => {
-    //     this.setState({locationId: roomId})
-    //   })
-    // }, 400)
+    DebugNotifications();
+
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
@@ -130,32 +122,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
     NAVBAR_PARAMS_CACHE = null;
   }
 
-
-
-  // _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
-  //   if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
-  //     if (amountOfSpheres > 1) {
-  //       return <SphereChangeButton visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
-  //         let newState = {zoomLevel: ZOOM_LEVELS.sphere};
-  //
-  //         if (state.app.hasZoomedOutForSphereOverview === false) {
-  //           this._getInstructionScreen();
-  //         }
-  //
-  //         this.setState(newState, () => { this._updateNavBar(); })
-  //       }}/>
-  //     }
-  //   }
-  // }
-  //
-  //
-  // _getAddButtonDescription(activeSphereId, noCrownstonesYet: boolean) {
-  //   if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-  //     return <AddCrownstoneButtonDescription visible={
-  //       noCrownstonesYet && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false
-  //     } />;
-  //   }
-  // }
 
   _zoomIn = () => {
     const state = core.store.getState();

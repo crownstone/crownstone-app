@@ -372,6 +372,10 @@ export const menuStyles = StyleSheet.create({
   }
 });
 
+export const appStyleConstants = {
+  roundness:10,
+};
+
 
 export const rowstyles = StyleSheet.create({
   title: {
