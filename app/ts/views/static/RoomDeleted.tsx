@@ -8,11 +8,11 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text, View
 } from "react-native";
-import {Background} from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { screenWidth } from "../styles";
 import { TextButtonLight } from "../components/InterviewComponents";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class RoomDeleted extends Component<any, any> {
   static options(props) {
@@ -21,7 +21,7 @@ export class RoomDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../../assets/images/backgrounds/lightBackground2.jpg')}>
+      <SettingsNavbarBackground>
         <View style={{ flex:1, width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
           <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Room_Deleted_") }</Text>
@@ -33,7 +33,7 @@ export class RoomDeleted extends Component<any, any> {
           />
           <View style={{height: 30}} />
         </View>
-      </Background>
+      </SettingsNavbarBackground>
     )
   }
 

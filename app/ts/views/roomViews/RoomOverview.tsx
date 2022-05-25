@@ -214,13 +214,11 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           sphereId={this.props.sphereId}
           stoneId={id}
           key={id + '_item'}
-          viewingRemotely={this.viewingRemotely}
-          setSwitchView={(value) => { this.setState({switchView: value })}}
-          switchView={this.state.switchView}
-          nearestInSphere={id === this.nearestStoneIdInSphere}
-          nearestInRoom={id === this.nearestStoneIdInRoom}
-          toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
-          amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+          editMode={this.state.editMode}
+
+          isBeingDragged={isActive}
+          eventBus={this.localEventBus}
+          dragAction={drag}
         />
       );
     }
@@ -230,7 +228,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           key={id + '_item'}
           sphereId={this.props.sphereId}
           stoneId={id}
-          viewingRemotely={this.viewingRemotely}
           dimMode={this.state.dimMode && !this.state.editMode}
           editMode={this.state.editMode}
 
@@ -246,11 +243,11 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           sphereId={this.props.sphereId}
           key={id + '_item'}
           hubId={id}
-          viewingRemotely={this.viewingRemotely}
-          setSwitchView={(value) => { this.setState({switchView: value })}}
-          switchView={this.state.switchView}
-          toggleScrollView={(value) => { this.setState({scrollEnabled: value })}}
-          amountOfDimmableCrownstonesInLocation={this.amountOfDimmableCrownstonesInLocation}
+          editMode={this.state.editMode}
+
+          isBeingDragged={isActive}
+          eventBus={this.localEventBus}
+          dragAction={drag}
         />
       );
     }
@@ -421,7 +418,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           />
         </TopBarBlur>
         <NavBarBlur xxlight line/>
-        { this.amountOfDimmableCrownstonesInLocation > 0 &&
+        { this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => { this.setState({dimMode:state})}} /> }
       </Background>
     );

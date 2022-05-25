@@ -10,7 +10,7 @@ import { SettingsIconRight }            from "./EditIcon";
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
 interface BlurEntryProps {
-  dimMode: boolean,
+  dimMode?: boolean,
   editMode: boolean,
 
   settings?: boolean,
@@ -107,7 +107,7 @@ export function BlurMessageBar(props) {
         borderRadius: appStyleConstants.roundness,
         borderWidth: 2,
         borderColor: props.borderColor ?? colors.white.hex,
-        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.6)
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5)
       }}>
       {props.children}
     </BlurView>

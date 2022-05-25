@@ -275,7 +275,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
           { !this.state.showDevMenu &&
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
-              <View style={{width:screenWidth, height:80, backgroundColor: 'red'}} />
+              <View style={{width:screenWidth, height:80, backgroundColor: 'transparent'}} />
             </TouchableWithoutFeedback>
           }
         </ScrollView>

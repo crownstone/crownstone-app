@@ -34,7 +34,7 @@ export function DeviceControl({stone, setPercentage}) {
 
   let content;
   let action = null;
-  if (StoneAvailabilityTracker.isDisabled(stone.id) === false || true) {
+  if (StoneAvailabilityTracker.isDisabled(stone.id) === false) {
     if (stone.errors.hasError) {
       content = <Switch value={stone.state.state > 0} disabled={true} />;
     }

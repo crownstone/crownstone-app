@@ -32,6 +32,9 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import { IconButton } from "../components/IconButton";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { Get } from "../../util/GetUtil";
+import {STONE_TYPES} from "../../Enums";
+import {xUtil} from "../../util/StandAloneUtil";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 
 
 export class  DeviceOverview extends LiveComponent<any, any> {
@@ -141,6 +144,9 @@ export class  DeviceOverview extends LiveComponent<any, any> {
   _getItems(stone: StoneData) {
     let items = [];
 
+    let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    canSwitch = canSwitch && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION);
+
     items.push({type: 'explanation', label: "CROWNSTONE SETTINGS"});
     items.push({
       id: 'My Account',
@@ -189,28 +195,31 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       type:  'navigation',
       style: {color: colors.blue.hex},
       callback: () => {
-        OverlayUtil.callRoomSelectionOverlay(this.props.sphereId, (roomId) => {
-          this.setState({locationId: roomId})
-        })
+        OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId);
       }
     });
     items.push({type: 'explanation', label: "Move the Crownstone to another room", below: true});
 
-    items.push({
-      id: 'lock',
-      label: stone.config.locked ? "Unlock Crownstone switch" : "Lock Crownstone switch",
-      testID: 'Appearence',
-      icon: <Icon name={'md-lock'} size={30} color={colors.blue.hex} />,
-      type: 'navigation',
-      callback: () => {
-        if (stone.config.locked) {
-          StoneUtil.lockCrownstone(this.props.sphereId, this.props.stoneId);
+    if (canSwitch) {
+      items.push({
+        id: 'lock',
+        label: stone.config.locked ? "Unlock Crownstone switch" : "Lock Crownstone switch",
+        testID: 'Appearence',
+        icon: <Icon name={'md-lock'} size={30} color={colors.blue.hex}/>,
+        type: 'navigation',
+        callback: () => {
+          if (stone.abilities.dimming.enabledTarget) {
+            Alert.alert("Can't lock...", lang("You_can_only_lock_Crownst"), [{text:lang("OK")}])
+            return;
+          }
+          if (stone.config.locked) {
+            StoneUtil.lockCrownstone(this.props.sphereId, this.props.stoneId);
+          } else {
+            StoneUtil.unlockCrownstone(this.props.sphereId, this.props.stoneId);
+          }
         }
-        else {
-          StoneUtil.unlockCrownstone(this.props.sphereId, this.props.stoneId);
-        }
-      }
-    });
+      });
+    }
 
     items.push({label: lang("DANGER"), type: 'explanation', below: false});
     items.push({

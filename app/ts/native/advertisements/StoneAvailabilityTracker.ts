@@ -275,6 +275,10 @@ export class StoneAvailabilityTrackerClass {
     }
     return true;
   }
+
+  isAvailable(stoneId) {
+    return !this.isDisabled(stoneId)
+  }
 }
 
 export const StoneAvailabilityTracker = new StoneAvailabilityTrackerClass();

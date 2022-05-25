@@ -8,9 +8,9 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text, View
 } from "react-native";
-import {Background} from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { screenWidth } from "../styles";
+import {SettingsBackground} from "../components/SettingsBackground";
 
 
 export class SphereDeleted extends Component<any, any> {
@@ -20,13 +20,13 @@ export class SphereDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../../assets/images/backgrounds/mainBackgroundLightNotConnected.jpg')}>
-        <View style={{ width: screenWidth, alignItems:'center' }}>
-          <View style={{height: 30}} />
-          <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Sphere_Deleted_") }</Text>
+      <SettingsBackground>
+        <View style={{ flex:1, width: screenWidth, alignItems:'center' }}>
           <View style={{flex:1}} />
+          <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Sphere_Deleted_") }</Text>
+          <View style={{flex:3}} />
         </View>
-      </Background>
+      </SettingsBackground>
     )
   }
 

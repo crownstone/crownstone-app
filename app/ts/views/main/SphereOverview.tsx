@@ -34,7 +34,7 @@ import { SideBarView } from "../components/animated/SideBarView";
 import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 import {useRef} from "react";
 import {NavBarBlur} from "../components/NavBarBlur";
-import {DebugNotifications} from "../../DebugCalls";
+import {Debug, DebugNotifications} from "../../DebugCalls";
 
 
 const ZOOM_LEVELS = {
@@ -69,7 +69,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    DebugNotifications();
+    Debug();
 
     // watch for setup stones
     this.unsubscribeSetupEvents = [];

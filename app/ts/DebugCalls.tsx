@@ -38,3 +38,17 @@ export function DebugOverlays() {
   //
   // })
 }
+
+export function Debug() {
+  DebugCustomView();
+}
+
+
+function DebugCustomView() {
+  setTimeout(() => {
+  NavigationUtil.launchModal("HubOverview",{
+    "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
+      "stoneId": "f9301f4d-5740-9fad-9ee9-544ec6775"
+  })
+  },300)
+}

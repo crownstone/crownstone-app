@@ -92,16 +92,16 @@ export class SphereHubOverview extends LiveComponent<any, any> {
       let locationString = location ? lang("In_", location.config.name) : lang("Not_in_room_")
       switch (hubItem.type) {
         case "hub":
-          items.push({
-            __item: <HubEntry
-              hubId={hubItem.id}
-              sphereId={this.props.sphereId}
-              statusText={locationString}
-              allowSwitchView={false}
-              viewingRemotely={false}
-              hideExplanation={true}
-            />
-          });
+          // items.push({
+            // __item: <HubEntry
+            //   hubId={hubItem.id}
+            //   sphereId={this.props.sphereId}
+            //   statusText={locationString}
+            //   allowSwitchView={false}
+            //   viewingRemotely={false}
+            //   hideExplanation={true}
+            // />
+          // });
           break;
         case "dongle":
           // items.push({
@@ -116,16 +116,16 @@ export class SphereHubOverview extends LiveComponent<any, any> {
           // });
           break;
         case "hubStone":
-          items.push({
-            __item: <HubEntry
-              stoneId={hubItem.id}
-              sphereId={this.props.sphereId}
-              statusText={locationString}
-              allowSwitchView={false}
-              viewingRemotely={false}
-              hideExplanation={true}
-            />
-          });
+          // items.push({
+          //   __item: <HubEntry
+          //     // stoneId={hubItem.id}
+          //     // sphereId={this.props.sphereId}
+          //     // statusText={locationString}
+          //     // allowSwitchView={false}
+          //     // viewingRemotely={false}
+          //     // hideExplanation={true}
+          //   />
+          // });
           break;
       }
     })

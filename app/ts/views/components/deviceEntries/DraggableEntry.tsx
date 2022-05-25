@@ -11,7 +11,7 @@ import { Get } from "../../../util/GetUtil";
 import { BlurView } from "@react-native-community/blur";
 import { SettingsIconRight } from "../EditIcon";
 import {DeviceDimSlider, DeviceDimTopPadding, DeviceSwitchControl} from "./submodules/DeviceEntrySwitchControls";
-import {DevicePowerUsage} from "./submodules/DeviceLabels";
+import {DeviceEntryLabel} from "./submodules/DeviceLabels";
 import { useDatabaseChange } from "../hooks/databaseHooks";
 import { DraggableProps, useDraggable } from "../hooks/draggableHooks";
 import { useCleanup } from "../hooks/timerHooks";
@@ -92,7 +92,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
               setPercentage(value);
             }}
           />
-          <DevicePowerUsage
+          <DeviceEntryLabel
             stone={stone}
             dimMode={props.dimMode}
             editMode={props.editMode}

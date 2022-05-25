@@ -6,7 +6,7 @@ import { NavigationUtil }               from "../../../util/navigation/Navigatio
 import { DeviceEntryIcon }              from "./submodules/DeviceEntryIcon";
 import { Get }                          from "../../../util/GetUtil";
 import { DeviceDimSlider, DeviceDimTopPadding, DeviceSwitchControl } from "./submodules/DeviceEntrySwitchControls";
-import { DevicePowerUsage }             from "./submodules/DeviceLabels";
+import { DeviceEntryLabel }             from "./submodules/DeviceLabels";
 import { useDatabaseChange }            from "../hooks/databaseHooks";
 import { DraggableProps }               from "../hooks/draggableHooks";
 import { useCleanup }                   from "../hooks/timerHooks";
@@ -18,7 +18,6 @@ interface DeviceEntryProps extends DraggableProps {
   stoneId: stoneId,
   dimMode: boolean,
   editMode: boolean,
-  viewingRemotely: boolean
 }
 
 export function DeviceEntry(props: DeviceEntryProps) {
@@ -57,7 +56,6 @@ export function DeviceEntry(props: DeviceEntryProps) {
   return (
     <DraggableBlurEntry
       {...props}
-
       title={stone.config.name}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
       paddingItem={(props) => { return <DeviceDimTopPadding stone={stone} dimMode={props.dimMode} editMode={props.editMode} />}}
@@ -74,7 +72,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
               setPercentage(value);
             }}
           />
-          <DevicePowerUsage
+          <DeviceEntryLabel
             stone={stone}
             dimMode={props.dimMode}
             editMode={props.editMode}

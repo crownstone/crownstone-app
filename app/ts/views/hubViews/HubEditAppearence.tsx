@@ -80,6 +80,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
 
   constructStoneOptions(stone, state) {
     let items = [];
+    let locations = state.spheres[this.props.sphereId].locations;
     let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
 
     items.push({label: hub ? "HUB SETTINGS" : lang("CROWNSTONE"), type: 'explanation', below: false});
