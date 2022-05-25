@@ -13,7 +13,9 @@ import {
 
 import { HiddenFadeInBlur} from "../animated/FadeInView";
 import { Icon }         from '../Icon'
-import { styles, colors, screenHeight, screenWidth, availableScreenHeight} from "../../styles";
+import {styles, colors, screenHeight, screenWidth, availableScreenHeight, topBarHeight} from "../../styles";
+import {TopBarBlur, TopBarFlexBlur} from "../NavBarBlur";
+import {BlurView} from "@react-native-community/blur";
 
 interface overlayBoxProps {
   overrideBackButton?: any,
@@ -87,10 +89,7 @@ export class SimpleOverlayBox extends Component<overlayBoxProps, any> {
   }
 
   render() {
-    let designElementSize = Math.min(0.21*screenHeight,0.38 * screenWidth);
     let closeIconSize = 40;
-    let topPadding = 12;
-
 
     return (
       <HiddenFadeInBlur
@@ -108,9 +107,18 @@ export class SimpleOverlayBox extends Component<overlayBoxProps, any> {
       >
         <SafeAreaView style={{flex:1}}>
           <View style={{flex:1, padding:30}}>
-            <View style={{flex:1, backgroundColor:colors.white.hex, paddingTop: 30, paddingLeft:30, borderRadius:10}}>
-              { this._getTitle() }
-              <ScrollView showsVerticalScrollIndicator={true} persistentScrollbar={true} contentContainerStyle={{paddingRight:30}}>{ this.props.children }</ScrollView>
+            <View style={{flex:1, backgroundColor:colors.white.hex, paddingLeft:30, borderRadius:10}}>
+              <ScrollView showsVerticalScrollIndicator={true} persistentScrollbar={true} contentContainerStyle={{paddingRight:20, paddingTop: 60}}>{
+                this.props.children
+              }</ScrollView>
+              <BlurView blurType={'light'} blurAmount={3} style={{
+                position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,
+                borderRadius: 10, backgroundColor: colors.white.rgba(0.5),
+                justifyContent:'center',
+                paddingLeft:30
+              }}>
+                { this._getTitle() }
+              </BlurView>
               { this._getCloseIcon(closeIconSize) }
             </View>
           </View>

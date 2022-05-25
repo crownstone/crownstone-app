@@ -17,7 +17,6 @@ import {NavigationUtil} from "../../../../util/navigation/NavigationUtil";
 export function DeviceSwitchControl({stone, editMode, dimMode, setPercentage}) {
   let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
   canSwitch = canSwitch && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION);
-
   if (!canSwitch) { return <React.Fragment />; }
 
   let canDim  = stone.abilities.dimming.enabledTarget;

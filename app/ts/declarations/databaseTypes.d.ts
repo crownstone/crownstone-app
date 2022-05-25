@@ -394,6 +394,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'hubLocationUpdated'              |
   'updateHubConfig'                 |
   'changeHubs'                      |
+  'changeStoneAvailability'         |
   'totalAffectedIds'
 
 type DatabaseChangeEventData = {

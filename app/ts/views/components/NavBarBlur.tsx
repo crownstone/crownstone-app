@@ -99,3 +99,30 @@ export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabled
     </View>
   );
 }
+
+
+export function TopBarFlexBlur(props: {xlight?: boolean, xxlight?: boolean, disabledBlur?: boolean, children?: any, showNotifications?: boolean}) {
+  let backgroundColor = 'transparent';
+  if (props.xlight) {
+    backgroundColor = colors.white.rgba(0.4);
+  }
+  else if (props.xxlight) {
+    backgroundColor = colors.white.rgba(0.6);
+  }
+
+  let style : ViewStyle = {
+    height: topBarHeight, flex:1,
+    paddingBottom: 8,
+    backgroundColor
+  };
+
+  return (
+    <View style={{ position:'absolute', top:0 }}>
+      <BlurView blurType={'light'} blurAmount={4} style={style}>
+        <View style={{flex:1}} />
+        { props.children }
+      </BlurView>
+      <NotificationLine showNotifications={props.showNotifications}/>
+    </View>
+  );
+}

@@ -17,3 +17,8 @@ export interface DraggableProps {
   eventBus: EventBusClass,
   dragAction: () => void
 }
+export interface OptionalDraggableProps {
+  isBeingDragged?: boolean,
+  eventBus?: EventBusClass,
+  dragAction?: () => void
+}

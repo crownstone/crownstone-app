@@ -21,6 +21,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 
 let iconSize = 100;
@@ -45,17 +46,16 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={background.main} hasNavBar={false} testID={"SphereAdd"}>
+      <SettingsBackground testID={"SphereAdd"}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
-            <IconButton
-              name="c1-sphere"
-              size={0.75*iconSize}
-              color="#fff"
-              buttonSize={iconSize}
-              buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
-            />
-            <View style={{height: 0.2*iconSize}} />
+            {/*<IconButton*/}
+            {/*  name="c1-sphere"*/}
+            {/*  size={0.75*iconSize}*/}
+            {/*  color="#fff"*/}
+            {/*  buttonSize={iconSize}*/}
+            {/*  buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}*/}
+            {/*/>*/}
             <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
@@ -64,7 +64,8 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
               }} />
               <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} testID={"AddCrownstone_button"} callback={() => {
                 NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
-              }} />
+              }}
+              />
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} testID={"AddPerson"} callback={() => {
@@ -77,7 +78,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
             <View style={{height: 30}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }
@@ -90,15 +91,14 @@ function AddItem(props) {
       <IconButton
         name={props.icon}
         size={0.75*usedIconSize}
-        color={colors.white.hex}
-        addColor={props.highlight ? colors.green.hex : colors.menuBackground.hex}
+        color={colors.green.hex}
+        addColor={colors.menuBackground.hex}
         addIcon={true}
         buttonSize={usedIconSize + 6}
         buttonStyle={{
-          backgroundColor: props.highlight ? colors.blue.hex : colors.green.hex,
-          borderRadius: 0.2*usedIconSize,
-          borderColor: colors.white.rgba(0.8),
-          borderWidth: 4
+          borderRadius: 0.15*usedIconSize,
+          borderColor:  colors.white.hex,
+          borderWidth:  2
         }}
       />
       <Text style={{paddingTop:10, color: colors.csBlueDark.hex, fontWeight:'bold'}}>{props.label}</Text>
