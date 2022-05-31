@@ -8,7 +8,7 @@ import * as React from 'react';
 import {
   Platform, View
 } from "react-native";
-import {background, colors, screenHeight, screenWidth, styles} from "../styles";
+import {background, colors, screenHeight, styles} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
@@ -19,7 +19,6 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {TopBarBlur} from "../components/NavBarBlur";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
@@ -42,10 +41,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     let state = core.store.getState();
     let sphereId = this.props.sphereId;
     let sphere = state.spheres[sphereId];
-    if (sphere) {
-      if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId) || true) {
-        stateData.inSphere = true;
-      }
+    if (sphere && sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
+      stateData.inSphere = true;
     }
     this.state = stateData;
 
@@ -120,7 +117,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage}>
         <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}

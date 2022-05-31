@@ -140,7 +140,7 @@ export class DfuFinished extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage}>
         <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}

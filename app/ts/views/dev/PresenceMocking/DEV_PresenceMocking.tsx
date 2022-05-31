@@ -96,7 +96,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.main} hideNotifications={true}>
+      <Background image={background.main}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />

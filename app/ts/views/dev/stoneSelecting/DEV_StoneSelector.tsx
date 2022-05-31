@@ -434,7 +434,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     this.lastRedraw = Date.now();
 
     return (
-      <Background image={background.main} hideNotifications={true}>
+      <Background image={background.main}>
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }} />
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>

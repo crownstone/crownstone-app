@@ -31,7 +31,6 @@ export class SettingsBackground extends Component<SettingsBackgroundProps, any> 
       ...this.props,
       hasNavBar:false,
       hasTopBar:false,
-      hideNotifications: true,
       image: background.menu
     }}>
       { this.props.children }
@@ -48,7 +47,6 @@ export class SettingsCustomTopBarBackground extends Component<SettingsBackground
       ...this.props,
       hasNavBar:false,
       hasTopBar:false,
-      hideNotifications: true,
       image: background.menu
     }}>
       { this.props.children }

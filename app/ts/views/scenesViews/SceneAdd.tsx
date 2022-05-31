@@ -308,7 +308,7 @@ lang("_Select_at_least_one______body"),
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage}>
         <SafeAreaView>
         <TopbarImitation
           leftStyle={{color: textColor}}

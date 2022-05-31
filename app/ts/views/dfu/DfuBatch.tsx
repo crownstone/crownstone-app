@@ -12,7 +12,7 @@ import {
   ScrollView, Text, Vibration,
   View
 } from "react-native";
-import { background, colors, screenWidth, styles } from "../styles";
+import {background, colors, screenWidth, styles, topBarHeight} from "../styles";
 import { core } from "../../Core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -25,6 +25,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { LiveComponent } from "../LiveComponent";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
+import {TopBarBlur} from "../components/NavBarBlur";
 
 const CLASSNAME = "DFU_BATCH";
 export class DfuBatch extends LiveComponent<any, any> {
@@ -69,23 +70,21 @@ export class DfuBatch extends LiveComponent<any, any> {
 
   _renderer(item, index, stoneId) {
     return (
-      <View key={stoneId + '_DFU_entry'}>
-        <FadeIn style={{width: screenWidth, backgroundColor: "transparent"}}>
-          <DfuDeviceUpdaterEntry
-            sphereId={this.props.sphereId}
-            stoneId={stoneId}
-            handle={item.handle}
-            item={item}
-            isUpdating={this.state.updatingCrownstoneIndex === index}
-            failed={ (attemptCount, cloudIssue = false) => {
-              this._getNext(stoneId, index, false, attemptCount, cloudIssue);
-            }}
-            success={(attemptCount) => {
-              this._getNext(stoneId, index, true, attemptCount);
-            }}
-          />
-        </FadeIn>
-      </View>
+      <FadeIn key={stoneId + '_DFU_entry'} style={{width: screenWidth, backgroundColor: "transparent"}}>
+        <DfuDeviceUpdaterEntry
+          sphereId={this.props.sphereId}
+          stoneId={stoneId}
+          handle={item.handle}
+          item={item}
+          isUpdating={this.state.updatingCrownstoneIndex === index}
+          failed={ (attemptCount, cloudIssue = false) => {
+            this._getNext(stoneId, index, false, attemptCount, cloudIssue);
+          }}
+          success={(attemptCount) => {
+            this._getNext(stoneId, index, true, attemptCount);
+          }}
+        />
+      </FadeIn>
     );
   }
 
@@ -194,9 +193,10 @@ export class DfuBatch extends LiveComponent<any, any> {
   render() {
     const { stoneArray, ids } = this._getStoneList();
 
-    let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+    let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1, borderTopWidth: 1 };
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
+      <Background fullScreen={true} image={background.main}>
+        <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
@@ -208,32 +208,28 @@ export class DfuBatch extends LiveComponent<any, any> {
             <View style={{flex:1}} />
           </View>
         </View>
-        <View style={{...styles.centered, width:screenWidth, height:95, backgroundColor: colors.white.rgba(0.3), ...borderStyle}}>
-          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("This_can_take_a_while_so_j") }</Text>
-        </View>
-        <ScrollView style={{position:'relative', top:-1}}>
-          <SeparatedItemList
-            items={stoneArray}
-            ids={ids}
-            separatorIndent={false}
-            renderer={this._renderer.bind(this)}
-          />
+        <ScrollView>
+          <View style={{...styles.centered, width:screenWidth, height:95, backgroundColor: colors.white.rgba(0.3), ...borderStyle, marginBottom: 10}}>
+            <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("This_can_take_a_while_so_j") }</Text>
+          </View>
+          { stoneArray.map((item, index) => { return this._renderer(item, index, ids[index])}) }
         </ScrollView>
 
         {this.state.cancelled &&
-        <View style={{
-          position: 'absolute',
-          top: 130,
-          width: screenWidth,
-          height: 60,
-          ...styles.centered
-        }}>
-          <View style={{width: 250, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
-            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{lang("Cancelling_after_this_Cro")}</Text>
-            <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
+          <View style={{
+            position: 'absolute',
+            top: topBarHeight+0.5*110-30,
+            width: screenWidth,
+            height: 60,
+            ...styles.centered
+          }}>
+            <View style={{width: 250, height: 60, borderRadius: 10, backgroundColor: colors.black.rgba(0.75), ...styles.centered, flexDirection:'row'}}>
+              <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize: 16, paddingRight:20, textAlign:'center'}}>{lang("Cancelling_after_this_Cro")}</Text>
+              <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
+            </View>
           </View>
-        </View>
         }
+        <TopBarBlur />
       </Background>
     );
   }

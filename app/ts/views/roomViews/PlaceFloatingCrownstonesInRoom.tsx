@@ -125,7 +125,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
     let viewHeight = screenHeight - tabBarHeight - topBarHeight - 100;
 
     return (
-      <Background image={background.main} hideNotifications={true}>
+      <Background image={background.main}>
         <RoomBanner
           noCrownstones={ids.length === 0}
           amountOfStonesInRoom={ids.length}

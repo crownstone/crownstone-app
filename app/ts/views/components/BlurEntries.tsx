@@ -10,8 +10,8 @@ import { SettingsIconRight }            from "./EditIcon";
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
 interface BlurEntryProps {
-  dimMode?: boolean,
-  editMode: boolean,
+  dimMode?:  boolean,
+  editMode?: boolean,
 
   settings?: boolean,
 
@@ -21,7 +21,9 @@ interface BlurEntryProps {
   control?:     ReactHOC | React.ComponentElement<any, any>,
   labelItem?:   ReactHOC | React.ComponentElement<any, any>,
 
-  editSettingsCallback: () => void
+  backgroundColor?: string,
+
+  editSettingsCallback?: () => void
 }
 interface DraggableBlurEntryProps extends DraggableProps, BlurEntryProps {}
 
@@ -51,7 +53,7 @@ export function BlurEntry(props: BlurEntryProps) {
         flexDirection:'row',
         height: 70,
         flex:1,
-        backgroundColor: colors.white.rgba(0.4),
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
         marginHorizontal: 12,
         marginBottom: 12,
         borderRadius: appStyleConstants.roundness,
@@ -59,7 +61,7 @@ export function BlurEntry(props: BlurEntryProps) {
         paddingLeft: 15,
       }}>
       { renderPropItem(props.iconItem,props) }
-      <View style={{ flex:1}}>
+      <View style={{ flex:1 }}>
         { renderPropItem(props.paddingItem, props) }
         {
           typeof props.title === 'string' ?

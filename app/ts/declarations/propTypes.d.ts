@@ -1,6 +1,5 @@
 
 interface BackgroundProps {
-  hideNotifications?: boolean,
   hasNavBar?:         boolean,
   lightStatusbar?:    boolean,
 

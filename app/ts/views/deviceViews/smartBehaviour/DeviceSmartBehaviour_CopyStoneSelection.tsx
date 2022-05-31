@@ -12,7 +12,7 @@ import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight, background,
   colors,
-  deviceStyles,
+  deviceStyles, getRoomStockImage,
   screenWidth
 } from "../../styles";
 import { Icon } from "../../components/Icon";
@@ -24,7 +24,11 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
-import {SettingsBackground} from "../../components/SettingsBackground";
+import {
+  SettingsBackground,
+  SettingsCustomTopBarBackground,
+  SettingsCustomTopBarNavbarBackground
+} from "../../components/SettingsBackground";
 
 
 
@@ -142,16 +146,8 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   }
 
   render() {
-    let header = null
-    if (this.props.copyType === 'TO') {
-      header = lang("Who_I_shall_copy_my_behav")
-    }
-    else {
-      header = lang("Who_shall_I_copy_behaviou")
-    }
-
     return (
-      <SettingsBackground>
+      <SettingsCustomTopBarBackground>
         <TopbarImitation
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
@@ -159,9 +155,10 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
           rightAction={() => {
             if (Object.keys(this.state.selectionMap).length === 0) {
               Alert.alert(
-lang("_No_Crownstone_selected___header"),
-lang("_No_Crownstone_selected___body"),
-[{text:lang("_No_Crownstone_selected___left")}]);
+                lang("_No_Crownstone_selected___header"),
+                lang("_No_Crownstone_selected___body"),
+        [{text:lang("_No_Crownstone_selected___left")}]
+              );
             }
             else {
               this.props.callback(Object.keys(this.state.selectionMap));
@@ -169,15 +166,12 @@ lang("_No_Crownstone_selected___body"),
           }}
           right={this.props.copyType === "FROM" ? null : lang("Select")}
         />
-        <NotificationLine />
         <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={{...deviceStyles.header, width: 0.85*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
-            <View style={{height:30}} />
+          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
             { this._getLocationStoneList() }
           </View>
         </ScrollView>
-      </SettingsBackground>
+      </SettingsCustomTopBarBackground>
     )
   }
 }
@@ -233,7 +227,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     width:screenWidth,
     height: height,
     padding:padding,
-    paddingLeft:30,
+    paddingLeft:20,
     flexDirection:'row',
     alignItems:'center',
     backgroundColor: colors.white.rgba(0.8),
@@ -378,17 +372,11 @@ function LocationRow({location}) {
 function LocationFlavourImage(props : {location: any, height?: number}) {
   let location = props.location;
   let usedHeight = props.height || 120;
-  if (location.config.picture) {
+  if (location.config.pictureSource === "CUSTOM") {
     return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
   }
   else {
-    return (
-      <View style={{width:screenWidth, height: usedHeight, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
-        <Image source={require("../../../../assets/images/backgrounds/RoomBannerBackground.jpg")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0, opacity:0.75}} resizeMode={"cover"} />
-        <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
-        <Icon size={usedHeight*0.75} color={colors.white.rgba(0.75)} name={location.config.icon} />
-      </View>
-    )
+    return <Image source={getRoomStockImage(location.config.picture)} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
   }
 }
 

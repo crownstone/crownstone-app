@@ -85,7 +85,7 @@ export class RoomTrainingStep1_train extends LiveComponent<any, any> {
     let location = Get.location(this.props.sphereId, this.props.locationId);
     let size = Math.min(screenWidth, 0.35*screenHeight);
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
+      <Background hasNavBar={false} image={background.main}>
         <KeepAwake />
         <View style={{height:30}}/>
         <Text style={styles.header}>{"Listening..."}</Text>

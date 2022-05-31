@@ -165,32 +165,33 @@ export class DfuScanning extends LiveComponent<any, any> {
 
 
   _renderer(item, index, stoneId) {
-    let visible = this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE || this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE
-    let backgroundColor = colors.lightGray.rgba(0.5);
-    let iconColor = colors.csBlue.rgba(0.2);
+    let visible = this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE || this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE;
+    let backgroundColor = colors.white.rgba(0.5);
+    let iconColor = colors.black.hex;
     let closeEnough = false;
+    let maxOpacity = 0.5;
 
     if (visible) {
       if (this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE) {
-        backgroundColor = colors.green.rgba(0.8);
-        iconColor = colors.csBlue.hex;
+        backgroundColor = colors.green.rgba(0.6);
+        iconColor = colors.black.hex;
         closeEnough = true;
+        maxOpacity = 1;
       }
       else {
-        backgroundColor = colors.white.rgba(0.8);
-        iconColor = colors.csBlue.hex;
+        backgroundColor = colors.white.rgba(0.4);
+        iconColor = colors.black.hex;
+        maxOpacity = 0.75;
       }
     }
 
     return (
-      <FadeIn key={stoneId + '_DFU_entry'} style={[styles.listView, {width: screenWidth, backgroundColor: backgroundColor}]}>
+      <FadeIn key={stoneId + '_DFU_entry'} style={{width: screenWidth}} maxOpacity={maxOpacity}>
         <DfuDeviceOverviewEntry
           sphereId={this.props.sphereId}
           stoneId={stoneId}
           iconColor={iconColor}
           backgroundColor={backgroundColor}
-          handle={item.handle}
-          item={item}
           visible={visible}
           closeEnough={closeEnough}
         />
@@ -229,8 +230,8 @@ export class DfuScanning extends LiveComponent<any, any> {
         // not visible yet!
         this.stateMap[stoneId] = AVAILABILITY_STATES.INVISIBLE;
       }
+      this.stoneIdsToUpdate.push(stoneId);
     }
-
     // construct the list in order of availability.
     for (let i = 0; i < ids.length; i++) {
       let stoneId = ids[i];
@@ -254,9 +255,6 @@ export class DfuScanning extends LiveComponent<any, any> {
       }
      }
 
-
-
-
      return { stoneArray, ids: idArray };
   }
 
@@ -270,21 +268,13 @@ export class DfuScanning extends LiveComponent<any, any> {
 
 
     return (
-      <SettingsBackground>
+      <Background fullScreen={true} image={background.main}>
         <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
-        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
-          <ScanningForDFUCrownstonesBanner height={100} componentId={this.props.componentId} />
-          <View style={{...styles.centered, flexDirection:'row', flex:1, height: 100}}>
-            <View style={{flex:1}} />
-            <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Collecting_nearby_Crownsto") }</Text>
-            <View style={{flex:1}} />
-          </View>
-        </View>
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
           <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Crownstones_turn_green_onc") }</Text>
         </View>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{paddingTop:10}}>
           { stoneArray.map((item, index) => { return this._renderer(item, index, ids[index])}) }
         </ScrollView>
         <SlideFadeInView visible={this.stoneIdsToUpdate.length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
@@ -301,7 +291,7 @@ export class DfuScanning extends LiveComponent<any, any> {
           </View>
           <View style={{height:10}} />
         </SlideFadeInView>
-      </SettingsBackground>
+      </Background>
     );
   }
 }

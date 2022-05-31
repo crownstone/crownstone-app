@@ -45,10 +45,12 @@ export function Debug() {
 
 
 function DebugCustomView() {
-  setTimeout(() => {
-  NavigationUtil.launchModal("DfuScanning",{
-    "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
-      "stoneId": "f9301f4d-5740-9fad-9ee9-544ec6775"
-  })
-  },300)
+  // setTimeout(() => {
+  // NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection",{
+  //   "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
+  //   "stoneId": "9dbe67aa-b176-c1aa-d444-2ab5582c6c1",
+  //   "copyType": "TO",
+  //   "originId": "9dbe67aa-b176-c1aa-d444-2ab5582c6c1"
+  // })},
+  //   300);
 }

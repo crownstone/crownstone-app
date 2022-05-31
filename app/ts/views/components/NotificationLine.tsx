@@ -97,7 +97,7 @@ export function NotificationFiller(props) {
   let hasNotifications = Object.keys(availableNotifications).length > 0
   return (
     <SlideFadeInView
-      visible={hasNotifications}
+      visible={props.visible ?? hasNotifications}
       height={Math.max(1, Object.keys(availableNotifications).length) * (60 + NotificationPadding)}
     />
   )

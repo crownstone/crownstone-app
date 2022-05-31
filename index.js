@@ -3,7 +3,7 @@ LogBox.ignoreLogs([
   /Require cycle*/,
   /.*/,
 ])
-
+Error.stackTraceLimit = 30;
 import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";
 import { loadRoutes } from "./app/js/views/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";

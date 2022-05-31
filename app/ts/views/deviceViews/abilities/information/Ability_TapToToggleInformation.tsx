@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 
 
-import { background, screenHeight, styles } from "../../../styles";
-import {Background} from "../../../components/Background";
+import { screenHeight, styles } from "../../../styles";
 import {ScaledImage} from "../../../components/ScaledImage";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
+import {SettingsBackground} from "../../../components/SettingsBackground";
 
 
 export class Ability_TapToToggleInformation extends Component<any, any> {
@@ -25,7 +25,7 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.lightBlurLighter}>
+      <SettingsBackground>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
@@ -40,7 +40,7 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

@@ -357,7 +357,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight, paddingBottom: 2*tabBarHeight}}
         >
-          <NotificationFiller />
+          <NotificationFiller visible={this.state.editMode ? false : undefined} />
           <RoomExplanation
             explanation={ this.props.explanation }
             sphereId={    this.props.sphereId }

@@ -232,7 +232,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={background.main} testID={"SphereOverview_addRoom"}>
+            <Background image={background.main} testID={"SphereOverview_addRoom"}>
               <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
             </Background>
           )
@@ -260,7 +260,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
           viewWrapper
           image={backgroundOverride}
           lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
-          hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}
           hasTopBar={false}
           testID={"SphereOverview"}
         >

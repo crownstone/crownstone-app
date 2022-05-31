@@ -22,6 +22,7 @@ import { ButtonBar } from "../../../components/editComponents/ButtonBar";
 import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
+import {SettingsBackground} from "../../../components/SettingsBackground";
 
 
 export class Ability_SwitchcraftSettings extends Component<any, any> {
@@ -36,7 +37,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.lightBlurLighter}>
+      <SettingsBackground>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
@@ -66,7 +67,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }
