@@ -2,7 +2,7 @@ import { Component } from "react";
 import * as React from "react";
 import { View } from "react-native";
 import { FadeInView } from "./FadeInView";
-import { colors, screenWidth } from "../../styles";
+import {colors, screenWidth, styles} from "../../styles";
 import { Icon } from "../Icon";
 import { ViewStateWatcher } from "../ViewStateWatcher";
 
@@ -97,11 +97,7 @@ export class AnimatedIconBanner extends Component<
 
   render() {
     return (
-      <View style={{
-        position:'absolute', top:0, left:0,
-        width: screenWidth, height: this.props.height,
-        overflow:'hidden'
-      }}>
+      <View style={{position:'absolute', top:0, left:0, width: screenWidth, height: this.props.height}}>
         <ViewStateWatcher
           componentId={ this.props.componentId }
           onFocus={() => { this.start(); }}

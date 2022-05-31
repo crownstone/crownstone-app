@@ -158,29 +158,31 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       }
     });
     items.push({type: 'explanation', label: "Change name, icon, etc.", below: true});
-    items.push({
-      id: 'abilities',
-      label: lang("Abilities"),
-      testID: 'Appearence',
-      icon: <Icon name={'ios-school'} size={30} color={colors.csBlueLight.hex} />,
-      type: 'navigation',
-      callback: () => {
-        NavigationUtil.navigate("DeviceAbilities", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-      }
-    });
-    items.push({type: 'explanation', label: "Enable dimming, switchcraft, etc.", below: true});
-    items.push({
-      id: 'behaviour',
-      label: lang("Behaviour"),
-      testID: 'Appearence',
-      icon: <Icon name={'c1-brain'} size={30} color={colors.csBlue.hex} />,
-      type: 'navigation',
-      callback: () => {
-        NavigationUtil.navigate("DeviceSmartBehaviour", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-      }
-    });
-    items.push({type: 'explanation', label: "Turn on if/when ...", below: true});
 
+    if (canSwitch) {
+      items.push({
+        id: 'abilities',
+        label: lang("Abilities"),
+        testID: 'Appearence',
+        icon: <Icon name={'ios-school'} size={30} color={colors.csBlueLight.hex}/>,
+        type: 'navigation',
+        callback: () => {
+          NavigationUtil.navigate("DeviceAbilities", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        }
+      });
+      items.push({type: 'explanation', label: "Enable dimming, switchcraft, etc.", below: true});
+      items.push({
+        id: 'behaviour',
+        label: lang("Behaviour"),
+        testID: 'Appearence',
+        icon: <Icon name={'c1-brain'} size={30} color={colors.csBlue.hex}/>,
+        type: 'navigation',
+        callback: () => {
+          NavigationUtil.navigate("DeviceSmartBehaviour", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        }
+      });
+      items.push({type: 'explanation', label: "Turn on if/when ...", below: true});
+    }
 
     let location = Get.location(this.props.sphereId, stone.config.locationId);
     let locationLabel = lang("Not_in_a_room");

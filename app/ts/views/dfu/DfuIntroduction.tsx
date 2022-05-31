@@ -19,6 +19,7 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {TopBarBlur} from "../components/NavBarBlur";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
@@ -42,7 +43,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     let sphereId = this.props.sphereId;
     let sphere = state.spheres[sphereId];
     if (sphere) {
-      if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
+      if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId) || true) {
         stateData.inSphere = true;
       }
     }
@@ -98,7 +99,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="c1-sphere" size={0.55*screenWidth} color={colors.white.rgba(1)} />
+              <Icon name="c1-house" size={100} color={colors.black.rgba(0.3)} />
             </View>
           </View>
         ),

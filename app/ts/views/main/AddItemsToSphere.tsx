@@ -22,6 +22,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { SettingsBackground } from "../components/SettingsBackground";
+import {IconBlurButton} from "../components/IconBlurButton";
 
 
 let iconSize = 100;
@@ -88,7 +89,7 @@ function AddItem(props) {
 
   return (
     <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }} testID={props.testID}>
-      <IconButton
+      <IconBlurButton
         name={props.icon}
         size={0.75*usedIconSize}
         color={colors.green.hex}
@@ -97,8 +98,8 @@ function AddItem(props) {
         buttonSize={usedIconSize + 6}
         buttonStyle={{
           borderRadius: 0.15*usedIconSize,
-          borderColor:  colors.white.hex,
-          borderWidth:  2
+          borderWidth:  0,
+          backgroundColor: colors.white.rgba(0.4)
         }}
       />
       <Text style={{paddingTop:10, color: colors.csBlueDark.hex, fontWeight:'bold'}}>{props.label}</Text>

@@ -10,7 +10,7 @@ import {
   ScrollView, Text,
   View
 } from "react-native";
-import { background, colors, screenWidth, styles } from "../styles";
+import {background, colors, screenWidth, statusBarHeight, styles, topBarHeight} from "../styles";
 import { core } from "../../Core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -27,6 +27,7 @@ import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { Button } from "../components/Button";
+import {SettingsBackground} from "../components/SettingsBackground";
 
 const triggerId = "ScanningForDfu";
 
@@ -182,20 +183,18 @@ export class DfuScanning extends LiveComponent<any, any> {
     }
 
     return (
-      <View key={stoneId + '_DFU_entry'}>
-        <FadeIn style={[styles.listView, {width: screenWidth, backgroundColor: backgroundColor}]}>
-          <DfuDeviceOverviewEntry
-            sphereId={this.props.sphereId}
-            stoneId={stoneId}
-            iconColor={iconColor}
-            backgroundColor={backgroundColor}
-            handle={item.handle}
-            item={item}
-            visible={visible}
-            closeEnough={closeEnough}
-          />
-        </FadeIn>
-      </View>
+      <FadeIn key={stoneId + '_DFU_entry'} style={[styles.listView, {width: screenWidth, backgroundColor: backgroundColor}]}>
+        <DfuDeviceOverviewEntry
+          sphereId={this.props.sphereId}
+          stoneId={stoneId}
+          iconColor={iconColor}
+          backgroundColor={backgroundColor}
+          handle={item.handle}
+          item={item}
+          visible={visible}
+          closeEnough={closeEnough}
+        />
+      </FadeIn>
     );
   }
 
@@ -268,12 +267,15 @@ export class DfuScanning extends LiveComponent<any, any> {
     this.stoneIdsToUpdate = [];
     const { stoneArray, ids } = this._getStoneList();
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+
+
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
+      <SettingsBackground>
+        <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
-        <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <ScanningForDFUCrownstonesBanner height={110} componentId={this.props.componentId} />
-          <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
+        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
+          <ScanningForDFUCrownstonesBanner height={100} componentId={this.props.componentId} />
+          <View style={{...styles.centered, flexDirection:'row', flex:1, height: 100}}>
             <View style={{flex:1}} />
             <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Collecting_nearby_Crownsto") }</Text>
             <View style={{flex:1}} />
@@ -282,14 +284,8 @@ export class DfuScanning extends LiveComponent<any, any> {
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
           <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Crownstones_turn_green_onc") }</Text>
         </View>
-        <ScrollView style={{position:'relative', top:-1}}>
-          <SeparatedItemList
-            style={{paddingBottom:140}}
-            items={stoneArray}
-            ids={ids}
-            separatorIndent={false}
-            renderer={this._renderer.bind(this)}
-          />
+        <ScrollView>
+          { stoneArray.map((item, index) => { return this._renderer(item, index, ids[index])}) }
         </ScrollView>
         <SlideFadeInView visible={this.stoneIdsToUpdate.length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
           <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
@@ -305,7 +301,7 @@ export class DfuScanning extends LiveComponent<any, any> {
           </View>
           <View style={{height:10}} />
         </SlideFadeInView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }
