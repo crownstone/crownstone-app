@@ -106,7 +106,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   }
 
 
-  getStateEntries(hub, stone) {
+  getStateEntries(hub: HubData, stone: StoneData) {
     let issueDetected = HubUtil.getProblems(this.props.sphereId, this.props.hubId, this.props.stoneId);
 
     if (this.state.fixing) { return HubIssue_Fixing(); }
@@ -144,7 +144,6 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   _getItems(hub: HubData, stone: StoneData) {
     let items = [];
 
-    items.push({type: 'explanation', label: "CROWNSTONE SETTINGS"});
     items.push({
       id: 'My Account',
       label: "Appearence",
@@ -155,6 +154,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
         NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
+    items.push({type: 'explanation', label: "Change name, icon, etc.", below: true});
 
     let location = Get.location(this.props.sphereId, stone.config.locationId);
     let locationLabel = lang("Not_in_a_room");
@@ -164,68 +164,23 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     items.push({
       label: locationLabel,
-      icon:  <Icon name="md-cube" size={23} color={colors.lightCsOrange.hex} />,
+      icon:  <Icon name="md-cube" size={25} color={colors.green.hex} />,
       type:  'navigation',
       style: {color: colors.blue.hex},
       callback: () => {
         OverlayUtil.callRoomSelectionOverlayForHubPlacement(this.props.sphereId, hub.id);
       }
     });
-    items.push({type: 'explanation', label: "Move the Crownstone to another room", below: true});
+    items.push({type: 'explanation', label: "Move the hub to another room.", below: true});
 
-    items.push({label: lang("DANGER"), type: 'explanation', below: false});
+    items.push({label: lang("DANGER"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
       label: "Remove Hub",
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
       callback: () => {
-        if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-          Alert.alert(lang("Cant_see_this_one_"),
-            lang("This_Crownstone_has_not_b"),
-            [{
-              text: lang("Delete_anyway"), onPress: () => {
-                this._removeCloudOnly()
-              }, style: 'destructive'
-            },
-              {
-                text: lang("Cancel"), style: 'cancel', onPress: () => {
-                }
-              }]
-          )
-        } else {
-          Alert.alert(
-            lang("Are_you_sure_you_want_to_"),
-            lang("This_cannot_be_undone_"),
-            [{
-              text: "Delete", onPress: async () => {
-                core.eventBus.emit('showLoading', lang("Resetting_hub___"));
-                let helper = new HubHelper();
-                try {
-                  await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
-                  this._removeCrownstoneFromRedux();
-                } catch (err) {
-                  core.eventBus.emit('hideLoading');
-                  if (err?.message === "HUB_REPLY_TIMEOUT") {
-                    Alert.alert(lang("The_hub_is_not_responding"),
-                      lang("If_this_hub_is_broken__yo"),
-                      [{
-                        text: lang("Delete_anyway"), onPress: () => {
-                          this._removeCrownstone(stone).catch((err) => {
-                          });
-                        }, style: 'destructive'
-                      }, {text: lang("Cancel"), style: 'cancel'}]);
-                  } else {
-                    Alert.alert(
-                      lang("_Something_went_wrong_____header"),
-                      lang("_Something_went_wrong_____body"),
-                      [{text: lang("_Something_went_wrong_____left")}]);
-                  }
-                }
-              }, style: 'destructive'
-            }, {text: lang("Cancel"), style: 'cancel'}])
-        }
+        StoneUtil.remove.hub.now(this.props.sphereId, this.props.stoneId);
       }
-      // }
     });
 
     items.push({label: lang("Removing_this_Hub_"), type: 'explanation', below: true});
@@ -247,7 +202,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return (
       <SettingsBackground>
-        <ScrollView testID={'HubOverview_scrollview'}>
+        <ScrollView testID={'HubOverview_scrollview'} contentContainerStyle={{paddingTop:20}}>
+          { this.getStateEntries(hub, stone) }
           <ListEditableItems items={this._getItems(hub, stone)} />
         </ScrollView>
       </SettingsBackground>

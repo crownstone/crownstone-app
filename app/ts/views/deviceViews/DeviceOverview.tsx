@@ -44,7 +44,6 @@ export class  DeviceOverview extends LiveComponent<any, any> {
   }
 
   unsubscribeStoreEvents;
-  deleting = false
 
   constructor(props) {
     super(props);
@@ -163,7 +162,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       id: 'abilities',
       label: lang("Abilities"),
       testID: 'Appearence',
-      icon: <Icon name={'ios-school'} size={30} color={colors.green.hex} />,
+      icon: <Icon name={'ios-school'} size={30} color={colors.csBlueLight.hex} />,
       type: 'navigation',
       callback: () => {
         NavigationUtil.navigate("DeviceAbilities", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
@@ -191,7 +190,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
 
     items.push({
       label: locationLabel,
-      icon:  <Icon name="md-cube" size={23} color={colors.lightCsOrange.hex} />,
+      icon:  <Icon name="md-cube" size={25} color={colors.green.hex} />,
       type:  'navigation',
       style: {color: colors.blue.hex},
       callback: () => {
@@ -227,61 +226,17 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
       callback: () => {
-        // if (hub) {
-        //   if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-        //     Alert.alert(lang("Cant_see_this_one_"),
-        //       lang("This_Crownstone_has_not_b"),
-        //       [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-        //         {text:lang("Cancel"),style: 'cancel', onPress: () => {}}]
-        //     )
-        //   }
-        //   else {
-        //     Alert.alert(
-        //       lang("Are_you_sure_you_want_to_"),
-        //       lang("This_cannot_be_undone_"),
-        //       [{text: "Delete", onPress: async () => {
-        //           core.eventBus.emit('showLoading', lang("Resetting_hub___"));
-        //           let helper = new HubHelper();
-        //           try {
-        //             await helper.factoryResetHub(this.props.sphereId, this.props.stoneId);
-        //             this._removeCrownstoneFromRedux();
-        //           }
-        //           catch(err) {
-        //             core.eventBus.emit('hideLoading');
-        //             if (err?.message === "HUB_REPLY_TIMEOUT") {
-        //               Alert.alert(lang("The_hub_is_not_responding"),
-        //                 lang("If_this_hub_is_broken__yo"),
-        //                 [{ text: lang("Delete_anyway"), onPress: () => {this._removeCrownstone(stone).catch((err) => {});} , style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}]);
-        //             }
-        //             else {
-        //               Alert.alert(
-        //                 lang("_Something_went_wrong_____header"),
-        //                 lang("_Something_went_wrong_____body"),
-        //                 [{text: lang("_Something_went_wrong_____left") }]);
-        //             }
-        //           }
-        //         }, style: 'destructive'},{text:lang("Cancel"),style: 'cancel'}])
-        //   }
-        // }
-        // else {
-          core.eventBus.emit('hideLoading');
-          Alert.alert(
-            lang("_Are_you_sure___Removing__header"),
-            lang("_Are_you_sure___Removing__body"),
-            [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-              text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-                this._removeCrownstone(stone).catch((err) => {});
-              }}]
-          )
-        }
-      // }
+        Alert.alert(
+          lang("_Are_you_sure___Removing__header"),
+          lang("_Are_you_sure___Removing__body"),
+          [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+            text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
+              StoneUtil.remove.crownstone.now(this.props.sphereId, this.props.stoneId).catch((err) => {});
+            }}]
+        )
+      }
     });
-    // if (hub) {
-    //   items.push({label: lang("Removing_this_Hub_"),  type:'explanation', below:true});
-    // }
-    // else {
-      items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
-    // }
+    items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
 
     return items;
   }
@@ -307,143 +262,6 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     )
   }
 
-  async _removeCrownstone(stone) {
-    core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
-    let {discovered, mode} = await StoneUtil.discoverCrownstone(stone);
-    if (!discovered) {
-      core.eventBus.emit('hideLoading');
-      Alert.alert(
-        lang("_Cant_see_this_one___We_c_header"),
-        lang("_Cant_see_this_one___We_c_body"),
-        [
-          {
-            text:lang("_Cant_see_this_one___We_c_left"),
-            onPress: async () => {
-              await this._removeWithoutReset();
-              NavigationUtil.dismissModal();
-            }, style: 'destructive'
-          },
-          {
-            text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {}
-          }
-      ]);
-      return;
-    }
-
-    if (mode === 'setup') {
-      await this._removeWithoutReset();
-      NavigationUtil.dismissModal();
-      return;
-    }
-
-    try { await this._factoryResetCrownstone(stone); } catch (err) {
-      Alert.alert(
-        lang("_Encountered_a_problem____header"),
-        lang("_Encountered_a_problem____body"),
-        [
-          {text:lang("_Encountered_a_problem____left"), style:'destructive', onPress: async () => {
-            await this._removeWithoutReset();
-            NavigationUtil.dismissModal();
-          }},
-          {text:lang("_Encountered_a_problem____right")}
-        ]);
-      return;
-    }
-
-    // discovered Crownstone in operation mode
-    try { await this._removeCrownstoneFromCloud(); } catch (err) { return; }
-    this._removeCrownstoneFromRedux(true);
-  }
-
-  async _removeWithoutReset() {
-    try {
-      await this._removeCrownstoneFromCloud();
-      this._removeCrownstoneFromRedux(false);
-    }
-    catch(err) {}
-  }
-
-
-  async _removeCrownstoneFromCloud()  {
-    core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
-    // let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
-    // if (hub && hub.config.cloudId) {
-    //   CLOUD.deleteHub(hub.config.cloudId)
-    //     .catch((err) => {
-    //       return new Promise<void>((resolve, reject) => {
-    //         if (err && err?.status === 404) {
-    //           resolve();
-    //         }
-    //       })
-    //     })
-    // }
-    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
-      .catch((err) => {
-        return new Promise<void>((resolve, reject) => {
-          if (err && err?.status === 404) {
-            resolve();
-          }
-          else {
-            LOGe.info("COULD NOT DELETE IN CLOUD", err?.message);
-            reject();
-          }
-        })
-      })
-      .catch((err) => {
-        LOG.info("error while asking the cloud to remove this crownstone", err?.message);
-        core.eventBus.emit('hideLoading');
-        Alert.alert(
-          lang("_Encountered_Cloud_Issue__header"),
-          lang("_Encountered_Cloud_Issue__body"),
-          [{text:lang("_Encountered_Cloud_Issue__left")
-        }]);
-        throw err;
-      })
-  }
-
-
-  async _factoryResetCrownstone(stone) {
-    core.eventBus.emit('showLoading', lang("Factory_resetting_the_Cro"));
-    try {
-      await tell(stone).commandFactoryReset();
-    }
-    catch(err) {
-      LOGe.info("DeviceEdit: error during removeCloudReset, commandFactoryReset phase.", err?.message);
-      core.eventBus.emit('hideLoading');
-      throw err;
-    };
-  }
-
-
-  _removeCrownstoneFromRedux(factoryReset = false) {
-    // let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
-
-    // deleting makes sure we will not draw this page again if we delete it's source from the database.
-    this.deleting = true;
-
-    let labelText =  lang("I_have_removed_this_Crown");
-    // if (hub) {
-    //   labelText =  lang("I_have_removed_this_Hub");
-    // }
-    // else {
-    if (factoryReset === false) {
-      labelText =  lang("I_have_removed_this_Crowns");
-    }
-    // }
-
-    Alert.alert(
-      lang("_Success__arguments___OKn_header"),
-      lang("_Success__arguments___OKn_body",labelText),
-      [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
-          SortingManager.removeFromLists(this.props.stoneId);
-          core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-          // if (hub) {
-          //   SortingManager.removeFromLists(hub.id);
-          //   core.store.dispatch({type: "REMOVE_HUB", sphereId: this.props.sphereId, hubId: hub.id});
-          // }
-        }}]
-    )
-  }
 
 }
 

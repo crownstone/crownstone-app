@@ -454,8 +454,7 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
   let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id})};
   return (
     <View style={{flexDirection:'row', alignItems:'center'}}>
-      <SlideSideFadeInView visible={!editMode} width={53}><BackIcon /></SlideSideFadeInView>
-      <SlideSideFadeInView visible={editMode} width={15} />
+      <BackIcon />
       <TouchableOpacity
         activeOpacity={editMode ? 0.2 : 1.0}
         style={{alignItems:'center', justifyContent:'center'}}

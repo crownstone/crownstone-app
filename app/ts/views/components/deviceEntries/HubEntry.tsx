@@ -56,14 +56,21 @@ export function HubEntry(props: HubEntryProps) {
       {...props}
       title={name}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
-      control={(props) => { return <TouchableOpacity style={{paddingRight:15}} onPress={settingsCallback}>{
-          hubProblem && ! showStateIcon ? <ActivityIndicator size={"small"} /> :
+      control={(props) => { return (
+        <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={settingsCallback}>
+          {
+          hubProblem && !showStateIcon ? <ActivityIndicator size={"small"} /> :
           hubProblem ?
             <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
             :
-            <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
+            <View style={{width:30, height:30}} >
+              <View style={{position:'absolute', top:5, left:2, width:18, height:18, backgroundColor: colors.white.hex, borderRadius:9}} />
+              <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
+            </View>
 
-          }</TouchableOpacity>
+          }
+        </TouchableOpacity>
+        )
       }}
       labelItem={(props) => { return <HubEntryLabel hub={hub} stone={stone} editMode={props.editMode}/> }}
       editSettingsCallback={settingsCallback}
