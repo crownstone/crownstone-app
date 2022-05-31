@@ -27,7 +27,7 @@ import {core} from "../../Core";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import {xUtil} from "../../util/StandAloneUtil";
-import {Background} from "../components/Background";
+import {Background, BackgroundCustomTopBar} from "../components/Background";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
@@ -352,7 +352,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
 
     return (
-      <Background image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
+      <BackgroundCustomTopBar image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
         <NestableScrollContainer
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight, paddingBottom: 2*tabBarHeight}}
@@ -420,7 +420,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         <NavBarBlur xxlight line/>
         { this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => { this.setState({dimMode:state})}} /> }
-      </Background>
+      </BackgroundCustomTopBar>
     );
   }
 }

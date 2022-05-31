@@ -152,7 +152,7 @@ export class IconDevSelector extends LiveComponent<{callback(icon: string) : voi
 
 
     return (
-      <Background fullScreen={true} image={background.detailsDark}>
+      <Background fullScreen={true} image={background.dark}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DevIconSelection

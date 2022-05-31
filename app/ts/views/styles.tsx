@@ -479,9 +479,9 @@ export const overviewStyles = StyleSheet.create({
 
 
 export const background = {
-  main       : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
-  menu       : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'), //require('../../assets/images/backgrounds/menuBackground.jpg'),
-  detailsDark: require('../../assets/images/backgrounds/darkBackground4.jpg'),
+  main: require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
+  menu: require('../../assets/images/backgrounds/lightBackground3_blur.jpg'), //require('../../assets/images/backgrounds/menuBackground.jpg'),
+  dark: require('../../assets/images/backgrounds/darkBackground3.jpg'),
 }
 
 export const RoomStockBackground = {

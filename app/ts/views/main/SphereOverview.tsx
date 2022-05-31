@@ -13,9 +13,10 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import {
+  availableModalHeight,
   availableScreenHeight, background,
   colors,
-  overviewStyles, screenWidth, styles
+  overviewStyles, screenHeight, screenWidth, statusBarHeight, styles, tabBarHeight
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import {SphereLevel}                from "./SphereLevel";
@@ -210,8 +211,16 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
+        // select your sphere.
+        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
         return (
-          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
+          <AnimatedBackground
+            viewWrapper
+            image={background.dark}
+            lightStatusbar={true}
+            hasTopBar={false}
+            testID={"SphereOverview"}
+          >
             { this._getContent(activeSphereId) }
           </AnimatedBackground>
         );
@@ -226,14 +235,14 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         SPHERE_ID_STORE.activeSphereId = null;
-        backgroundOverride = require("../../../assets/images/backgrounds/darkBackground3.jpg");
+        backgroundOverride = background.dark;
       }
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background image={background.main} testID={"SphereOverview_addRoom"}>
-              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
+            <Background image={background.main} testID={"SphereOverview_addRoom"} fullScreen={true}>
+              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } paddingBottom={statusBarHeight} />
             </Background>
           )
         }
@@ -294,8 +303,6 @@ export function SphereOverview(props) {
     />
   )
 }
-
-SphereOverview.options = (props) => { return {statusBar:{style:'dark'}} }
 
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;

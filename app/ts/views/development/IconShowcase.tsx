@@ -202,7 +202,7 @@ export class IconShowcase extends LiveComponent<{callback(icon: string) : void, 
 
   render() {
     return (
-      <Background fullScreen={true} image={background.detailsDark}>
+      <Background fullScreen={true} image={background.dark}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DebugIconShowcase

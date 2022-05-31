@@ -16,16 +16,18 @@ import {
   styles,
   colors,
   screenWidth,
-  updateScreenHeight
+  updateScreenHeight,
+  background
 } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { CustomKeyboardAvoidingView } from "./CustomKeyboardAvoidingView";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {getHeight} from "./animated/AnimatedBackground";
 import {StatusBarWatcher} from "../../backgroundProcesses/StatusBarWatcher";
+import {NavBarBlur, TopBarBlur} from "./NavBarBlur";
 
 
-export class Background extends Component<BackgroundProps, any> {
+export class BaseBackground extends Component<BackgroundProps, any> {
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
@@ -54,4 +56,28 @@ export class Background extends Component<BackgroundProps, any> {
       </SafeAreaProvider>
     );
   }
+}
+
+
+export function Background(props: BackgroundProps) {
+  return (
+    <BaseBackground
+      {...{ fullScreen:true, image: background.main, ...props}}
+    >
+      {props.children}
+      <TopBarBlur />
+      { props.hasNavBar && <NavBarBlur /> }
+    </BaseBackground>
+  );
+}
+
+export function BackgroundCustomTopBar(props: BackgroundProps) {
+  return (
+    <BaseBackground
+      {...{ fullScreen:true, image: background.main, ...props}}
+    >
+      {props.children}
+      { props.hasNavBar && <NavBarBlur /> }
+    </BaseBackground>
+  );
 }

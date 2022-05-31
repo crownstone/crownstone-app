@@ -19,9 +19,10 @@ export class BlurCircle extends Component<{color: string, borderWidth?: number, 
         height:size,
         borderRadius:0.5*size,
         backgroundColor: this.props.color,
-      }, styles.centered, this.props.style]}>
-    {this.props.children}
-    </BlurView>
-  )
+      }, styles.centered, this.props.style]}
+      >
+        {this.props.children}
+      </BlurView>
+    );
   }
 }

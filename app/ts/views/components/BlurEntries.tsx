@@ -5,7 +5,9 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { SlideSideFadeInView }          from "./animated/SlideFadeInView";
 import { BlurView }                     from "@react-native-community/blur";
 import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styles";
-import { SettingsIconRight }            from "./EditIcon";
+import {DevIconRight, SettingsIconRight} from "./EditIcon";
+import {SettingsBackground} from "./SettingsBackground";
+import {core} from "../../Core";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
@@ -14,6 +16,7 @@ interface BlurEntryProps {
   editMode?: boolean,
 
   settings?: boolean,
+  settingsItem?:  ReactHOC | React.ComponentElement<any, any>,
 
   title:        ReactHOC | React.ComponentElement<any, any> | string,
   iconItem?:    ReactHOC | React.ComponentElement<any, any>,
@@ -71,20 +74,34 @@ export function BlurEntry(props: BlurEntryProps) {
         { renderPropItem(props.labelItem, props) }
       </View>
       {
-        props.settings !== false && (
-          <SlideSideFadeInView visible={props.editMode} width={60}>
-            <SettingsIconRight style={{height: 55}} onPress={() => {
-              props.editSettingsCallback();
-            }}/>
-          </SlideSideFadeInView>
-        )
+        props.settings && props.settingsItem && renderPropItem(props.settingsItem, props) ||
+        props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
       }
       { renderPropItem(props.control, props) }
     </BlurView>
   );
 }
 
-
+export function BlurEntrySettingsIcon(props: {callback: () => void, visible: boolean}) {
+  return (
+    <SlideSideFadeInView visible={props.visible} width={60}>
+      <SettingsIconRight style={{height: 55}} onPress={() => {
+        props.callback();
+      }}/>
+    </SlideSideFadeInView>
+  );
+}
+export function BlurEntryDevIcon(props: {callback: () => void, visible: boolean}) {
+  let state = core.store.getState();
+  let isDeveloper = state.user.developer;
+  return (
+    <SlideSideFadeInView visible={isDeveloper && props.visible} width={35}>
+      <DevIconRight style={{height: 55, paddingHorizontal:4}} onPress={() => {
+        props.callback();
+      }}/>
+    </SlideSideFadeInView>
+  );
+}
 
 export function renderPropItem(item: ReactHOC | React.ComponentElement<any, any> | undefined, props: any) : React.ComponentElement<any, any> | undefined {
   if (!item) { return; }

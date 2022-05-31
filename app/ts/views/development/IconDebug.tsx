@@ -201,7 +201,7 @@ export class IconDebug extends LiveComponent<{callback(icon: string) : void, ico
 
   render() {
     return (
-      <Background fullScreen={true} image={background.detailsDark}>
+      <Background fullScreen={true} image={background.dark}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DebugIconSelection

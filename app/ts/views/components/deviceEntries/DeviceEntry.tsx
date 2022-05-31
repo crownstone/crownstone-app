@@ -10,7 +10,7 @@ import { DeviceEntryLabel }             from "./submodules/DeviceLabels";
 import { useDatabaseChange }            from "../hooks/databaseHooks";
 import { DraggableProps }               from "../hooks/draggableHooks";
 import { useCleanup }                   from "../hooks/timerHooks";
-import { DraggableBlurEntry }           from "../BlurEntries";
+import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../BlurEntries";
 
 
 interface DeviceEntryProps extends DraggableProps {
@@ -56,11 +56,25 @@ export function DeviceEntry(props: DeviceEntryProps) {
   return (
     <DraggableBlurEntry
       {...props}
+      settings
       title={stone.config.name}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
-      paddingItem={(props) => { return <DeviceDimTopPadding stone={stone} dimMode={props.dimMode} editMode={props.editMode} />}}
-      control={    (props) => { return <DeviceSwitchControl stone={stone} dimMode={props.dimMode} editMode={props.editMode} setPercentage={(value) => { setPercentage(value);}}/>}}
-      labelItem={  (props) => { return (
+      paddingItem={ (props) => { return <DeviceDimTopPadding stone={stone} dimMode={props.dimMode} editMode={props.editMode} />}}
+      control={     (props) => { return <DeviceSwitchControl stone={stone} dimMode={props.dimMode} editMode={props.editMode} setPercentage={(value) => { setPercentage(value);}}/>}}
+      settingsItem={(props) => { return (
+        <React.Fragment>
+        <BlurEntryDevIcon
+          callback={() => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          visible={props.editMode}
+        />
+        <BlurEntrySettingsIcon
+          callback={() => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          visible={props.editMode}
+        />
+
+        </React.Fragment>
+      )}}
+      labelItem={   (props) => { return (
         <React.Fragment>
           <DeviceDimSlider
             stone={stone}
@@ -79,7 +93,6 @@ export function DeviceEntry(props: DeviceEntryProps) {
           />
         </React.Fragment>);
       }}
-      editSettingsCallback={() => {  NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); }}
     />
   );
 }

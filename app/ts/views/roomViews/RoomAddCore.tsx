@@ -291,6 +291,8 @@ lang("_Max_amount_of_rooms_reac_body"),
         getCards={ () => { return this.getCards();}}
         update={   () => { this.forceUpdate() }}
         height={ this.props.height || availableModalHeight }
+        paddingBottom={this.props.paddingBottom}
+        paddingTop={this.props.paddingTop}
       />
     );
   }

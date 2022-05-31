@@ -13,24 +13,24 @@ import {
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
-import { background, screenHeight, screenWidth, tabBarHeight, topBarHeight } from "../styles";
+import {background, screenHeight, screenWidth, statusBarHeight, tabBarHeight, topBarHeight} from "../styles";
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../Core";
-import { Background } from "../components/Background";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { HubEntryBasic } from "../components/deviceEntries/HubEntryBasic";
+import {
+  SettingsCustomTopBarNavbarBackground,
+} from "../components/SettingsBackground";
 
 
 export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
   unsubscribeStoreEvents: any;
   unsubscribeSetupEvents: any;
-  nearestStoneIdInSphere: any;
-  nearestStoneIdInRoom: any;
 
   constructor(props) {
     super(props);
@@ -101,8 +101,11 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
       items.push({type: 'stone', data: stone});
     }
     for (let [hubId, hub] of Object.entries<HubData>(hubs)) {
-      ids.push(hubId);
-      items.push({type: 'hub', data: hub});
+      // only add the hub if the linked stone is not shown
+      if (ids.indexOf(hub.config.linkedStoneId) === -1) {
+        ids.push(hubId);
+        items.push({type: 'hub', data: hub});
+      }
     }
 
     return { items, ids };
@@ -125,7 +128,8 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
     let viewHeight = screenHeight - tabBarHeight - topBarHeight - 100;
 
     return (
-      <Background image={background.main}>
+      <SettingsCustomTopBarNavbarBackground>
+        <View style={{height:statusBarHeight}} />
         <RoomBanner
           noCrownstones={ids.length === 0}
           amountOfStonesInRoom={ids.length}
@@ -142,15 +146,10 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
         />
         <ScrollView>
           <View style={{width:screenWidth}}>
-            <SeparatedItemList
-              items={items}
-              ids={ids}
-              separatorIndent={false}
-              renderer={this._renderer.bind(this)}
-            />
+            { items.map((item, index) => { return this._renderer(item, index, ids[index])}) }
           </View>
         </ScrollView>
-      </Background>
+      </SettingsCustomTopBarNavbarBackground>
     );
   }
 }

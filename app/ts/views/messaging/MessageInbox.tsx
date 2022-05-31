@@ -32,6 +32,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { Navigation } from "react-native-navigation";
+import { Background } from "../components/Background";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -44,7 +45,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       title +=  lang("_in_",sphere.config.name);
     }
 
-    return TopBarUtil.getOptions({title: title});
+    return TopBarUtil.getOptions({title: title, closeModal: true});
   }
 
 
@@ -260,31 +261,31 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <BackgroundNoNotification image={background.main}>
+          <Background fullScreen={true} image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
-          </BackgroundNoNotification>
+          </Background>
         );
       }
       else {
         return (
-          <BackgroundNoNotification image={background.main}>
+          <Background fullScreen={true} image={background.main}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
             <View style={{flex:1}} />
-          </BackgroundNoNotification>
+          </Background>
         );
       }
     }
     else {
       return (
-        <BackgroundNoNotification image={background.main}>
+        <Background fullScreen={true} image={background.main}>
           <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>
           <View style={{flex:1}} />
-        </BackgroundNoNotification>
+        </Background>
       );
     }
   }

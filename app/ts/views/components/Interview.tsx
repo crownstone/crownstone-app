@@ -49,7 +49,8 @@ export class Interview extends Component<{
   getCards() : interviewCards,
   backButtonOverrideViewNameOrId?: string,
   height? : number,
-  topPadding? : number,
+  paddingBottom? : number,
+  paddingTop? : number,
   scrollEnabled? : boolean,
   update?() : void,
 }, any> {
@@ -175,7 +176,8 @@ export class Interview extends Component<{
         height={this.props.height}
         headerOverride={this.responseHeaders[this.state.cardIds[index]]}
         selectedOption={this.selectedOptions[index]}
-        topPadding={this.props.topPadding ?? 0}
+        paddingTop={this.props.paddingTop ?? 0}
+        paddingBottom={this.props.paddingBottom ?? 10}
       />
     )
   }
@@ -234,6 +236,7 @@ export class Interview extends Component<{
       cards.push(allCards[cardId]);
     });
 
+
     return (
       <Carousel
         scrollEnabled={this.props.scrollEnabled}
@@ -284,7 +287,8 @@ export class Interview extends Component<{
 
 function InterviewCard(props : {
   card: interviewCard,
-  topPadding: number,
+  paddingTop: number,
+  paddingBottom: number,
   headerOverride?: string,
   height?: number,
   image?: any,
@@ -316,7 +320,7 @@ function InterviewCard(props : {
   return (
     <View testID={card.testID}>
       <ScrollView style={{height: props.height || availableModalHeight}} testID={props.card.scrollViewtestID} contentContainerStyle={{
-        minHeight: props.height || availableModalHeight - 10, paddingBottom: 10
+        minHeight: (props.height || availableModalHeight) - props.paddingBottom
       }}>
           { header      && <Text style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text> }
           { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }

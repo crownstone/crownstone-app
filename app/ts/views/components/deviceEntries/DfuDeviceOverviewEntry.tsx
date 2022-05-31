@@ -47,7 +47,6 @@ export function DfuDeviceOverviewEntry(props: { sphereId: sphereId, stoneId: sto
       style={{width:screenWidth}}
     >
     <BlurEntry
-      settings={false}
       title={stone.config.name}
       iconItem={<Icon name={stone.config.icon} size={30} color={props.iconColor} />}
       backgroundColor={props.backgroundColor}
