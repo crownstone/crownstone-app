@@ -23,6 +23,10 @@ import { BackgroundNoNotification } from "../components/BackgroundNoNotification
 import {Stacks} from "../Stacks";
 import {Icon} from "../components/Icon";
 import {SettingsBackground} from "../components/SettingsBackground";
+import {Get} from "../../util/GetUtil";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {Util} from "../../util/Util";
+import {Bluenet} from "../../native/libInterface/Bluenet";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {
@@ -39,16 +43,34 @@ export class SphereEdit extends LiveComponent<any, any> {
 
 
   unsubscribe = [];
+  validationState : any;
 
   constructor(props) {
     super(props);
-    this.state = {syncing: false};
+
+    let sphere = Get.sphere(props.sphereId);
+
+    this.state = {syncing: false, sphereName: sphere?.config?.name ?? "Unnamed Sphere" };
+
+    this.validationState = {sphereName:'valid'};
   }
 
   componentDidMount() {
     this.unsubscribe.push(core.eventBus.on("CloudSyncComplete", () => {
       if (this.state.syncing) {
         this.setState({syncing: false})
+      }
+    }));
+
+    this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        change.changeSpheres      && change.changeSpheres.sphereIds[this.props.sphereId]      ||
+        change.changeSphereConfig && change.changeSphereConfig.sphereIds[this.props.sphereId]
+      ) {
+        if (Get.sphere(this.props.sphereId)) {
+          this.forceUpdate();
+        }
       }
     }));
   }
@@ -61,9 +83,11 @@ export class SphereEdit extends LiveComponent<any, any> {
     let items = [];
     let state = core.store.getState();
     let amountOfSpheres = Object.keys(state.spheres).length;
-    items.push({ label: lang("What_can_I_help_you_with_"), type: 'largeExplanation' });
+    items.push({ type: 'spacer' });
 
-    if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
+    let sphere = Get.sphere(this.props.sphereId);
+
+    if (!sphere) {
       if (amountOfSpheres === 0) {
         items.push({
           label: lang("Create_Sphere"),
@@ -101,36 +125,70 @@ export class SphereEdit extends LiveComponent<any, any> {
       }
     }
 
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+    if (spherePermissions.editSphere) {
+      items.push({
+        type:'textEdit',
+        label: lang("Name"),
+        testID: 'SphereName',
+        value: this.state.sphereName,
+        validation:{minLength:2},
+        validationCallback: (result) => {this.validationState.sphereName = result;},
+        callback: (newText) => {
+          this.setState({sphereName: newText});
+        },
+        endCallback: (newText) => {
+          if (sphere.config.name !== newText) {
+            if (this.validationState.sphereName === 'valid' && newText.trim().length >= 2) {
+
+              core.eventBus.emit('showLoading', lang("Changing_sphere_name___"));
+              CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
+                .then((result) => {
+                  core.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: this.props.sphereId,  data: {name: newText}});
+                  core.eventBus.emit('hideLoading');
+                })
+                .catch((err) => {
+                  core.eventBus.emit('hideLoading');
+                })
+            }
+            else {
+              Alert.alert(
+                lang("_Sphere_name_must_be_at_l_header"),
+                lang("_Sphere_name_must_be_at_l_body"),
+                [{text: lang("_Sphere_name_must_be_at_l_left")}]);
+            }
+          }
+        }
+      });
+    }
+
+
+    let coordinates = Util.getSphereLocation(this.props.sphereId);
+    const city = Util.getNearestCity(coordinates);
+    items.push({label: lang("SPHERE_LOCATION"),  type:'explanation', below:false});
     items.push({
-      label: lang("Rooms"),
+      label: lang("Near_",city),
+      type: spherePermissions.canSetSphereLocation ? 'navigation' : 'info',
+      testID: 'SphereLocation',
+      icon: <Icon name='c1-locationIcon1' size={15} radius={15}  color={colors.csBlue.hex} buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
+      callback: () => {
+        NavigationUtil.navigate( "SphereEditMap", {sphereId: this.props.sphereId});
+      }
+    });
+    items.push({label: lang("We_use_the_location_of_th"),  type:'explanation', style:{paddingBottom:10}, below:true});
+
+
+    items.push({
+      label: lang("Rearrange_Rooms_"),
       type: 'navigation',
       testID: 'SphereEdit_rooms',
       icon: <Icon name='md-cube' size={30}  color={colors.green.hex}/>,
       callback: () => {
-        NavigationUtil.navigate( "SphereRoomOverview", {sphereId: this.props.sphereId});
+        NavigationUtil.dismissModal()
+        core.eventBus.emit("SET_ARRANGING_ROOMS");
       }
     });
 
-
-    items.push({
-      label: lang("Crownstones"),
-      type: 'navigation',
-      testID: 'SphereEdit_crownstones',
-      icon: <Icon name='c2-crownstone' size={30}  color={colors.black.hex}/>,
-      callback: () => {
-        NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
-      }
-    });
-
-    items.push({
-      label: lang("Hubs"),
-      type: 'navigation',
-      testID: 'SphereEdit_hubs',
-      icon: <Icon name='c1-router' size={30}  color={colors.darkerPurple.hex}/>,
-      callback: () => {
-        NavigationUtil.navigate( "SphereHubOverview", {sphereId: this.props.sphereId});
-      }
-    });
 
     items.push({
       label: lang("Users"),
@@ -154,17 +212,30 @@ export class SphereEdit extends LiveComponent<any, any> {
       }
     });
 
-    items.push({label: lang("SPHERE_SETTINGS"),  type:'explanation'});
+    items.push({label: lang("DANGER"),  type:'explanation', below: false});
     items.push({
-      label: lang("Settings"),
-      icon: <Icon name="ios-cog" size={30} color={colors.csBlue.hex}/>,
-      type: 'navigation',
-      testID: 'SphereEdit_settings',
+      label: lang("Leave_Sphere"),
+      icon: <Icon name="md-exit" size={22} color={colors.menuRed.hex} />,
+      style: {color:colors.menuRed.hex},
+      type: 'button',
+      testID: 'LeaveSphere',
       callback: () => {
-        NavigationUtil.navigate( "SphereEditSettings", {sphereId: this.props.sphereId});
+        this._leaveSphere(state);
       }
     });
-
+    if (spherePermissions.deleteSphere) {
+      items.push({
+        label: lang("Delete_Sphere"),
+        icon: <Icon name="md-exit" size={22}  color={colors.darkRed.hex} />,
+        style: {color: colors.darkRed.hex},
+        type: 'button',
+        testID: 'DeleteSphere',
+        callback: () => {
+          this._deleteSphere(state);
+        }
+      });
+    }
+    items.push({label: lang("This_cannot_be_undone_"),  type:'explanation', below: true});
     items.push({label: lang("Sphere_Creation"),  type:'explanation'});
     items.push({
       label: lang("Create_a_new_Sphere"),
@@ -184,6 +255,83 @@ export class SphereEdit extends LiveComponent<any, any> {
     return items;
   }
 
+
+  _leaveSphere(state) {
+    Alert.alert(
+      lang("_Are_you_sure_you_want_to_header"),
+      lang("_Are_you_sure_you_want_to_body"),
+      [{text:lang("_Are_you_sure_you_want_to_left")},
+        {
+          text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
+            core.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
+            CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
+              .then(() => {
+                this._processLocalDeletion()
+              })
+              .catch((err) => {
+
+                let explanation =  lang("Please_try_again_later_");
+                if (err && err?.data && err?.data.error && err?.data.error.message === "Trying to remove the only user from the sphere. Remove the sphere if there are no more users in it.") {
+                  explanation =  lang("You_are_the_owner_of_this");
+                }
+
+                core.eventBus.emit('hideLoading');
+                Alert.alert("Could not leave Sphere!", explanation, [{text:"OK"}]);
+              })
+          }}
+      ]
+    );
+  }
+
+  _processLocalDeletion(){
+    core.eventBus.emit('hideLoading');
+    let state = core.store.getState();
+    let actions = [];
+    if (state.app.activeSphere === this.props.sphereId)
+      actions.push({type:"CLEAR_ACTIVE_SPHERE"});
+
+    actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
+
+    // stop tracking sphere.
+    Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
+    core.store.batchDispatch(actions);
+
+    NavigationUtil.dismissAllModals()
+  }
+
+  _deleteSphere(state) {
+    Alert.alert(
+      lang("_Are_you_sure_you_want_to__header"),
+      lang("_Are_you_sure_you_want_to__body"),
+      [{text:lang("_Are_you_sure_you_want_to__left")},
+        {text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
+            let stones = state.spheres[this.props.sphereId].stones;
+            let stoneIds = Object.keys(stones);
+            if (stoneIds.length > 0) {
+              Alert.alert(
+                lang("Still_Crownstones_detecte"),
+                lang("You_can_remove_then_by_go"),
+                [{text:'OK'}]
+              );
+            }
+            else {
+              core.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
+              CLOUD.deleteSphere(this.props.sphereId)
+                .then(() => {
+                  this._processLocalDeletion();
+                })
+                .catch((err) => {
+                  core.eventBus.emit('hideLoading');
+                  Alert.alert(
+                    lang("_Could_not_delete_Sphere__header"),
+                    lang("_Could_not_delete_Sphere__body"),
+                    [{text:lang("_Could_not_delete_Sphere__left")}]);
+                })
+            }
+          }}
+      ]
+    );
+  }
 
 
   render() {

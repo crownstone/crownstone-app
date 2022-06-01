@@ -48,15 +48,15 @@ export function Debug() {
 
 
 function DebugPopup() {
-  setTimeout(() => {
-    core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
-      callback: (newTime: aicoreTime) => {
-
-      },
-      time: null,
-      image: require("../assets/images/overlayCircles/time.png")
-    })
-  },200);
+  // setTimeout(() => {
+  //   core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
+  //     callback: (newTime: aicoreTime) => {
+  //
+  //     },
+  //     time: null,
+  //     image: require("../assets/images/overlayCircles/time.png")
+  //   })
+  // },200);
 }
 
 function DebugCustomView() {
