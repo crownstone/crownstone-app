@@ -110,6 +110,7 @@ export const DataUtil = {
   },
 
 
+
   /**
    * Get the ID of the device (phone model) we are currently using.
    * @param state
@@ -334,6 +335,19 @@ export const DataUtil = {
       }
     }
     return amount;
+  },
+
+  areThereActiveStonesWithErrorsInLocation: function(sphereId: sphereId, locationId: locationId) : boolean {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+
+    for (let stoneId in stones) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        if (stones[stoneId].errors.hasError) {
+          return true;
+        }
+      }
+    }
+    return false;
   },
 
 

@@ -9,23 +9,19 @@ import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 
 
 export function DeviceEntryIcon({stone, stoneId}) {
-  let size = 60;
 
-  let color = colors.csBlueDark.rgba(0.5);
-  if (StoneAvailabilityTracker.isDisabled(stoneId) !== true || true) {
-    color = colors.black.hex;
-  }
+  let color = colors.black.hex;
 
   if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
     if (stone.errors.hasError === true) {
       return (
         <AlternatingContent
-          style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
+          style={{width:35, height:35, justifyContent:'center', alignItems:'center'}}
           fadeDuration={500}
           switchDuration={2000}
           contentArray={[
-            <Icon name={'ios-warning'} size={40} color={colors.menuRed.hex} style={{backgroundColor:'transparent'}} />,
-            <Icon name={stone.config.icon} size={35} color={colors.menuRed.hex} />,
+            <Icon name={'ios-warning'} size={40} color={color} style={{backgroundColor:'transparent'}} />,
+            <Icon name={stone.config.icon} size={35} color={color} />,
           ]}
         />
       );
@@ -37,7 +33,7 @@ export function DeviceEntryIcon({stone, stoneId}) {
     ) {
       return (
         <AlternatingContent
-          style={{width:size, height:size, justifyContent:'center', alignItems:'center'}}
+          style={{width:35, height:35, justifyContent:'center', alignItems:'center'}}
           fadeDuration={500}
           switchDuration={2000}
           contentArray={[

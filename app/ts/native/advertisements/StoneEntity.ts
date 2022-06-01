@@ -452,9 +452,6 @@ export class StoneEntity {
               stoneId: this.stoneId,
               data: { hasError: true }
             });
-            if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              core.eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
-            }
           }
 
           // store errors in the db
@@ -473,9 +470,9 @@ export class StoneEntity {
               }
             });
             LOGe.info("CROWNSTONE ERROR stoneId", this.stoneId, 'sphereId:', this.sphereId, "serviceData:", advertisement.serviceData, "errors:", advertisement.serviceData.errors, "stoneConfig", stone.config);
-            if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
-            }
+            // if (Permissions.inSphere(this.sphereId).canClearErrors) {
+            //   core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+            // }
           }
         }
       }

@@ -31,6 +31,8 @@ interface topbarOptions {
   next? : boolean,
   create? : boolean,
   update? : boolean,
+
+  darkBackground?: boolean,
 }
 
 interface topbarNavComponent {

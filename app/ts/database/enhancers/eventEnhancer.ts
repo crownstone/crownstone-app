@@ -150,6 +150,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':
     case 'CLEAR_STONE_ERRORS':
+      eventStatus.updateStoneErrors = affectedIds;
     case "UPDATE_STONE_CONFIG_TRANSIENT":
       eventStatus.updateStoneConfig = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':

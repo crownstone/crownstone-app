@@ -28,10 +28,6 @@ import { RoomIconSelection }                  from '../views/roomViews/RoomIconS
 import { SphereOverview }                     from '../views/main/SphereOverview'
 import { SelectFromList }                     from '../views/selection/SelectFromList'
 import { SphereEdit }                         from '../views/main/SphereEdit'
-import { SphereEditSettings }                 from '../views/main/editSubviews/SphereEditSettings'
-import { SphereRoomOverview }                 from "../views/main/editSubviews/SphereRoomOverview";
-import { SphereCrownstoneOverview }           from "../views/main/editSubviews/SphereCrownstoneOverview";
-import { SphereRoomArranger }                 from "../views/main/editSubviews/SphereRoomArranger";
 import { SphereUserInvite }                   from "../views/main/editSubviews/SphereUserInvite";
 import { SphereUserOverview }                 from "../views/main/editSubviews/SphereUserOverview";
 import { SphereInvitedUser }                  from "../views/main/editSubviews/SphereInvitedUser";
@@ -113,7 +109,6 @@ import { HueOverview }                        from "../views/thirdParty/hue/HueO
 import { HueAdd }                             from "../views/thirdParty/hue/HueAdd";
 import { SetupHub }                           from "../views/addingCrownstones/SetupHub";
 import { HubOverview }                        from "../views/hubViews/HubOverview";
-import { SphereHubOverview }                  from "../views/main/editSubviews/SphereHubOverview";
 import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
@@ -127,6 +122,7 @@ import { SetupLocalization }                  from "./main/localization/SetupLoc
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 import {PowerUsage} from "./powerUsage/PowerUsage";
+import {DeviceError} from "./deviceViews/DeviceError";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -161,6 +157,7 @@ export const Views = {
   GoogleAssistantOverview:           GoogleAssistantOverview,
   HubOverview:                       HubOverview,
   HubEdit:                           HubEdit,
+  DeviceError:                       DeviceError,
   DeviceEditAppearence:              DeviceEditAppearence,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,
@@ -215,16 +212,11 @@ export const Views = {
   SettingsStoneBleDebug:             SettingsStoneBleDebug,
   SettingsUptime:                    SettingsUptime,
   SettingsLocalizationMonitor:       SettingsLocalizationMonitor,
-  SphereCrownstoneOverview:          SphereCrownstoneOverview,
   SphereEdit:                        SphereEdit,
-  SphereEditSettings:                SphereEditSettings,
   SphereEditMap:                     SphereEditMap,
   SphereIntegrations:                SphereIntegrations,
   SphereInvitedUser:                 SphereInvitedUser,
-  SphereHubOverview:                 SphereHubOverview,
   SphereOverview:                    SphereOverview,
-  SphereRoomArranger:                SphereRoomArranger,
-  SphereRoomOverview:                SphereRoomOverview,
   SphereUser:                        SphereUser,
   SphereUserInvite:                  SphereUserInvite,
   SphereUserOverview:                SphereUserOverview,

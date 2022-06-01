@@ -11,6 +11,7 @@ import { useDatabaseChange }            from "../hooks/databaseHooks";
 import { DraggableProps }               from "../hooks/draggableHooks";
 import { useCleanup }                   from "../hooks/timerHooks";
 import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../BlurEntries";
+import {colors} from "../../styles";
 
 
 interface DeviceEntryProps extends DraggableProps {
@@ -53,11 +54,21 @@ export function DeviceEntry(props: DeviceEntryProps) {
   }
 
 
+  let tapCallback = undefined;
+  let backgroundColor = undefined;
+  if (stone.errors.hasError) {
+    backgroundColor = colors.csOrange.rgba(0.5);
+    tapCallback = () => { NavigationUtil.launchModal("DeviceError", { sphereId: props.sphereId, stoneId: props.stoneId}) }
+  }
+
+
   return (
     <DraggableBlurEntry
       {...props}
       settings
+      tapCallback={tapCallback}
       title={stone.config.name}
+      backgroundColor={backgroundColor}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
       paddingItem={ (props) => { return <DeviceDimTopPadding stone={stone} dimMode={props.dimMode} editMode={props.editMode} />}}
       control={     (props) => { return <DeviceSwitchControl stone={stone} dimMode={props.dimMode} editMode={props.editMode} setPercentage={(value) => { setPercentage(value);}}/>}}

@@ -23,18 +23,13 @@ import { Icon } from "../components/Icon";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Navigation } from "react-native-navigation";
 import {SettingsBackground} from "../components/SettingsBackground";
-import {CLOUD} from "../../cloud/cloudAPI";
-import {LOG, LOGe} from "../../logging/Log";
-import {tell} from "../../logic/constellation/Tellers";
-import {SortingManager} from "../../logic/SortingManager";
-import {StoneUtil} from "../../util/StoneUtil";
 import {ListEditableItems} from "../components/ListEditableItems";
-import { IconButton } from "../components/IconButton";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { Get } from "../../util/GetUtil";
 import {STONE_TYPES} from "../../Enums";
 import {xUtil} from "../../util/StandAloneUtil";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
+import {StoneUtil} from "../../util/StoneUtil";
 
 
 export class  DeviceOverview extends LiveComponent<any, any> {

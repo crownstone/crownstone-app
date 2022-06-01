@@ -13,7 +13,6 @@ import {
 } from "react-native";
 
 import { styles, colors } from '../styles'
-import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
@@ -21,10 +20,11 @@ import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 
 
-class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any}> {
+class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any, showErrorState: boolean}> {
   initializedPosition: any;
   usage: any;
   borderWidth: number;
@@ -33,9 +33,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   iconSize: number;
   textSize: number;
 
-  animationStarted = false;
   animating = false;
-  animatedMoving = false;
 
   previousCircle: any;
   color: any;
@@ -67,15 +65,10 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       left: new Animated.Value(initialX),
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
-      tapAndHoldProgress: 0
+      tapAndHoldProgress: 0,
+      showErrorState: DataUtil.areThereActiveStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId),
     };
 
-    // this.energyLevels = [
-    //   {min: 0, max: 50, color: colors.green.hex},
-    //   {min: 50, max: 200, color: colors.orange.hex},
-    //   {min: 200, max: 1000, color: colors.red.hex},
-    //   {min: 1000, max: 4000, color: colors.darkRed.hex},
-    // ];
 
     this.usage = 0;
     // calculate the size of the circle based on the screen size
@@ -86,6 +79,8 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.textSize = props.radius * 0.25;
 
     this.previousCircle = undefined;
+
+
   }
 
 
@@ -96,13 +91,21 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
       }
-      // only redraw if the power usage changes or if the settings of the room change
 
       // in the case the room is deleted, do not redraw.
       if (state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
+      let change = data.change;
+
+      if (
+        change.updateStoneErrors     ||
+        change.removeSphere          ||
+        change.changeSpheres
+      ) {
+        this.forceUpdate();
+      }
     });
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
@@ -138,19 +141,25 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
 
   getIcon() {
-    let icon = core.store.getState()?.spheres[this.props.sphereId]?.locations[this.props.locationId]?.config?.icon || null;
+    let icon = Get.location(this.props.sphereId, this.props.locationId)?.config?.icon || null;
+    if (this.state.showErrorState) {
+      icon = 'ion5-warning'
+    }
     return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 
   }
 
   getCircle() {
-    let newColor = colors.green.rgba(0.75);
+    let innerColor = colors.green.rgba(0.75);
+    if (this.state.showErrorState) {
+      innerColor = colors.csOrange.rgba(0.6);
+    }
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
       <View>
         <Circle size={this.outerDiameter} color={colors.white.hex}>
           <Circle size={this.outerDiameter - (2/3)*innerOffset} color={colors.white.hex} borderColor={colors.lightGray.hex} borderWidth={ (1/3)*innerOffset }>
-            <Circle size={this.innerDiameter} color={newColor}>
+            <Circle size={this.innerDiameter} color={innerColor}>
               {this.getIcon()}
             </Circle>
           </Circle>

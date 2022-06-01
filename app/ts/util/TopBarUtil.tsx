@@ -3,7 +3,7 @@ import {Platform} from "react-native";
 import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButton";
 import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
-import {statusBarHeight, topBarHeight} from "../views/styles";
+import {colors, statusBarHeight, topBarHeight} from "../views/styles";
 import {Navigation, Options} from "react-native-navigation";
 
 interface topBarOptionConfig {
@@ -157,6 +157,10 @@ export const TopBarUtil = {
 
     // console.log("Setting Topbar Options", JSON.stringify(results, null, 2))
 
+    if (props.darkBackground) {
+      results.topBar.title.color = colors.white.hex;
+      results.topBar.leftButtonColor = colors.white.hex;
+    }
 
     return results;
   },

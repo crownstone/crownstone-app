@@ -25,7 +25,9 @@ interface BlurEntryProps {
   labelItem?:   ReactHOC | React.ComponentElement<any, any>,
 
   backgroundColor?: string,
+  opacity?:         number,
 
+  tapCallback? : () => void,
   editSettingsCallback?: () => void
 }
 interface DraggableBlurEntryProps extends DraggableProps, BlurEntryProps {}
@@ -38,6 +40,7 @@ export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
     <TouchableOpacity
       activeOpacity={props.editMode ? 0.5 : 1.0}
       onLongPress={() => { if (props.editMode) { triggerDrag(); } }}
+      onPress={() => { if (props.tapCallback) { props.tapCallback() }}}
       style={{flexDirection:'row'}}
     >
       <SlideSideFadeInView visible={dragging} width={40} />
@@ -62,6 +65,7 @@ export function BlurEntry(props: BlurEntryProps) {
         borderRadius: appStyleConstants.roundness,
         alignItems:'center',
         paddingLeft: 15,
+        opacity: props.opacity ?? 1
       }}>
       { renderPropItem(props.iconItem,props) }
       <View style={{ flex:1 }}>
@@ -125,7 +129,7 @@ export function BlurMessageBar(props) {
         flexDirection:'row',
         height: props.height ?? 60,
         borderRadius: appStyleConstants.roundness,
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: props.borderColor ?? colors.white.hex,
         backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5)
       }}>

@@ -362,6 +362,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'updateStoneIdentificationConfig' |
   'updateStoneCoreConfig'           |
   'updateStoneConfig'               |
+  'updateStoneErrors'               |
   'stoneLocationUpdated'            |
   'updateStoneSwitchState'          |
   'updateStoneState'                |

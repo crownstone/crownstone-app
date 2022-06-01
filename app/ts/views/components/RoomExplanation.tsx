@@ -15,6 +15,7 @@ import {
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {BlurMessageBar, TouchableBlurMessageBar} from "./BlurEntries";
 import {core} from "../../Core";
+import {colors} from "../styles";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -55,14 +56,14 @@ export class RoomExplanation extends Component<any, any> {
 
     if (buttonCallback !== undefined) {
       return (
-        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10}>
+        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
           {label}
         </TouchableBlurMessageBar>
       );
     }
     else {
       return (
-        <BlurMessageBar marginTop={10}>
+        <BlurMessageBar marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
           {label}
         </BlurMessageBar>
       );
@@ -85,7 +86,8 @@ function shouldShowTrainingButton(state, sphereId, locationId) {
   if (!location) { return false; }
 
   if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
-  if (sphere.state.present === true)        { return false; } // cant train a room when not in the sphere
+  if (sphere.state.present === false)       { return false; } // cant train a room when not in the sphere
+  if (sphere.state.reachable === false)     { return false; } // cant train a room when not in the sphere
   if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
 
   if (location.config.fingerprintRaw !== null) { return false; } // there already is a fingerprint, dont show animated training icon.
