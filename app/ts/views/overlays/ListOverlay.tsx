@@ -12,12 +12,11 @@ import {
   View,
 } from "react-native";
 
-import { OverlayBox }           from '../components/overlays/OverlayBox'
-import { colors, screenWidth, screenHeight, statusBarHeight } from "../styles";
-import { ScaledImage } from "../components/ScaledImage";
+import {colors, screenWidth, screenHeight, statusBarHeight, appStyleConstants} from "../styles";
 import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
+import {BlurView} from "@react-native-community/blur";
 
 export class ListOverlay extends LiveComponent<any, any> {
   customContent : () => Component;
@@ -71,7 +70,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       elements.push(
         <TouchableOpacity
           key={"listOverlayElement_"+i}
-          style={{backgroundColor: isSelected ? this.themeColor : colors.white.hex}}
+          style={{backgroundColor: isSelected ? this.themeColor : colors.white.hex, marginLeft:15, borderRadius: appStyleConstants.roundness, paddingHorizontal:15, marginBottom:5}}
           onPress={() => {
             if (this.state.allowMultipleSelections) {
               if (isSelected) {
@@ -105,20 +104,15 @@ export class ListOverlay extends LiveComponent<any, any> {
   _getSaveButton() {
     if ((this.selection.length > 0 && this.state.allowMultipleSelections === true) || this.state.showSaveButton) {
       return (
-        <View style={{flex:1, flexDirection:'row'}}>
-          <View style={{flex:1}} />
-          <TouchableOpacity
-            style={{height:50, flex:3, borderColor:colors.white.hex, borderWidth:2, backgroundColor: this.themeColor, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}
-            onPress={() => {
-              this.callback(this.selection);
-              this.close();
-            }}
-          >
-            <Text style={{fontSize:15, fontWeight:'bold'}}>{ lang("Save_selection_",this.state.saveLabel) }</Text>
-          </TouchableOpacity>
-          <View style={{flex:0.2}} />
-        </View>
-      )
+        <OverlaySaveButton
+          label={lang("Save_selection_",this.state.saveLabel)}
+          backgroundColor={this.themeColor}
+          callback={() => {
+            this.callback(this.selection);
+            this.close();
+          }}
+        />
+      );
     }
   }
 
@@ -140,10 +134,6 @@ export class ListOverlay extends LiveComponent<any, any> {
   }
 
   render() {
-    let idealAspectRatio = 1.75;
-    let width = 0.85*screenWidth;
-    let height = Math.min(width*idealAspectRatio, 0.9 * (screenHeight - statusBarHeight));
-
     let customContent = null;
     if (this.state.showCustomContent) {
       customContent = this.customContent
@@ -165,6 +155,31 @@ export class ListOverlay extends LiveComponent<any, any> {
       </SimpleOverlayBox>
     );
   }
+}
+
+
+export function OverlaySaveButton(props : { label: string, backgroundColor: string, callback: () => void}) {
+  return (
+    <View style={{flex:1, flexDirection:'row'}}>
+      <View style={{flex:1}} />
+      <BlurView blurType={'light'} blurAmount={3} style={{
+        height:50,
+        flex:3,
+        borderColor: colors.white.hex,
+        borderWidth:2,
+        backgroundColor: props.backgroundColor,
+        borderRadius: appStyleConstants.roundness,
+      }}>
+        <TouchableOpacity
+          style={{flex:1, alignItems: 'center', justifyContent:'center'}}
+          onPress={props.callback}
+        >
+          <Text style={{fontSize:15, fontWeight:'bold'}}>{ props.label }</Text>
+        </TouchableOpacity>
+      </BlurView>
+      <View style={{flex:0.2}} />
+    </View>
+  );
 }
 
 

@@ -4,6 +4,8 @@ import {colors, screenHeight, styles} from "./views/styles";
 import * as React from "react";
 import {NavigationUtil} from "./util/navigation/NavigationUtil";
 import {OverlayUtil} from "./views/overlays/OverlayUtil";
+import {RoomList} from "./views/components/RoomList";
+import {SELECTABLE_TYPE} from "./Enums";
 
 export function DebugNotifications() {
   let activeSphereId = core.store.getState().app.activeSphere;
@@ -41,8 +43,21 @@ export function DebugOverlays() {
 
 export function Debug() {
   DebugCustomView();
+  DebugPopup()
 }
 
+
+function DebugPopup() {
+  setTimeout(() => {
+    core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
+      callback: (newTime: aicoreTime) => {
+
+      },
+      time: null,
+      image: require("../assets/images/overlayCircles/time.png")
+    })
+  },200);
+}
 
 function DebugCustomView() {
   // setTimeout(() => {

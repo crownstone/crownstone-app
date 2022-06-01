@@ -50,7 +50,7 @@ export function SettingsIconRight(props) {
 export function DevIconRight(props) {
   return (
     <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
-      <Icon name={'ios-bug'} size={30} color={props.color ?? color}/>
+      <Icon name={'ios-bug'} size={22} color={props.color ?? color}/>
     </TouchableOpacity>
   );
 }

@@ -8,29 +8,6 @@ import {TextEditInput} from "./editComponents/TextEditInput";
 import {Util} from "../../util/Util";
 
 
-let buttonStyle : ViewStyle = {
-  flexDirection:'row',
-  margin:10,
-  marginTop:5,
-  marginBottom:5,
-  paddingTop:10,
-  paddingBottom:10,
-  paddingLeft:15,
-  paddingRight:25,
-  alignItems:'center',
-  backgroundColor: colors.csBlue.rgba(0.2),
-  borderBottomLeftRadius:  0,
-  borderBottomRightRadius: 10,
-  borderTopLeftRadius:     10,
-  borderTopRightRadius:    0,
-  borderColor: colors.green.hex,
-  borderBottomWidth: 4,
-  borderRightWidth:  4,
-  borderTopWidth:    0,
-  borderLeftWidth:   0,
-
-};
-
 let buttonBasicStyle : ViewStyle = {
   flexDirection:'row',
   margin:10,
@@ -41,11 +18,21 @@ let buttonBasicStyle : ViewStyle = {
   paddingLeft:15,
   paddingRight:15,
   alignItems:'center',
-  backgroundColor: colors.csBlue.rgba(0.2),
+  // backgroundColor: colors.csBlue.rgba(0.2),
   borderBottomLeftRadius:  0,
   borderBottomRightRadius: 10,
   borderTopLeftRadius:     10,
   borderTopRightRadius:    0,
+};
+
+let buttonStyle : ViewStyle = {
+  ...buttonBasicStyle,
+  paddingRight:25,
+  borderColor: colors.green.hex,
+  borderBottomWidth: 4,
+  borderRightWidth:  4,
+  borderTopWidth:    0,
+  borderLeftWidth:   0,
 
 };
 
@@ -77,7 +64,7 @@ let textStyle : TextStyle = {
   paddingRight: 25,
   fontSize: Util.narrowScreen() ? 15 : 16,
   fontWeight: "bold",
-  color: colors.csBlue.hex
+  color: colors.black.hex
 };
 
 
@@ -85,20 +72,9 @@ let subTextStyle : TextStyle = {
   fontSize: Util.narrowScreen() ? 12 : 13,
   fontWeight: "300",
   fontStyle:'italic',
-  color: colors.csBlue.hex
+  color: colors.black.hex
 };
 
-export function TimeButtonWithImage(props) {
-  return (
-    <FadeIn index={props.index || 0}>
-      <TouchableOpacity style={props.basic ? buttonBasicStyle : buttonStyle} onPress={() => { props.callback(); }}>
-        <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetWidth={40}/>
-        <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <Text style={{...textStyle, flex:1, paddingRight:0}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
-      </TouchableOpacity>
-    </FadeIn>
-  );
-}
 
 
 export function LargeTextButtonWithLargeImage(props) {
@@ -178,7 +154,7 @@ export function TextButton(props) {
         props.borderColor ? {borderColor: props.borderColor} : {},
       ]} onPress={() => { props.callback(); }}>
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
-      <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.csBlue.hex} size={15} style={{padding:10}} />
+      <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.black.hex} size={15} style={{padding:10}} />
       <Text style={[textStyle, {color: props.danger ? colors.red.hex : props.textColor}]}>{props.label}</Text>
     </TouchableOpacity>
   );

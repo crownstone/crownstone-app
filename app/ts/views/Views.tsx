@@ -77,7 +77,6 @@ import { ListOverlay }                        from "../views/overlays/ListOverla
 import { LocalizationSetupStep1 }             from "../views/overlays/LocalizationSetupStep1";
 import { LocalizationSetupStep2 }             from "../views/overlays/LocalizationSetupStep2";
 import { LocationPermissionOverlay }          from "../views/overlays/LocationPermissionOverlay";
-import { LockOverlay }                        from "../views/overlays/LockOverlay";
 import { SimpleOverlay }                      from "../views/overlays/SimpleOverlay";
 import { OptionPopup }                        from "../views/overlays/OptionPopup";
 import { DeviceAbilities }                    from "../views/deviceViews/DeviceAbilities";
@@ -243,8 +242,8 @@ export const Views = {
 
   PowerUsage:                        PowerUsage,
 
-  // Overlays:
 
+  // Overlays:
   AicoreTimeCustomizationOverlay:    AicoreTimeCustomizationOverlay,
   BleStateOverlay:                   BleStateOverlay,
   DimLevelOverlay:                   DimLevelOverlay,
@@ -254,7 +253,6 @@ export const Views = {
   LocalizationSetupStep1:            LocalizationSetupStep1,
   LocalizationSetupStep2:            LocalizationSetupStep2,
   LocationPermissionOverlay:         LocationPermissionOverlay,
-  LockOverlay:                       LockOverlay,
   NumericOverlay:                    NumericOverlay,
   OptionPopup:                       OptionPopup,
   Processing:                        Processing,
@@ -272,8 +270,8 @@ export const Views = {
   DEV_PresenceMocking:               DEV_PresenceMocking,
   DEV_UserData:                      DEV_UserData,
 
-  // Sidebars
 
+  // Sidebars
   SphereOverviewSideBar:            SphereOverviewSideBar,
 };
 

@@ -91,6 +91,7 @@ export function BlurEntrySettingsIcon(props: {callback: () => void, visible: boo
     </SlideSideFadeInView>
   );
 }
+
 export function BlurEntryDevIcon(props: {callback: () => void, visible: boolean}) {
   let state = core.store.getState();
   let isDeveloper = state.user.developer;

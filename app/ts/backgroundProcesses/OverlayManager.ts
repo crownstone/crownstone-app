@@ -27,7 +27,6 @@ class OverlayManagerClass {
 
       // hardware errors
       core.eventBus.on('showErrorOverlay', (data) => { NavigationUtil.showOverlay('ErrorOverlay', {data: data}); });
-
       core.eventBus.on('showListOverlay', (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); });
 
       // localization popup.
@@ -36,7 +35,6 @@ class OverlayManagerClass {
 
 
       core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
-      core.eventBus.on('showLockOverlay',      (data) => { NavigationUtil.showOverlay('LockOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
       core.eventBus.on('showLoading',          (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('hideLoading',          () => {     this.loadingState = false; })

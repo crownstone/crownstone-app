@@ -14,18 +14,15 @@ import {
 import { HiddenFadeInBlur} from "../animated/FadeInView";
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight, topBarHeight} from "../../styles";
-import {TopBarBlur, TopBarFlexBlur} from "../NavBarBlur";
 import {BlurView} from "@react-native-community/blur";
 
-interface overlayBoxProps {
+interface simpleOverlayBoxProps {
   overrideBackButton?: any,
   visible:             boolean,
   backgroundColor?:    any,
   maxOpacity?:         number,
   scrollable?:         boolean,
   canClose?:           boolean,
-  vFlex?: number,
-  hFlex?: number,
   closeCallback?:      any,
   style?:              any
   wrapperStyle?:       any,
@@ -38,24 +35,22 @@ interface overlayBoxProps {
 // Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
 //    true: disable the back button
 //    function: execute that function when the back button is pressed
-export class SimpleOverlayBox extends Component<overlayBoxProps, any> {
+export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
 
   _getTitle() {
-    if (!this.props.getDesignElement && this.props.title) {
-      return (
-          <Text style={{fontSize: 24, fontWeight:'bold', textAlign:'left'}}>{this.props.title}</Text>
-      )
+    if (this.props.title) {
+      return (<Text style={{fontSize: 24, fontWeight:'bold', textAlign:'left'}}>{this.props.title}</Text>);
     }
   }
 
-  _getFooterComponent(closeIconSize) {
+  _getFooterComponent() {
     if (this.props.footerComponent) {
       return (
         <View style={{
           position: 'absolute',
           bottom: -30,
           left: 0,
-          width: screenWidth - 0.25*closeIconSize,
+          width: screenWidth-30,
           height: 60,
         }}>
           {this.props.footerComponent}
@@ -107,10 +102,9 @@ export class SimpleOverlayBox extends Component<overlayBoxProps, any> {
       >
         <SafeAreaView style={{flex:1}}>
           <View style={{flex:1, padding:30}}>
-            <View style={{flex:1, backgroundColor:colors.white.hex, paddingLeft:30, borderRadius:10}}>
-              <ScrollView showsVerticalScrollIndicator={true} persistentScrollbar={true} contentContainerStyle={{paddingRight:20, paddingTop: 60}}>{
-                this.props.children
-              }</ScrollView>
+            <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
+              {this.props.scrollable && <ScrollView contentContainerStyle={{flex:1, paddingRight:20, paddingTop: 60}}>{this.props.children}</ScrollView> }
+              {!this.props.scrollable && <View style={{flex:1,paddingRight:20, paddingTop: 60}}>{this.props.children}</View> }
               <BlurView blurType={'light'} blurAmount={3} style={{
                 position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,
                 borderRadius: 10, backgroundColor: colors.white.rgba(0.5),
@@ -120,6 +114,7 @@ export class SimpleOverlayBox extends Component<overlayBoxProps, any> {
                 { this._getTitle() }
               </BlurView>
               { this._getCloseIcon(closeIconSize) }
+              { this._getFooterComponent()}
             </View>
           </View>
         </SafeAreaView>

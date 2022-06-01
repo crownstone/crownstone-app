@@ -338,6 +338,9 @@ export class BehaviourEditor extends LiveComponent<
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
 
+
+
+
     core.eventBus.emit("showDimLevelOverlay",{
       initialValue: this.behaviour.willDim() ? this.behaviour.getDimPercentage() : exampleBehaviour.getDimPercentage(),
       callback: (value) => {

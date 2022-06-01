@@ -11,13 +11,14 @@ import Slider from '@react-native-community/slider';
 import {FadeIn} from "../../../components/animated/FadeInView";
 import {xUtil} from "../../../../util/StandAloneUtil";
 import {AicoreBehaviour} from "../supportCode/AicoreBehaviour";
-import {TextButtonDark, TimeButtonWithImage} from "../../../components/InterviewComponents";
 import {AicoreUtil} from "../supportCode/AicoreUtil";
 import {AicoreTimeData} from "../supportCode/AicoreTimeData";
 
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import {LOGe} from "../../../../logging/Log";
+import {ScaledImage} from "../../../components/ScaledImage";
+import {Icon} from "../../../components/Icon";
+import {OverlaySaveButton} from "../../../overlays/ListOverlay";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
@@ -29,9 +30,9 @@ let timeReference = null;
 let headerStyle : TextStyle = {
   paddingLeft: 15,
   paddingRight: 15,
-  fontSize: 15,
+  fontSize: 16,
   fontWeight: "bold",
-  color: colors.csBlue.hex
+  color: colors.black.hex
 };
 
 export class AicoreTimeCustomization extends Component<any,any> {
@@ -52,7 +53,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
 
   render() {
     return (
-      <View style={{flex:1}}>
+      <View style={{flex:1, paddingLeft:15, paddingTop:10}}>
         <TimePart
           initialLabel={ lang("When_should_I_start_")}
           finalLabel={lang("Ill_start_at_")}
@@ -62,6 +63,9 @@ export class AicoreTimeCustomization extends Component<any,any> {
           initiallyFinished={this.state.fromFinished}
           setFinished={(value) => {
             this.setState({fromFinished:value});
+            if (this.state.toFinished) {
+              this.props.setStoreButton(true, this.fromTime, this.toTime);
+            }
           }}
         />
         {this.state.fromFinished ? <View style={{ height: 20 }} /> : undefined}
@@ -74,30 +78,11 @@ export class AicoreTimeCustomization extends Component<any,any> {
           initiallyFinished={this.state.toFinished}
           setFinished={(value) => {
             this.setState({toFinished:value});
+            if (this.state.fromFinished) {
+              this.props.setStoreButton(true, this.fromTime, this.toTime);
+            }
           }}
         />
-        <View style={{ flex: 1 }}/>
-        {this.state.toFinished && this.state.fromFinished ?
-          <TimeButtonWithImage
-            basic={true}
-            label={ lang("Looks_good_")}
-            image={require("../../../../../assets/images/icons/timeIcon.png")}
-            callback={() => {
-              if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
-                Alert.alert(
-                  lang("_The_start_and_ending_time_header"),
-                  lang("_The_start_and_ending_time_body"),
-                 [{text:lang("_The_start_and_ending_time_left")}])
-              }
-              else {
-                let tempBehaviour = new AicoreBehaviour();
-                tempBehaviour.insertTimeDataFrom(this.fromTime);
-                tempBehaviour.insertTimeDataTo(this.toTime);
-                this.props.save(tempBehaviour.getTime());
-              }
-            }}/>
-          : undefined}
-        <View style={{ height: 5 }} />
       </View>
     )
   }
@@ -139,14 +124,13 @@ function TimePart(props : {
         case "SUNSET":
           elements.push(<TimeSummary key={"startsAt"} label={timeStr} index={index++} type={type} callback={() => { setType(null); }} />);
           elements.push(
-            <View key={"offsetSetup"} style={{ paddingTop: 5 }}>
+            <View key={"offsetSetup"} style={{ paddingTop: 5, flex:1 }}>
               <FadeIn index={index++}>
                 <Text style={headerStyle}>{ lang("Exactly_or_with_an_offset_") }</Text>
               </FadeIn>
-              <View style={{ height: 5 }}/>
-              <FadeIn index={index++}>
+              <FadeIn index={index++} style={{marginTop:5}}>
                 <View style={{ flexDirection: "row", justifyContent: 'flex-end', alignItems: 'center'}}>
-                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("__h") }</Text>
+                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("_h") }</Text>
                   <View style={{flex:1}}>
                     <Slider
                       style={{ height: 40 }}
@@ -165,22 +149,19 @@ function TimePart(props : {
                   <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("__h") }</Text>
                 </View>
               </FadeIn>
+              <View style={{ flex:1 }}/>
               <FadeIn index={index++}>
-                <View style={{ marginLeft: 25 }}>
-                  <TextButtonDark label={lang("Thats_a_good_time_")} basic={true} callback={() => {
-                    setFinished(true);
-                    props.setFinished(true);
-                  }}/>
-                </View>
+                <TextButton label={lang("Thats_a_good_time_")} basic={true} callback={() => {
+                  setFinished(true);
+                  props.setFinished(true);
+                }}/>
               </FadeIn>
               { props.instantEdit && !ignoreInstantEdit ?
                 <FadeIn index={index++}>
-                  <View style={{ marginLeft: 25 }}>
-                  <TextButtonDark label={ lang("I_want_something_else_")} basic={true} callback={() => {
+                  <TextButton label={ lang("I_want_something_else_")} basic={true} callback={() => {
                     setType(null);
                     setIgnorInstantEdit(true);
                   }}/>
-                  </View>
                 </FadeIn>
                 : undefined }
             </View>
@@ -191,7 +172,7 @@ function TimePart(props : {
             props.instantEdit && !ignoreInstantEdit ?
             <FadeIn index={index++}>
               <View style={{ marginLeft: 25 }}>
-                <TextButtonDark label={ lang("I_want_something_else_")} basic={true} callback={() => {
+                <TextButton label={ lang("I_want_something_else_")} basic={true} callback={() => {
                   setType(null);
                   setIgnorInstantEdit(true);
                 }}/>
@@ -256,12 +237,11 @@ function TimePart(props : {
                     </Text>
                   </TouchableOpacity>
                 </FadeIn>
-                <TimeButtonWithImage
+                <TextButton
                   basic={true}
                   key={"resultButton" + index}
                   index={index}
-                  label={ Platform.OS === "android" ? lang("Thats_a_good_time_") : lang("Tap_to_select_time_")}
-                  image={require("../../../../../assets/images/icons/clock.png")}
+                  label={ lang("Thats_a_good_time_")}
                   callback={() => {
                     setFinished(true);
                     props.setFinished(true);
@@ -272,7 +252,7 @@ function TimePart(props : {
           }
           else {
             elements.push(
-              <View key={"clockUI"}>
+              <View key={"clockUI"} style={{flex:1}}>
                 <FadeIn index={index++}>
                   <UncontrolledDatePickerIOS
                     ref={(x) => {
@@ -280,15 +260,13 @@ function TimePart(props : {
                     }}
                     date={new Date(new Date(new Date().setHours(time.hours)).setMinutes(time.minutes))}
                     mode="time"
-                    style={{ height: 210 }}
                   />
                 </FadeIn>
-                <TimeButtonWithImage
-                  basic={true}
+                <View style={{flex:1}} />
+                <TextButton
                   key={"resultButton" + index}
                   index={index}
                   label={lang("Tap_to_select_time_")}
-                  image={require("../../../../../assets/images/icons/clock.png")}
                   callback={() => {
                     timeReference.getDate((date) => {
                       let hours = date.getHours();
@@ -327,7 +305,7 @@ function TimePart(props : {
   }
 
   return (
-    <View>
+    <View style={{flex: finished === false ? 1 : undefined}}>
       { elements }
     </View>
   )
@@ -405,3 +383,47 @@ function TypeSelector(props) {
   );
 }
 
+
+export function TimeButtonWithImage(props) {
+  return (
+    <FadeIn index={props.index || 0}>
+      <TouchableOpacity
+        style={{
+          flexDirection:'row',
+          margin:10,
+          marginTop:5,
+          marginBottom:5,
+          paddingTop:10,
+          paddingBottom:10,
+          paddingRight:15,
+          alignItems:'center',
+        }}
+        onPress={() => { props.callback(); }}
+      >
+        <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetWidth={40}/>
+        <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
+        <Text style={{fontWeight:'bold', fontSize:16}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
+      </TouchableOpacity>
+    </FadeIn>
+  );
+}
+
+export function TextButton(props) {
+  return (
+    <TouchableOpacity
+      testID={props.testID}
+      style={{flexDirection:'row',
+        margin:10,
+        marginTop:5,
+        marginBottom:5,
+        paddingTop:10,
+        paddingBottom:10,
+        paddingRight:15,
+        alignItems:'center',
+      }} onPress={() => { props.callback(); }}>
+      { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
+      <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.black.hex} size={15} style={{padding:10}} />
+      <Text style={{color:  props.textColor, fontSize:16, fontWeight:'bold'}}>{props.label}</Text>
+    </TouchableOpacity>
+  );
+}
