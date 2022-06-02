@@ -28,6 +28,7 @@ import {SelectedCornerIcon} from "../components/IconCircleEdit";
 import {SelectPicture} from "../components/PictureCircle";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Component } from "react";
+import { core } from "../../Core";
 
 
 export class RoomPictureSelection extends LiveComponent<{
@@ -55,10 +56,11 @@ export class RoomPictureSelection extends LiveComponent<{
       label:'Custom background picture',
       callback: () => {
         this.setState({selecting:true});
+        let unsubscribe = core.eventBus.on("hidePopup")
         SelectPicture((uri) => {
           this.props.selectImage(uri, "CUSTOM");
           setTimeout(() => { NavigationUtil.dismissModal(); }, 500);
-        });
+        }, () => {this.setState({selecting:false});});
       }
     })
     items.push({

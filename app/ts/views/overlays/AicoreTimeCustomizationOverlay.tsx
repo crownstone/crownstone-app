@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 
-import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../Core";
 import { ScaledImage } from "../components/ScaledImage";

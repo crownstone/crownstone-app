@@ -21,18 +21,12 @@ class OverlayManagerClass {
       })
 
       // message popup from the lib
-      core.nativeBus.on(core.nativeBus.topics.libPopup,
-        (data) => { NavigationUtil.showOverlay('LibMessages',{data: data});
+      core.nativeBus.on(core.nativeBus.topics.libPopup,(data) => {
+        NavigationUtil.showOverlay('LibMessages',{data: data});
       });
 
       // hardware errors
-      core.eventBus.on('showErrorOverlay', (data) => { NavigationUtil.showOverlay('ErrorOverlay', {data: data}); });
       core.eventBus.on('showListOverlay', (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); });
-
-      // localization popup.
-      core.eventBus.on('showLocalizationSetupStep1', (data) => { NavigationUtil.showOverlay('LocalizationSetupStep1',{data: data}); })
-      core.eventBus.on('showLocalizationSetupStep2', (data) => { NavigationUtil.showOverlay('LocalizationSetupStep2',{data: data}); })
-
 
       core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
@@ -44,84 +38,6 @@ class OverlayManagerClass {
       core.eventBus.on('showTextInputOverlay', (data) => { NavigationUtil.showOverlay('TextInputOverlay',{data: data}); })
     }
     this._initialized = true;
-
-    // setTimeout(() => {
-    //   core.eventBus.emit("showAicoreTimeCustomizationOverlay", {data: {
-    //       callback: (newTime: aicoreTime) => {
-    //       },
-    //       time: null,
-    //       image: require("../../assets/images/overlayCircles/time.png")
-    //     }
-    //   })
-    // })
-
-    // setTimeout(() => {
-    //   core.eventBus.emit("showDimLevelOverlay",{
-    //     initialValue: 59,
-    //     callback: (value) => {
-    //     }
-    //   })
-    // })
-
-    // setTimeout(() => {
-    //   let state = core.store.getState();
-    //   let sphereId = Object.keys(state.spheres)[0];
-    //   let stoneId = Object.keys(state.spheres[sphereId].stones)[0]
-    //   core.eventBus.emit('showErrorOverlay', {stoneId: stoneId, sphereId: sphereId});
-    // },2000)
-
-    // setTimeout(() => {
-    //   let state = core.store.getState();
-    //   let sphereId = Object.keys(state.spheres)[0];
-    //   let stoneId = Object.keys(state.spheres[sphereId].stones)[0]
-    //   core.eventBus.emit('showLockOverlay', {stoneId: stoneId, sphereId: sphereId});
-    // },2000)
-
-    // setTimeout(() => {
-    //   let state = core.store.getState();
-    //   let sphereId = Object.keys(state.spheres)[0];
-    //   core.eventBus.emit("showLocalizationSetupStep2", sphereId);
-    // },2000)
-
-    // setTimeout(() => {
-    //   core.eventBus.emit("showNumericOverlay",{
-    //     value: '2',
-    //     title: "here",
-    //     text: "Input a number and press set, or close this window.",
-    //     callback: () => {}
-    //   })
-    // },1000)
-
-    // setTimeout(() => {
-    //   let state = core.store.getState();
-    //   let sphereId = Object.keys(state.spheres)[0];
-    //   core.eventBus.emit('showListOverlay', {
-    //     title: "Select room",
-    //     getItems: () => {
-    //       const state = core.store.getState();
-    //       const sphere = state.spheres[sphereId];
-    //       let items = [];
-    //       Object.keys(sphere.locations).forEach((locationId) => {
-    //           let location = sphere.locations[locationId];
-    //           items.push( {id: location.config.uid, component: <RoomList
-    //             icon={location.config.icon}
-    //             name={location.config.name}
-    //             hideSubtitle={true}
-    //             showNavigationIcon={false}
-    //             small={true}
-    //           />})
-    //         });
-    //
-    //           return items;
-    //         },
-    //         callback: (selection) => {
-    //       },
-    //         themeColor: colors.green.rgba(0.8),
-    //         allowMultipleSelections: true,
-    //         selection: null,
-    //         image: require("../../assets/images/overlayCircles/roomsCircle.png")
-    //     })
-    // },1000)
   }
 
   initStateOverlays() {

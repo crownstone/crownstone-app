@@ -6,10 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 
-import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
 
 export class SimpleOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -52,9 +52,8 @@ export class SimpleOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox
+      <SimpleOverlayBox
         visible={this.state.visible}
-        hFlex={8} vFlex={5}
         overrideBackButton={false}
         canClose={true}
         scrollable={true}
@@ -64,7 +63,7 @@ export class SimpleOverlay extends Component<any, any> {
         footerComponent={this.props.data?.footer}
       >
         { this.customContent }
-      </OverlayBox>
+      </SimpleOverlayBox>
     );
   }
 }

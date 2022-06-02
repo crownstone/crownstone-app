@@ -1196,7 +1196,7 @@ export default {
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
     Request_Permission:                     function() { return "Request Permission" },
     toAppSettings:                          function() { return "Go to app settings!" },
-    Request_failed____Youll_h:              function() { return "Request failed... You'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to Settings -> Crownstone -> Location -> Always." },
+    Request_failed____Youll_h:              function() { return "Request failed... You'll have to manually enable 'Always' location access for the Crownstone app in your phone's settings. Go to the settings by tapping the button below." },
     _Request_not_allowed______header:       function() { return "Request not allowed...." },
     _Request_not_allowed______body:         function() { return "Please ensure that the permission is set to always. If it is always already, please set it to while in use, and back to always." },
     _Request_not_allowed______left:         function() { return "OK" },

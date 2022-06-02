@@ -2132,7 +2132,7 @@ export default {
     },
     Request_Permission:                     function() { return "Toestemming vragen"; },
     toAppSettings:                          function() { return "Naar de app settings!"; },
-    Request_failed____Youll_h:              function() { return "Het verzoek is mislukt... Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Crownstone -> Locatie -> Altijd."; },
+    Request_failed____Youll_h:              function() { return "Het verzoek is mislukt... Je moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar de instellingen via de onderstaande knop."; },
     _Request_not_allowed______header:       function() { return "Verzoek niet toegestaan..."; },
     _Request_not_allowed______body:         function() { return "Zorg ervoor dat de toestemming is ingesteld op altijd. Als dat al het geval is, zet hem dan op terwijl hij in gebruik is, en terug op altijd."; },
     _Request_not_allowed______left:         function() { return "Oké"; },

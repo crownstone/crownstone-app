@@ -119,6 +119,7 @@ interface NativeBusTopics {
 }
 
 interface NativeBus {
+  emit: (topic: string, data: any) => void,
   topics: NativeBusTopics,
   on(topic : string, callback) : () => void,
   clearAllEvents() : void,

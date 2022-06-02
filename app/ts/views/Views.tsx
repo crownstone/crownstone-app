@@ -67,11 +67,8 @@ import { DfuFinished }                        from "../views/dfu/DfuFinished";
 import { Processing }                         from "../views/overlays/Processing";
 import { AicoreTimeCustomizationOverlay }     from "../views/overlays/AicoreTimeCustomizationOverlay";
 import { BleStateOverlay }                    from "../views/overlays/BleStateOverlay";
-import { ErrorOverlay }                       from "../views/overlays/ErrorOverlay";
 import { LibMessages }                        from "../views/overlays/LibMessages";
 import { ListOverlay }                        from "../views/overlays/ListOverlay";
-import { LocalizationSetupStep1 }             from "../views/overlays/LocalizationSetupStep1";
-import { LocalizationSetupStep2 }             from "../views/overlays/LocalizationSetupStep2";
 import { LocationPermissionOverlay }          from "../views/overlays/LocationPermissionOverlay";
 import { SimpleOverlay }                      from "../views/overlays/SimpleOverlay";
 import { OptionPopup }                        from "../views/overlays/OptionPopup";
@@ -239,11 +236,8 @@ export const Views = {
   AicoreTimeCustomizationOverlay:    AicoreTimeCustomizationOverlay,
   BleStateOverlay:                   BleStateOverlay,
   DimLevelOverlay:                   DimLevelOverlay,
-  ErrorOverlay:                      ErrorOverlay,
   LibMessages:                       LibMessages,
   ListOverlay:                       ListOverlay,
-  LocalizationSetupStep1:            LocalizationSetupStep1,
-  LocalizationSetupStep2:            LocalizationSetupStep2,
   LocationPermissionOverlay:         LocationPermissionOverlay,
   NumericOverlay:                    NumericOverlay,
   OptionPopup:                       OptionPopup,

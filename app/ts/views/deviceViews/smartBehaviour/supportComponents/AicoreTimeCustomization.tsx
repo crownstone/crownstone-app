@@ -53,7 +53,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
 
   render() {
     return (
-      <View style={{flex:1, paddingLeft:15, paddingTop:10}}>
+      <View style={{flex:1, paddingLeft:15, paddingTop:10, paddingRight:15}}>
         <TimePart
           initialLabel={ lang("When_should_I_start_")}
           finalLabel={lang("Ill_start_at_")}

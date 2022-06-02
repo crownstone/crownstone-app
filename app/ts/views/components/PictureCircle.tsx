@@ -100,9 +100,18 @@ export class PictureCircle extends Component<any, any> {
 }
 
 
-export function SelectPicture(callback) {
+export function SelectPicture(callback: (uri: string) => void, cancelCallback?: () => void) {
+  let unsubscribe = core.eventBus.on("hidePopup", () => {
+    unsubscribe();
+
+    if (cancelCallback) {
+      cancelCallback();
+    }
+  })
+
   core.eventBus.emit("showPopup", {buttons: [
     {text: lang("Camera"), testID:"optionsCamera", callback: () => {
+      unsubscribe();
       setTimeout(() => {
         launchCamera({ saveToPhotos: false, mediaType: "photo"}, (response) => {
           // console.log('Response = ', response);
@@ -121,6 +130,7 @@ export function SelectPicture(callback) {
       }, 100);
     }},
     {text: lang("Photo_Library"), testID:"optionsPhotoLibrary", callback: () => {
+      unsubscribe();
       setTimeout(() => {
         launchImageLibrary({ mediaType: "photo", selectionLimit: 1 }, (response) => {
           // console.log('Response = ', response);

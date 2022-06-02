@@ -49,12 +49,11 @@ export function Debug() {
 
 function DebugPopup() {
   // setTimeout(() => {
-  //   core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
+  //   core.eventBus.emit('showDimLevelOverlay', {
+  //     initialValue: 50,
   //     callback: (newTime: aicoreTime) => {
   //
   //     },
-  //     time: null,
-  //     image: require("../assets/images/overlayCircles/time.png")
   //   })
   // },200);
 }

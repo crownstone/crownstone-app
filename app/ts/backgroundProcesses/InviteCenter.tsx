@@ -32,7 +32,7 @@ export const InviteCenter = {
             icon: "ios-mail",
             callback: () => {
               core.eventBus.emit("showCustomOverlay", {
-                backgroundColor: colors.green.rgba(0.5),
+                backgroundColor: colors.green.rgba(0.6),
                 content: (
                   <View style={{flex:1}}>
                     <Text style={styles.header}>{ lang("Your_invitation_awaits_") }</Text>

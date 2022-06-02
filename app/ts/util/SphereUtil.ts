@@ -116,14 +116,11 @@ export const SphereUtil = {
           [{text: 'OK'}]
         );
       }
-      else if (enoughCrownstonesInLocationsForIndoorLocalization(sphereId)) {
-        core.eventBus.emit("showLocalizationSetupStep2", sphereId);
-      }
     };
 
     return {
       showItem: showFinalizeIndoorNavigationButton,
-      action: showFinalizeIndoorNavigationCallback
+      action:   showFinalizeIndoorNavigationCallback
     }
 
   },

@@ -231,11 +231,6 @@ export class RoomEdit extends LiveComponent<any, any> {
             }])
         }
       });
-      items.push({
-        label: lang("Removing_this_Room_will_m"),
-        type: 'explanation',
-        below: true
-      });
     }
 
     return items;
@@ -274,22 +269,6 @@ export class RoomEdit extends LiveComponent<any, any> {
           pictureSource: "STOCK",
         }});
     }
-    // TODO: take stock into account
-
-
-    // // Picture CANNOT be null, will always be stock.
-    // if (room.config.picture !== this.state.picture && this.state.picture === null) {
-    //   this._removePicture(room.config.picture);
-    //   core.store.dispatch({
-    //     type:'UPDATE_LOCATION_CONFIG',
-    //     sphereId: this.props.sphereId,
-    //     locationId: this.props.locationId,
-    //     data: {
-    //       picture: null,
-    //       pictureTaken: null,
-    //       pictureId: null
-    //     }});
-    // }
 
 
     if (room.config.name !== this.state.name || room.config.icon !== this.state.icon) {
