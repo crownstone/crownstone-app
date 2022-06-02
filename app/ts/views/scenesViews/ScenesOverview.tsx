@@ -30,7 +30,7 @@ import { SceneItem }              from "./supportComponents/SceneItem";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { ScaledImage } from "../components/ScaledImage";
-import { Background } from "../components/Background";
+import { Background, BackgroundCustomTopBarNavbar } from "../components/Background";
 import { Icon } from "../components/Icon";
 import { Get } from "../../util/GetUtil";
 import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
@@ -222,18 +222,13 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
 
     return (
-      <Background
-        image={background.main}
-        fullScreen={true}
-       
-        testID={'ScenesOverview'}
-      >
+      <BackgroundCustomTopBarNavbar testID={'ScenesOverview'}>
         {content}
         <TopBarBlur xlight>
           <SceneHeader editMode={this.state.editMode} setEditMode={this.setEditMode} endEditMode={this.endEditMode} />
         </TopBarBlur>
         <NavBarBlur xlight/>
-      </Background>
+      </BackgroundCustomTopBarNavbar>
     );
   }
 }

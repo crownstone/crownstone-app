@@ -25,6 +25,7 @@ import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import { EditIcon, MenuButton } from "../components/EditIcon";
 import { TopBarBlur } from "../components/NavBarBlur";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderTitle } from "../components/HeaderTitle";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -109,7 +110,7 @@ function SphereHeader({sphere, openSideMenu}) {
     <View style={{flexDirection: 'row', alignItems:'center'}}>
       <MenuButton onPress={openSideMenu} />
       <TouchableOpacity onPress={() => { openSideMenu() }} style={{alignItems:'center', justifyContent:'center'}}>
-        <Text style={styles.viewHeader}>{sphere.config.name}</Text>
+        <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>
       <View style={{flex:1}} />
       <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} />

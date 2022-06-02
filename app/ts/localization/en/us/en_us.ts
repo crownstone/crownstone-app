@@ -2906,12 +2906,6 @@ export default {
     Update_available_:                      function() { return "Update available!" },
   },
   LocalizationMenu: {},
-  ZoomInstructionOverlay:{
-    __filename: "../js/views/main/ZoomInstructionOverlay.tsx",
-    You_can_go_to_the_sphere_:              function() { return "You can go to the sphere overview just by zooming out!" },
-    Youll_have_to_do_this_onc:              function() { return "You'll have to do this once to get rid of this pop up!" },
-    Ill_try_it_:                            function() { return "I'll try it!" },
-  },
   __UNIVERSAL:{
     Developer_Menu:                         function() { return "Developer Menu" },
     Create:                                 function() { return "Create" },

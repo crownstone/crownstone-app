@@ -319,8 +319,8 @@ export const styles = StyleSheet.create({
   header: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:18, fontWeight:'bold'},
   title: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:30, fontWeight:'bold'},
   legendText: {fontSize:12, textAlign:'center', paddingTop:10},
-  viewHeader: { fontSize: 30, fontWeight: 'bold', color: colors.black.hex},
-  viewHeaderLight: { fontSize: 30, fontWeight: 'bold', color: colors.white.hex},
+  viewHeader: { fontSize: 30, fontWeight: 'bold', color: colors.black.hex,      maxWidth: screenWidth - 50 - 50},
+  viewHeaderLight: { fontSize: 30, fontWeight: 'bold', color: colors.white.hex, maxWidth: screenWidth - 50 - 50},
   viewButton: { fontSize:16, fontWeight: 'bold', color: colors.white.hex },
 });
 

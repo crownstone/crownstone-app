@@ -42,6 +42,7 @@ import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { SceneCreateNewItem } from "../scenesViews/supportComponents/SceneCreateNewItem";
 import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EventBusClass } from "../../util/EventBus";
+import { HeaderTitle } from "../components/HeaderTitle";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -58,6 +59,10 @@ interface RoomItemList {
   data?:          any,
   advertisement?: any,
   deviceType?:    string,
+}
+
+export const PERSISTED_DIMMING_OVERLAY_STATE = {
+  value: false
 }
 
 export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
@@ -97,7 +102,7 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       switchView: false,
       scrollEnabled: true,
       editMode: false,
-      dimMode: false,
+      dimMode: PERSISTED_DIMMING_OVERLAY_STATE.value,
 
       dragging: false,
       data: this.sortedList.getDraggableList(),
@@ -419,7 +424,10 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
         </TopBarBlur>
         <NavBarBlur xxlight line/>
         { this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
-          <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => { this.setState({dimMode:state})}} /> }
+          <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => {
+            this.setState({dimMode:state});
+            PERSISTED_DIMMING_OVERLAY_STATE.value = state;
+          }} /> }
       </BackgroundCustomTopBar>
     );
   }
@@ -453,21 +461,19 @@ function DimmerSwitch({dimMode, setDimMode}) {
 function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
   let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id})};
   return (
-    <View style={{flexDirection:'row', alignItems:'center'}}>
+    <View style={{flexDirection:'row', alignItems:'center', width: screenWidth}}>
       <BackIcon />
       <TouchableOpacity
         activeOpacity={editMode ? 0.2 : 1.0}
         style={{alignItems:'center', justifyContent:'center'}}
         onPress={editMode ? launchEditModal : () => {}}
       >
-        <Text style={styles.viewHeader}>{location.config.name}</Text>
+        <HeaderTitle title={location.config.name} maxWidth={screenWidth-70-50-50}/>
       </TouchableOpacity>
-      <SlideSideFadeInView visible={editMode} width={60}><SettingsIconLeft onPress={launchEditModal}/></SlideSideFadeInView>
-      <View style={{flex:1}} />
-      <SlideSideFadeInView visible={editMode} width={80}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
-      <SlideSideFadeInView visible={!editMode} width={100}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>
+      <SlideSideFadeInView visible={editMode} width={50}><SettingsIconLeft onPress={launchEditModal}/></SlideSideFadeInView>
+      <View style={{flex:1, height:30}} />
+      <SlideSideFadeInView visible={editMode} width={70}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
+      <SlideSideFadeInView visible={!editMode} width={50}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>
     </View>
   )
 }
-
-

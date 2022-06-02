@@ -34,7 +34,7 @@ export function EditIcon(props) {
 export function SettingsIconLeft(props) {
   return (
     <TouchableOpacity style={getLeftStyle(props.style)} onPress={props.onPress}>
-      <Icon name={'ios-cog'} size={30} color={color}/>
+      <Icon name={'md-create'} size={25} color={color}/>
     </TouchableOpacity>
   );
 }
@@ -43,7 +43,7 @@ export function SettingsIconLeft(props) {
 export function SettingsIconRight(props) {
   return (
     <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
-      <Icon name={'ios-cog'} size={30} color={color}/>
+      <Icon name={'md-create'} size={25} color={color}/>
     </TouchableOpacity>
   );
 }
@@ -57,7 +57,7 @@ export function DevIconRight(props) {
 
 export function EditDone(props) {
   return (
-    <TouchableOpacity style={getRightStyle()} onPress={props.onPress}>
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
       <Text style={{...styles.viewButton, color: color, textAlign:'right'}}>Done</Text>
     </TouchableOpacity>
   );
@@ -65,7 +65,7 @@ export function EditDone(props) {
 
 export function BackIcon(props) {
   return (
-    <TouchableOpacity style={getLeftStyle()} onPress={() => {
+    <TouchableOpacity style={getLeftStyle(props.style)} onPress={() => {
       if (props.modal) {
         NavigationUtil.dismissModal();
       }
@@ -73,7 +73,7 @@ export function BackIcon(props) {
         NavigationUtil.back();
       }
     }}>
-      <Icon name={'fa5-arrow-left'} size={23} color={color}/>
+      <Icon name={'fa5-arrow-left'} size={20} color={color}/>
     </TouchableOpacity>
   );
 }

@@ -81,3 +81,13 @@ export function BackgroundCustomTopBar(props: BackgroundProps) {
     </BaseBackground>
   );
 }
+
+export function BackgroundCustomTopBarNavbar(props: BackgroundProps) {
+  return (
+    <BackgroundCustomTopBar
+      {...{ fullScreen:true, image: background.main, hasNavBar:true, ...props}}
+    >
+      {props.children}
+    </BackgroundCustomTopBar>
+  );
+}
