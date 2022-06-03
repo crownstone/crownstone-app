@@ -50,6 +50,26 @@ export const Stacks = {
           {
             stack: {
               children: [
+                { component: {id: 'PowerUsage', name: "PowerUsage"} },
+              ],
+              options: {
+                topBar: { visible: false, drawBehind: true },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind:true
+                },
+                bottomTab: {
+                  id: 'bottomTab_powerUsage',
+                  testID: 'bottomTab_powerUsage',
+                  text: Languages.get("Tabs","PowerUsage")(),
+                  icon: require('../../assets/images/icons/graph.png'),
+                }
+              }
+            }
+          },
+          {
+            stack: {
+              children: [
                 {
                   component: {
                     id: 'SphereOverview',
@@ -84,26 +104,6 @@ export const Stacks = {
                   testID: 'bottomTab_scenes',
                   text: Languages.get("Tabs","Scenes")(),
                   icon: require('../../assets/images/icons/scenes.png'),
-                }
-              }
-            }
-          },
-          {
-            stack: {
-              children: [
-                { component: {id: 'PowerUsage', name: "PowerUsage"} },
-              ],
-              options: {
-                topBar: { visible: false, drawBehind: true },
-                bottomTabs:{
-                  backgroundColor: 'transparent',
-                  drawBehind:true
-                },
-                bottomTab: {
-                  id: 'bottomTab_powerUsage',
-                  testID: 'bottomTab_powerUsage',
-                  text: Languages.get("Tabs","PowerUsage")(),
-                  icon: require('../../assets/images/icons/graph.png'),
                 }
               }
             }

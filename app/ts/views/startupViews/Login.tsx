@@ -17,7 +17,7 @@ import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import {emailChecker, getImageFileFromUser} from "../../util/Util";
 import {CLOUD} from '../../cloud/cloudAPI'
 import {TextEditInput} from '../components/editComponents/TextEditInput'
-import {Background} from '../components/Background'
+import { Background, BackgroundCustomTopBar } from "../components/Background";
 import {StoreManager} from '../../database/storeManager'
 import loginStyles from './LoginStyles'
 import {background, colors, screenHeight, screenWidth, topBarHeight} from "../styles";
@@ -226,7 +226,7 @@ export class Login extends Component<any, any> {
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={background.main} keyboardAvoid={true} testID={"LoginView"}>
+      <BackgroundCustomTopBar keyboardAvoid={true} testID={"LoginView"}>
         <SafeAreaView>
         <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
@@ -280,7 +280,7 @@ export class Login extends Component<any, any> {
           </View>
         </ScrollView>
         </SafeAreaView>
-      </Background>
+      </BackgroundCustomTopBar>
     );
   }
 
