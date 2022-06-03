@@ -40,7 +40,7 @@ const defaultColorList = [
 ]
 
 
-export function BarGraphData(props: {data: number[][],yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number}) {
+export function BarGraphData(props: {data: Record<locationId,number>[],yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number}) {
   let values = [];
   let valueFillFactor = 0.8;
   let valueStep = props.width/props.data.length;
@@ -66,7 +66,7 @@ export function BarGraphData(props: {data: number[][],yStart: number, xStart: nu
  * @param props
  * @constructor
  */
-function StackedBarValue(props: { data: number[], x:number, y: number, width:number, maxHeight: number, maxValue: number, colors?: color[]}) {
+function StackedBarValue(props: { data: Record<locationId, number>, x:number, y: number, width:number, maxHeight: number, maxValue: number, colors?: color[]}) {
   let colorsUsed = props.colors ?? defaultColorList;
   let data = props.data;
   let stack = [];
@@ -76,8 +76,8 @@ function StackedBarValue(props: { data: number[], x:number, y: number, width:num
   let colorArr = Object.keys(colors);
 
   let colorIndex = 0;
-  for (let datapoint of data) {
-    let height = (datapoint / props.maxValue)*props.maxHeight;
+  for (let locationId in data) {
+    let height = (data[locationId] / props.maxValue)*props.maxHeight;
 
     stack.push(
       <Rect

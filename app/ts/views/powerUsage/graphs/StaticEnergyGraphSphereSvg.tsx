@@ -8,6 +8,7 @@ import { DataStep } from "../../components/graph/GraphComponents/DataStep";
 import { BarGraphTimeAxis_Hours } from "./BarGraphTimeAxis";
 import { BarGraphDataAxis } from "./BarGraphDataAxis";
 import { BarGraphData } from "./BarGraphData";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 export function StaticEnergyGraphSphereSvg(props) {
   let forceUpdate = useForceUpdate()
@@ -55,12 +56,17 @@ function EnergyGraphAxis(props : {height: number, width?:number}) {
 
       let roomCount = 40;
 
+      let rooms = []
+      for (let i = 0; i < roomCount; i++) {
+        rooms.push(xUtil.getUUID());
+      }
+
       let data = []
       for (let i = 0; i < valueCount; i++) {
-        data.push([]);
+        data.push({});
         for (let k = 0; k < roomCount; k++) {
           let value = gaussian(i)*Math.random()*3600+ Math.random()*100;
-          data[i].push(value);
+          data[i][rooms[k]] = value;
         }
       }
   /** end of Generate Data **/
@@ -95,10 +101,10 @@ function EnergyGraphAxis(props : {height: number, width?:number}) {
 
 function getMaxValue(data: number[][]) {
   let max = -Infinity;
-  for (let arr of data) {
+  for (let set of data) {
     let sum = 0;
-    for (let value of arr) {
-      sum += value;
+    for (let locationId in set) {
+      sum += set[locationId];
     }
     max = Math.max(max, sum);
   }
