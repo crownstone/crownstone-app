@@ -5,9 +5,9 @@ import { BlurView } from "@react-native-community/blur";
 import { appStyleConstants, colors, screenWidth } from "../../styles";
 import { Line, Svg, Rect, Text } from "react-native-svg";
 import { DataStep } from "../../components/graph/GraphComponents/DataStep";
-import { BarGraphTimeAxis_Hours } from "./BarGraphTimeAxis";
-import { BarGraphDataAxis } from "./BarGraphDataAxis";
-import { BarGraphData } from "./BarGraphData";
+import { BarGraphTimeAxis_HoursSvg } from "./svg/BarGraphTimeAxis";
+import { BarGraphDataAxisSvg } from "./svg/BarGraphDataAxis";
+import { BarGraphDataSvg } from "./svg/BarGraphData";
 import { xUtil } from "../../../util/StandAloneUtil";
 
 export function StaticEnergyGraphSphereSvg(props) {
@@ -19,13 +19,13 @@ export function StaticEnergyGraphSphereSvg(props) {
   return (
     <React.Fragment>
       <View>
-        <EnergyGraphAxis width={0.9*screenWidth} height={200}/>
+        <EnergyGraphAxisSvg width={0.9*screenWidth} height={200}/>
       </View>
     </React.Fragment>
   );
 }
 
-function EnergyGraphAxis(props : {height: number, width?:number}) {
+function EnergyGraphAxisSvg(props : {height: number, width?:number}) {
   let dataSpacing     = 5;  // space between max data value and top of axis;
   let dataTextSpacing = 6;  // space between data values and axis
   let dataTextWidth   = 22; // width of the textAreas of the data values on the dataAxis
@@ -54,7 +54,7 @@ function EnergyGraphAxis(props : {height: number, width?:number}) {
         return stoneProbability;
       }
 
-      let roomCount = 40;
+      let roomCount = 10;
 
       let rooms = []
       for (let i = 0; i < roomCount; i++) {
@@ -75,22 +75,23 @@ function EnergyGraphAxis(props : {height: number, width?:number}) {
 
   return (
     <Svg width={props.width} height={props.height}>
-      <BarGraphDataAxis
+      <BarGraphDataAxisSvg
         {...dimensions}
         textWidth={dataTextWidth}
         maxValue={maxValue}
         valueMaxHeight={valueMaxHeight}
         spacing={dataSpacing}
       />
-      <BarGraphTimeAxis_Hours
+      <BarGraphTimeAxis_HoursSvg
         {...dimensions}
         textHeight={timeTextHeight}
       />
-      <BarGraphData
+      <BarGraphDataSvg
         {...dimensions}
         data={data}
         maxValue={maxValue}
         valueMaxHeight={valueMaxHeight}
+        callback={(index, locationId) => { console.log("Tapped hour", index, "room", locationId)}}
       />
     </Svg>
   )

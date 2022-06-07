@@ -1,6 +1,7 @@
 import { Line, Text } from "react-native-svg";
 import * as React from "react";
-import { colors } from "../../styles";
+import { colors } from "../../../styles";
+import { BarGraphDataSvg } from "./BarGraphData";
 
 interface BarGraphTimeProps_Preconfigured {
   width: number,
@@ -20,9 +21,9 @@ interface BarGraphTimeProps extends BarGraphTimeProps_Preconfigured {
 }
 
 
-export function BarGraphTimeAxis_Hours(props: BarGraphTimeProps_Preconfigured) {
+export function BarGraphTimeAxis_HoursSvg(props: BarGraphTimeProps_Preconfigured) {
   return (
-    <BarGraphTimeAxis
+    <BarGraphTimeAxisSvg
       {...props}
       amountOfValues={24}
       label={(value) => {
@@ -50,7 +51,7 @@ export function BarGraphTimeAxis_Years(props) {
 
 }
 
-function BarGraphTimeAxis(props: BarGraphTimeProps) {
+function BarGraphTimeAxisSvg(props: BarGraphTimeProps) {
   let width = props.width;
 
   let timeValues = [];

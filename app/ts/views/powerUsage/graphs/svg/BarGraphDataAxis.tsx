@@ -1,7 +1,8 @@
-import { DataStep } from "../../components/graph/GraphComponents/DataStep";
+import { DataStep } from "../../../components/graph/GraphComponents/DataStep";
 import { Line, Text } from "react-native-svg";
-import { colors } from "../../styles";
+import { colors } from "../../../styles";
 import * as React from "react";
+import { BarGraphDataSvg } from "./BarGraphData";
 
 interface BarGraphDataProps {
   width: number,
@@ -21,7 +22,7 @@ interface BarGraphDataProps {
   textWidth: number,
 }
 
-export function BarGraphDataAxis(props: BarGraphDataProps) {
+export function BarGraphDataAxisSvg(props: BarGraphDataProps) {
   let dataValues = [];
 
   let unit = 'Wh';

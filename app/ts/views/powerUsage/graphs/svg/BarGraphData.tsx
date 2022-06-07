@@ -1,4 +1,4 @@
-import { colors } from "../../styles";
+import { colors } from "../../../styles";
 import { Rect } from "react-native-svg";
 import * as React from "react";
 
@@ -40,7 +40,7 @@ const defaultColorList = [
 ]
 
 
-export function BarGraphData(props: {data: Record<locationId,number>[],yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number}) {
+export function BarGraphDataSvg(props: {data: Record<locationId,number>[],yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number, callback: (index, locationId) => void}) {
   let values = [];
   let valueFillFactor = 0.8;
   let valueStep = props.width/props.data.length;
@@ -48,13 +48,14 @@ export function BarGraphData(props: {data: Record<locationId,number>[],yStart: n
 
   for (let i = 0; i < props.data.length; i++) {
     values.push(
-      <StackedBarValue
+      <StackedBarValueSvg
         data={props.data[i]}
         x={i*valueStep + props.xStart + 0.5*(valueStep*(1-valueFillFactor))}
         y={props.height}
         width={valueWidth}
         maxHeight={props.valueMaxHeight}
         maxValue={props.maxValue}
+        callback={(locationId) => { props.callback(i, locationId); }}
       />
     );
   }
@@ -66,7 +67,7 @@ export function BarGraphData(props: {data: Record<locationId,number>[],yStart: n
  * @param props
  * @constructor
  */
-function StackedBarValue(props: { data: Record<locationId, number>, x:number, y: number, width:number, maxHeight: number, maxValue: number, colors?: color[]}) {
+function StackedBarValueSvg(props: { data: Record<locationId, number>, x:number, y: number, width:number, maxHeight: number, maxValue: number, callback: (locationId) => void, colors?: color[]}) {
   let colorsUsed = props.colors ?? defaultColorList;
   let data = props.data;
   let stack = [];
@@ -91,6 +92,7 @@ function StackedBarValue(props: { data: Record<locationId, number>, x:number, y:
         strokeOpacity={0.15}
         rx={1}
         ry={1}
+        onPress={() => { props.callback(locationId); }}
       />
     );
 

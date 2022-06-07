@@ -26,7 +26,6 @@ export function PowerUsage(props) {
 
 function PowerUsageContent(props) {
   useDatabaseChange(['updateActiveSphere']);
-
   let activeSphere = Get.activeSphere();
   if (!activeSphere) {
     return <PowerUsageContentNoSphere />
