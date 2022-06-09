@@ -3379,6 +3379,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			DeviceType.GUIDESTONE -> "guidestone"
 			DeviceType.CROWNSTONE_BUILTIN_ONE -> "builtinOne"
 			DeviceType.CROWNSTONE_HUB -> "hub"
+			DeviceType.SOCKET_F -> "socketF"
+			DeviceType.PROTO_WITH_DIMMER -> "prototype_relay_dimmer"
+			DeviceType.PROTO_WITH_RELAY -> "prototype_relay"
+			DeviceType.PROTO_WITHOUT_SWITCH -> "prototype_no_switching"
 			else -> "undefined"
 		}
 		if (deviceTypeString == "undefined") {
