@@ -280,6 +280,7 @@ lang("_Indoor_localization_is_c_body"),
     else if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
+
       // check if there are any setup stones that match the stones already in the database.
       stoneIds.forEach((stoneId) => {
         let stoneObj = stones[stoneId];
@@ -292,9 +293,9 @@ lang("_Indoor_localization_is_c_body"),
               ids.push(stoneId);
               // we do not want to overwrite the type, but the type we're using in this view is also required. We rename the incoming type to deviceType.
               let setupData = {...setupStones[setupId]};
-              setupData.deviceType = setupData.type;
               stoneArray.push({
                 ...setupData,
+                deviceType: setupData.type,
                 type:'setupStone',
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon

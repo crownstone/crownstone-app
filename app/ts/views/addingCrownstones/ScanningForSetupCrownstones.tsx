@@ -200,8 +200,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
 
         shownHandles[setupStones[setupId].handle] = true;
         ids.push(setupId);
-        setupStones[setupId].setupMode = true;
-        stoneArray.push(setupStones[setupId]);
+        stoneArray.push({...setupStones[setupId], setupMode: true});
       });
     }
 

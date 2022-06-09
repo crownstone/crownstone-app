@@ -44,10 +44,9 @@ export const RoomUtil = {
               shownHandles[handle] = true;
               ids.push(stoneId);
               // we do not want to overwrite the type, but the type we're using in this view is also required. We rename the incoming type to deviceType.
-              let setupData = {...setupStones[setupId]};
-              setupData.deviceType = setupData.type;
               stoneArray.push({
-                ...setupData,
+                ...setupStones[setupId],
+                deviceType: setupStones[setupId].type,
                 type:'setupStone',
                 name: stoneObj.config.name,
                 icon: stoneObj.config.icon
