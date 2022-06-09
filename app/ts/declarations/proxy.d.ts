@@ -1,5 +1,31 @@
 type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu";
-type StoneType      = "UNKNOWN" | "PLUG" | "BUILTIN" | "BUILTIN_ONE" | "GUIDESTONE" | "CROWNSTONE_USB" | "CROWNSTONE_HUB";
+
+// this is used in the stone datamodel to denote the type
+type StoneType      = "UNKNOWN"        |
+                      "PLUG"           |
+                      "BUILTIN"        |
+                      "BUILTIN_ONE"    |
+                      "GUIDESTONE"     |
+                      "CROWNSTONE_USB" |
+                      "CROWNSTONE_HUB" |
+                      "SOCKET_F"       |
+                      "PROTOTYPE_RELAY_DIMMER" |
+                      "PROTOTYPE_RELAY"        |
+                      "PROTOTYPE_NO_SWITCHING";
+
+// this comes from the libs
+type DeviceType     = 'undefined'              |
+                      'plug'                   |
+                      'guidestone'             |
+                      'builtin'                |
+                      'crownstoneUSB'          |
+                      'builtinOne'             |
+                      'hub'                    |
+                      'socketF'                |
+                      'prototype_relay_dimmer' |
+                      'prototype_relay'        |
+                      'prototype_no_switching';
+
 type handle         = string;
 /**
  * All methods which will send a command to a Crownstone and fail due to there not being a connection will throw error "NOT_CONNECTED"
@@ -361,7 +387,7 @@ interface behaviourDebug {
   presenceProfile_8   : boolean[]
 }
 
-type DeviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne' | 'hub'
+
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)

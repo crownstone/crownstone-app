@@ -18,9 +18,9 @@ import {CodedError} from "../../util/Errors";
 const networkError = 'network_error';
 
 export class SetupHelper {
-  handle : any;
+  handle : handle;
   name : any;
-  type : any;
+  type : StoneType;
   icon : any;
 
   // things to be filled out during setup process
@@ -142,16 +142,16 @@ export class SetupHelper {
         sphereId: sphereId,
         stoneId: localId,
         data: {
-          cloudId: this.stoneIdInCloud,
-          type: this.type,
-          uid: this.cloudResponse.uid,
-          crownstoneId: this.cloudResponse.uid,
+          cloudId:         this.stoneIdInCloud,
+          type:            this.type,
+          uid:             this.cloudResponse.uid,
+          crownstoneId:    this.cloudResponse.uid,
           firmwareVersion: this.firmwareVersion,
           hardwareVersion: this.hardwareVersion,
-          handle: this.handle,
-          macAddress: this.macAddress,
-          iBeaconMajor: this.cloudResponse.major,
-          iBeaconMinor: this.cloudResponse.minor,
+          handle:          this.handle,
+          macAddress:      this.macAddress,
+          iBeaconMajor:    this.cloudResponse.major,
+          iBeaconMinor:    this.cloudResponse.minor,
         }
       };
 
