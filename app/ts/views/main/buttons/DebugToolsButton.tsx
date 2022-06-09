@@ -18,63 +18,63 @@ import { LocalizationLogger } from "../../../backgroundProcesses/dev/Localizatio
 import { SHARE_DATA_TYPE, shareDataViaRTC } from "../../settingsViews/dev/SettingsDeveloper";
 import { Scheduler } from "../../../logic/Scheduler";
 import { SphereOverviewButton } from "./SphereOverviewButton";
+import { DataUtil } from "../../../util/DataUtil";
 
 export function DebugToolsButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string}) {
-  let state = core.store.getState();
-  if (state.user.developer) {
-
-    let outerRadius = 0.11 * screenWidth;
-    let innerRadius = outerRadius - 10;
-    let size = 0.055 * screenWidth;
-    let iconColor = colors.csBlueDark.rgba(0.75);
-
-    let buttonStyle = {
-      position:'absolute',
-      bottom: 0,
-      left: 0,
-      padding: 6,
-      paddingLeft:10,
-      paddingTop:10,
-      flexDirection:'row',
-      alignItems:'center',
-      justifyContent:'center',
-    };
-    let viewStyle : ViewStyle = {
-      width: outerRadius,
-      height:outerRadius,
-      borderRadius:0.5*outerRadius,
-      backgroundColor: colors.white.rgba(0.55),
-      alignItems:'center',
-      justifyContent:'center',
-    };
-
-
-    return (
-      <SphereOverviewButton
-        icon={'ios-bug'}
-        iconScale={1.1}
-        callback={() => {
-          core.eventBus.emit("showPopup", {buttons: [
-              {close: false, text:"The last minute, I've been in ...",     callback: () => { selectRecentRoom(props.sphereId, 1); }},
-              {close: false, text:"The last 2 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 2); }},
-              {close: false, text:"The last 5 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 5); }},
-              {close: false, text:"The last 10 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 10); }},
-              {close: false, text:"The last 15 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 15); }},
-              {close: false, text:"The last 30 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 30); }},
-              {close: false, text:"The last hour, I've been in ...",       callback: () => { selectRecentRoom(props.sphereId, 60); }},
-              {text:"Reset collection!",                                   callback: () => {
-                  LocalizationLogger.resetMeasurement();
-                  Alert.alert("Cache reset successful","New measurements are coming in again... starting now!",[{text:"Nice!"}])
-                }},
-            ]})
-        }}
-        testID={"DebugToolsButton"}
-        visible={props.arrangingRooms === false && props.inSphere}
-        position={'bottom-left'}
-      />
-    );
+  if (!DataUtil.isDeveloper()) {
+    return <React.Fragment/>
   }
-  return <View />;
+
+  let outerRadius = 0.11 * screenWidth;
+  let innerRadius = outerRadius - 10;
+  let size = 0.055 * screenWidth;
+  let iconColor = colors.csBlueDark.rgba(0.75);
+
+  let buttonStyle = {
+    position:'absolute',
+    bottom: 0,
+    left: 0,
+    padding: 6,
+    paddingLeft:10,
+    paddingTop:10,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  };
+  let viewStyle : ViewStyle = {
+    width: outerRadius,
+    height:outerRadius,
+    borderRadius:0.5*outerRadius,
+    backgroundColor: colors.white.rgba(0.55),
+    alignItems:'center',
+    justifyContent:'center',
+  };
+
+
+  return (
+    <SphereOverviewButton
+      icon={'ios-bug'}
+      iconScale={1.1}
+      callback={() => {
+        core.eventBus.emit("showPopup", {buttons: [
+            {close: false, text:"The last minute, I've been in ...",     callback: () => { selectRecentRoom(props.sphereId, 1); }},
+            {close: false, text:"The last 2 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 2); }},
+            {close: false, text:"The last 5 minutes, I've been in ...",  callback: () => { selectRecentRoom(props.sphereId, 5); }},
+            {close: false, text:"The last 10 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 10); }},
+            {close: false, text:"The last 15 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 15); }},
+            {close: false, text:"The last 30 minutes, I've been in ...", callback: () => { selectRecentRoom(props.sphereId, 30); }},
+            {close: false, text:"The last hour, I've been in ...",       callback: () => { selectRecentRoom(props.sphereId, 60); }},
+            {text:"Reset collection!",                                   callback: () => {
+                LocalizationLogger.resetMeasurement();
+                Alert.alert("Cache reset successful","New measurements are coming in again... starting now!",[{text:"Nice!"}])
+              }},
+          ]})
+      }}
+      testID={"DebugToolsButton"}
+      visible={props.arrangingRooms === false && props.inSphere}
+      position={'bottom-left'}
+    />
+  );
 }
 
 function selectRecentRoom(sphereId: string, minutes: number) {

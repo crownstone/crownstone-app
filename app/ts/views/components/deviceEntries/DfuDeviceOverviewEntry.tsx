@@ -34,7 +34,7 @@ export function DfuDeviceOverviewEntry(props: { sphereId: sphereId, stoneId: sto
     <TouchableOpacity
       activeOpacity={1}
       onLongPress={() => {
-        if (state.user.developer) {
+        if (DataUtil.isDeveloper()) {
           Alert.alert(
             lang("_Update_just_this_Crownst_header"),
             lang("_Update_just_this_Crownst_body"),

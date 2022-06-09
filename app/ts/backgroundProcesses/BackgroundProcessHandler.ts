@@ -175,7 +175,7 @@ class BackgroundProcessHandlerClass {
         }
 
         if (Platform.OS === 'android') {
-          if (state.user.developer === true) {
+          if (DataUtil.isDeveloper()) {
             Bluenet.useHighFrequencyScanningInBackground(state.development.useHighFrequencyScanningInBackground);
           }
         }
@@ -205,8 +205,8 @@ class BackgroundProcessHandlerClass {
 
   setupLogging() {
     let state = core.store.getState();
-    Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
-    if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
+    Bluenet.enableLoggingToFile((DataUtil.isDeveloper() && state.development.logging_enabled === true) || LOG_TO_FILE === true);
+    if ((DataUtil.isDeveloper() && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
 
@@ -493,7 +493,7 @@ class BackgroundProcessHandlerClass {
 
   startDeveloperSingletons() {
     let state = core.store.getState();
-    if (state.user.developer) {
+    if (DataUtil.isDeveloper()) {
       LocalizationLogger.init();
     }
   }

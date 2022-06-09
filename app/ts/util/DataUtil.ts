@@ -739,6 +739,12 @@ export const DataUtil = {
       randomDeviceTokenValidated,
       useTimeBasedNonce: state.user.developer && state.development.use_time_based_nonce
     }
+  },
+
+
+  isDeveloper() : boolean {
+    let state = core.store.getState();
+    return state?.user?.developer ?? false;
   }
 };
 

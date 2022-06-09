@@ -4,11 +4,11 @@ import { Icon } from "./Icon";
 import { colors } from "../styles";
 import * as React from "react";
 import { core } from "../../Core";
+import { DataUtil } from "../../util/DataUtil";
 
 
 export function DebugIcon(props : {sphereId: string, stoneId: string, customView?: string}) {
-  let state = core.store.getState()
-  if (!state.user.developer) { return <View />; }
+  if (!DataUtil.isDeveloper()) { return <React.Fragment />; }
   let wrapperStyle : ViewStyle = {
     width: 35,
     height: 35,

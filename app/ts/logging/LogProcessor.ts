@@ -3,6 +3,7 @@ import { core } from "../Core";
 import { LOGi } from "./Log";
 import DeviceInfo from "react-native-device-info";
 import {AppState} from "react-native";
+import { DataUtil } from "../util/DataUtil";
 
 
 class LogProcessorClass {
@@ -53,7 +54,7 @@ class LogProcessorClass {
   refreshData() {
     if (this.initialized) {
       let state = core.store.getState();
-      let dev = state.user.developer;
+      let dev = DataUtil.isDeveloper();
       let loggingEnabled = state.development.logging_enabled;
       let devState = state.development;
 

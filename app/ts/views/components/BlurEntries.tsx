@@ -8,6 +8,7 @@ import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styl
 import {DevIconRight, SettingsIconRight} from "./EditIcon";
 import {SettingsBackground} from "./SettingsBackground";
 import {core} from "../../Core";
+import { DataUtil } from "../../util/DataUtil";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
@@ -97,8 +98,7 @@ export function BlurEntrySettingsIcon(props: {callback: () => void, visible: boo
 }
 
 export function BlurEntryDevIcon(props: {callback: () => void, visible: boolean}) {
-  let state = core.store.getState();
-  let isDeveloper = state.user.developer;
+  let isDeveloper = DataUtil.isDeveloper();
   return (
     <SlideSideFadeInView visible={isDeveloper && props.visible} width={35}>
       <DevIconRight style={{height: 55, paddingHorizontal:4}} onPress={() => {

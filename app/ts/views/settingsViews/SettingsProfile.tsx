@@ -25,6 +25,7 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
+import { DataUtil } from "../../util/DataUtil";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -51,7 +52,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
       picture: user.picture,
       firstName: user.firstName,
       lastName: user.lastName,
-      showDevMenu: state.user.developer || false
+      showDevMenu: DataUtil.isDeveloper()
     };
   }
 
@@ -168,7 +169,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({type:'spacer'});
 
     if (this.state.showDevMenu) {
-      if (user.developer !== true) {
+      if (!DataUtil.isDeveloper()) {
         items.push({
           label: lang("Enable_Developer_Mode"),
           value: false,

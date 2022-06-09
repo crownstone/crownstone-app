@@ -7,8 +7,6 @@ type sphereUserId = string;
 type databaseId   = string;
 
 
-type StoneType = "PLUG" | "BUILTIN" |  "BUILTIN_ONE" | "GUIDESTONE" | "CROWNSTONE_USB" | "CROWNSTONE_HUB";
-
 interface SyncEvent {
   id: string,
   localId: string,

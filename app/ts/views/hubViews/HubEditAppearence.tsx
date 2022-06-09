@@ -237,7 +237,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
           <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("crownstone_id__",stone.config.uid, lang("unknown")) }</Text>
           {
-            core.store.getState().user.developer && <Text style={styles.version}>{ lang("uicr",JSON.stringify(stone.config.uicr, null, 2), unknownString) }</Text>
+            DataUtil.isDeveloper() && <Text style={styles.version}>{ lang("uicr",JSON.stringify(stone.config.uicr, null, 2), unknownString) }</Text>
           }
         </TouchableOpacity>
       );

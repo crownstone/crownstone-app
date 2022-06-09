@@ -15,6 +15,7 @@ import {LOGe} from "../../logging/Log";
 import {getDevAppItems} from "./dev/SettingsDeveloper";
 import {Icon} from "../components/Icon";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
+import { DataUtil } from "../../util/DataUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
@@ -153,7 +154,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
       });
     }
 
-    if (state.development.devAppVisible && state.user.developer) {
+    if (state.development.devAppVisible && DataUtil.isDeveloper()) {
       items = [...items, ...getDevAppItems()];
     }
     else {
