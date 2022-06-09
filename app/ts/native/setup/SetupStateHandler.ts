@@ -9,7 +9,16 @@ import {STONE_TYPES} from "../../Enums";
 import {core} from "../../Core";
 import {CodedError} from "../../util/Errors";
 import {CommandAPI} from "../../logic/constellation/Commander";
+import {DataUtil} from "../../util/DataUtil";
 
+
+interface SetupStoneSummary {
+  name: string,
+  icon: string,
+  type: StoneType,
+  rawType: DeviceType,
+  handle: string
+}
 
 /**
  * This class keeps track of the Crownstones in setup state.
@@ -18,7 +27,7 @@ class SetupStateHandlerClass {
   _uuid : string;
   _setupModeTimeouts : any;
   _stonesInSetupStateAdvertisements : any;
-  _stonesInSetupStateTypes: any;
+  _stonesInSetupStateTypes: Record<handle, SetupStoneSummary>;
   _currentSetupState : any;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
@@ -86,8 +95,15 @@ class SetupStateHandlerClass {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
+        let setupSummary = this._getSetupSummary(setupAdvertisement);
+        if (setupSummary.type === STONE_TYPES.unknown && !DataUtil.isDeveloper()) {
+          return;
+        }
+
+
         // If we detect a normal validated advertisement from a Crownstone that we ALSO see as a setup Crownstone, we assume it is spoofed.
         // It then has to not be validated for at least 30 seconds before we give it a chance as a setup Crownstone.
+        // spoofed Crownstones can be used to steal keys.
         if (this._spoofedCrownstonePossibility[handle] !== undefined) {
           if (Date.now() - this._spoofedCrownstonePossibility[handle] < 30000) {
             return;
@@ -121,7 +137,7 @@ class SetupStateHandlerClass {
           }
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
-          this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
+          this._stonesInSetupStateTypes[handle] = setupSummary;
 
           if (this._stonesInSetupStateTypes[handle] === undefined) {
             delete this._stonesInSetupStateTypes[handle];
@@ -130,9 +146,11 @@ class SetupStateHandlerClass {
             core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
           }
         }
+
+
         // this is here in case the device type changes. The hub might change a dongle to hub on the fly.
         if (this._stonesInSetupStateTypes[handle]?.rawType !== setupAdvertisement.serviceData.deviceType) {
-          this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
+          this._stonesInSetupStateTypes[handle] = setupSummary;
           core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
@@ -191,20 +209,27 @@ class SetupStateHandlerClass {
     }
   }
 
-  _getTypeData(advertisement : crownstoneAdvertisement) {
-    let payload = {};
-    if (     advertisement.serviceData.deviceType === 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,          rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,       rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,    rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,    rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB, rawType: advertisement.serviceData.deviceType }; }
-    else if (advertisement.serviceData.deviceType === 'hub')           { payload = {name: 'Hub',                    icon: 'c1-router',       type:STONE_TYPES.hub,           rawType: advertisement.serviceData.deviceType }; }
-    else {
-      LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
-      return undefined;
-    }
 
-    payload["handle"] = advertisement.handle;
+
+
+
+  _getSetupSummary(advertisement : crownstoneAdvertisement) : SetupStoneSummary {
+    let payload : SetupStoneSummary = {
+      handle : advertisement.handle,
+      rawType: advertisement.serviceData.deviceType,
+      name: 'Unknown device type',
+      icon: 'Unknown',
+      type: STONE_TYPES.unknown
+    };
+    if (     advertisement.serviceData.deviceType === 'plug')          { payload.name = 'Crownstone Plug';        payload.icon ='c2-pluginFilled'; payload.type = STONE_TYPES.plug;          }
+    else if (advertisement.serviceData.deviceType === 'builtin')       { payload.name = 'Crownstone Builtin';     payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtin;       }
+    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload.name = 'Crownstone Builtin One'; payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtinOne;    }
+    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload.name = 'Guidestone';             payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.guidestone;    }
+    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload.name = 'Crownstone USB';         payload.icon ='c1-router';       payload.type = STONE_TYPES.crownstoneUSB; }
+    else if (advertisement.serviceData.deviceType === 'hub')           { payload.name = 'Hub';                    payload.icon ='c1-router';       payload.type = STONE_TYPES.hub;           }
+    else {
+      LOGd.info("UNKNOWN DEVICE in setup procedure", advertisement);
+    }
 
     return payload;
   }

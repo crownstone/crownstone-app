@@ -1,5 +1,6 @@
-type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu"
-
+type CrownstoneMode = "unknown" | "setup" | "operation" | "dfu";
+type StoneType      = "UNKNOWN" | "PLUG" | "BUILTIN" | "BUILTIN_ONE" | "GUIDESTONE" | "CROWNSTONE_USB" | "CROWNSTONE_HUB";
+type handle         = string;
 /**
  * All methods which will send a command to a Crownstone and fail due to there not being a connection will throw error "NOT_CONNECTED"
  *
@@ -19,7 +20,7 @@ interface BluenetPromiseWrapperProtocol {
    * It leaves the Crownstone disconnected.
    * It can throw an error COULD_NOT_FACTORY_RESET if the return code is not success
    */
-  commandFactoryReset(handle: string)                                   : Promise< void >,
+  commandFactoryReset(handle: handle)                                   : Promise< void >,
 
   /**
    * This will connect to the Crownstone and return the mode. Possible modes are typed in CrownstoneMode.
@@ -30,25 +31,25 @@ interface BluenetPromiseWrapperProtocol {
    * @param referenceId      The sphere ID.
    * @param highPriority
    */
-  connect(handle: string, referenceId: string, highPriority?: boolean)  : Promise< CrownstoneMode >,
+  connect(handle: handle, referenceId: string, highPriority?: boolean)  : Promise< CrownstoneMode >,
 
   /**
    * Cancels a connection request to the handle. Will return immediately and will not throw errors.
    * @param handle
    */
-  cancelConnectionRequest(handle: string)                               : Promise< void >,
+  cancelConnectionRequest(handle: handle)                               : Promise< void >,
 
   /**
    * This sends the disconnect command to the Crownstone and performs a phoneDisconnect afterwards.
    * Leaves the Crownstone disconnected. Will not throw errors.
    * @param handle
    */
-  disconnectCommand(handle: string)                                     : Promise< void >,
+  disconnectCommand(handle: handle)                                     : Promise< void >,
 
-  getMACAddress(handle: string)                                         : Promise< string >,
-  getFirmwareVersion(handle: string)                                    : Promise< string >,
-  getBootloaderVersion(handle: string)                                  : Promise< string >,
-  getHardwareVersion(handle: string)                                    : Promise< string >,
+  getMACAddress(handle: handle)                                         : Promise< string >,
+  getFirmwareVersion(handle: handle)                                    : Promise< string >,
+  getBootloaderVersion(handle: handle)                                  : Promise< string >,
+  getHardwareVersion(handle: handle)                                    : Promise< string >,
 
   finalizeFingerprint(sphereId: string, locationId: string)             : Promise< void >,
 
@@ -62,48 +63,48 @@ interface BluenetPromiseWrapperProtocol {
    * Disconnect from the Crownstone from the phone's side. Used for Crownstones that are not in operation mode. Will not throw errors.
    * @param handle
    */
-  phoneDisconnect(handle: string)                                       : Promise< void >,
+  phoneDisconnect(handle: handle)                                       : Promise< void >,
 
 
-  toggleSwitchState(handle: string, stateForOn)                         : Promise< number >,
+  toggleSwitchState(handle: handle, stateForOn)                         : Promise< number >,
 
   /**
    * Setups a Crownstone. Will leave the Crownstone disconnected and setupped.
    * @param handle
    * @param dataObject
    */
-  setupCrownstone(handle: string, dataObject: setupData)                : Promise< void >,
+  setupCrownstone(handle: handle, dataObject: setupData)                : Promise< void >,
   requestLocation()                                                     : Promise< locationType >,
-  recover(handle: string)                                               : Promise< void >,
+  recover(handle: handle)                                               : Promise< void >,
   clearFingerprintsPromise()                                            : Promise< void >,
   setKeySets(keySets)                                                   : Promise< void >,
 
   // Mesh
-  multiSwitch(handle: string, arrayOfStoneSwitchPackets: any[])         : Promise< void >,
+  multiSwitch(handle: handle, arrayOfStoneSwitchPackets: any[])         : Promise< void >,
 
   // DFU
   /**
    * Will write the command to put in DFU mode. Will not directly disconnect from the Crownstone
    * @param handle
    */
-  putInDFU(handle: string)                                              : Promise< void >,
+  putInDFU(handle: handle)                                              : Promise< void >,
   /**
    * Same as putInDFU
    * @param handle
    */
-  setupPutInDFU(handle: string)                                         : Promise< void >,
-  performDFU(handle: string, uri: string)                               : Promise< void >,
+  setupPutInDFU(handle: handle)                                         : Promise< void >,
+  performDFU(handle: handle, uri: string)                               : Promise< void >,
 
   /**
    * This will connect to the Crownstone, resolve if the Crownstone is NOT in dfu mode, try to start it in normal mode and leave disconnected.
    * Does not check if the new mode is operation mode.
    * @param handle
    */
-  bootloaderToNormalMode(handle: string)                                : Promise< void >,
+  bootloaderToNormalMode(handle: handle)                                : Promise< void >,
 
-  clearErrors(handle: string, clearErrorJSON : clearErrorData)          : Promise< void >,
-  restartCrownstone(handle: string)                                     : Promise< void >,
-  setTime(handle: string, time : number)                                : Promise< void >,
+  clearErrors(handle: handle, clearErrorJSON : clearErrorData)          : Promise< void >,
+  restartCrownstone(handle: handle)                                     : Promise< void >,
+  setTime(handle: handle, time : number)                                : Promise< void >,
 
   /**
    * Set time via broadcast.
@@ -121,21 +122,21 @@ interface BluenetPromiseWrapperProtocol {
     referenceId: string,
     enableTimeBasedNonce: boolean
   )                                                                     : Promise< void >,
-  meshSetTime(handle: string, time : number)                            : Promise< void >,
-  getTime(handle: string)                                               : Promise< number >, // timestamp in seconds since epoch
+  meshSetTime(handle: handle, time : number)                            : Promise< void >,
+  getTime(handle: handle)                                               : Promise< number >, // timestamp in seconds since epoch
 
-  getSwitchState(handle: string)                                        : Promise< number >,
-  setSwitchState(handle: string, state: number)                         : Promise< void >,
-  lockSwitch(handle: string, lock : Boolean)                            : Promise< void >,
-  allowDimming(handle: string, allow: Boolean)                          : Promise< void >,
-  setSwitchCraft(handle: string, state: Boolean)                        : Promise< void >,
+  getSwitchState(handle: handle)                                        : Promise< number >,
+  setSwitchState(handle: handle, state: number)                         : Promise< void >,
+  lockSwitch(handle: handle, lock : Boolean)                            : Promise< void >,
+  allowDimming(handle: handle, allow: Boolean)                          : Promise< void >,
+  setSwitchCraft(handle: handle, state: Boolean)                        : Promise< void >,
 
-  sendNoOp(handle: string)                                              : Promise< void >,
-  sendMeshNoOp(handle: string)                                          : Promise< void >,
+  sendNoOp(handle: handle)                                              : Promise< void >,
+  sendMeshNoOp(handle: handle)                                          : Promise< void >,
 
   getTrackingState()                                                    : Promise< trackingState >,
   isDevelopmentEnvironment()                                            : Promise< boolean >,
-  setupPulse(handle: string)                                            : Promise< void >,
+  setupPulse(handle: handle)                                            : Promise< void >,
   checkBroadcastAuthorization()                                         : Promise< string >,
 
   /**
@@ -156,18 +157,18 @@ interface BluenetPromiseWrapperProtocol {
    */
   broadcastBehaviourSettings(referenceId, enabled:boolean)              : Promise< void >,
 
-  addBehaviour(handle: string, behaviour: behaviourTransfer)            : Promise<behaviourReply>,
-  updateBehaviour(handle: string, behaviour: behaviourTransfer)         : Promise<behaviourReply>,
-  removeBehaviour(handle: string, index: number)                        : Promise<behaviourReply>,
-  getBehaviour(handle: string, index: number)                           : Promise<behaviourTransfer>,
+  addBehaviour(handle: handle, behaviour: behaviourTransfer)            : Promise<behaviourReply>,
+  updateBehaviour(handle: handle, behaviour: behaviourTransfer)         : Promise<behaviourReply>,
+  removeBehaviour(handle: handle, index: number)                        : Promise<behaviourReply>,
+  getBehaviour(handle: handle, index: number)                           : Promise<behaviourTransfer>,
 
-  setTapToToggle(handle: string, enabled: boolean)                      : Promise<void>,
-  setTapToToggleThresholdOffset(handle: string, rssiThresholdOffset: number): Promise<void>,
-  getTapToToggleThresholdOffset(handle: string)                         : Promise< number >,
-  setSoftOnSpeed(handle: string, speed: number)                         : Promise< void >,
-  getSoftOnSpeed(handle: string)                                        : Promise< number >,
+  setTapToToggle(handle: handle, enabled: boolean)                      : Promise<void>,
+  setTapToToggleThresholdOffset(handle: handle, rssiThresholdOffset: number): Promise<void>,
+  getTapToToggleThresholdOffset(handle: handle)                         : Promise< number >,
+  setSoftOnSpeed(handle: handle, speed: number)                         : Promise< void >,
+  getSoftOnSpeed(handle: handle)                                        : Promise< number >,
 
-  syncBehaviours(handle: string, behaviours: behaviourTransfer[])       : Promise<behaviourTransfer[]>,
+  syncBehaviours(handle: handle, behaviours: behaviourTransfer[])       : Promise<behaviourTransfer[]>,
   getBehaviourMasterHash(behaviours: behaviourTransfer[])               : Promise<number>,
   getBehaviourMasterHashCRC(behaviours: behaviourTransfer[])            : Promise<number>,
 
@@ -178,33 +179,33 @@ interface BluenetPromiseWrapperProtocol {
   canUseDynamicBackgroundBroadcasts()                                   : Promise<boolean>,
 
   // dev
-  switchRelay(handle: string, state: number)                            : Promise< void >,
-  switchDimmer(handle: string, state: number)                           : Promise< void >,
-  getResetCounter(handle: string)                                       : Promise< number >,
-  getSwitchcraftThreshold(handle: string)                               : Promise< number >,
-  setSwitchcraftThreshold(handle: string, value: number)                : Promise< void >,
-  getMaxChipTemp(handle: string)                                        : Promise< number >,
-  setMaxChipTemp(handle: string, value: number)                         : Promise< void >,
-  getDimmerCurrentThreshold(handle: string)                             : Promise< number >,
-  setDimmerCurrentThreshold(handle: string, value: number)              : Promise< void >,
-  getDimmerTempUpThreshold(handle: string)                              : Promise< number >,
-  setDimmerTempUpThreshold(handle: string, value: number)               : Promise< void >,
-  getDimmerTempDownThreshold(handle: string)                            : Promise< number >,
-  setDimmerTempDownThreshold(handle: string, value: number)             : Promise< void >,
-  getVoltageZero(handle: string)                                        : Promise< number >,
-  setVoltageZero(handle: string, value: number)                         : Promise< void >,
-  getCurrentZero(handle: string)                                        : Promise< number >,
-  setCurrentZero(handle: string, value: number)                         : Promise< void >,
-  getPowerZero(handle: string)                                          : Promise< number >,
-  setPowerZero(handle: string, value: number)                           : Promise< void >,
-  getVoltageMultiplier(handle: string)                                  : Promise< number >,
-  setVoltageMultiplier(handle: string, value: number)                   : Promise< void >,
-  getCurrentMultiplier(handle: string)                                  : Promise< number >,
-  setCurrentMultiplier(handle: string, value: number)                   : Promise< void >,
-  setUartState(handle: string, value: 0 | 1 | 3)                        : Promise< number >,
-  getBehaviourDebugInformation(handle: string)                          : Promise< behaviourDebug >,
+  switchRelay(handle: handle, state: number)                            : Promise< void >,
+  switchDimmer(handle: handle, state: number)                           : Promise< void >,
+  getResetCounter(handle: handle)                                       : Promise< number >,
+  getSwitchcraftThreshold(handle: handle)                               : Promise< number >,
+  setSwitchcraftThreshold(handle: handle, value: number)                : Promise< void >,
+  getMaxChipTemp(handle: handle)                                        : Promise< number >,
+  setMaxChipTemp(handle: handle, value: number)                         : Promise< void >,
+  getDimmerCurrentThreshold(handle: handle)                             : Promise< number >,
+  setDimmerCurrentThreshold(handle: handle, value: number)              : Promise< void >,
+  getDimmerTempUpThreshold(handle: handle)                              : Promise< number >,
+  setDimmerTempUpThreshold(handle: handle, value: number)               : Promise< void >,
+  getDimmerTempDownThreshold(handle: handle)                            : Promise< number >,
+  setDimmerTempDownThreshold(handle: handle, value: number)             : Promise< void >,
+  getVoltageZero(handle: handle)                                        : Promise< number >,
+  setVoltageZero(handle: handle, value: number)                         : Promise< void >,
+  getCurrentZero(handle: handle)                                        : Promise< number >,
+  setCurrentZero(handle: handle, value: number)                         : Promise< void >,
+  getPowerZero(handle: handle)                                          : Promise< number >,
+  setPowerZero(handle: handle, value: number)                           : Promise< void >,
+  getVoltageMultiplier(handle: handle)                                  : Promise< number >,
+  setVoltageMultiplier(handle: handle, value: number)                   : Promise< void >,
+  getCurrentMultiplier(handle: handle)                                  : Promise< number >,
+  setCurrentMultiplier(handle: handle, value: number)                   : Promise< void >,
+  setUartState(handle: handle, value: 0 | 1 | 3)                        : Promise< number >,
+  getBehaviourDebugInformation(handle: handle)                          : Promise< behaviourDebug >,
 
-  turnOnMesh(handle: string, arrayOfStoneIds: number[])                 : Promise< void >,
+  turnOnMesh(handle: handle, arrayOfStoneIds: number[])                 : Promise< void >,
 
   /**
    * Broadcast turn on.
@@ -214,10 +215,10 @@ interface BluenetPromiseWrapperProtocol {
    * @param autoExecute
    */
   turnOnBroadcast(referenceId, stoneId, autoExecute)                    : Promise< void >,
-  setSunTimesViaConnection(handle: string, sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
+  setSunTimesViaConnection(handle: handle, sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 
   registerTrackedDevice(
-    handle: string,
+    handle: handle,
     trackingNumber:number,
     locationUID:number,
     profileId:number,
@@ -228,7 +229,7 @@ interface BluenetPromiseWrapperProtocol {
     ttlMinutes:number)                                                  : Promise< void >,
 
   trackedDeviceHeartbeat(
-    handle: string,
+    handle: handle,
     trackingNumber:number,
     locationUID:number,
     deviceToken:number,
@@ -250,24 +251,24 @@ interface BluenetPromiseWrapperProtocol {
     deviceToken:number,
     ttlMinutes:number)                                                  : Promise< void >,
 
-  getCrownstoneUptime(handle: string)                                   : Promise<number>,
-  getMinSchedulerFreeSpace(handle: string)                              : Promise<number>,
-  getLastResetReason(handle: string)                                    : Promise<ResetReason>,
-  getGPREGRET(handle: string)                                           : Promise<GPREGRET[]>,
-  getAdcChannelSwaps(handle: string)                                    : Promise<AdcSwapCount>,
-  getAdcRestarts(handle: string)                                        : Promise<AdcRestart>,
-  getSwitchHistory(handle: string)                                      : Promise<SwitchHistory[]>,
-  getPowerSamples(handle: string, type : PowersampleDataType)           : Promise<PowerSamples[]>,
+  getCrownstoneUptime(handle: handle)                                   : Promise<number>,
+  getMinSchedulerFreeSpace(handle: handle)                              : Promise<number>,
+  getLastResetReason(handle: handle)                                    : Promise<ResetReason>,
+  getGPREGRET(handle: handle)                                           : Promise<GPREGRET[]>,
+  getAdcChannelSwaps(handle: handle)                                    : Promise<AdcSwapCount>,
+  getAdcRestarts(handle: handle)                                        : Promise<AdcRestart>,
+  getSwitchHistory(handle: handle)                                      : Promise<SwitchHistory[]>,
+  getPowerSamples(handle: handle, type : PowersampleDataType)           : Promise<PowerSamples[]>,
 
-  getUICR(handle: string)                                               : Promise<UICRData>
+  getUICR(handle: handle)                                               : Promise<UICRData>
   
-  setUartKey(handle: string, uartKey: string)                           : Promise<void>,
+  setUartKey(handle: handle, uartKey: string)                           : Promise<void>,
 
   // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
-  transferHubTokenAndCloudId(handle: string, hubToken: string, cloudId: string) : Promise<HubDataReply>,
-  requestCloudId(handle: string)                                        : Promise<HubDataReply>,
-  factoryResetHub(handle: string)                                       : Promise<HubDataReply>,
-  factoryResetHubOnly(handle: string)                                   : Promise<HubDataReply>,
+  transferHubTokenAndCloudId(handle: handle, hubToken: string, cloudId: string) : Promise<HubDataReply>,
+  requestCloudId(handle: handle)                                        : Promise<HubDataReply>,
+  factoryResetHub(handle: handle)                                       : Promise<HubDataReply>,
+  factoryResetHubOnly(handle: handle)                                   : Promise<HubDataReply>,
   getLaunchArguments()                                                  : Promise<Record<string, string>>
 }
 
@@ -360,7 +361,7 @@ interface behaviourDebug {
   presenceProfile_8   : boolean[]
 }
 
-type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne' | 'hub'
+type DeviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne' | 'hub'
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)
@@ -405,7 +406,7 @@ interface crownstoneServiceData {
   hubHasInternet            : boolean,
   hubHasError               : boolean,
 
-  deviceType                : deviceType,
+  deviceType                : DeviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
@@ -413,13 +414,13 @@ interface crownstoneServiceData {
 }
 
 interface crownstoneAdvertisementSummary {
-  handle : string,
+  handle : handle,
   rssi   : number,
 }
 
 
 interface crownstoneBaseAdvertisement {
-  handle              : string,
+  handle              : handle,
   name                : string,
   rssi                : number,
   referenceId         : string, // The sphere ID. Only required when advertisement is validated and crownstone is in normal mode
@@ -438,7 +439,7 @@ interface ibeaconPackage {
   major : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   minor : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   rssi  : number,
-  referenceId  : string, // The sphere ID, as given in trackIBeacon().
+  referenceId : string, // The sphere ID, as given in trackIBeacon().
 }
 
 
@@ -476,7 +477,7 @@ interface trackingState {
 }
 
 interface nearestStone  {
-  handle    : string,
+  handle    : handle,
   rssi      : number,
   setupMode : boolean
   dfuMode   : boolean
