@@ -575,7 +575,6 @@
 		FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../app/assets/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../app/assets/fonts/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Black.ttf"; path = "../app/assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
-		FADE935A27D2156600C2D8E6 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "bluenet-lib"; path = "../../XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHandler.swift; sourceTree = "<group>"; };
 		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -922,7 +921,6 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FADE935A27D2156600C2D8E6 /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -2047,7 +2045,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2089,7 +2087,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2257,7 +2255,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2320,7 +2318,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2373,7 +2371,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -2428,7 +2426,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
@@ -2498,7 +2496,7 @@
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 29.0.0;
+				minimumVersion = 29.1.0;
 			};
 		};
 		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {

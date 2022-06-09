@@ -1,11 +1,15 @@
 export let STONE_TYPES : Record<string, StoneType> = {
-  unknown:       "UNKNOWN",
-  plug:          "PLUG",
-  builtin:       "BUILTIN",
-  builtinOne:    "BUILTIN_ONE",
-  guidestone:    "GUIDESTONE",
-  crownstoneUSB: "CROWNSTONE_USB",
-  hub:           "CROWNSTONE_HUB",
+  unknown:              "UNKNOWN",
+  plug:                 "PLUG",
+  builtin:              "BUILTIN",
+  builtinOne:           "BUILTIN_ONE",
+  guidestone:           "GUIDESTONE",
+  crownstoneUSB:        "CROWNSTONE_USB",
+  hub:                  "CROWNSTONE_HUB",
+  socketF:              "SOCKET_F",
+  prototypeRelayDimmer: "PROTOTYPE_RELAY_DIMMER",
+  prototypeRelay:       "PROTOTYPE_RELAY",
+  prototypeNoSwitching: "PROTOTYPE_NO_SWITCHING",
 };
 
 export const BCH_ERROR_CODES = {

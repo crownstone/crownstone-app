@@ -13,6 +13,7 @@ import {CancelButton} from "../views/components/topbar/CancelButton";
 import {OverlayManager} from "../backgroundProcesses/OverlayManager";
 import {NavigationUtil, topBarComponentNames} from "../util/NavigationUtil";
 import React from "react";
+import {IconShowcase} from "./development/IconShowcase";
 
 
 let viewsLoaded = false;
@@ -83,9 +84,9 @@ Navigation.events().registerAppLaunchedListener(() => {
 
   NavigationUtil.init();
 
-  NavigationUtil.setRoot(Stacks.initial());
+  // NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
-  // Navigation.registerComponent("IconDevSelector", () => IconShowcase);
-  // NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
+  Navigation.registerComponent("IconDevSelector", () => IconShowcase);
+  NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
 });

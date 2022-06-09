@@ -406,11 +406,7 @@ export class  DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }>
       return <DeviceError {...this.props} stone={stone} />
     }
 
-    let stoneCanSwitch = true;
-    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB || stone.config.type === STONE_TYPES.hub) {
-      stoneCanSwitch = false;
-    }
-
+    let stoneCanSwitch = StoneUtil.canSwitch(stone);
     let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (

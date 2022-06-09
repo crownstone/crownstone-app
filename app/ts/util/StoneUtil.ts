@@ -10,6 +10,7 @@ import {xUtil} from "./StandAloneUtil";
 import {AicoreUtil} from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 import {from, tell} from "../logic/constellation/Tellers";
 import {Get} from "./GetUtil";
+import {STONE_TYPES} from "../Enums";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StoneUtil", key)(a,b,c,d,e);
@@ -226,6 +227,49 @@ export const StoneUtil = {
         }
       }
     }
+  },
 
-  }
+
+  canSwitch(stone) : boolean {
+    let canSwitch      = true;
+
+    switch (stone.config.type) {
+      case STONE_TYPES.guidestone:
+      case STONE_TYPES.crownstoneUSB:
+      case STONE_TYPES.hub:
+      case STONE_TYPES.prototypeNoSwitching:
+        canSwitch = false;
+        break;
+    }
+
+    return canSwitch;
+  },
+
+  canDim(stone) : boolean {
+    let canDim = false;
+
+    switch (stone.config.type) {
+      case STONE_TYPES.plug:
+      case STONE_TYPES.builtin:
+      case STONE_TYPES.builtinOne:
+      case STONE_TYPES.prototypeRelayDimmer:
+        canDim = true;
+    }
+
+    return canDim;
+  },
+
+  canSwitchCraft(stone) : boolean {
+    let canSwitchCraft = false;
+
+    switch (stone.config.type) {
+      case STONE_TYPES.builtinOne:
+      case STONE_TYPES.prototypeRelay:
+      case STONE_TYPES.prototypeRelayDimmer:
+        canSwitchCraft = true;
+        break;
+    }
+
+    return canSwitchCraft;
+  },
 };

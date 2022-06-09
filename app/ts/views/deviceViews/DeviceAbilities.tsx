@@ -28,6 +28,7 @@ import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
+import {StoneUtil} from "../../util/StoneUtil";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
@@ -69,7 +70,10 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
     let permissionGranted = Permissions.inSphere(this.props.sphereId).canChangeAbilities
 
-    let hasSwitchcraft = stone.config.type === STONE_TYPES.builtinOne;
+    let canSwitch      = StoneUtil.canSwitch(stone);
+    let hasSwitchcraft = StoneUtil.canSwitchCraft(stone);
+    let canDim         = StoneUtil.canDim(stone);
+
     return (
       <Background image={background.main} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
@@ -78,9 +82,9 @@ export class DeviceAbilities extends LiveComponent<any, any> {
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("These_are_the_things_I_ca",permissionGranted) }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-                                <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+            { canDim         && <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
             { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-                                <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+            { canSwitch      && <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
           </View>
         </ScrollView>
       </Background>

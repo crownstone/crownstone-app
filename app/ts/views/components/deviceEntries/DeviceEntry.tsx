@@ -232,7 +232,7 @@ export class DeviceEntry extends Component<{
     let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let useControl = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    let useControl = StoneUtil.canSwitch(stone);
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
