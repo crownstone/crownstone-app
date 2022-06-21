@@ -1,6 +1,6 @@
 import { Icon } from "./Icon";
 import { colors, statusBarHeight, styles, tabBarHeight, topBarHeight } from "../styles";
-import { Text, TouchableOpacity, ViewStyle } from "react-native";
+import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import * as React from "react";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 

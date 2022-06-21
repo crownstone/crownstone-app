@@ -40,6 +40,9 @@ interface color {
   hsvBlend?(color, number) : color,
 }
 
+
+interface UIBlinkSettings { left?: boolean, center?: boolean, right?: boolean };
+
 interface colorInterface {
   csBlue:               color,
   csBlueDark:           color,

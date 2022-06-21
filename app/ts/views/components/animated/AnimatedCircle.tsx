@@ -52,7 +52,12 @@ export class AnimatedCircle extends Component<any, any> {
     if (nextProps.size !== this.size) {
       changeSize = true;
       this.size = nextProps.size;
-      Animated.spring(this.state.size, {toValue: this.size, friction: 2, useNativeDriver: false, delay: this.props.delay}).start()
+      if (this.props.spring === false) {
+        Animated.timing(this.state.size, {toValue: this.size, useNativeDriver: false, delay: this.props.delay}).start();
+      }
+      else {
+        Animated.spring(this.state.size, {toValue: this.size, friction: 2, useNativeDriver: false, delay: this.props.delay}).start()
+      }
     }
     return true;
   }
