@@ -25,25 +25,12 @@ export class NavigationBar extends Component<any, any> {
     super(props);
     let emptyFunction = () => {};
     this.setActiveElement = props.setActiveElement || emptyFunction;
-    this.state = { backgroundColor: new Animated.Value(0) };
   }
 
-  componentDidMount() {
-    // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(core.eventBus.on('highlight_nav_field', (fieldId) => {
-      if (fieldId === this.props.fieldId) {
-        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 50, useNativeDriver: false }).start();
-        setTimeout(() => {
-          Animated.timing(this.state.backgroundColor, { toValue: 0, useNativeDriver: false, duration: 200 }).start();
-        }, 1000);
-      }
-    }));
-  }
 
   componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
   }
-
 
 
   render() {
@@ -55,10 +42,7 @@ export class NavigationBar extends Component<any, any> {
     else if (this.props.icon)
       navBarHeight = NORMAL_ROW_SIZE;
 
-    let backgroundColor = this.state.backgroundColor.interpolate({
-      inputRange: [0,10],
-      outputRange: [menuStyles.listView.backgroundColor,  colors.green.rgba(0.8)]
-    });
+    let backgroundColor = this.props.backgroundColor ?? menuStyles.listView.backgroundColor
 
     let fontColor = colors.black.hex;
 
@@ -68,7 +52,7 @@ export class NavigationBar extends Component<any, any> {
     }
 
     let content = (
-      <Animated.View style={[menuStyles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
+      <View style={[menuStyles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
         {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
         {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
         {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
@@ -80,10 +64,15 @@ export class NavigationBar extends Component<any, any> {
         }
         {this.props.subtext ? <Text style={[menuStyles.subText, this.props.subtextStyle, {color: fontColor}]}>{this.props.subtext}</Text> : undefined}
         {this.props.value !== undefined ?
-          this.props.valueRight ?
-            <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
-            :
-            <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+          (
+            ( typeof this.props.value !== 'string' && this.props.value) ||
+            (
+              this.props.valueRight ?
+              <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+              :
+              <Text style={[menuStyles.valueText, {flex:1}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            )
+          )
           :
           <View style={{flex:1}} />
         }
@@ -94,7 +83,7 @@ export class NavigationBar extends Component<any, any> {
               <Icon name="ios-arrow-forward" size={18} color={'#888'}/>}
           </View>
         }
-      </Animated.View>
+      </View>
     );
 
     if (this.props.disabled) {

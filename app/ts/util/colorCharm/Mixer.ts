@@ -2,6 +2,9 @@
  * Created by Alex on 1/16/2015.
  */
 
+type ColorSpace = 'rgb' | 'hcl' | 'hsv' | 'hsl'
+type colorString = string;
+
 import * as convert from '../ColorConverters';
 import { interpolation } from './modules/interpolation';
 
@@ -12,12 +15,12 @@ export class Mixer {
 
   constructor() {}
 
-  linear(colors, amountOfSegments, interpolationSpace = 'rgb') {
+  linear(colors, amountOfSegments: number, interpolationSpace: ColorSpace = 'rgb') {
     return this._interpolate(colors, amountOfSegments, interpolationSpace.toUpperCase(), 'linear');
   };
 
 
-  bezier(colors, amountOfSegments, interpolationSpace) {
+  bezier(colors, amountOfSegments: number, interpolationSpace: ColorSpace = 'rgb') {
     return this._interpolate(colors, amountOfSegments, interpolationSpace.toUpperCase(), 'bezier');
   };
 
@@ -46,7 +49,7 @@ export class Mixer {
     return resultList;
   };
 
-  toHex() {
+  toHex() : colorString[] {
     let rgb = this.toRGB();
     let resultList = rgb.map((rgb) => {
       return convert.rgb2hex(rgb)
@@ -121,7 +124,7 @@ export class Mixer {
    */
   _getPoints(colors, colorSpace) {
     let points = [];
-    colors.map(function (colorArray) {
+    colors.map((colorArray) => {
       for (let i = 0; i < colorArray.length - 1; i++) {
         let fromRGB = convert.hex2rgb(colorArray[i]);
         let toRGB = convert.hex2rgb(colorArray[i + 1]);
@@ -161,6 +164,7 @@ export class Mixer {
         points.push(toConverted);
       }
     });
+
     return points;
   };
 

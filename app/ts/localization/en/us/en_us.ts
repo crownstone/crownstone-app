@@ -2839,7 +2839,7 @@ export default {
     Overview:                               function() { return "Overview" },
     Messages:                               function() { return "Messages" },
     Settings:                               function() { return "Settings" },
-    PowerUsage:                             function() { return "Power usage" },
+    Energy:                                 function() { return "Energy usage" },
     Scenes:                                 function() { return "Scenes" },
   },
   TextInputOverlay:{
@@ -2939,5 +2939,41 @@ export default {
     DAY_Fridays:                            function() { return "Fridays"},
     DAY_Saturdays:                          function() { return "Saturdays"},
     DAY_Sundays:                            function() { return "Sundays"},
+    MONTH_Jan:                              function() { return "Jan"; },
+    MONTH_Feb:                              function() { return "Feb"; },
+    MONTH_Mar:                              function() { return "Mar"; },
+    MONTH_Apr:                              function() { return "Apr"; },
+    MONTH_May:                              function() { return "May"; },
+    MONTH_Jun:                              function() { return "Jun"; },
+    MONTH_Jul:                              function() { return "Jul"; },
+    MONTH_Aug:                              function() { return "Aug"; },
+    MONTH_Sep:                              function() { return "Sep"; },
+    MONTH_Oct:                              function() { return "Oct"; },
+    MONTH_Nov:                              function() { return "Nov"; },
+    MONTH_Dec:                              function() { return "Dec"; },
+    MONTH_January:                          function() { return "January"; },
+    MONTH_February:                         function() { return "February"; },
+    MONTH_March:                            function() { return "March"; },
+    MONTH_April:                            function() { return "April"; },
+    MONTH_May_full:                         function() { return "May_full"; },
+    MONTH_June:                             function() { return "June"; },
+    MONTH_July:                             function() { return "July"; },
+    MONTH_August:                           function() { return "August"; },
+    MONTH_September:                        function() { return "September"; },
+    MONTH_October:                          function() { return "October"; },
+    MONTH_November:                         function() { return "November"; },
+    MONTH_December:                         function() { return "December"; },
   },
 }
+
+
+
+
+
+
+
+
+
+
+
+

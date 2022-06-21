@@ -74,7 +74,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
     }
 
     return (
-      <Wrapper style={{flex:1, backgroundColor: colors.csBlueDarker.hex}} onLayout={(event) => {
+      <Wrapper style={{flex:1, backgroundColor: colors.white.hex}} onLayout={(event) => {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>

@@ -1,7 +1,13 @@
 import { Line, Text } from "react-native-svg";
 import * as React from "react";
-import { colors } from "../../../styles";
+import { colors, screenWidth } from "../../../styles";
 import { BarGraphDataSvg } from "./BarGraphData";
+import {
+  DAY_INDICES_SUNDAY_START,
+  DAY_SHORT_LABEL_MAP,
+  MONTH_INDICES,
+  MONTH_SHORT_LABEL_MAP
+} from "../../../../Constants";
 
 interface BarGraphTimeProps_Preconfigured {
   width: number,
@@ -9,6 +15,7 @@ interface BarGraphTimeProps_Preconfigured {
   xStart: number,
   xEnd: number,
   yEnd: number,
+  data: EnergyData,
   textHeight: number,
   textColor?: string,
   axisColor?: string,
@@ -17,17 +24,20 @@ interface BarGraphTimeProps_Preconfigured {
 
 interface BarGraphTimeProps extends BarGraphTimeProps_Preconfigured {
   amountOfValues: number,
+
   label: (value: number) => string | null;
 }
 
 
-export function BarGraphTimeAxis_HoursSvg(props: BarGraphTimeProps_Preconfigured) {
+export function BarGraphTimeAxis_Hours(props: BarGraphTimeProps_Preconfigured) {
   return (
     <BarGraphTimeAxisSvg
       {...props}
       amountOfValues={24}
       label={(value) => {
-        if (value%2 !== 0) { return null; }
+        if (value % 2 !== 0) {
+          return null;
+        }
 
         return String(value);
       }}
@@ -35,20 +45,48 @@ export function BarGraphTimeAxis_HoursSvg(props: BarGraphTimeProps_Preconfigured
   )
 }
 
-export function BarGraphTimeAxis_WeekDays(props) {
+export function BarGraphTimeAxis_Week(props: BarGraphTimeProps_Preconfigured) {
+  return (
+    <BarGraphTimeAxisSvg
+      {...props}
+      amountOfValues={7}
+      label={(value) => {
+        let startTime = props.data.startTime;
+        let startDay = new Date(startTime).getDay()
 
+        return DAY_SHORT_LABEL_MAP(DAY_INDICES_SUNDAY_START[(startDay+value)%7]);
+      }}
+    />
+  )
 }
 
-export function BarGraphTimeAxis_MonthDays(props) {
 
+export function BarGraphTimeAxis_Month(props: BarGraphTimeProps_Preconfigured) {
+  return (
+    <BarGraphTimeAxisSvg
+      {...props}
+      amountOfValues={props.data.data.length}
+      label={(value) => {
+        if (value % 2 !== 0) {
+          return null;
+        }
+
+        return String(value+1);
+      }}
+    />
+  )
 }
 
-export function BarGraphTimeAxis_Months(props) {
-
-}
-
-export function BarGraphTimeAxis_Years(props) {
-
+export function BarGraphTimeAxis_Year(props: BarGraphTimeProps_Preconfigured) {
+  return (
+    <BarGraphTimeAxisSvg
+      {...props}
+      amountOfValues={12}
+      label={(value) => {
+        return MONTH_SHORT_LABEL_MAP(MONTH_INDICES[value]);
+      }}
+    />
+  )
 }
 
 function BarGraphTimeAxisSvg(props: BarGraphTimeProps) {
@@ -66,7 +104,7 @@ function BarGraphTimeAxisSvg(props: BarGraphTimeProps) {
       <Text
         key={`timeAxis-${i}`}
         x={i*timeTextStep + props.xStart + 0.5*timeTextWidth}
-        y={props.yEnd}
+        y={props.yEnd-2}
         fontSize={10}
         fill={props.textColor ?? colors.black.rgba(0.3)}
         textAnchor="middle"

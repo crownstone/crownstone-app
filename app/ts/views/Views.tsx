@@ -118,8 +118,8 @@ import { LocalizationMenu }                   from "./main/localization/Localiza
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
-import {PowerUsage} from "./powerUsage/PowerUsage";
 import {DeviceError} from "./deviceViews/DeviceError";
+import { EnergyUsage } from "./powerUsage/EnergyUsage";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -229,8 +229,7 @@ export const Views = {
   ScenePictureGallery:               ScenePictureGallery,
   SceneSelectCrownstones:            SceneSelectCrownstones,
 
-  PowerUsage:                        PowerUsage,
-
+  EnergyUsage:                       EnergyUsage,
 
   // Overlays:
   AicoreTimeCustomizationOverlay:    AicoreTimeCustomizationOverlay,

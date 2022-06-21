@@ -27,7 +27,11 @@ export function BarGraphDataAxisSvg(props: BarGraphDataProps) {
 
   let unit = 'Wh';
   let scalingFactor = 1;
-  if (props.maxValue > 1000) {
+  if (props.maxValue > 1e6) {
+    scalingFactor = 0.000001;
+    unit = 'MWh';
+  }
+  else if (props.maxValue > 1000) {
     scalingFactor = 0.001;
     unit = 'kWh';
   }
@@ -48,9 +52,11 @@ export function BarGraphDataAxisSvg(props: BarGraphDataProps) {
     if (height < props.yStart) { continue; }
 
     if (line.major) {
+      let dataValueHeight = height + 0.5 * dataTextHeight;
+
       dataValues.push(
         <Text
-          key={`dataAxis-${i}`}
+          key={`dataAxis-label-${i}`}
           x={props.textWidth} y={height + 0.5 * dataTextHeight}
           fontSize={10}
           fill={props.textColor ?? colors.black.rgba(0.3)}
@@ -62,8 +68,8 @@ export function BarGraphDataAxisSvg(props: BarGraphDataProps) {
 
     dataValues.push(
       <Line
-        key={'dataAxis'}
-        x1={props.xStart} y1={height} x2={props.width} y2={height}
+        key={`dataAxis-${i}`}
+        x1={props.xStart} y1={height} x2={props.xEnd} y2={height}
         stroke={
           line.major ?
             props.axisMajorColor ?? colors.black.rgba(0.10) :
@@ -77,7 +83,7 @@ export function BarGraphDataAxisSvg(props: BarGraphDataProps) {
     <React.Fragment>
       <Text
         x={props.textWidth}
-        y={props.yStart}
+        y={10}
         fontSize={10}
         fill={props.textColor ?? colors.black.rgba(0.3)}
         textAnchor={'end'}

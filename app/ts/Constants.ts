@@ -18,6 +18,20 @@ export const DAY_INDICES_MONDAY_START = [
   "Sat",
   "Sun",
 ]
+export const MONTH_INDICES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+]
 
 export let WEEK_DAY_INDICES = ['Mon','Tue','Wed','Thu','Fri']; // these are keys
 export let WEEKEND_DAY_INDICES = ['Sat','Sun']; // these are keys
@@ -77,6 +91,68 @@ export let DAY_SHORT_LABEL_MAP = function(key) {
       return Languages.get("__UNIVERSAL", 'DAY_Sat')();
     case "Sun":
       return Languages.get("__UNIVERSAL", 'DAY_Sun')();
+  }
+};
+
+
+
+export let MONTH_LABEL_MAP = function(key) {
+  switch (key) {
+    case "Jan":
+        return Languages.get("__UNIVERSAL", 'MONTH_January')();
+    case "Feb":
+      return Languages.get("__UNIVERSAL", 'MONTH_February')();
+    case "Mar":
+      return Languages.get("__UNIVERSAL", 'MONTH_March')();
+    case "Apr":
+      return Languages.get("__UNIVERSAL", 'MONTH_April')();
+    case "May":
+      return Languages.get("__UNIVERSAL", 'MONTH_May_full')();
+    case "Jun":
+      return Languages.get("__UNIVERSAL", 'MONTH_June')();
+    case "Jul":
+      return Languages.get("__UNIVERSAL", 'MONTH_July')();
+    case "Aug":
+      return Languages.get("__UNIVERSAL", 'MONTH_August')();
+    case "Sep":
+      return Languages.get("__UNIVERSAL", 'MONTH_September')();
+    case "Oct":
+      return Languages.get("__UNIVERSAL", 'MONTH_October')();
+    case "Nov":
+      return Languages.get("__UNIVERSAL", 'MONTH_November')();
+    case "Dec":
+      return Languages.get("__UNIVERSAL", 'MONTH_December')();
+  }
+};
+
+
+
+export let MONTH_SHORT_LABEL_MAP = function(key) {
+  switch (key) {
+    case "Jan":
+      return Languages.get("__UNIVERSAL", 'MONTH_Jan')();
+    case "Feb":
+      return Languages.get("__UNIVERSAL", 'MONTH_Feb')();
+    case "Mar":
+      return Languages.get("__UNIVERSAL", 'MONTH_Mar')();
+    case "Apr":
+      return Languages.get("__UNIVERSAL", 'MONTH_Apr')();
+    case "May":
+      return Languages.get("__UNIVERSAL", 'MONTH_May')();
+    case "Jun":
+      return Languages.get("__UNIVERSAL", 'MONTH_Jun')();
+    case "Jul":
+      return Languages.get("__UNIVERSAL", 'MONTH_Jul')();
+    case "Aug":
+      return Languages.get("__UNIVERSAL", 'MONTH_Aug')();
+    case "Sep":
+      return Languages.get("__UNIVERSAL", 'MONTH_Sep')();
+    case "Oct":
+      return Languages.get("__UNIVERSAL", 'MONTH_Oct')();
+    case "Nov":
+      return Languages.get("__UNIVERSAL", 'MONTH_Nov')();
+    case "Dec":
+      return Languages.get("__UNIVERSAL", 'MONTH_Dec')();
   }
 };
 

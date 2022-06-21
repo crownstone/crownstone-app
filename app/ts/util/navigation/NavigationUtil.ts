@@ -401,7 +401,7 @@ export const NavigationUtil = {
       }}
     Navigation.mergeOptions("SphereOverview", options);
     Navigation.mergeOptions("ScenesOverview", options);
-    Navigation.mergeOptions("PowerUsage", options);
+    Navigation.mergeOptions("EnergyUsage", options);
     Navigation.mergeOptions("SettingsOverview", options);
   },
 
