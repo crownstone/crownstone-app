@@ -1,4 +1,4 @@
-import { colors, screenWidth, statusBarHeight, tabBarHeight, topBarHeight } from "../styles";
+import {colors, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight} from "../styles";
 import { View, ViewStyle } from "react-native";
 import {BlurView} from "@react-native-community/blur";
 import * as React from "react";
@@ -98,7 +98,8 @@ export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabled
     <View style={{ position:'absolute', top:0 }}>
       <BlurView blurType={'light'} blurAmount={4} style={style} />
 
-      <View style={{position:'absolute', top:-5, left: -40}}><Blinky /></View>
+      { props.blink && props.blink.left  && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, left:27}}  /> }
+      { props.blink && props.blink.right && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, right:27}} /> }
 
       <View style={{ position:'absolute', top:statusBarHeight, width: screenWidth }}>
       <View style={{flex:1}} />
@@ -109,21 +110,27 @@ export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabled
   );
 }
 
+function Blinker(props) {
+  return (
+    <View style={{position:'absolute', overflow:'visible', backgroundColor: 'red', ...props.style}} pointerEvents={"none"}>
+      <Blinky color={colors.csOrange}/>
+      <Blinky scale={0.4} color={colors.blue} delay={200} />
+    </View>
+  )
+}
+
 
 class Blinky extends React.Component<any, any> {
-
-
   animationInterval = null;
+  startTimeout  = null;
   animationTimeout  = null;
   animationTimeout2  = null;
 
-  sizes = [
-    0,0,0
-  ]
+  sizes = [0,0]
 
   colors = [
-    colors.green.rgba(0.6),
-    colors.white.rgba(0.3),
+    (this.props.color ?? colors.green).rgba(this.props.opacity ?? 0.4),
+    colors.white.rgba(this.props.opacity ?? 0.4),
   ]
 
   constructor(props) {
@@ -144,10 +151,10 @@ class Blinky extends React.Component<any, any> {
     clearTimeout(this.animationTimeout2);
 
     let pulse = () => {
-      this.sizes[0] = 140;
-      this.sizes[1] = 90;
+      this.sizes[0] = 140 * (this.props.scale ?? 1);
+      this.sizes[1] = 160 * (this.props.scale ?? 1);
 
-      this.colors[0] = colors.green.rgba(0);
+      this.colors[0] = (this.props.color ?? colors.green).rgba(0);
       this.colors[1] = colors.white.rgba(0);
       this.forceUpdate()
       this.animationTimeout = setTimeout(() => {
@@ -155,31 +162,38 @@ class Blinky extends React.Component<any, any> {
         this.sizes[1] = 0;
         this.forceUpdate()
         this.animationTimeout2 = setTimeout(() => {
-          this.colors[0] = colors.green.rgba(0.6);
-          this.colors[1] = colors.white.rgba(0.5);
+          this.colors[0] = (this.props.color ?? colors.green).rgba(this.props.opacity ?? 0.4);
+          this.colors[1] = colors.white.rgba(this.props.opacity ?? 0.4);
           this.forceUpdate()
         }, 400);
 
       },800)
     }
-    this.animationInterval = setInterval(pulse,1600);
-    pulse();
+
+    this.startTimeout = setTimeout(() => {
+      this.animationInterval = setInterval(pulse,2000);
+      pulse();
+    }, this.props.delay ?? 0)
   }
 
   stopAnimation() {
     clearInterval(this.animationInterval);
     clearTimeout(this.animationTimeout);
+    clearTimeout(this.startTimeout);
     clearTimeout(this.animationTimeout2);
     this.forceUpdate();
   }
 
   render() {
+    let maxSize = 160 * (this.props.scale ?? 1)
     return (
-      <View style={{ width: 140, height: 140, alignItems: 'center', justifyContent: 'center' }}>
-        <AnimatedCircle size={this.sizes[0]} color={this.colors[0]}>
-          <AnimatedCircle size={this.sizes[1]} color={this.colors[1]} delay={80}>
+      <View style={{ position:'absolute', top:0, left:0}} pointerEvents={"none"}>
+        <View style={{ position:'relative', top:-0.5*maxSize, left:-0.5*maxSize, width: maxSize, height: maxSize, ...styles.centered}} pointerEvents={"none"}>
+          <AnimatedCircle size={this.sizes[0]} color={this.colors[0]} delay={0}>
+            <AnimatedCircle size={this.sizes[1]} color={this.colors[1]} delay={200}>
+            </AnimatedCircle>
           </AnimatedCircle>
-        </AnimatedCircle>
+        </View>
       </View>
     );
   }

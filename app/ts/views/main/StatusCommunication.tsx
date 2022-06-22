@@ -18,7 +18,6 @@ import {
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
 import { colors, screenWidth, overviewStyles, tabBarHeight } from "../styles";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
@@ -99,7 +98,6 @@ function StatusCommunicationRender(props) {
   let enoughForLocalization = enoughCrownstonesForIndoorLocalization(currentSphereId);
   let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
   let requiresFingerprints = requireMoreFingerprints(currentSphereId);
-  let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
 
   let insets = useSafeAreaInsets()
 
@@ -109,8 +107,8 @@ function StatusCommunicationRender(props) {
     justifyContent: 'center',
     alignItems: 'center',
     opacity: props.opacity || 1,
-    left: addButtonShown ? (0.11 * screenWidth) + 5: 0,   // 0.11*screenwidth is the width of the add icon
-    width: addButtonShown ? (1 - (0.11 * 2)) * screenWidth - 10 : screenWidth,
+    left: 0,   // 0.11*screenwidth is the width of the add icon
+    width: screenWidth-20,
     height: 50,
     overflow: 'hidden',
     flexDirection:'column',

@@ -4,32 +4,36 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Sphere", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Text, TextStyle, TouchableOpacity,
+  Text, TouchableOpacity,
   View,
   ViewStyle
 } from "react-native";
 
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
-import { LOG }       from '../../logging/Log'
 import { screenWidth, availableScreenHeight, colors, overviewStyles, styles } from "../styles";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
 import { core } from "../../Core";
-import { DataUtil } from "../../util/DataUtil";
+import {
+  DataUtil,
+  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+} from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import { EditIcon, MenuButton } from "../components/EditIcon";
 import { TopBarBlur } from "../components/NavBarBlur";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderTitle } from "../components/HeaderTitle";
+import {useSidebarState} from "../components/hooks/eventHooks";
+import {SIDEBAR_STATE} from "../components/animated/SideBarView";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
-  LOG.info("RENDERING SPHERE");
+  useSidebarState();
   const state = core.store.getState();
 
   let viewingRemotely = true;
@@ -80,6 +84,15 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 
   let shouldShowStatusCommunication = noStones === false && arrangingRooms === false
   let sphere = Get.sphere(sphereId);
+
+  let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
+  let requiresFingerprints = requireMoreFingerprints(sphereId);
+  let blinkMenuIconForLocalization = !arrangingRooms && enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
+
+  console.log("HEREE", SIDEBAR_STATE)
+  let blinkMenuIcon = SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
+
+
   return (
     <React.Fragment>
       <SafeAreaView style={{flexGrow:1}}>
@@ -94,10 +107,10 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
         />
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </SafeAreaView>
-      <TopBarBlur disabledBlur={arrangingRooms} showNotifications={!arrangingRooms}>
+      <TopBarBlur disabledBlur={arrangingRooms} showNotifications={!arrangingRooms} blink={{left: blinkMenuIcon}}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
-          <SphereHeader sphere={sphere} openSideMenu={openSideMenu}/>
+          <SphereHeader sphere={sphere} openSideMenu={openSideMenu} blinkMenuIcon={blinkMenuIcon}/>
         }
       </TopBarBlur>
     </React.Fragment>
@@ -105,10 +118,10 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 }
 
 
-function SphereHeader({sphere, openSideMenu}) {
+function SphereHeader({sphere, openSideMenu, blinkMenuIcon}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
-      <MenuButton onPress={openSideMenu} />
+      <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} />
       <TouchableOpacity onPress={() => { openSideMenu() }} style={{alignItems:'center', justifyContent:'center'}}>
         <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>

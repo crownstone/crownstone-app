@@ -1,11 +1,16 @@
 import * as React from 'react';
 import { Component } from "react";
-import { Animated, TouchableOpacity, View } from "react-native";
+import { Animated, View } from "react-native";
 import { screenWidth, styles } from "../../styles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {InvisiblePressable} from "../InvisiblePressable";
+import {core} from "../../../Core";
 
 const DURATION = 300;
+
+export const SIDEBAR_STATE = {
+  open: false
+}
 
 export class SideBarView extends Component<any, any> {
 
@@ -28,6 +33,8 @@ export class SideBarView extends Component<any, any> {
     ]
     this.setState({open: true});
     Animated.parallel(animations).start();
+    SIDEBAR_STATE.open = true;
+    core.eventBus.emit("sidebarOpen");
   }
 
   close() {
@@ -38,7 +45,9 @@ export class SideBarView extends Component<any, any> {
         Animated.timing(this.state.margins, {toValue: 0, useNativeDriver: false, duration: DURATION}),
       ]
       this.setState({open: false});
+      SIDEBAR_STATE.open = false;
       Animated.parallel(animations).start();
+      core.eventBus.emit("sidebarClose");
     }
   }
 

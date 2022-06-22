@@ -1,8 +1,9 @@
 import { Icon } from "./Icon";
-import { colors, statusBarHeight, styles, tabBarHeight, topBarHeight } from "../styles";
-import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { colors, styles } from "../styles";
+import { Text, TouchableOpacity, ViewStyle} from "react-native";
 import * as React from "react";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {HighlightableBlackIcon} from "./animated/HighlightableIcon";
 
 
 let color = colors.black.hex;
@@ -17,7 +18,7 @@ function getLeftStyle(style : ViewStyle = {}) : ViewStyle {
 export function MenuButton(props) {
   return (
     <TouchableOpacity onPress={props.onPress} style={getLeftStyle()}>
-      <Icon name={'enty-menu'} size={25} color={color} />
+      <HighlightableBlackIcon name={'enty-menu'} size={25} enabled={props.highlight} />
     </TouchableOpacity>
   );
 }
