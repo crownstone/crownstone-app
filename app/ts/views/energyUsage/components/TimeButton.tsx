@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, ViewStyle } from "react-native";
 import * as React from "react";
 import { colors } from "../../styles";
 
-const normalStyle   : ViewStyle = { height: 30, justifyContent:'center', flex:1, borderRadius: 5, marginHorizontal: 10 };
+const normalStyle   : ViewStyle = { height: 30, justifyContent:'center', flex:1, borderRadius: 5 };
 const selectedStyle : ViewStyle = { ...normalStyle, backgroundColor: colors.white.hex}
 
 export function TimeButton(props: {selected:boolean, label: string, callback: () => void}) {

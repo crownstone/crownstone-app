@@ -87,9 +87,8 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 
   let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
   let requiresFingerprints = requireMoreFingerprints(sphereId);
-  let blinkMenuIconForLocalization = !arrangingRooms && enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
+  let blinkMenuIconForLocalization = sphere.state.present && !arrangingRooms && enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
 
-  console.log("HEREE", SIDEBAR_STATE)
   let blinkMenuIcon = SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
 
 

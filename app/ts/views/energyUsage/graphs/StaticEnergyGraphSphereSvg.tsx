@@ -1,10 +1,6 @@
-import { useForceUpdate } from "../../components/hooks/databaseHooks";
 import * as React from "react";
-import { TouchableOpacity, View } from "react-native";
-import { BlurView } from "@react-native-community/blur";
-import { appStyleConstants, colors, screenWidth } from "../../styles";
-import { Line, Svg, Rect, Text } from "react-native-svg";
-import { DataStep } from "../../components/graph/GraphComponents/DataStep";
+import { screenWidth } from "../../styles";
+import { Svg } from "react-native-svg";
 import {
   BarGraphTimeAxis_Hours,
   BarGraphTimeAxis_Month,
@@ -13,7 +9,7 @@ import {
 } from "./svg/BarGraphTimeAxis";
 import { BarGraphDataAxisSvg } from "./svg/BarGraphDataAxis";
 import { BarGraphDataSvg } from "./svg/BarGraphData";
-import { xUtil } from "../../../util/StandAloneUtil";
+
 
 export function EnergyGraphAxisSvg(props : {data: EnergyData, height: number, width?:number, type: GRAPH_TYPE}) {
   let dataSpacing     = 10;  // space between max data value and top of axis;

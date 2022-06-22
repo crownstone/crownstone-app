@@ -350,6 +350,25 @@ export const DataUtil = {
     return false;
   },
 
+  getLocationsInSphere: function(sphereId: string) : Record<locationId, LocationData> {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+
+    if (!sphere) { return {}; }
+
+    return sphere.locations;
+  },
+
+  getLocationsInSphereAlphabetically: function(sphereId: string) : LocationData[] {
+    let locations = DataUtil.getLocationsInSphere(sphereId);
+
+    let locationArray = [];
+    for (let locationId in locations) {
+      locationArray.push({name: locations[locationId].config.name, id: locationId});
+    }
+
+    return locationArray.sort((a, b) =>  { return a.name > b.name ? 1 : -1});
+  },
 
   getStonesInLocation: function(sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
     let state = core.store.getState();

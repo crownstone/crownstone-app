@@ -28,7 +28,6 @@ export let topBarComponentNames = [];
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
   if (componentId === 'SphereOverviewSideBar') { return; }
 
-  core.eventBus.emit("VIEW_DID_APPEAR", componentId);
   // console.log("registerComponentDidAppearListener", { componentId, componentName })
   if (topBarComponentNames.indexOf(componentName) === -1) {
     LOGi.nav("VIEW DID APPEAR", componentId, componentName);
@@ -37,6 +36,8 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
     }
     NavState.addView(componentId, componentName);
   }
+
+  core.eventBus.emit("VIEW_DID_APPEAR", componentId);
 });
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentWillAppearListener(({ componentId, componentName }) => {
@@ -44,7 +45,7 @@ Navigation.events().registerComponentWillAppearListener(({ componentId, componen
 });
 // Listen for componentDidAppear screen events
 Navigation.events().registerCommandListener((data, args) => {
-  console.log('registerCommandListener', data, JSON.stringify(args, null, 2))
+  // console.log('registerCommandListener', data, JSON.stringify(args, null, 2))
 });
 
 // Listen for componentDidAppear screen events
@@ -150,6 +151,15 @@ export const NavigationUtil = {
     })
   },
 
+
+  getActiveView() : string {
+    return NavState.getActiveComponent()
+  },
+
+  isOnView(viewName) : boolean {
+    let activeView = NavState.getActiveComponent()
+    return activeView === viewName;
+  },
 
   isModalOpen(viewName) {
     return NavState.isModalViewNameOpen(viewName);

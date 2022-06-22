@@ -33,10 +33,8 @@ export function BarGraphDataSvg(props: {data: EnergyData,yStart: number, xStart:
 function StackedBarValueSvg(props: { data: Record<itemId, number>, colorMap: Record<itemId, string>, x:number, y: number, width:number, maxHeight: number, maxValue: number, callback: (locationId) => void, colors?: color[]}) {
   let data = props.data;
   let stack = [];
-
   let totalHeight = 0;
 
-  let colorIndex = 0;
   for (let itemId in data) {
     let height = (data[itemId] / props.maxValue)*props.maxHeight;
 

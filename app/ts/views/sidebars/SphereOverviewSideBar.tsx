@@ -33,8 +33,6 @@ export function SphereOverviewSideBar(props) {
       <Image source={require('../../../assets/images/crownstoneLogo.png')} style={{width:factor * 300, height: factor*300, tintColor: colors.white.hex}}/>
       <View style={{height:50}}/>
 
-      {amountOfSpheres > 1 &&
-        <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
 
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} highlight={blinkLocalizationIcon} />
@@ -44,7 +42,8 @@ export function SphereOverviewSideBar(props) {
                     iconImage={<Image source={require('../../../assets/images/icons/mail.png')} style={{tintColor: colors.white.hex}} />}
       />
       <View style={{height:50}}/>
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Settings"}      callback={() => { NavigationUtil.launchModal( "SphereEdit", { sphereId: SPHERE_ID_STORE.activeSphereId }) }} size={25} icon={'ios-cog'} />
+      {amountOfSpheres > 1 &&
+        <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"}     callback={() => { }} size={22} icon={'ios-bug'}         />
 
       <View style={{flex:1}}/>

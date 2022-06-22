@@ -119,7 +119,7 @@ import { SetupLocalization }                  from "./main/localization/SetupLoc
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
 import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 import {DeviceError} from "./deviceViews/DeviceError";
-import { EnergyUsage } from "./powerUsage/EnergyUsage";
+import { EnergyUsage } from "./energyUsage/EnergyUsage";
 
 export function NavWrap(Child) {
   return function (props) {

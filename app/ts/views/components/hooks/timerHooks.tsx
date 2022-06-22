@@ -7,6 +7,15 @@ export function useTimeout(callback, ms) {
   }, []);
 }
 
+export function useInterval(callback, ms, dependencies = []) {
+  useEffect(() => {
+    let interval = setInterval(callback , ms);
+
+    return () => { clearInterval(interval); }
+  }, dependencies);
+}
+
 export function useCleanup(callback) {
   useEffect(() => { return callback; }, []);
 }
+

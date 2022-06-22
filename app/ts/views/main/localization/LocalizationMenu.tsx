@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
-  View, Alert
+  View, Alert, Linking
 } from "react-native";
 
 
@@ -30,8 +30,7 @@ import {
   DataUtil,
   enoughCrownstonesForIndoorLocalization, requireMoreFingerprints
 } from "../../../util/DataUtil";
-
-const ICON_RADIUS = 12;
+import {Icon} from "../../components/Icon";
 
 export class LocalizationMenu extends LiveComponent<any, any> {
   static options(props) {
@@ -61,7 +60,7 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       label: "Improve localization",
       type: 'navigation',
       testID: 'ImproveLocalization',
-      largeIcon: <IconButton name='c1-locationPin1' buttonSize={55} size={30} radius={ICON_RADIUS}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      icon: <Icon name='c1-locationPin1' size={30} color={colors.blue.hex}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
       }
@@ -74,7 +73,7 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       type: 'navigation',
       numberOfLines: 2,
       testID: 'LocalizationMistake',
-      largeIcon: <IconButton name='c1-router' buttonSize={55} size={40} radius={ICON_RADIUS}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
+      icon: <Icon name='c1-router' size={30} color={colors.csBlue.hex}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereHubOverview", {sphereId: this.props.sphereId});
       }
@@ -95,17 +94,14 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       type: 'navigation',
       disabled: disabled,
       testID: 'setupLocalization',
-      largeIcon: <IconButton name='c1-locationPin1' buttonSize={55} size={30} radius={ICON_RADIUS}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      icon: <Icon name='c1-locationPin1' size={25} color={colors.blue.hex}/>,
       callback: () => {
         NavigationUtil.navigate( "SetupLocalization", {sphereId: this.props.sphereId});
       }
     });
     items.push({label: label,  type:'explanation', below: true});
 
-    items.push({ label: "WHAT IS INDOOR LOCALIZATION?", type: 'largeExplanation'});
     this._getLearnAboutLocalizationItems(items);
-
-
   }
 
   _getLearnAboutLocalizationItems(items: any[]) {
@@ -114,9 +110,9 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       type: 'navigation',
       numberOfLines: 3,
       testID: 'ImproveLocalization',
-      largeIcon: <IconButton name='md-book' buttonSize={55} size={30} radius={ICON_RADIUS}  color="#fff" buttonStyle={{backgroundColor: colors.blueDark.hex}}/>,
+      icon: <Icon name='md-book' size={30} color={colors.blueDark.hex}/>,
       callback: () => {
-        Alert.alert("Open URL which explains this");
+        Linking.openURL('https://crownstone.rocks/positioning-users/').catch(err => {})
       }
     });
     items.push({label: "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!",  type:'explanation', below: true});
@@ -150,7 +146,7 @@ export class LocalizationMenu extends LiveComponent<any, any> {
       type: 'switch',
       testID: 'Disable_behaviour',
       disabled: disabled,
-      largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={ICON_RADIUS}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      icon: <Icon name='c1-brain' size={30} color={colors.green.hex} />,
       value: !behaviourEnabledState,
       callback: (newState) => {
         SphereStateManager.userSetSmartHomeState(this.props.sphereId, !newState);

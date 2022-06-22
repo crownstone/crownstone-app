@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {core} from "../../../Core";
 import { useEvent } from "./eventHooks";
+import {useState} from "react";
+import {Navigation} from "react-native-navigation";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
+import {act} from "@testing-library/react-native";
 
 
 export function useForceUpdate(){
@@ -22,6 +26,40 @@ export function useDatabaseChange(filters: filter | filter[], callback: () => vo
     if (checkFilter(change, filters)) {
       if (callback !== null) { callback();    }
       else                   { forceUpdate(); }
+    }
+  });
+}
+
+export function useSphereSwitching(callback: () => void = null) {
+  useDatabaseChange(['updateActiveSphere'], callback);
+}
+
+
+export function useSpherePresence() {
+  const forceUpdate = useForceUpdate();
+
+  useEvent('enterSphere', forceUpdate);
+  useEvent('exitSphere', forceUpdate);
+}
+
+/**
+ * Will trigger if we go from or to this view
+ * @param viewName
+ */
+export function useViewSwitching(viewName) {
+  // let forceUpdate = useForceUpdate();
+  let [currentView, setCurrentView] = useState(null);
+
+  useEvent('VIEW_DID_APPEAR', () => {
+    let activeView = NavigationUtil.getActiveView();
+
+    if (viewName === activeView) {
+      setCurrentView(viewName);
+    }
+    else {
+      if (currentView === viewName) {
+        setCurrentView(null);
+      }
     }
   });
 }

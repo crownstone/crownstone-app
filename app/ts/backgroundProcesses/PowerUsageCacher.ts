@@ -85,6 +85,19 @@ class PowerUsageCacherClass {
   }
 
 
+  getRecentData(sphereId, handle, timeout= 20) : number | null {
+    let data = this.getData(sphereId, handle);
+    if (data.length === 0) {
+      return null;
+    }
+    let lastPoint = data[data.length-1];
+    if (Date.now() - lastPoint.x > timeout*1000) {
+      return null;
+    }
+    return lastPoint.y;
+  }
+
+
   getUniqueElement(sphereId, handle) {
     if (this.uniqueElements[sphereId] && this.uniqueElements[sphereId][handle]) {
       return this.uniqueElements[sphereId][handle];
