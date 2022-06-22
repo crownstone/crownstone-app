@@ -7,7 +7,7 @@ import {
 import { IconButton } from '../../components/IconButton'
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { background, colors, screenWidth } from "../../styles";
+import {background, colors, screenWidth, statusBarHeight, topBarHeight} from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../Core";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
@@ -37,6 +37,7 @@ import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
 import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
 import { SettingsCustomTopBarNavbarBackground, SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {TopBarBlur} from "../../components/NavBarBlur";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 

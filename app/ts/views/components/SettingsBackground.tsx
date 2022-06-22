@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 
-import { Background } from "./Background";
+import {Background, BaseBackground} from "./Background";
 import { background } from "../styles";
 import {NavBarBlur, TopBarBlur} from "./NavBarBlur";
 
@@ -27,7 +27,7 @@ interface SettingsNavbarBackgroundProps {
 
 export class SettingsBackground extends Component<SettingsBackgroundProps, any> {
   render() {
-    return <Background {...{
+    return <BaseBackground {...{
       ...this.props,
       hasNavBar:false,
       hasTopBar:false,
@@ -36,14 +36,14 @@ export class SettingsBackground extends Component<SettingsBackgroundProps, any> 
       { this.props.children }
       <TopBarBlur />
       { this.props.hasNavBar && <NavBarBlur /> }
-    </Background>
+    </BaseBackground>
   }
 }
 
 export class SettingsCustomTopBarBackground extends Component<SettingsBackgroundProps, any> {
 
   render() {
-    return <Background {...{
+    return <BaseBackground {...{
       ...this.props,
       hasNavBar:false,
       hasTopBar:false,
@@ -51,7 +51,7 @@ export class SettingsCustomTopBarBackground extends Component<SettingsBackground
     }}>
       { this.props.children }
       { this.props.hasNavBar && <NavBarBlur /> }
-    </Background>
+    </BaseBackground>
   }
 }
 

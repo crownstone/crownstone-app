@@ -17,6 +17,7 @@ import { colors, topBarHeight, statusBarHeight} from '../styles'
 
 import {topBarStyle} from "./topbar/TopbarStyles";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {TopBarBlur} from "./NavBarBlur";
 
 let barHeight = topBarHeight - statusBarHeight;
 
@@ -120,7 +121,7 @@ class TopBarIOS extends Component<any, any> {
         );
       }
       else {
-        let color = colors.blue.hex;
+        let color = colors.iosBlue.hex;
         if (this.props.leftStyle && this.props.leftStyle.color) {
           color = this.props.leftStyle.color;
         }
@@ -130,7 +131,7 @@ class TopBarIOS extends Component<any, any> {
             style={[topBarStyle.topBarLeftTouch, {paddingLeft:10}, this.props.leftButtonStyle]} testID={"topBarLeftItem"}>
             <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
-              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, {color: colors.blue.hex}, this.props.leftStyle]}>{this.props.left}</Text>
+              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, {color: colors.iosBlue.hex}, this.props.leftStyle]}>{this.props.left}</Text>
             </View>
           </TouchableOpacity>
         );

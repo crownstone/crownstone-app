@@ -49,7 +49,7 @@ export const topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    color: colors.blue.hex
+    color: colors.iosBlue.hex
   },
   leftText:{
     fontSize: 14,
