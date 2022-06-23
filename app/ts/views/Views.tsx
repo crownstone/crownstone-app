@@ -22,8 +22,6 @@ import { Register }                           from '../views/startupViews/Regist
 import { RoomOverview }                       from '../views/roomViews/RoomOverview'
 import { RoomEdit }                           from '../views/roomViews/RoomEdit'
 import { RoomAdd }                            from '../views/roomViews/RoomAdd'
-import { RoomTraining }                       from '../views/roomViews/RoomTraining'
-import { RoomTraining_roomSize }              from '../views/roomViews/RoomTraining_roomSize'
 import { RoomIconSelection }                  from '../views/roomViews/RoomIconSelection'
 import { SphereOverview }                     from '../views/main/SphereOverview'
 import { SelectFromList }                     from '../views/selection/SelectFromList'
@@ -112,8 +110,6 @@ import { TextInputOverlay }                   from "./overlays/TextInputOverlay"
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
 import { SettingsLogLevelConfig }             from "./settingsViews/dev/SettingsLogLevelConfig";
 import { SettingsLogOverview }                from "./settingsViews/dev/SettingsLogOverview";
-import { RoomTrainingStep1 }                  from "./roomViews/RoomTrainingStep1";
-import { RoomTrainingStep1_train }            from "./roomViews/RoomTrainingStep1_train";
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
@@ -121,6 +117,9 @@ import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 import {DeviceError} from "./deviceViews/DeviceError";
 import { EnergyUsage } from "./energyUsage/EnergyUsage";
 import { BehaviourMenu } from "./main/behaviour/BehaviourMenu";
+import { RoomTraining } from "./main/localization/RoomTraining";
+import { RoomTrainingStep1 } from "./main/localization/RoomTrainingStep1";
+import { RoomTrainingStep1_train } from "./main/localization/RoomTrainingStep1_train";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -188,7 +187,6 @@ export const Views = {
   RoomTraining:                      RoomTraining,
   RoomTrainingStep1:                 RoomTrainingStep1,
   RoomTrainingStep1_train:           RoomTrainingStep1_train,
-  RoomTraining_roomSize:             RoomTraining_roomSize,
   SelectFromList:                    SelectFromList,
   SettingsApp:                       SettingsApp,
   SettingsDatabaseExplorer:          SettingsDatabaseExplorer,

@@ -17,12 +17,12 @@ const colorList = [
 
 export const EnergyUsageUtil = {
 
-  // get the monday of the week based on a timestamp
-  getMonday: function(timestamp) : timestamp {
+  // get timestamp of the monday on the week of the provided timestamp
+  getMonday: function(timestamp) : number {
     let date = new Date(timestamp);
     let day = date.getDay();
-    let diff = date.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-    return new Date(date.setDate(diff)).valueOf();
+    let diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+    return new Date(date.setDate(diff)).getTime();
   },
 
 

@@ -14,6 +14,8 @@ export class KNN {
     let fingerprintSet = {};
     this.fingerprints  = {};
     this.sphereDeviceMap = {};
+
+
     for (let sphereId in fingerprints.spheres) {
       let sphere = fingerprints.spheres[sphereId];
       if (fingerprintSet[sphereId] === undefined) {

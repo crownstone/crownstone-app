@@ -1,15 +1,15 @@
-import {Languages} from "../../Languages"
 import * as React from 'react';
 import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
 
 import KeepAwake from 'react-native-keep-awake';
-import {Get} from "../../util/GetUtil";
-import { LiveComponent } from "../LiveComponent";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { Background } from "../components/Background";
-import { background, colors, screenHeight, screenWidth, styles } from "../styles";
-import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import { Button } from "../components/Button";
+import { Languages } from "../../../Languages";
+import { LiveComponent } from "../../LiveComponent";
+import { Get } from "../../../util/GetUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
+import { Background } from "../../components/Background";
+import { colors, screenHeight, screenWidth, styles } from "../../styles";
+import { Button } from "../../components/Button";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining", key)(a,b,c,d,e);
@@ -45,7 +45,7 @@ export class RoomTraining extends LiveComponent<any, any> {
   render() {
     let location = Get.location(this.props.sphereId, this.props.locationId);
     return (
-      <Background hasNavBar={false} image={background.main}>
+      <Background>
         <KeepAwake />
         <View style={{height:30}}/>
         <Text style={styles.boldExplanation}>{"In order for me to know when you are in this room, I need to learn a bit more about it."}</Text>

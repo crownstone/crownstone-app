@@ -1,30 +1,26 @@
-import {Languages} from "../../Languages"
 import * as React from 'react';
 import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
+import { Languages } from "../../../Languages";
+import { LiveComponent } from "../../LiveComponent";
+import { Get } from "../../../util/GetUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
+import { TrainingData } from "../../roomViews/trainingComponents/TrainingData";
+import { Bluenet } from "../../../native/libInterface/Bluenet";
+import { Background } from "../../components/Background";
+import { colors, screenHeight, screenWidth, styles } from "../../styles";
+import { Button } from "../../components/Button";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
-import KeepAwake from 'react-native-keep-awake';
-import {Get} from "../../util/GetUtil";
-import { LiveComponent } from "../LiveComponent";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { Background } from "../components/Background";
-import { background, colors, screenHeight, screenWidth, styles } from "../styles";
-import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import { Button } from "../components/Button";
-import { TrainingData } from "./trainingComponents/TrainingData";
-import { core } from "../../Core";
-import { Bluenet } from "../../native/libInterface/Bluenet";
-import { Component } from "react";
-import {
-  Svg,
-  Line, Circle
-} from "react-native-svg";
-import { TOPICS } from "../../Topics";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining", key)(a,b,c,d,e);
 }
 
 export const MIN_DATA_COUNT = 10;
+
+function KeepAwake() {
+  return null;
+}
 
 export class RoomTrainingStep1_train extends LiveComponent<any, any> {
   static options(props) {
@@ -85,7 +81,7 @@ export class RoomTrainingStep1_train extends LiveComponent<any, any> {
     let location = Get.location(this.props.sphereId, this.props.locationId);
     let size = Math.min(screenWidth, 0.35*screenHeight);
     return (
-      <Background hasNavBar={false} image={background.main}>
+      <Background>
         <KeepAwake />
         <View style={{height:30}}/>
         <Text style={styles.header}>{"Listening..."}</Text>
