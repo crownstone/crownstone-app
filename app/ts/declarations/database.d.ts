@@ -130,12 +130,12 @@ interface StoneDataConfig {
   updatedAt: timestamp,
 }
 
-type FingerprintId = string;
+type fingerprintId = string;
 interface LocationData {
   id: string,
   config: LocationDataConfig
   presentUsers: string[],
-  fingerprints: Record<FingerprintId, FingerprintData>,
+  fingerprints: Record<fingerprintId, FingerprintData>,
   layout: {
     x: number,
     y: number,

@@ -18,7 +18,7 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       opacity2Value.current.setValue(0);
       opacity3Value.current.setValue(0);
       scale.current.setValue(1);
-      scale.current.setValue(1);
+      rotation.current.setValue(0);
       return;
     }
 
@@ -29,7 +29,6 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
     let step = 300;
     let speed = 3;
     let bounciness = 1;
-
 
     function showElement1() {
       let animations = [
@@ -72,7 +71,6 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       }
       Animated.parallel(animations).start();
     }
-
 
     function executeAnimation() {
       showElement2();

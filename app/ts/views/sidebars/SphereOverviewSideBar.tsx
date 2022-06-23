@@ -27,6 +27,8 @@ export function SphereOverviewSideBar(props) {
     blinkLocalizationIcon = enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
   }
 
+  let blinkBehaviour = false;
+
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
       <View style={{height:50}}/>
@@ -36,9 +38,8 @@ export function SphereOverviewSideBar(props) {
 
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} highlight={blinkLocalizationIcon} />
-      <SideMenuLink closeSideMenu={props.closeSideMenu}
-                    label={"Messages"}
-                    callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Behaviour"}     callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-brain'} highlight={blinkBehaviour} />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Messages"}      callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
                     iconImage={<Image source={require('../../../assets/images/icons/mail.png')} style={{tintColor: colors.white.hex}} />}
       />
       <View style={{height:50}}/>

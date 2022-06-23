@@ -33,6 +33,7 @@ import {
 import { Get } from "../../../util/GetUtil";
 import { Spacer } from "../../components/Spacer";
 import { Button } from "../../components/Button";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 const ICON_RADIUS = 12;
 
@@ -107,7 +108,7 @@ export class SetupLocalization extends LiveComponent<any, any> {
 
     if (toDoRooms.length === 0) {
       return (
-        <Background image={background.main} hasNavBar={false} testID={"SetupLocalization"}>
+        <SettingsBackground testID={"SetupLocalization"}>
           <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
             <View style={{height:30}}/>
             <Text style={styles.title}>{"All done!"}</Text>
@@ -129,12 +130,12 @@ export class SetupLocalization extends LiveComponent<any, any> {
               />
             </View>
           </ScrollView>
-        </Background>
+        </SettingsBackground>
       );
     }
 
     return (
-      <Background image={background.main} hasNavBar={false} testID={"SetupLocalization"}>
+      <SettingsBackground testID={"SetupLocalization"}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
           <View style={{height:30}}/>
           <Text style={styles.header}>{"To use indoor localization, we have to walk around each room to learn about the Crownstone signals in the rooms."}</Text>
@@ -148,7 +149,7 @@ export class SetupLocalization extends LiveComponent<any, any> {
           { finishedRooms.length > 0 && <ListEditableItems items={finishedRooms} style={{width: screenWidth}}/> }
           { finishedRooms.length === 0 && <Text style={styles.header}>{"Pick a room to get started!"}</Text> }
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

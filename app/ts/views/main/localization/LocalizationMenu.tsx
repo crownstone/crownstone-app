@@ -119,49 +119,8 @@ export class LocalizationMenu extends LiveComponent<any, any> {
   }
 
 
-  _getBehaviourItems(items: any[]) {
-    let state = core.store.getState();
-    let sphere : SphereData = state.spheres[this.props.sphereId];
-    let behaviourEnabledState = true;
-    if (sphere) {
-      behaviourEnabledState = sphere.state.smartHomeEnabled === true
-    }
-
-    items.push({ label: "BEHAVIOUR", type: 'largeExplanation' });
-    let label = "You can disable behaviour so your house reverts to a normal, dumb, home. This is often used if you have guests. Guests prefer not to be left in the dark...";
-    let disabled = false;
-    if (DataUtil.isBehaviourUsed(this.props.sphereId)) {
-      if (!DataUtil.inSphere(this.props.sphereId)) {
-        label = "You have to be in the sphere to enable/disable behaviour...";
-        disabled = true;
-      }
-    }
-    else {
-      label = "No Crownstones have behaviour at the moment...";
-      disabled = true;
-    }
-
-    items.push({
-      label: "Disable behaviour",
-      type: 'switch',
-      testID: 'Disable_behaviour',
-      disabled: disabled,
-      icon: <Icon name='c1-brain' size={30} color={colors.green.hex} />,
-      value: !behaviourEnabledState,
-      callback: (newState) => {
-        SphereStateManager.userSetSmartHomeState(this.props.sphereId, !newState);
-        core.eventBus.emit("showLoading",newState === true ? "Disabling behaviour..." : "Enabling behaviour...");
-        setTimeout(() => { core.eventBus.emit("hideLoading"); }, 4000);
-      }
-    });
-    items.push({label: label,  type:'explanation', below: true});
-
-  }
-
   _getItems() {
     let items = [];
-
-    this._getBehaviourItems(items);
 
     let enoughCrownstones = enoughCrownstonesForIndoorLocalization(this.props.sphereId);
     let trainingRequired  = requireMoreFingerprints(this.props.sphereId);

@@ -120,6 +120,7 @@ import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSid
 import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
 import {DeviceError} from "./deviceViews/DeviceError";
 import { EnergyUsage } from "./energyUsage/EnergyUsage";
+import { BehaviourMenu } from "./main/behaviour/BehaviourMenu";
 
 export function NavWrap(Child) {
   return function (props) {
@@ -136,6 +137,7 @@ export const Views = {
 
   LocalizationMenu:                  LocalizationMenu,
   SetupLocalization:                 SetupLocalization,
+  BehaviourMenu:                     BehaviourMenu,
 
   SetupCrownstone:                   SetupCrownstone,
   SetupHub:                          SetupHub,
