@@ -31,128 +31,113 @@ import {
   enoughCrownstonesForIndoorLocalization, requireMoreFingerprints
 } from "../../../util/DataUtil";
 import {Icon} from "../../components/Icon";
-
-export class LocalizationMenu extends LiveComponent<any, any> {
-  static options(props) {
-    return TopBarUtil.getOptions({ title: "Localization", closeModal: true });
-  }
-
-  unsubscribeEventListener = () => {};
-
-  componentDidMount() {
-    this.unsubscribeEventListener = core.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-      if (
-        change.changeSphereSmartHomeState && change.changeSphereSmartHomeState.sphereIds[this.props.sphereId] ||
-        change.changeSphereState          && change.changeSphereState.sphereIds[this.props.sphereId]
-      ) {
-        this.forceUpdate();
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeEventListener();
-  }
-
-  _getExitingLocalizationItems(items: any[]) {
-    items.push({
-      label: "Improve localization",
-      type: 'navigation',
-      testID: 'ImproveLocalization',
-      icon: <Icon name='c1-locationPin1' size={30} color={colors.blue.hex}/>,
-      callback: () => {
-        NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
-      }
-    });
-    items.push({label: "Is the localization not working correctly? This will take you through the steps to identify the problem and improve the localization!",  type:'explanation', below: true});
-
-    items.push({ label: "Quick fix", type: 'largeExplanation' });
-    items.push({
-      label: "My localization made a mistake just now...",
-      type: 'navigation',
-      numberOfLines: 2,
-      testID: 'LocalizationMistake',
-      icon: <Icon name='c1-router' size={30} color={colors.csBlue.hex}/>,
-      callback: () => {
-        NavigationUtil.navigate( "SphereHubOverview", {sphereId: this.props.sphereId});
-      }
-    });
-    items.push({label: "If the localization was wrong and you've been in the same room for at least 2 minutes, use this to quickly fix the problem!",  type:'explanation', below: true});
-  }
-
-  _getTrainingRoomItems(items: any[]) {
-    let disabled = false;
-    let label = "By teaching the localization where all your rooms are, you can use your location for behaviour!"
-    if (!DataUtil.inSphere(this.props.sphereId)) {
-      disabled = true;
-      label = "You have to be in the sphere to setup indoor localization...";
-    }
-
-    items.push({
-      label: "Let's setup localization!",
-      type: 'navigation',
-      disabled: disabled,
-      testID: 'setupLocalization',
-      icon: <Icon name='c1-locationPin1' size={25} color={colors.blue.hex}/>,
-      callback: () => {
-        NavigationUtil.navigate( "SetupLocalization", {sphereId: this.props.sphereId});
-      }
-    });
-    items.push({label: label,  type:'explanation', below: true});
-
-    this._getLearnAboutLocalizationItems(items);
-  }
-
-  _getLearnAboutLocalizationItems(items: any[]) {
-    items.push({
-      label: "Learn about indoor localization",
-      type: 'navigation',
-      numberOfLines: 3,
-      testID: 'ImproveLocalization',
-      icon: <Icon name='md-book' size={30} color={colors.blueDark.hex}/>,
-      callback: () => {
-        Linking.openURL('https://crownstone.rocks/positioning-users/').catch(err => {})
-      }
-    });
-    items.push({label: "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!",  type:'explanation', below: true});
-  }
+import { useLiveView } from "../../components/hooks/viewHooks";
+import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 
 
-  _getItems() {
-    let items = [];
 
-    let enoughCrownstones = enoughCrownstonesForIndoorLocalization(this.props.sphereId);
-    let trainingRequired  = requireMoreFingerprints(this.props.sphereId);
 
-    items.push({ label: "INDOOR LOCALIZATION", type: 'largeExplanation' });
-    if (enoughCrownstones) {
-      if (trainingRequired) {
-        this._getTrainingRoomItems(items);
-      }
-      else {
-        this._getExitingLocalizationItems(items);
-      }
+export function LocalizationMenu(props) {
+  useLiveView(props);
+  useDatabaseChange(['changeFingerprint','changeSphereState']);
+
+
+  let items = [];
+  let enoughCrownstones = enoughCrownstonesForIndoorLocalization(props.sphereId);
+  let trainingRequired  = requireMoreFingerprints(props.sphereId);
+
+  items.push({ label: "INDOOR LOCALIZATION", type: 'largeExplanation' });
+  if (enoughCrownstones) {
+    if (trainingRequired) {
+      getTrainingRoomItems(items, props.sphereId);
     }
     else {
-      this._getLearnAboutLocalizationItems(items)
+      getExitingLocalizationItems(items, props.sphereId);
     }
-
-    items.push({type:'spacer'});
-    items.push({type:'spacer'});
-    items.push({type:'spacer'});
-
-    return items;
+  }
+  else {
+    getLearnAboutLocalizationItems(items, props.sphereId)
   }
 
+  items.push({type:'spacer'});
+  items.push({type:'spacer'});
+  items.push({type:'spacer'});
 
-  render() {
-    return (
-      <Background image={background.main} hasNavBar={false} testID={"LocalizationMenu"}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <ListEditableItems items={this._getItems()} />
-        </ScrollView>
-      </Background>
-    );
+  return (
+    <Background image={background.main} hasNavBar={false} testID={"LocalizationMenu"}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ListEditableItems items={items} />
+      </ScrollView>
+    </Background>
+  );
+
+}
+
+LocalizationMenu.options = TopBarUtil.getOptions({ title: "Localization", closeModal: true });
+
+
+function getExitingLocalizationItems(items: any[], sphereId: sphereId) {
+  items.push({
+    label: "Improve localization",
+    type: 'navigation',
+    testID: 'ImproveLocalization',
+    icon: <Icon name='c1-locationPin1' size={30} color={colors.blue.hex}/>,
+    callback: () => {
+
+    }
+  });
+  items.push({label: "Is the localization not working correctly? This will take you through the steps to identify the problem and improve the localization!",  type:'explanation', below: true});
+
+  items.push({ label: "Quick fix", type: 'largeExplanation' });
+  items.push({
+    label: "My localization made a mistake just now...",
+    type: 'navigation',
+    numberOfLines: 2,
+    testID: 'LocalizationMistake',
+    icon: <Icon name='c1-router' size={30} color={colors.csBlue.hex}/>,
+    callback: () => {
+
+    }
+  });
+  items.push({label: "If the localization was wrong and you've been in the same room for at least 2 minutes, use this to quickly fix the problem!",  type:'explanation', below: true});
+}
+
+
+function getTrainingRoomItems(items: any[], sphereId: sphereId) {
+  let disabled = false;
+  let label = "By teaching the localization where all your rooms are, you can use your location for behaviour!"
+  if (!DataUtil.inSphere(sphereId)) {
+    disabled = true;
+    label = "You have to be in the sphere to setup indoor localization...";
   }
+
+  items.push({
+    label: "Let's setup localization!",
+    type: 'navigation',
+    disabled: disabled,
+    testID: 'setupLocalization',
+    icon: <Icon name='c1-locationPin1' size={24} color={colors.green.hex}/>,
+    callback: () => {
+      NavigationUtil.navigate( "SetupLocalization", {sphereId: sphereId});
+    }
+  });
+  items.push({label: label,  type:'explanation', below: true});
+  items.push({type:'spacer'});
+
+  getLearnAboutLocalizationItems(items, sphereId);
+}
+
+
+function getLearnAboutLocalizationItems(items: any[], sphereId: sphereId) {
+  items.push({
+    label: "Learn about indoor localization",
+    type: 'navigation',
+    numberOfLines: 3,
+    testID: 'ImproveLocalization',
+    icon: <Icon name='md-book' size={25} color={colors.blueDark.hex}/>,
+    callback: () => {
+      Linking.openURL('https://crownstone.rocks/positioning-users/').catch(err => {})
+    }
+  });
+  items.push({label: "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!",  type:'explanation', below: true});
 }
