@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
-
+import fingerprintReducer from './fingerprints'
 
 let defaultSettings : LocationData = {
   id: undefined,
@@ -21,7 +21,10 @@ let defaultSettings : LocationData = {
     fingerprintParsed: null,
     fingerprintUpdatedAt: 1,
   },
-  fingerprints: {},
+  fingerprints: {
+    raw: {},
+    processed: {},
+  },
   presentUsers: [],
   layout: {
     x: null,
@@ -31,50 +34,6 @@ let defaultSettings : LocationData = {
   }
 };
 
-
-let defaultFingerprintData: FingerprintData = {
-  id: undefined,
-  type: null,
-  cloudId: null,
-  createdAt: 0,
-  crownstonesAtCreation: [], // maj_min as id representing the Crownstone. Crownstones removed afterwards are removed from this list.
-  data: {
-    dt: 0,   // diff from createdAt
-    data: []
-  }
-}
-
-const fingerprintDataReducer = (state = defaultSettings.config, action : any = {}) => {
-  switch (action.type) {
-    case 'ADD_FINGERPRINT_V2':
-      if (action.data) {
-
-      }
-  }
-}
-
-
-let fingerprintReducer = (state = {}, action : any = {}) => {
-  switch (action.type) {
-    case 'REMOVE_FINGERPRINT_V2':
-      if (action.data && action.data.fingerprintId) {
-        let newState = {...state};
-        delete newState[action.data.fingerprintId];
-        return newState;
-      }
-    default:
-      // create a new fingerprint if it doesn't exist
-      if (action.fingerprintId !== undefined && action.fingerprintId !== null) {
-        if (state[action.fingerprintId] !== undefined || action.type === "ADD_FINGERPRINT_V2") {
-          return {
-            ...state,
-            ...{[action.fingerprintId]: fingerprintDataReducer(state[action.fingerprintId], action)}
-          };
-        }
-      }
-      return state;
-  }
-};
 
 let userPresenceReducer = (state = [], action : any = {}) => {
   switch (action.type) {

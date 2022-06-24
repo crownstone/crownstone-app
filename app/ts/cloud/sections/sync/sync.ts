@@ -113,12 +113,12 @@ export const sync = {
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
       })
-      .then(() => {
-        LOG.info("Sync: DONE DeviceSyncer sync.");
-        LOG.info("Sync: START Fingerprint sync.");
-        let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, syncSphereIdMap);
-        return fingerprintSyncer.sync(state);
-      })
+      // .then(() => {
+      //   LOG.info("Sync: DONE DeviceSyncer sync.");
+      //   LOG.info("Sync: START Fingerprint sync.");
+      //   let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, syncSphereIdMap);
+      //   return fingerprintSyncer.sync(state);
+      // })
       .then((reloadOfTrackingRequiredResult) => {
         reloadOfTrackingRequired = reloadOfTrackingRequiredResult;
         LOG.info("Sync: DONE Fingerprint sync.");

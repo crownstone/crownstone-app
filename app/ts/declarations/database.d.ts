@@ -135,7 +135,10 @@ interface LocationData {
   id: string,
   config: LocationDataConfig
   presentUsers: string[],
-  fingerprints: Record<fingerprintId, FingerprintData>,
+  fingerprints: {
+    raw: Record<fingerprintId, FingerprintData>,
+    processed: Record<fingerprintId, FingerprintProcessedData>,
+  },
   layout: {
     x: number,
     y: number,
@@ -144,18 +147,38 @@ interface LocationData {
   }
 }
 
+type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED'
+type TransformState  = 'NOT_REQUIRED' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE'
+type CrownstoneIdentifier = string; // maj_min as identifier representing the Crownstone.
+
 interface FingerprintData {
   id: string,
-  type: string,
-  cloudId: string,
-  createdAt: number,
-  crownstonesAtCreation: string[], // maj_min as id representing the Crownstone. Crownstones removed afterwards are removed from this list.
+  cloudId: string | null,
+  type: FingerprintType,
+  createdOnDeviceType: string, // ${device type string}_${userId who collected it}
+  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
   data: {
-    dt: number,   // diff from createdAt
-    data: {
-      [id: string]: number
-    }[]
-  }
+    dt: number, // ms diff from createdAt
+    data: Record<CrownstoneIdentifier, rssi>[]
+  }[],
+  updatedAt: timestamp,
+  createdAt: timestamp,
+}
+
+interface FingerprintProcessedData {
+  id: string,
+  fingerprintId: string, // processed based on parent id
+  type: FingerprintType,
+  transformState: TransformState,
+  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
+  data: {
+    dt: number, // ms diff from createdAt
+    data: Record<CrownstoneIdentifier, sigmoid>[]
+  }[],
+  processingParameterHash: string, // this contains the parameters used to process the data. (sigmoid)
+  transformedAt: timestamp,  // if the transform data has changed since the last time it was transformed, repeat the transform.
+  processedAt:   timestamp,  // if the base fingerprint has changed since the processing time, update the processed fingerprint.
+  createdAt:     timestamp,
 }
 
 interface LocationDataConfig {

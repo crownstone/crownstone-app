@@ -20,17 +20,22 @@ location.fingerprints : {
 The raw fingerprint data will be defined as follows and is stored on the cloud like this:
 
 ```
+type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED'
+type CrownstoneIdentifier = string; // maj_min as identifier representing the Crownstone.
+
 interface FingerprintData {
-    id: string,
-    cloudId: string | null,
-    type: FingerprintType,
-    createdOnDeviceType: string, // ${device type string}_${userId who collected it}
-    createdAt: timestamp,
-    crownstonesAtCreation: identifier[], // maj_min as id representing the Crownstone.
-    data: {
-        dt: number, // ms diff from createdAt
-        data: Record<identifier, number>[]
-    }
+  id: string,
+  cloudId: string | null,
+  type: FingerprintType,
+  createdOnDeviceType: string, // ${device type string}_${userId who collected it}
+  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
+  data: {
+    dt: number, // ms diff from createdAt
+    data: Record<CrownstoneIdentifier, rssi>[]
+  }[],
+  updatedAt: timestamp,
+  createdAt: timestamp,
+}
 ```
 
 the ```identifier``` is the ```${iBeacon Major}_${iBeacon Minor}``` of the Crownstone. This uniquely identifies the Crownstone 
@@ -52,21 +57,29 @@ Processing has a few steps:
 - Transform the RSSI values to sigmoids.
 
 ```
+type TransformState  = 'NOT_REQUIRED' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE'
+
 interface FingerprintProcessedData {
-    id: string,
-    fingerprintId: string, // processed based on parent id
-    type: FingerprintType,
-    transformState: 'NOT_REQUIRED' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE',
-    transformedAt: timestamp,
-    createdAt: timestamp,
-    crownstonesAtCreation: identifier[], // maj_min as id representing the Crownstone.
-    data: {
-      dt: number, // ms diff from createdAt
-      data: Record<identifier, number>[]
-    }
+  id: string,
+  fingerprintId: string, // processed based on parent id
+  type: FingerprintType,
+  transformState: TransformState,
+  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
+  data: {
+    dt: number, // ms diff from createdAt
+    data: Record<CrownstoneIdentifier, sigmoid>[]
+  }[],
+  processingParameterHash: string, // this contains the parameters used to process the data. (sigmoid)
+  transformedAt: timestamp,  // if the transform data has changed since the last time it was transformed, repeat the transform.
+  processedAt:   timestamp,  // if the base fingerprint has changed since the processing time, update the processed fingerprint.
+  createdAt:     timestamp,
+}
 ```
 
-# Classification
+
+
+
+# Classification Process
 
 ## Pre-processing
 
@@ -126,10 +139,13 @@ TODO: work this out..
 We will give the locations a fingerprint quality score. This is based on the following criteria:
 
 - Is there an in-hand fingerprint AND an in-pocket fingerprint? (if not in pocket -10%);
-- How many crownstones are in the crownstonesAtCreation list of the fingerprint(s)? If less than 3 total, set the quality to 10%, if ratio, set to ratio (mapped 0 .. 90%).
+- Is there a requirement for transformation? If so, -10% for not transformed, -5% for approximate.
+- How many crownstones are in the crownstonesAtCreation list of the fingerprint(s)? If less than 3 total, set the quality to 10%, if ratio, set to ratio (mapped 0 .. 80%).
   - If mulitple trainingsets are used, the average of the quality scores will be used weighed by the number of datapoints. This will give a better average.
 
 If the score (partially) falls below 60%, discard the trainingset upon the next training of the room. If the total quality is above 60%, add the new set to the previous ones.
+TODO: DECIDE: If there are multiple sets for a location, automatically remove the worst one. 
+
 
 If the user has moved a crownstone, ask him which and delete that one from the fingerprints. The problem then becomes an "adding new crownstones" one.
 
@@ -169,3 +185,9 @@ d += 2 * (x*x + y*y - 1.95*x*y)
 - [x] Use KNN in js instead of native.
 - [x] Store existing crownstone IDs along with the training data to avoid penalties for crownstones existing in the test vector and not in the training data.
 - [x] Use the https://reactnative.dev/docs/interactionmanager 
+
+# Syncing fingerprints with the cloud
+
+All raw fingerprints are stored in the cloud. Each user in the sphere will download the full set of raw fingerprints. If any user (admin/member) has marked a crownstone as moved,
+the data from this Crownstone will be removed from the fingerprint. This will be synced back to the cloud and to the other users. If any user has removed a fingerprint manually or 
+if the score of a fingerprint was low enough that it has been automatically removed, this will be synced back to the cloud and the fingeprint will be removed from the other users as well.

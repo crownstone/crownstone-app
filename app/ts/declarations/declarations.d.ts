@@ -7,6 +7,7 @@
 
 type timestamp = number;
 type rssi      = number;
+type sigmoid   = number;
 
 declare const global: {
   __DEV__: boolean,
