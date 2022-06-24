@@ -81,7 +81,7 @@ function getExitingLocalizationItems(items: any[], sphereId: sphereId) {
     label: "Improve localization",
     type: 'navigation',
     testID: 'ImproveLocalization',
-    icon: <Icon name='c1-locationPin1' size={30} color={colors.blue.hex}/>,
+    icon: <Icon name='c1-locationPin1' size={25} color={colors.blue.hex}/>,
     callback: () => {
 
     }
@@ -90,7 +90,7 @@ function getExitingLocalizationItems(items: any[], sphereId: sphereId) {
 
   items.push({ label: "Quick fix", type: 'largeExplanation' });
   items.push({
-    label: "My localization made a mistake just now...",
+    label: "Localization mistake just now...",
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',

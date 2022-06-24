@@ -23,14 +23,14 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
         let newState = {...state};
         if (newState.id === null) { newState.id = action.fingerprintId; }
 
-        newState.cloudId                = update(action.data.cloudId, newState.cloudId);
-        newState.type                   = update(action.data.type, newState.type);
-        newState.createdOnDeviceType    = update(action.data.createdOnDeviceType, newState.createdOnDeviceType);
-        newState.crownstonesAtCreation  = update(action.data.crownstonesAtCreation, newState.crownstonesAtCreation);
+        newState.cloudId               = update(action.data.cloudId, newState.cloudId);
+        newState.type                  = update(action.data.type, newState.type);
+        newState.createdOnDeviceType   = update(action.data.createdOnDeviceType, newState.createdOnDeviceType);
+        newState.crownstonesAtCreation = update(action.data.crownstonesAtCreation, newState.crownstonesAtCreation);
         newState.data                  = update(action.data.data, newState.data);
 
-        newState.updatedAt              = getTime(action.data.updatedAt);
-        newState.createdAt              = getTime(action.data.createdAt);
+        newState.updatedAt             = getTime(action.data.updatedAt);
+        newState.createdAt             = getTime(action.data.createdAt);
         return newState;
       }
     case 'REFRESH_DEFAULTS':
