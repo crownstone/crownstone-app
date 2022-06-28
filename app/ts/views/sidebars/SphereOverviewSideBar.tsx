@@ -13,7 +13,7 @@ import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 
 export function SphereOverviewSideBar(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeStones', "changeFingerprint"]);
+  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint"]);
   let factor = 0.25;
 
   const state = core.store.getState();
@@ -21,6 +21,7 @@ export function SphereOverviewSideBar(props) {
 
   let blinkLocalizationIcon = false;
   let activeSphere = Get.activeSphere();
+
   if (activeSphere) {
     blinkLocalizationIcon = MenuNotificationUtil.isThereALocalizationAlert(activeSphere.id);
   }

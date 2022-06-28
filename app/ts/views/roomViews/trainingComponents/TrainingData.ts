@@ -3,10 +3,12 @@ import { NATIVE_BUS_TOPICS, TOPICS } from "../../../Topics";
 import { core } from "../../../Core";
 import { KNNsigmoid } from "../../../logic/classifiers/knn";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { Get } from "../../../util/GetUtil";
+import { FingerprintUtil } from "../../../util/FingerprintUtil";
 
 interface trainingData {
-  timestamp: timestamp,
-  devices:   Record<string, rssi>
+  dt: timestamp,
+  data: Record<string, rssi>
 }
 type processedData = Record<string, number>
 
@@ -15,10 +17,11 @@ export class TrainingData {
   processedData : processedData[] = [];
 
   sortedDeviceIds : string[] = [];
-  availableDevices = {};
+  crownstonesAtCreation = [];
 
   subscriptions = [];
 
+  startT: timestamp;
   sphereId:   string;
   locationId: string;
 
@@ -30,10 +33,20 @@ export class TrainingData {
   }
 
   start() {
-    this.trainingData     = [];
-    this.processedData    = [];
-    this.sortedDeviceIds  = [];
-    this.availableDevices = {};
+    this.trainingData          = [];
+    this.processedData         = [];
+    this.sortedDeviceIds       = [];
+    this.crownstonesAtCreation = [];
+    this.startT                = Date.now();
+
+    let sphere = Get.sphere(this.sphereId);
+    if (sphere) {
+      for (let stoneId in sphere.stones) {
+        let stone = sphere.stones[stoneId];
+        this.crownstonesAtCreation.push(FingerprintUtil.getStoneIdentifierFromStone(stone));
+      }
+    }
+
     this._listen();
   }
 
@@ -42,24 +55,15 @@ export class TrainingData {
   }
 
   _collect(data: ibeaconPackage[]) {
-    let datapoint = {timestamp:Date.now(), devices: {}};
+    let datapoint = {dt: Date.now() - this.startT, data: {}};
     for (let point of data) {
-      let id = `${point.major}_${point.minor}`
-      datapoint.devices[id]     = point.rssi;
-      this.availableDevices[id] = true;
+      let id = `${point.major}_${point.minor}`;
+      datapoint.data[id] = point.rssi;
     }
-
-    this.sortedDeviceIds = Object.keys(this.availableDevices).sort();
-
-    this._process(datapoint);
 
     this.trainingData.push(datapoint);
 
-
     this.tick(this.trainingData.length);
-  }
-
-  _process(datapoint: trainingData) {
   }
 
 

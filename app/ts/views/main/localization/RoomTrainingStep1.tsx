@@ -7,7 +7,7 @@ import { LiveComponent } from "../../LiveComponent";
 import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Background } from "../../components/Background";
-import { colors, screenHeight, screenWidth, styles } from "../../styles";
+import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 
@@ -20,7 +20,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 export class RoomTrainingStep1 extends LiveComponent<any, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: false});
+    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
   }
 
 
@@ -49,8 +49,9 @@ export class RoomTrainingStep1 extends LiveComponent<any, any> {
     let location = Get.location(this.props.sphereId, this.props.locationId);
     return (
       <Background>
+        <View style={{height: topBarHeight}} />
         <KeepAwake />
-        <View style={{height:30}}/>
+        <View style={{height:20}}/>
         <Text style={styles.header}>{"Initial training session"}</Text>
         <Text style={styles.boldExplanation}>{"First we will walk around the room with the phone in your hand, arm stretched out."}</Text>
         <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>

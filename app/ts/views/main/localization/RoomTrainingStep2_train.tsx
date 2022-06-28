@@ -10,7 +10,7 @@ import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import KeepAwake from 'react-native-keep-awake';
+
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining", key)(a,b,c,d,e);
@@ -19,94 +19,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 export const MIN_DATA_COUNT = 10;
 
 
-export class RoomTrainingStep1_train extends LiveComponent<any, any> {
-  static options(props) {
-    let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
-  }
-
-  trainingData : TrainingData;
-
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      showMoveAround: false,
-      distance: 0,
-      dataCount:0
-    };
-
-    this.trainingData = new TrainingData(this.props.sphereId, this.props.locationId);
-
-    this.trainingData.tick = (amountOfPoints) => {
-      this.setState({dataCount: amountOfPoints});
-
-      if (Platform.OS === "android") {
-        let pattern = [50,0,30]
-        Vibration.vibrate(pattern);
-      }
-      else {
-        Bluenet.vibrate("success");
-      }
-
-      if (amountOfPoints === MIN_DATA_COUNT) {
-        Vibration.vibrate([400])
-        return;
-      }
-    }
-
-  }
-
-  navigationButtonPressed({buttonId}) {
-    if (buttonId === 'cancel') {
-      this.trainingData.abort();
-    }
-  }
-
-  componentDidMount() {
-    this.trainingData.start();
-  }
-
-  componentWillUnmount() {
-    this.trainingData.stop();
-  }
-
-  render() {
-    let location = Get.location(this.props.sphereId, this.props.locationId);
-    let size = Math.min(screenWidth, 0.35*screenHeight);
-    return (
-      <Background>
-        <View style={{height: topBarHeight}} />
-        <KeepAwake />
-        <View style={{height:30}}/>
-        <Text style={styles.header}>{"Listening..."}</Text>
-
-        <View style={{flex:1}}/>
-        <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
-        <View style={{flex:1}}/>
-
-        { this.state.dataCount < MIN_DATA_COUNT  && <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>}
-        { this.state.dataCount < MIN_DATA_COUNT  && <Text style={styles.header}>{`(${this.state.dataCount} / ${MIN_DATA_COUNT})`}</Text>}
-
-        { this.state.dataCount >= MIN_DATA_COUNT && <Text style={styles.explanation}>{"You can collect more if you want. The more the better!"}</Text>}
-        { this.state.dataCount >= MIN_DATA_COUNT && <Text style={{...styles.header, color: colors.green.hex}}>{`Collected ${this.state.dataCount} points so far!`}</Text>}
-
-        <View style={{flex:1}}/>
-
-        { this.state.dataCount >= MIN_DATA_COUNT && <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
-          <Button
-            backgroundColor={colors.blue.rgba(0.5)}
-            icon={'ios-play'}
-            label={ "Finish!"}
-            callback={() => {
-              this.trainingData.stop();
-              NavigationUtil.navigate('RoomTrainingStep2_train', this.props);
-            }}
-          />
-        </View>}
-      </Background>
-    );
-  }
+export function RoomTrainingStep2_train() {
 }
 
 // class Viz extends Component<any, any> {

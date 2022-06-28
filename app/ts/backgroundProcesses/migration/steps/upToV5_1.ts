@@ -1,6 +1,7 @@
 import {core} from "../../../Core";
 import {xUtil} from "../../../util/StandAloneUtil";
 import {RoomStockBackground} from "../../../views/styles";
+import { FingerprintUtil } from "../../../util/FingerprintUtil";
 
 export const clean_upTo5_1 = async function() {
 }
@@ -95,7 +96,7 @@ function getCrownstonesAtCreation(fingerprint) {
     if (!measurement.devices) { continue; }
 
     for (let deviceId in measurement.devices) {
-      let identifier = getStoneIdentifierFromIBeaconString(deviceId);
+      let identifier = FingerprintUtil.getStoneIdentifierFromIBeaconString(deviceId);
       if (!identifier) { continue; }
 
       set[identifier] = true;
@@ -124,7 +125,7 @@ function getFingerprintData(fingerprint, updatedAt) {
     if (!measurement.devices) { continue; }
 
     for (let deviceId in measurement.devices) {
-      let identifier = getStoneIdentifierFromIBeaconString(deviceId);
+      let identifier = FingerprintUtil.getStoneIdentifierFromIBeaconString(deviceId);
       if (!identifier) { continue; }
 
       data.push({[identifier] : measurement.devices[deviceId]});
@@ -135,20 +136,4 @@ function getFingerprintData(fingerprint, updatedAt) {
     }
   }
   return set;
-}
-
-
-/**
- * Get the stone identifier maj_min from a string like this D8B094E7-569C-4BC6-8637-E11CE4221C18_Maj:47912_Min:57777
- */
-function getStoneIdentifierFromIBeaconString(str : string) : string {
-  let parts = str.split("_");
-  if (parts.length !== 3) {
-    return null;
-  }
-  return `${parts[1].substr(4)}_${parts[2].substr(4)}`;
-}
-
-function getStoneIdentifierFromStone(stone : StoneData) : string {
-  return `${stone.config.iBeaconMajor}_${stone.config.iBeaconMinor}`;
 }
