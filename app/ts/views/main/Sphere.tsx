@@ -20,7 +20,7 @@ import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import {
   DataUtil,
-  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
@@ -30,6 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderTitle } from "../components/HeaderTitle";
 import {useSidebarState} from "../components/hooks/eventHooks";
 import {SIDEBAR_STATE} from "../components/animated/SideBarView";
+import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -85,12 +86,10 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   let shouldShowStatusCommunication = noStones === false && arrangingRooms === false
   let sphere = Get.sphere(sphereId);
 
-  let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
-  let requiresFingerprints = requireMoreFingerprints(sphereId);
-  let blinkMenuIconForLocalization = sphere.state.present && !arrangingRooms && enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
+  let blinkMenuIconForLocalization = MenuNotificationUtil.isThereALocalizationAlert(sphereId);
+  console.log('blinkMenuIconForLocalization',blinkMenuIconForLocalization);
 
-  let blinkMenuIcon = SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
-
+  let blinkMenuIcon = !arrangingRooms && SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
 
   return (
     <React.Fragment>

@@ -39,8 +39,7 @@ export class Initializer extends Component<any, any> {
       }
 
       if (BackgroundProcessHandler.userLoggedInReady) {
-        // NavigationUtil.setRoot(Stacks.loggedIn());
-        NavigationUtil.setRoot(Stacks.DEV_firmwareTesting({}));
+        NavigationUtil.setRoot(Stacks.loggedIn());
       }
       else if (BackgroundProcessHandler.userLoggedIn) {
         NavigationUtil.setRoot(Stacks.permissions());

@@ -136,7 +136,7 @@ interface LocationData {
   config: LocationDataConfig
   presentUsers: string[],
   fingerprints: {
-    raw: Record<fingerprintId, FingerprintData>,
+    raw:       Record<fingerprintId, FingerprintData>,
     processed: Record<fingerprintId, FingerprintProcessedData>,
   },
   layout: {

@@ -7,10 +7,10 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SPHERE_ID_STORE } from "../main/SphereOverview";
 import { core } from "../../Core";
 import {HighlightableWhiteIcon} from "../components/animated/HighlightableIcon";
-import {enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints} from "../../util/DataUtil";
 import {useDatabaseChange} from "../components/hooks/databaseHooks";
 import {Get} from "../../util/GetUtil";
 import {HighlightableLabel} from "../components/animated/HighlightableLabel";
+import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 
 export function SphereOverviewSideBar(props) {
   useDatabaseChange(['updateActiveSphere', 'changeStones', "changeFingerprint"]);
@@ -22,9 +22,7 @@ export function SphereOverviewSideBar(props) {
   let blinkLocalizationIcon = false;
   let activeSphere = Get.activeSphere();
   if (activeSphere) {
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(activeSphere.id);
-    let requiresFingerprints = requireMoreFingerprints(activeSphere.id);
-    blinkLocalizationIcon = enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled;
+    blinkLocalizationIcon = MenuNotificationUtil.isThereALocalizationAlert(activeSphere.id);
   }
 
   let blinkBehaviour = false;

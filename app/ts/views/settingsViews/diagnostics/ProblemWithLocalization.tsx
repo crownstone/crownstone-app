@@ -22,12 +22,13 @@ import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {Util} from "../../../util/Util";
 import {
   enoughCrownstonesForIndoorLocalization,
-  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../../util/DataUtil";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../util/FingerprintUtil";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -88,7 +89,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     let presentSphereId = Util.data.getPresentSphereId();
     let enoughForLocalization = enoughCrownstonesForIndoorLocalization(presentSphereId);
     let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(presentSphereId);
-    let requiresFingerprints = requireMoreFingerprints(presentSphereId);
+    let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(presentSphereId);
 
     let stones = state.spheres[presentSphereId].stones;
     let stoneIds = Object.keys(stones);

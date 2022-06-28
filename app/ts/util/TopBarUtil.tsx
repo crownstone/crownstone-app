@@ -37,22 +37,22 @@ export const TopBarUtil = {
     //   })
     // }
 
-    if (props.leftText !== undefined) {
+    if (props.leftText) {
       leftButtons.push(getLeftButton(props.leftText.id, props.leftText.text));
     }
     if (props.disableBack === true && Platform.OS === 'ios') {
       leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
     }
-    if (props.closeModal !== undefined) {
+    if (props.closeModal) {
       leftButtons.push(getLeftButton('closeModal', Languages.get("__UNIVERSAL", "Back")()));
     }
-    if (props.backModal !== undefined) {
+    if (props.backModal) {
       leftButtons.push(getLeftButton('backModal', Languages.get("__UNIVERSAL", "Back")()));
     }
-    if (props.cancelBack !== undefined) {
+    if (props.cancelBack) {
       leftButtons.push(getLeftButton('cancelBack', Languages.get("__UNIVERSAL", "Back")()));
     }
-    if (props.cancelModal !== undefined) {
+    if (props.cancelModal) {
       leftButtons.push(getLeftButton('cancelModal', Languages.get("__UNIVERSAL", "Cancel")()));
     }
 

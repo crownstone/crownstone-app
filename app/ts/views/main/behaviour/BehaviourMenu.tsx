@@ -28,7 +28,7 @@ import { SphereStateManager } from "../../../backgroundProcesses/SphereStateMana
 import {
   canUseIndoorLocalizationInSphere,
   DataUtil,
-  enoughCrownstonesForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesForIndoorLocalization
 } from "../../../util/DataUtil";
 import {Icon} from "../../components/Icon";
 import { SettingsBackground } from "../../components/SettingsBackground";
@@ -88,79 +88,3 @@ export function BehaviourMenu(props: { sphereId: sphereId}) {
 }
 
 BehaviourMenu.options = TopBarUtil.getOptions({ title: "Behaviour", closeModal: true })
-
-// export class BehaviourMenuClass extends LiveComponent<any, any> {
-//   static options(props) {
-//     return TopBarUtil.getOptions({ title: "Behaviour", closeModal: true });
-//   }
-//
-//   unsubscribeEventListener = () => {};
-//
-//   componentDidMount() {
-//     this.unsubscribeEventListener = core.eventBus.on("databaseChange", (data) => {
-//       let change = data.change;
-//       if (
-//         change.changeSphereSmartHomeState && change.changeSphereSmartHomeState.sphereIds[this.props.sphereId] ||
-//         change.changeSphereState          && change.changeSphereState.sphereIds[this.props.sphereId]
-//       ) {
-//         this.forceUpdate();
-//       }
-//     });
-//   }
-//
-//   componentWillUnmount() {
-//     this.unsubscribeEventListener();
-//   }
-//
-//   _getBehaviourItems() {
-//     let state = core.store.getState();
-//     let sphere : SphereData = state.spheres[this.props.sphereId];
-//     let behaviourEnabledState = true;
-//     if (sphere) {
-//       behaviourEnabledState = sphere.state.smartHomeEnabled === true
-//     }
-//     let items = [];
-//
-//     items.push({ label: "BEHAVIOUR", type: 'largeExplanation' });
-//     let label = "You can disable behaviour so your house reverts to a normal, dumb, home. This is often used if you have guests. Guests prefer not to be left in the dark...";
-//     let disabled = false;
-//     if (DataUtil.isBehaviourUsed(this.props.sphereId)) {
-//       if (!DataUtil.inSphere(this.props.sphereId)) {
-//         label = "You have to be in the sphere to enable/disable behaviour...";
-//         disabled = true;
-//       }
-//     }
-//     else {
-//       label = "No Crownstones have behaviour at the moment...";
-//       disabled = true;
-//     }
-//
-//     items.push({
-//       label: "Disable behaviour",
-//       type: 'switch',
-//       testID: 'Disable_behaviour',
-//       disabled: disabled,
-//       icon: <Icon name='c1-brain' size={30} color={colors.green.hex} />,
-//       value: !behaviourEnabledState,
-//       callback: (newState) => {
-//         SphereStateManager.userSetSmartHomeState(this.props.sphereId, !newState);
-//         core.eventBus.emit("showLoading",newState === true ? "Disabling behaviour..." : "Enabling behaviour...");
-//         setTimeout(() => { core.eventBus.emit("hideLoading"); }, 4000);
-//       }
-//     });
-//     items.push({label: label,  type:'explanation', below: true});
-//
-//     return items;
-//   }
-//
-//
-//   render() {
-//     return (
-//       <SettingsBackground testID={"LocalizationMenu"}>
-//         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-//           <ListEditableItems items={this._getBehaviourItems()} />
-//         </ScrollView>
-//       </SettingsBackground>
-//     );
-//   }
-// }

@@ -21,8 +21,9 @@ import { Util } from "../../../../util/Util";
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";
 import { Alert } from "react-native";
 import {
-  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../../../util/DataUtil";
+import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../../util/FingerprintUtil";
 const SunCalc = require('suncalc');
 
 
@@ -548,7 +549,7 @@ export const AicoreUtil = {
       let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
       // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprints(sphereId);
+      let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
       if (enoughForLocalization === false) {
         Alert.alert(
@@ -725,7 +726,7 @@ export const AicoreUtil = {
   getBehaviourSummary(sphereId: string, behaviourData) {
     let behaviour : AicoreTwilight | AicoreBehaviour = null;
     if (behaviourData.type === BEHAVIOUR_TYPES.twilight) { behaviour = new AicoreTwilight(behaviourData.data);  }
-    else                                            { behaviour = new AicoreBehaviour(behaviourData.data); }
+    else                                                 { behaviour = new AicoreBehaviour(behaviourData.data); }
 
     return {
       usingSingleRoomPresence: behaviour.isUsingSingleRoomPresence(),

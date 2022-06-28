@@ -17,6 +17,12 @@ let defaultFingerprintData: FingerprintData = {
 
 const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {}) => {
   switch (action.type) {
+    case "UPDATE_FINGERPRINT_V2_CLOUD_ID":
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
     case 'ADD_FINGERPRINT_V2':
     case 'UPDATE_FINGERPRINT_V2':
       if (action.data) {

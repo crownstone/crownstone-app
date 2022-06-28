@@ -43,11 +43,12 @@ import { Spacer } from "../../components/Spacer";
 import { Button } from "../../components/Button";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
+import { useLiveView } from "../../components/hooks/viewHooks";
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
+  useLiveView(props);
   useDatabaseChange(['changeSphereState']);
-
 
   let toDoRooms     = getToDoRooms(props.sphereId);
   let finishedRooms = getFinishedRooms(props.sphereId);
@@ -69,13 +70,15 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
         <View style={{height:30}}/>
         { finishedRooms.length > 0 && <Text style={styles.explanation}>{finishedRooms.length > 1 ? "These rooms are already done:" : "This room is already done:"}</Text> }
         { finishedRooms.length > 0 && <ListEditableItems items={finishedRooms} style={{width: screenWidth}}/> }
-        { finishedRooms.length === 0 && <Text style={styles.header}>{"Pick a room to get started!"}</Text> }
+        { toDoRooms.length > 1 && finishedRooms.length === 0 && <Text style={styles.header}>{"Pick a room to get started!"}</Text> }
       </ScrollView>
     </SettingsBackground>
   );
 }
 
-SetupLocalization.options = TopBarUtil.getOptions({ title: "Setup Localization" });
+SetupLocalization.options = (props) => {
+  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.fromOverview ?? false });
+}
 
 
 function SetupFinished(props) {
@@ -115,7 +118,7 @@ function getFinishedRooms(sphereId: sphereId) {
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
     let location = sphere.locations[locationId];
-    if (Object.keys(location.fingerprints).length === 0) {
+    if (Object.keys(location.fingerprints.raw).length === 0) {
       items.push({
         label: location.config.name,
         type: 'info',
@@ -135,7 +138,7 @@ function getToDoRooms(sphereId: sphereId) {
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
     let location = sphere.locations[locationId];
-    if (Object.keys(location.fingerprints).length === 0) {
+    if (Object.keys(location.fingerprints.raw).length === 0) {
       items.push({
         label: location.config.name,
         type: 'navigation',

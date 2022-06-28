@@ -91,7 +91,6 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
-      console.log("STARTINGS")
       BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
         base_core.sessionMemory.developmentEnvironment = result || DeviceInfo.isEmulatorSync();
         console.log("isDevelopmentEnvironment", base_core.sessionMemory.developmentEnvironment)

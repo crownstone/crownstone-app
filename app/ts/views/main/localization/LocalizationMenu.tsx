@@ -28,11 +28,12 @@ import { SphereStateManager } from "../../../backgroundProcesses/SphereStateMana
 import {
   canUseIndoorLocalizationInSphere,
   DataUtil,
-  enoughCrownstonesForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesForIndoorLocalization
 } from "../../../util/DataUtil";
 import {Icon} from "../../components/Icon";
 import { useLiveView } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
+import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../util/FingerprintUtil";
 
 
 
@@ -44,7 +45,7 @@ export function LocalizationMenu(props) {
 
   let items = [];
   let enoughCrownstones = enoughCrownstonesForIndoorLocalization(props.sphereId);
-  let trainingRequired  = requireMoreFingerprints(props.sphereId);
+  let trainingRequired  = requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
 
   items.push({ label: "INDOOR LOCALIZATION", type: 'largeExplanation' });
   if (enoughCrownstones) {

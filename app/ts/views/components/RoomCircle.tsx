@@ -7,6 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  Alert,
   Animated,
   Text, TouchableOpacity,
   View
@@ -20,7 +21,9 @@ import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
-import { DataUtil } from "../../util/DataUtil";
+import { DataUtil, enoughCrownstonesInLocationsForIndoorLocalization } from "../../util/DataUtil";
+import { IconCircle } from "./IconCircle";
+import { FingerprintUtil } from "../../util/FingerprintUtil";
 
 
 
@@ -40,7 +43,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
   unsubscribeStoreEvents: any;
   unsubscribeControlEvents = [];
-  renderState: any;
 
   scaledUp = true;
   touching = false;
@@ -139,6 +141,18 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.unsubscribeStoreEvents();
   }
 
+  getLocationIcon() {
+    let alertSize = this.outerDiameter*0.30;
+    return (
+      <TouchableOpacity
+        style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}
+        onPress={() => { NavigationUtil.launchModal("SetupLocalization",{sphereId: this.props.sphereId, fromOverview: true}); }}
+      >
+        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
+      </TouchableOpacity>
+    )
+  }
+
 
   getIcon() {
     let icon = Get.location(this.props.sphereId, this.props.locationId)?.config?.icon || null;
@@ -194,14 +208,22 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
   render() {
     const state = core.store.getState();
-
-
-    this.renderState = state;
     const animatedStyle = {
       transform: [
         { scale: this.state.scale },
       ]
     };
+
+    let showLocalizationIcon = false;
+    // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
+    if (state.app.indoorLocalizationEnabled) {
+      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(this.props.sphereId);
+      if (this.props.viewingRemotely !== true) {
+        if (canDoLocalization && !FingerprintUtil.hasFingerprints(this.props.sphereId, this.props.locationId)) {
+          showLocalizationIcon = true;
+        }
+      }
+    }
 
     let room = Get.location(this.props.sphereId, this.props.locationId);
 
@@ -225,6 +247,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
         testID={`RoomCircle${room?.config?.cloudId}`}
       >
         {this.getCircle()}
+        {showLocalizationIcon ? this.getLocationIcon() : undefined}
         {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
       </Animated.View>
       </TouchableOpacity>

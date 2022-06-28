@@ -70,6 +70,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       newState.fingerprintRaw = null;
       newState.fingerprintParsed = null;
       newState.fingerprintCloudId = null;
+      newState.fingerprintUpdatedAt = null;
       return newState;
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {

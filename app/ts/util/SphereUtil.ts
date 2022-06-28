@@ -10,9 +10,9 @@ import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {
   enoughCrownstonesForIndoorLocalization,
   enoughCrownstonesInLocationsForIndoorLocalization,
-  requireMoreFingerprints
 } from "./DataUtil";
 import { core } from "../Core";
+import { requireMoreFingerprintsBeforeLocalizationCanStart } from "./FingerprintUtil";
 
 
 export const SphereUtil = {
@@ -87,7 +87,7 @@ export const SphereUtil = {
     let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(sphereId);
 
     // do we need more fingerprints?
-    let requiresFingerprints = requireMoreFingerprints(sphereId);
+    let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
     let noRooms = (sphereId ? Object.keys(sphere.locations).length : 0) == 0;
 

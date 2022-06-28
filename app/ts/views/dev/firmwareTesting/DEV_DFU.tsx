@@ -1,9 +1,3 @@
-//
-// import { Languages } from "../../../Languages"
-//
-// function lang(key,a?,b?,c?,d?,e?) {
-//   return Languages.get("DEV_DFU", key)(a,b,c,d,e);
-// }
 import {LiveComponent} from "../../LiveComponent";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
@@ -159,8 +153,6 @@ export class DEV_DFU extends LiveComponent<{
         });
       }
     }
-
-
 
 
     items.push({type: 'spacer'});
