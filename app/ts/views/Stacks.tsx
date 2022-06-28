@@ -151,6 +151,8 @@ export const Stacks = {
     return {
       bottomTabs: {
         id: 'bottomTabs',
+        titleDisplayMode: "alwaysShow",
+        backgroundColor: "transparent",
         children: [
           {
             stack: {
@@ -196,10 +198,33 @@ export const Stacks = {
     }
   },
 
-  DEV_firmwareTesting: function(props) : StackData {
+  DEV_firmwareTesting: function(props) {
     return {
+      statusBar: {
+        visible:    true,
+        drawBehind: true,
+      },
+      topBar: {
+        drawBehind: true,
+        background: { color: 'transparent'},
+        title: {
+          color: colors.black.hex,
+        },
+      },
+      bottomTab: {
+        textColor: colors.black.hex,
+        selectedTextColor: colors.blue.hex,
+        fontSize: 11,
+        iconColor: colors.black.hex,
+        selectedIconColor: colors.blue.hex,
+      },
+      layout: {
+        orientation: ['portrait'],
+      },
       bottomTabs: {
         id: 'bottomTabs',
+        titleDisplayMode: "alwaysShow",
+        backgroundColor: "transparent",
         children: [
           {
             stack: {

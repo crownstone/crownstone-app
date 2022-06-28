@@ -84,7 +84,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
         <Animated.View style={[styles.fullscreen, {height:backgroundHeight, opacity:this.state.fade}]}>
           <BackgroundImage height={backgroundHeight} image={this.animatedImage} />
         </Animated.View>
-        <CustomKeyboardAvoidingView style={{flex:1}}>
+        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight}}>
           <View style={{flex:1}}>
             { this.props.children }
           </View>

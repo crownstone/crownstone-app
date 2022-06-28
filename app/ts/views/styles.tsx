@@ -341,7 +341,8 @@ export const menuStyles = StyleSheet.create({
     fontSize: 15,
     paddingLeft:25,
     paddingRight: 20,
-    paddingTop: 10
+    paddingTop: 10,
+    paddingBottom: 30,
   },
   listText:{
     width:(1/3)*screenWidth,

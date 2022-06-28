@@ -179,6 +179,8 @@ export class SettingsOverview extends LiveComponent<any, any> {
         </View>
       )
     });
+    items.push({type:'spacer'});
+    items.push({type:'spacer'});
 
     return items;
   }

@@ -25,7 +25,15 @@ import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastSta
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { SlideInView } from "../../components/animated/SlideInView";
-import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
+import {
+  availableScreenHeight,
+  background,
+  colors,
+  screenWidth,
+  styles,
+  tabBarHeight,
+  topBarHeight
+} from "../../styles";
 import React from "react";
 import { StoneSelectorDataContainer } from "./DEV_StoneSelectorData";
 import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionComponents";
@@ -35,6 +43,7 @@ import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandle
 import { AppUtil } from "../../../util/AppUtil";
 import { TESTING_SPHERE_ID } from "../../../backgroundProcesses/dev/DevAppState";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
+import { SettingsBackground, SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
@@ -369,7 +378,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
           height:50,
           ...styles.centered,
           borderBottomColor: colors.black.rgba(0.2),
-          borderBottomWidth:1,
+          borderBottomWidth: this.state.showHandleFilter ? 1 : 0,
           paddingLeft:10,
           paddingRight:10
         }}>
@@ -414,7 +423,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
           }}
           style={{
             position: 'absolute',
-            bottom: 20,
+            bottom: 20 + tabBarHeight,
             left: 0.125 * screenWidth,
             padding: 15,
             width: 0.75 * screenWidth, ...styles.centered,
@@ -432,9 +441,9 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
 
   render() {
     this.lastRedraw = Date.now();
-
     return (
-      <Background image={background.main}>
+      <SettingsNavbarBackground>
+        <View style={{height: topBarHeight}} />
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }} />
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>
@@ -478,7 +487,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
           </SlideInView>
         </View>
 
-        <ScrollView>
+        <ScrollView contentContainerStyle={{paddingBottom: tabBarHeight}}>
           <RefreshControl
             refreshing={false}
             onRefresh={() => { this.refresh() }}
@@ -492,7 +501,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
           </View>
         </ScrollView>
         { this.getBatchButton() }
-      </Background>
+      </SettingsNavbarBackground>
     );
   }
 }

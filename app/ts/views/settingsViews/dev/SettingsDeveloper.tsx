@@ -532,6 +532,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       type: 'explanation',
     });
     items.push({type: 'spacer'});
+    items.push({type: 'spacer'});
 
     return items;
   }

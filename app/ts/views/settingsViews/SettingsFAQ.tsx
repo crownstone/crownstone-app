@@ -32,6 +32,7 @@ export class SettingsFAQ extends Component<any, any> {
   _getItems() {
     let items = [];
 
+    let wrapperStyle = {paddingTop: menuStyles.collapsableContent.paddingTop, paddingBottom:menuStyles.collapsableContent.paddingBottom, paddingLeft:menuStyles.collapsableContent.paddingLeft};
     let appStoreLabel =  lang("App_Store");
     if (Platform.OS === 'android') {
       appStoreLabel =  lang("Play_Store");
@@ -119,7 +120,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question9',
       label: lang("____I_want_to_have_a_clea"),
       contentItem:
-        <View style={{flex:1}}>
+        <View style={wrapperStyle}>
           <Text style={menuStyles.collapsableContent}>{ lang("Sometimes_something_goes_") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
@@ -140,7 +141,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question10',
       label: lang("____my_Sphere_name_is_gon"),
       contentItem:
-        <View style={{flex:1}}>
+        <View style={wrapperStyle}>
           <Text style={menuStyles.collapsableContent}>{ lang("Sometimes_something_goes_w") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
@@ -160,7 +161,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question11',
       label: lang("____it_always_says_No_Cro"),
       contentItem:
-        <View style={{flex:1}}>
+        <View style={wrapperStyle}>
           <Text style={menuStyles.collapsableContent}>{ lang("It_could_be_that_youre_no") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
@@ -201,7 +202,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question14',
       label: lang("____I_need_to_factory_res"),
       contentItem:
-        <View style={{flex:1}}>
+        <View style={wrapperStyle}>
           <Text style={menuStyles.collapsableContent}>{ lang("Only_use_this_as_a_last_r") }</Text>
           <View style={{flex:1}} />
           <NavigationBar

@@ -6,7 +6,7 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { core } from "../../../Core";
 import { SetupHelper } from "../../../native/setup/SetupHelper";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
-import { background, colors, screenWidth, styles } from "../../styles";
+import { background, colors, RoomStockBackground, screenWidth, styles, tabBarHeight, topBarHeight } from "../../styles";
 import { Alert, Platform, ScrollView, TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { SlideInView } from "../../components/animated/SlideInView";
@@ -16,6 +16,7 @@ import { Icon } from "../../components/Icon";
 import {DevAppState, TESTING_SPHERE_ID} from "../../../backgroundProcesses/dev/DevAppState";
 import {tell} from "../../../logic/constellation/Tellers";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 const BLE_STATE_READY = "ready";
 const BLE_STATE_BUSY = "busy";
@@ -576,7 +577,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         backgroundImage = require('../../../../assets/images/backgrounds/blueBackground2.jpg');
         break;
       case "verified":
-        backgroundImage = background.main;
+        backgroundImage = RoomStockBackground.green;
         break;
       case "unverified":
         backgroundImage = background.menu;
@@ -597,17 +598,22 @@ export class DEV_FirmwareTest extends LiveComponent<{
       }
     }
 
+    let items = this._getItems(explanationColor);
+
     return (
-      <AnimatedBackground image={backgroundImage}>
+      <AnimatedBackground fullScreen image={backgroundImage}>
+        <View style={{height: topBarHeight}} />
         <BleStatusBar bleState={this.state.bleState} />
         <SlideInView hidden={true} height={50} visible={this.state.bleState !== BLE_STATE_READY && this.state.bleState !== BLE_STATE_BUSY}>
           <TouchableOpacity onPress={triggerErrorMessage} style={{paddingLeft: 10, paddingRight: 10, backgroundColor: colors.red.hex, borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2), height: 50, ...styles.centered}}>
             <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.white.hex}}>{ "Error during BLE command." }</Text>
           </TouchableOpacity>
         </SlideInView>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
+          <ListEditableItems items={items} separatorIndent={true} />
         </ScrollView>
+        <TopBarBlur />
+        <NavBarBlur />
       </AnimatedBackground>
     )
   }

@@ -13,6 +13,7 @@ import { View, Text, ScrollView} from "react-native";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { BackButton, RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
 import { availableScreenHeight, background, colors, screenWidth } from "../../styles";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 export class DEV_PresenceMocking extends LiveComponent<any, any> {
   static options(props) {
@@ -96,7 +97,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={background.main}>
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
@@ -106,7 +107,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
             { this.state.sphereId === null ? this.getSpheres() : this.getRooms() }
           </View>
         </ScrollView>
-      </Background>
+      </SettingsNavbarBackground>
     );
   }
 }
