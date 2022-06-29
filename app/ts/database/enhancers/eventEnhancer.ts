@@ -87,6 +87,12 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case 'CLEAR_USERS_IN_LOCATION':
       eventStatus.changeUsers = affectedIds;
       break;
+    case 'ADD_FINGERPRINT_V2':
+    case 'UPDATE_FINGERPRINT_V2':
+    case 'REMOVE_FINGERPRINT_V2':
+    case 'ADD_PROCESSED_FINGERPRINT':
+    case 'UPDATE_PROCESSED_FINGERPRINT':
+    case 'REMOVE_PROCESSED_FINGERPRINT':
     case 'UPDATE_LOCATION_FINGERPRINT':
     case 'UPDATE_NEW_LOCATION_FINGERPRINT':
       eventStatus.changeFingerprint = affectedIds; break;

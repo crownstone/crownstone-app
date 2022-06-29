@@ -151,6 +151,12 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'REMOVE_LOCATION_FINGERPRINT'             |
                       'UPDATE_LOCATION_FINGERPRINT'             |
                       'UPDATE_NEW_LOCATION_FINGERPRINT'         |
+                      'ADD_FINGERPRINT_V2'                      |
+                      'UPDATE_FINGERPRINT_V2'                   |
+                      'REMOVE_FINGERPRINT_V2'                   |
+                      'ADD_PROCESSED_FINGERPRINT'               |
+                      'UPDATE_PROCESSED_FINGERPRINT'            |
+                      'REMOVE_PROCESSED_FINGERPRINT'            |
                       'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID'    |
                       'ADD_LOCATION'                            |
                       'UPDATE_LOCATION_CONFIG'                  |

@@ -4,8 +4,6 @@ import {BlurView} from "@react-native-community/blur";
 import * as React from "react";
 import {NotificationLine} from "./NotificationLine";
 import { AnimatedCircle } from "./animated/AnimatedCircle";
-import { useEffect, useState } from "react";
-import { SPHERE_OVERVIEW_BUTTON_ICON_SIZE, SPHERE_OVERVIEW_BUTTON_SIZE } from "../main/buttons/SphereOverviewButton";
 
 
 export function NavBarBlur(props) {

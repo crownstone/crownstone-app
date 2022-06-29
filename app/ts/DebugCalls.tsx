@@ -59,10 +59,10 @@ function DebugPopup() {
 }
 
 function DebugCustomView() {
-  setTimeout(() => {
-  NavigationUtil.launchModal("RoomTraining_conclusion",{
-    "sphereId": "aef42623-570-8cb8-f83f-a3bc59bd7ab9",
-    "locationId": "50cb58ba-7efa-33ff-6d0e-755244352ef5",
-  })},
-    300);
+  // setTimeout(() => {
+  // NavigationUtil.launchModal("RoomTraining_conclusion",{
+  //   "sphereId": "aef42623-570-8cb8-f83f-a3bc59bd7ab9",
+  //   "locationId": "50cb58ba-7efa-33ff-6d0e-755244352ef5",
+  // })},
+  //   300);
 }

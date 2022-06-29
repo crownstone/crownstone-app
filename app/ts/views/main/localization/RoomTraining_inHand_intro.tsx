@@ -20,11 +20,9 @@ export function RoomTraining_inHand_intro(props) {
 
   return (
     <Background>
-      <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: topBarHeight}} contentInsetAdjustmentBehavior={"never"}>
         <View style={{height: topBarHeight}} />
         <KeepAwake />
         <View style={{height:20}}/>
-        <Text style={styles.header}>{"Initial training session"}</Text>
         <Text style={styles.boldExplanation}>{"First we will walk around the room with the phone in your hand, arm stretched out."}</Text>
         <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>
 
@@ -35,18 +33,16 @@ export function RoomTraining_inHand_intro(props) {
         <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!."}</Text>
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           <Button
-            backgroundColor={colors.blue.rgba(0.5)}
+            backgroundColor={colors.blue.hex}
             icon={'ios-play'}
             label={ "Start!"}
             callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND"}); }}
           />
         </View>
-      </ScrollView>
     </Background>
   );
 }
 
 RoomTraining_inHand_intro.options = (props) => {
-  let location = Get.location(props.sphereId, props.locationId);
-  return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
+  return TopBarUtil.getOptions({title: `Initial training session`});
 }

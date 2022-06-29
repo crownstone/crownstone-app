@@ -24,11 +24,12 @@ import { Button } from "../../components/Button";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
+import { Icon } from '../../components/Icon';
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeSphereState']);
+  useDatabaseChange(['changeSphereState','changeFingerprint']);
 
   let toDoRooms     = getToDoRooms(props.sphereId);
   let finishedRooms = getFinishedRooms(props.sphereId);
@@ -92,8 +93,6 @@ function SetupFinished(props) {
 
 function getFinishedRooms(sphereId: sphereId) {
   let items = [];
-  let state = core.store.getState();
-
   let sphere = Get.sphere(sphereId);
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
@@ -102,7 +101,7 @@ function getFinishedRooms(sphereId: sphereId) {
       items.push({
         label: location.config.name,
         type: 'info',
-        icon: <IconButton name={'ios-checkmark-circle'} buttonSize={30} size={20} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+        icon: <Icon name={'ios-checkmark-circle'}  size={25} color={colors.green.hex} />,
       })
     }
   }
@@ -112,8 +111,6 @@ function getFinishedRooms(sphereId: sphereId) {
 
 function getToDoRooms(sphereId: sphereId) {
   let items = [];
-  let state = core.store.getState();
-
   let sphere = Get.sphere(sphereId);
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
@@ -122,7 +119,7 @@ function getToDoRooms(sphereId: sphereId) {
       items.push({
         label: location.config.name,
         type: 'navigation',
-        icon: <IconButton name={'c1-locationPin1'} buttonSize={30} size={20} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.blue.hex }}/>,
+        icon: <Icon name={'c1-locationPin1'} size={20} color={colors.blue.hex}/>,
         callback: () => {
           NavigationUtil.launchModal('RoomTraining',{sphereId: sphereId, locationId: locationId});
         }

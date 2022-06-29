@@ -42,7 +42,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
         icon={'c1-locationPin1'}
         iconSize={11}
         label={ "Finalize localization!"}
-        callback={() => { NavigationUtil.dismissAllModals(); }}
+        callback={() => { NavigationUtil.dismissModal(); }}
       />
     );
   }

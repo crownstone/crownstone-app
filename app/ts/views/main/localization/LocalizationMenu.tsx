@@ -18,7 +18,6 @@ import {Background} from "../../components/Background";
 import {IconButton} from "../../components/IconButton";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import {
