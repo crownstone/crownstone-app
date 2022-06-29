@@ -40,9 +40,9 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
     const store = core.store;
-    let state = store.getState();
-    let sphere = state.spheres[props.sphereId];
-    let stone = sphere.stones[props.stoneId];
+    let state   = store.getState();
+    let sphere  = state.spheres[props.sphereId];
+    let stone   = sphere.stones[props.stoneId];
 
     this._ibeaconUuid  = sphere.config.iBeaconUUID;
     this._crownstoneId = stone ? stone.config.uid : null;

@@ -85,7 +85,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
 
         </React.Fragment>
       )}}
-      labelItem={   (props) => { return (
+      labelItem={(props) => { return (
         <React.Fragment>
           <DeviceDimSlider
             stone={stone}

@@ -104,7 +104,7 @@ function EnergyUsageContent(props) {
         {mode !== "LIVE" && <TouchableOpacity onPress={showDemoAlert}><EnergyGraphAxisSvg data={cachedData} type={mode} width={0.9*screenWidth} height={200} /></TouchableOpacity>}
         {mode !== "LIVE" ?  <RoomList mode={mode} data={cachedData} /> : <LiveRoomList /> }
       </ScrollView>
-      <TopBarBlur>
+      <TopBarBlur xlight>
         <EnergyUsageHeader mode={mode} />
       </TopBarBlur>
     </React.Fragment>

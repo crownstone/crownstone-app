@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import { ListEditableItems } from '../components/ListEditableItems'
-import { IconButton }        from '../components/IconButton'
 import { background, colors } from "./../styles";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
@@ -19,7 +18,6 @@ import { core }              from "../../Core";
 import { NavigationUtil }    from "../../util/navigation/NavigationUtil";
 import { TopBarUtil }        from "../../util/TopBarUtil";
 import { LiveComponent }     from "../LiveComponent";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import {Stacks} from "../Stacks";
 import {Icon} from "../components/Icon";
 import {SettingsBackground} from "../components/SettingsBackground";

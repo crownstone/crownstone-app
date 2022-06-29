@@ -207,24 +207,13 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   render() {
-    const state = core.store.getState();
     const animatedStyle = {
       transform: [
         { scale: this.state.scale },
       ]
     };
 
-    let showLocalizationIcon = false;
-    // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
-    if (state.app.indoorLocalizationEnabled) {
-      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(this.props.sphereId);
-      if (this.props.viewingRemotely !== true) {
-        if (canDoLocalization && !FingerprintUtil.hasFingerprints(this.props.sphereId, this.props.locationId)) {
-          showLocalizationIcon = true;
-        }
-      }
-    }
-
+    let showLocalizationIcon = FingerprintUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);
 
     return (

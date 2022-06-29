@@ -16,6 +16,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {BlurMessageBar, TouchableBlurMessageBar} from "./BlurEntries";
 import {core} from "../../Core";
 import {colors} from "../styles";
+import {FingerprintUtil} from "../../util/FingerprintUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -43,9 +44,9 @@ export class RoomExplanation extends Component<any, any> {
       explanation =  lang("No_Crownstones_in_this_ro");
     }
 
-    if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
+    if (FingerprintUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
-      buttonCallback = () => { NavigationUtil.launchModal( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+      buttonCallback = () => { NavigationUtil.launchModal( "SetupLocalization", { sphereId: this.props.sphereId }); }
     }
 
     if (explanation === undefined) {
@@ -71,26 +72,3 @@ export class RoomExplanation extends Component<any, any> {
   }
 }
 
-/**
- * The right item is the flickering icon for localization.
- * @param state
- * @param sphereId
- * @param locationId
- */
-function shouldShowTrainingButton(state, sphereId, locationId) {
-  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
-  let sphere = state.spheres[sphereId];
-  if (!sphere) { return false; }
-
-  let location = sphere.locations[locationId];
-  if (!location) { return false; }
-
-  if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
-  if (sphere.state.present === false)       { return false; } // cant train a room when not in the sphere
-  if (sphere.state.reachable === false)     { return false; } // cant train a room when not in the sphere
-  if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
-
-  if (location.config.fingerprintRaw !== null) { return false; } // there already is a fingerprint, dont show animated training icon.
-
-  return true;
-}

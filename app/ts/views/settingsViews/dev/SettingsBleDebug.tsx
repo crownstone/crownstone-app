@@ -3,11 +3,10 @@ import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {background, colors, tabBarHeight} from "../../styles";
-import {Util} from "../../../util/Util";
-import {IconCircle} from "../../components/IconCircle";
+import { colors, tabBarHeight } from "../../styles";
+import { Util } from "../../../util/Util";
+import { IconCircle } from "../../components/IconCircle";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";

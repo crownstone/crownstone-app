@@ -1,10 +1,3 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("Background", key)(a,b,c,d,e);
-}
-
 import * as React from 'react'; import { Component } from 'react';
 import {
   Platform, StatusBar,
@@ -15,7 +8,6 @@ import {
 import {
   styles,
   colors,
-  screenWidth,
   updateScreenHeight,
   background
 } from "../styles";
@@ -66,7 +58,7 @@ export function Background(props: BackgroundProps) {
     >
       {props.children}
       <TopBarBlur />
-      { props.hasNavBar && <NavBarBlur /> }
+      { props.hasNavBar && <NavBarBlur xlight /> }
     </BaseBackground>
   );
 }
@@ -77,7 +69,7 @@ export function BackgroundCustomTopBar(props: BackgroundProps) {
       {...{ fullScreen:true, image: background.main, ...props}}
     >
       {props.children}
-      { props.hasNavBar && <NavBarBlur /> }
+      { props.hasNavBar && <NavBarBlur xlight /> }
     </BaseBackground>
   );
 }
