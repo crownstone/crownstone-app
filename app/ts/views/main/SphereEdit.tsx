@@ -34,7 +34,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     if (props.sphereId) {
       let sphere = state.spheres[props.sphereId];
       if (sphere) {
-        return TopBarUtil.getOptions({title: sphere.config.name, closeModal: true})
+        return TopBarUtil.getOptions({title: lang("EditSphere"), closeModal: true})
       }
     }
 

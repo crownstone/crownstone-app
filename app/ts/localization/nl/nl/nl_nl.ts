@@ -4630,6 +4630,7 @@ export default {
     Crownstones:                            function() { return "Crownstones"; },
     Users:                                  function() { return "Gebruikers"; },
     Integrations:                           function() { return "Integraties"; },
+    SphereEdit:                             function() { return "Sfeer aanpassen"; },
     Settings:                               function() { return "Instellingen"; },
     Welcome_:                               function() { return "Welkom!"; },
     Create_a_new_Sphere:                    function() { return "Creëer een nieuwe Sfeer"; },

@@ -75,7 +75,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
       settingsItem={(props) => { return (
         <React.Fragment>
         <BlurEntryDevIcon
-          callback={() => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          callback={() => { NavigationUtil.launchModal( "SettingsStoneBleDebug",{sphereId: props.sphereId, stoneId: props.stoneId, isModal: true}); }}
           visible={props.editMode}
         />
         <BlurEntrySettingsIcon

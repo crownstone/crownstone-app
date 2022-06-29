@@ -35,9 +35,8 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
 import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
-import { SettingsCustomTopBarNavbarBackground, SettingsNavbarBackground } from "../../components/SettingsBackground";
-import {TopBarBlur} from "../../components/NavBarBlur";
-import {CustomTopBarWrapper} from "../../components/CustomTopBarWrapper";
+import { SettingsCustomTopBarNavbarBackground, } from "../../components/SettingsBackground";
+import { CustomTopBarWrapperWithLine} from "../../components/CustomTopBarWrapper";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 
@@ -540,7 +539,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsCustomTopBarNavbarBackground testID={"SettingsDev"}>
-        <CustomTopBarWrapper
+        <CustomTopBarWrapperWithLine
           left={Platform.OS === 'android' ? null : "Back"}
           titleObject={
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
@@ -558,7 +557,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             </SlideFadeInView>
             <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
           </ScrollView>
-        </CustomTopBarWrapper>
+        </CustomTopBarWrapperWithLine>
       </SettingsCustomTopBarNavbarBackground>
     );
   }

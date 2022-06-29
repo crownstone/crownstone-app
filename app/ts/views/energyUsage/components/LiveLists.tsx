@@ -7,7 +7,6 @@ import {NavigationBar} from "../../components/editComponents/NavigationBar";
 import {IconButton} from "../../components/IconButton";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {Icon} from "../../components/Icon";
-import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {EnergyUsageUtil} from "../EnergyUsageUtil";
 import {InfoBar} from "../../components/editComponents/InfoBar";
 import {
@@ -17,7 +16,7 @@ import {
   useViewSwitching
 } from "../../components/hooks/databaseHooks";
 import {PowerUsageCacher} from "../../../backgroundProcesses/PowerUsageCacher";
-import {SlideFadeInViewLayoutAnimation} from "../../components/animated/SlideFadeInViewLayoutAnimation";
+import {SlideInViewLayoutAnimation} from "../../components/animated/SlideInViewLayoutAnimation";
 
 export function LiveRoomList(props: {}) {
   useSphereSwitching();
@@ -97,7 +96,7 @@ function CrownstoneList(props: { open: boolean, locationId: locationId }) {
   let height = 0;
 
   let showCollecting = false;
-  if (props.open) {
+  if (props.open || true) {
     for (let stoneData of stones) {
       let stone = activeSphere.stones[stoneData.id];
       height += NORMAL_ROW_SIZE;
@@ -119,24 +118,25 @@ function CrownstoneList(props: { open: boolean, locationId: locationId }) {
         />
       );
     }
+
+    if (items.length === 0) {
+      items.push(
+        <InfoBar barHeight={0.6*NORMAL_ROW_SIZE} label={"No Crownstones in room"} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
+      );
+    }
+
+    if (showCollecting) {
+      items.push(
+        <InfoBar barHeight={2*0.6*NORMAL_ROW_SIZE} label={"Waiting to hear from all Crownstones in the room..."} numberOfLines={2} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
+      );
+    }
   }
 
-  if (items.length === 0) {
-    items.push(
-      <InfoBar barHeight={0.6*NORMAL_ROW_SIZE} label={"No Crownstones in room"} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
-    );
-  }
-
-  if (showCollecting && props.open) {
-    items.push(
-      <InfoBar barHeight={2*0.6*NORMAL_ROW_SIZE} label={"Waiting to hear from all Crownstones in the room..."} numberOfLines={2} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
-    );
-  }
 
   return (
-    <SlideFadeInViewLayoutAnimation visible={props.open} style={{width: screenWidth, paddingLeft:20}} height={Math.max(0.6*NORMAL_ROW_SIZE,height)}>
+    <SlideInViewLayoutAnimation visible={props.open} style={{width: screenWidth, paddingLeft:20}}>
       {items}
-    </SlideFadeInViewLayoutAnimation>
+    </SlideInViewLayoutAnimation>
   );
 
 }

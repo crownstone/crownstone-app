@@ -272,7 +272,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         >
           { this._getContent(activeSphereId) }
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-          { this.state.zoomLevel === ZOOM_LEVELS.room && !this.state.arrangingRooms && <NavBarBlur noLine /> }
+          { this.state.zoomLevel === ZOOM_LEVELS.room && !this.state.arrangingRooms && <NavBarBlur xlight noLine /> }
         </AnimatedBackground>
       );
     }

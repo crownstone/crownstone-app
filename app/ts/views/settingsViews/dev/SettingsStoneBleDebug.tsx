@@ -7,9 +7,8 @@ import {
   View
 } from "react-native";
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
+import {availableScreenHeight, colors, screenWidth, styles} from "../../styles";
 import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
@@ -19,11 +18,16 @@ import { Graph } from "../../components/graph/Graph";
 import { FileUtil } from "../../../util/FileUtil";
 import { from } from "../../../logic/constellation/Tellers";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {TopBarUtil} from "../../../util/TopBarUtil";
 const RNFS = require('react-native-fs');
 
 const triggerId = "SettingsStoneBleDebug";
 
 export class SettingsStoneBleDebug extends LiveComponent<any, any> {
+  static options(props) {
+    return TopBarUtil.getOptions({title:  "BLE Debug", closeModal: props.isModal ?? false});
+  }
+
   unsubscribeNative : any[] = [];
   _crownstoneId : number;
   _ibeaconUuid : string;

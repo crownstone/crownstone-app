@@ -17,7 +17,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 export function SlideInViewLayoutAnimation(props) {
   useEffect(() => {
     LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration: props.duration ?? 200});
-  }, [props.visible])
+  }, [props.visible, props.children])
 
   let style : ViewStyle = {
     ...props.style,

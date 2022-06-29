@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-import {topBarHeight, statusBarHeight} from '../styles'
+import {topBarHeight, statusBarHeight, colors} from '../styles'
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {TopBarBlur} from "./NavBarBlur";
 import {TopBarCenterIOS, TopBarLeftIOS, TopBarRightIOS} from "./CustomTopBarWrapperIOS";
@@ -37,12 +37,22 @@ export function CustomTopBarWrapper(props) {
         {props.children}
       </TopBarContext.Provider>
       { props.noBlur !== true && <TopBarBlur /> }
-      <View style={{position:'absolute', top:0, left:0, right:0, height: topBarHeight, paddingTop:insets.top, flexDirection:'row'}}>
+      <View style={{
+        position:'absolute', top:0, left:0, right:0,
+        height: topBarHeight, paddingTop:insets.top,
+        flexDirection:'row',
+        borderColor: colors.black.rgba(0.1),
+        borderBottomWidth: props.line ? 1 : 0,
+      }}>
         {Platform.OS === 'android' ? <TopBarLeftAndroid   {...props} /> : <TopBarLeftIOS   {...props} /> }
         {Platform.OS === 'android' ? <TopBarCenterAndroid {...props} /> : <TopBarCenterIOS {...props} /> }
         {Platform.OS === 'android' ? <TopBarRightAndroid  {...props} /> : <TopBarRightIOS  {...props} /> }
       </View>
     </React.Fragment>
   )
+}
+
+export function CustomTopBarWrapperWithLine(props) {
+  return <CustomTopBarWrapper {...props} line={true} />
 }
 

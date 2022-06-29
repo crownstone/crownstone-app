@@ -34,8 +34,8 @@ export class SettingsBackground extends Component<SettingsBackgroundProps, any> 
       image: background.menu
     }}>
       { this.props.children }
-      <TopBarBlur />
-      { this.props.hasNavBar && <NavBarBlur /> }
+      <TopBarBlur xlight/>
+      { this.props.hasNavBar && <NavBarBlur xlight /> }
     </BaseBackground>
   }
 }

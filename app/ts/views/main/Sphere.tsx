@@ -87,7 +87,6 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   let sphere = Get.sphere(sphereId);
 
   let blinkMenuIconForLocalization = MenuNotificationUtil.isThereALocalizationAlert(sphereId);
-  console.log('blinkMenuIconForLocalization',blinkMenuIconForLocalization);
 
   let blinkMenuIcon = !arrangingRooms && SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
 
@@ -105,7 +104,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
         />
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={sphereId} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </SafeAreaView>
-      <TopBarBlur disabledBlur={arrangingRooms} showNotifications={!arrangingRooms} blink={{left: blinkMenuIcon}}>
+      <TopBarBlur xlight disabledBlur={arrangingRooms} showNotifications={!arrangingRooms} blink={{left: blinkMenuIcon}}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
           <SphereHeader sphere={sphere} openSideMenu={openSideMenu} blinkMenuIcon={blinkMenuIcon}/>

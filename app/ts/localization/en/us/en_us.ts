@@ -2496,6 +2496,7 @@ export default {
     Users:                                  function() { return "Users" },
     Integrations:                           function() { return "Integrations" },
     Settings:                               function() { return "Settings" },
+    EditSphere:                             function() { return "Edit Sphere" },
     Sphere_Creation:                        function() { return "SPHERE CREATION" },
     Something_went_wrong_with:              function() { return "Something went wrong with the creation of your Sphere." },
     Whoops:                                 function() { return "Whoops!" },

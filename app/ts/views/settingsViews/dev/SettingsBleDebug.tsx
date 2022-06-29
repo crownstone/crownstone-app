@@ -5,7 +5,7 @@ import {
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { background, colors } from "../../styles";
+import {background, colors, tabBarHeight} from "../../styles";
 import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
 import { core } from "../../../Core";
@@ -102,7 +102,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{paddingBottom: tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </SettingsNavbarBackground>
