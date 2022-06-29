@@ -147,7 +147,7 @@ interface core {
     bleAvailable: boolean,
     bleBroadcastAvailable: boolean,
   },
-  store: any,
+  store: { getState: () => ReduxAppState, dispatch: (action) => void, batchDispatch: (actions) => void },
   eventBus: any,
   nativeBus: NativeBus,
 }

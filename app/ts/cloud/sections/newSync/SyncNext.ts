@@ -92,7 +92,7 @@ export const SyncNext = {
 
     let state = core.store.getState()
     if (state?.user?.updatedAt) {
-      syncRequest.user = { updatedAt: state?.user?.updatedAt };
+      syncRequest.user = { updatedAt: new Date(state?.user?.updatedAt).toISOString() };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
     // console.log("SYNC REQUEST", JSON.stringify(syncRequest))

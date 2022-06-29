@@ -74,7 +74,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
 
-    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name > state.spheres[a].config.name ? 1 : -1});
 
     // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {

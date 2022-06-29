@@ -21,7 +21,7 @@ import { core } from "../../Core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Util } from "../../util/Util";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../util/FingerprintUtil";
+import {FingerprintUtil} from "../../util/FingerprintUtil";
 
 
 
@@ -97,7 +97,7 @@ function StatusCommunicationRender(props) {
 
   let enoughForLocalization = enoughCrownstonesForIndoorLocalization(currentSphereId);
   let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
-  let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(currentSphereId);
+  let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(currentSphereId);
 
   let insets = useSafeAreaInsets()
 

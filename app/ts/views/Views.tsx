@@ -113,21 +113,16 @@ import { SettingsLogOverview }                from "./settingsViews/dev/Settings
 import { LocalizationMenu }                   from "./main/localization/LocalizationMenu";
 import { SetupLocalization }                  from "./main/localization/SetupLocalization";
 import { SphereOverviewSideBar }              from "./sidebars/SphereOverviewSideBar";
-import {RoomPictureSelection} from "./roomViews/RoomPictureSelection";
-import {DeviceError} from "./deviceViews/DeviceError";
-import { EnergyUsage } from "./energyUsage/EnergyUsage";
-import { BehaviourMenu } from "./main/behaviour/BehaviourMenu";
-import { RoomTraining } from "./main/localization/RoomTraining";
-import { RoomTrainingStep1 } from "./main/localization/RoomTrainingStep1";
-import { RoomTrainingStep1_train } from "./main/localization/RoomTrainingStep1_train";
+import { RoomPictureSelection }               from "./roomViews/RoomPictureSelection";
+import { DeviceError }                        from "./deviceViews/DeviceError";
+import { EnergyUsage }                        from "./energyUsage/EnergyUsage";
+import { BehaviourMenu }                      from "./main/behaviour/BehaviourMenu";
+import { RoomTraining }                       from "./main/localization/RoomTraining";
+import {RoomTraining_inHand_intro} from "./main/localization/RoomTraining_inHand_intro";
+import {RoomTraining_training} from "./main/localization/RoomTraining_training";
+import {RoomTraining_inPocket_intro} from "./main/localization/RoomTraining_inPocket_intro";
+import {RoomTraining_conclusion} from "./main/localization/RoomTraining_conclusion";
 
-export function NavWrap(Child) {
-  return function (props) {
-    let params = props?.route?.params ?? {};
-    let childProps = {...props, ...params};
-    return <Child {...childProps} />;
-  }
-}
 
 export const Views = {
   Initializer:                       Initializer,
@@ -184,9 +179,6 @@ export const Views = {
   RoomIconSelection:                 RoomIconSelection,
   RoomPictureSelection:              RoomPictureSelection,
   RoomOverview:                      RoomOverview,
-  RoomTraining:                      RoomTraining,
-  RoomTrainingStep1:                 RoomTrainingStep1,
-  RoomTrainingStep1_train:           RoomTrainingStep1_train,
   SelectFromList:                    SelectFromList,
   SettingsApp:                       SettingsApp,
   SettingsDatabaseExplorer:          SettingsDatabaseExplorer,
@@ -230,6 +222,14 @@ export const Views = {
   SceneSelectCrownstones:            SceneSelectCrownstones,
 
   EnergyUsage:                       EnergyUsage,
+
+  // localization
+  RoomTraining:                      RoomTraining,
+  RoomTraining_inHand_intro:         RoomTraining_inHand_intro,
+  RoomTraining_training:             RoomTraining_training,
+  RoomTraining_conclusion:           RoomTraining_conclusion,
+  RoomTraining_inPocket_intro:       RoomTraining_inPocket_intro,
+
 
   // Overlays:
   AicoreTimeCustomizationOverlay:    AicoreTimeCustomizationOverlay,

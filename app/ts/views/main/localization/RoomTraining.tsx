@@ -2,48 +2,22 @@ import * as React from 'react';
 import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
 
 import KeepAwake from 'react-native-keep-awake';
-import { Languages } from "../../../Languages";
-import { LiveComponent } from "../../LiveComponent";
 import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
+import { Languages } from "../../../Languages";
+
+
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomTraining", key)(a,b,c,d,e);
 }
 
-export class RoomTraining extends LiveComponent<any, any> {
-  static options(props) {
-    let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
-  }
 
-
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-
-  navigationButtonPressed({buttonId}) {
-    if (buttonId === 'cancel') {
-    }
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-
-
-
-  render() {
-    let location = Get.location(this.props.sphereId, this.props.locationId);
+export function RoomTraining(props) {
     return (
       <Background>
         <KeepAwake />
@@ -62,11 +36,15 @@ export class RoomTraining extends LiveComponent<any, any> {
             backgroundColor={colors.blue.rgba(0.5)}
             icon={"ios-play"}
             label={ "Let's go! "}
-            callback={() => { NavigationUtil.navigate('RoomTrainingStep1', this.props); }}
+            callback={() => { NavigationUtil.navigate('RoomTraining_inHand_intro', this.props); }}
           />
         </View>
       </Background>
     );
   }
-}
+
+RoomTraining.options = (props) => {
+  let location = Get.location(props.sphereId, props.locationId);
+  return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
+};
 

@@ -10,7 +10,6 @@ import {
   View
 } from 'react-native';
 
-import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
 import {background, screenHeight, screenWidth, statusBarHeight, tabBarHeight, topBarHeight} from "../styles";

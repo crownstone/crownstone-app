@@ -23,7 +23,7 @@ import { Alert } from "react-native";
 import {
   enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../../../util/DataUtil";
-import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../../util/FingerprintUtil";
+import {FingerprintUtil} from "../../../../util/FingerprintUtil";
 const SunCalc = require('suncalc');
 
 
@@ -549,7 +549,7 @@ export const AicoreUtil = {
       let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
       // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
+      let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
       if (enoughForLocalization === false) {
         Alert.alert(

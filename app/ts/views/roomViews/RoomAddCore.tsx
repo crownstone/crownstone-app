@@ -220,7 +220,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
       locationIds.sort((a, b) => {
         return locations[b].config.uid - locations[a].config.uid
       });
-      let latestUID = locations[locationIds[0]];
+      let latestUID = locations[locationIds[0]].config.uid;
 
       let back = () => {
         if (this.props.isModal !== true) {

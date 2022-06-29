@@ -20,20 +20,15 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { LiveComponent } from "../../LiveComponent";
-import { createNewSphere } from "../../../util/CreateSphere";
-import { Stacks } from "../../Stacks";
 import { ListEditableItems } from "../../components/ListEditableItems";
-import { SphereStateManager } from "../../../backgroundProcesses/SphereStateManager";
 import {
-  canUseIndoorLocalizationInSphere,
   DataUtil,
   enoughCrownstonesForIndoorLocalization
 } from "../../../util/DataUtil";
 import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../util/FingerprintUtil";
+import {FingerprintUtil} from "../../../util/FingerprintUtil";
 
 
 
@@ -44,7 +39,7 @@ export function LocalizationMenu(props) {
 
   let items = [];
   let enoughCrownstones = enoughCrownstonesForIndoorLocalization(props.sphereId);
-  let trainingRequired  = requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
+  let trainingRequired  = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
 
   items.push({ label: "INDOOR LOCALIZATION", type: 'largeExplanation' });
   if (enoughCrownstones) {

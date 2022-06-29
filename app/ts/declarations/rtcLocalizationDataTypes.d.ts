@@ -13,7 +13,7 @@ interface FingerprintDatapoint {
 interface AppFingerprintFormat {
   spheres: {
     [sphereId: string]: {  // sphereCloudId
-      sphere: SphereData,
+      sphere: SphereDataConfig,
       fingerprints: {
         [locationId: LocationId]: {
           name: string,       // location name
@@ -28,7 +28,7 @@ interface AppFingerprintFormat {
 // Datasets
 interface AppDatasetFormat {
   sphereCloudId: string,
-  sphere: SphereData,
+  sphere: SphereDataConfig,
   annotation: string,
   device: {
     name: string,

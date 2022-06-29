@@ -1,7 +1,6 @@
 import { NativeBus } from "../../../native/libInterface/NativeBus";
-import { NATIVE_BUS_TOPICS, TOPICS } from "../../../Topics";
+import { NATIVE_BUS_TOPICS } from "../../../Topics";
 import { core } from "../../../Core";
-import { KNNsigmoid } from "../../../logic/classifiers/knn";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { Get } from "../../../util/GetUtil";
 import { FingerprintUtil } from "../../../util/FingerprintUtil";
@@ -10,34 +9,34 @@ interface trainingData {
   dt: timestamp,
   data: Record<string, rssi>
 }
-type processedData = Record<string, number>
 
 export class TrainingData {
   trainingData  : trainingData[]  = [];
-  processedData : processedData[] = [];
 
   sortedDeviceIds : string[] = [];
   crownstonesAtCreation = [];
 
   subscriptions = [];
 
-  startT: timestamp;
+  startTime: timestamp;
   sphereId:   string;
   locationId: string;
 
   tick = (amountOfPoints : number) => {};
 
-  constructor(sphereId: string, locationId: string) {
+  type: FingerprintType;
+
+  constructor(sphereId: string, locationId: string, type: FingerprintType) {
     this.sphereId   = sphereId;
     this.locationId = locationId;
+    this.type       = type;
   }
 
   start() {
     this.trainingData          = [];
-    this.processedData         = [];
     this.sortedDeviceIds       = [];
     this.crownstonesAtCreation = [];
-    this.startT                = Date.now();
+    this.startTime             = Date.now();
 
     let sphere = Get.sphere(this.sphereId);
     if (sphere) {
@@ -55,7 +54,7 @@ export class TrainingData {
   }
 
   _collect(data: ibeaconPackage[]) {
-    let datapoint = {dt: Date.now() - this.startT, data: {}};
+    let datapoint = {dt: Date.now() - this.startTime, data: {}};
     for (let point of data) {
       let id = `${point.major}_${point.minor}`;
       datapoint.data[id] = point.rssi;
@@ -82,12 +81,17 @@ export class TrainingData {
   }
 
   store() {
+    let fingerprintId = xUtil.getUUID();
     core.store.dispatch({
-      type: 'UPDATE_NEW_LOCATION_FINGERPRINT',
+      type: 'ADD_FINGERPRINT_V2',
       sphereId: this.sphereId,
       locationId: this.locationId,
+      fingerprintId,
       data: {
-        fingerprintRaw: JSON.stringify(this.trainingData)
+        type:                  this.type,
+        createdOnDeviceType:   FingerprintUtil.getDeviceType(), // ${device type string}_${userId who collected it}
+        crownstonesAtCreation: this.crownstonesAtCreation, // maj_min as id representing the Crownstone.
+        data:                  this.trainingData,
       }
     });
   }

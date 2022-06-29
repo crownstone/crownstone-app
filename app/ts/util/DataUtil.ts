@@ -10,7 +10,7 @@ import * as RNLocalize from "react-native-localize";
 import { Get } from "./GetUtil";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
 import {StoneAvailabilityTracker} from "../native/advertisements/StoneAvailabilityTracker";
-import { requireMoreFingerprintsBeforeLocalizationCanStart } from "./FingerprintUtil";
+import {FingerprintUtil} from "./FingerprintUtil";
 
 
 
@@ -897,7 +897,7 @@ export const canUseIndoorLocalizationInSphere = function (sphereId: string, stat
   let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
   // do we need more fingerprints?
-  let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
+  let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
   // we have enough and we do not need more fingerprints.
   return !requiresFingerprints && enoughForLocalization;

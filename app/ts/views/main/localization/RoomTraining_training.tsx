@@ -1,25 +1,20 @@
 import * as React from 'react';
-import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
-import { Languages } from "../../../Languages";
+import { Platform, Vibration, Text, View } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { TrainingData } from "../../roomViews/trainingComponents/TrainingData";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
+import {TrainingData} from "./TrainingData";
 
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomTraining", key)(a,b,c,d,e);
-}
 
 export const MIN_DATA_COUNT = 10;
 
-
-export class RoomTrainingStep1_train extends LiveComponent<any, any> {
+export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType }, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
     return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
@@ -36,7 +31,7 @@ export class RoomTrainingStep1_train extends LiveComponent<any, any> {
       dataCount:0
     };
 
-    this.trainingData = new TrainingData(this.props.sphereId, this.props.locationId);
+    this.trainingData = new TrainingData(this.props.sphereId, this.props.locationId, this.props.type);
 
     this.trainingData.tick = (amountOfPoints) => {
       this.setState({dataCount: amountOfPoints});
@@ -100,7 +95,7 @@ export class RoomTrainingStep1_train extends LiveComponent<any, any> {
             label={ "Finish!"}
             callback={() => {
               this.trainingData.stop();
-              NavigationUtil.navigate('RoomTrainingStep2_train', this.props);
+              NavigationUtil.navigate('RoomTraining_conclusion', this.props);
             }}
           />
         </View>}

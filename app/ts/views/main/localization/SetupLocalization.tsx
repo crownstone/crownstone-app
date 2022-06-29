@@ -1,43 +1,23 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationMenu", key)(a,b,c,d,e);
-}
 import * as React from 'react';
 import {
   ScrollView,
-  TouchableOpacity,
   Text,
-  View, Alert
+  View
 } from "react-native";
 
 
 import {
   colors,
-  deviceStyles,
-  background,
   styles,
   screenHeight,
   screenWidth,
   availableModalHeight
 } from "../../styles";
-import {Background} from "../../components/Background";
 import {IconButton} from "../../components/IconButton";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { LiveComponent } from "../../LiveComponent";
-import { createNewSphere } from "../../../util/CreateSphere";
-import { Stacks } from "../../Stacks";
 import { ListEditableItems } from "../../components/ListEditableItems";
-import { SphereStateManager } from "../../../backgroundProcesses/SphereStateManager";
-import {
-  canUseIndoorLocalizationInSphere,
-  DataUtil,
-  enoughCrownstonesForIndoorLocalization
-} from "../../../util/DataUtil";
 import { Get } from "../../../util/GetUtil";
 import { Spacer } from "../../components/Spacer";
 import { Button } from "../../components/Button";
@@ -118,7 +98,7 @@ function getFinishedRooms(sphereId: sphereId) {
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
     let location = sphere.locations[locationId];
-    if (Object.keys(location.fingerprints.raw).length === 0) {
+    if (Object.keys(location.fingerprints.raw).length !== 0) {
       items.push({
         label: location.config.name,
         type: 'info',
@@ -144,7 +124,7 @@ function getToDoRooms(sphereId: sphereId) {
         type: 'navigation',
         icon: <IconButton name={'c1-locationPin1'} buttonSize={30} size={20} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.blue.hex }}/>,
         callback: () => {
-          NavigationUtil.launchModal('RoomTrainingStep1',{sphereId: sphereId, locationId: locationId});
+          NavigationUtil.launchModal('RoomTraining',{sphereId: sphereId, locationId: locationId});
         }
       })
     }

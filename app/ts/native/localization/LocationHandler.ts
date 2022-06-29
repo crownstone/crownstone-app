@@ -269,7 +269,7 @@ class LocationHandlerClass {
     let sphereIds = Object.keys(state.spheres);
     let now = Date.now();
     sphereIds.forEach((sphereId) => {
-      let sphereTimeout = 1000*(state.spheres[sphereId].config.exitDelay);
+      let sphereTimeout = 300000; // 5 minutes
       if (SphereUtil.getTimeLastSeenInSphere(state, sphereId) > (now - sphereTimeout)) {
         this.enterSphere(sphereId);
       }

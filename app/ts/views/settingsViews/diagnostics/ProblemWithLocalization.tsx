@@ -28,7 +28,7 @@ import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
-import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../util/FingerprintUtil";
+import {FingerprintUtil} from "../../../util/FingerprintUtil";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -89,7 +89,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     let presentSphereId = Util.data.getPresentSphereId();
     let enoughForLocalization = enoughCrownstonesForIndoorLocalization(presentSphereId);
     let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(presentSphereId);
-    let requiresFingerprints = requireMoreFingerprintsBeforeLocalizationCanStart(presentSphereId);
+    let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(presentSphereId);
 
     let stones = state.spheres[presentSphereId].stones;
     let stoneIds = Object.keys(stones);
@@ -355,7 +355,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
       if (stone.config.type === STONE_TYPES.plug || ((stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne) && this.state.stoneTypeWarningRead === true)) {
-        if (stone.config.tapToToggle) {
+        if (stone.abilities.tapToToggle.enabledTarget) {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}

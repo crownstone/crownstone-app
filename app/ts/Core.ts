@@ -9,6 +9,18 @@ export const core : core = {
     bleAvailable: true,
     bleBroadcastAvailable: true,
   },
-  store: { getState: () => { return {}; } },
+  store: {
+    getState: () : ReduxAppState => {
+
+      // @ts-ignore
+      return {}
+    },
+    dispatch: () => {
+
+    },
+    batchDispatch: () => {
+
+    }
+  },
 };
 

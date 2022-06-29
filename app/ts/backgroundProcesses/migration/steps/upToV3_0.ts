@@ -19,7 +19,7 @@ function moveKeysInDatabase() {
         }})
     }
 
-    let sphere = state.spheres[sphereId];
+    let sphere : any = state.spheres[sphereId];
     if (sphere.config.adminKey) {
       insertKey(sphere.config.adminKey, KEY_TYPES.ADMIN_KEY);
     }

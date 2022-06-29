@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
+import { Alert, Animated, Platform, Vibration, Text, View, ScrollView } from "react-native";
 
 import KeepAwake from 'react-native-keep-awake';
 import { Languages } from "../../../Languages";
@@ -10,45 +10,17 @@ import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomTraining", key)(a,b,c,d,e);
-}
-
-
-
-export class RoomTrainingStep1 extends LiveComponent<any, any> {
-  static options(props) {
-    let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
-  }
-
-
-  constructor(props) {
-    super(props);
-    this.state = {
-
-    };
-  }
-
-  navigationButtonPressed({buttonId}) {
-    if (buttonId === 'cancel') {
-    }
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
+import {bindTopbarButtons} from "../../components/hooks/viewHooks";
 
 
 
 
-  render() {
-    let location = Get.location(this.props.sphereId, this.props.locationId);
-    return (
-      <Background>
+export function RoomTraining_inHand_intro(props) {
+  bindTopbarButtons(props);
+
+  return (
+    <Background>
+      <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: topBarHeight}} contentInsetAdjustmentBehavior={"never"}>
         <View style={{height: topBarHeight}} />
         <KeepAwake />
         <View style={{height:20}}/>
@@ -66,11 +38,15 @@ export class RoomTrainingStep1 extends LiveComponent<any, any> {
             backgroundColor={colors.blue.rgba(0.5)}
             icon={'ios-play'}
             label={ "Start!"}
-            callback={() => { NavigationUtil.navigate('RoomTrainingStep1_train', this.props); }}
+            callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND"}); }}
           />
         </View>
-      </Background>
-    );
-  }
+      </ScrollView>
+    </Background>
+  );
 }
 
+RoomTraining_inHand_intro.options = (props) => {
+  let location = Get.location(props.sphereId, props.locationId);
+  return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
+}

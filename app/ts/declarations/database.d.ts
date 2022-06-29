@@ -1,35 +1,46 @@
 
+interface ReduxAppState {
+  app:           any,
+  devices:       any,
+  development:   any,
+  events:        any,
+  installations: any,
+  spheres:       Record<sphereId, SphereData>,
+  user:          UserData,
+  devApp:        any,
+}
+
 interface SphereData {
-  id: string,
+  id:     string,
   config: SphereDataConfig,
   state: {
-    lastPresentTime: number,
-    reachable: boolean,
-    present: boolean,
+    lastPresentTime:  number,
+    reachable:        boolean,
+    present:          boolean,
     smartHomeEnabled: boolean,
-    newMessageFound: boolean,
+    newMessageFound:  boolean,
   },
-  users:       {[userId: string]: any},
-  locations:   {[locationId: string]: any},
-  stones:      {[stoneId: string]: StoneData},
-  scenes:      {[sceneId: string]: any},
-  hubs:        {[hubId: string]: HubData},
-  messages:    {[messageId: string]: any},
+  users:       {[userId:     string]: SphereUserData},
+  locations:   {[locationId: string]: LocationData},
+  stones:      {[stoneId:    string]: StoneData},
+  scenes:      {[sceneId:    string]: SceneData},
+  hubs:        {[hubId:      string]: HubData},
+  messages:    {[messageId:  string]: any},
   thirdParty:  any,
   sortedLists: any,
   keys:        any,
 }
 
 interface SphereDataConfig {
-  name: string,
+  name:        string,
   iBeaconUUID: string, // ibeacon uuid
-  uid: number,
-  cloudId: string,
+  uid:         number,
+  cloudId:     string,
 
-  latitude: number | null,
-  longitude: number | null,
+  latitude:    number | null,
+  longitude:   number | null,
 
-  updatedAt: timestamp,
+  updatedAt:   timestamp,
 }
 
 interface HubData {

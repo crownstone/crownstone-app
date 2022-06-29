@@ -156,7 +156,7 @@ export class SphereSyncer extends SyncingBase {
 
     locationIds.forEach((locationId) => {
       let location = locations[locationId];
-      if (location.picture) { FileUtil.safeDeleteFile(location.picture); }
+      if (location.config.picture && location.config.pictureSource === "CUSTOM") { FileUtil.safeDeleteFile(location.config.picture); }
     });
     sceneIds.forEach((sceneId) => {
       let scene = scenes[sceneId];
