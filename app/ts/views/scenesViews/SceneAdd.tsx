@@ -12,7 +12,6 @@ import { Alert, Platform, Switch, Text, TouchableOpacity, View, ViewStyle } from
 import { availableModalHeight, colors, screenHeight, screenWidth, styles } from "../styles";
 import { Interview } from "../components/Interview";
 import * as React from "react";
-import { TopbarImitation } from "../components/TopbarImitation";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { Icon } from "../components/Icon";
 import { useState } from "react";
@@ -27,6 +26,7 @@ import { executeScene} from "./supportComponents/SceneItem";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./constants/SceneConstants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 const SCENE_ADD_CLASSNAME = "SceneAdd";
 
@@ -309,8 +309,7 @@ lang("_Select_at_least_one______body"),
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage}>
-        <SafeAreaView>
-        <TopbarImitation
+        <CustomTopBarWrapper
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => {
@@ -318,15 +317,16 @@ lang("_Select_at_least_one______body"),
               NavigationUtil.dismissModal();
             }}
           }
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}}
+        >
         <Interview
           scrollEnabled={false}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
-          height={ this.props.height || availableModalHeight }
+          // height={ this.props.height || availableModalHeight }
         />
-        </SafeAreaView>
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

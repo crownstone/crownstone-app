@@ -91,20 +91,16 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor       = this._interview.getTextColorFromCard()  || textColor;
     }
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} testID={"PermissionIntroduction"}>
-        <SafeAreaView>
-          <Interview
-            backButtonOverrideViewNameOrId={this.props.componentId}
-            height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
-            ref={     (i) => { this._interview = i; }}
-            getCards={ () => { return this.getCards();}}
-            update={   () => { this.forceUpdate() }}
-          />
-        </SafeAreaView>
+        <Interview
+          backButtonOverrideViewNameOrId={this.props.componentId}
+          ref={     (i) => { this._interview = i; }}
+          getCards={ () => { return this.getCards();}}
+          update={   () => { this.forceUpdate() }}
+        />
       </AnimatedBackground>
     );
   }

@@ -33,12 +33,12 @@ import {
 import {Icon} from "../../components/Icon";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import { useLiveView } from "../../components/hooks/viewHooks";
+import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 
 
 
 export function BehaviourMenu(props: { sphereId: sphereId}) {
-  useLiveView(props);
+  bindTopbarButtons(props);
   useDatabaseChange(['changeSphereSmartHomeState','changeSphereState']);
 
   let state = core.store.getState();

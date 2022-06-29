@@ -31,15 +31,14 @@ import {
   enoughCrownstonesForIndoorLocalization
 } from "../../../util/DataUtil";
 import {Icon} from "../../components/Icon";
-import { useLiveView } from "../../components/hooks/viewHooks";
+import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { requireMoreFingerprintsBeforeLocalizationCanStart } from "../../../util/FingerprintUtil";
 
 
 
-
 export function LocalizationMenu(props) {
-  useLiveView(props);
+  bindTopbarButtons(props);
   useDatabaseChange(['changeFingerprint','changeSphereState']);
 
 

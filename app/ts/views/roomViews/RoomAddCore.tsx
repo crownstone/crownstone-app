@@ -290,7 +290,7 @@ lang("_Max_amount_of_rooms_reac_body"),
         ref={     (i) => { this._interview = i; }}
         getCards={ () => { return this.getCards();}}
         update={   () => { this.forceUpdate() }}
-        height={ this.props.height || availableModalHeight }
+        // height={ this.props.height || availableModalHeight }
         paddingBottom={this.props.paddingBottom}
         paddingTop={this.props.paddingTop}
       />

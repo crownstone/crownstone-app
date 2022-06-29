@@ -15,7 +15,6 @@ export const topBarStyle = StyleSheet.create({
   topBar: {
     backgroundColor: 'transparent',
     flexDirection: 'row',
-    paddingTop: statusBarHeight
   },
   topBarCenterView: {
     flex: 1,

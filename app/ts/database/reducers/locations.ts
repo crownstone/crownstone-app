@@ -185,7 +185,7 @@ export default (state = {}, action : any = {}) => {
         let locationIds = Object.keys(state);
         locationIds.forEach((locationId) => {
           let location = state[locationId];
-          if (location.presentUsers.indexOf(action.userId) !== -1) {
+          if (location.presentUsers.includes(action.userId)) {
             return {
               ...state,
               ...{[locationId]: combinedLocationReducer(state[locationId],

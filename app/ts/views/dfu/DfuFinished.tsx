@@ -11,7 +11,6 @@ import {
 import {background, colors, screenHeight, screenWidth, styles} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import { TopbarImitation } from "../components/TopbarImitation";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 import { DfuUtil } from "../../util/DfuUtil";
@@ -19,6 +18,7 @@ import { Icon } from "../components/Icon";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 import { TrackingNumberManager } from "../../backgroundProcesses/TrackingNumberManager";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 export class DfuFinished extends LiveComponent<any, any> {
   static options = {
@@ -141,21 +141,20 @@ export class DfuFinished extends LiveComponent<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage}>
-        <SafeAreaView>
-        <TopbarImitation
+        <CustomTopBarWrapper
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.backTo("DfuScanning") } }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}
-        />
+        >
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return getCardsCallback() }}
           update={   () => { this.forceUpdate() }}
         />
-        </SafeAreaView>
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

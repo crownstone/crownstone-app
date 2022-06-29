@@ -40,6 +40,7 @@ export class Initializer extends Component<any, any> {
 
       if (BackgroundProcessHandler.userLoggedInReady) {
         NavigationUtil.setRoot(Stacks.loggedIn());
+        // setTimeout(() => { NavigationUtil.launchModal("RoomAdd"); }, 300);
       }
       else if (BackgroundProcessHandler.userLoggedIn) {
         NavigationUtil.setRoot(Stacks.permissions());

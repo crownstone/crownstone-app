@@ -14,13 +14,12 @@ import {core} from "../../Core";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Interview} from "../components/Interview";
 import {AnimatedBackground} from "../components/animated/AnimatedBackground";
-import {TopbarImitation} from "../components/TopbarImitation";
 import {PictureCircle} from "../components/PictureCircle";
 import {InterviewPasswordInput, InterviewTextInput} from "../components/InterviewComponents";
 import {FileUtil} from "../../util/FileUtil";
 import {Icon} from "../components/Icon";
 import {base_core} from "../../Base_core";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Register", key)(a,b,c,d,e);
@@ -377,21 +376,20 @@ export class Register extends LiveComponent<any, any> {
        
         testID={"registerView"}
       >
-        <SafeAreaView>
-          <TopbarImitation
-            leftStyle={{color: textColor}}
-            left={Platform.OS === 'android' ? null : lang("Back")}
-            leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
-            leftButtonStyle={{width: 300}}
-            style={{backgroundColor:'transparent', paddingTop:0}}
-          />
+        <CustomTopBarWrapper
+          leftStyle={{color: textColor}}
+          left={Platform.OS === 'android' ? null : lang("Back")}
+          leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
+          leftButtonStyle={{width: 300}}
+          style={{backgroundColor:'transparent', paddingTop:0}}
+        >
           <Interview
             ref={     (i) => { this._interview = i;    }}
             getCards={ () => { return this.getCards(); }}
             update={   () => { this.forceUpdate();     }}
             backButtonOverrideViewNameOrId={this.props.componentId}
           />
-        </SafeAreaView>
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

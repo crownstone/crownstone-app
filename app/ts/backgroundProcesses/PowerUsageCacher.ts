@@ -29,6 +29,9 @@ class PowerUsageCacherClass {
         if (data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
           this.processData(data);
         }
+        else if (data.serviceData.stateOfExternalCrownstone === true && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
+
+        }
       });
     }
   }

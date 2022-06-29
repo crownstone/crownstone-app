@@ -52,10 +52,12 @@ export const EnergyUsageUtil = {
   },
 
 
-  getLiveStoneEnergyUsage: function(sphereId, stoneId) {
+  getLiveStoneEnergyUsage: function(sphereId, stoneId, value : number = null ) {
     let stone = Get.stone(sphereId, stoneId);
 
-    let value = PowerUsageCacher.getRecentData(sphereId, stone.config.handle)
+    if (value === null) {
+      value = PowerUsageCacher.getRecentData(sphereId, stone.config.handle);
+    }
     return <PendingEnergyState powerData={[value]} showCollection={false} baseUnit={'W'} />
   },
 

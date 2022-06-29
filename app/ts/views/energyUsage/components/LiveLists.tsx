@@ -16,6 +16,8 @@ import {
   useSphereSwitching,
   useViewSwitching
 } from "../../components/hooks/databaseHooks";
+import {PowerUsageCacher} from "../../../backgroundProcesses/PowerUsageCacher";
+import {SlideFadeInViewLayoutAnimation} from "../../components/animated/SlideFadeInViewLayoutAnimation";
 
 export function LiveRoomList(props: {}) {
   useSphereSwitching();
@@ -94,17 +96,22 @@ function CrownstoneList(props: { open: boolean, locationId: locationId }) {
   stones.sort((a,b) => { return a.name > b.name ? 1 : -1});
   let height = 0;
 
+  let showCollecting = false;
   if (props.open) {
     for (let stoneData of stones) {
       let stone = activeSphere.stones[stoneData.id];
       height += NORMAL_ROW_SIZE;
+
+      let value = PowerUsageCacher.getRecentData(activeSphere.id, stone.config.handle);
+      if (value === null) { showCollecting = true; }
+
       items.push(
         <NavigationBar
           key={stoneData.id}
           backgroundColor={"transparent"}
           label={stoneData.name}
           labelStyle={{width:null, flex:3}}
-          value={EnergyUsageUtil.getLiveStoneEnergyUsage(activeSphere.id, stoneData.id)}
+          value={EnergyUsageUtil.getLiveStoneEnergyUsage(activeSphere.id, stoneData.id, value)}
           valueRight
           customValueItem
           callback={() => { NavigationUtil.launchModal("DevicePowerUsage", {sphereId: activeSphere.id, stoneId: stoneData.id})}}
@@ -120,10 +127,16 @@ function CrownstoneList(props: { open: boolean, locationId: locationId }) {
     );
   }
 
+  if (showCollecting && props.open) {
+    items.push(
+      <InfoBar barHeight={2*0.6*NORMAL_ROW_SIZE} label={"Waiting to hear from all Crownstones in the room..."} numberOfLines={2} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
+    );
+  }
+
   return (
-    <SlideFadeInView visible={props.open} style={{width: screenWidth, paddingLeft:20}} height={Math.max(0.6*NORMAL_ROW_SIZE,height)}>
+    <SlideFadeInViewLayoutAnimation visible={props.open} style={{width: screenWidth, paddingLeft:20}} height={Math.max(0.6*NORMAL_ROW_SIZE,height)}>
       {items}
-    </SlideFadeInView>
+    </SlideFadeInViewLayoutAnimation>
   );
 
 }

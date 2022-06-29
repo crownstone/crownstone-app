@@ -20,15 +20,12 @@ import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { useState } from "react";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import { TopbarImitation } from "../../components/TopbarImitation";
-import { NotificationLine } from "../../components/NotificationLine";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
 import {
-  SettingsBackground,
   SettingsCustomTopBarBackground,
-  SettingsCustomTopBarNavbarBackground
 } from "../../components/SettingsBackground";
+import { CustomTopBarWrapper } from "../../components/CustomTopBarWrapper";
 
 
 
@@ -148,7 +145,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   render() {
     return (
       <SettingsCustomTopBarBackground>
-        <TopbarImitation
+        <CustomTopBarWrapper
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
           leftLabel={ lang("Back")}
@@ -165,12 +162,13 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
             }
           }}
           right={this.props.copyType === "FROM" ? null : lang("Select")}
-        />
-        <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
-            { this._getLocationStoneList() }
-          </View>
-        </ScrollView>
+        >
+          <ScrollView>
+            <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
+              { this._getLocationStoneList() }
+            </View>
+          </ScrollView>
+        </CustomTopBarWrapper>
       </SettingsCustomTopBarBackground>
     )
   }

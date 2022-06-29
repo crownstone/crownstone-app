@@ -60,11 +60,8 @@ function DebugPopup() {
 
 function DebugCustomView() {
   // setTimeout(() => {
-  // NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection",{
-  //   "sphereId": "8525eed2-684d-f73a-b54d-13f1db84e610",
-  //   "stoneId": "9dbe67aa-b176-c1aa-d444-2ab5582c6c1",
-  //   "copyType": "TO",
-  //   "originId": "9dbe67aa-b176-c1aa-d444-2ab5582c6c1"
+  // NavigationUtil.launchModal("AddCrownstone",{
+  //   "sphereId": "aef42623-570-8cb8-f83f-a3bc59bd7ab9",
   // })},
   //   300);
 }

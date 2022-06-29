@@ -42,7 +42,7 @@ class MessageCenterClass {
       let dbRecipientIds = Object.keys(dbMessage.recipients);
       if (dbRecipientIds.length === cloudRecipientIds.length) {
         for (let i = 0; i < dbRecipientIds.length; i++) {
-          if (cloudRecipientIds.indexOf(dbRecipientIds[i]) === -1) {
+          if (cloudRecipientIds.includes(dbRecipientIds[i]) === false) {
             return false;
           }
         }

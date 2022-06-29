@@ -18,6 +18,8 @@ import {
 import { ScaledImage } from "./ScaledImage";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useTopBarOffset} from "./CustomTopBarWrapper";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -45,15 +47,16 @@ let explanationStyle : TextStyle = {
   color: colors.csBlueDark.hex
 };
 
-export class Interview extends Component<{
+export interface InterviewProps {
   getCards() : interviewCards,
   backButtonOverrideViewNameOrId?: string,
-  height? : number,
   paddingBottom? : number,
   paddingTop? : number,
   scrollEnabled? : boolean,
   update?() : void,
-}, any> {
+}
+
+export class Interview extends Component<InterviewProps, any> {
 
   _carousel;
   responseHeaders : any;
@@ -173,7 +176,6 @@ export class Interview extends Component<{
           })
         }}
         card={item}
-        height={this.props.height}
         headerOverride={this.responseHeaders[this.state.cardIds[index]]}
         selectedOption={this.selectedOptions[index]}
         paddingTop={this.props.paddingTop ?? 0}
@@ -248,7 +250,6 @@ export class Interview extends Component<{
         removeClippedSubviews={Platform.OS === 'android' ? false : undefined /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
-        itemHeight={this.props.height || availableModalHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
         onBeforeSnapToItem={(indexToBe) => {
@@ -290,7 +291,6 @@ function InterviewCard(props : {
   paddingTop: number,
   paddingBottom: number,
   headerOverride?: string,
-  height?: number,
   image?: any,
   selectedOption?: number,
   nextCard: (nextCard:string, value: interviewReturnData, index:number, option: interviewOption) => void
@@ -298,6 +298,9 @@ function InterviewCard(props : {
   let [ editableInputState, setEditableInputState ] = useState("");
   let [ textInput, setTextInput ] = useState("");
 
+  let insets = useSafeAreaInsets();
+  let topBarOffsets = useTopBarOffset();
+  console.log('topBarOffsets',topBarOffsets)
   let header = props.headerOverride || props.card.header;
   let subHeader = props.card.subHeader;
   let explanation = props.card.explanation;
@@ -317,11 +320,18 @@ function InterviewCard(props : {
 
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
   let card = props.card;
+
   return (
-    <View testID={card.testID}>
-      <ScrollView style={{height: props.height || availableModalHeight}} testID={props.card.scrollViewtestID} contentContainerStyle={{
-        minHeight: (props.height || availableModalHeight) - props.paddingBottom
-      }}>
+    <View testID={card.testID} style={{flex:1}}>
+      {/*<View testID={props.card.scrollViewtestID} style={{flex:1, backgroundColor:'red', paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom}}>*/}
+      <ScrollView
+        contentInsetAdjustmentBehavior={"never"}
+        testID={props.card.scrollViewtestID}
+        contentContainerStyle={{flexGrow:1, paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        disableScrollViewPanResponder={true}
+      >
           { header      && <Text style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text> }
           { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
           { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }

@@ -10,10 +10,10 @@ import { Alert, Platform, View } from "react-native";
 import { availableModalHeight, colors } from "../styles";
 import { Interview } from "../components/Interview";
 import * as React from "react";
-import { TopbarImitation } from "../components/TopbarImitation";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { getStoneSelectionList } from "./SceneAdd";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 export class SceneSelectCrownstones extends LiveComponent<any, any> {
   static options = {
@@ -69,8 +69,7 @@ lang("_Select_at_least_one______body"),
     let textColor = colors.white.hex;
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage}>
-        <SafeAreaView>
-        <TopbarImitation
+        <CustomTopBarWrapper
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Cancel")}
           leftAction={() => { if (this._interview.back() === false) {
@@ -81,16 +80,17 @@ lang("_Select_at_least_one______body"),
               NavigationUtil.back();
             }
           }}}
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}}
+        >
         <Interview
           backButtonOverrideViewNameOrId={"sceneSelectCrownstones"}
           scrollEnabled={false}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
-          height={ this.props.height || availableModalHeight }
+          // height={ this.props.height || availableModalHeight }
         />
-        </SafeAreaView>
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

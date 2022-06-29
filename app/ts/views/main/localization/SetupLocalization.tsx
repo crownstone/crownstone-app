@@ -43,11 +43,11 @@ import { Spacer } from "../../components/Spacer";
 import { Button } from "../../components/Button";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import { useLiveView } from "../../components/hooks/viewHooks";
+import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
-  useLiveView(props);
+  bindTopbarButtons(props);
   useDatabaseChange(['changeSphereState']);
 
   let toDoRooms     = getToDoRooms(props.sphereId);
