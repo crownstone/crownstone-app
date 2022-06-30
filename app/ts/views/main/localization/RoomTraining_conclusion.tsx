@@ -23,7 +23,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
   let finalizationButton;
   let label;
   if (FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId)) {
-    label = "This room can be used for indoor localization once all other rooms are trained.";
+    label = "This room can be used for indoor localization once all other rooms are trained!";
     finalizationButton = (
       <Button
         backgroundColor={colors.csBlue.hex}
@@ -35,7 +35,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
     );
   }
   else {
-    label = "This room can now be used for indoor localization.";
+    label = "This room can now be used for indoor localization!";
     finalizationButton = (
       <Button
         backgroundColor={colors.csBlue.hex}

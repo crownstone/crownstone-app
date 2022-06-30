@@ -22,6 +22,7 @@ import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvail
 import { Util } from "../../util/Util";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {FingerprintUtil} from "../../util/FingerprintUtil";
+import { Get } from "../../util/GetUtil";
 
 
 
@@ -59,15 +60,15 @@ export class StatusCommunication extends LiveComponent<any, any> {
   }
 
   _getAmountOfCrownstones() {
-    const store = core.store;
-    const state = store.getState();
-    if (!(state && state.spheres && state.spheres[this.props.sphereId])) { return }
+    let sphere = Get.sphere(this.props.sphereId);
+    if (!sphere) { return; }
 
-    let stones = state.spheres[this.props.sphereId].stones;
+    let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
     let amountOfVisible = 0;
     stoneIds.forEach((stoneId) => {
-      if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
+      let rssi = StoneAvailabilityTracker.getRssi(stoneId);
+      if (rssi > -100) {
         amountOfVisible += 1;
       }
     });

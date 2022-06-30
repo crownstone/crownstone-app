@@ -72,17 +72,17 @@ function SetupFinished(props) {
         <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
         <View style={{height:30}}/>
         <Text style={styles.explanation}>
-          <Text>{"If you want to improve the localization performance later on the "}</Text>
+          <Text>{"If you want to improve the localization performance later on, the "}</Text>
           <Text style={{ fontWeight:'bold' }}>{"Improve Localization"}</Text>
-          <Text>{" feature is now available from the localization menu."}</Text>
+          <Text>{" option is now available from the localization menu."}</Text>
         </Text>
         <Spacer />
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           <Button
-            backgroundColor={colors.blue.rgba(0.5)}
+            backgroundColor={colors.csBlue.hex}
             icon={'ios-play'}
             label={ "Finish!"}
-            callback={() => { NavigationUtil.back(); }}
+            callback={() => { NavigationUtil.dismissModal(); }}
           />
         </View>
       </ScrollView>

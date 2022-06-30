@@ -54,6 +54,11 @@ export class StoneAvailabilityTrackerClass {
     this.triggers = {};
   }
 
+
+  /**
+   * Periodically checking if we have to notify the system about new Crownstones.
+   * @param data
+   */
   notify() {
     let logStoneIds = Object.keys(this.log);
     let availabilityStoneIds = {};
@@ -69,7 +74,7 @@ export class StoneAvailabilityTrackerClass {
       let stoneId = logStoneIds[i];
       let logData = this.log[stoneId];
 
-      //rssi has expired and we have not marked it yet. do it now.
+      // rssi has expired and we have not marked it yet. do it now.
       if (now - logData.t > RSSI_TIMEOUT_MS && logData.rssi !== INVALID_RSSI) {
         availabilityStoneIds[stoneId] = true;
         availabilitySphereIds[logData.sphereId] = true;
@@ -133,6 +138,8 @@ export class StoneAvailabilityTrackerClass {
     })
   }
 
+
+
   _update(data) {
     LOGd.native("StoneAvailabilityTracker: Updating data", data);
     if (this.sphereLog[data.sphereId] === undefined) {
@@ -149,23 +156,24 @@ export class StoneAvailabilityTrackerClass {
       LOGv.native("StoneAvailabilityTracker: registerStoneId stoneId, sphereId, rssi", stoneId, sphereId, rssi);
       if (this.log[stoneId] === undefined) {
         LOGd.native("StoneAvailabilityTracker: registerStoneId storing in LOG stoneId, sphereId, rssi", stoneId, sphereId, rssi);
-        this.log[stoneId] = {t: null, rssi: data.rssi, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
+        this.log[stoneId] = {t: now, rssi: data.rssi, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
         // new Crownstone detected this run!
         let stoneIds  = {};
         let sphereIds = {};
         stoneIds[stoneId]   = true;
         sphereIds[sphereId] = true;
-        core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
+        core.eventBus.emitAfterTick("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
 
-        if (rssi) { core.eventBus.emit("rssiChange", {stoneId: stoneId, sphereId: sphereId, rssi: rssi}); }// Major change in RSSI
+        if (rssi) { core.eventBus.emitAfterTick("rssiChange", {stoneId: stoneId, sphereId: sphereId, rssi: rssi}); }// Major change in RSSI
       }
 
       if (this.sphereLog[sphereId][stoneId] === undefined) {
-        this.sphereLog[sphereId][stoneId] = {t: null, rssi: null, handle: null };
+        this.sphereLog[sphereId][stoneId] = {t: now, rssi: null, handle: null };
       }
 
       this.sphereLog[sphereId][data.stoneId].t = now;
       this.log[stoneId].t = now;
+
     }
 
     // add stone that has broadcast this advertisment

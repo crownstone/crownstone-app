@@ -30,8 +30,8 @@ export function RoomTraining_inHand_intro(props) {
         <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
         <View style={{flex:1}}/>
 
-        <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!."}</Text>
-        <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
+        <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>
+        <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
           <Button
             backgroundColor={colors.blue.hex}
             icon={'ios-play'}
