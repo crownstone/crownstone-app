@@ -14,7 +14,7 @@ import {
 import { IconCircle } from '../components/IconCircle'
 import { getLocationNamesInSphere} from '../../util/DataUtil'
 
-import { availableModalHeight, colors, screenHeight, styles } from "../styles";
+import { availableModalHeight, colors, RoomStockBackground, screenHeight, styles } from "../styles";
 import { processImage, Util } from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
@@ -253,7 +253,15 @@ lang("_Max_amount_of_rooms_reac_body"),
 
 
     // create room.
-    core.store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.newRoomData.name, icon: this.newRoomData.icon, uid: nextUID}});
+    core.store.dispatch({
+      type:'ADD_LOCATION',
+      sphereId: this.props.sphereId,
+      locationId: localId,
+      data: {
+        name: this.newRoomData.name,
+        icon: this.newRoomData.icon,
+        uid: nextUID
+      }});
 
     // if we have a picture:
     if (this.newRoomData.picture !== null) {
@@ -266,9 +274,23 @@ lang("_Max_amount_of_rooms_reac_body"),
             data: {
               picture: picture,
               pictureTaken: Date.now(),
+              pictureSource: "CUSTOM",
               pictureId: null
             }});
         })
+    }
+    else {
+      let keys = Object.keys(RoomStockBackground);
+      let randomImage = keys[Math.floor(Math.random()*keys.length)];
+      core.store.dispatch({
+        type:'UPDATE_LOCATION_CONFIG',
+        sphereId: this.props.sphereId,
+        locationId: localId,
+        data: {
+          picture: randomImage,
+          pictureSource: "STOCK",
+        }});
+
     }
 
     let location = Get.location(this.props.sphereId, localId);

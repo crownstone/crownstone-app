@@ -146,7 +146,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     return (
       <TouchableOpacity
         style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}
-        onPress={() => { NavigationUtil.launchModal("SetupLocalization",{sphereId: this.props.sphereId, fromOverview: true}); }}
+        onPress={() => { NavigationUtil.launchModal("SetupLocalization",{sphereId: this.props.sphereId, isModal: true}); }}
       >
         <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
       </TouchableOpacity>

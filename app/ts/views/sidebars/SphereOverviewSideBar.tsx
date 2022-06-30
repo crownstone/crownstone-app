@@ -13,7 +13,7 @@ import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 
 export function SphereOverviewSideBar(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint"]);
+  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations']);
   let factor = 0.25;
 
   const state = core.store.getState();

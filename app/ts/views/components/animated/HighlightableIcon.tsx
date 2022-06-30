@@ -24,9 +24,9 @@ export function HighlightableWhiteIcon(props: {size: number, name: string, color
 }
 
 // icon with animated color and pulsing animation
-export function HighlightableIcon(props: {size: number, name: string, colorArray?: string[], enabled: boolean, quick?: boolean}) {
+export function HighlightableIcon(props: {size: number, name: string, color?: string, colorArray?: string[], enabled: boolean, quick?: boolean}) {
   const elements = [
-    <Icon name={props.name} size={props.size} color={(props.colorArray && props.colorArray[0]) ?? colors.black.hex} />,
+    <Icon name={props.name} size={props.size} color={(props.colorArray && props.colorArray[0]) ?? (props.color ?? colors.black.hex)} />,
     <Icon name={props.name} size={props.size} color={(props.colorArray && props.colorArray[1]) ?? colors.csOrange.hex} />,
     <Icon name={props.name} size={props.size} color={(props.colorArray && props.colorArray[2]) ?? colors.blue.hex} />,
   ];

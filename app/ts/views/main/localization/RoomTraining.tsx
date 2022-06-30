@@ -21,7 +21,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 export function RoomTraining(props) {
   bindTopbarButtons(props)
 
-
   return (
     <Background>
       <View style={{height:topBarHeight}}/>

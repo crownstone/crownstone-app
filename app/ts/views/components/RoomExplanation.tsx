@@ -46,7 +46,7 @@ export class RoomExplanation extends Component<any, any> {
 
     if (FingerprintUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
-      buttonCallback = () => { NavigationUtil.launchModal( "SetupLocalization", { sphereId: this.props.sphereId }); }
+      buttonCallback = () => { NavigationUtil.launchModal( "SetupLocalization", { sphereId: this.props.sphereId, isModal: true }); }
     }
 
     if (explanation === undefined) {

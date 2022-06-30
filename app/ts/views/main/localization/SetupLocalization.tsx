@@ -58,7 +58,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
 }
 
 SetupLocalization.options = (props) => {
-  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.fromOverview ?? false });
+  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.isModal ?? false });
 }
 
 

@@ -3,7 +3,7 @@ import { colors, styles } from "../styles";
 import { Text, TouchableOpacity, ViewStyle} from "react-native";
 import * as React from "react";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import {HighlightableBlackIcon} from "./animated/HighlightableIcon";
+import { HighlightableBlackIcon, HighlightableIcon } from "./animated/HighlightableIcon";
 
 
 let color = colors.black.hex;
@@ -35,7 +35,7 @@ export function EditIcon(props) {
 export function SettingsIconLeft(props) {
   return (
     <TouchableOpacity style={getLeftStyle(props.style)} onPress={props.onPress}>
-      <Icon name={'md-create'} size={25} color={color}/>
+      <HighlightableIcon name={'md-create'} size={25} color={color} enabled={props.highlight ?? false}/>
     </TouchableOpacity>
   );
 }

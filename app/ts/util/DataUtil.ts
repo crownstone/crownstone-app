@@ -312,6 +312,12 @@ export const DataUtil = {
 
 
 
+  getAmountOfCrownstonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    return Object.keys(stones).length;
+  },
+
+
   getAmountOfDimmableStonesInLocation: function(sphereId: string, locationId?) : number {
     let stones = DataUtil.getStonesInLocation(sphereId, locationId);
     let amount = 0;

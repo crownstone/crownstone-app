@@ -75,25 +75,26 @@ function getExitingLocalizationItems(items: any[], sphereId: sphereId) {
     label: "Improve localization",
     type: 'navigation',
     testID: 'ImproveLocalization',
-    icon: <Icon name='c1-locationPin1' size={25} color={colors.blue.hex}/>,
+    icon: <Icon name='c1-locationPin1' size={25} color={colors.csBlue.hex}/>,
     callback: () => {
 
     }
   });
   items.push({label: "Is the localization not working correctly? This will take you through the steps to identify the problem and improve the localization!",  type:'explanation', below: true});
 
-  items.push({ label: "Quick fix", type: 'largeExplanation' });
   items.push({
-    label: "Localization mistake just now...",
+    label: "Localization quick fix",
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
-    icon: <Icon name='c1-router' size={30} color={colors.csBlue.hex}/>,
+    icon: <Icon name='c1-router' size={28} color={colors.blue.hex}/>,
     callback: () => {
 
     }
   });
   items.push({label: "If the localization was wrong and you've been in the same room for at least 2 minutes, use this to quickly fix the problem!",  type:'explanation', below: true});
+
+  getLearnAboutLocalizationItems(items, sphereId);
 }
 
 

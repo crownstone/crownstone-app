@@ -460,6 +460,9 @@ function DimmerSwitch({dimMode, setDimMode}) {
 
 function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
   let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id})};
+
+  let amountOfCrownstonesInLocation = DataUtil.getAmountOfCrownstonesInLocation(sphereId, location.id);
+
   return (
     <View style={{flexDirection:'row', alignItems:'center', width: screenWidth}}>
       <BackIcon />
@@ -470,7 +473,7 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
       >
         <HeaderTitle title={location.config.name} maxWidth={screenWidth-70-50-50}/>
       </TouchableOpacity>
-      <SlideSideFadeInView visible={editMode} width={50}><SettingsIconLeft onPress={launchEditModal}/></SlideSideFadeInView>
+      <SlideSideFadeInView visible={editMode} width={50}><SettingsIconLeft onPress={launchEditModal} highlight={amountOfCrownstonesInLocation === 0}/></SlideSideFadeInView>
       <View style={{flex:1, height:30}} />
       <SlideSideFadeInView visible={editMode} width={70}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
       <SlideSideFadeInView visible={!editMode} width={50}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>

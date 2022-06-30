@@ -18,18 +18,18 @@ export class SideBarView extends Component<any, any> {
     super(props);
 
     this.state = {
-      leftOffset: new Animated.Value(0),
+      leftOffset:   new Animated.Value(0),
       borderRadius: new Animated.Value(0),
-      margins: new Animated.Value(0),
-      open:false
+      margins:      new Animated.Value(0),
+      open:         false
     };
   }
 
   open() {
     let animations = [
-      Animated.timing(this.state.leftOffset, {toValue: 0.75*screenWidth, useNativeDriver: false, duration: DURATION}),
+      Animated.timing(this.state.leftOffset,   {toValue: 0.75*screenWidth, useNativeDriver: false, duration: DURATION}),
       Animated.timing(this.state.borderRadius, {toValue: 30, useNativeDriver: false, duration: DURATION}),
-      Animated.timing(this.state.margins, {toValue: 15, useNativeDriver: false, duration: DURATION}),
+      Animated.timing(this.state.margins,      {toValue: 15, useNativeDriver: false, duration: DURATION}),
     ]
     this.setState({open: true});
     Animated.parallel(animations).start();
@@ -40,9 +40,9 @@ export class SideBarView extends Component<any, any> {
   close() {
     if (this.state.open) {
       let animations = [
-        Animated.timing(this.state.leftOffset, {toValue: 0, useNativeDriver: false, duration: DURATION}),
+        Animated.timing(this.state.leftOffset,    {toValue: 0, useNativeDriver: false, duration: DURATION}),
         Animated.timing(this.state.borderRadius, {toValue: 0, useNativeDriver: false, duration: DURATION}),
-        Animated.timing(this.state.margins, {toValue: 0, useNativeDriver: false, duration: DURATION}),
+        Animated.timing(this.state.margins,      {toValue: 0, useNativeDriver: false, duration: DURATION}),
       ]
       this.setState({open: false});
       SIDEBAR_STATE.open = false;

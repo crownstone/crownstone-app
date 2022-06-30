@@ -109,6 +109,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.picture            = update(action.data.picture,           newState.picture);
         newState.pictureTaken       = update(action.data.pictureTaken,      newState.pictureTaken);
+        newState.pictureSource      = update(action.data.pictureSource,     newState.pictureSource);
         newState.pictureId          = update(action.data.pictureId,         newState.pictureId);
         newState.fingerprintRaw     = update(action.data.fingerprintRaw,    newState.fingerprintRaw);
         newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);
