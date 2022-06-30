@@ -910,13 +910,11 @@ export const canUseIndoorLocalizationInSphere = function (sphereId: string, stat
 };
 
 
-export const enoughCrownstonesForIndoorLocalization = function(sphereId) {
-  let state = core.store.getState();
-  if (!(state?.spheres?.[sphereId]?.stones)) {
-    return false;
-  }
+export const enoughCrownstonesForIndoorLocalization = function(sphereId) : boolean {
+  let sphere = Get.sphere(sphereId);
+  if (!sphere) { return false; }
 
-  return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
+  return Object.keys(sphere.stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
 

@@ -28,11 +28,11 @@ import {
   HubIssue_UART_ENCRYPTION_NOT_ENABLED
 } from "./HubProblems";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
-import {OverlayUtil} from "../overlays/OverlayUtil";
 import {StoneUtil} from "../../util/StoneUtil";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {HubHelper} from "../../native/setup/HubHelper";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
+import { OverlayUtil } from "../../util/OverlayUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("HubOverview", key)(a,b,c,d,e);

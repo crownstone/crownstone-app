@@ -3,7 +3,6 @@ import {core} from "./Core";
 import {colors, screenHeight, styles} from "./views/styles";
 import * as React from "react";
 import {NavigationUtil} from "./util/navigation/NavigationUtil";
-import {OverlayUtil} from "./views/overlays/OverlayUtil";
 import {RoomList} from "./views/components/RoomList";
 import {SELECTABLE_TYPE} from "./Enums";
 
@@ -60,9 +59,8 @@ function DebugPopup() {
 
 function DebugCustomView() {
   // setTimeout(() => {
-  // NavigationUtil.launchModal("RoomTraining_conclusion",{
-  //   "sphereId": "aef42623-570-8cb8-f83f-a3bc59bd7ab9",
-  //   "locationId": "50cb58ba-7efa-33ff-6d0e-755244352ef5",
+  // NavigationUtil.launchModal("Quickfix",{
+  //   "sphereId":"2bb36a17-f6fd-5d1-41cc-cb92dd406c70"
   // })},
   //   300);
 }

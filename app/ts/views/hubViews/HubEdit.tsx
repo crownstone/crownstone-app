@@ -21,11 +21,11 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
 import { Get } from "../../util/GetUtil";
 import { HubHelper } from "../../native/setup/HubHelper";
+import { OverlayUtil } from "../../util/OverlayUtil";
 
 
 export class HubEdit extends LiveComponent<any, any> {

@@ -35,18 +35,29 @@ export function LocalizationMenu(props) {
   bindTopbarButtons(props);
   useDatabaseChange(['changeFingerprint','changeSphereState']);
 
-
   let items = [];
   let enoughCrownstones = enoughCrownstonesForIndoorLocalization(props.sphereId);
   let trainingRequired  = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
 
   items.push({ label: "INDOOR LOCALIZATION", type: 'largeExplanation' });
   if (enoughCrownstones) {
-    if (trainingRequired) {
-      getTrainingRoomItems(items, props.sphereId);
+    if (!DataUtil.inSphere(props.sphereId)) {
+      items.push({
+        type:"info",
+        numberOfLines:2,
+        style: {color: colors.black.rgba(0.3)},
+        label:"You have to be in the sphere to continue..."
+      });
+      items.push({type:'spacer'});
+      getLearnAboutLocalizationItems(items, props.sphereId)
     }
     else {
-      getExitingLocalizationItems(items, props.sphereId);
+      if (trainingRequired) {
+        getTrainingRoomItems(items, props.sphereId);
+      }
+      else {
+        getExitingLocalizationItems(items, props.sphereId);
+      }
     }
   }
   else {
@@ -89,7 +100,7 @@ function getExitingLocalizationItems(items: any[], sphereId: sphereId) {
     testID: 'LocalizationMistake',
     icon: <Icon name='c1-router' size={28} color={colors.blue.hex}/>,
     callback: () => {
-
+      NavigationUtil.navigate('LocalizationQuickFix', {sphereId: sphereId});
     }
   });
   items.push({label: "If the localization was wrong and you've been in the same room for at least 2 minutes, use this to quickly fix the problem!",  type:'explanation', below: true});

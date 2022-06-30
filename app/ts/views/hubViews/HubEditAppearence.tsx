@@ -15,7 +15,6 @@ import {core} from "../../Core";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import {TopBarUtil} from "../../util/TopBarUtil";
-import {OverlayUtil} from "../overlays/OverlayUtil";
 import {DataUtil} from "../../util/DataUtil";
 import { from, tell } from "../../logic/constellation/Tellers";
 import {SettingsBackground} from "../components/SettingsBackground";

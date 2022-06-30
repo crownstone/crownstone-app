@@ -18,12 +18,12 @@ import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../Core";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
-import { OverlayUtil } from "../overlays/OverlayUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { HubEntryBasic } from "../components/deviceEntries/HubEntryBasic";
 import {
   SettingsCustomTopBarNavbarBackground,
 } from "../components/SettingsBackground";
+import { OverlayUtil } from "../../util/OverlayUtil";
 
 
 export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {

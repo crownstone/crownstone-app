@@ -33,8 +33,8 @@ import { NumericSet }        from "./editComponents/NumericSet";
 import { NumericGetSet }     from "./editComponents/NumericGetSet";
 
 import {styles, colors, NORMAL_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
-import { Popup } from "./editComponents/Popup";
 import {PictureSelect} from "./editComponents/PictureSelect";
+import { PopupBar } from "./editComponents/PopupBar";
 
 
 /**
@@ -144,7 +144,7 @@ export class EditableItem extends Component<any, any> {
       case 'numericSet':
         return <NumericSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'popup':
-        return <Popup barHeight={NORMAL_ROW_SIZE} {...this.props} />
+        return <PopupBar barHeight={NORMAL_ROW_SIZE} {...this.props} />
       case 'picture':
         return <PictureEdit barHeightLarge={EXTRA_LARGE_ROW_SIZE} {...this.props} />;
       case 'pictureSelect':

@@ -1,15 +1,17 @@
-
-import { Languages } from "../../Languages"
+import { Languages } from "../Languages";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("OverlayUtil", key)(a,b,c,d,e);
 }
-import { core } from "../../Core";
-import { RoomList } from "../components/RoomList";
+
 import * as React from "react";
-import { colors } from "../styles";
-import { DataUtil } from "../../util/DataUtil";
-import { Get } from "../../util/GetUtil";
+import { core } from "../Core";
+import { RoomList } from "../views/components/RoomList";
+import { colors } from "../views/styles";
+import { DataUtil } from "./DataUtil";
+import { Get } from "./GetUtil";
+
+
 
 
 export const OverlayUtil = {
@@ -48,7 +50,7 @@ export const OverlayUtil = {
       themeColor: colors.lightGreen2.hex,
       selection: null,
       separator: false,
-      image: require("../../../assets/images/overlayCircles/roomsCircle.png")
+      image: require("../../assets/images/overlayCircles/roomsCircle.png")
     });
   },
 

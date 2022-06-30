@@ -15,7 +15,7 @@ import {styles, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE, menu
 import { core } from "../../../Core";
 
 
-export class Popup extends Component<any, any> {
+export class PopupBar extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {value: props.value};

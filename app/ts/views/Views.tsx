@@ -122,6 +122,7 @@ import {RoomTraining_inHand_intro} from "./main/localization/RoomTraining_inHand
 import {RoomTraining_training} from "./main/localization/RoomTraining_training";
 import {RoomTraining_inPocket_intro} from "./main/localization/RoomTraining_inPocket_intro";
 import {RoomTraining_conclusion} from "./main/localization/RoomTraining_conclusion";
+import { LocalizationQuickFix } from "./main/localization/LocalizationQuickFix";
 
 
 export const Views = {
@@ -229,6 +230,7 @@ export const Views = {
   RoomTraining_training:             RoomTraining_training,
   RoomTraining_conclusion:           RoomTraining_conclusion,
   RoomTraining_inPocket_intro:       RoomTraining_inPocket_intro,
+  LocalizationQuickFix:              LocalizationQuickFix,
 
 
   // Overlays:
