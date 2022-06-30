@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Text, View, StatusBar,
+  Text, View, StatusBar, TouchableOpacity
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
@@ -27,15 +27,17 @@ import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
 import { DataUtil }                 from "../../util/DataUtil";
-import { RoomAddCore }              from "../roomViews/RoomAddCore";
-import { Background }               from "../components/Background";
+import { Background, BackgroundCustomTopBar } from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { SideBarView } from "../components/animated/SideBarView";
 import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
 import {useRef} from "react";
-import {NavBarBlur} from "../components/NavBarBlur";
+import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import {Debug, DebugNotifications} from "../../DebugCalls";
+import { EditIcon, MenuButton } from "../components/EditIcon";
+import { HeaderTitle } from "../components/HeaderTitle";
+import { Get } from "../../util/GetUtil";
 
 
 const ZOOM_LEVELS = {
@@ -239,9 +241,9 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background image={background.main} testID={"SphereOverview_addRoom"} fullScreen={true}>
-              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } paddingBottom={statusBarHeight} />
-            </Background>
+            <BackgroundCustomTopBar testID={"SphereOverview_addRoom"} fullScreen={true}>
+              <RoomsRequired sphereId={activeSphereId} openSideMenu={this.props.openSideMenu} />
+            </BackgroundCustomTopBar>
           )
         }
 
@@ -288,6 +290,37 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
       );
     }
   }
+}
+
+
+/**
+ * Tell the users that they need to add a room to the sphere.
+ * @param props
+ * @constructor
+ */
+function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
+  let sphere = Get.sphere(props.sphereId);
+  return (
+    <React.Fragment>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center',}}>
+      <View style={{flex:1}} />
+      <Text style={styles.header}>{ "You need to add a room to the sphere to place your Crownstones in." }</Text>
+      <View style={{flex:0.1}} />
+      <Text style={styles.boldExplanation}>{ "Tap the blinking icon on the top left to continue!" }</Text>
+      <View style={{flex:3}} />
+    </View>
+    <TopBarBlur xlight blink={{left: true}}>
+      <View style={{flexDirection: 'row', alignItems:'center'}}>
+        <MenuButton onPress={props.openSideMenu} highlight={true} />
+        <TouchableOpacity onPress={props.openSideMenu} style={{alignItems:'center', justifyContent:'center'}}>
+          <HeaderTitle title={sphere?.config?.name} />
+        </TouchableOpacity>
+        <View style={{flex:1}} />
+        <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: props.sphereId})}} />
+      </View>
+    </TopBarBlur>
+    </React.Fragment>
+  );
 }
 
 export function SphereOverview(props) {

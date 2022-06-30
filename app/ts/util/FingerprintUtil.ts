@@ -101,6 +101,24 @@ export const FingerprintUtil = {
   },
 
 
+  requiresTransformation: function(fingerprint : FingerprintData) : boolean {
+    if (!fingerprint.type) { return false; }
+
+    let deviceType = DeviceInfo.getDeviceId();
+    let fingerprintDeviceType = fingerprint.type.split('_')[0];
+
+    if (deviceType !== fingerprintDeviceType) {
+      return true;
+    }
+
+    return false;
+  },
+
+  canTransform: function(fingerprint : FingerprintData) : boolean {
+    // TODO: implement transforms.
+    return false;
+  },
+
   /**
    * True is we need to gather fingerprints in this location
    * @param sphereId
@@ -119,12 +137,83 @@ export const FingerprintUtil = {
   },
 
 
-  getDeviceType(): string {
+  getDeviceTypeDescription(): string {
     let state = core.store.getState();
 
-    let deviceId = DeviceInfo.getDeviceId;
+    let deviceId = DeviceInfo.getDeviceId();
 
     return `${deviceId}_${state.user.userId}`
+  },
+
+
+  getAmountOfCrownstonesInFingerprint(fingerprint : FingerprintData) : number {
+    let ids = {};
+    for (let datapoint of fingerprint.data) {
+      for (let id in datapoint.data){
+        ids[id] = true;
+      }
+    }
+
+    return Object.keys(ids).length;
+  },
+
+  /**
+   * We will give the locations a fingerprint quality score. This is based on the following criteria:
+   *
+   * - Is there an in-hand fingerprint AND an in-pocket fingerprint? (if not in pocket -10%);
+   * - Is there a requirement for transformation? If so, -10% for not transformed, -5% for approximate.
+   * - How many crownstones are in the crownstonesAtCreation list of the fingerprint(s)? If less than 3 total, set the quality to 10%, if ratio, set to ratio (mapped 0 .. 80%).
+   *   - If mulitple trainingsets are used, the average of the quality scores will be used weighed by the number of datapoints. This will give a better average.
+   *
+   * If the score (partially) falls below 60%, discard the trainingset upon the next training of the room. If the total quality is above 60%, add the new set to the previous ones.
+   * TODO: DECIDE: If there are multiple sets for a location, automatically remove the worst one.
+   *
+   * @param sphereId
+   * @param locationId
+   * @param fingerprintId
+   */
+  calculateScore: function(sphereId: string, locationId: string, fingerprintId: string) : number {
+    let sphere = Get.sphere(sphereId);
+    let location = Get.location(sphereId, locationId);
+    if (!sphere || !location) { return 0; }
+
+    let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
+
+    let score = 100;
+
+    if (FingerprintUtil.hasInPocketSet(location)) {
+      score -= 10;
+    }
+
+    if (fingerprint.createdOnDeviceType === null) {
+      score -= 20;
+    }
+
+    let amountOfCrownstonesAtCreation    = fingerprint.crownstonesAtCreation.length;
+    let amountOfCrownstonesInFingerprint = FingerprintUtil.getAmountOfCrownstonesInFingerprint(fingerprint);
+    let amountOfCrownstones              = Object.keys(sphere.stones).length;
+
+    if (amountOfCrownstonesInFingerprint < 3) {
+      return 10;
+    }
+
+     if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
+      let ratio = (amountOfCrownstonesAtCreation / amountOfCrownstones) * 100;
+      let penalty = (100 - ratio);
+      score -= penalty;
+    }
+
+    if (FingerprintUtil.requiresTransformation(fingerprint)) {
+      if (FingerprintUtil.canTransform(fingerprint) === false) {
+        // expect that if it can, it has been transformed since this is an automatic process
+      }
+      else {
+        score -= 10;
+      }
+    }
+
+    console.log('fingerprint, score',fingerprint, score)
+    return score;
   },
 }
 

@@ -13,7 +13,7 @@ import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 
 export function SphereOverviewSideBar(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations']);
+  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated']);
   let factor = 0.25;
 
   const state = core.store.getState();
@@ -27,6 +27,7 @@ export function SphereOverviewSideBar(props) {
   }
 
   let blinkBehaviour = false;
+  let blinkAdding    = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
@@ -34,10 +35,9 @@ export function SphereOverviewSideBar(props) {
       <Image source={require('../../../assets/images/crownstoneLogo.png')} style={{width:factor * 300, height: factor*300, tintColor: colors.white.hex}}/>
       <View style={{height:50}}/>
 
-
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   highlight={blinkAdding} />
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} highlight={blinkLocalizationIcon} />
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Behaviour"}     callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-brain'} highlight={blinkBehaviour} />
+      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Behaviour"}     callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-brain'}           highlight={blinkBehaviour} />
       <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Messages"}      callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
                     iconImage={<Image source={require('../../../assets/images/icons/mail.png')} style={{tintColor: colors.white.hex}} />}
       />

@@ -89,7 +89,7 @@ export class TrainingData {
       fingerprintId,
       data: {
         type:                  this.type,
-        createdOnDeviceType:   FingerprintUtil.getDeviceType(), // ${device type string}_${userId who collected it}
+        createdOnDeviceType:   FingerprintUtil.getDeviceTypeDescription(), // ${device type string}_${userId who collected it}
         crownstonesAtCreation: this.crownstonesAtCreation, // maj_min as id representing the Crownstone.
         data:                  this.trainingData,
       }

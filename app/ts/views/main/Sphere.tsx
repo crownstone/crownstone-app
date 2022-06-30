@@ -119,7 +119,7 @@ function SphereHeader({sphere, openSideMenu, blinkMenuIcon}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
       <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} />
-      <TouchableOpacity onPress={() => { openSideMenu() }} style={{alignItems:'center', justifyContent:'center'}}>
+      <TouchableOpacity onPress={openSideMenu} style={{alignItems:'center', justifyContent:'center'}}>
         <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>
       <View style={{flex:1}} />

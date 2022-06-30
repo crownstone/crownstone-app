@@ -23,6 +23,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { SettingsBackground } from "../components/SettingsBackground";
 import {IconBlurButton} from "../components/IconBlurButton";
+import { Get } from "../../util/GetUtil";
 
 
 let iconSize = 100;
@@ -33,18 +34,32 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
   }
 
 
-
   render() {
-    let hightlightAddCrownstoneButton = false;
+    let highlightAddCrownstoneButton = false;
+    let highlightAddRoomButton       = false;
+
+    let sphere = Get.sphere(this.props.sphereId);
     if (Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
-      let state = core.store.getState();
-      let sphere = state.spheres[this.props.sphereId];
       if (sphere) {
         if (Object.keys(sphere.stones).length === 0) {
-          hightlightAddCrownstoneButton = true;
+          highlightAddCrownstoneButton = true;
         }
       }
     }
+
+    if (Permissions.inSphere(this.props.sphereId).canCreateLocations) {
+      if (sphere) {
+        if (Object.keys(sphere.locations).length === 0) {
+          highlightAddRoomButton = true;
+        }
+      }
+    }
+
+    if (highlightAddRoomButton) {
+      highlightAddCrownstoneButton = false;
+    }
+
+
 
     return (
       <SettingsBackground testID={"SphereAdd"}>
@@ -60,10 +75,10 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
             <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
-              <AddItem icon={'md-cube'} label={ lang("Room")} testID={"AddRoom"} callback={() => {
+              <AddItem icon={'md-cube'} label={ lang("Room")} highlight={highlightAddRoomButton}  testID={"AddRoom"} callback={() => {
                 NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId, isModal: true });
               }} />
-              <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} testID={"AddCrownstone_button"} callback={() => {
+              <AddItem icon={'c2-crownstone'} highlight={highlightAddCrownstoneButton} label={ lang("Crownstone")} testID={"AddCrownstone_button"} callback={() => {
                 NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
               }}
               />
@@ -90,6 +105,7 @@ function AddItem(props) {
   return (
     <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }} testID={props.testID}>
       <IconBlurButton
+        highlight={props.highlight}
         name={props.icon}
         size={0.75*usedIconSize}
         color={colors.green.hex}

@@ -3,6 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { Icon } from './Icon'
 import { styles, colors} from '../styles'
 import {BlurView} from "@react-native-community/blur";
+import { HighlightableIcon } from "./animated/HighlightableIcon";
 
 /**
 
@@ -17,9 +18,9 @@ export function IconBlurButton(props: {
     circle?:          boolean,
     plusSize?:        number,
     addColor?:        string,
+    highlight?:       boolean,
     buttonStyle?:     any,
     style?:           any,
-    showLoadingIcon?: boolean
   }) {
 
   let iconSize = props.buttonSize || 30;
@@ -37,7 +38,7 @@ export function IconBlurButton(props: {
           left: 0.5*plusSize,
           top:  0.2*plusSize
         }, styles.centered, props.buttonStyle]}>
-          {props.showLoadingIcon ? <ActivityIndicator animating={true} size={iconSize > 50 ? 'large' : 'small' }  /> : <Icon {...props} /> }
+          <HighlightableIcon {...props} enabled={props.highlight ?? false} />
         </BlurView>
         <View style={[{
           width:plusSize,
@@ -52,7 +53,7 @@ export function IconBlurButton(props: {
           top:-iconSize,
           left:iconSize-0.25*plusSize,
         }]}>
-          <Icon name={'md-add'} size={plusSize/1.5} color={'#ffffff'} />
+          <HighlightableIcon name={'md-add'} size={plusSize/1.5} color={'#ffffff'} enabled={props.highlight ?? false} />
         </View>
     </View>
     );
@@ -67,7 +68,7 @@ export function IconBlurButton(props: {
         margin:0,
         }, styles.centered, props.buttonStyle
       ]}>
-        {props.showLoadingIcon ? <ActivityIndicator animating={true} size={iconSize > 50 ? 'large' :  'small'}  /> : <Icon {...props} /> }
+        <HighlightableIcon {...props} enabled={props.highlight ?? false} />
       </BlurView>
     )
   }

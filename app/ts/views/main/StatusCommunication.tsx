@@ -23,69 +23,43 @@ import { Util } from "../../util/Util";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {FingerprintUtil} from "../../util/FingerprintUtil";
 import { Get } from "../../util/GetUtil";
+import { useDatabaseChange } from "../components/hooks/databaseHooks";
 
 
 
-export class StatusCommunication extends LiveComponent<any, any> {
-  unsubscribeStoreEvents : any;
-  unsubscribeSetupEvents : any;
-
-  constructor(props) {
-    super(props);
-    this.state = {amountOfVisibleCrownstones: this._getAmountOfCrownstones()};
-  }
-
-  componentDidMount() {
-    // watch for setup stones
-    this.unsubscribeSetupEvents = [];
-
-    // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-
-      if ((change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])) {
-        this._checkIfRedrawIsRequired();
+export function StatusCommunication(props: { sphereId: sphereId, viewingRemotely: boolean, opacity: number}) {
+  let [ amountOfCrownstones, setAmountOfCrownstones ] = React.useState(getAmountOfVisibleCrownstones(props.sphereId));
+  useDatabaseChange(
+    [{'changeStoneAvailability':props.sphereId}],
+    () => {
+      let amountOfVisibleCrownstones = getAmountOfVisibleCrownstones(props.sphereId);
+      if (amountOfCrownstones !== amountOfVisibleCrownstones) {
+        setAmountOfCrownstones(amountOfVisibleCrownstones);
       }
-    });
+  },
+  [props.sphereId]);
 
-    // verify that something has not happened between rendering and starting the listener.
-    this._checkIfRedrawIsRequired();
-  }
+  return <StatusCommunicationRender {...props} amountOfVisibleCrownstones={amountOfCrownstones} />
+};
 
-  _checkIfRedrawIsRequired() {
-    let amountOfVisibleCrownstones = this._getAmountOfCrownstones();
-    if (this.state.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
-      this.setState({amountOfVisibleCrownstones: amountOfVisibleCrownstones})
+function getAmountOfVisibleCrownstones(sphereId) {
+  let sphere = Get.sphere(sphereId);
+  if (!sphere) { return; }
+
+  let stones = sphere.stones;
+  let stoneIds = Object.keys(stones);
+  let amountOfVisible = 0;
+  stoneIds.forEach((stoneId) => {
+    let rssi = StoneAvailabilityTracker.getRssi(stoneId);
+    if (rssi > -100) {
+      amountOfVisible += 1;
     }
-  }
-
-  _getAmountOfCrownstones() {
-    let sphere = Get.sphere(this.props.sphereId);
-    if (!sphere) { return; }
-
-    let stones = sphere.stones;
-    let stoneIds = Object.keys(stones);
-    let amountOfVisible = 0;
-    stoneIds.forEach((stoneId) => {
-      let rssi = StoneAvailabilityTracker.getRssi(stoneId);
-      if (rssi > -100) {
-        amountOfVisible += 1;
-      }
-    });
-    return amountOfVisible;
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
-    this.unsubscribeStoreEvents();
-  }
-
-  render() {
-    return <StatusCommunicationRender {...this.props} amountOfVisibleCrownstones={this.state.amountOfVisibleCrownstones} />
-  }
+  });
+  return amountOfVisible;
 }
 
-function StatusCommunicationRender(props) {
+
+function StatusCommunicationRender(props: { sphereId: sphereId, amountOfVisibleCrownstones: number, viewingRemotely: boolean, opacity: number }) {
   const store = core.store;
   const state = store.getState();
 

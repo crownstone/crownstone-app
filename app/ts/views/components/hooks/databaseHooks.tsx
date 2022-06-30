@@ -17,7 +17,7 @@ type filter = DatabaseEventType | PartialRecord<DatabaseEventType, databaseId>
 // filter = {changeStones: "id"}
 // filter = "changeStones"
 
-export function useDatabaseChange(filters: filter | filter[], callback: () => void = null) {
+export function useDatabaseChange(filters: filter | filter[], callback: () => void = null, dependencies = []) {
   const forceUpdate = useForceUpdate();
 
   useEvent('databaseChange', (data) => {
@@ -27,7 +27,7 @@ export function useDatabaseChange(filters: filter | filter[], callback: () => vo
       if (callback !== null) { callback();    }
       else                   { forceUpdate(); }
     }
-  });
+  }, dependencies);
 }
 
 export function useSphereSwitching(callback: () => void = null) {
@@ -67,19 +67,30 @@ export function useViewSwitching(viewName) {
 function checkFilter(change: DatabaseChangeEventData, filters: filter | filter[]) {
   if (Array.isArray(filters)) {
     for (let filter of filters) {
-      if (typeof filter === 'string') {
-        if (change[filter] !== undefined) { return true; }
+      if (_checkFilter(change, filter)) {
+        return true;
       }
-      else {
-        for (let key in filter) {
-          let id = filter[key];
-          if (change[key]?.id[id]) { return true; }
-        }
+    }
+    return false;
+  }
+
+  return _checkFilter(change, filters);
+}
+
+function _checkFilter(change: DatabaseChangeEventData, filter: filter) : boolean {
+  if (typeof filter === 'string') {
+    if (change[filter] !== undefined) { return true; }
+  }
+  else {
+    for (let key in filter) {
+      let id = filter[key];
+      if (change[key] === undefined) { continue; }
+
+      for (let idType in change[key]) {
+        if (change[key][idType][id]) { return true;}
       }
     }
   }
-  else if (typeof filters === 'string') {
-    if (change[filters] !== undefined) { return true; }
-  }
-  return false;
+
+  return false
 }

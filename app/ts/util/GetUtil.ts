@@ -70,6 +70,13 @@ export const Get = {
     return sphere?.thirdParty?.toon?.[toonId] || null;
   },
 
+  fingerprint(sphereId: string, locationId: string, fingerprintId) : FingerprintData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    return location.fingerprints?.raw[fingerprintId] || null;
+  },
+
   user() : UserData | null {
     return core.store.getState().user;
   }

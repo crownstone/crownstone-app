@@ -11,6 +11,15 @@ export function useEvents(topics : string[], callback, depencencies: any[] = [])
   }
 }
 
+export function useNativeEvent(topic: NativeBusTopic, callback, depencencies: any[] = []) {
+  React.useEffect(() => {
+    const unsubscribe = core.nativeBus.on(topic, callback);
+    return () => {
+      unsubscribe();
+    }
+  }, depencencies);
+}
+
 export function useSidebarState() {
   const forceUpdate = useForceUpdate();
   useEvents(['sidebarOpen', 'sidebarClose'], forceUpdate);

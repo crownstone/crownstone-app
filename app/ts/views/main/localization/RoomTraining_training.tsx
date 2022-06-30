@@ -36,6 +36,11 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
     this.trainingData.tick = (amountOfPoints) => {
       this.setState({dataCount: amountOfPoints});
 
+      if (amountOfPoints === MIN_DATA_COUNT) {
+        Vibration.vibrate([400]);
+        return;
+      }
+
       if (Platform.OS === "android") {
         let pattern = [50,0,30]
         Vibration.vibrate(pattern);
@@ -44,10 +49,6 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
         Bluenet.vibrate("success");
       }
 
-      if (amountOfPoints === MIN_DATA_COUNT) {
-        Vibration.vibrate([400]);
-        return;
-      }
     }
 
   }

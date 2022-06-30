@@ -86,6 +86,36 @@ interface colorInterface {
   random() : any
 }
 
+type NativeBusTopic = "setupAdvertisement"              |
+                      "dfuAdvertisement"                |
+                      "advertisement"                   |
+                      "crownstoneAdvertisementReceived" |
+                      "unverifiedAdvertisementData"     |
+                      "setupProgress"                   |
+                      "dfuProgress"                     |
+                      "bleStatus"                       |
+                      "bleBroadcastStatus"              |
+                      "locationStatus"                  |
+                      "nearest"                         |
+                      "nearestSetup"                    |
+                      "tick"                            |
+                      "iBeaconAdvertisement"            |
+                      "enterSphere"                     |
+                      "exitSphere"                      |
+                      "enterRoom"                       |
+                      "exitRoom"                        |
+                      "currentRoom"                     |
+                      "currentLocationKNN"              |
+                      "libAlert"                        |
+                      "libPopup"                        |
+                      "classifierProbabilities"         |
+                      "classifierResult"                |
+                      "callbackUrlInvoked"              |
+                      "localizationPausedState"         |
+                      "connectedToPeripheral"           |
+                      "disconnectedFromPeripheral"
+
+
 interface NativeBusTopics {
   setupAdvertisement:              string,
   dfuAdvertisement:                string,
