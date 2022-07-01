@@ -2,8 +2,11 @@ import { core } from "../Core";
 import { Get } from "./GetUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "./DataUtil";
 import DeviceInfo from "react-native-device-info";
+import {KNNsigmoid, processingParameters} from "../logic/classifiers/knn";
+import {xUtil} from "./StandAloneUtil";
+const sha1 = require('sha-1');
 
-
+const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export const FingerprintUtil = {
 
@@ -22,7 +25,7 @@ export const FingerprintUtil = {
 
 
   hasInPocketSet: function(location: LocationData) : boolean {
-    for (let [fingerprintId, fingerprint] of Object.entries(location.fingerprints.raw)) {
+    for (let fingerprint of Object.values(location.fingerprints.raw)) {
       if (fingerprint.type === "IN_POCKET") {
         return true;
       }
@@ -51,20 +54,18 @@ export const FingerprintUtil = {
     return `${parts[1].substr(4)}_${parts[2].substr(4)}`;
   },
 
-
   getStoneIdentifierFromStone: function(stone : StoneData) : string {
     return `${stone.config.iBeaconMajor}_${stone.config.iBeaconMinor}`;
   },
 
+  getStoneIdentifierFromIBeaconPackage: function(ibeacon : ibeaconPackage) : string {
+    return `${ibeacon.major}_${ibeacon.minor}`;
+  },
 
-  /**
-   * TODO: Implement scoring system.
-   * @param sphereId
-   * @param locationId
-   * @param fingerprintId
-   */
   isFingerprintGoodEnough: function(sphereId, locationId, fingerprintId) : boolean {
-    return true;
+    if (FingerprintUtil.calculateScore(sphereId, locationId, fingerprintId) >= FINGERPRINT_SCORE_THRESHOLD) {
+      return true;
+    }
   },
 
 
@@ -114,10 +115,11 @@ export const FingerprintUtil = {
     return false;
   },
 
-  canTransform: function(fingerprint : FingerprintData) : boolean {
+  canTransform: function(sphereId: sphereId, fingerprint : FingerprintData) : boolean {
     // TODO: implement transforms.
     return false;
   },
+
 
   /**
    * True is we need to gather fingerprints in this location
@@ -204,7 +206,7 @@ export const FingerprintUtil = {
     }
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
-      if (FingerprintUtil.canTransform(fingerprint) === false) {
+      if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
         // expect that if it can, it has been transformed since this is an automatic process
       }
       else {
@@ -213,7 +215,102 @@ export const FingerprintUtil = {
     }
 
     console.log('fingerprint, score',fingerprint, score)
-    return score;
+    return Math.round(score);
   },
+
+
+  processFingerprint(sphereId: string, locationId: string, fingerprintRawId: string) : void {
+    let location = Get.location(sphereId, locationId);
+    if (!location) { return; }
+
+    let alreadyHasProcessed = false;
+    let processedId = null;
+    for (let processedFingerprintId in location.fingerprints.processed) {
+      if (location.fingerprints.processed[processedFingerprintId].fingerprintId === fingerprintRawId) {
+        // this fingerprint has already been processed
+        alreadyHasProcessed = true;
+        processedId = processedFingerprintId;
+        break;
+      }
+    }
+
+
+    let processedFingerprint = FingerprintUtil._processFingerprint(sphereId, locationId, fingerprintRawId);
+    if (alreadyHasProcessed) {
+      core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: processedId, data: processedFingerprint});
+    }
+    else {
+      let newId = xUtil.getUUID();
+      core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: newId, data: processedFingerprint});
+    }
+  },
+
+
+  _processFingerprint(sphereId: string, locationId: string, fingerprintRawId: string) : Partial<FingerprintProcessedData> | null {
+    let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintRawId);
+    if (!fingerprint) { return null; }
+
+    let processedFingerprint: Partial<FingerprintProcessedData> = {
+      fingerprintId: fingerprintRawId,
+      type: fingerprint.type,
+      transformState: "NOT_TRANSFORMED_YET",
+      crownstonesAtCreation: [...fingerprint.crownstonesAtCreation],
+      data: [],
+      processingParameterHash: sha1(JSON.stringify(processingParameters)),
+      transformedAt: 0,
+      processedAt:   Date.now(),
+    }
+
+
+    // copy all the data before modifying it.
+    processedFingerprint.data = FingerprintUtil.copyData(fingerprint.data);
+
+
+    if (FingerprintUtil.requiresTransformation(fingerprint)) {
+      if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
+        processedFingerprint.transformState = "NOT_TRANSFORMED_YET";
+      }
+      else {
+        // TODO: transform the fingerprint
+        // processedFingerprint.transformState = "TRANSFORMED_APPROXIMATE";
+        // processedFingerprint.transformState = "TRANSFORMED_EXACT";
+      }
+    }
+
+
+    // apply sigmoid function.
+    for (let measurement of processedFingerprint.data) {
+      for (let datapoint of measurement.data) {
+        for (let identifier in datapoint) {
+          datapoint[identifier] = KNNsigmoid(datapoint[identifier]);
+        }
+      }
+    }
+
+    return processedFingerprint;
+  },
+
+
+  copyData(fingeprintData: FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[]) : FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[] {
+    let copy = []
+
+    for (let measurement of fingeprintData) {
+      let datapoints = [];
+      for (let datapoint of measurement.data) [
+        datapoints.push({...datapoint})
+      ]
+
+      copy.push({
+        dt: measurement.dt,
+        data: datapoints
+      })
+    }
+
+    return copy;
+  }
+
+
+
+
 }
 

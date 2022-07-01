@@ -52,6 +52,7 @@ import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
 import DeviceInfo from "react-native-device-info";
 import {StatusBarWatcher} from "./StatusBarWatcher";
+import {LocalizationCore} from "./LocalizationCore";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -469,6 +470,7 @@ class BackgroundProcessHandlerClass {
     DfuStateHandler.init();
     EncryptionManager.init();
     FirmwareWatcher.init();
+    LocalizationCore.init();
     LocationHandler.init();
     LocalizationMonitor.init();
     MessageCenter.init();
@@ -491,7 +493,6 @@ class BackgroundProcessHandlerClass {
   }
 
   startDeveloperSingletons() {
-    let state = core.store.getState();
     if (DataUtil.isDeveloper()) {
       LocalizationLogger.init();
     }

@@ -5,11 +5,11 @@ import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
 import {Bluenet} from '../libInterface/Bluenet';
 import {LOG, LOGe} from "../../logging/Log";
 import {BatterySavingUtil} from '../../util/BatterySavingUtil';
-import {FingerprintManager} from "./FingerprintManager";
 import {SphereUtil} from "../../util/SphereUtil";
 import {core} from "../../Core";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {canUseIndoorLocalizationInSphere} from "../../util/DataUtil";
+import {LocalizationCore} from "../../backgroundProcesses/LocalizationCore";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocationHandler", key)(a,b,c,d,e);
@@ -27,8 +27,8 @@ class LocationHandlerClass {
     this._initialized = false;
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    core.eventBus.on('CloudSyncComplete_spheresChanged', () => {
-      if (this._readyForLocalization) {
+    core.eventBus.on('databaseChange', ({change}) => {
+      if (change.changeSpheres) {
         this.initializeTracking();
       }
     });
@@ -41,12 +41,6 @@ class LocationHandlerClass {
       }
     });
 
-
-    core.eventBus.on("reloadTracking", () => {
-      this.reloadFingerprintTracking();
-    })
-
-
   }
 
   init() {
@@ -57,8 +51,8 @@ class LocationHandlerClass {
       // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); }));
       this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); }));
-      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); })); // data = {region: sphereId, location: locationId}
-      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); })); // data = {region: sphereId, location: locationId}
+      this._unsubscribeLocationEvents.push(core.eventBus.on('enterRoom',   (data)     => { this._enterRoom(data); })); // data = {sphereId: sphereId, locationId: locationId}
+      this._unsubscribeLocationEvents.push(core.eventBus.on('exitRoom',    (data)     => { this._exitRoom(data); }));  // data = {sphereId: sphereId, locationId: locationId}
     }
   }
 
@@ -67,33 +61,35 @@ class LocationHandlerClass {
   }
 
 
-  enterSphere(enteringSphereId) {
+  enterSphere(sphereId) {
     let state = core.store.getState();
-    let sphere = state.spheres[enteringSphereId];
+    let sphere = state.spheres[sphereId];
 
     if (!sphere) {
       LOGe.info('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
       return;
     }
 
+    LocalizationCore.enterSphere(sphereId);
+
     // We load the settings and start the localization regardless if we are already in the sphere. The calls themselves
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    if (canUseIndoorLocalizationInSphere(enteringSphereId) === true) {
-      LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
-      Bluenet.startIndoorLocalization();
+    if (canUseIndoorLocalizationInSphere(sphereId) === true) {
+      LOG.info('LocationHandler: Starting indoor localization for sphere', sphereId);
+      LocalizationCore.enableLocalization();
     }
     else {
-      LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
-      Bluenet.stopIndoorLocalization();
+      LOG.info('LocationHandler: Stopping indoor localization for sphere', sphereId, 'due to missing fingerprints or not enough Crownstones.');
+      LocalizationCore.disableLocalization();
     }
 
     // scan for crownstones on entering a sphere.
-    BatterySavingUtil.startNormalUsage(enteringSphereId);
+    BatterySavingUtil.startNormalUsage(sphereId);
 
     // get the time last seen of the crownstones in this sphere
-    let timeLastSeen  = SphereUtil.getTimeLastSeenInSphere(state, enteringSphereId);
+    let timeLastSeen  = SphereUtil.getTimeLastSeenInSphere(state, sphereId);
     let sphereTimeout = 5*60*1000; // 5 minutes.
     let timeSinceLastCrownstoneWasSeen = Date.now() - timeLastSeen;
     let sphereHasTimedOut = timeSinceLastCrownstoneWasSeen > sphereTimeout;
@@ -103,15 +99,15 @@ class LocationHandlerClass {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
 
       // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-      core.eventBus.emit('enterSphere', enteringSphereId);
+      core.eventBus.emit('enterSphere', sphereId);
 
       return;
     }
 
     // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
-    LOG.info('LocationHandler: ENTER SPHERE', enteringSphereId);
+    LOG.info('LocationHandler: ENTER SPHERE', sphereId);
 
-    if (sphere.config.latitude && sphere.config.longitude || Permissions.inSphere(enteringSphereId).canSetSphereLocation == false) {
+    if (sphere.config.latitude && sphere.config.longitude || Permissions.inSphere(sphereId).canSetSphereLocation == false) {
       // do not request new position.
     }
     else {
@@ -127,12 +123,12 @@ class LocationHandlerClass {
               let distance = Math.sqrt(dx*dx + dy*dy);
               if (distance > 0.4) {
                 LOG.info('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
-                core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+                core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
               }
             }
             else {
               LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-              core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
         })
@@ -140,10 +136,10 @@ class LocationHandlerClass {
     }
 
     // set the presence
-    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true, lastPresentTime: Date.now()}});
+    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true, lastPresentTime: Date.now()}});
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-    core.eventBus.emit('enterSphere', enteringSphereId);
+    core.eventBus.emit('enterSphere', sphereId);
   }
 
 
@@ -154,6 +150,9 @@ class LocationHandlerClass {
   exitSphere(sphereId) {
     LOG.info('LocationHandler: LEAVING SPHERE', sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
+
+    delete LocalizationCore.presentSpheres[sphereId];
+
     let state = core.store.getState();
 
     if (state.spheres[sphereId] && state.spheres[sphereId].state.present === true) {
@@ -181,9 +180,9 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data : locationDataContainer) {
-    LOG.info('LocationHandler: USER_ENTER_LOCATION.', data.region, data.location);
-    let sphereId = data.region;
-    let locationId = data.location;
+    LOG.info('LocationHandler: USER_ENTER_LOCATION.', data.sphereId, data.locationId);
+    let sphereId = data.sphereId;
+    let locationId = data.locationId;
     let state = core.store.getState();
 
     if (state.app.indoorLocalizationEnabled === false) { return }
@@ -206,8 +205,8 @@ class LocationHandlerClass {
   _exitRoom(data : locationDataContainer) {
     LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
 
-    let sphereId = data.region;
-    let locationId = data.location;
+    let sphereId = data.sphereId;
+    let locationId = data.locationId;
     let state = core.store.getState();
 
     if (state.app.indoorLocalizationEnabled === false) { return }
@@ -250,7 +249,7 @@ class LocationHandlerClass {
           presentAtProvidedLocationId = true;
         }
         else {
-          this._exitRoom({region: sphereId, location: locationIds[i]});
+          this._exitRoom({sphereId: sphereId, locationId: locationIds[i]});
         }
       }
     }
@@ -280,69 +279,6 @@ class LocationHandlerClass {
   }
 
 
-  loadFingerprints() {
-    LOG.info("LocationHandler: loadFingerprints.");
-    BluenetPromiseWrapper.isReady()
-      .then(() => {
-        return BluenetPromiseWrapper.clearFingerprintsPromise();
-      })
-      .then(() => {
-        // register the iBeacons UUIDs with the localization system.
-        const state = core.store.getState();
-        let sphereIds = Object.keys(state.spheres);
-        let showRemoveFingerprintNotification : boolean = false;
-        let actions = [];
-
-        sphereIds.forEach((sphereId) => {
-          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
-
-          LOG.info('LocationHandler: Setup tracking for iBeacon UUID: ', sphereIBeaconUUID, ' with sphereId:', sphereId);
-
-          let locations = state.spheres[sphereId].locations;
-          let locationIds = Object.keys(locations);
-          locationIds.forEach((locationId) => {
-            if (locations[locationId].config.fingerprintRaw) {
-              // check format of the fingerprint:
-              LOG.info('LocationHandler: Checking fingerprint format for: ', locationId, ' in sphere: ', sphereId);
-              if (FingerprintManager.validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                let activeFingerprint = locations[locationId].config.fingerprintRaw;
-                if (FingerprintManager.shouldTransformFingerprint(activeFingerprint)) {
-                  LOG.info('LocationHandler: Transforming fingerprint format for: ', locationId, ' in sphere: ', sphereId);
-                  activeFingerprint = FingerprintManager.transformFingerprint(activeFingerprint);
-                  core.store.dispatch({
-                    type: 'UPDATE_NEW_LOCATION_FINGERPRINT',
-                    sphereId: sphereId,
-                    locationId: locationId,
-                    data: { fingerprintRaw: activeFingerprint }
-                  });
-                }
-
-                LOG.info('LocationHandler: Loading fingerprint for: ', locationId, ' in sphere: ', sphereId);
-                Bluenet.loadFingerprint(sphereId, locationId, activeFingerprint);
-              }
-              else {
-                showRemoveFingerprintNotification = true;
-                actions.push({type: 'REMOVE_LOCATION_FINGERPRINT', sphereId: sphereId, locationId: locationId});
-              }
-            }
-          });
-        });
-
-        if (showRemoveFingerprintNotification) { //  === true
-          if (actions.length > 0) {
-            core.store.batchDispatch(actions);
-          }
-
-          Alert.alert(
-            lang("Please_forgive_me___"),
-            lang("Due_to_many_improvements_"),
-            [{text:lang("OK")}]
-          );
-        }
-      })
-      .catch((err) => {})
-  }
-
   /**
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
@@ -368,19 +304,12 @@ class LocationHandlerClass {
   initializeTracking() {
     return this.trackSpheres()
       .then(() => {
-        this.reloadFingerprintTracking();
+        let state = core.store.getState();
+        if (state.app.indoorLocalizationEnabled === true) {
+          LocalizationCore.enableLocalization();
+        }
       })
   }
-
-
-  reloadFingerprintTracking() {
-    this.loadFingerprints();
-    let state = core.store.getState();
-    if (state.app.indoorLocalizationEnabled === true) {
-      Bluenet.startIndoorLocalization();
-    }
-  }
-
 
 }
 

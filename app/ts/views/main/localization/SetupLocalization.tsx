@@ -13,8 +13,6 @@ import {
   screenWidth,
   availableModalHeight
 } from "../../styles";
-import {IconButton} from "../../components/IconButton";
-import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";

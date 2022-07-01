@@ -17,8 +17,6 @@ export const NATIVE_BUS_TOPICS : NativeBusTopics = {
   iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = ibeaconPackage[]
   enterSphere:          "enterSphere",                      // data type = string (sphereId)
   exitSphere:           "exitSphere",                       // data type = string (sphereId)
-  enterRoom:            "enterLocation",                    // data type = {region: sphereId, location: locationId}
-  exitRoom:             "exitLocation",                     // data type = {region: sphereId, location: locationId}
   currentRoom:          "currentLocation",                  // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
   currentLocationKNN:   "currentLocationKNN",               // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
 

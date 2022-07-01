@@ -1,4 +1,3 @@
-
 interface ReduxAppState {
   app:           any,
   devices:       any,
@@ -141,7 +140,7 @@ interface StoneDataConfig {
   updatedAt: timestamp,
 }
 
-type fingerprintId = string;
+
 interface LocationData {
   id: string,
   config: LocationDataConfig
@@ -158,8 +157,8 @@ interface LocationData {
   }
 }
 
-type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED'
-type TransformState  = 'NOT_REQUIRED' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE'
+type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED';
+type TransformState  = 'NOT_REQUIRED' | 'NOT_TRANSFORMED_YET' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE';
 type CrownstoneIdentifier = string; // maj_min as identifier representing the Crownstone.
 
 interface FingerprintData {
@@ -168,10 +167,7 @@ interface FingerprintData {
   type: FingerprintType,
   createdOnDeviceType: string, // ${device type string}_${userId who collected it}
   crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
-  data: {
-    dt: number, // ms diff from createdAt
-    data: Record<CrownstoneIdentifier, rssi>[]
-  }[],
+  data: FingerprintMeasurementData[],
   updatedAt: timestamp,
   createdAt: timestamp,
 }
@@ -182,14 +178,21 @@ interface FingerprintProcessedData {
   type: FingerprintType,
   transformState: TransformState,
   crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
-  data: {
-    dt: number, // ms diff from createdAt
-    data: Record<CrownstoneIdentifier, sigmoid>[]
-  }[],
+  data: FingerprintProcessedMeasurementData[],
   processingParameterHash: string, // this contains the parameters used to process the data. (sigmoid)
   transformedAt: timestamp,  // if the transform data has changed since the last time it was transformed, repeat the transform.
   processedAt:   timestamp,  // if the base fingerprint has changed since the processing time, update the processed fingerprint.
   createdAt:     timestamp,
+}
+
+interface FingerprintMeasurementData {
+  dt: number, // ms diff from createdAt
+  data: Record<CrownstoneIdentifier, rssi>[]
+}
+
+interface FingerprintProcessedMeasurementData {
+  dt: number, // ms diff from createdAt
+  data: Record<CrownstoneIdentifier, sigmoid>[]
 }
 
 interface LocationDataConfig {

@@ -42,20 +42,6 @@ open class BluenetJS: RCTEventEmitter {
         
         print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
         
-        _ = GLOBAL_BLUENET.localization.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
-            //print("__classifierProbabilities",data)
-            if let dict = data as? NSDictionary {
-                self.sendEvent(withName: "classifierProbabilities", body: dict)
-            }
-        })
-        
-        _ = GLOBAL_BLUENET.localization.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
-            //print("__classifierResult",data)
-            if let dict = data as? NSDictionary {
-                self.sendEvent(withName: "classifierResult", body: dict)
-            }
-        })
-        
         
         // forward the event streams to react native
         GLOBAL_BLUENET.bluenetOn("verifiedAdvertisementData", {data -> Void in
@@ -138,9 +124,7 @@ open class BluenetJS: RCTEventEmitter {
         // forward the navigation event stream to react native
         GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
             var returnArray = [NSDictionary]()
-            if let data = ibeaconData as? [iBeaconPacket] {
-                GLOBAL_BLUENET.localization.handleMeasurement(data)
-                
+            if let data = ibeaconData as? [iBeaconPacket] {                
                 for packet in data {
                     returnArray.append(packet.getDictionary())
                 }
@@ -335,16 +319,6 @@ open class BluenetJS: RCTEventEmitter {
         GLOBAL_BLUENET.bluenet.stopScanning()
     }
     
-    @objc func startIndoorLocalization() {
-        LOGGER.info("BluenetBridge: Called startIndoorLocalization")
-        GLOBAL_BLUENET.localization.startIndoorLocalization()
-    }
-    
-    @objc func stopIndoorLocalization() {
-        LOGGER.info("BluenetBridge: Called stopIndoorLocalization")
-        GLOBAL_BLUENET.localization.stopIndoorLocalization()
-    }
-    
     @objc func quitApp() {
         LOGGER.info("BluenetBridge: Called quitApp")
         exit(0)
@@ -416,43 +390,6 @@ open class BluenetJS: RCTEventEmitter {
         GLOBAL_BLUENET.bluenetLocalization.resumeTracking()
     }
     
-    @objc func startCollectingFingerprint() -> Void {
-        LOGGER.info("BluenetBridge: Called startCollectingFingerprint")
-        // abort collecting fingerprint if it is currently happening.
-        GLOBAL_BLUENET.trainingHelper.abortCollectingTrainingData()
-        
-        // start collection
-        GLOBAL_BLUENET.trainingHelper.startCollectingTrainingData()
-    }
-    
-    @objc func abortCollectingFingerprint() -> Void {
-        LOGGER.info("BluenetBridge: Called abortCollectingFingerprint")
-        GLOBAL_BLUENET.trainingHelper.abortCollectingTrainingData()
-    }
-    
-    @objc func pauseCollectingFingerprint() -> Void {
-        LOGGER.info("BluenetBridge: Called pauseCollectingFingerprint")
-        GLOBAL_BLUENET.trainingHelper.pauseCollectingTrainingData()
-    }
-    
-    @objc func resumeCollectingFingerprint() -> Void {
-        LOGGER.info("BluenetBridge: Called resumeCollectingFingerprint")
-        GLOBAL_BLUENET.trainingHelper.resumeCollectingTrainingData()
-    }
-    
-    
-    @objc func finalizeFingerprint(_ sphereId: String, locationId: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-        LOGGER.info("BluenetBridge: Called finalizeFingerprint \(sphereId) \(locationId)")
-        
-        let stringifiedFingerprint = GLOBAL_BLUENET.trainingHelper.finishCollectingTrainingData()
-        if (stringifiedFingerprint != nil) {
-            GLOBAL_BLUENET.localization.loadTrainingData(locationId, referenceId: sphereId, trainingData: stringifiedFingerprint!)
-            callback([["error" : false, "data": stringifiedFingerprint!]])
-        }
-        else {
-            callback([["error" : true, "data": "No samples collected"]])
-        }
-    }
     
     // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
     @objc func clearTrackedBeacons(_ callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -461,22 +398,6 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : false]])
     }
     
-    
-    @objc func clearFingerprints() {
-        LOGGER.info("BluenetBridge: Called clearFingerprints")
-        GLOBAL_BLUENET.localization.resetAllTrainingData()
-    }
-    
-    @objc func clearFingerprintsPromise(_ callback: @escaping RCTResponseSenderBlock) {
-        LOGGER.info("BluenetBridge: Called clearFingerprintsPromise")
-        GLOBAL_BLUENET.localization.resetAllTrainingData()
-        callback([["error" : false]])
-    }
-    
-    @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
-        LOGGER.info("BluenetBridge: Called loadFingerprint \(sphereId) \(locationId)")
-        GLOBAL_BLUENET.localization.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
-    }
     
     @objc func commandFactoryReset(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
         let handleUUID = UUID(uuidString: handle)

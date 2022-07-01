@@ -129,7 +129,6 @@ export const sync = {
       // FINISHED SYNCING
       .then(() => {
         LOG.info("Sync: Finished. Dispatching ", actions.length, " actions!");
-        let reloadTrackingRequired = false;
 
         actions.forEach((action) => {
           action.triggeredBySync = true;
@@ -138,13 +137,6 @@ export const sync = {
             action.__noEvents = true
           }
 
-          switch (action.type) {
-            case 'ADD_SPHERE':
-            case 'REMOVE_SPHERE':
-            case 'ADD_LOCATION':
-            case 'REMOVE_LOCATION':
-              reloadTrackingRequired = true; break;
-          }
         });
 
 
@@ -163,10 +155,6 @@ export const sync = {
           NotificationHandler.request();
         }
 
-        if (reloadOfTrackingRequired === true) {
-          core.eventBus.emit("reloadTracking")
-        }
-
         LOG.info("Sync after: START Executing cloud poll.");
         CloudPoller.poll(true);
         LOG.info("Sync after: DONE Executing cloud poll.");
@@ -178,9 +166,8 @@ export const sync = {
           core.eventBus.emit("permissionsHaveBeenUpdated");
         }
 
-        return reloadTrackingRequired;
       })
-      .then((reloadTrackingRequired) => {
+      .then(() => {
         CLOUD.__currentlySyncing = false;
         CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
@@ -194,9 +181,6 @@ export const sync = {
 
         core.eventBus.emit("CloudSyncComplete");
 
-        if (reloadTrackingRequired) {
-          core.eventBus.emit("CloudSyncComplete_spheresChanged");
-        }
         console.log("SYNC COMPLETE!")
 
       })

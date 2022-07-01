@@ -39,8 +39,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 
-const sha1    = require('sha-1');
-const RNFS    = require('react-native-fs');
+const sha1 = require('sha-1');
+const RNFS = require('react-native-fs');
 
 export class Login extends Component<any, any> {
   progress : number;

@@ -60,8 +60,8 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentLocationKNN, (data) => {
       this.knnLocation = data.location;
     }));
-    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {
-      this.appLocation = data.location;
+    this.unsubscribeNativeEvents.push(core.eventBus.on('enterRoom', (data) => {
+      this.appLocation = data.locationId;
     }));
     this.unsubscribeNativeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
 

@@ -14,8 +14,8 @@ declare const global: {
 };
 
 interface locationDataContainer {
-  region:   string,
-  location: string,
+  sphereId: string,
+  locationId: string,
 }
 
 interface classificationContainer {
@@ -30,6 +30,8 @@ type stringMap = { [proptype: string] : string } | {}
 type colorString = string;
 
 type PromiseCallback = (any) => Promise<any>
+type voidCallback = () => void;
+type unsubscriber = () => void;
 
 interface color {
   hex:string,
@@ -135,8 +137,6 @@ interface NativeBusTopics {
   iBeaconAdvertisement:            string,
   enterSphere:                     string,
   exitSphere:                      string,
-  enterRoom:                       string,
-  exitRoom:                        string,
   currentRoom:                     string,
   currentLocationKNN:              string,
 

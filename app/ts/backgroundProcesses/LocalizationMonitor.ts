@@ -15,7 +15,7 @@ class LocalizationMonitorClass {
     if (this._initialized === false) {
       core.nativeBus.on(core.nativeBus.topics.enterSphere,  (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Enter Sphere.'}); })
       core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Exit Sphere.'}); })
-      core.nativeBus.on(core.nativeBus.topics.enterRoom,(data) => { this.storeLocalization(data); }); // data = {region: sphereId, location: locationId}
+      core.eventBus.on('enterRoom' ,(data) => { this.storeLocalization(data); }); // data = {sphereId: sphereId, locationId: locationId}
     }
     this._initialized = true;
   }
@@ -82,7 +82,7 @@ function writeLocalization(data) {
 
 
   // create string
-  let str = data.region + ";" + data.location + ";" + Date.now() + "\n";
+  let str = data.sphereId + ";" + data.locationId + ";" + Date.now() + "\n";
 
   // write the file
   RNFS.appendFile(filePath, str, 'utf8').catch((err) => {})

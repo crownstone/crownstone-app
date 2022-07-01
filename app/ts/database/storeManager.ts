@@ -1,7 +1,6 @@
 import {Alert} from 'react-native'
 import {applyMiddleware, createStore} from 'redux'
 import CrownstoneReducer from './reducer'
-import {NativeEnhancer} from './enhancers/nativeEnhancer'
 import {CloudEnhancer} from './enhancers/cloudEnhancer'
 import {EventEnhancer} from './enhancers/eventEnhancer'
 import {LOG, LOGe} from '../logging/Log'
@@ -50,7 +49,11 @@ class StoreManagerClass {
 
   _initializeStore(userId) {
     LOG.info("StoreManager: initializing Store");
-    this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer, PersistenceEnhancer));
+    this.store = createStore(
+      enableBatching(CrownstoneReducer),
+      {},
+      applyMiddleware(CloudEnhancer, EventEnhancer, PersistenceEnhancer)
+    );
     this.store.batchDispatch = (actions) => { return batchActions(this.store, actions); };
 
     migrateBeforeInitialization()

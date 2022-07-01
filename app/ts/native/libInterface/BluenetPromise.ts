@@ -116,7 +116,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets', dataObject); },
   requestLocation:                ()           => { return BluenetPromise('requestLocation');             },
   recover:                        (handle: string)     => { return BluenetPromise('recover', handle);             },                                // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
-  finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:            (handle: string)           => { return BluenetPromise('commandFactoryReset', handle);         },
 
   multiSwitch:                    (handle: string, arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch', handle, arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
@@ -135,7 +134,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   //new
   clearErrors:                    (handle: string, clearErrorJSON) => { return BluenetPromise('clearErrors', handle, clearErrorJSON); },
   restartCrownstone:              (handle: string)     => { return BluenetPromise('restartCrownstone', handle); },
-  clearFingerprintsPromise:       ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                        (handle: string, time) => { return BluenetPromise('setTime', handle, time); },
   setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string, enableTimeBasedNonce: boolean) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId, enableTimeBasedNonce); },
   meshSetTime:                    (handle: string, time) => { return BluenetPromise('meshSetTime', handle, time); },

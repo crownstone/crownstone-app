@@ -22,8 +22,7 @@ class BluenetContainer : NSObject {
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
-  open var trainingHelper : TrainingHelper!
-
+  
   open var launchArguments = [String: String]()
   
   var watchStateManager: WatchStateManager!
@@ -53,9 +52,6 @@ class BluenetContainer : NSObject {
     // use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
-    
-    self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
     
     // store the environment so the app can request it. This is used to determine which notification key we should use in our installation model in the cloud.
     #if DEBUG

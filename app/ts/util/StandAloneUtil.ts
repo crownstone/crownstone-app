@@ -4,7 +4,7 @@ export const xUtil = {
 
   nextTick: function() {
     return new Promise<void>((resolve, reject) => {
-      setImmediate(() => { resolve() });
+      setTimeout(() => { resolve() },0);
     })
   },
 

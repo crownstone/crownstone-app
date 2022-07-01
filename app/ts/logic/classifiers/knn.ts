@@ -1,98 +1,163 @@
+import {core} from "../../Core";
+import {FingerprintUtil} from "../../util/FingerprintUtil";
 
-
+type vector = sigmoid[];
+type fingerprintSummary = { id: processedFingerprintId, dataset: vector[], mask: number[] };
 
 export class KNN {
-  name = 'nodeKNN';
-
-  fingerprints    : Record<string, Record<LocationId, number[][]>> = {};
-  sphereDeviceMap = {};
-  sortedSphereKeys : Record<string,string[]> = {};
-
-  constructor() {}
-
-  train(fingerprints: AppFingerprintFormat) {
-    let fingerprintSet = {};
-    this.fingerprints  = {};
-    this.sphereDeviceMap = {};
+  sortedSphereKeys : Record<sphereId,string[]> = {};
+  fingerprints : Record<sphereId, Record<locationId, fingerprintSummary[]>> = {};
 
 
-    for (let sphereId in fingerprints.spheres) {
-      let sphere = fingerprints.spheres[sphereId];
-      if (fingerprintSet[sphereId] === undefined) {
-        fingerprintSet[sphereId] = {};
-        this.fingerprints[sphereId] = {};
+  initialize() {
+    // this will generate sortedSphereKeys for each sphere. This will also clear any initialized state on the start of the call.
+    // any change in stones, this has to be reinitialized.
+    let sphereDeviceMap = {};
+    this.sortedSphereKeys = {};
+
+    let spheres = core.store.getState().spheres;
+    for (let [sphereId, sphere] of Object.entries(spheres)) {
+      sphereDeviceMap[sphereId] = {};
+      for (let stone of Object.values(sphere.stones)) {
+        sphereDeviceMap[sphereId][FingerprintUtil.getStoneIdentifierFromStone(stone)] = 0;
       }
-
-      this.sphereDeviceMap[sphereId] = {};
-
-      for (let locationId in sphere.fingerprints) {
-        let location = sphere.fingerprints[locationId];
-        for (let datapoint of location.fingerprint) {
-          for (let deviceId in datapoint.devices) {
-            this.sphereDeviceMap[sphereId][deviceId] = 1.0;
-          }
-        }
-      }
-
-      this.sortedSphereKeys[sphereId] = Object.keys(this.sphereDeviceMap[sphereId]).sort();
-
-      for (let locationId in sphere.fingerprints) {
-        let location = sphere.fingerprints[locationId];
-
-        if (fingerprintSet[sphereId][locationId] === undefined) {
-          fingerprintSet[sphereId][locationId] = {};
-          this.fingerprints[sphereId][locationId] = [];
-        }
-
-        for (let datapoint of location.fingerprint) {
-          let data = {...this.sphereDeviceMap[sphereId]};
-          for (let deviceId in datapoint.devices) {
-            data[deviceId] = KNNsigmoid(datapoint.devices[deviceId]);
-          }
-          let dataArray : number[] = [];
-          for (let key of this.sortedSphereKeys[sphereId]) {
-            dataArray.push(data[key]);
-          }
-          this.fingerprints[sphereId][locationId].push(dataArray);
-        }
-      }
+      this.sortedSphereKeys[sphereId] = Object.keys(sphereDeviceMap[sphereId]).sort();
     }
   }
 
-  classify(inputVector : FingerprintDatapoint, sphereId: string) : LocationId {
-    let sphereFingerprint = this.fingerprints[sphereId];
-    let vector = [];
-    for (let key of this.sortedSphereKeys[sphereId]) {
-      if (inputVector.devices[key]) {
-        vector.push(KNNsigmoid(inputVector.devices[key]));
+
+  addFingerprint(sphereId: sphereId, locationId: locationId, fingerprint: FingerprintProcessedData) {
+    // store the fingerprint for classification
+    if (!this.fingerprints[sphereId]) {
+      this.fingerprints[sphereId] = {};
+    }
+    if (!this.fingerprints[sphereId][locationId]) {
+      this.fingerprints[sphereId][locationId] = []
+    }
+
+    // generate the mask for the fingerprint
+    // if there is a crownstone measurement which was not available at the creation of the fingerprint, the measurement should be set to 0.
+    // that is what the mask is for
+    let crownstonesAtCreationMap = {};
+    for (let crownstoneIdentifier of fingerprint.crownstonesAtCreation) {
+      crownstonesAtCreationMap[crownstoneIdentifier] = true;
+    }
+
+    // the ones that existed in the fingerprint when it was created are set to 1
+    let mask = [];
+    for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
+      if (crownstonesAtCreationMap[crownstoneIdentifier]) {
+        mask.push(1);
       }
       else {
-        vector.push(1);
+        mask.push(0);
       }
     }
 
-    let label;
-    let minDistance = Infinity;
-    for (let locationId in sphereFingerprint) {
-      for (let dataVector of sphereFingerprint[locationId]) {
-        let distance = KNNgetDistance(vector, dataVector);
-        if (distance < minDistance) {
-          minDistance = distance;
-          label = locationId;
+    // additionally, we will construct vectors for this fingerprint which are used to match later on.
+    let vectorSet = [];
+    for (let measurement of fingerprint.data) {
+      let vector = [];
+      for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
+        if (measurement[crownstoneIdentifier] !== undefined) {
+          vector.push(measurement[crownstoneIdentifier]);
+        }
+        else {
+          vector.push(1);
         }
       }
-    };
 
-    return label;
+      // apply the mask on the vector, this way the crownstones that should be ignored are 0 both in the fingerprint and in the measurement vector.
+      for (let i = 0; i < vector.length; i++) {
+        vector[i] *= mask[i];
+      }
+
+      vectorSet.push(vector);
+    }
+
+    this.fingerprints[sphereId][locationId].push({id: fingerprint.id, dataset: vectorSet, mask: mask});
   }
 
-  clear() {
-    this.fingerprints = {};
+  /**
+   * method to map the ibeaconPackage[] format to a classification vector
+   *
+   * missing crownstones that should exist in the sphere are set to 1.
+   *
+   * TODO: profile. optimize.
+   * TODO: decide if the packages here will output multiple sphere vectors or only the selected sphereId ones
+   */
+  preprocess(packages : ibeaconPackage[]) : Record<sphereId, vector> {
+    let vector  : Record<sphereId, vector> = {};
+    let spheres : Record<sphereId, Record<CrownstoneIdentifier, rssi>> = {};
+
+    let measurements : Record<CrownstoneIdentifier, rssi> = {};
+    for (let ibeaconPackage of packages) {
+      if (spheres[ibeaconPackage.referenceId] === undefined) {
+        spheres[ibeaconPackage.referenceId] = {};
+        vector[ibeaconPackage.referenceId]  = [];
+      };
+
+      let identifier = FingerprintUtil.getStoneIdentifierFromIBeaconPackage(ibeaconPackage);
+      spheres[ibeaconPackage.referenceId][identifier] = ibeaconPackage.rssi;
+    }
+
+    for (let sphereId in spheres) {
+      for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
+        if (spheres[sphereId][crownstoneIdentifier]) {
+          vector[sphereId].push(KNNsigmoid(measurements[crownstoneIdentifier]));
+        }
+        else {
+          vector[sphereId].push(1);
+        }
+      }
+    }
+
+    return vector;
   }
 
 
+  classify(packages : ibeaconPackage[]) : { sphereId: sphereId, locationId: locationId } {
+    let inputVector = this.preprocess(packages);
 
+    for (let sphereId in inputVector) {
+      // find the closest fingerprint in the sphere.
+      let sphereLocations = this.fingerprints[sphereId];
+
+      let label;
+      let minDistance = Infinity;
+      for (let locationId in sphereLocations) {
+        let fingerprintsInLocation = sphereLocations[locationId];
+        for (let fingerprint of fingerprintsInLocation) {
+          // we now apply the mask on the inputVector
+          // TODO: profile this. Optimize this. Check the map.reduce alternative
+          //  dot = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
+          //  console.log(dot([1,2,3], [1,0,1]));
+          let vectorForFingerprint = [...inputVector[sphereId]];
+          for (let i = 0; i < vectorForFingerprint.length; i++) {
+            vectorForFingerprint[i] *= fingerprint.mask[i];
+          }
+
+          // calculate the distance between the inputVector and the fingerprint
+          for (let fingerprintVector of fingerprint.dataset) {
+            let distance = KNNgetDistance(vectorForFingerprint, fingerprintVector);
+            if (distance < minDistance) {
+              minDistance = distance;
+              label = locationId;
+            }
+          }
+        }
+      }
+
+      return { sphereId: sphereId, locationId: label };
+    }
+  }
+
+  reset() {
+    this.fingerprints     = {};
+    this.sortedSphereKeys = {};
+  }
 }
+
 
 export function KNNgetDistance(vector: number[], fingerprint: number[]) {
   let d = 0; let x = 0; let y = 0;
@@ -104,7 +169,12 @@ export function KNNgetDistance(vector: number[], fingerprint: number[]) {
   return d;
 }
 
+
 export function KNNsigmoid(rssi) {
-  let smooth_f = 0.1;
-  return (1 / (1 + Math.exp((rssi + 50)*smooth_f)));
+  return (1 / (1 + Math.exp((rssi + 50)*0.1)));
+}
+
+
+export const processingParameters = {
+  sigmoid: { smooth_f: 0.1, offset: 50 },
 }

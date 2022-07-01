@@ -19,12 +19,12 @@ class LocalizationLoggerClass {
     if (this._initialized === false) {
       this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,
         (ibeaconData: ibeaconPackage[]) => { this._store(ibeaconData); }))
-      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom,
+      this._unsubscribeListeners.push(core.eventBus.on('enterRoom',
         (data : locationDataContainer) => {
         // no duplicates in this set.
         removeExistingClassifications(this._lastClassifications, data);
         // place the most recent one first.
-        this._lastClassifications.unshift({timestamp : Date.now(), sphereId: data.region, locationId: data.location});
+        this._lastClassifications.unshift({timestamp : Date.now(), sphereId: data.sphereId, locationId: data.locationId});
 
         // only need the last 10 unique ones.
         if (this._lastClassifications.length > 10) {
@@ -220,7 +220,7 @@ async function getDatasetUrls() {
 
 function removeExistingClassifications(set: classificationContainer[], data: locationDataContainer) {
   for (let i = set.length-1; i >= 0; i--) {
-    if (set[i].sphereId === data.region && set[i].locationId === data.location) {
+    if (set[i].sphereId === data.sphereId && set[i].locationId === data.locationId) {
       set.splice(i, 1)
     }
   }

@@ -6,24 +6,21 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsApp", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  ScrollView} from 'react-native';
 
-import { IconButton } from '../components/IconButton'
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { Bluenet } from '../../native/libInterface/Bluenet'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
-import { background, colors } from "../styles";
-import {Util} from "../../util/Util";
-import { core } from "../../Core";
+import { ScrollView } from 'react-native';
+import { Bluenet }    from '../../native/libInterface/Bluenet'
+import { CLOUD }      from '../../cloud/cloudAPI'
+import { LOG }        from '../../logging/Log'
+import { colors }     from "../styles";
+import { Util }       from "../../util/Util";
+import { core }       from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { SliderBar } from "../components/editComponents/SliderBar";
-import {DataUtil} from "../../util/DataUtil";
-import {Icon} from "../components/Icon";
-import {NavBarBlur} from "../components/NavBarBlur";
-import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
+import { SliderBar }  from "../components/editComponents/SliderBar";
+import { DataUtil }   from "../../util/DataUtil";
+import { Icon }       from "../components/Icon";
+import { ListEditableItems }       from '../components/ListEditableItems'
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
+import {LocalizationCore} from "../../backgroundProcesses/LocalizationCore";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -172,7 +169,7 @@ export class SettingsApp extends LiveComponent<any, any> {
         Bluenet.setBackgroundScanning(newValue);
 
         if (newValue === false) {
-          Bluenet.stopIndoorLocalization();
+          LocalizationCore.disableLocalization();
 
           // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS IN THE CLOUD
           let deviceId = Util.data.getCurrentDeviceId(state);
@@ -199,7 +196,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           }
         }
         else {
-          Bluenet.startIndoorLocalization();
+          LocalizationCore.enableLocalization();
         }
       }
     });

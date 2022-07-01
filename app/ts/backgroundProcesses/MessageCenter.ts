@@ -21,8 +21,8 @@ class MessageCenterClass {
 
       core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
       core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      core.eventBus.on('enterRoom',   (data)     => { this._enterRoom(data); }); // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on('exitRoom',    (data)     => { this._exitRoom(data); });  // data = {sphereId: sphereId, locationId: locationId}
 
     }
     this._initialized = true;
@@ -231,7 +231,7 @@ class MessageCenterClass {
     this._enterRoomInProgress = true;
 
     LOG.info("MessageCenter: enter room / already in room", data);
-    return this._handleMessageInLocation(data.region, data.location, 'enter')
+    return this._handleMessageInLocation(data.sphereId, data.locationId, 'enter')
       .then(() => { this._enterRoomInProgress = false; })
       .catch(() => {          this._enterRoomInProgress = false; })
   }
@@ -241,7 +241,7 @@ class MessageCenterClass {
     this._exitRoomInProgress = true;
 
     LOG.info("MessageCenter: exit room", data);
-    return this._handleMessageInLocation(data.region, data.location, 'exit')
+    return this._handleMessageInLocation(data.sphereId, data.locationId, 'exit')
       .then(() => { this._exitRoomInProgress = false; })
       .catch(() => {          this._exitRoomInProgress = false; })
   }
@@ -301,7 +301,7 @@ class MessageCenterClass {
     if (presentSphereId) {
       let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
       if (presentLocationId) {
-        return this._enterRoom({region: presentSphereId, location: presentLocationId});
+        return this._enterRoom({sphereId: presentSphereId, locationId: presentLocationId});
       }
       else {
         return this._enterSphere(presentSphereId);

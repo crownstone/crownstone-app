@@ -139,8 +139,7 @@ export class RoomEdit extends LiveComponent<any, any> {
         core.eventBus.emit('hideLoading');
         NavigationUtil.dismissModalAndBack();
 
-        // reload fingerprints.
-        LocationHandler.loadFingerprints();
+        // the removal of the fingerprint from the classifier is automatic due to the database change events.
 
       })
       .catch((err) => {

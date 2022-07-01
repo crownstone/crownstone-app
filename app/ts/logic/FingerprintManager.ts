@@ -1,0 +1,187 @@
+import {core} from "../Core";
+import {FingerprintUtil} from "../util/FingerprintUtil";
+import {Get} from "../util/GetUtil";
+
+
+export class FingerprintManager {
+
+  sphereId    : sphereId;
+  initialized : boolean = false;
+
+  subscriptions : unsubscriber[] = [];
+
+  constructor(sphereId: sphereId) {
+    this.sphereId = sphereId;
+  }
+
+  init() {
+    if (this.initialized === false) {
+      this.initialized = true;
+
+      /**
+       * This should watch for all changes in a sphere that can lead to changes in localization.
+       */
+      this.subscriptions.push(core.eventBus.on("databaseChange", ({change}) => {
+        if (change.removeStone && change.removeStone.sphereIds[this.sphereId]) {
+          // removal of stones will possibly require removal of data from existing fingerprints.
+          this.removeStoneIdsFromFingerprints(Object.keys(change.removeStone.stoneIds));
+        }
+
+        if (change.changeFingerprint && change.changeFingerprint.sphereIds[this.sphereId]) {
+          // changes in fingerprints will lead to reprocessing.
+          this.checkProcessedFingerprints();
+        }
+      }))
+
+      this.checkProcessedFingerprints();
+    }
+  }
+
+  deinit() {
+    this.subscriptions.forEach(unsubscribe => unsubscribe());
+    this.subscriptions = [];
+    this.initialized = false;
+  }
+
+
+  checkForRemovedCrownstonesInFingerprint() {
+    // if the sphere does not exist, clean up and stop.
+    let sphere = Get.sphere(this.sphereId);
+    if (!sphere) { this.deinit(); return; }
+
+    let availableCrownstoneIdentifiers = {};
+    for (let stone of Object.values(sphere.stones)) {
+      availableCrownstoneIdentifiers[FingerprintUtil.getStoneIdentifierFromStone(stone)] = stone.id;
+    }
+
+    let stoneIdentifiersToPurge = {};
+
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprint of Object.values(location.fingerprints.raw)) {
+        // check if there are crownstones in the crownstonesAtCreation array that are not in the availableCrownstoneIdentifiers.
+        for (let crownstoneIdentifier of fingerprint.crownstonesAtCreation) {
+          if (!availableCrownstoneIdentifiers[crownstoneIdentifier]) {
+            stoneIdentifiersToPurge[crownstoneIdentifier] = true;
+          }
+        }
+      }
+    }
+  }
+
+
+  removeStoneIdsFromFingerprints(stoneIds: stoneId[]) {
+    // prepare the identifier maps so we can iterate over the data and use that.
+    let crownstoneIdentifiers = [];
+    for (let stoneId of stoneIds) {
+      let stone = Get.stone(this.sphereId, stoneId);
+      if (stone) {
+        let identifier = FingerprintUtil.getStoneIdentifierFromStone(stone);
+        crownstoneIdentifiers.push(identifier)
+      }
+    }
+
+    this.removeCrownstoneIdentifiersFromFingerprints(crownstoneIdentifiers);
+  }
+
+
+  removeCrownstoneIdentifiersFromFingerprints(crownstoneIdentifiers: CrownstoneIdentifier[]) {
+    let actions = [];
+
+    // if the sphere does not exist, clean up and stop.
+    let sphere = Get.sphere(this.sphereId);
+    if (!sphere) { this.deinit(); return; }
+
+
+    // get a map from the identifier array
+    let crownstoneIdentifierMap = {};
+    for (let identifier of crownstoneIdentifiers) {
+      crownstoneIdentifierMap[identifier] = true;
+    }
+
+    // remove all datapoints belonging to the removed stones from all the raw fingerprints;
+    for (let location of Object.values(sphere.locations)) {
+      for (let fingerprint of Object.values(location.fingerprints.raw)) {
+        // remove the crownstoneIdentifiers from the crownstonesAtCreation array of the fingerprint.
+        let modified = false;
+        let crownstonesAtCreation = fingerprint.crownstonesAtCreation.filter((crownstoneIdentifier) => {
+          let hasIdentifier = crownstoneIdentifierMap[crownstoneIdentifier];
+          if (hasIdentifier) {
+            modified = true;
+            return false
+          }
+          return true;
+        });
+
+        // iterate over all the datapoints and remove the ones that belong to the removed stones.
+        let copiedData = FingerprintUtil.copyData(fingerprint.data);
+        for (let measurement of copiedData) {
+          for (let datapoint of measurement.data) {
+            for (let crownstoneIdentifier of crownstoneIdentifiers) {
+              modified = true;
+              delete datapoint[crownstoneIdentifier];
+            }
+          }
+        }
+
+        if (modified) {
+          actions.push({type:"UPDATE_FINGERPRINT_V2", sphereId: this.sphereId, locationId: location.id, fingerprintId: fingerprint.id, data: {
+            crownstonesAtCreation: crownstonesAtCreation,
+            data: copiedData
+          }});
+        }
+      }
+    }
+
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
+  }
+
+
+  // check all fingerprints in all spheres and all locations and see if they are processed.
+  // if they are not, then we need to process them. If they have been processed before the updated time of the fingerprints,
+  // then we need to reprocess them.
+  checkProcessedFingerprints() {
+    let hasProcessedFingerprints = false;
+
+    // if the sphere does not exist, clean up and stop.
+    let sphere = Get.sphere(this.sphereId);
+    if (!sphere) { this.deinit(); return; }
+
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprint of Object.values(location.fingerprints.raw)) {
+        let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprint.id);
+        if (!processedFingerprint || processedFingerprint.processedAt < fingerprint.updatedAt) {
+          FingerprintUtil.processFingerprint(this.sphereId, locationId, fingerprint.id);
+          hasProcessedFingerprints = true;
+        }
+      }
+    }
+
+    return hasProcessedFingerprints;
+  }
+
+
+  getProcessedFingerprints() : Record<locationId, FingerprintProcessedData[]> {
+    let result = {};
+
+    // if the sphere does not exist, clean up and stop.
+    let sphere = Get.sphere(this.sphereId);
+    if (!sphere) { this.deinit(); return {}; }
+
+    for (let location of Object.values(sphere.locations)) {
+      result[location.id] = [];
+      for (let fingerprint of Object.values(location.fingerprints.processed)) {
+        result[location.id].push(fingerprint);
+      }
+    }
+
+    return result;
+  }
+
+}
+
+
+

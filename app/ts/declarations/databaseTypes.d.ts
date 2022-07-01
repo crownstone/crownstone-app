@@ -1,11 +1,12 @@
-type sphereId     = string;
-type locationId   = string;
-type stoneId      = string;
-type sceneId      = string;
-type hubId        = string;
-type sphereUserId = string;
-type databaseId   = string;
-
+type sphereId               = string;
+type locationId             = string;
+type stoneId                = string;
+type sceneId                = string;
+type hubId                  = string;
+type sphereUserId           = string;
+type databaseId             = string;
+type fingerprintId          = string;
+type processedFingerprintId = string;
 
 interface SyncEvent {
   id: string,
@@ -343,6 +344,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'updateAppState'                  |
   'userPositionUpdate'              |
   'changeUsers'                     |
+  'changeProcessedFingerprint'      |
   'changeFingerprint'               |
   'addLocation'                     |
   'changeLocations'                 |

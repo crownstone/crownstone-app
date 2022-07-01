@@ -77,6 +77,26 @@ export const Get = {
     return location.fingerprints?.raw[fingerprintId] || null;
   },
 
+  processedFingerprint(sphereId: string, locationId: string, fingerprintId) : FingerprintProcessedData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    return location.fingerprints?.processed[fingerprintId] || null;
+  },
+
+  processedFingerprintFromRawId(sphereId: string, locationId: string, fingerprintId) : FingerprintProcessedData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    for (let processedFingerprint of Object.values(location.fingerprints.processed)) {
+      if (processedFingerprint.fingerprintId === fingerprintId) {
+        return processedFingerprint;
+      }
+    }
+
+    return null;
+  },
+
   user() : UserData | null {
     return core.store.getState().user;
   }
