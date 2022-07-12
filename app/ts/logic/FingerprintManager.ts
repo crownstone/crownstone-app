@@ -16,6 +16,7 @@ export class FingerprintManager {
     let sphere = Get.sphere(this.sphereId);
     for (let locationId in sphere.locations) {
       core.store.dispatch({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+      // core.store.dispatch({type:"REMOVE_ALL_FINGERPRINTS_V2",        sphereId: this.sphereId, locationId});
     }
 
     this.init();
@@ -123,11 +124,9 @@ export class FingerprintManager {
         // iterate over all the datapoints and remove the ones that belong to the removed stones.
         let copiedData = FingerprintUtil.copyData(fingerprint.data);
         for (let measurement of copiedData) {
-          for (let datapoint of measurement.data) {
-            for (let crownstoneIdentifier of crownstoneIdentifiers) {
-              modified = true;
-              delete datapoint[crownstoneIdentifier];
-            }
+          for (let crownstoneIdentifier of crownstoneIdentifiers) {
+            modified = true;
+            delete measurement.data[crownstoneIdentifier];
           }
         }
 

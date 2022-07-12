@@ -257,7 +257,6 @@ export const FingerprintUtil = {
       processedAt: Date.now(),
     }
 
-
     // copy all the data before modifying it.
     processedFingerprint.data = FingerprintUtil.copyData(fingerprint.data);
 
@@ -276,10 +275,8 @@ export const FingerprintUtil = {
 
     // apply sigmoid function.
     for (let measurement of processedFingerprint.data) {
-      for (let datapoint of measurement.data) {
-        for (let identifier in datapoint) {
-          datapoint[identifier] = KNNsigmoid(datapoint[identifier]);
-        }
+      for (let identifier in measurement.data) {
+        measurement.data[identifier] = KNNsigmoid(measurement.data[identifier]);
       }
     }
 
@@ -287,18 +284,12 @@ export const FingerprintUtil = {
   },
 
 
-  copyData(fingeprintData: FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[]) : FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[] {
+  copyData(fingerprintData: FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[]) : FingerprintMeasurementData[] | FingerprintProcessedMeasurementData[] {
     let copy = []
-
-    for (let measurement of fingeprintData) {
-      let datapoints = [];
-      for (let datapoint of measurement.data) [
-        datapoints.push({...datapoint})
-      ]
-
+    for (let measurement of fingerprintData) {
       copy.push({
         dt: measurement.dt,
-        data: datapoints
+        data: xUtil.deepCopy(measurement.data)
       })
     }
 

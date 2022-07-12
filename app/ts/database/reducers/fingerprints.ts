@@ -52,6 +52,8 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
 
 let fingerprintReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_FINGERPRINTS_V2':
+      return {};
     case 'REMOVE_FINGERPRINT_V2':
       if (action.fingerprintId) {
         let newState = {...state};

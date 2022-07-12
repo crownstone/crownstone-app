@@ -54,6 +54,7 @@ export class TrainingData {
   }
 
   _collect(data: ibeaconPackage[]) {
+    console.log("data",data)
     let datapoint = {dt: Date.now() - this.startTime, data: {}};
     for (let point of data) {
       let id = `${point.major}_${point.minor}`;

@@ -121,17 +121,19 @@ function getFingerprintData(fingerprint, updatedAt) {
   let time = 0;
   for (let measurement of fingerprint) {
     let dt = 1000*time++;
-    let data = []
+    let data = { };
     if (!measurement.devices) { continue; }
 
+    let hasData = false;
     for (let deviceId in measurement.devices) {
       let identifier = FingerprintUtil.getStoneIdentifierFromIBeaconString(deviceId);
       if (!identifier) { continue; }
 
-      data.push({[identifier] : measurement.devices[deviceId]});
+      data[identifier] = measurement.devices[deviceId];
+      hasData = true;
     }
 
-    if (data.length > 0) {
+    if (hasData) {
       set.push({dt,data});
     }
   }

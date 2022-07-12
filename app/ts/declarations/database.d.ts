@@ -187,12 +187,12 @@ interface FingerprintProcessedData {
 
 interface FingerprintMeasurementData {
   dt: number, // ms diff from createdAt
-  data: Record<CrownstoneIdentifier, rssi>[]
+  data: Record<CrownstoneIdentifier, rssi>
 }
 
 interface FingerprintProcessedMeasurementData {
   dt: number, // ms diff from createdAt
-  data: Record<CrownstoneIdentifier, sigmoid>[]
+  data: Record<CrownstoneIdentifier, sigmoid>
 }
 
 interface LocationDataConfig {
