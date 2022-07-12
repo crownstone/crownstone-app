@@ -336,52 +336,76 @@ export const StoneUtil = {
 
   remove: {
     crownstone: {
-      now: async function(sphereId: sphereId, stoneId: stoneId) {
+      now: async function(sphereId: sphereId, stoneId: stoneId) : Promise<void> {
         let stone = Get.stone(sphereId, stoneId);
         if (!stone) { return; }
 
         core.eventBus.emit('showLoading', lang("Looking_for_the_Crownston"));
         let {found, mode} = await StoneUtil.lookForCrownstone(stone);
         if (!found) {
-          core.eventBus.emit('hideLoading');
           Alert.alert(
             lang("_Cant_see_this_one___We_c_header"),
             lang("_Cant_see_this_one___We_c_body"),
             [
               {
                 text:lang("_Cant_see_this_one___We_c_left"),
+                style: 'destructive',
                 onPress: async () => {
                   await StoneUtil.remove.crownstone.withoutReset(sphereId, stoneId);
+
+                  core.eventBus.emit('hideLoading');
                   NavigationUtil.dismissModal();
-                }, style: 'destructive'
+                },
               },
-              {text:lang("_Cant_see_this_one___We_c_right"), style: "cancel"}
-            ]);
+              { text:lang("_Cant_see_this_one___We_c_right"),
+                style: "cancel",
+                onPress: () => {
+                  core.eventBus.emit('hideLoading');
+                }
+              },
+            ], {cancelable:false}
+          );
           return;
         }
 
         if (mode === 'setup') {
           await StoneUtil.remove.crownstone.withoutReset(sphereId, stoneId);
+
+          core.eventBus.emit('hideLoading');
           NavigationUtil.dismissModal();
           return;
         }
 
-        try { await StoneUtil.remove.crownstone.factoryReset(stone); } catch (err) {
+        try {
+          await StoneUtil.remove.crownstone.factoryReset(stone);
+        }
+        catch (err) {
           Alert.alert(
             lang("_Encountered_a_problem____header"),
             lang("_Encountered_a_problem____body"),
-            [
-              {text:lang("_Encountered_a_problem____left"), style:'destructive', onPress: async () => {
-                  await StoneUtil.remove.crownstone.withoutReset(sphereId, stoneId);
-                  NavigationUtil.dismissModal();
-                }},
-              {text:lang("_Encountered_a_problem____right")}
-            ]);
+            [{
+              text:lang("_Encountered_a_problem____left"),
+              style:'destructive',
+              onPress: async () => {
+                await StoneUtil.remove.crownstone.withoutReset(sphereId, stoneId);
+
+                core.eventBus.emit('hideLoading');
+                NavigationUtil.dismissModal();
+              }},
+              {
+                text:lang("_Encountered_a_problem____right")
+              }
+            ], {cancelable:false});
           return;
         }
 
         // discovered Crownstone in operation mode
-        try { await StoneUtil.remove.crownstone.fromCloud(sphereId, stoneId); } catch (err) { return; }
+        try {
+          await StoneUtil.remove.crownstone.fromCloud(sphereId, stoneId);
+        }
+        catch (err) {}
+
+        core.eventBus.emit('hideLoading');
         StoneUtil.remove.shared.fromRedux(sphereId, stoneId,true);
       },
 

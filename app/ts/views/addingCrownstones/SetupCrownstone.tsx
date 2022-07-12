@@ -561,16 +561,14 @@ export class SetupCrownstone extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground hasNavBar={false} image={backgroundImage} testID={'SetupCrownstone'}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} testID={'SetupCrownstone'}>
         <KeepAwake />
-        <SafeAreaView>
-          <Interview
-            backButtonOverrideViewNameOrId={this.props.componentId}
-            ref={     (i) => { this._interview = i; }}
-            getCards={ () => { return this.getCards();}}
-            update={   () => { this.forceUpdate() }}
-          />
-        </SafeAreaView>
+        <Interview
+          backButtonOverrideViewNameOrId={this.props.componentId}
+          ref={     (i) => { this._interview = i; }}
+          getCards={ () => { return this.getCards();}}
+          update={   () => { this.forceUpdate() }}
+        />
       </AnimatedBackground>
     );
   }

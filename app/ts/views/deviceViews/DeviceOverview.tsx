@@ -227,8 +227,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
           lang("_Are_you_sure___Removing__header"),
           lang("_Are_you_sure___Removing__body"),
           [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-            text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-              StoneUtil.remove.crownstone.now(this.props.sphereId, this.props.stoneId).catch((err) => {});
+            text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: async () => {
+              await StoneUtil.remove.crownstone.now(this.props.sphereId, this.props.stoneId).catch((err) => {});
             }}]
         )
       }

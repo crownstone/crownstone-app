@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   ScrollView, Text, TouchableOpacity,
   View} from "react-native";
-import { background, colors, screenWidth, styles } from "../styles";
+import { background, colors, screenWidth, styles, topBarHeight } from "../styles";
 import { core } from "../../Core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
@@ -224,7 +224,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
           onFocus={() => { this._startActiveScanning(); }}
           onBlur={ () => { this._stopActiveScanning();  }}
         />
-        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
+        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden', marginTop: topBarHeight}}>
           <ScanningForSetupCrownstonesBanner componentId={this.props.componentId} height={100}/>
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
