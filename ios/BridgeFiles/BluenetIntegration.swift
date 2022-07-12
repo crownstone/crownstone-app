@@ -12,7 +12,6 @@ import SwiftyJSON
 
 import BluenetLib
 import BluenetShared
-import BluenetLocalization
 
 import WatchConnectivity
 
@@ -142,25 +141,6 @@ open class BluenetJS: RCTEventEmitter {
             print("BluenetBridge: exitRegion")
             if let castData = data as? String {
                 self.sendEvent(withName: "exitSphere", body: castData)
-            }
-        })
-        GLOBAL_BLUENET.localizationOn("enterLocation", {data -> Void in
-            print("BluenetBridge: enterLocation")
-            if let castData = data as? NSDictionary {
-                self.sendEvent(withName: "enterLocation", body: castData)
-            }
-        })
-        GLOBAL_BLUENET.localizationOn("exitLocation", {data -> Void in
-            print("BluenetBridge: exitLocation")
-            if let castData = data as? NSDictionary {
-                self.sendEvent(withName: "exitLocation", body: castData)
-            }
-        })
-        GLOBAL_BLUENET.localizationOn("currentLocation", {data -> Void in
-            //print("BluenetBridge: currentLocation")
-            if let castData = data as? NSDictionary {
-                //print("BluenetBridge: currentLocation \(castData)")
-                self.sendEvent(withName: "currentLocation", body: castData)
             }
         })
     }

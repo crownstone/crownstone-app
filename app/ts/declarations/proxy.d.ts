@@ -595,3 +595,11 @@ interface setupData {
   ibeaconMinor:       number,
 }
 
+
+interface SetupStoneSummary {
+  name: string,
+  icon: string,
+  type: StoneType,
+  rawType: DeviceType,
+  handle: string
+}

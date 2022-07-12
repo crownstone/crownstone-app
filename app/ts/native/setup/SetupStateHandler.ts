@@ -12,14 +12,6 @@ import {CommandAPI} from "../../logic/constellation/Commander";
 import {DataUtil} from "../../util/DataUtil";
 
 
-interface SetupStoneSummary {
-  name: string,
-  icon: string,
-  type: StoneType,
-  rawType: DeviceType,
-  handle: string
-}
-
 /**
  * This class keeps track of the Crownstones in setup state.
  */

@@ -612,8 +612,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <ListEditableItems items={items} separatorIndent={true} />
         </ScrollView>
-        <TopBarBlur />
-        <NavBarBlur />
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

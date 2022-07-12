@@ -296,15 +296,14 @@ function InterviewCard(props : {
   nextCard: (nextCard:string, value: interviewReturnData, index:number, option: interviewOption) => void
 }) {
   let [ editableInputState, setEditableInputState ] = useState("");
-  let [ textInput, setTextInput ] = useState("");
+  let [ textInput, setTextInput ]                   = useState("");
 
-  let insets = useSafeAreaInsets();
+  let insets        = useSafeAreaInsets();
   let topBarOffsets = useTopBarOffset();
-  console.log('topBarOffsets',topBarOffsets)
-  let header = props.headerOverride || props.card.header;
-  let subHeader = props.card.subHeader;
-  let explanation = props.card.explanation;
-  let options = props.card.options;
+  let header        = props.headerOverride || props.card.header;
+  let subHeader     = props.card.subHeader;
+  let explanation   = props.card.explanation;
+  let options       = props.card.options;
 
   let flexBeforeOptions = false;
   if (props.card.backgroundImage !== undefined || props.card.optionsBottom || props.card.optionsCenter || props.card.hasTextInputField || props.card.editableItem) {

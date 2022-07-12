@@ -10,6 +10,8 @@ export class KNN {
 
 
   initialize() {
+    console.time("Classifier initialization");
+
     // this will generate sortedSphereKeys for each sphere. This will also clear any initialized state on the start of the call.
     // any change in stones, this has to be reinitialized.
     let sphereDeviceMap = {};
@@ -23,10 +25,13 @@ export class KNN {
       }
       this.sortedSphereKeys[sphereId] = Object.keys(sphereDeviceMap[sphereId]).sort();
     }
+
+    console.timeEnd("Classifier initialization");
   }
 
 
   addFingerprint(sphereId: sphereId, locationId: locationId, fingerprint: FingerprintProcessedData) {
+    console.time(`Classifier add fingerprint ${sphereId} ${locationId}`);
     // store the fingerprint for classification
     if (!this.fingerprints[sphereId]) {
       this.fingerprints[sphereId] = {};
@@ -76,6 +81,8 @@ export class KNN {
     }
 
     this.fingerprints[sphereId][locationId].push({id: fingerprint.id, dataset: vectorSet, mask: mask});
+
+    console.timeEnd(`Classifier add fingerprint ${sphereId} ${locationId}`);
   }
 
   /**

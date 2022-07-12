@@ -4,7 +4,7 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupDeviceEntry", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react'; import { Component, useState } from "react";
 import {
   Alert,
   TouchableOpacity,
@@ -21,9 +21,20 @@ import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 import { STONE_TYPES } from "../../../Enums";
 import { tell } from "../../../logic/constellation/Tellers";
+import { DraggableProps } from "../hooks/draggableHooks";
+import { useTimeout } from "../hooks/timerHooks";
+import { Get } from "../../../util/GetUtil";
+import { DataUtil } from "../../../util/DataUtil";
+import { HubUtil } from "../../../util/HubUtil";
+import { useDatabaseChange } from "../hooks/databaseHooks";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
+import { BlurEntry, BlurEntryProps, DraggableBlurEntry } from "../BlurEntries";
+import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
+import { HubEntryLabel, SetupDeviceEntryLabel } from "./submodules/DeviceLabels";
+import { SetupDeviceEntryIcon } from "./submodules/SetupDeviceEntryIcon";
 
 
-export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?, testID?: string}, any> {
+export class SetupDeviceEntry_addMenu extends Component<{handle, sphereId, callback: any, item?, restore?, testID?: string}, any> {
   baseHeight : any;
   setupEvents : any;
   rssiTimeout : any = null;
@@ -195,4 +206,28 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any
       </View>;
     }
   }
+}
+
+
+
+interface SetupDeviceEntryProps {
+  item: { name: string, icon: string },
+  testID?: string,
+  sphereId?: string,
+  handle?: string,
+  callback?: () => void,
+}
+
+export function SetupDeviceEntry_RoomOverview(props: SetupDeviceEntryProps) {
+  return (
+    <BlurEntry
+      {...props}
+      title={props.item.name}
+      heightOffset={10}
+      backgroundColor={colors.blue.rgba(0.7)}
+      labelItem={<SetupDeviceEntryLabel />}
+      iconItem={<SetupDeviceEntryIcon icon={props.item.icon} />}
+      tapCallback={props.callback}
+    />
+  );
 }

@@ -23,6 +23,7 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
         return newState;
       }
+      return state;
     case 'ADD_FINGERPRINT_V2':
     case 'UPDATE_FINGERPRINT_V2':
       if (action.data) {
@@ -39,6 +40,7 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
         newState.createdAt             = getTime(action.data.createdAt);
         return newState;
       }
+      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultFingerprintData);
     default:
@@ -56,6 +58,7 @@ let fingerprintReducer = (state = {}, action : any = {}) => {
         delete newState[action.fingerprintId];
         return newState;
       }
+      return state;
     default:
       // create a new fingerprint if it doesn't exist
       if (action.fingerprintId !== undefined && action.fingerprintId !== null) {
@@ -91,18 +94,20 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
     case 'UPDATE_PROCESSED_FINGERPRINT':
       if (action.data) {
         let newState = {...state};
-        if (newState.id === null) { newState.id = action.fingerprintId; }
-        newState.fingerprintId           = update(action.data.fingerprintId, newState.fingerprintId);
-        newState.type                    = update(action.data.type, newState.type);
-        newState.transformState          = update(action.data.transformState, newState.transformState);
-        newState.crownstonesAtCreation   = update(action.data.crownstonesAtCreation, newState.crownstonesAtCreation);
-        newState.data                    = update(action.data.data, newState.data);
+        if (newState.id === null) { newState.id = action.fingerprintProcessedId; }
+        newState.fingerprintId           = update(action.data.fingerprintId,           newState.fingerprintId);
+        newState.type                    = update(action.data.type,                    newState.type);
+        newState.transformState          = update(action.data.transformState,          newState.transformState);
+        newState.crownstonesAtCreation   = update(action.data.crownstonesAtCreation,   newState.crownstonesAtCreation);
+        newState.data                    = update(action.data.data,                    newState.data);
         newState.processingParameterHash = update(action.data.processingParameterHash, newState.processingParameterHash);
 
         newState.transformedAt           = getTime(action.data.transformedAt);
         newState.processedAt             = getTime(action.data.processedAt);
         newState.createdAt               = getTime(action.data.createdAt);
+        return newState;
       }
+      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultFingerprintData);
     default:
@@ -114,6 +119,8 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
 
 const fingerprintProcessedReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_PROCESSED_FINGERPRINTS':
+      return {};
     case 'REMOVE_PROCESSED_FINGERPRINT':
       if (action.fingerprintProcessedId) {
         let newState = {...state};

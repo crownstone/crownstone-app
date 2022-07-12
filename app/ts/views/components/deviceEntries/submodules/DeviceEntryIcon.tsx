@@ -9,7 +9,6 @@ import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../../ExternalConfig";
 
 
 export function DeviceEntryIcon({stone, stoneId}) {
-
   let color = colors.black.hex;
 
   if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {

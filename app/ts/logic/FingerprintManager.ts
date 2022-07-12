@@ -12,6 +12,13 @@ export class FingerprintManager {
 
   constructor(sphereId: sphereId) {
     this.sphereId = sphereId;
+
+    let sphere = Get.sphere(this.sphereId);
+    for (let locationId in sphere.locations) {
+      core.store.dispatch({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+    }
+
+    this.init();
   }
 
   init() {
@@ -125,10 +132,15 @@ export class FingerprintManager {
         }
 
         if (modified) {
-          actions.push({type:"UPDATE_FINGERPRINT_V2", sphereId: this.sphereId, locationId: location.id, fingerprintId: fingerprint.id, data: {
-            crownstonesAtCreation: crownstonesAtCreation,
-            data: copiedData
-          }});
+          actions.push({
+            type:"UPDATE_FINGERPRINT_V2",
+            sphereId: this.sphereId,
+            locationId: location.id,
+            fingerprintId: fingerprint.id, data: {
+              crownstonesAtCreation: crownstonesAtCreation,
+              data: copiedData
+            }
+          });
         }
       }
     }
@@ -138,29 +150,29 @@ export class FingerprintManager {
     }
   }
 
-
-  // check all fingerprints in all spheres and all locations and see if they are processed.
-  // if they are not, then we need to process them. If they have been processed before the updated time of the fingerprints,
-  // then we need to reprocess them.
+  /**
+   * check all fingerprints in all spheres and all locations and see if they are processed.
+   * if they are not, then we need to process them. If they have been processed before the updated time of the fingerprints,
+   * then we need to reprocess them.
+   */
   checkProcessedFingerprints() {
-    let hasProcessedFingerprints = false;
-
+    console.time("checkProcessedFingerprints");
     // if the sphere does not exist, clean up and stop.
     let sphere = Get.sphere(this.sphereId);
     if (!sphere) { this.deinit(); return; }
 
     for (let locationId in sphere.locations) {
       let location = sphere.locations[locationId];
+
       for (let fingerprint of Object.values(location.fingerprints.raw)) {
         let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprint.id);
         if (!processedFingerprint || processedFingerprint.processedAt < fingerprint.updatedAt) {
           FingerprintUtil.processFingerprint(this.sphereId, locationId, fingerprint.id);
-          hasProcessedFingerprints = true;
         }
       }
     }
 
-    return hasProcessedFingerprints;
+    console.timeEnd("checkProcessedFingerprints");
   }
 
 

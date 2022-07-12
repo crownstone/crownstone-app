@@ -17,7 +17,7 @@ import {
   topBarHeight
 } from "../styles";
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
-import {DfuDeviceEntry} from '../components/deviceEntries/DfuDeviceEntry';
+import { DfuDeviceEntry, DfuDeviceEntry_RoomOverview } from "../components/deviceEntries/DfuDeviceEntry";
 import {RoomExplanation} from '../components/RoomExplanation';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {SphereDeleted} from "../static/SphereDeleted";
@@ -29,7 +29,7 @@ import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailab
 import {xUtil} from "../../util/StandAloneUtil";
 import {Background, BackgroundCustomTopBar} from "../components/Background";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
-import {SetupDeviceEntry} from "../components/deviceEntries/SetupDeviceEntry";
+import { SetupDeviceEntry_RoomOverview } from "../components/deviceEntries/SetupDeviceEntry";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import {STONE_TYPES} from "../../Enums";
 import {HubEntry} from "../components/deviceEntries/HubEntry";
@@ -171,46 +171,42 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
     let id = item.id;
     if (item.type === 'dfuStone') {
       return (
-        <View key={id + '_item'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-          <DfuDeviceEntry
-            sphereId={this.props.sphereId}
-            handle={item.advertisement && item.advertisement.handle}
-            name={item.data && item.data.name}
-            stoneId={item.data && item.data.id}
-          />
-        </View>
+        <DfuDeviceEntry_RoomOverview
+          sphereId={this.props.sphereId}
+          handle={item.advertisement && item.advertisement.handle}
+          name={item.data && item.data.name}
+          stoneId={item.data && item.data.id}
+        />
       );
     }
     else if (item.type === 'setupStone') {
       return (
-        <View key={id + '_item'} style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-          <SetupDeviceEntry
-            sphereId={this.props.sphereId}
-            handle={item.handle}
-            item={item}
-            restore={true}
-            callback={() => {
-              if (item.deviceType === STONE_TYPES.hub) {
-                NavigationUtil.launchModal(
-                  "SetupHub",
-                  {
-                    sphereId: this.props.sphereId,
-                    setupItem: item,
-                    restoration: true
-                  });
-              }
-              else {
-                NavigationUtil.launchModal(
-                  "SetupCrownstone",
-                  {
-                    sphereId: this.props.sphereId,
-                    setupItem: item,
-                    restoration: true
+        <SetupDeviceEntry_RoomOverview
+          key={id + '_item'}
+          sphereId={this.props.sphereId}
+          handle={item.handle}
+          item={item as {name: string, icon: string}}
+          callback={() => {
+            if (item.deviceType === STONE_TYPES.hub) {
+              NavigationUtil.launchModal(
+                "SetupHub",
+                {
+                  sphereId: this.props.sphereId,
+                  setupItem: item,
+                  restoration: true
                 });
-              }
-            }}
-          />
-        </View>
+            }
+            else {
+              NavigationUtil.launchModal(
+                "SetupCrownstone",
+                {
+                  sphereId: this.props.sphereId,
+                  setupItem: item,
+                  restoration: true
+              });
+            }
+          }}
+        />
       );
     }
     else if (item.type === 'stone' && item.data.config.type === STONE_TYPES.hub) {

@@ -7,6 +7,7 @@ import { background, colors, topBarHeight } from "../../styles";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import { ScrollView, Text, View } from "react-native";
 import React from "react";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 export class DEV_RawAdvertisements extends LiveComponent<{
   item: crownstoneAdvertisement,
@@ -128,6 +129,8 @@ export class DEV_RawAdvertisements extends LiveComponent<{
         <ScrollView>
           <Text style={{fontSize: 13, backgroundColor: this.state.stateOfExternalCrownstone ? colors.green.rgba(0.6) : colors.white.rgba(0.6)}}>{this.state.advertisement}</Text>
         </ScrollView>
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

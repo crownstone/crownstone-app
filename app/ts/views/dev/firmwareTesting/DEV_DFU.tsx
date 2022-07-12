@@ -9,6 +9,7 @@ import {background, colors, screenWidth} from "../../styles";
 import React from "react";
 import {AnimatedBackground} from "../../components/animated/AnimatedBackground";
 import {ListEditableItems} from "../../components/ListEditableItems";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 const RNFS = require('react-native-fs');
 
@@ -188,6 +189,8 @@ export class DEV_DFU extends LiveComponent<{
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
         </ScrollView>
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

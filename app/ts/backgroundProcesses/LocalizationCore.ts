@@ -26,8 +26,6 @@ class LocalizationCoreClass {
 
   constructor() {
     this.classifier = new KNN();
-
-    this.init();
   }
 
   init() {
@@ -73,6 +71,7 @@ class LocalizationCoreClass {
         }
       }));
 
+      this.evaluateFingerprintManagers();
       this.initClassifier();
     }
   }
@@ -123,7 +122,9 @@ class LocalizationCoreClass {
       this.classifier.reset()
       this.classifier.initialize();
 
+      console.time("Load all fingerprints");
       for (let sphereId in this.fingerprintManagers) {
+        console.log("Loading fingerprints for sphere " + sphereId);
         let fingerprints = this.fingerprintManagers[sphereId].getProcessedFingerprints();
         for (let locationId in fingerprints) {
           for (let fingerprint of fingerprints[locationId]) {
@@ -132,6 +133,7 @@ class LocalizationCoreClass {
         }
       }
 
+      console.timeEnd("Load all fingerprints");
       this.classifierInitialized = true;
     }, 10);
   }

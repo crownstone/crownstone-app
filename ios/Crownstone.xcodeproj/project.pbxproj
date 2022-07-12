@@ -48,7 +48,6 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
-		FAB44C9D276A279200E36078 /* BluenetLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44C9C276A279200E36078 /* BluenetLocalization */; };
 		FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA0276A28B300E36078 /* BluenetLib */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
@@ -70,7 +69,6 @@
 		FADC2B3925F7B519000AE5A7 /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */; };
 		FADC2B3A25F7B519000AE5A7 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */; };
 		FADC2B3B25F7B519000AE5A7 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */; };
-		FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */; };
 		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
 /* End PBXBuildFile section */
 
@@ -411,6 +409,13 @@
 			remoteGlobalIDString = 3EEAA606F6866DA20E6601B9655B1027;
 			remoteInfo = BugsnagReactNative;
 		};
+		FACBF71D287D68A0000CC582 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8F65F9361F2069CF9E9D751272968DE4;
+			remoteInfo = RNGestureHandler;
+		};
 		FACF166926160CB500A9163F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -612,7 +617,6 @@
 		FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../app/assets/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../app/assets/fonts/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Black.ttf"; path = "../app/assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
-		FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHandler.swift; sourceTree = "<group>"; };
 		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -633,7 +637,6 @@
 				FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */,
 				FA58A22E2822627300553B1D /* BluenetLib in Frameworks */,
 				F565541EA0E74560636016AB /* libPods-Crownstone.a in Frameworks */,
-				FAB44C9D276A279200E36078 /* BluenetLocalization in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -805,7 +808,6 @@
 				FA0177D31FC46359001C8FD6 /* Portal.swift */,
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
 				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
-				FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */,
 				FA4ADDE027F450D4005FB0CA /* Haptics.swift */,
 			);
 			path = BridgeFiles;
@@ -868,6 +870,7 @@
 				FA58A2702822627400553B1D /* RNDateTimePicker */,
 				FA274EBC2410144F00D7C858 /* RNDeviceInfo */,
 				FA274EBE2410144F00D7C858 /* RNFS */,
+				FACBF71E287D68A0000CC582 /* RNGestureHandler */,
 				FA345D9424111FEA00C288D3 /* RNLocalize */,
 				FA2FB1152821190B005A3F11 /* RNReanimated */,
 				FAEEF10A281BDBF400868171 /* RNScreens */,
@@ -1050,7 +1053,6 @@
 			name = Crownstone;
 			packageProductDependencies = (
 				FA39A49C2743DAF100A63C79 /* BluenetShared */,
-				FAB44C9C276A279200E36078 /* BluenetLocalization */,
 				FAB44CA0276A28B300E36078 /* BluenetLib */,
 				FA58A22D2822627300553B1D /* BluenetLib */,
 			);
@@ -1149,7 +1151,6 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
 				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
-				FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */,
 				FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -1531,6 +1532,14 @@
 			remoteRef = FAC9792226B2B31A008BB51D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FACBF71E287D68A0000CC582 /* RNGestureHandler */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNGestureHandler;
+			path = libRNGestureHandler.a;
+			remoteRef = FACBF71D287D68A0000CC582 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FACF166A26160CB500A9163F /* RCT-Folly */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1850,7 +1859,6 @@
 				FA59A6A5224CE5D300D58C9F /* AppDelegate_old.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,
 				FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */,
-				FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */,
 				FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */,
 				FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */,
 				FA39A5502744037700A63C79 /* main.m in Sources */,
@@ -2139,6 +2147,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2218,7 +2227,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2273,7 +2282,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2591,14 +2600,6 @@
 				minimumVersion = 2.2.1;
 			};
 		};
-		FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "file:///Users/alex/Dropbox/Crownstone/Projects/XCode/bluenet-localization";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2616,11 +2617,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
 			productName = BluenetLib;
-		};
-		FAB44C9C276A279200E36078 /* BluenetLocalization */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */;
-			productName = BluenetLocalization;
 		};
 		FAB44CA0276A28B300E36078 /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;

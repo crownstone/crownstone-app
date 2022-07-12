@@ -234,15 +234,12 @@ export const FingerprintUtil = {
       }
     }
 
-
     let processedFingerprint = FingerprintUtil._processFingerprint(sphereId, locationId, fingerprintRawId);
-    if (alreadyHasProcessed) {
-      core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: processedId, data: processedFingerprint});
+    if (!alreadyHasProcessed) {
+      processedId = xUtil.getUUID();
     }
-    else {
-      let newId = xUtil.getUUID();
-      core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: newId, data: processedFingerprint});
-    }
+
+    core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: processedId, data: processedFingerprint});
   },
 
 
@@ -258,7 +255,7 @@ export const FingerprintUtil = {
       data: [],
       processingParameterHash: sha1(JSON.stringify(processingParameters)),
       transformedAt: 0,
-      processedAt:   Date.now(),
+      processedAt: Date.now(),
     }
 
 

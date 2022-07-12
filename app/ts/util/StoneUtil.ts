@@ -531,14 +531,6 @@ export const StoneUtil = {
       }
     }
   }
-
-
-
-
-
-
-
-
 };
 
 async function setLockCrownstoneState(sphereId: string, stoneId: string, label: string, lockState: boolean) {

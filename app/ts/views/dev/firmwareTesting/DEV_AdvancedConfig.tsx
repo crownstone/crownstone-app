@@ -17,6 +17,7 @@ import { CommandAPI } from "../../../logic/constellation/Commander";
 import {TESTING_SPHERE_ID} from "../../../backgroundProcesses/dev/DevAppState";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {from, tell} from "../../../logic/constellation/Tellers";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 
 const BLE_STATE_READY = "ready";
@@ -468,6 +469,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
         </ScrollView>
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

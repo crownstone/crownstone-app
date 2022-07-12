@@ -12,19 +12,22 @@ import { DataUtil } from "../../util/DataUtil";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
-interface BlurEntryProps {
+export interface BlurEntryProps {
   dimMode?:  boolean,
   editMode?: boolean,
 
   settings?: boolean,
   settingsItem?:  ReactHOC | React.ComponentElement<any, any>,
 
-  title:        ReactHOC | React.ComponentElement<any, any> | string,
-  iconItem?:    ReactHOC | React.ComponentElement<any, any>,
-  paddingItem?: ReactHOC | React.ComponentElement<any, any>,
-  control?:     ReactHOC | React.ComponentElement<any, any>,
-  labelItem?:   ReactHOC | React.ComponentElement<any, any>,
+  title:          ReactHOC | React.ComponentElement<any, any> | string,
+  iconItem?:      ReactHOC | React.ComponentElement<any, any>,
+  paddingItem?:   ReactHOC | React.ComponentElement<any, any>,
+  control?:       ReactHOC | React.ComponentElement<any, any>,
+  labelItem?:     ReactHOC | React.ComponentElement<any, any>,
 
+  heightOffset?:  number,
+
+  titleColor?:      string,
   backgroundColor?: string,
   opacity?:         number,
 
@@ -58,7 +61,7 @@ export function BlurEntry(props: BlurEntryProps) {
       blurAmount={5}
       style={{
         flexDirection:'row',
-        height: 70,
+        height: 70 + (props.heightOffset ?? 0),
         flex:1,
         backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
         marginHorizontal: 12,
@@ -73,7 +76,7 @@ export function BlurEntry(props: BlurEntryProps) {
         { renderPropItem(props.paddingItem, props) }
         {
           typeof props.title === 'string' ?
-            <Text style={{...rowstyles.title, paddingLeft:15}}>{props.title}</Text> :
+            <Text style={{...rowstyles.title, color: props.titleColor ?? rowstyles.title.color, paddingLeft:15}}>{props.title}</Text> :
             renderPropItem(props.title, props)
         }
         { renderPropItem(props.labelItem, props) }

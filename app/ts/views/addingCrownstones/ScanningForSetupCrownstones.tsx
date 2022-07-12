@@ -12,7 +12,6 @@ import {
 import { background, colors, screenWidth, styles } from "../styles";
 import { core } from "../../Core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
-import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
@@ -28,6 +27,7 @@ import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
 import { STONE_TYPES } from "../../Enums";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
+import { SetupDeviceEntry_addMenu } from "../components/deviceEntries/SetupDeviceEntry";
 
 export class ScanningForSetupCrownstones extends LiveComponent<{
   sphereId: string,
@@ -160,7 +160,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     return (
       <View key={stoneId + '_setup_entry'}>
         <FadeIn style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-          <SetupDeviceEntry
+          <SetupDeviceEntry_addMenu
             testID={`SetupDeviceEntry${item.handle}`}
             key={stoneId + '_setup_element'}
             sphereId={this.props.sphereId}
