@@ -191,7 +191,7 @@ export const FingerprintUtil = {
       score -= 20;
     }
 
-    let amountOfCrownstonesAtCreation    = fingerprint.crownstonesAtCreation.length;
+    let amountOfCrownstonesAtCreation    = Object.keys(fingerprint.crownstonesAtCreation).length;
     let amountOfCrownstonesInFingerprint = FingerprintUtil.getAmountOfCrownstonesInFingerprint(fingerprint);
     let amountOfCrownstones              = Object.keys(sphere.stones).length;
 
@@ -250,7 +250,7 @@ export const FingerprintUtil = {
       fingerprintId: fingerprintRawId,
       type: fingerprint.type,
       transformState: "NOT_TRANSFORMED_YET",
-      crownstonesAtCreation: [...fingerprint.crownstonesAtCreation],
+      crownstonesAtCreation: {...fingerprint.crownstonesAtCreation},
       data: [],
       processingParameterHash: sha1(JSON.stringify(processingParameters)),
       transformedAt: 0,
@@ -289,7 +289,7 @@ export const FingerprintUtil = {
     for (let measurement of fingerprintData) {
       copy.push({
         dt: measurement.dt,
-        data: xUtil.deepCopy(measurement.data)
+        data: { ...measurement.data }
       })
     }
 

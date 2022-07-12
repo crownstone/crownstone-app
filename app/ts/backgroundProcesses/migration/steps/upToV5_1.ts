@@ -103,7 +103,7 @@ function getCrownstonesAtCreation(fingerprint) {
     }
   }
 
-  return Object.keys(set);
+  return set;
 }
 
 

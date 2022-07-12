@@ -166,7 +166,7 @@ interface FingerprintData {
   cloudId: string | null,
   type: FingerprintType,
   createdOnDeviceType: string, // ${device type string}_${userId who collected it}
-  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
+  crownstonesAtCreation: Record<CrownstoneIdentifier, true>, // maj_min as id representing the Crownstone.
   data: FingerprintMeasurementData[],
   updatedAt: timestamp,
   createdAt: timestamp,
@@ -177,7 +177,7 @@ interface FingerprintProcessedData {
   fingerprintId: string, // processed based on parent id
   type: FingerprintType,
   transformState: TransformState,
-  crownstonesAtCreation: CrownstoneIdentifier[], // maj_min as id representing the Crownstone.
+  crownstonesAtCreation: Record<CrownstoneIdentifier, true>, // maj_min as id representing the Crownstone.
   data: FingerprintProcessedMeasurementData[],
   processingParameterHash: string, // this contains the parameters used to process the data. (sigmoid)
   transformedAt: timestamp,  // if the transform data has changed since the last time it was transformed, repeat the transform.

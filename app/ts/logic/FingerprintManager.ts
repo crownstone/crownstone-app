@@ -68,7 +68,7 @@ export class FingerprintManager {
       let location = sphere.locations[locationId];
       for (let fingerprint of Object.values(location.fingerprints.raw)) {
         // check if there are crownstones in the crownstonesAtCreation array that are not in the availableCrownstoneIdentifiers.
-        for (let crownstoneIdentifier of fingerprint.crownstonesAtCreation) {
+        for (let crownstoneIdentifier in fingerprint.crownstonesAtCreation) {
           if (!availableCrownstoneIdentifiers[crownstoneIdentifier]) {
             stoneIdentifiersToPurge[crownstoneIdentifier] = true;
           }
@@ -112,14 +112,13 @@ export class FingerprintManager {
       for (let fingerprint of Object.values(location.fingerprints.raw)) {
         // remove the crownstoneIdentifiers from the crownstonesAtCreation array of the fingerprint.
         let modified = false;
-        let crownstonesAtCreation = fingerprint.crownstonesAtCreation.filter((crownstoneIdentifier) => {
-          let hasIdentifier = crownstoneIdentifierMap[crownstoneIdentifier];
-          if (hasIdentifier) {
+        let crownstonesAtCreation = {...fingerprint.crownstonesAtCreation};
+        for (let identifier of crownstoneIdentifiers) {
+          if (crownstonesAtCreation[identifier]) {
+            delete crownstonesAtCreation[identifier];
             modified = true;
-            return false
           }
-          return true;
-        });
+        }
 
         // iterate over all the datapoints and remove the ones that belong to the removed stones.
         let copiedData = FingerprintUtil.copyData(fingerprint.data);

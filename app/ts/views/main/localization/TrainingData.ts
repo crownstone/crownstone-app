@@ -42,7 +42,7 @@ export class TrainingData {
     if (sphere) {
       for (let stoneId in sphere.stones) {
         let stone = sphere.stones[stoneId];
-        this.crownstonesAtCreation.push(FingerprintUtil.getStoneIdentifierFromStone(stone));
+        this.crownstonesAtCreation[FingerprintUtil.getStoneIdentifierFromStone(stone)] = true;
       }
     }
 
@@ -54,7 +54,6 @@ export class TrainingData {
   }
 
   _collect(data: ibeaconPackage[]) {
-    console.log("data",data)
     let datapoint = {dt: Date.now() - this.startTime, data: {}};
     for (let point of data) {
       let id = `${point.major}_${point.minor}`;

@@ -10,8 +10,6 @@ export class KNN {
 
 
   initialize() {
-    console.time("Classifier initialization");
-
     // this will generate sortedSphereKeys for each sphere. This will also clear any initialized state on the start of the call.
     // any change in stones, this has to be reinitialized.
     let sphereDeviceMap = {};
@@ -25,56 +23,39 @@ export class KNN {
       }
       this.sortedSphereKeys[sphereId] = Object.keys(sphereDeviceMap[sphereId]).sort();
     }
-
-    console.timeEnd("Classifier initialization");
   }
 
 
   addFingerprint(sphereId: sphereId, locationId: locationId, fingerprint: FingerprintProcessedData) {
-    console.time(`Classifier add fingerprint ${sphereId} ${locationId}`);
     // store the fingerprint for classification
     if (!this.fingerprints[sphereId]) {
       this.fingerprints[sphereId] = {};
     }
     if (!this.fingerprints[sphereId][locationId]) {
-      this.fingerprints[sphereId][locationId] = []
+      this.fingerprints[sphereId][locationId] = [];
     }
 
-    // generate the mask for the fingerprint
-    // if there is a crownstone measurement which was not available at the creation of the fingerprint, the measurement should be set to 0.
-    // that is what the mask is for
-    let crownstonesAtCreationMap = {};
-    for (let crownstoneIdentifier of fingerprint.crownstonesAtCreation) {
-      crownstonesAtCreationMap[crownstoneIdentifier] = true;
-    }
+
+    let keysInSphere = this.sortedSphereKeys[sphereId];
+    let amountOfKeysInSphere = keysInSphere.length;
 
     // the ones that existed in the fingerprint when it was created are set to 1
-    let mask = [];
-    for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
-      if (crownstonesAtCreationMap[crownstoneIdentifier]) {
-        mask.push(1);
-      }
-      else {
-        mask.push(0);
+    let mask = new Array(amountOfKeysInSphere).fill(1);
+    for (let i = 0; i < mask.length; i++) {
+      if (!fingerprint.crownstonesAtCreation[keysInSphere[i]]) {
+        mask[i] = 0;
       }
     }
 
     // additionally, we will construct vectors for this fingerprint which are used to match later on.
     let vectorSet = [];
     for (let measurement of fingerprint.data) {
-      let vector = [];
-      for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
-        if (measurement[crownstoneIdentifier] !== undefined) {
-          vector.push(measurement[crownstoneIdentifier]);
-        }
-        else {
-          vector.push(1);
-        }
-      }
-
-      // apply the mask on the vector, this way the crownstones that should be ignored are 0 both in the fingerprint and in the measurement vector.
+      let vector = mask.concat([]); // copy the mask since we would apply it to the vector later on anyway.
       for (let i = 0; i < vector.length; i++) {
-        vector[i] *= mask[i];
+        if (measurement[keysInSphere[i]] !== undefined) {
+          // apply the mask on the vector, this way the crownstones that should be ignored are 0 both in the fingerprint and in the measurement vector.
+          vector[i] *= measurement[keysInSphere[i]];
+        }
       }
 
       vectorSet.push(vector);
@@ -82,7 +63,6 @@ export class KNN {
 
     this.fingerprints[sphereId][locationId].push({id: fingerprint.id, dataset: vectorSet, mask: mask});
 
-    console.timeEnd(`Classifier add fingerprint ${sphereId} ${locationId}`);
   }
 
   /**

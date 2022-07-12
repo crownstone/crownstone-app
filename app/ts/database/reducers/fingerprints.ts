@@ -7,7 +7,7 @@ let defaultFingerprintData: FingerprintData = {
   cloudId:               null,
   type:                  null,
   createdOnDeviceType:   null, // ${device type string}_${userId who collected it}
-  crownstonesAtCreation: [], // maj_min as id representing the Crownstone.
+  crownstonesAtCreation: {}, // maj_min as id representing the Crownstone.
   data:                  [],
   updatedAt:             0,
   createdAt:             0,
@@ -81,7 +81,7 @@ let defaultProcessedFingerprintData: FingerprintProcessedData = {
   fingerprintId:           null, // processed based on parent id
   type:                    null,
   transformState:          null,
-  crownstonesAtCreation:   [], // maj_min as id representing the Crownstone.
+  crownstonesAtCreation:   {}, // maj_min as id representing the Crownstone.
   data:                    [],
   processingParameterHash: null, // this contains the parameters used to process the data. (sigmoid)
   transformedAt:           0,  // if the transform data has changed since the last time it was transformed, repeat the transform.
