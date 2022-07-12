@@ -59,6 +59,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     super(props);
 
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
+    console.log("this.stoneUpateData", this.stoneUpdateData);
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -199,7 +200,8 @@ export class DfuScanning extends LiveComponent<any, any> {
     );
   }
 
-   _getStoneList() {
+  _getStoneList() {
+    this.stoneIdsToUpdate = [];
     let stoneArray = [];
     let idArray = [];
 
@@ -230,8 +232,8 @@ export class DfuScanning extends LiveComponent<any, any> {
         // not visible yet!
         this.stateMap[stoneId] = AVAILABILITY_STATES.INVISIBLE;
       }
-      this.stoneIdsToUpdate.push(stoneId);
     }
+
     // construct the list in order of availability.
     for (let i = 0; i < ids.length; i++) {
       let stoneId = ids[i];

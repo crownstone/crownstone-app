@@ -214,7 +214,6 @@ export const FingerprintUtil = {
       }
     }
 
-    console.log('fingerprint, score',fingerprint, score)
     return Math.round(score);
   },
 

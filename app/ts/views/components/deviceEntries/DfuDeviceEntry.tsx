@@ -209,7 +209,7 @@ export function DfuDeviceEntry_RoomOverview(props: DfuDeviceEntryProps) {
       labelItem={<DfuDeviceEntryLabel restoring={restoring} />}
       iconItem={<SetupDeviceEntryIcon icon={stone?.config?.icon || 'unknown'} />}
       tapCallback={ async () => {
-        if (!restoring) {
+        if (restoring !== true) {
           if (Permissions.inSphere(props.sphereId).canUpdateCrownstone) {
             let updatableStones = DfuUtil.getUpdatableStones(props.sphereId);
             if (updatableStones.stones[props.stoneId]) {

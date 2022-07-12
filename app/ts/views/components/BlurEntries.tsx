@@ -56,37 +56,43 @@ export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
 
 export function BlurEntry(props: BlurEntryProps) {
   return (
-    <BlurView
-      blurType={"light"}
-      blurAmount={5}
-      style={{
-        flexDirection:'row',
-        height: 70 + (props.heightOffset ?? 0),
-        flex:1,
-        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
-        marginHorizontal: 12,
-        marginBottom: 12,
-        borderRadius: appStyleConstants.roundness,
-        alignItems:'center',
-        paddingLeft: 15,
-        opacity: props.opacity ?? 1
-      }}>
-      { renderPropItem(props.iconItem,props) }
-      <View style={{ flex:1 }}>
-        { renderPropItem(props.paddingItem, props) }
+    <TouchableOpacity
+      activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
+      onPress={() => { props.tapCallback && props.tapCallback()} }
+      style={{flex:1}}
+    >
+      <BlurView
+        blurType={"light"}
+        blurAmount={5}
+        style={{
+          flexDirection:'row',
+          height: 70 + (props.heightOffset ?? 0),
+          flex:1,
+          backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
+          marginHorizontal: 12,
+          marginBottom: 12,
+          borderRadius: appStyleConstants.roundness,
+          alignItems:'center',
+          paddingLeft: 15,
+          opacity: props.opacity ?? 1
+        }}>
+        { renderPropItem(props.iconItem,props) }
+        <View style={{ flex:1 }}>
+          { renderPropItem(props.paddingItem, props) }
+          {
+            typeof props.title === 'string' ?
+              <Text style={{...rowstyles.title, color: props.titleColor ?? rowstyles.title.color, paddingLeft:15}}>{props.title}</Text> :
+              renderPropItem(props.title, props)
+          }
+          { renderPropItem(props.labelItem, props) }
+        </View>
         {
-          typeof props.title === 'string' ?
-            <Text style={{...rowstyles.title, color: props.titleColor ?? rowstyles.title.color, paddingLeft:15}}>{props.title}</Text> :
-            renderPropItem(props.title, props)
+          props.settings && props.settingsItem && renderPropItem(props.settingsItem, props) ||
+          props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
         }
-        { renderPropItem(props.labelItem, props) }
-      </View>
-      {
-        props.settings && props.settingsItem && renderPropItem(props.settingsItem, props) ||
-        props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
-      }
-      { renderPropItem(props.control, props) }
-    </BlurView>
+        { renderPropItem(props.control, props) }
+      </BlurView>
+    </TouchableOpacity>
   );
 }
 

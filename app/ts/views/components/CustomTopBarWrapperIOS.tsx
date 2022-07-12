@@ -5,7 +5,6 @@ import {Icon} from "./Icon";
 import * as React from "react";
 
 export function TopBarLeftIOS(props) {
-  console.log("left")
   let barHeight = topBarHeight - statusBarHeight;
   if (props.notBack !== true && props.leftAction !== undefined) {
     if (props.leftItem !== undefined) {
@@ -62,7 +61,6 @@ export function TopBarCenterIOS(props) {
 
 
 export function TopBarRightIOS(props) {
-  console.log("right")
   let barHeight = topBarHeight - statusBarHeight;
 
   if (props.rightItem) {

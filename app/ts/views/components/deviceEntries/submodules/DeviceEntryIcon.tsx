@@ -19,24 +19,22 @@ export function DeviceEntryIcon({stone, stoneId}) {
           fadeDuration={500}
           switchDuration={2000}
           contentArray={[
-            <Icon name={'ios-warning'} size={40} color={color} style={{backgroundColor:'transparent'}} />,
+            <Icon name={'ios-warning'} size={35} color={color} style={{backgroundColor:'transparent'}} />,
             <Icon name={stone.config.icon} size={35} color={color} />,
           ]}
         />
       );
     }
     else if (
-      stone.config.firmwareVersion && (
-      Util.canUpdate(stone) === true ||
-      xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
+      stone.config.firmwareVersion && (Util.canUpdate(stone) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
     ) {
       return (
         <AlternatingContent
           style={{width:35, height:35, justifyContent:'center', alignItems:'center'}}
-          fadeDuration={500}
-          switchDuration={2000}
+          fadeDuration={300}
+          switchDuration={1000}
           contentArray={[
-            <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
+            <Icon name={'c1-update-arrow'} size={34} color={color} style={{backgroundColor:'transparent'}} />,
             <Icon name={stone.config.icon} size={35} color={color} />,
           ]}
         />

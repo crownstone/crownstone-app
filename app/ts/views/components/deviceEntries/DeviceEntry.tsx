@@ -56,6 +56,11 @@ export function DeviceEntry(props: DeviceEntryProps) {
 
   let tapCallback = undefined;
   let backgroundColor = undefined;
+  if (StoneUtil.shouldUpdateBeforeBeingUsed(stone)) {
+    backgroundColor = colors.purple.rgba(0.5);
+    tapCallback = () => { NavigationUtil.launchModal("DfuIntroduction", { sphereId: props.sphereId}) }
+  }
+
   if (stone.errors.hasError) {
     backgroundColor = colors.csOrange.rgba(0.5);
     tapCallback = () => { NavigationUtil.launchModal("DeviceError", { sphereId: props.sphereId, stoneId: props.stoneId}) }

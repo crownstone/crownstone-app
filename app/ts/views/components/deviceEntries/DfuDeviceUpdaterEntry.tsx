@@ -27,7 +27,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.baseHeight = props.height || 70;
+    this.baseHeight = props.height || 80;
 
     this.state = {
       updateSuccessful: false,
@@ -218,7 +218,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         <Animated.View style={{position:'absolute', top:this.baseHeight-5, left:0, height: 5, width: this.state.totalProgressWidth, backgroundColor: colors.iosBlueDark.rgba(0.8)}} />
         <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.successIndicatorWidth, backgroundColor: colors.green.rgba(0.5)}} />
         <Icon name={stone.config.icon} size={35} color={colors.black.hex} />
-        <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingLeft:15, paddingRight:15,}}>
+        <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingHorizontal:15, paddingVertical:3}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>

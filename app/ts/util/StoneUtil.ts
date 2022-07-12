@@ -18,6 +18,8 @@ import {DataUtil} from "./DataUtil";
 import {StoneAvailabilityTracker} from "../native/advertisements/StoneAvailabilityTracker";
 import {HubHelper} from "../native/setup/HubHelper";
 import {STONE_TYPES} from "../Enums";
+import { Util } from "./Util";
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../ExternalConfig";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StoneUtil", key)(a,b,c,d,e);
@@ -554,6 +556,13 @@ export const StoneUtil = {
         )
       }
     }
+  },
+
+  shouldUpdateBeforeBeingUsed: function(stone: StoneData) : boolean {
+    if (stone.config.firmwareVersion && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
+      return true;
+    }
+    return false
   }
 };
 
