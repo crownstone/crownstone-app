@@ -116,3 +116,7 @@ export function createMockDatabase() {
     stones: [stone1, stone2, stone3, stone4, stone5, stone6]
   };
 }
+
+export function loadDump(dumpState) {
+  core.store.dispatch({type:"HYDRATE", state: dumpState});
+}

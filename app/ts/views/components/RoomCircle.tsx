@@ -21,7 +21,7 @@ import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
-import { DataUtil, enoughCrownstonesInLocationsForIndoorLocalization } from "../../util/DataUtil";
+import { DataUtil } from "../../util/DataUtil";
 import { IconCircle } from "./IconCircle";
 import { FingerprintUtil } from "../../util/FingerprintUtil";
 

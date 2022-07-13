@@ -63,7 +63,8 @@ export const FingerprintUtil = {
   },
 
   isFingerprintGoodEnough: function(sphereId, locationId, fingerprintId) : boolean {
-    if (FingerprintUtil.calculateScore(sphereId, locationId, fingerprintId) >= FINGERPRINT_SCORE_THRESHOLD) {
+    let score = FingerprintUtil.calculateScore(sphereId, locationId, fingerprintId);
+    if (score >= FINGERPRINT_SCORE_THRESHOLD) {
       return true;
     }
   },
@@ -201,9 +202,13 @@ export const FingerprintUtil = {
 
      if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
       let ratio = (amountOfCrownstonesAtCreation / amountOfCrownstones) * 100;
+      console.log("FingerprintUtil.calculateScore: ratio:",amountOfCrownstonesAtCreation,amountOfCrownstones,ratio);
       let penalty = (100 - ratio);
       score -= penalty;
     }
+
+
+
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
       if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
@@ -247,14 +252,16 @@ export const FingerprintUtil = {
     if (!fingerprint) { return null; }
 
     let processedFingerprint: Partial<FingerprintProcessedData> = {
-      fingerprintId: fingerprintRawId,
-      type: fingerprint.type,
-      transformState: "NOT_TRANSFORMED_YET",
-      crownstonesAtCreation: {...fingerprint.crownstonesAtCreation},
-      data: [],
+      fingerprintId:           fingerprintRawId,
+      type:                    fingerprint.type,
+      transformState:          "NOT_TRANSFORMED_YET",
+
+      crownstonesAtCreation:   {...fingerprint.crownstonesAtCreation},
       processingParameterHash: sha1(JSON.stringify(processingParameters)),
-      transformedAt: 0,
-      processedAt: Date.now(),
+
+      data:                    [],
+      transformedAt:           0,
+      processedAt:             Date.now(),
     }
 
     // copy all the data before modifying it.

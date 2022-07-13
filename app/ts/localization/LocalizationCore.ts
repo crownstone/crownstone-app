@@ -5,11 +5,12 @@ import {Scheduler} from "../logic/Scheduler";
 import {KNN} from "./classifiers/knn";
 
 
-class LocalizationCoreClass {
+export class LocalizationCoreClass {
 
-  initialized:           boolean = false;
-  classifierInitialized: boolean = false;
-  localizationEnabled:   boolean = false;
+  initialized:            boolean = false;
+  classifierInitialized:  boolean = false;
+  classifierInitializing: boolean = false;
+  localizationEnabled:    boolean = false;
 
   initClassifierTimeout = () => {}
 
@@ -28,7 +29,7 @@ class LocalizationCoreClass {
     this.classifier = new KNN();
   }
 
-  init() {
+  async init() {
     if (!this.initialized) {
       this.initialized = true;
 
@@ -39,6 +40,7 @@ class LocalizationCoreClass {
       this.eventSubscriptions.push(core.eventBus.on('databaseChange', ({change}) => {
         if (change.changeSpheres) {
           this.evaluateFingerprintManagers();
+          this.initClassifier();
           return;
         }
 
@@ -72,7 +74,7 @@ class LocalizationCoreClass {
       }));
 
       this.evaluateFingerprintManagers();
-      this.initClassifier();
+      await this.initClassifier();
     }
   }
 
@@ -93,10 +95,6 @@ class LocalizationCoreClass {
         delete this.fingerprintManagers[sphereId];
       }
     }
-
-
-    // TODO: check if it's worth it to remove individual fingerprints from the classifier.
-    this.initClassifier();
   }
 
 
@@ -114,51 +112,65 @@ class LocalizationCoreClass {
   }
 
 
-  initClassifier() {
+  initClassifier() : Promise<void> {
+    if (this.classifierInitializing) { return Promise.resolve(); }
+
+    this.classifierInitializing = true;
+
     // this timeout ensures that multiple calls of the init due to multiple listeners to the databaseChange event will not result in multiple classifier reinitializations.
-    this.initClassifierTimeout()
-    this.initClassifierTimeout = Scheduler.setTimeout(() => {
-
-      this.classifier.reset()
-      this.classifier.initialize();
-
-      for (let sphereId in this.fingerprintManagers) {
-        let fingerprints = this.fingerprintManagers[sphereId].getProcessedFingerprints();
-        for (let locationId in fingerprints) {
-          for (let fingerprint of fingerprints[locationId]) {
-            this.classifier.addFingerprint(sphereId, locationId, fingerprint);
-          }
-        }
-      }
-
-      this.classifierInitialized = true;
-    }, 10);
+    return new Promise((resolve, reject) => {
+      this.initClassifierTimeout();
+      this.initClassifierTimeout = Scheduler.setTimeout(() => {
+        this._initClassifier();
+        resolve();
+      }, 10);
+    })
   }
 
+
+  _initClassifier() {
+    this.classifier.reset()
+    this.classifier.initialize();
+
+    for (let sphereId in this.fingerprintManagers) {
+      let fingerprints = this.fingerprintManagers[sphereId].getProcessedFingerprints();
+      for (let locationId in fingerprints) {
+        for (let fingerprint of fingerprints[locationId]) {
+          this.classifier.addFingerprint(sphereId, locationId, fingerprint);
+        }
+      }
+    }
+
+    this.classifierInitialized  = true;
+    this.classifierInitializing = false;
+  }
 
   handleIBeaconAdvertisement(data: ibeaconPackage[]) {
     // TODO: decide whether this is better than unsubscribing and resubscribing the nativeBus.
     if (this.classifierInitialized === false) { return; }
     if (this.localizationEnabled   === false) { return; }
 
-    let resultingLabel = this.classifier.classify(data);
+    let classificationResults = this.classifier.classify(data);
 
-    // TODO: insert postprocessor here.
-    if (this.presence[resultingLabel.sphereId] === undefined) {
-      this.presence[resultingLabel.sphereId] = null;
+    for (let sphereId in classificationResults) {
+      // TODO: insert postprocessor here.
+      if (this.presence[sphereId] === undefined) {
+        this.presence[sphereId] = null;
+      }
+
+      if (this.presence[sphereId] !== classificationResults[sphereId]) {
+        // leave the previous room
+
+        if (this.presence[sphereId] !== null) {
+          core.eventBus.emit('exitRoom', {sphereId: sphereId, locationId: this.presence[sphereId]});
+        }
+        core.eventBus.emit('enterRoom',  {sphereId: sphereId, locationId: classificationResults[sphereId]});
+
+        this.presence[sphereId] = classificationResults[sphereId];
+      }
     }
 
-    if (this.presence[resultingLabel.sphereId] !== resultingLabel.locationId) {
-      // leave the previous room
-
-      console.log('resultingLabel', resultingLabel)
-      // if (resultingLabel.sphereId) {
-      //   core.eventBus.emit('exitRoom', this.presence[resultingLabel.sphereId]);
-      // }
-      // core.eventBus.emit('enterRoom', resultingLabel);
-
-      this.presence[resultingLabel.sphereId] = resultingLabel.locationId;
-    }
+    return classificationResults;
   }
 
 

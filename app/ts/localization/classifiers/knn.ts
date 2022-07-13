@@ -1,5 +1,6 @@
 import {core} from "../../Core";
 import {FingerprintUtil} from "../../util/FingerprintUtil";
+import {Get} from "../../util/GetUtil";
 
 type vector = sigmoid[];
 type fingerprintSummary = { id: processedFingerprintId, dataset: vector[], mask: number[] };
@@ -41,28 +42,27 @@ export class KNN {
 
     // the ones that existed in the fingerprint when it was created are set to 1
     let mask = new Array(amountOfKeysInSphere).fill(1);
-    for (let i = 0; i < mask.length; i++) {
-      if (!fingerprint.crownstonesAtCreation[keysInSphere[i]]) {
-        mask[i] = 0;
-      }
-    }
+    // TODO: check if masks can be used
+    // for (let i = 0; i < mask.length; i++) {
+      // if (!fingerprint.crownstonesAtCreation[keysInSphere[i]]) {
+      //   mask[i] = 0;
+      // }
+    // }
 
     // additionally, we will construct vectors for this fingerprint which are used to match later on.
     let vectorSet = [];
     for (let measurement of fingerprint.data) {
       let vector = mask.concat([]); // copy the mask since we would apply it to the vector later on anyway.
       for (let i = 0; i < vector.length; i++) {
-        if (measurement[keysInSphere[i]] !== undefined) {
+        if (measurement.data[keysInSphere[i]] !== undefined) {
           // apply the mask on the vector, this way the crownstones that should be ignored are 0 both in the fingerprint and in the measurement vector.
-          vector[i] *= measurement[keysInSphere[i]];
+          vector[i] *= measurement.data[keysInSphere[i]];
         }
       }
-
       vectorSet.push(vector);
     }
 
     this.fingerprints[sphereId][locationId].push({id: fingerprint.id, dataset: vectorSet, mask: mask});
-
   }
 
   /**
@@ -70,16 +70,11 @@ export class KNN {
    *
    * missing crownstones that should exist in the sphere are set to 1.
    *
-   * TODO: profile. optimize.
-   * TODO: decide if the packages here will output multiple sphere vectors or only the selected sphereId ones
+   * Profiled. This is negligibly fast.
    */
-  preprocess(packages : ibeaconPackage[]) : Record<sphereId, vector> {
+  preprocessIBeacon(packages : ibeaconPackage[]) : Record<sphereId, vector> {
     let vector  : Record<sphereId, vector> = {};
     let spheres : Record<sphereId, Record<CrownstoneIdentifier, rssi>> = {};
-
-    let measurements : Record<CrownstoneIdentifier, rssi> = {};
-
-    console.log('packages', packages)
 
     for (let ibeaconPackage of packages) {
       if (spheres[ibeaconPackage.referenceId] === undefined) {
@@ -94,7 +89,7 @@ export class KNN {
     for (let sphereId in spheres) {
       for (let crownstoneIdentifier of this.sortedSphereKeys[sphereId]) {
         if (spheres[sphereId][crownstoneIdentifier]) {
-          vector[sphereId].push(KNNsigmoid(measurements[crownstoneIdentifier]));
+          vector[sphereId].push(KNNsigmoid(spheres[sphereId][crownstoneIdentifier]));
         }
         else {
           vector[sphereId].push(1);
@@ -106,15 +101,15 @@ export class KNN {
   }
 
 
-  classify(packages : ibeaconPackage[]) : { sphereId: sphereId, locationId: locationId } {
-    let inputVector = this.preprocess(packages);
+  classify(packages : ibeaconPackage[]) : Record<sphereId, locationId> {
+    let inputVector = this.preprocessIBeacon(packages);
+    let result = {};
 
     for (let sphereId in inputVector) {
-
       // find the closest fingerprint in the sphere.
       let sphereLocations = this.fingerprints[sphereId];
 
-      let label;
+      let label = null;
       let minDistance = Infinity;
       for (let locationId in sphereLocations) {
         let fingerprintsInLocation = sphereLocations[locationId];
@@ -123,7 +118,7 @@ export class KNN {
           // TODO: profile this. Optimize this. Check the map.reduce alternative
           //  dot = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
           //  console.log(dot([1,2,3], [1,0,1]));
-          let vectorForFingerprint = [...inputVector[sphereId]];
+          let vectorForFingerprint = inputVector[sphereId].concat([])
           for (let i = 0; i < vectorForFingerprint.length; i++) {
             vectorForFingerprint[i] *= fingerprint.mask[i];
           }
@@ -133,14 +128,18 @@ export class KNN {
             let distance = KNNgetDistance(vectorForFingerprint, fingerprintVector);
             if (distance < minDistance) {
               minDistance = distance;
-              label = locationId;
+              label       = locationId;
             }
           }
         }
       }
 
-      return { sphereId: sphereId, locationId: label };
+      if (label !== null) {
+        result[sphereId] = label;
+      }
     }
+
+    return result;
   }
 
   reset() {

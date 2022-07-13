@@ -516,8 +516,8 @@ interface crownstoneAdvertisement extends crownstoneBaseAdvertisement {
 interface ibeaconPackage {
   id    : string, // uuid + "_Maj:" + string(major) + "_Min:" + string(minor)
   uuid  : string, // this is the iBeacon UUID in uppercase: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
-  major : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
-  minor : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
+  major : string | number, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
+  minor : string | number, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   rssi  : number,
   referenceId : string, // The sphere ID, as given in trackIBeacon().
 }

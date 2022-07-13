@@ -154,7 +154,6 @@ export class FingerprintManager {
    * then we need to reprocess them.
    */
   checkProcessedFingerprints() {
-    console.time("checkProcessedFingerprints");
     // if the sphere does not exist, clean up and stop.
     let sphere = Get.sphere(this.sphereId);
     if (!sphere) { this.deinit(); return; }
@@ -169,8 +168,6 @@ export class FingerprintManager {
         }
       }
     }
-
-    console.timeEnd("checkProcessedFingerprints");
   }
 
 
