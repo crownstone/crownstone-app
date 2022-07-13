@@ -135,21 +135,20 @@ test("LocalizationCore - classify", async () => {
   }
 
   let base = {
-    'Living room': { total: 5351, correct: 4797, miss: 554 },
-    Studeerkamer: { total: 2027, correct: 2024, miss: 3 },
-    Badkamer: { total: 524, correct: 121, miss: 403 },
-    'Gang Boven': { total: 421, correct: 148, miss: 273 },
-    Gang: { total: 385, correct: 254, miss: 131 },
-    Keuken: { total: 913, correct: 713, miss: 200 },
-    Logeerkamer: { total: 761, correct: 368, miss: 393 },
-    Slaapkamer: { total: 805, correct: 700, miss: 105 },
-    Voordakkapel: { total: 615, correct: 0, miss: 615 },
-    Washok: { total: 513, correct: 255, miss: 258 },
-    'Wc Beneden': { total: 420, correct: 305, miss: 115 },
-    'Wc Boven': { total: 392, correct: 350, miss: 42 },
-    Workshop: { total: 939, correct: 782, miss: 157 }
+    'Living room': { total: 5351, correct: 4797, miss: 554, rate: 0.8964679499159036 },
+    Studeerkamer: { total: 2027, correct: 2024, miss: 3, rate: 0.9985199802664035 },
+    Badkamer: { total: 524, correct: 121, miss: 403, rate: 0.23091603053435114 },
+    'Gang Boven': { total: 421, correct: 148, miss: 273, rate: 0.3515439429928741 },
+    Gang: { total: 385, correct: 254, miss: 131, rate: 0.6597402597402597 },
+    Keuken: { total: 913, correct: 713, miss: 200, rate: 0.7809419496166484 },
+    Logeerkamer: { total: 761, correct: 368, miss: 393, rate: 0.4835742444152431 },
+    Slaapkamer: { total: 805, correct: 700, miss: 105, rate: 0.8695652173913043 },
+    Voordakkapel: { total: 615, correct: 0, miss: 615, rate: 0 },
+    Washok: { total: 513, correct: 255, miss: 258, rate: 0.49707602339181284 },
+    'Wc Beneden': { total: 420, correct: 305, miss: 115, rate: 0.7261904761904762 },
+    'Wc Boven': { total: 392, correct: 350, miss: 42, rate: 0.8928571428571429 },
+    Workshop: { total: 939, correct: 782, miss: 157, rate: 0.832800851970181 }
   }
-
 
   for (let result in base) {
     base[result].rate = base[result].correct/base[result].total;
@@ -157,8 +156,9 @@ test("LocalizationCore - classify", async () => {
   let str = ''
   for (let result in results) {
     results[result].rate = results[result].correct/results[result].total;
-    str += `improvement ${result} ${Math.round(100*results[result].rate)} ${Math.round(100*(results[result].rate - base[result].rate))} \n`
+    str += `improvement ${result} ${Math.round(100*results[result].rate)} ${Math.round(100*(results[result].rate - base[result].rate))}\n`
   }
-  console.log(str)
+
+  console.log(str);
 
 });
