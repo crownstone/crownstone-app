@@ -28,7 +28,7 @@ const secondMeshId = "secondMeshId";
 
 
 test("Check claiming Bluetooth to handle session with connect / disconnect", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   await SessionManager.intiateBlock()
@@ -74,7 +74,7 @@ test("Check claiming Bluetooth to handle session with connect / disconnect", asy
 
 
 test("Check claiming Bluetooth to handle session with open commands", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   tell(handle).allowDimming(true);
@@ -125,7 +125,7 @@ test("Check claiming Bluetooth to handle session with open commands", async () =
 
 
 test("Check claiming Bluetooth to handle session with open commands which timeout during the claim", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   let expectedError

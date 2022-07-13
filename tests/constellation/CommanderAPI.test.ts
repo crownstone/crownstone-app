@@ -32,7 +32,7 @@ afterAll( async () => {})
 const meshId = "meshNetwork";
 
 test("Check the CommanderAPI multiswitch queueing", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
 
   let stone1 = new CommandAPI(getCommandOptions(db.sphere.id, [db.stones[0].handle]));
   let stone2 = new CommandAPI(getCommandOptions(db.sphere.id, [db.stones[1].handle]));
@@ -47,7 +47,7 @@ test("Check the CommanderAPI multiswitch queueing", async () => {
 
 
 test("Check the CommanderAPI handling multiple session timeouts", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
 
   let commander = new CommandAPI(getCommandOptions(db.sphere.id, [db.stones[0].handle]));
 
@@ -68,7 +68,7 @@ test("Check the CommanderAPI handling multiple session timeouts", async () => {
 
 
 test("Check multiple commanders requiring the same session", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle
   let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
 
@@ -105,7 +105,7 @@ test("Check multiple commanders requiring the same session", async () => {
 
 
 test("Ensure sessions do not perform commands after they are killed.", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle
   let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
   let commander2 = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
@@ -152,7 +152,7 @@ test("Ensure sessions do not perform commands after they are killed.", async () 
 });
 
 test("Check if the timeout of the commands works properly", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle
   let commander = new CommandAPI(getCommandOptions(db.sphere.id, [handle]));
 
@@ -182,6 +182,6 @@ test("Check if the timeout of the commands works properly", async () => {
   expect(Object.keys(SessionManager._timeoutHandlers[handle]).length).toBe(0)
   
   await moveTimeBy(5000) // timeout the command.
-
+  await TestUtil.nextTick();
   expect(SessionManager._sessions[handle]).not.toBeDefined()
 })

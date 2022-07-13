@@ -46,7 +46,7 @@ export function addSphere(config? : Partial<SphereDataTest>) {
   return Get.sphere(sphereId);
 }
 
-export function addStone(config? : Partial<StoneDataConfig>, meshNetworkId?: string) {
+export function addStone(config? : Partial<StoneDataConfig>) {
   let stoneId = 'stone_' + xUtil.getUUID();
   stoneCount++;
   if (!config) { config = {}; }
@@ -68,6 +68,8 @@ export function addStone(config? : Partial<StoneDataConfig>, meshNetworkId?: str
   let stone = Get.stone(lastUsedSphereId, stoneId);
   return { stone, handle: stone.config.handle };
 }
+
+
 export function addHub(config? : any) {
   let hubId = 'hub_' + xUtil.getUUID();
   hubCount++;
@@ -96,22 +98,18 @@ export function addLocation(config? : any) {
   return Get.location(lastUsedSphereId, locationId);
 }
 
-export function createMockDatabase(meshId, meshId2?) {
-  if (!meshId2) {
-    meshId2 = meshId;
-  }
-
+export function createMockDatabase() {
   let sphere = addSphere();
   let location1 = addLocation();
   let location2 = addLocation();
   let location3 = addLocation();
   let location4 = addLocation();
-  let stone1 = addStone({locationId: location2.id}, meshId);
-  let stone2 = addStone({locationId: location2.id}, meshId);
-  let stone3 = addStone({locationId: location3.id}, meshId);
-  let stone4 = addStone({locationId: location4.id}, meshId);
-  let stone5 = addStone({locationId: location1.id}, meshId2);
-  let stone6 = addStone({locationId: location1.id}, meshId2);
+  let stone1 = addStone({locationId: location2.id});
+  let stone2 = addStone({locationId: location2.id});
+  let stone3 = addStone({locationId: location3.id});
+  let stone4 = addStone({locationId: location4.id});
+  let stone5 = addStone({locationId: location1.id});
+  let stone6 = addStone({locationId: location1.id});
   return {
     sphere,
     locations: [location1, location2, location3, location4],
