@@ -38,11 +38,11 @@ test("SessionBroker finish mesh command", async () => {
   StoneAvailabilityTracker.init();
 
   let sphere = addSphere();
-  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
-  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
-  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
-  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
-  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({}, meshId);
+  let { stone: stone2, handle:handle2 } = addStone({}, meshId);
+  let { stone: stone3, handle:handle3 } = addStone({}, meshId);
+  let { stone: stone4, handle:handle4 } = addStone({}, meshId);
+  let { stone: stone5, handle:handle5 } = addStone({}, meshId);
 
   let turnOnCommander       = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
   let allowDimmingCommander = new CommandAPI(getCommandOptions(sphere.id, [handle3]));
@@ -88,11 +88,11 @@ test("SessionBroker direct command finishes mesh commands", async () => {
   StoneAvailabilityTracker.init();
 
   let sphere = addSphere();
-  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
-  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
-  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
-  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
-  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({}, meshId);
+  let { stone: stone2, handle:handle2 } = addStone({}, meshId);
+  let { stone: stone3, handle:handle3 } = addStone({}, meshId);
+  let { stone: stone4, handle:handle4 } = addStone({}, meshId);
+  let { stone: stone5, handle:handle5 } = addStone({}, meshId);
 
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1]));
 
@@ -125,7 +125,7 @@ test("SessionBroker direct command finishes mesh commands", async () => {
 test("SessionBroker check if a private connection is not closed prematurely", async () => {
   StoneAvailabilityTracker.init();
   let sphere = addSphere();
-  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({}, meshId);
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
   api.allowDimming(true);
   await mBluenetPromise.for(handle1).succeed.connect("operation");
@@ -139,7 +139,7 @@ test("SessionBroker check if a private connection is not closed prematurely", as
 test("SessionBroker check the cleanup of closed private session", async () => {
   StoneAvailabilityTracker.init();
   let sphere = addSphere();
-  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle: handle1 } = addStone({}, meshId);
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], true));
 
   api.allowDimming(true);
@@ -176,7 +176,7 @@ test("SessionBroker check the cleanup of closed private session", async () => {
 test("SessionBroker check the cleanup of closed public session", async () => {
   StoneAvailabilityTracker.init();
   let sphere = addSphere();
-  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle: handle1 } = addStone({}, meshId);
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], false));
 
   api.allowDimming(true);
@@ -209,7 +209,7 @@ test("SessionBroker check the cleanup of closed public session", async () => {
 test("SessionBroker do not re-request sessions on failure or finish of a single command", async () => {
   StoneAvailabilityTracker.init();
   let sphere = addSphere();
-  let { stone: stone1, handle: handle1 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle: handle1 } = addStone({}, meshId);
   let api  = new CommandAPI(getCommandOptions(sphere.id, [handle1], false));
 
   let fwErr = null

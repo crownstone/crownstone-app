@@ -78,6 +78,9 @@ export class KNN {
     let spheres : Record<sphereId, Record<CrownstoneIdentifier, rssi>> = {};
 
     let measurements : Record<CrownstoneIdentifier, rssi> = {};
+
+    console.log('packages', packages)
+
     for (let ibeaconPackage of packages) {
       if (spheres[ibeaconPackage.referenceId] === undefined) {
         spheres[ibeaconPackage.referenceId] = {};
@@ -107,6 +110,7 @@ export class KNN {
     let inputVector = this.preprocess(packages);
 
     for (let sphereId in inputVector) {
+
       // find the closest fingerprint in the sphere.
       let sphereLocations = this.fingerprints[sphereId];
 

@@ -2,8 +2,8 @@ import { core } from "../Core";
 import { Get } from "./GetUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "./DataUtil";
 import DeviceInfo from "react-native-device-info";
-import {KNNsigmoid, processingParameters} from "../logic/classifiers/knn";
 import {xUtil} from "./StandAloneUtil";
+import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
 const sha1 = require('sha-1');
 
 const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.

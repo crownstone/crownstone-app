@@ -58,7 +58,7 @@ test("Using SyncUtil", async () => {
 
 test("Check if abilityProperties sync correctly", async () => {
   let sphere = addSphere();
-  let stone = addStone('handle1').stone
+  let stone = addStone({handle:'handle1'}).stone
 
   let action = AbilityPropertyTransferNext.getUpdateLocalCloudIdAction(sphere.id, stone.id, 'dimming', 'softOnSpeed', '123')
   core.store.dispatch(action)

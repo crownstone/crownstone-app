@@ -20,7 +20,7 @@ import { DataUtil }   from "../../util/DataUtil";
 import { Icon }       from "../components/Icon";
 import { ListEditableItems }       from '../components/ListEditableItems'
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
-import {LocalizationCore} from "../../backgroundProcesses/LocalizationCore";
+import {LocalizationCore} from "../../localization/LocalizationCore";
 
 
 export class SettingsApp extends LiveComponent<any, any> {

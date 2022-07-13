@@ -69,7 +69,6 @@ Object {
   "spheres": Object {
     "sphere_uuid2002-2003": Object {
       "config": Object {
-        "aiName": null,
         "cloudId": null,
         "iBeaconUUID": undefined,
         "latitude": null,
@@ -148,7 +147,7 @@ Object {
             "description": "",
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
-            "handle": "handle_uuid2006",
+            "handle": "handle1",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -246,7 +245,7 @@ Object {
             "description": "",
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
-            "handle": "handle_uuid2010",
+            "handle": "handle2",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,
@@ -344,7 +343,7 @@ Object {
             "description": "",
             "dfuResetRequired": false,
             "firmwareVersion": "5.4.0",
-            "handle": "handle_uuid2014",
+            "handle": "handle3",
             "hardwareVersion": null,
             "hidden": false,
             "iBeaconMajor": undefined,

@@ -37,7 +37,7 @@ eventHelperSetActive(handle);
 
 test("Session manager registration and queue for shared connections.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -90,7 +90,7 @@ test("Session manager registration and queue for shared connections.", async () 
 
 test("Session manager registration and queue for private connections.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -141,7 +141,7 @@ test("Session manager registration and queue for private connections.", async ()
 
 test("Session manager failing shared connection.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -173,7 +173,7 @@ test("Session manager failing shared connection.", async () => {
 
 test("Session manager failing private connection.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -218,7 +218,7 @@ test("Session manager failing private connection.", async () => {
 
 test("Session manager request and revoke shared requests in different states.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -275,7 +275,7 @@ test("Session manager request and revoke shared requests in different states.", 
 
 test("Session manager request and revoke private requests in different states.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({}, meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -313,7 +313,7 @@ test("Session manager request and revoke private requests in different states.",
 
 test("Session manager private connections cannot request the same session twice.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({} , meshId);
   eventHelperSetActive(handle, sphere.id, stone1.id);
   let sessionManager = new SessionManagerClass();
   let id1 = 'commanderId_1';

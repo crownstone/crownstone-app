@@ -1,8 +1,8 @@
 import {NATIVE_BUS_TOPICS} from "../Topics";
 import {core} from "../Core";
-import {KNN} from "../logic/classifiers/knn";
 import {FingerprintManager} from "../logic/FingerprintManager";
 import {Scheduler} from "../logic/Scheduler";
+import {KNN} from "./classifiers/knn";
 
 
 class LocalizationCoreClass {
@@ -150,10 +150,12 @@ class LocalizationCoreClass {
 
     if (this.presence[resultingLabel.sphereId] !== resultingLabel.locationId) {
       // leave the previous room
-      if (resultingLabel.sphereId) {
-        core.eventBus.emit('exitRoom', this.presence[resultingLabel.sphereId]);
-      }
-      core.eventBus.emit('enterRoom', resultingLabel);
+
+      console.log('resultingLabel', resultingLabel)
+      // if (resultingLabel.sphereId) {
+      //   core.eventBus.emit('exitRoom', this.presence[resultingLabel.sphereId]);
+      // }
+      // core.eventBus.emit('enterRoom', resultingLabel);
 
       this.presence[resultingLabel.sphereId] = resultingLabel.locationId;
     }

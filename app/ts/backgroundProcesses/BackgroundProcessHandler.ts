@@ -45,14 +45,14 @@ import {SphereStateManager} from "./SphereStateManager";
 import {UptimeMonitor} from "./UptimeMonitor";
 import {TrackingNumberManager} from "./TrackingNumberManager";
 import {ActiveSphereManager} from "./ActiveSphereManager";
-import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
 import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
 import DeviceInfo from "react-native-device-info";
 import {StatusBarWatcher} from "./StatusBarWatcher";
-import {LocalizationCore} from "./LocalizationCore";
+import {LocalizationCore} from "../localization/LocalizationCore";
+import {LocalizationMonitor} from "../localization/LocalizationMonitor";
 
 const PushNotification = require('react-native-push-notification');
 

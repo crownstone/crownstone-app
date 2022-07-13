@@ -1,5 +1,4 @@
 import {Languages} from "../../Languages";
-import {Alert} from 'react-native';
 
 import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
 import {Bluenet} from '../libInterface/Bluenet';
@@ -9,7 +8,7 @@ import {SphereUtil} from "../../util/SphereUtil";
 import {core} from "../../Core";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {canUseIndoorLocalizationInSphere} from "../../util/DataUtil";
-import {LocalizationCore} from "../../backgroundProcesses/LocalizationCore";
+import {LocalizationCore} from "../../localization/LocalizationCore";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocationHandler", key)(a,b,c,d,e);
@@ -180,6 +179,7 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data : locationDataContainer) {
+    console.log("_enterRoom", data);
     LOG.info('LocationHandler: USER_ENTER_LOCATION.', data.sphereId, data.locationId);
     let sphereId = data.sphereId;
     let locationId = data.locationId;
@@ -203,6 +203,7 @@ class LocationHandlerClass {
   }
 
   _exitRoom(data : locationDataContainer) {
+    console.log("_exitRoom", data);
     LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
 
     let sphereId = data.sphereId;

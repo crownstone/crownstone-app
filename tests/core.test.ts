@@ -13,9 +13,9 @@ afterAll(async () => {})
 let handle = 'TestHandle';
 test("Using core in tests", async () => {
   addSphere();
-  addStone('handle1')
-  addStone('handle2')
-  addStone('handle3')
+  addStone({handle:'handle1'});
+  addStone({handle:'handle2'});
+  addStone({handle:'handle3'});
   let state = core.store.getState();
   expect(state).toMatchSnapshot()
 })
@@ -37,9 +37,9 @@ test("versionUtil", async () => {
 
 test("abilities", async () => {
   addSphere();
-  addStone('handle1')
-  addStone('handle2')
-  addStone('handle3')
+  addStone({handle:'handle1'});
+  addStone({handle:'handle2'});
+  addStone({handle:'handle3'});
   let actions = [];
   let state = core.store.getState();
 

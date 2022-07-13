@@ -23,11 +23,11 @@ const meshId = "meshNetwork";
 
 test("Check the executor aggregation", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle:handle1 } = addStone({meshNetworkId: meshId});
-  let { stone: stone2, handle:handle2 } = addStone({meshNetworkId: meshId});
-  let { stone: stone3, handle:handle3 } = addStone({meshNetworkId: meshId});
-  let { stone: stone4, handle:handle4 } = addStone({meshNetworkId: meshId});
-  let { stone: stone5, handle:handle5 } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle:handle1 } = addStone({}, meshId);
+  let { stone: stone2, handle:handle2 } = addStone({}, meshId);
+  let { stone: stone3, handle:handle3 } = addStone({}, meshId);
+  let { stone: stone4, handle:handle4 } = addStone({}, meshId);
+  let { stone: stone5, handle:handle5 } = addStone({}, meshId);
 
   let promise = { resolve: jest.fn(), reject: jest.fn() };
   let options = getCommandOptions(sphere.id, [handle1]);

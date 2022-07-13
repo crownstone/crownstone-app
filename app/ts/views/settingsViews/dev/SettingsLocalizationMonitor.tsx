@@ -7,9 +7,8 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { background, colors, screenWidth } from "../../styles";
-import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
-import { Localization_LOG_PREFIX, LocalizationMonitor } from "../../../backgroundProcesses/LocalizationMonitor";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {Localization_LOG_PREFIX, LocalizationMonitor} from "../../../localization/LocalizationMonitor";
 
 const RNFS = require('react-native-fs');
 
