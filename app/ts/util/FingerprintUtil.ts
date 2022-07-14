@@ -179,16 +179,59 @@ export const FingerprintUtil = {
     let location = Get.location(sphereId, locationId);
     if (!sphere || !location) { return 0; }
 
-    let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
+    let penalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
 
     let score = 100;
+    for (let penalty in penalties) {
+      score -= penalties[penalty];
+    }
+
+    return Math.max(0,Math.round(score));
+  },
+
+  /**
+   * We will give the locations a fingerprint quality score. This is based on the following criteria:
+   *
+   * - Is there an in-hand fingerprint AND an in-pocket fingerprint? (if not in pocket -10%);
+   * - Is there a requirement for transformation? If so, -10% for not transformed, -5% for approximate.
+   * - How many crownstones are in the crownstonesAtCreation list of the fingerprint(s)? If less than 3 total, set the quality to 10%, if ratio, set to ratio (mapped 0 .. 80%).
+   *   - If mulitple trainingsets are used, the average of the quality scores will be used weighed by the number of datapoints. This will give a better average.
+   *
+   * If the score (partially) falls below 60%, discard the trainingset upon the next training of the room. If the total quality is above 60%, add the new set to the previous ones.
+   * TODO: DECIDE: If there are multiple sets for a location, automatically remove the worst one.
+   *
+   * @param sphereId
+   * @param locationId
+   * @param fingerprintId
+   */
+  calculateFingerprintScorePenalties: function(sphereId: string, locationId: string, fingerprintId: string) : {
+    missingInPocket: number,
+    unknownDeviceType:  number,
+    insufficientamountOfCrownstones:  number,
+    missingCrownstones: number,
+    missingTransform: number,
+  } {
+    let sphere = Get.sphere(sphereId);
+    let location = Get.location(sphereId, locationId);
+
+    let penalties = {
+      missingInPocket:0,
+      unknownDeviceType: 0,
+      insufficientamountOfCrownstones: 0,
+      missingCrownstones:0,
+      missingTransform:0,
+    };
+
+    if (!sphere || !location) { return penalties; }
+
+    let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
 
     if (FingerprintUtil.hasInPocketSet(location)) {
-      score -= 10;
+      penalties.missingInPocket = -10;
     }
 
     if (fingerprint.createdOnDeviceType === null) {
-      score -= 20;
+      penalties.unknownDeviceType = -20;
     }
 
     let amountOfCrownstonesAtCreation    = Object.keys(fingerprint.crownstonesAtCreation).length;
@@ -197,13 +240,13 @@ export const FingerprintUtil = {
     let amountOfSamples                  = fingerprint.data.length;
 
     if (amountOfCrownstonesInFingerprint < 3) {
-      return 10;
+      penalties.insufficientamountOfCrownstones = -90;
     }
 
     if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
       let ratio = (amountOfCrownstonesAtCreation / amountOfCrownstones) * 100;
       let penalty = (100 - ratio);
-      score -= penalty;
+      penalties.missingCrownstones = penalty;
     }
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
@@ -211,12 +254,13 @@ export const FingerprintUtil = {
         // expect that if it can, it has been transformed since this is an automatic process
       }
       else {
-        score -= 10;
+        penalties.missingTransform = -10;
       }
     }
 
-    return Math.round(score);
+    return penalties;
   },
+
 
 
   calculateLocationScore: function(sphereId: string, locationId: string) : number {

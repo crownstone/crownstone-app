@@ -108,7 +108,7 @@ function RoomItem(props) {
   console.log("Score: " + score + " factor: " + factor);
 
   return (
-    <View style={{
+    <TouchableOpacity style={{
       // backgroundColor: colors.csOrange.blend(colors.green, factor).rgba(0.75),
       flexDirection:'row',
       alignItems:'center',
@@ -116,7 +116,8 @@ function RoomItem(props) {
       paddingHorizontal:10,
       borderBottomWidth:1,
       borderColor: menuStyles.separator.backgroundColor,
-    }}>
+    }}
+      onPress={() => { NavigationUtil.navigate("LocalizationDetail",{sphereId: props.sphereId, locationId: props.locationId}); }}>
       <Icon name={location.config.icon} size={35} color={colors.black.hex} />
       <View style={{flexDirection:'column', flex:1, paddingLeft:10}}>
         <Text style={{fontSize:fontSize}}>{location.config.name}</Text>
@@ -124,23 +125,28 @@ function RoomItem(props) {
       { props.value ?? <Text style={{fontSize:fontSize, ...(props.valueStyle ?? {})}}>{props.value}</Text> }
       { getStars(score) }
       <Icon name="ios-arrow-forward" size={18} color={'#888'} style={{paddingRight:0, paddingLeft:15}} />
-    </View>
+    </TouchableOpacity>
   )
 }
 
-function getStars(score: number) {
+/**
+ * Get the stars for a given score.
+ * @param score
+ * @param size    Icon size
+ * @param color   Icon color
+ */
+export function getStars(score: number, size: number = 19, color = colors.black) {
   let stars = [];
-  let size = 19;
   for (let i = 0; i < 5; i++) {
     score -= 20;
     if (score >= 0) {
-      stars.push(<Icon key={`star_${i}`} name="fa-star" size={size} color={colors.black.hex} />);
+      stars.push(<Icon key={`star_${i}`} name="fa-star" size={size} color={color.hex} />);
     }
-    else if (score >= -10) {
-      stars.push(<Icon key={`star_${i}`} name="fa-star-half-o" size={size} color={colors.black.hex} />);
+    else if (score > -15 && score <= -5) {
+      stars.push(<Icon key={`star_${i}`} name="fa-star-half-o" size={size} color={color.hex} />);
     }
     else {
-      stars.push(<Icon key={`star_o_${i}`} name="fa-star-o" size={size} color={colors.black.rgba(0.3)} />);
+      stars.push(<Icon key={`star_o_${i}`} name="fa-star-o" size={size} color={color.rgba(0.3)} />);
     }
   }
 

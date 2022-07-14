@@ -126,6 +126,7 @@ import { LocalizationQuickFix } from "./main/localization/LocalizationQuickFix";
 import { LocalizationCrownstoneMoved } from "./main/localization/LocalizationCrownstoneMoved";
 import { SelectCrownstone } from "./selection/SelectCrownstone";
 import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
+import { LocalizationDetail } from "./main/localization/LocalizationDetail";
 
 
 export const Views = {
@@ -235,6 +236,7 @@ export const Views = {
   RoomTraining_conclusion:           RoomTraining_conclusion,
   RoomTraining_inPocket_intro:       RoomTraining_inPocket_intro,
   LocalizationQuickFix:              LocalizationQuickFix,
+  LocalizationDetail:                LocalizationDetail,
   LocalizationCrownstoneMoved:       LocalizationCrownstoneMoved,
 
 
