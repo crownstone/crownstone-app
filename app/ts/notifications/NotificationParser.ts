@@ -6,8 +6,8 @@ import {MessageCenter} from "../backgroundProcesses/MessageCenter";
 import {LOG, LOGe, LOGw} from "../logging/Log";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 import {InviteCenter} from "../backgroundProcesses/InviteCenter";
-import {tell} from "../logic/constellation/Tellers";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
+import { StoneUtil } from "../util/StoneUtil";
 
 class NotificationParserClass {
 
@@ -171,10 +171,10 @@ class NotificationParserClass {
       }
       switchState = Math.min(100, Math.max(0,switchState));
       if (switchState === 100) {
-        tell(stone).turnOn(true).catch(() => {});
+        StoneUtil.turnOn(stone).catch(() => {})
       }
       else {
-        tell(stone).multiSwitch(switchState,true).catch(() => {});
+        StoneUtil.multiSwitch(stone, switchState).catch(() => {})
       }
     }
   }
@@ -220,13 +220,13 @@ class NotificationParserClass {
           break;
         case "TURN_ON":
           actionToPerform = true;
-          tell(stone).turnOn(true).catch((err) => {});
+          StoneUtil.turnOn(stone).catch(() => {})
           return;
         default:
           return;
       }
       actionToPerform = true;
-      tell(stone).multiSwitch(switchState,true).catch((err) => {});
+      StoneUtil.multiSwitch(stone, switchState).catch(() => {})
     });
   }
 }

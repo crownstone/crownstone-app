@@ -490,6 +490,7 @@ export class SetupCrownstone extends LiveComponent<{
       rooms: {
         header: lang("Lets_pick_a_room_"),
         testID:'addCrownstone_roomPhase',
+        scrollViewtestID:'addCrownstone_roomPhase_scroll',
         subHeader: lang("In_which_room_did_you_put", xUtil.capitalize(this.newCrownstoneState.name)),
         optionsBottom: true,
         options: roomOptions

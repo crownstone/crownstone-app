@@ -610,7 +610,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun isDevelopmentEnvironment(callback: Callback) {
-		// Return whether this is app is for development
+		// Return true when this is a debug build
 		Log.i(TAG, "isDevelopmentEnvironment")
 		resolveCallback(callback, BuildConfig.DEBUG)
 	}
@@ -2969,7 +2969,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					retVal.putInt("reserved2",      it.reserved2.toInt())
 					retVal.putInt("productHousing", it.housing.toInt())
 					retVal.putInt("productionWeek", it.productionWeek.toInt())
-					retVal.putInt("producitonYear", it.productionYear.toInt())
+					retVal.putInt("productionYear", it.productionYear.toInt())
 					retVal.putInt("reserved3",      it.reserved3.toInt())
 					resolveCallback(callback, retVal) }
 				.fail { rejectCallback(callback, it) }

@@ -2,7 +2,7 @@ import {
   $, checkBackOption, delay, replaceText, screenshot, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
-  tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
+  tapSingularAlertButton, visitLink, waitToNavigate, waitToShow, waitToStart
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 import { device } from "detox";
@@ -74,11 +74,7 @@ export const Settings_myAccount = () => {
     })
 
     test('should be able to go to the data management', async () => {
-      await tap('DataManagement');
-      await delay(1000);
-      await screenshot();
-      await device.sendToHome();
-      await device.launchApp({ newInstance: false });
+      await visitLink('DataManagement');
     })
   }
 

@@ -1,5 +1,5 @@
 import {
-  $, checkBackOption, delay, longPress, replaceText, screenshot, shouldBeOn, tap,
+  $, checkBackOption, delay, longPress, replaceText, screenshot, scrollDownUntilVisible, shouldBeOn, tap,
   tapAlertCancelButton,
   tapAlertOKButton, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
@@ -13,6 +13,7 @@ export const SphereEditMenu_sphereSettings = () => {
   })
 
   test('should go to the SphereEditSettings view', async () => {
+    await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
     await tap("SphereEdit_settings");
     await waitToNavigate('SphereEditSettings');
     await screenshot();
@@ -60,17 +61,22 @@ export const SphereEditMenu_sphereSettings = () => {
       await tap("SphereUser_button");
       await waitToNavigate("SphereUserOverview");
       await checkBackOption("BackButton","SphereEdit", { restoreState: async () => {
+        await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
         await tap("SphereEdit_settings");
         await waitToNavigate('SphereEditSettings');
         await tap("SphereUser_button");
         await waitToNavigate("SphereUserOverview");
       }});
-    })
+    });
   }
   else {
     test('should be able to back from the sphere settings', async () => {
       await shouldBeOn("SphereEditSettings");
-      await checkBackOption("BackButton","SphereEdit","SphereEdit_settings","SphereEditSettings");
-    })
+      await checkBackOption("BackButton","SphereEdit", { restoreState: async () => {
+        await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
+        await tap("SphereEdit_settings");
+        await waitToNavigate('SphereEditSettings');
+      }});
+    });
   }
 };

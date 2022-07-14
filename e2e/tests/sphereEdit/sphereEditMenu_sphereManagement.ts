@@ -15,9 +15,11 @@ export const SphereEditMenu_sphereManagement = () => {
   })
 
   test("should not be able to leave the sphere as the only user", async () => {
+    await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
     await tap("SphereEdit_settings");
     await waitToNavigate('SphereEditSettings');
     await screenshot();
+    await scrollDownUntilVisible('LeaveSphere', "SphereEditSettingsScrollView");
     await tap("LeaveSphere")
     await screenshot();
     await tapAlertCancelButton();
@@ -29,6 +31,7 @@ export const SphereEditMenu_sphereManagement = () => {
   })
 
   test("should be able to delete sphere", async () => {
+    await scrollDownUntilVisible('DeleteSphere', "SphereEditSettingsScrollView");
     await tap("DeleteSphere")
     await screenshot();
     await tapAlertCancelButton();
@@ -73,6 +76,7 @@ export const SphereEditMenu_sphereManagement = () => {
   })
 
   test('should be able to tap never mind', async () => {
+    await scrollDownUntilVisible('AddSphere_nevermind', "AddSphereTutorial_intended");
     await tap("AddSphere_nevermind")
     await waitToNavigate('SphereEdit');
   })
@@ -85,6 +89,7 @@ export const SphereEditMenu_sphereManagement = () => {
     await waitToNavigate('AddSphereTutorial_multiple');
     await swipeNext('AddSphereTutorial_multiple');
     await waitToNavigate('AddSphereTutorial_intended');
+    await scrollDownUntilVisible('AddSphere_create', "AddSphereTutorial_intended");
     await tap("AddSphere_create")
     await waitToNavigate('AiStart');
   })
@@ -117,8 +122,10 @@ export const SphereEditMenu_sphereManagement = () => {
     await waitToNavigate("SphereOverview")
     await tap('edit')
     await waitToNavigate('SphereEdit');
+    await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
     await tap("SphereEdit_settings");
     await waitToNavigate('SphereEditSettings');
+    await scrollDownUntilVisible('DeleteSphere', "SphereEditSettingsScrollView");
     await tap("DeleteSphere")
     await tapAlertOKButton();
     await waitToNavigate('SphereOverview_SphereLevel');
