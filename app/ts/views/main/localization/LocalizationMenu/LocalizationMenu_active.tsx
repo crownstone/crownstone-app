@@ -104,7 +104,8 @@ function RoomItem(props) {
 
   let score = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
   let factor = (100 - score) / 100;
-  factor = Math.random();
+
+  console.log("Score: " + score + " factor: " + factor);
 
   return (
     <View style={{
@@ -121,7 +122,7 @@ function RoomItem(props) {
         <Text style={{fontSize:fontSize}}>{location.config.name}</Text>
       </View>
       { props.value ?? <Text style={{fontSize:fontSize, ...(props.valueStyle ?? {})}}>{props.value}</Text> }
-      { getStars(factor) }
+      { getStars(score) }
       <Icon name="ios-arrow-forward" size={18} color={'#888'} style={{paddingRight:0, paddingLeft:15}} />
     </View>
   )
@@ -131,11 +132,11 @@ function getStars(score: number) {
   let stars = [];
   let size = 19;
   for (let i = 0; i < 5; i++) {
-    score -= 0.2;
+    score -= 20;
     if (score >= 0) {
       stars.push(<Icon key={`star_${i}`} name="fa-star" size={size} color={colors.black.hex} />);
     }
-    else if (score >= -0.1) {
+    else if (score >= -10) {
       stars.push(<Icon key={`star_${i}`} name="fa-star-half-o" size={size} color={colors.black.hex} />);
     }
     else {

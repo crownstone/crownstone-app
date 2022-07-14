@@ -7,6 +7,7 @@ import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn"
 const sha1 = require('sha-1');
 
 const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
+const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export const FingerprintUtil = {
 
@@ -193,20 +194,17 @@ export const FingerprintUtil = {
     let amountOfCrownstonesAtCreation    = Object.keys(fingerprint.crownstonesAtCreation).length;
     let amountOfCrownstonesInFingerprint = FingerprintUtil.getAmountOfCrownstonesInFingerprint(fingerprint);
     let amountOfCrownstones              = Object.keys(sphere.stones).length;
+    let amountOfSamples                  = fingerprint.data.length;
 
     if (amountOfCrownstonesInFingerprint < 3) {
       return 10;
     }
 
-     if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
+    if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
       let ratio = (amountOfCrownstonesAtCreation / amountOfCrownstones) * 100;
-      console.log("FingerprintUtil.calculateScore: ratio:",amountOfCrownstonesAtCreation,amountOfCrownstones,ratio);
       let penalty = (100 - ratio);
       score -= penalty;
     }
-
-
-
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
       if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
@@ -226,13 +224,23 @@ export const FingerprintUtil = {
     let location = Get.location(sphereId, locationId);
     if (!sphere || !location) { return 0; }
 
-    let score = 0;
+    let totalScore = 0;
+    let totalSamples : Record<FingerprintType, number> = {IN_HAND:0, IN_POCKET:0, AUTO_COLLECTED: 0};
 
     for (let fingerprintId in location.fingerprints.raw) {
-      score += FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
+      totalScore += FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
+      let fingerprint = location.fingerprints.raw[fingerprintId];
+      if (totalSamples[fingerprint.type] !== undefined) {
+        totalSamples[fingerprint.type] += fingerprint.data.length;
+      }
     }
 
-    return Math.round(score/Object.keys(location.fingerprints.raw).length);
+    let averageScore = Math.round(totalScore/Object.keys(location.fingerprints.raw).length);
+    if (totalSamples.IN_HAND < FINGERPRINT_SIZE_THRESHOLD) {
+      averageScore -= 80 * (1-(totalSamples.IN_HAND/FINGERPRINT_SIZE_THRESHOLD));
+    }
+
+    return Math.max(0,averageScore);
   },
 
 
