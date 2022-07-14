@@ -37,7 +37,12 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
       this.setState({dataCount: amountOfPoints});
 
       if (amountOfPoints === MIN_DATA_COUNT) {
-        Vibration.vibrate([400]);
+        if (Platform.OS === 'android') {
+          Vibration.vibrate([0,400]);
+        }
+        else {
+          Vibration.vibrate([0]);
+        }
         return;
       }
 

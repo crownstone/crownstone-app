@@ -1,6 +1,8 @@
 import {core} from "../Core";
 import {FingerprintUtil} from "../util/FingerprintUtil";
 import {Get} from "../util/GetUtil";
+import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
+import { LocalizationCore } from "../localization/LocalizationCore";
 
 
 export class FingerprintManager {
@@ -16,6 +18,7 @@ export class FingerprintManager {
     // let sphere = Get.sphere(this.sphereId);
     // for (let locationId in sphere.locations) {
     //   core.store.dispatch({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+    //   core.store.dispatch({type:"REMOVE_ALL_FINGERPRINTS_V2",        sphereId: this.sphereId, locationId});
     // }
 
     this.init();
@@ -37,6 +40,9 @@ export class FingerprintManager {
         if (change.changeFingerprint && change.changeFingerprint.sphereIds[this.sphereId]) {
           // changes in fingerprints will lead to reprocessing.
           this.checkProcessedFingerprints();
+          if (canUseIndoorLocalizationInSphere(this.sphereId)) {
+            LocalizationCore.enableLocalization();
+          }
         }
       }))
 
@@ -47,7 +53,7 @@ export class FingerprintManager {
   deinit() {
     this.subscriptions.forEach(unsubscribe => unsubscribe());
     this.subscriptions = [];
-    this.initialized = false;
+    this.initialized   = false;
   }
 
 

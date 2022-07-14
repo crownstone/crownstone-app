@@ -547,11 +547,10 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
                 <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ "Developer Menu" }</Text>
               </View>
             </TouchableWithoutFeedback>
-
           }
           leftAction={() => { NavigationUtil.back(); }}
         >
-          <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1,paddingTop: topBarHeight}}>
+          <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1,paddingTop: topBarHeight-statusBarHeight}}>
             <SlideFadeInView visible={this.state.devAppVisible} height={120}>
               <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
             </SlideFadeInView>

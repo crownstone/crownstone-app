@@ -357,7 +357,7 @@ export const menuStyles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: colors.white.hex,
+    backgroundColor: colors.black.rgba(0.03),
   },
   subText: {
     fontSize:12,

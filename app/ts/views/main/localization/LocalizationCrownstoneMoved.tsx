@@ -36,55 +36,60 @@ import { NavigationBar } from "../../components/editComponents/NavigationBar";
 import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
 import { Get } from "../../../util/GetUtil";
+import { LocalizationCore } from "../../../localization/LocalizationCore";
 
 
 
-export function LocalizationQuickFix(props) {
+export function LocalizationCrownstoneMoved(props) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeFingerprint','changeSphereState']);
-  let [locationId, setLocationId] = React.useState(null);
+  useDatabaseChange(['changeStones']);
+  let [selectedStoneId, setSelectedStoneId] = React.useState(null);
 
-  let location = Get.location(props.sphereId, locationId);
+
+  let stoneName = null;
+  if (selectedStoneId) {
+    let stone = Get.stone(props.sphereId, selectedStoneId);
+    if (stone) {
+      let location = Get.location(props.sphereId, stone.config.locationId);
+      stoneName = `${stone.config.name} in ${location.config.name}`;
+    }
+
+  }
+
   return (
     <Background>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
-      <Text style={styles.header}>{"Localization made a mistake.."}</Text>
-      <Text style={styles.boldExplanation}>{"Let's learn from that mistake!"}</Text>
-      <Text style={styles.explanation}>{"Which room where you in for the last 3 minutes?"}</Text>
+      <Text style={styles.header}>{"A Crownstone has been moved.."}</Text>
+      <Text style={styles.boldExplanation}>{"We can update the rooms to use this information!"}</Text>
+      <Text style={styles.explanation}>{"If we do not do this, the moved Crownstone can interfere with the ability to detect which room you are in."}</Text>
+      <View style={{height:30}}/>
 
       <NavigationBar
-        label={ locationId === null ? "Pick location" : location.config.name }
+        label={ stoneName === null ? 'Which Crownstone was moved?' : stoneName }
         callback={() => {
-          OverlayUtil.callRoomSelectionOverlay(
+          OverlayUtil.callCrownstoneSelectionOverlay(
             props.sphereId,
-            (locationId) => { setLocationId(locationId); }
+            (stoneId) => {
+              setSelectedStoneId(stoneId);
+            },
           );
         }}
       />
 
-      <Text style={styles.explanation}>{"It is important that you really were in that room in all of the last 3 minutes!"}</Text>
       <Spacer />
       <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
-        { locationId === null ?
-            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{"Please pick a location first."}</Text>
+        { stoneName === null ?
+            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{"Please pick a Crownstone first."}</Text>
           :
             <Button
               backgroundColor={colors.csBlue.hex}
               icon={'c1-locationPin1'}
               iconSize={11}
-              label={ " Fix mistake! "}
+              label={ " Update rooms! "}
               callback={() => {
-                Alert.alert(
-                "You were in the " + location.config.name + " for the last 3 minutes?",
-                "This is important.",
-                [{text:"Yes", style: "destructive", onPress: handleConfirm},
-                         {text:"I'm not sure..", style:'cancel',
-
-
-                           onPress: handleCancel} ],
-                {cancelable:false}
-                );
+                LocalizationCore.crownstoneWasMoved(props.sphereId, selectedStoneId);
+                NavigationUtil.back();
               }}
             />
         }
@@ -93,18 +98,6 @@ export function LocalizationQuickFix(props) {
   );
 }
 
-function handleConfirm() {
-  NavigationUtil.dismissModal()
-}
 
-function handleCancel() {
-  Alert.alert(
-    "Better safe than sorry!",
-    "Stay in the room a little longer and try again after 3 minutes",
-    [{text:"OK", onPress: () => { NavigationUtil.dismissModal() }}],
-    {cancelable:false}
-  );
-}
-
-LocalizationQuickFix.options = TopBarUtil.getOptions({ title: "Quickfix" });
+LocalizationCrownstoneMoved.options = TopBarUtil.getOptions({ title: "Quickfix" });
 

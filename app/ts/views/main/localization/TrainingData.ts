@@ -14,7 +14,7 @@ export class TrainingData {
   trainingData  : trainingData[]  = [];
 
   sortedDeviceIds : string[] = [];
-  crownstonesAtCreation = [];
+  crownstonesAtCreation : Record<CrownstoneIdentifier, true> = {};
 
   subscriptions = [];
 
@@ -35,7 +35,7 @@ export class TrainingData {
   start() {
     this.trainingData          = [];
     this.sortedDeviceIds       = [];
-    this.crownstonesAtCreation = [];
+    this.crownstonesAtCreation = {};
     this.startTime             = Date.now();
 
     let sphere = Get.sphere(this.sphereId);
@@ -83,8 +83,8 @@ export class TrainingData {
   store() {
     let fingerprintId = xUtil.getUUID();
     core.store.dispatch({
-      type: 'ADD_FINGERPRINT_V2',
-      sphereId: this.sphereId,
+      type:       'ADD_FINGERPRINT_V2',
+      sphereId:   this.sphereId,
       locationId: this.locationId,
       fingerprintId,
       data: {

@@ -3,6 +3,7 @@ import {core} from "../Core";
 import {FingerprintManager} from "../logic/FingerprintManager";
 import {Scheduler} from "../logic/Scheduler";
 import {KNN} from "./classifiers/knn";
+import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
 
 
 export class LocalizationCoreClass {
@@ -176,13 +177,12 @@ export class LocalizationCoreClass {
 
   enableLocalization()            {
     if (this.classifierInitialized === false) {
-      this.initClassifier()
+      this.initClassifier();
     }
     this.localizationEnabled = true;
   }
 
-  disableLocalization()           { this.localizationEnabled = false; }
-
+  disableLocalization()           { this.localizationEnabled = false;     }
   enterSphere(sphereId: sphereId) { this.presentSpheres[sphereId] = true; }
   exitSphere( sphereId: sphereId) { delete this.presentSpheres[sphereId]; }
 

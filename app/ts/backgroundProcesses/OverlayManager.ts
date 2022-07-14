@@ -34,6 +34,7 @@ class OverlayManagerClass {
       core.eventBus.on('hideLoading',          () => {     this.loadingState = false; })
       core.eventBus.on('showProgress',         (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('showCustomOverlay',    (data) => { NavigationUtil.showOverlay('SimpleOverlay', {data: data}); })
+      core.eventBus.on('showSelectCrownstoneOverlay',    (data) => { NavigationUtil.showOverlay('SelectCrownstoneOverlay', data); })
       core.eventBus.on('showNumericOverlay',   (data) => { NavigationUtil.showOverlay('NumericOverlay',{data: data}); })
       core.eventBus.on('showTextInputOverlay', (data) => { NavigationUtil.showOverlay('TextInputOverlay',{data: data}); })
     }

@@ -13,7 +13,7 @@ import {
   availableModalHeight, background,
   colors,
   deviceStyles, getRoomStockImage,
-  screenWidth
+  screenWidth, statusBarHeight, topBarHeight
 } from "../../styles";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
@@ -26,6 +26,7 @@ import {
   SettingsCustomTopBarBackground,
 } from "../../components/SettingsBackground";
 import { CustomTopBarWrapper } from "../../components/CustomTopBarWrapper";
+import { LocationRow } from "../../selection/SelectCrownstone";
 
 
 
@@ -59,7 +60,6 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   static options = {
     topBar: { visible: false, height: 0 }
   };
-
 
   unsubscribeStoreEvents;
   callback;
@@ -163,7 +163,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
           }}
           right={this.props.copyType === "FROM" ? null : lang("Select")}
         >
-          <ScrollView>
+          <ScrollView contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight}}>
             <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
               { this._getLocationStoneList() }
             </View>
@@ -180,7 +180,7 @@ function LocationStoneList({location, sphereId, stoneDataArray, callback, origin
   }
   return (
     <React.Fragment>
-      <LocationRow location={location} />
+      <LocationRow sphereId={sphereId} locationId={location.id} />
       <StoneList stoneDataArray={stoneDataArray} sphereId={sphereId} callback={callback} dimmingRequired={dimmingRequired} behavioursRequired={behavioursRequired} originId={originId} />
       <View style={{height:50}} />
     </React.Fragment>
@@ -347,34 +347,5 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     </TouchableOpacity>
   )
 
-}
-
-function LocationRow({location}) {
-  let height = 80;
-  let textBackgroundColor = "transparent";
-  if (location.config.picture) {
-    textBackgroundColor = colors.white.rgba(0.8);
-  }
-  return (
-    <View style={{width: screenWidth, borderColor: colors.black.rgba(0.5), borderBottomWidth: 1, borderTopWidth: 1}}>
-      <View style={{opacity: 0.8}}><LocationFlavourImage location={location} height={height}/></View>
-      <View style={{position:'absolute', top:0, left:0, width: screenWidth, height: height, justifyContent:'center'}}>
-        <View style={{backgroundColor: textBackgroundColor, width: 30 + (location.config.name.length || 0) * 14}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:10}}>{location.config.name}</Text>
-        </View>
-      </View>
-    </View>
-  )
-}
-
-function LocationFlavourImage(props : {location: any, height?: number}) {
-  let location = props.location;
-  let usedHeight = props.height || 120;
-  if (location.config.pictureSource === "CUSTOM") {
-    return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
-  }
-  else {
-    return <Image source={getRoomStockImage(location.config.picture)} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
-  }
 }
 

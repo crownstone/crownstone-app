@@ -365,11 +365,12 @@ const entypoCorrections = {
 const fontAwesome5Corrections = {
 
 };
+const fontAwesomeCorrections = {
+
+};
 const materialIconsCorrections = {
 
 };
-
-
 
 
 export const iconCorrectionsAndroid = {
@@ -378,6 +379,7 @@ export const iconCorrectionsAndroid = {
   c3: c3CorrectionsAndroid,
   materialIcons: materialIconsCorrections,
   entypo: entypoCorrections,
+  fontAwesome: fontAwesomeCorrections,
   fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsAndroid,
   ionicons5: ion5CorrectionsAndroid,

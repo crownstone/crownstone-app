@@ -63,7 +63,7 @@ function migrateFingerprints() {
 
       if (fingerprint) {
         let newId = xUtil.getUUID();
-        let crownstonesAtCreation = getCrownstonesAtCreation(fingerprint);
+        let crownstonesAtCreation = getCrownstonesAtCreation(sphere);
         let deviceType = getDeviceType(fingerprint);
         let data = getFingerprintData(fingerprint, location.config.fingerprintUpdatedAt);
         actions.push({type:"ADD_FINGERPRINT_V2", sphereId, locationId, fingerprintId: newId, data: {
@@ -85,25 +85,13 @@ function migrateFingerprints() {
 }
 
 
-function getCrownstonesAtCreation(fingerprint) {
-  if (typeof fingerprint === 'string') {
-    fingerprint = JSON.parse(fingerprint);
+function getCrownstonesAtCreation(sphere: SphereData) {
+  let result = {};
+  for (let stoneId in sphere.stones) {
+    let stone = sphere.stones[stoneId];
+    result[FingerprintUtil.getStoneIdentifierFromStone(stone)] = true;
   }
-
-  let set = { };
-  for (let measurement of fingerprint) {
-    let data = []
-    if (!measurement.devices) { continue; }
-
-    for (let deviceId in measurement.devices) {
-      let identifier = FingerprintUtil.getStoneIdentifierFromIBeaconString(deviceId);
-      if (!identifier) { continue; }
-
-      set[identifier] = true;
-    }
-  }
-
-  return set;
+  return result;
 }
 
 

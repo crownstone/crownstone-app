@@ -5,6 +5,7 @@ import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 import Entypo from 'react-native-vector-icons/dist/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import Ionicons  from 'react-native-vector-icons/dist/Ionicons';
 import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
 
@@ -69,6 +70,11 @@ export function Icon(props) {
     offsetStyle = offset(props,'fontAwesome5');
     correctedName = props.name.substr(4);
     return <FontAwesome5 {...props} {...getProps(correctedName, offsetStyle, style)} />
+  }
+  else if (prefix3 == 'fa-') {
+    offsetStyle = offset(props,'fontAwesome');
+    correctedName = props.name.substr(3);
+    return <FontAwesome {...props} {...getProps(correctedName, offsetStyle, style)} />
   }
   else if (prefix3 == 'ma-') {
     offsetStyle = offset(props,'materialIcons');

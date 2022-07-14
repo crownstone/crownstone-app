@@ -7,16 +7,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from "react";
 import { core } from "../Core";
 import { RoomList } from "../views/components/RoomList";
-import { colors } from "../views/styles";
+import { colors, statusBarHeight, topBarHeight } from "../views/styles";
 import { DataUtil } from "./DataUtil";
 import { Get } from "./GetUtil";
+import { ScrollView } from "react-native";
+import { LocationLists } from "../views/selection/SelectCrownstone";
 
 
 
 
 export const OverlayUtil = {
 
-  callRoomSelectionOverlay: function(sphereId, callback, currentLocationId?) {
+  callRoomSelectionOverlay: function(sphereId, callback) {
     core.eventBus.emit('showListOverlay', {
       title: lang("Select_Room"),
       getItems: () => {
@@ -53,6 +55,15 @@ export const OverlayUtil = {
       image: require("../../assets/images/overlayCircles/roomsCircle.png")
     });
   },
+
+
+  callCrownstoneSelectionOverlay: function(sphereId, callback) {
+    core.eventBus.emit('showSelectCrownstoneOverlay', {
+      title: lang("Select_Crownstone"),
+      sphereId, callback
+    });
+  },
+
 
 
   callRoomSelectionOverlayForStonePlacement: function(sphereId, stoneId) {

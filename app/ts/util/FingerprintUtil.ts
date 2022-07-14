@@ -63,7 +63,7 @@ export const FingerprintUtil = {
   },
 
   isFingerprintGoodEnough: function(sphereId, locationId, fingerprintId) : boolean {
-    let score = FingerprintUtil.calculateScore(sphereId, locationId, fingerprintId);
+    let score = FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
     if (score >= FINGERPRINT_SCORE_THRESHOLD) {
       return true;
     }
@@ -143,9 +143,7 @@ export const FingerprintUtil = {
   getDeviceTypeDescription(): string {
     let state = core.store.getState();
 
-    let deviceId = DeviceInfo.getDeviceId();
-
-    return `${deviceId}_${state.user.userId}`
+    return `${DeviceInfo.getDeviceId()}_${DeviceInfo.getDeviceType()}_${state.user.userId}`
   },
 
 
@@ -175,7 +173,7 @@ export const FingerprintUtil = {
    * @param locationId
    * @param fingerprintId
    */
-  calculateScore: function(sphereId: string, locationId: string, fingerprintId: string) : number {
+  calculateFingerprintScore: function(sphereId: string, locationId: string, fingerprintId: string) : number {
     let sphere = Get.sphere(sphereId);
     let location = Get.location(sphereId, locationId);
     if (!sphere || !location) { return 0; }
@@ -220,6 +218,21 @@ export const FingerprintUtil = {
     }
 
     return Math.round(score);
+  },
+
+
+  calculateLocationScore: function(sphereId: string, locationId: string) : number {
+    let sphere = Get.sphere(sphereId);
+    let location = Get.location(sphereId, locationId);
+    if (!sphere || !location) { return 0; }
+
+    let score = 0;
+
+    for (let fingerprintId in location.fingerprints.raw) {
+      score += FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
+    }
+
+    return Math.round(score/Object.keys(location.fingerprints.raw).length);
   },
 
 

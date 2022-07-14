@@ -1446,6 +1446,7 @@ export default {
   OverlayUtil:{
     __filename: "../../js/views/overlays/OverlayUtil.tsx",
     Select_Room:                            function() { return "Select Room" },
+    Select_Crownstone:                      function() { return "Select Crownstone" },
   },
   PermissionIntroduction:{
     Lets_talk_Data_:                        function() { return "Let's talk Data!" },

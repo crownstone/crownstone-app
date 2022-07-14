@@ -123,6 +123,9 @@ import {RoomTraining_training} from "./main/localization/RoomTraining_training";
 import {RoomTraining_inPocket_intro} from "./main/localization/RoomTraining_inPocket_intro";
 import {RoomTraining_conclusion} from "./main/localization/RoomTraining_conclusion";
 import { LocalizationQuickFix } from "./main/localization/LocalizationQuickFix";
+import { LocalizationCrownstoneMoved } from "./main/localization/LocalizationCrownstoneMoved";
+import { SelectCrownstone } from "./selection/SelectCrownstone";
+import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
 
 
 export const Views = {
@@ -221,6 +224,7 @@ export const Views = {
   SceneEdit:                         SceneEdit,
   ScenePictureGallery:               ScenePictureGallery,
   SceneSelectCrownstones:            SceneSelectCrownstones,
+  SelectCrownstone:                  SelectCrownstone,
 
   EnergyUsage:                       EnergyUsage,
 
@@ -231,6 +235,7 @@ export const Views = {
   RoomTraining_conclusion:           RoomTraining_conclusion,
   RoomTraining_inPocket_intro:       RoomTraining_inPocket_intro,
   LocalizationQuickFix:              LocalizationQuickFix,
+  LocalizationCrownstoneMoved:       LocalizationCrownstoneMoved,
 
 
   // Overlays:
@@ -243,6 +248,7 @@ export const Views = {
   NumericOverlay:                    NumericOverlay,
   OptionPopup:                       OptionPopup,
   Processing:                        Processing,
+  SelectCrownstoneOverlay:           SelectCrownstoneOverlay,
   SimpleOverlay:                     SimpleOverlay,
   TextInputOverlay:                  TextInputOverlay,
 

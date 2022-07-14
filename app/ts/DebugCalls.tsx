@@ -5,6 +5,7 @@ import * as React from "react";
 import {NavigationUtil} from "./util/navigation/NavigationUtil";
 import {RoomList} from "./views/components/RoomList";
 import {SELECTABLE_TYPE} from "./Enums";
+import { OverlayUtil } from "./util/OverlayUtil";
 
 export function DebugNotifications() {
   let activeSphereId = core.store.getState().app.activeSphere;
