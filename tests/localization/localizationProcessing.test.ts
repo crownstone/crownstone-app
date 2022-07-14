@@ -102,10 +102,10 @@ test("LocalizationCore - classify", async () => {
   let items = fs.readdirSync(dataPath);
 
   let results = {}
+  console.time("classify");
   for (let item of items) {
     if (String(item).includes(".json")) {
       let data = JSON.parse(fs.readFileSync(path.join(dataPath, item)));
-
       for (let datapoint of data.dataset) {
         let packet = [];
         for (let ibeaconId in datapoint.devices) {
@@ -133,6 +133,7 @@ test("LocalizationCore - classify", async () => {
       }
     }
   }
+  console.timeEnd("classify");
 
   let base = {
     'Living room': { total: 5351, correct: 4797, miss: 554, rate: 0.8964679499159036 },

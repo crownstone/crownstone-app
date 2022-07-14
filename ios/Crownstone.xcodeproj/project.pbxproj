@@ -2589,7 +2589,7 @@
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
 				kind = exactVersion;
-				version = 29.0.0;
+				version = 29.1.0;
 			};
 		};
 		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {

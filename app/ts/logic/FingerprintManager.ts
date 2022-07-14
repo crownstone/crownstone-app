@@ -13,11 +13,10 @@ export class FingerprintManager {
   constructor(sphereId: sphereId) {
     this.sphereId = sphereId;
 
-    let sphere = Get.sphere(this.sphereId);
-    for (let locationId in sphere.locations) {
-      core.store.dispatch({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
-      // core.store.dispatch({type:"REMOVE_ALL_FINGERPRINTS_V2",        sphereId: this.sphereId, locationId});
-    }
+    // let sphere = Get.sphere(this.sphereId);
+    // for (let locationId in sphere.locations) {
+    //   core.store.dispatch({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+    // }
 
     this.init();
   }
@@ -85,7 +84,7 @@ export class FingerprintManager {
       let stone = Get.stone(this.sphereId, stoneId);
       if (stone) {
         let identifier = FingerprintUtil.getStoneIdentifierFromStone(stone);
-        crownstoneIdentifiers.push(identifier)
+        crownstoneIdentifiers.push(identifier);
       }
     }
 
