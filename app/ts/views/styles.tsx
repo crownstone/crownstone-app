@@ -316,6 +316,7 @@ export const styles = StyleSheet.create({
   },
   explanation: {fontSize:15, padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center'},
   boldExplanation: {fontSize:15, padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontWeight:'bold'},
+  boldLeftExplanation: {fontSize:15, padding: 15, paddingTop:10, paddingBottom:10, textAlign:'left', fontWeight:'bold'},
   header: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:18, fontWeight:'bold'},
   title: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:30, fontWeight:'bold'},
   legendText: {fontSize:12, textAlign:'center', paddingTop:10},

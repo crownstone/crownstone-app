@@ -60,10 +60,10 @@ export class SelectCrownstoneOverlay extends Component<any, any> {
         canClose={true}
         scrollable={true}
         closeCallback={() => { this.close(); }}
-        backgroundColor={colors.gray.rgba(0.2)}
+        backgroundColor={colors.csBlue.rgba(0.2)}
         title={this.props.title}
       >
-        <ScrollView>
+        <ScrollView contentContainerStyle={{backgroundColor: colors.gray.rgba(0.3)}}>
           <LocationLists
             sphereId={this.sphereId}
             callback={(stoneId) => { this.callback(stoneId); this.close(); }}

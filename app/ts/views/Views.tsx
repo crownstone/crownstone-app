@@ -127,6 +127,7 @@ import { LocalizationCrownstoneMoved } from "./main/localization/LocalizationCro
 import { SelectCrownstone } from "./selection/SelectCrownstone";
 import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
 import { LocalizationDetail } from "./main/localization/LocalizationDetail";
+import {LocalizationFindAndFix} from "./main/localization/LocalizationFindAndFix";
 
 
 export const Views = {
@@ -238,6 +239,7 @@ export const Views = {
   LocalizationQuickFix:              LocalizationQuickFix,
   LocalizationDetail:                LocalizationDetail,
   LocalizationCrownstoneMoved:       LocalizationCrownstoneMoved,
+  LocalizationFindAndFix:            LocalizationFindAndFix,
 
 
   // Overlays:

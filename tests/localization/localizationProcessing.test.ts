@@ -163,3 +163,8 @@ test("LocalizationCore - classify", async () => {
   console.log(str);
 
 });
+
+
+test("Removal of Crownstone from fingerprints", async () => {
+
+})

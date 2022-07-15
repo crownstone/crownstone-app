@@ -129,6 +129,17 @@ const fingerprintProcessedReducer = (state = {}, action : any = {}) => {
         delete newState[action.fingerprintProcessedId];
         return newState;
       }
+    case 'REMOVE_FINGERPRINT_V2':
+      if (action.fingerprintId) {
+        for (let fingerprintProcessedId in state) {
+          if (state[fingerprintProcessedId].fingerprintId === action.fingerprintId) {
+            let newState = {...state};
+            delete newState[fingerprintProcessedId];
+            return newState;
+          }
+        }
+      }
+      return state;
     default:
       // create a new fingerprint if it doesn't exist
       if (action.fingerprintProcessedId !== undefined && action.fingerprintProcessedId !== null) {

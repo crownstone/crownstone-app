@@ -35,15 +35,15 @@ export function DebugNotifications() {
 }
 
 export function DebugOverlays() {
-  // let activeSphereId = core.store.getState().app.activeSphere;
-  // OverlayUtil.callRoomSelectionOverlay(activeSphereId, (roomId) => {
-  //
-  // })
+  let activeSphereId = core.store.getState().app.activeSphere;
+  OverlayUtil.callCrownstoneSelectionOverlay(activeSphereId, (roomId) => {
+
+  })
 }
 
 export function Debug() {
-  DebugCustomView();
-  DebugPopup()
+  // DebugCustomView();
+  // DebugPopup()
 }
 
 
@@ -59,9 +59,8 @@ function DebugPopup() {
 }
 
 function DebugCustomView() {
-  // setTimeout(() => {
-  // NavigationUtil.launchModal("Quickfix",{
-  //   "sphereId":"2bb36a17-f6fd-5d1-41cc-cb92dd406c70"
-  // })},
-  //   300);
+  setTimeout(() => {
+  NavigationUtil.launchModal("LocalizationFindAndFix",
+    {"sphereId":"ded1eb49-50b1-e8d9-5f4a-6ea7b4e4a40a","locationId":"f121c973-e86c-9bc8-e9ff-bd36265dcc83"})},
+    300);
 }

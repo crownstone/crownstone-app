@@ -12,6 +12,7 @@ export class LocalizationCoreClass {
   classifierInitialized:  boolean = false;
   classifierInitializing: boolean = false;
   localizationEnabled:    boolean = false;
+  localizationPaused:     boolean = false;
 
   initClassifierTimeout = () => {}
 
@@ -146,10 +147,21 @@ export class LocalizationCoreClass {
     this.classifierInitializing = false;
   }
 
+
+  pauseLocalization() {
+    this.localizationPaused = true;
+  }
+
+  resumeLocalization() {
+    this.localizationPaused = false;
+  }
+
+
   handleIBeaconAdvertisement(data: ibeaconPackage[]) {
     // TODO: decide whether this is better than unsubscribing and resubscribing the nativeBus.
     if (this.classifierInitialized === false) { return; }
     if (this.localizationEnabled   === false) { return; }
+    if (this.localizationPaused    === true)  { return; }
 
     let classificationResults = this.classifier.classify(data);
 
@@ -175,7 +187,7 @@ export class LocalizationCoreClass {
   }
 
 
-  enableLocalization()            {
+  enableLocalization() {
     if (this.classifierInitialized === false) {
       this.initClassifier();
     }

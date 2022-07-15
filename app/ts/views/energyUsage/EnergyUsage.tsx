@@ -41,7 +41,7 @@ function EnergyUsageContent(props) {
 
   let activeSphere = Get.activeSphere();
   if (!activeSphere) {
-    return <PowerUsageContentNoSphere />;
+    return <EnergyUsageContentNoSphere />;
   }
 
   let indicator;
@@ -121,7 +121,7 @@ export function showDemoAlert() {
 }
 
 
-function PowerUsageContentNoSphere(props) {
+function EnergyUsageContentNoSphere(props) {
   return (
     <View style={{flex:1, alignItems:'flex-start', justifyContent:'center', paddingTop:topBarHeight}}>
       <View style={{flex:1}} />

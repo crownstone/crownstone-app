@@ -2,12 +2,10 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationMenu", key)(a,b,c,d,e);
+  return Languages.get("LocalizationQuickFix", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
-  ScrollView,
-  TouchableOpacity,
   Text,
   View, Alert, Linking
 } from "react-native";
@@ -15,23 +13,11 @@ import {
 
 import { colors, deviceStyles, background, topBarHeight, styles, screenHeight, screenWidth } from "../../styles";
 import {Background} from "../../components/Background";
-import {IconButton} from "../../components/IconButton";
-import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { ListEditableItems } from "../../components/ListEditableItems";
-import {
-  DataUtil,
-  enoughCrownstonesForIndoorLocalization
-} from "../../../util/DataUtil";
-import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import {FingerprintUtil} from "../../../util/FingerprintUtil";
 import { Button } from "../../components/Button";
-import { Dropdown } from "../../components/editComponents/Dropdown";
-import { OptionalSwitchBar } from "../../components/editComponents/OptionalSwitchBar";
-import { PopupBar } from "../../components/editComponents/PopupBar";
 import { NavigationBar } from "../../components/editComponents/NavigationBar";
 import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
@@ -94,6 +80,9 @@ export function LocalizationQuickFix(props) {
 }
 
 function handleConfirm() {
+  // TODO: Check each sample and the ones that do not resolve to the selected location are collected into an AUTO_GENERATED fingerprint.
+  // TODO: This will be done with a live-updateable fingerprint so we do not have to add any unnecessary samples.
+
   NavigationUtil.dismissModal()
 }
 

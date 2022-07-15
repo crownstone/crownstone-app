@@ -11,6 +11,7 @@ export class FingerprintManager {
   initialized : boolean = false;
 
   subscriptions : unsubscriber[] = [];
+  stoneIdMap:  Record<stoneId, CrownstoneIdentifier> = {};
 
   constructor(sphereId: sphereId) {
     this.sphereId = sphereId;
@@ -24,6 +25,17 @@ export class FingerprintManager {
     this.init();
   }
 
+  generateStoneIdentifierMap() : Record<stoneId, CrownstoneIdentifier> {
+    let sphere = Get.sphere(this.sphereId);
+    if (!sphere) { this.deinit(); return {}; }
+
+    this.stoneIdMap = {};
+    for (let stoneId in sphere.stones) {
+      let stone = sphere.stones[stoneId];
+      this.stoneIdMap[stoneId] = FingerprintUtil.getStoneIdentifierFromStone(stone);
+    }
+  }
+
   init() {
     if (this.initialized === false) {
       this.initialized = true;
@@ -32,6 +44,10 @@ export class FingerprintManager {
        * This should watch for all changes in a sphere that can lead to changes in localization.
        */
       this.subscriptions.push(core.eventBus.on("databaseChange", ({change}) => {
+        if (change.addStone && change.addStone.sphereIds[this.sphereId]) {
+          this.generateStoneIdentifierMap();
+        }
+
         if (change.removeStone && change.removeStone.sphereIds[this.sphereId]) {
           // removal of stones will possibly require removal of data from existing fingerprints.
           this.removeStoneIdsFromFingerprints(Object.keys(change.removeStone.stoneIds));
@@ -57,39 +73,13 @@ export class FingerprintManager {
   }
 
 
-  checkForRemovedCrownstonesInFingerprint() {
-    // if the sphere does not exist, clean up and stop.
-    let sphere = Get.sphere(this.sphereId);
-    if (!sphere) { this.deinit(); return; }
-
-    let availableCrownstoneIdentifiers = {};
-    for (let stone of Object.values(sphere.stones)) {
-      availableCrownstoneIdentifiers[FingerprintUtil.getStoneIdentifierFromStone(stone)] = stone.id;
-    }
-
-    let stoneIdentifiersToPurge = {};
-
-    for (let locationId in sphere.locations) {
-      let location = sphere.locations[locationId];
-      for (let fingerprint of Object.values(location.fingerprints.raw)) {
-        // check if there are crownstones in the crownstonesAtCreation array that are not in the availableCrownstoneIdentifiers.
-        for (let crownstoneIdentifier in fingerprint.crownstonesAtCreation) {
-          if (!availableCrownstoneIdentifiers[crownstoneIdentifier]) {
-            stoneIdentifiersToPurge[crownstoneIdentifier] = true;
-          }
-        }
-      }
-    }
-  }
-
 
   removeStoneIdsFromFingerprints(stoneIds: stoneId[]) {
     // prepare the identifier maps so we can iterate over the data and use that.
     let crownstoneIdentifiers = [];
     for (let stoneId of stoneIds) {
-      let stone = Get.stone(this.sphereId, stoneId);
-      if (stone) {
-        let identifier = FingerprintUtil.getStoneIdentifierFromStone(stone);
+      let identifier = this.stoneIdMap[stoneId];
+      if (identifier) {
         crownstoneIdentifiers.push(identifier);
       }
     }
@@ -137,9 +127,10 @@ export class FingerprintManager {
         if (modified) {
           actions.push({
             type:"UPDATE_FINGERPRINT_V2",
-            sphereId: this.sphereId,
-            locationId: location.id,
-            fingerprintId: fingerprint.id, data: {
+            sphereId:      this.sphereId,
+            locationId:    location.id,
+            fingerprintId: fingerprint.id,
+            data: {
               crownstonesAtCreation: crownstonesAtCreation,
               data: copiedData
             }

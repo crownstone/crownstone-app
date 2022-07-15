@@ -5,6 +5,7 @@ import {useState} from "react";
 import {Navigation} from "react-native-navigation";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {act} from "@testing-library/react-native";
+import {AppState} from "react-native";
 
 
 export function useForceUpdate(){
@@ -49,6 +50,7 @@ export function useSpherePresence() {
 export function useViewSwitching(viewName) {
   // let forceUpdate = useForceUpdate();
   let [currentView, setCurrentView] = useState(null);
+  useAppStateChangeRedraw();
 
   useEvent('VIEW_DID_APPEAR', () => {
     let activeView = NavigationUtil.getActiveView();
@@ -61,6 +63,21 @@ export function useViewSwitching(viewName) {
         setCurrentView(null);
       }
     }
+  });
+}
+/**
+ * Will trigger if we go from or to this view
+ * @param viewName
+ */
+export function useAppStateChangeRedraw() {
+  let forceUpdate = useForceUpdate()
+  useEvent("AppStateChange", (appState) => {forceUpdate();});
+}
+
+
+export function useAppStateChange(callback : (appState) => void) {
+  useEvent("AppStateChange", (appState) => {
+    callback(appState);
   });
 }
 

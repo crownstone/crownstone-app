@@ -2,109 +2,169 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationMenu", key)(a,b,c,d,e);
+  return Languages.get("LocalizationDetail", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
   ScrollView,
-  TouchableOpacity,
   Text,
-  View, Alert, Linking
+  View,
 } from "react-native";
 
 
 import { colors, deviceStyles, background, topBarHeight, styles, screenHeight, screenWidth } from "../../styles";
 import {Background} from "../../components/Background";
-import {IconButton} from "../../components/IconButton";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";
-import {
-  DataUtil,
-  enoughCrownstonesForIndoorLocalization
-} from "../../../util/DataUtil";
-import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import {FingerprintUtil} from "../../../util/FingerprintUtil";
-import { Button } from "../../components/Button";
-import { Dropdown } from "../../components/editComponents/Dropdown";
-import { OptionalSwitchBar } from "../../components/editComponents/OptionalSwitchBar";
-import { PopupBar } from "../../components/editComponents/PopupBar";
-import { NavigationBar } from "../../components/editComponents/NavigationBar";
-import { OverlayUtil } from "../../../util/OverlayUtil";
-import { Spacer } from "../../components/Spacer";
 import { Get } from "../../../util/GetUtil";
-
+import {FingerprintUtil, PenaltyList} from "../../../util/FingerprintUtil";
+import {getStars} from "./localizationMenu/LocalizationMenu_active";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 
 
 export function LocalizationDetail(props: {sphereId: string, locationId: string}) {
   bindTopbarButtons(props);
   useDatabaseChange(['changeFingerprint','changeSphereState']);
-  let [locationId, setLocationId] = React.useState(null);
 
-  let location = Get.location(props.sphereId, locationId);
+  let penalties = FingerprintUtil.calculateLocationPenalties(props.sphereId, props.locationId);
+  let score     = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
+
+  let items = [];
+  items.push({
+    type:'navigation',
+    label: 'Add more training data...',
+    callback: () => {
+      NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, minRequiredSamples: 20});
+    },
+  })
+  items.push({
+    type:'navigation',
+    label: 'Find and fix difficult spots...',
+    callback: () => {
+      NavigationUtil.launchModal("LocalizationFindAndFix", {sphereId: props.sphereId, locationId: props.locationId});
+    },
+  })
+
+  let deleteButton = [
+    {
+      type:  'button',
+      label: 'DELETE ALL COLLECTED DATA',
+      numberOfLines:3,
+      callback: () => {}
+    },
+    {
+      type: 'explanation', label:'Careful, you will need to retrain this room again if you delete all the data.', below: true
+    }];
+
+
   return (
     <Background>
       <View style={{height:topBarHeight}}/>
-      <View style={{height:30}}/>
-      <Text style={styles.header}>{"INFOe.."}</Text>
-      <Text style={styles.boldExplanation}>{"Let's learn from that mistake!"}</Text>
-      <Text style={styles.explanation}>{"Which room where you in for the last 3 minutes?"}</Text>
-
-      <NavigationBar
-        label={ locationId === null ? "Pick location" : location.config.name }
-        callback={() => {
-          OverlayUtil.callRoomSelectionOverlay(
-            props.sphereId,
-            (locationId) => { setLocationId(locationId); }
-          );
-        }}
-      />
-
-      <Text style={styles.explanation}>{"It is important that you really were in that room in all of the last 3 minutes!"}</Text>
-      <Spacer />
-      <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
-        { locationId === null ?
-            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{"Please pick a location first."}</Text>
-          :
-            <Button
-              backgroundColor={colors.csBlue.hex}
-              icon={'c1-locationPin1'}
-              iconSize={11}
-              label={ " Fix mistake! "}
-              callback={() => {
-                Alert.alert(
-                "You were in the " + location.config.name + " for the last 3 minutes?",
-                "This is important.",
-                [{text:"Yes", style: "destructive", onPress: handleConfirm},
-                         {text:"I'm not sure..", style:'cancel',
-
-
-                           onPress: handleCancel} ],
-                {cancelable:false}
-                );
-              }}
-            />
+      <ScrollView>
+        <Text style={styles.header}>{"Training quality"}</Text>
+        <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
+          { getStars(score, 30, colors.csBlue) }
+        </View>
+        <View style={{height:15}} />
+        { FingerprintUtil.isScoreGoodEnough(score) ?
+          <Text style={styles.boldLeftExplanation}>{"Add more stars by:"}</Text> :
+          <Text style={styles.boldLeftExplanation}>{"Address the issues by:"}</Text>
         }
-      </View>
+          <Improvements {...props} score={score} penalties={penalties} />
+
+        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <View style={{height:25}} /> }
+        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <Text style={styles.boldLeftExplanation}>{"Further improve localization by:"}</Text> }
+        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <ListEditableItems items={items} /> }
+
+        <View style={{height:25}} />
+        <Text style={styles.boldLeftExplanation}>{"Permanently delete all localization data for this room for a fresh start. This will affect the localization for everyone..."}</Text>
+        <ListEditableItems items={deleteButton} />
+      </ScrollView>
+
     </Background>
   );
 }
 
-function handleConfirm() {
-  NavigationUtil.dismissModal()
+
+LocalizationDetail.options = (props) => {
+  let location = Get.location(props.sphereId, props.locationId);
+
+  return TopBarUtil.getOptions({ title: location?.config?.name || "Unknown room" });
 }
 
-function handleCancel() {
-  Alert.alert(
-    "Better safe than sorry!",
-    "Stay in the room a little longer and try again after 3 minutes",
-    [{text:"OK", onPress: () => { NavigationUtil.dismissModal() }}],
-    {cancelable:false}
+function Improvements(props: {sphereId: string, locationId: string, score: number, penalties: PenaltyList}) {
+  let penalties = props.penalties;
+
+  let improvements = [];
+
+  if (penalties.missingInPocket < 0) {
+    improvements.push([penalties.missingInPocket,{
+      type: 'navigation',
+      label: "Adding an in-pocket training set...",
+      icon: <StarImprovement penalty={penalties.missingInPocket} />,
+      numberOfLines:2,
+      callback: () => {
+        NavigationUtil.launchModal("RoomTraining_inPocket_intro", {sphereId: props.sphereId, locationId: props.locationId});
+      }
+    }]);
+  }
+
+  if (penalties.unknownDeviceType < 0 || penalties.insufficientAmountOfData < 0) {
+    improvements.push([penalties.unknownDeviceType + penalties.insufficientAmountOfData,{
+      type: 'navigation',
+      label: "Retraining the room on this device...",
+      icon: <StarImprovement penalty={penalties.unknownDeviceType + penalties.insufficientAmountOfData} />,
+      numberOfLines:2,
+      callback: () => {
+        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId});
+      }
+    }]);
+  }
+
+  if (penalties.missingCrownstones < 0) {
+    improvements.push([penalties.missingCrownstones, {
+      type: 'navigation',
+      label: "Retraining to include new Crownstones...",
+      icon: <StarImprovement penalty={penalties.missingCrownstones} />,
+      numberOfLines:2,
+      callback: () => {
+        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId});
+      }
+    }]);
+  }
+
+  if (penalties.missingTransform < 0) {
+    improvements.push([penalties.missingTransform, {
+      type:  'navigation',
+      label: 'Optimizing for your phone...',
+      icon: <StarImprovement penalty={penalties.missingTransform} />,
+      numberOfLines:2,
+      callback: () => {}
+    }]);
+  }
+
+  improvements.sort((a,b) => { return a[0] - b[0] });
+  let items = [];
+  for (let improvement of improvements) {
+    items.push(improvement[1]);
+  }
+
+  return (
+    <React.Fragment>
+      { improvements.length > 0 && <ListEditableItems items={items} /> }
+    </React.Fragment>
   );
 }
 
-LocalizationDetail.options = TopBarUtil.getOptions({ title: "Quickfix" });
+function StarImprovement(props) {
+  return (
+    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: 30}}>
+      <Text style={{color:colors.green.hex, fontWeight:'bold'}}>+</Text>
+      {getStars(-1*props.penalty, 13, colors.green, false)}
+    </View>
+  )
+}
+
 

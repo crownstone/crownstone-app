@@ -157,7 +157,7 @@ interface LocationData {
   }
 }
 
-type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED';
+type FingerprintType = 'IN_HAND' | 'IN_POCKET' | 'AUTO_COLLECTED' | 'FIND_AND_FIX';
 type TransformState  = 'NOT_REQUIRED' | 'NOT_TRANSFORMED_YET' | 'TRANSFORMED_EXACT' | 'TRANSFORMED_APPROXIMATE';
 type CrownstoneIdentifier = string; // maj_min as identifier representing the Crownstone.
 
@@ -172,17 +172,20 @@ interface FingerprintData {
   createdAt: timestamp,
 }
 
-interface FingerprintProcessedData {
-  id: string,
+interface FingerprintProcessedData extends FingerprintCore {
   fingerprintId: string, // processed based on parent id
   type: FingerprintType,
   transformState: TransformState,
   crownstonesAtCreation: Record<CrownstoneIdentifier, true>, // maj_min as id representing the Crownstone.
-  data: FingerprintProcessedMeasurementData[],
   processingParameterHash: string, // this contains the parameters used to process the data. (sigmoid)
   transformedAt: timestamp,  // if the transform data has changed since the last time it was transformed, repeat the transform.
   processedAt:   timestamp,  // if the base fingerprint has changed since the processing time, update the processed fingerprint.
   createdAt:     timestamp,
+}
+
+interface FingerprintCore {
+  id: string,
+  data: FingerprintProcessedMeasurementData[],
 }
 
 interface FingerprintMeasurementData {

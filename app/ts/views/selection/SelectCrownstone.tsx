@@ -49,7 +49,6 @@ SelectCrownstone.options = {topBar: {visible: false, height:0}};
 
 export function LocationLists(props: {sphereId: sphereId, callback: (stoneId: string) => void}) {
   let sphere = Get.sphere(props.sphereId);
-  let stones = sphere.stones;
   let locations = sphere.locations;
   let locationIds = Object.keys(locations);
   locationIds.sort((a,b) => { return locations[a].config.name > locations[b].config.name ? 1 : -1});
@@ -77,8 +76,6 @@ export function LocationLists(props: {sphereId: sphereId, callback: (stoneId: st
 function LocationList(props: {sphereId: sphereId, locationId: locationId, callback: (stoneId: string) => void}) {
   let sphere = Get.sphere(props.sphereId);
   let stones = sphere.stones;
-
-  let location = Get.location(props.sphereId, props.locationId);
 
   let stoneIdsInLocation = Object.keys(stones)
     .filter((stoneId) => { return stones[stoneId].config.locationId === props.locationId;  })

@@ -28,10 +28,10 @@ import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";
-import { LocalizationMenu_notInSphere }          from "./LocalizationMenu/LocalizationMenu_notInSphere";
-import { LocalizationMenu_notEnoughCrownstones } from "./LocalizationMenu/LocalizationMenu_notEnoughCrownstones";
-import { LocalizationMenu_active }               from "./LocalizationMenu/LocalizationMenu_active";
-import { LocalizationMenu_gettingStarted }       from "./LocalizationMenu/LocalizationMenu_gettingStarted";
+import { LocalizationMenu_notInSphere }          from "./localizationMenu/LocalizationMenu_notInSphere";
+import { LocalizationMenu_notEnoughCrownstones } from "./localizationMenu/LocalizationMenu_notEnoughCrownstones";
+import { LocalizationMenu_active }               from "./localizationMenu/LocalizationMenu_active";
+import { LocalizationMenu_gettingStarted }       from "./localizationMenu/LocalizationMenu_gettingStarted";
 
 
 export function LocalizationMenu(props) {

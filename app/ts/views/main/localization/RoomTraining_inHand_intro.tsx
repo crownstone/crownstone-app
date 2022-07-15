@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { Alert, Animated, Platform, Vibration, Text, View, ScrollView } from "react-native";
+import { Text, View } from "react-native";
 
 import KeepAwake from 'react-native-keep-awake';
-import { Languages } from "../../../Languages";
-import { LiveComponent } from "../../LiveComponent";
-import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
@@ -23,7 +20,7 @@ export function RoomTraining_inHand_intro(props) {
         <View style={{height: topBarHeight}} />
         <KeepAwake />
         <View style={{height:20}}/>
-        <Text style={styles.boldExplanation}>{"First we will walk around the room with the phone in your hand, arm stretched out."}</Text>
+        <Text style={styles.boldExplanation}>{"Walk around the room with the phone in your hand, arm stretched out."}</Text>
         <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>
 
         <View style={{flex:1}}/>
@@ -36,7 +33,7 @@ export function RoomTraining_inHand_intro(props) {
             backgroundColor={colors.blue.hex}
             icon={'ios-play'}
             label={ "Start!"}
-            callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND"}); }}
+            callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND", minRequiredSamples: props.minRequiredSamples}); }}
           />
         </View>
     </Background>
@@ -44,5 +41,5 @@ export function RoomTraining_inHand_intro(props) {
 }
 
 RoomTraining_inHand_intro.options = (props) => {
-  return TopBarUtil.getOptions({title: `Initial training session`});
+  return TopBarUtil.getOptions({title: `Training session`});
 }

@@ -45,9 +45,6 @@ export function LocalizationMenu_active(props) {
 
   items.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: true});
 
-  let sphere = Get.sphere(props.sphereId);
-
-
   return (
     <SettingsBackground testID={"LocalizationMenu_active"}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
@@ -96,20 +93,16 @@ function LocalizationLocation(props: { sphereId: sphereId, locationId: locationI
 
 
 function RoomItem(props) {
-  let size = 50;
   let fontSize = 16;
 
   let location = Get.location(props.sphereId, props.locationId);
   if (!location) { return <View />; }
 
   let score = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
-  let factor = (100 - score) / 100;
 
-  console.log("Score: " + score + " factor: " + factor);
 
   return (
     <TouchableOpacity style={{
-      // backgroundColor: colors.csOrange.blend(colors.green, factor).rgba(0.75),
       flexDirection:'row',
       alignItems:'center',
       paddingVertical: 12,
@@ -135,20 +128,21 @@ function RoomItem(props) {
  * @param size    Icon size
  * @param color   Icon color
  */
-export function getStars(score: number, size: number = 19, color = colors.black) {
+export function getStars(score: number, size: number = 19, color = colors.black, showEmptyStars = true) {
   let stars = [];
   for (let i = 0; i < 5; i++) {
     score -= 20;
-    if (score >= 0) {
+    if (score >= -5) {
       stars.push(<Icon key={`star_${i}`} name="fa-star" size={size} color={color.hex} />);
     }
-    else if (score > -15 && score <= -5) {
-      stars.push(<Icon key={`star_${i}`} name="fa-star-half-o" size={size} color={color.hex} />);
+    else if (score >= -15) {
+      stars.push(<Icon key={`star_half_o_${i}`} name="fa-star-half-o" size={size} color={color.hex}/>);
     }
     else {
-      stars.push(<Icon key={`star_o_${i}`} name="fa-star-o" size={size} color={color.rgba(0.3)} />);
+      if (showEmptyStars) {
+        stars.push(<Icon key={`star_o_${i}`} name="fa-star-o" size={size} color={color.rgba(0.5)}/>);
+      }
     }
   }
-
   return stars;
 }

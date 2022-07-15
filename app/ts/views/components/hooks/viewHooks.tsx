@@ -31,3 +31,4 @@ export function bindTopbarButtons(props, buttonCallbacks: Record<buttonId, callb
 
   useTopBarButtons(props, usedButtonCallbacks);
 }
+

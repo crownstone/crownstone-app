@@ -9,34 +9,41 @@ import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../s
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {TrainingData} from "./TrainingData";
+import {FingerprintCollector} from "./fingerprintCollectors/FingerprintCollector";
+import {FingerprintUtil} from "../../../util/FingerprintUtil";
+import {core} from "../../../Core";
 
 
 export const MIN_DATA_COUNT = 10;
 
-export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType, componentId: string }, any> {
+export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType, componentId: string, minRequiredSamples?: number}, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
     return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, cancel: true});
   }
 
-  trainingData : TrainingData;
-
+  trainingData : FingerprintCollector;
+  minRequiredSamples : number = MIN_DATA_COUNT;
 
   constructor(props) {
     super(props);
+
+    if (this.props.minRequiredSamples) {
+      this.minRequiredSamples = this.props.minRequiredSamples;
+    }
+
     this.state = {
       showMoveAround: false,
       distance: 0,
       dataCount:0
     };
 
-    this.trainingData = new TrainingData(this.props.sphereId, this.props.locationId, this.props.type);
+    this.trainingData = new FingerprintCollector(this.props.sphereId, this.props.locationId, this.props.type);
 
     this.trainingData.tick = (amountOfPoints) => {
       this.setState({dataCount: amountOfPoints});
 
-      if (amountOfPoints === MIN_DATA_COUNT) {
+      if (amountOfPoints === this.minRequiredSamples) {
         if (Platform.OS === 'android') {
           Vibration.vibrate([0,400]);
         }
@@ -47,7 +54,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
       }
 
       if (Platform.OS === "android") {
-        let pattern = [50,0,30]
+        let pattern = [0,50,10,30]
         Vibration.vibrate(pattern);
       }
       else {
@@ -86,21 +93,28 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
         <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
         <View style={{flex:1}}/>
 
-        { this.state.dataCount < MIN_DATA_COUNT  && <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>}
-        { this.state.dataCount < MIN_DATA_COUNT  && <Text style={styles.header}>{`(${this.state.dataCount} / ${MIN_DATA_COUNT})`}</Text>}
+        { this.state.dataCount < this.minRequiredSamples  && <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>}
+        { this.state.dataCount < this.minRequiredSamples  && <Text style={styles.header}>{`(${this.state.dataCount} / ${this.minRequiredSamples})`}</Text>}
 
-        { this.state.dataCount >= MIN_DATA_COUNT && <Text style={styles.explanation}>{"You can collect more if you want. The more the better!"}</Text>}
-        { this.state.dataCount >= MIN_DATA_COUNT && <Text style={{...styles.header, color: colors.green.hex}}>{`Collected ${this.state.dataCount} points so far!`}</Text>}
+        { this.state.dataCount >= this.minRequiredSamples && <Text style={styles.explanation}>{"You can collect more if you want. The more the better!"}</Text>}
+        { this.state.dataCount >= this.minRequiredSamples && <Text style={{...styles.header, color: colors.green.hex}}>{`Collected ${this.state.dataCount} points so far!`}</Text>}
 
         <View style={{flex:1}}/>
 
-        { this.state.dataCount >= MIN_DATA_COUNT && <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
+        { this.state.dataCount >= this.minRequiredSamples && <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           <Button
             backgroundColor={colors.green.hex}
             label={ "Finish!"}
             callback={() => {
               this.trainingData.stop();
-              if (this.state.dataCount >= MIN_DATA_COUNT) {
+
+              // if we train the in-hand type of fingerprint, we can delete the other types.
+              // the in-hand fingerprints are a sort of baseline, whereas the in-pocket type is additional.
+              if (this.props.type === 'IN_HAND') {
+                checkToRemoveBadFingerprints(this.props.sphereId, this.props.locationId);
+              }
+
+              if (this.state.dataCount >= this.minRequiredSamples) {
                 this.trainingData.store();
               }
               NavigationUtil.navigate('RoomTraining_conclusion', this.props);
@@ -112,3 +126,18 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
   }
 }
 
+function checkToRemoveBadFingerprints(sphereId, locationId) {
+  let location = Get.location(sphereId, locationId);
+  let actions = [];
+  for (let fingerprintId in location.fingerprints.raw) {
+    let score = FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
+    if (!FingerprintUtil.isScoreGoodEnough(score)) {
+      actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId, locationId, fingerprintId});
+    }
+  }
+
+  if (actions.length > 0) {
+    core.store.batchDispatch(actions);
+  }
+
+}

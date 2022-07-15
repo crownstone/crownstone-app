@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';

@@ -1,5 +1,5 @@
 import {Get} from "../../../util/GetUtil";
-import {View} from "react-native";
+import {AppState, View} from "react-native";
 import {colors, NORMAL_ROW_SIZE, screenWidth} from "../../styles";
 import {useEffect, useState} from "react";
 import * as React from "react";
@@ -27,8 +27,13 @@ export function LiveRoomList(props: {}) {
   let activeSphere = Get.activeSphere();
 
   let isOnThisView = NavigationUtil.isOnView("EnergyUsage");
+  let isOnForeground = AppState.currentState === "active";
   useEffect(() => {
-    if (activeSphere && activeSphere.state.present && NavigationUtil.isOnView("EnergyUsage")) {
+    if (isOnForeground &&
+          activeSphere &&
+          activeSphere.state.present &&
+          NavigationUtil.isOnView("EnergyUsage")
+        ) {
       let interval = setInterval(() => {
         forceUpdate();
       }, 2000);
@@ -37,8 +42,7 @@ export function LiveRoomList(props: {}) {
         clearInterval(interval);
       }
     }
-  }, [activeSphere.id, isOnThisView]);
-
+  }, [activeSphere.id, isOnThisView, isOnForeground]);
 
   let items = [];
   let locations = [];
