@@ -1,9 +1,9 @@
 import {NATIVE_BUS_TOPICS} from "../Topics";
 import {core} from "../Core";
-import {FingerprintManager} from "../logic/FingerprintManager";
 import {Scheduler} from "../logic/Scheduler";
 import {KNN} from "./classifiers/knn";
 import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
+import { FingerprintManager } from "./fingerprints/FingerprintManager";
 
 
 export class LocalizationCoreClass {

@@ -1,15 +1,15 @@
-import { FileUtil } from "../../util/FileUtil";
-import { getLoggingFilename} from "../../logging/LogUtil";
-import { core } from "../../Core";
-import { MapProvider } from "./../MapProvider";
-import { LOGw } from "../../logging/Log";
-import { DataUtil } from "../../util/DataUtil";
+import { core } from "../Core";
+import { MapProvider } from "../backgroundProcesses/MapProvider";
+import { DataUtil } from "../util/DataUtil";
+import { FileUtil } from "../util/FileUtil";
+import { getLoggingFilename } from "../logging/LogUtil";
+import { LOGw } from "../logging/Log";
 
 const RNFS = require('react-native-fs');
 
 const Localization_LOG_PREFIX = 'Localization_Dataset_';
 
-class LocalizationLoggerClass {
+class LocalizationDevDataLoggerClass {
   _initialized : boolean = false;
   _unsubscribeListeners = [];
   _data = [];
@@ -17,12 +17,13 @@ class LocalizationLoggerClass {
 
   init() {
     if (this._initialized === false) {
-      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,
-        (ibeaconData: ibeaconPackage[]) => { this._store(ibeaconData); }))
-      this._unsubscribeListeners.push(core.eventBus.on('enterRoom',
-        (data : locationDataContainer) => {
+      this._unsubscribeListeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,(ibeaconData: ibeaconPackage[]) => { this._collect(ibeaconData); }))
+
+      // this will collect localization data for the last hour. These results can be used in postprocessing.
+      this._unsubscribeListeners.push(core.eventBus.on('enterRoom', (data : locationDataContainer) => {
         // no duplicates in this set.
         removeExistingClassifications(this._lastClassifications, data);
+
         // place the most recent one first.
         this._lastClassifications.unshift({timestamp : Date.now(), sphereId: data.sphereId, locationId: data.locationId});
 
@@ -31,12 +32,16 @@ class LocalizationLoggerClass {
           this._lastClassifications.pop();
         }
 
-      })); // data = {region: sphereId, location: locationId}
+      }));
     }
     this._initialized = true;
   }
 
 
+  /**
+   * This will present the last few locations that have been classified.
+   * @param minutesToLookBack
+   */
   getClassificationOptions(minutesToLookBack: number) : classificationContainer[] {
     let sinceDate = Date.now() - minutesToLookBack * 60000;
     let collection = [];
@@ -54,11 +59,13 @@ class LocalizationLoggerClass {
     return collection
   }
 
+
   resetMeasurement() {
     this._data = [];
   }
 
-  _store(data: ibeaconPackage[]) {
+
+  _collect(data: ibeaconPackage[]) {
     let set = {};
     let now = Date.now()
     for (let ibeaconData of data) {
@@ -76,7 +83,13 @@ class LocalizationLoggerClass {
   }
 
 
-  async classify(secondsToLookBack: number, location: LocationData, annotation: string) : Promise<number> {
+  /**
+   * This method will label the last X seconds of localization data to one location and stores it to file
+   * @param secondsToLookBack
+   * @param location
+   * @param annotation
+   */
+  async labelAndStore(secondsToLookBack: number, location: LocationData, annotation: string) : Promise<number> {
     let lastTimestamp = Date.now() - secondsToLookBack*1000;
     // find until where we need to get the data
     // we start with the assumption of 1 sample per second and go from there.
@@ -135,11 +148,11 @@ class LocalizationLoggerClass {
   }
 
   clearDataFiles() {
-    deleteDataFiles()
+    deleteLocaliztionDataFiles();
   }
 
   async getURLS() : Promise<string[]> {
-    return await getDatasetUrls()
+    return await getLocalizationDatasetUrls()
   }
 
   async storeFingerprints() : Promise<string> {
@@ -165,7 +178,7 @@ class LocalizationLoggerClass {
 
 }
 
-export const LocalizationLogger = new LocalizationLoggerClass();
+export const LocalizationDevDataLogger = new LocalizationDevDataLoggerClass();
 
 
 
@@ -187,9 +200,9 @@ async function writeLocalizationDataset(labelName: string, data, ignoreDatetime 
 }
 
 
-async function deleteDataFiles() {
+async function deleteLocaliztionDataFiles() {
   try {
-    let urls = await getDatasetUrls()
+    let urls = await getLocalizationDatasetUrls()
     for (let i = 0; i < urls.length; i++) {
       await FileUtil.safeDeleteFile(urls[i]).catch(()=>{});
     }
@@ -200,7 +213,7 @@ async function deleteDataFiles() {
 }
 
 
-async function getDatasetUrls() {
+async function getLocalizationDatasetUrls() {
   let filePath = FileUtil.getPath();
   let urls = [];
   try {

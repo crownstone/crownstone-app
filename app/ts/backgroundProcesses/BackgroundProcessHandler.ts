@@ -47,12 +47,12 @@ import {TrackingNumberManager} from "./TrackingNumberManager";
 import {ActiveSphereManager} from "./ActiveSphereManager";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
-import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
 import DeviceInfo from "react-native-device-info";
 import {StatusBarWatcher} from "./StatusBarWatcher";
 import {LocalizationCore} from "../localization/LocalizationCore";
 import {LocalizationMonitor} from "../localization/LocalizationMonitor";
+import { LocalizationDevDataLogger } from "../localization/LocalizationDevDataLogger";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -494,7 +494,7 @@ class BackgroundProcessHandlerClass {
 
   startDeveloperSingletons() {
     if (DataUtil.isDeveloper()) {
-      LocalizationLogger.init();
+      LocalizationDevDataLogger.init();
     }
   }
 }

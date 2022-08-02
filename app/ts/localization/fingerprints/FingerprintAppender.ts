@@ -1,13 +1,13 @@
-import { NativeBus } from "../../../../native/libInterface/NativeBus";
-import { NATIVE_BUS_TOPICS } from "../../../../Topics";
-import { Get } from "../../../../util/GetUtil";
-import {KNN} from "../../../../localization/classifiers/knn";
 import {FingerprintCollector} from "./FingerprintCollector";
+import { KNN } from "../classifiers/knn";
+import { Get } from "../../util/GetUtil";
+import { NativeBus } from "../../native/libInterface/NativeBus";
+import { NATIVE_BUS_TOPICS } from "../../Topics";
 
 
-export class FingerprintCollectorLive {
+export class FingerprintAppender {
   subscriptions = [];
-  handleResult  = (distanceMap : Record<locationId, number>) => {};
+  handleResult  = (distanceMap : Record<sphereId, locationId>) => {};
 
   startTime       : timestamp;
   sphereId        : string;
@@ -40,33 +40,18 @@ export class FingerprintCollectorLive {
     }
   }
 
-
-  start() {
-    this._listen();
-  }
-
-
-  _listen() {
-    this.subscriptions.push(NativeBus.on(NATIVE_BUS_TOPICS.iBeaconAdvertisement, this.handleIbeacon.bind(this)));
-  }
-
-
-  handleIbeacon(data: ibeaconPackage[]) {
-    let distanceMap = this.classifier.classifyWithDistanceMap(this.sphereId, data);
-    this.lastMeasurement = data;
-    this.handleResult(distanceMap);
+  loadCollectedData(data: ibeaconPackage[][]) {
+    for (let measurement of data) {
+      let classificationResults = this.classifier.classify(measurement);
+      this.lastMeasurement = measurement;
+      this.handleResult(classificationResults);
+    }
   }
 
 
   collectDatapoint() {
     this.collector.collect(this.lastMeasurement);
     this.classifier.updateFingerprint(this.sphereId, this.locationId, {id: 'LiveData', data: this.collector.trainingDataProcessed});
-  }
-
-
-  stop() {
-    this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
-    this.subscriptions = [];
   }
 
 

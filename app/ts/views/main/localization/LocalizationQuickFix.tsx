@@ -22,10 +22,12 @@ import { NavigationBar } from "../../components/editComponents/NavigationBar";
 import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
 import { Get } from "../../../util/GetUtil";
+import { LocalizationMonitor } from "../../../localization/LocalizationMonitor";
+import { FingerprintAppender } from "../../../localization/fingerprints/FingerprintAppender";
 
 
 
-export function LocalizationQuickFix(props) {
+export function LocalizationQuickFix(props: { sphereId: sphereId }) {
   bindTopbarButtons(props);
   useDatabaseChange(['changeFingerprint','changeSphereState']);
   let [locationId, setLocationId] = React.useState(null);
@@ -64,11 +66,8 @@ export function LocalizationQuickFix(props) {
                 Alert.alert(
                 "You were in the " + location.config.name + " for the last 3 minutes?",
                 "This is important.",
-                [{text:"Yes", style: "destructive", onPress: handleConfirm},
-                         {text:"I'm not sure..", style:'cancel',
-
-
-                           onPress: handleCancel} ],
+                [{text:"Yes", style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
+                         {text:"I'm not sure..", style:'cancel', onPress: handleCancel} ],
                 {cancelable:false}
                 );
               }}
@@ -79,11 +78,43 @@ export function LocalizationQuickFix(props) {
   );
 }
 
-function handleConfirm() {
-  // TODO: Check each sample and the ones that do not resolve to the selected location are collected into an AUTO_GENERATED fingerprint.
-  // TODO: This will be done with a live-updateable fingerprint so we do not have to add any unnecessary samples.
+function handleConfirm(sphereId, locationId) {
+  let history = LocalizationMonitor.getHistory(Date.now() - 3 * 60 * 1000);
+  let appender = new FingerprintAppender(sphereId, locationId, "AUTO_COLLECTED");
 
-  NavigationUtil.dismissModal()
+  let amountOfNewDatapoints = 0;
+
+  appender.handleResult = (result) => {
+    if (!result[sphereId]) { return; }
+
+    if (result[sphereId] !== locationId) {
+      appender.collectDatapoint();
+      amountOfNewDatapoints++;
+    }
+  }
+
+  appender.loadCollectedData(history);
+
+  appender.store();
+
+  if (amountOfNewDatapoints > 0) {
+    Alert.alert(
+      "Localization has been improved!",
+      "Added " + amountOfNewDatapoints + " new datapoints!",
+      [{
+        text: "Great!",  onPress: () => { NavigationUtil.dismissModal(); }}],
+      { cancelable: false }
+    );
+  }
+  else {
+    Alert.alert(
+      "No need to improve!",
+      "Localization already placed you in that room for the last 3 minutes!",
+      [{
+        text: "Great!", onPress: () => { NavigationUtil.dismissModal(); }}],
+      { cancelable: false }
+    );
+  }
 }
 
 function handleCancel() {

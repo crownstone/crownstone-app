@@ -1,18 +1,18 @@
-import { NativeBus } from "../../../../native/libInterface/NativeBus";
-import { NATIVE_BUS_TOPICS } from "../../../../Topics";
-import { core } from "../../../../Core";
-import { xUtil } from "../../../../util/StandAloneUtil";
-import { Get } from "../../../../util/GetUtil";
-import { FingerprintUtil } from "../../../../util/FingerprintUtil";
-import {LocalizationCore} from "../../../../localization/LocalizationCore";
-import {KNNsigmoid} from "../../../../localization/classifiers/knn";
-
-
 /**
  * This class will collect datapoints on each nativebus ibeacon event.
  * It provides a callback with the amount of points collected.
  * This is used for in-hand and in-pocket data collection.
  */
+import { Get } from "../../util/GetUtil";
+import { FingerprintUtil } from "../../util/FingerprintUtil";
+import { LocalizationCore } from "../LocalizationCore";
+import { NativeBus } from "../../native/libInterface/NativeBus";
+import { NATIVE_BUS_TOPICS } from "../../Topics";
+import { KNNsigmoid } from "../classifiers/knn";
+import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../Core";
+
+
 export class FingerprintCollector {
   trainingData          : trainingData[]           = [];
   trainingDataProcessed : trainingDataProcessed[]  = [];
@@ -91,6 +91,8 @@ export class FingerprintCollector {
 
 
   store() {
+    if (this.trainingData.length === 0) { return; }
+
     let fingerprintId = xUtil.getUUID();
     core.store.dispatch({
       type:       'ADD_FINGERPRINT_V2',

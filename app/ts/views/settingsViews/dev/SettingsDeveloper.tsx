@@ -27,7 +27,6 @@ import { Stacks } from "../../Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../Base_core";
-import { LocalizationLogger } from "../../../backgroundProcesses/dev/LocalizationLogger";
 import {LOG_file, LOGw} from "../../../logging/Log";
 
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
@@ -37,6 +36,7 @@ import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHa
 import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
 import { SettingsCustomTopBarNavbarBackground, } from "../../components/SettingsBackground";
 import { CustomTopBarWrapperWithLine} from "../../components/CustomTopBarWrapper";
+import { LocalizationDevDataLogger } from "../../../localization/LocalizationDevDataLogger";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 
@@ -74,7 +74,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   componentDidMount() {
     // this is done on boot if the user was already a developer. This can be repeated without sideeffects.
-    LocalizationLogger.init();
+    LocalizationDevDataLogger.init();
 
     this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -211,7 +211,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             }}]) }},
             {text:"Delete localization datasets",  callback: () => {
             Alert.alert("Sure about that?","This will delete all collected Localization datasets.",[{text:'no'},{text:"yes", onPress: async () => {
-              await LocalizationLogger.clearDataFiles();
+              await LocalizationDevDataLogger.clearDataFiles();
               Alert.alert("Done!");
             }}]) }},
           ]})
@@ -519,7 +519,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         store.batchDispatch(actions);
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
-        LocalizationLogger.destroy();
+        LocalizationDevDataLogger.destroy();
         NavigationUtil.back();
     }});
 
@@ -664,7 +664,7 @@ export async function shareDataViaRTC(shareDataType) {
 
     await shareData(shareDataType);
     Alert.alert("Delete datasets now?", "I could not see if the sharing was successful...", [{ text: "No" }, {
-      text: "Delete", style:'destructive', onPress: async () => { await LocalizationLogger.clearDataFiles(); }
+      text: "Delete", style:'destructive', onPress: async () => { await LocalizationDevDataLogger.clearDataFiles(); }
     }])
   // }
 }
@@ -674,8 +674,8 @@ export async function getShareDataFileUrls(shareDataType) : Promise<string[]> {
   let storagePath = FileUtil.getPath();
   let urls = [];
   if (shareDataType === SHARE_DATA_TYPE.localization) {
-    let fingerprintPath = await LocalizationLogger.storeFingerprints();
-    let logUrls = await LocalizationLogger.getURLS();
+    let fingerprintPath = await LocalizationDevDataLogger.storeFingerprints();
+    let logUrls = await LocalizationDevDataLogger.getURLS();
     logUrls.push(fingerprintPath);
     urls = logUrls.map((a) => { return "file://" + a })
   }

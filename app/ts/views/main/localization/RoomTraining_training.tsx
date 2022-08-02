@@ -9,9 +9,9 @@ import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../s
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {FingerprintCollector} from "./fingerprintCollectors/FingerprintCollector";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";
 import {core} from "../../../Core";
+import { FingerprintCollector } from "../../../localization/fingerprints/FingerprintCollector";
 
 
 export const MIN_DATA_COUNT = 10;

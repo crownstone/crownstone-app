@@ -1,8 +1,8 @@
-import {core} from "../Core";
-import {FingerprintUtil} from "../util/FingerprintUtil";
-import {Get} from "../util/GetUtil";
-import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
-import { LocalizationCore } from "../localization/LocalizationCore";
+import { Get } from "../../util/GetUtil";
+import { FingerprintUtil } from "../../util/FingerprintUtil";
+import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
+import { LocalizationCore } from "../LocalizationCore";
+import { core } from "../../Core";
 
 
 export class FingerprintManager {

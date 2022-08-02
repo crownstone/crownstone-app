@@ -7,12 +7,12 @@ import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {FingerprintCollectorLive} from "./fingerprintCollectors/FingerprintCollectorLive";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {BlurView} from "@react-native-community/blur";
 import {Button} from "../../components/Button";
 import {SlideInViewLayoutAnimation} from "../../components/animated/SlideInViewLayoutAnimation";
 import {core} from "../../../Core";
+import { FingerprintCollectorLive } from "../../../localization/fingerprints/FingerprintCollectorLive";
 
 
 

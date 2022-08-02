@@ -11,3 +11,5 @@ interface trainingDataProcessed {
   dt: timestamp,
   data: Record<string, sigmoid>
 }
+
+type iBeaconHistory = [timestamp, ibeaconPackage[]];

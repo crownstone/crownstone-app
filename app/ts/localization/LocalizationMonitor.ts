@@ -8,11 +8,20 @@ const RNFS = require('react-native-fs');
 const Localization_TRIGGER_ID = "Localization_MONITOR"
 export const Localization_LOG_PREFIX = 'LocalizationLog';
 
+
+const MAX_STORAGE_TIME = 5*60*1000; // 5 minutes
+
+
+/**
+ * This class keeps a history of the localization state.
+ */
 class LocalizationMonitorClass {
+  _history : iBeaconHistory[] = [];
   _initialized : boolean = false;
 
   init() {
     if (this._initialized === false) {
+      core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,(data: ibeaconPackage[]) => { this.storeMeasurement(data); })
       core.nativeBus.on(core.nativeBus.topics.enterSphere,  (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Enter Sphere.'}); })
       core.nativeBus.on(core.nativeBus.topics.exitSphere,   (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Exit Sphere.'}); })
       core.eventBus.on('enterRoom' ,(data) => { this.storeLocalization(data); }); // data = {sphereId: sphereId, locationId: locationId}
@@ -23,6 +32,23 @@ class LocalizationMonitorClass {
   storeLocalization(data) {
     cleanLogs();
     writeLocalization(data);
+  }
+
+
+  storeMeasurement(data: ibeaconPackage[]) {
+    this._history.push([Date.now(), data]);
+
+    // check if the oldest entry is older than the max storage time.
+    if (this._history.length > 0 && this._history[0][0] < Date.now() - MAX_STORAGE_TIME) {
+      this._history.shift();
+    }
+  }
+
+  getHistory(since: timestamp) : ibeaconPackage[][] {
+    // select the slice of history that matches the "since" timestamp.
+    return this._history
+      .filter((entry) => { return entry[0] >= since; })
+      .map((entry) => { return entry[1]; });
   }
 
   clear() {
