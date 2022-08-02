@@ -12,13 +12,14 @@ import { Background } from "../../../components/Background";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import { Get } from "../../../../util/GetUtil";
-import { FingerprintUtil } from "../../../../util/FingerprintUtil";
+import { FINGERPRINT_SCORE_THRESHOLD, FingerprintUtil } from "../../../../util/FingerprintUtil";
 import { RoomList } from "../../../components/RoomList";
 
 
 
 export function LocalizationMenu_active(props) {
   let items = [];
+  let secondItems = [];
   items.push({label: "CHANGES AND QUICKFIX",  type:'explanation'});
   items.push({
     label: "I have moved a Crownstone..",
@@ -41,15 +42,27 @@ export function LocalizationMenu_active(props) {
       NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
     }
   });
-  items.push({label: "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to improve localization!",  type:'explanation', below: true});
+  items.push({label: "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!",  type:'explanation', below: true});
 
-  items.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: true});
+
+  let locationsAttention = FingerprintUtil.getLocationsInNeedOfAttention(props.sphereId);
+  let goodLocations      = FingerprintUtil.getLocationsWithGoodFingerprints(props.sphereId);
+
+  if (locationsAttention.length > 0) {
+    items.push({label: "THESE NEED ATTENTION!",  type:'explanation', alreadyPadded: true});
+  }
+
+  if (goodLocations.length > 0) {
+    secondItems.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: true});
+  }
 
   return (
     <SettingsBackground testID={"LocalizationMenu_active"}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
         <ListEditableItems items={items} />
-        <LocalizationLocationList sphereId={props.sphereId} />
+        <LocalizationLocationList sphereId={props.sphereId} locations={locationsAttention} backgroundColor={colors.csOrange.rgba(0.35)}  />
+        <ListEditableItems items={secondItems} />
+        <LocalizationLocationList sphereId={props.sphereId} locations={goodLocations} />
       </ScrollView>
     </SettingsBackground>
   );
@@ -61,42 +74,30 @@ export function LocalizationMenu_active(props) {
  * @param props
  * @constructor
  */
-function LocalizationLocationList(props : {sphereId: sphereId}) {
+function LocalizationLocationList(props : {sphereId: sphereId, locations: LocationData[], backgroundColor?: string }) {
   let sphere = Get.sphere(props.sphereId);
   if (!sphere) { return null; }
 
+  if (props.locations.length === 0) { return null; }
+
   let items = [];
   items.push(<View style={{height:1, width:screenWidth, backgroundColor: menuStyles.separator.backgroundColor}}/>);
-  let locationIds = Object.keys(sphere.locations);
+
+  let locationIds = props.locations.map(location => location.id);
   locationIds.sort((a,b) => { return sphere.locations[a].config.name.localeCompare(sphere.locations[b].config.name); });
+
   for (let locationId of locationIds) {
-    items.push(<LocalizationLocation key={locationId} sphereId={props.sphereId} locationId={locationId} />);
+    items.push(<RoomItem key={locationId} {...props} locationId={locationId} />);
   }
 
   return <React.Fragment>{items}</React.Fragment>;
 }
 
-function LocalizationLocation(props: { sphereId: sphereId, locationId: locationId }) {
-  let location = Get.location(props.sphereId, props.locationId);
-  if (!location) { return <View />; }
-
-  let fingerprints = location.fingerprints.raw;
-  let scores = {};
-  let sum = 0;
-  for (let fingerprintId in fingerprints) {
-    scores[fingerprintId] = FingerprintUtil.calculateFingerprintScore(props.sphereId, props.locationId, fingerprintId);
-    sum += scores[fingerprintId];
-  }
-
-  return <RoomItem sphereId={props.sphereId} locationId={props.locationId} hideSubtitle />;
-}
-
-
-function RoomItem(props) {
+function RoomItem(props : { sphereId: sphereId, locationId: locationId, backgroundColor?: string }) {
   let fontSize = 16;
 
   let location = Get.location(props.sphereId, props.locationId);
-  if (!location) { return <View />; }
+  if (!location) { return <React.Fragment />; }
 
   let score = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
 
@@ -108,13 +109,13 @@ function RoomItem(props) {
       paddingHorizontal:10,
       borderBottomWidth:1,
       borderColor: menuStyles.separator.backgroundColor,
+      backgroundColor: props.backgroundColor ?? menuStyles.listView.backgroundColor
     }}
       onPress={() => { NavigationUtil.navigate("LocalizationDetail",{sphereId: props.sphereId, locationId: props.locationId}); }}>
       <Icon name={location.config.icon} size={35} color={colors.black.hex} />
       <View style={{flexDirection:'column', flex:1, paddingLeft:10}}>
         <Text style={{fontSize:fontSize}}>{location.config.name}</Text>
       </View>
-      { props.value ?? <Text style={{fontSize:fontSize, ...(props.valueStyle ?? {})}}>{props.value}</Text> }
       { getStars(score) }
       <Icon name="ios-arrow-forward" size={18} color={'#888'} style={{paddingRight:0, paddingLeft:15}} />
     </TouchableOpacity>

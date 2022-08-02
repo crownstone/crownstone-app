@@ -96,7 +96,12 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case 'ADD_PROCESSED_FINGERPRINT':
     case 'UPDATE_PROCESSED_FINGERPRINT':
     case 'REMOVE_PROCESSED_FINGERPRINT':
+    case 'REMOVE_ALL_PROCESSED_FINGERPRINTS':
       eventStatus.changeProcessedFingerprint = affectedIds; break;
+    case 'REMOVE_ALL_FINGERPRINTS_V2':
+      eventStatus.changeFingerprint = affectedIds;
+      eventStatus.changeProcessedFingerprint = affectedIds;
+      break;
     case 'ADD_LOCATION':
       eventStatus.addLocation = affectedIds;
       eventStatus.changeLocations = affectedIds;

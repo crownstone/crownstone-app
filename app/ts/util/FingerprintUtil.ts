@@ -6,8 +6,8 @@ import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
 const sha1 = require('sha-1');
 
-const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
-const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
+export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
+export const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export interface FingerprintPenaltyList {
   unknownDeviceType:  number,
@@ -292,7 +292,6 @@ export const FingerprintUtil = {
 
     let score = 100;
     let penalties = FingerprintUtil.calculateLocationPenalties(sphereId, locationId);
-    console.log("Location Penalties", penalties);
 
     for (let penalty in penalties) {
       score += penalties[penalty];
@@ -380,10 +379,44 @@ export const FingerprintUtil = {
     }
 
     return copy;
-  }
+  },
 
 
+
+  deleteAllCollectedData(sphereId: sphereId, locationId: locationId) : void {
+    core.store.dispatch({type:"REMOVE_ALL_FINGERPRINTS_V2", sphereId, locationId});
+  },
+
+
+  getLocationsInNeedOfAttention(sphereId: sphereId) : LocationData[] {
+    return checkLocations(sphereId, (location) => {
+      let score = FingerprintUtil.calculateLocationScore(sphereId, location.id);
+      return score < FINGERPRINT_SCORE_THRESHOLD;
+    });
+  },
+
+
+  getLocationsWithGoodFingerprints(sphereId: sphereId) : LocationData[] {
+    return checkLocations(sphereId, (location) => {
+      let score = FingerprintUtil.calculateLocationScore(sphereId, location.id);
+      return score >= FINGERPRINT_SCORE_THRESHOLD;
+    });
+  },
 
 
 }
 
+function checkLocations(sphereId: sphereId, comparator) : LocationData[] {
+  let sphere = Get.sphere(sphereId);
+  if (!sphere) { return []; }
+
+  let result = [];
+  let locations = Object.values(sphere.locations);
+  for (let location of locations) {
+    if (comparator(location)) {
+      result.push(location);
+    }
+  }
+
+  return result;
+}

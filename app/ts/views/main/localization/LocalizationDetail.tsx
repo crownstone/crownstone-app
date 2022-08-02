@@ -6,9 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  Alert,
   ScrollView,
   Text,
-  View,
+  View
 } from "react-native";
 
 
@@ -52,7 +53,20 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
       type:  'button',
       label: 'DELETE ALL COLLECTED DATA',
       numberOfLines:3,
-      callback: () => {}
+      callback: () => {
+        Alert.alert(
+          "Are you sure?",
+          "You will have to re-train the room to get it to work again.",
+          [
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Delete data!', style:'destructive', onPress: () => {
+              FingerprintUtil.deleteAllCollectedData(props.sphereId, props.locationId);
+              NavigationUtil.back();
+            }},
+          ],
+          {cancelable: false}
+        )
+      }
     },
     {
       type: 'explanation', label:'Careful, you will need to retrain this room again if you delete all the data.', below: true

@@ -121,6 +121,8 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
 
 const fingerprintProcessedReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_FINGERPRINTS_V2':
+      return {};
     case 'REMOVE_ALL_PROCESSED_FINGERPRINTS':
       return {};
     case 'REMOVE_PROCESSED_FINGERPRINT':
