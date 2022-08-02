@@ -306,3 +306,6 @@ interface sphereLogFormat {
 }
 
 type PartialRecord<K extends keyof any, T> = Partial<Record<K,T>>;
+
+
+type BadgeIndicator = number | string | boolean

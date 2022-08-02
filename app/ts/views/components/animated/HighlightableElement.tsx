@@ -1,8 +1,9 @@
 import {useEffect, useRef} from "react";
-import {Animated, FlexAlignType} from "react-native";
+import { Animated, FlexAlignType, View, Text } from "react-native";
 import * as React from "react";
+import { colors } from "../../styles";
 
-export function HighlightableElement(props: {elements: JSX.Element[], width: number, height: number, enabled?: boolean, alignment?: FlexAlignType, jiggle?: boolean, quick?: boolean}) {
+export function HighlightableElement(props: {elements: JSX.Element[], width: number, height: number, enabled?: boolean, alignment?: FlexAlignType, jiggle?: boolean, quick?: boolean, badge?: BadgeIndicator}) {
   const opacity1Value = useRef(new Animated.Value(1));
   const opacity2Value = useRef(new Animated.Value(0));
   const opacity3Value = useRef(new Animated.Value(0));
@@ -110,6 +111,20 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity3Value.current}}>
         {props.elements[2]}
       </Animated.View>
+      <Badge indicator={props.badge} color={colors.red.hex}/>
     </Animated.View>
+  );
+}
+
+
+function Badge(props:{indicator: BadgeIndicator, color: string}) {
+  if (props.indicator === 0 || props.indicator === undefined || props.indicator === false) {
+    return <React.Fragment />;
+  }
+  let size = 13;
+  return (
+    <View style={{position: 'absolute', top: -size/5, right: -size/5, width:size, height: size, alignItems:'center', justifyContent:'center', backgroundColor: props.color, borderRadius: 0.5*size}}>
+      {props.indicator !== true && <Text style={{color: 'white', fontSize: 10, fontWeight:'bold'}}>{props.indicator}</Text>}
+    </View>  
   );
 }

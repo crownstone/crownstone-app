@@ -15,10 +15,10 @@ function getLeftStyle(style : ViewStyle = {}) : ViewStyle {
   return {paddingHorizontal: 15, height: 35, justifyContent: 'center', alignItems:'flex-start', ...style}
 }
 
-export function MenuButton(props) {
+export function MenuButton(props: {onPress: () => void, highlight?: boolean, badge?: BadgeIndicator}) {
   return (
     <TouchableOpacity onPress={props.onPress} style={getLeftStyle()}>
-      <HighlightableBlackIcon name={'enty-menu'} size={25} enabled={props.highlight} />
+      <HighlightableBlackIcon name={'enty-menu'} size={25} enabled={props.highlight} badge={props.badge}/>
     </TouchableOpacity>
   );
 }
