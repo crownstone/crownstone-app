@@ -41,14 +41,13 @@ export class FingerprintCollector {
         this.crownstonesAtCreation[FingerprintUtil.getStoneIdentifierFromStone(stone)] = true;
       }
     }
+
   }
 
 
   start() {
-    this.trainingData          = [];
-    this.crownstonesAtCreation = {};
+    this.trainingData = [];
     LocalizationCore.pauseLocalization();
-
     this._listen();
   }
 

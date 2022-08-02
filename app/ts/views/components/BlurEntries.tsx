@@ -31,36 +31,53 @@ export interface BlurEntryProps {
   backgroundColor?: string,
   opacity?:         number,
 
-  tapCallback? : () => void,
   editSettingsCallback?: () => void
 }
-interface DraggableBlurEntryProps extends DraggableProps, BlurEntryProps {}
+
+
+export interface TappableBlurEntryProps extends BlurEntryProps {
+  tapCallback? : () => void
+}
+
+
+interface DraggableBlurEntryProps extends DraggableProps, TappableBlurEntryProps {}
 
 export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
   // include draggable
   let {dragging, triggerDrag} = useDraggable(props.isBeingDragged, props.eventBus, props.dragAction);
-
   return (
     <TouchableOpacity
       activeOpacity={props.editMode ? 0.5 : 1.0}
-      onLongPress={() => { if (props.editMode) { triggerDrag(); } }}
-      onPress={() => { if (props.tapCallback) { props.tapCallback() }}}
+      onLongPress={() => { console.log("LONG PRESS"); if (props.editMode) { triggerDrag(); } }}
+      onPress={() => {console.log("LOG TAP");   if (props.tapCallback) { props.tapCallback() }}}
       style={{flexDirection:'row'}}
     >
-      <SlideSideFadeInView visible={dragging} width={40} />
+      {/*<SlideSideFadeInView visible={dragging} width={40} />*/}
       <BlurEntry {...props} />
     </TouchableOpacity>
   );
 }
 
 
-export function BlurEntry(props: BlurEntryProps) {
+export function TappableBlurEntry(props: TappableBlurEntryProps) {
   return (
     <TouchableOpacity
       activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
-      onPress={() => { props.tapCallback && props.tapCallback()} }
+      onPress={() => { () => {console.log("TUPPERLY"); props.tapCallback && props.tapCallback()} }}
       style={{flex:1}}
     >
+      <BlurEntry {...props} />
+    </TouchableOpacity>
+  );
+}
+
+export function BlurEntry(props: BlurEntryProps) {
+  return (
+    // <TouchableOpacity
+    //   activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
+    //   onPress={() => { () => {console.log("TUPPERLY"); props.tapCallback && props.tapCallback()} }}
+    //   style={{flex:1}}
+    // >
       <BlurView
         blurType={"light"}
         blurAmount={5}
@@ -92,7 +109,7 @@ export function BlurEntry(props: BlurEntryProps) {
         }
         { renderPropItem(props.control, props) }
       </BlurView>
-    </TouchableOpacity>
+    // </TouchableOpacity>
   );
 }
 

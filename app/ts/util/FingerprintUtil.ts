@@ -10,12 +10,12 @@ const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will 
 const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export interface FingerprintPenaltyList {
-  missingInPocket: number,
   unknownDeviceType:  number,
   missingCrownstones: number,
   missingTransform: number,
 }
 export interface PenaltyList extends FingerprintPenaltyList{
+  missingInPocket: number,
   insufficientAmountOfData: number,
 }
 
@@ -100,21 +100,26 @@ export const FingerprintUtil = {
     if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
     if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
 
-    if (Object.keys(location.fingerprints.raw).length > 0) {
-      let hasGoodFingerprint = false
-      for (let fingerprintId in location.fingerprints.raw) {
-        if (FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
-          hasGoodFingerprint = true;
-          break;
-        }
-      }
-
-      if (hasGoodFingerprint) {
-        return false; // already have fingerprints in this location
-      }
+    if (Object.keys(location.fingerprints.raw).length === 0) {
+      return true;
     }
+    return false;
 
-    return true;
+    // if (Object.keys(location.fingerprints.raw).length > 0) {
+    //   let hasGoodFingerprint = false
+    //   for (let fingerprintId in location.fingerprints.raw) {
+    //     if (FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
+    //       hasGoodFingerprint = true;
+    //       break;
+    //     }
+    //   }
+    //
+    //   if (hasGoodFingerprint) {
+    //     return false; // already have fingerprints in this location
+    //   }
+    // }
+    //
+    // return true;
   },
 
 
@@ -197,7 +202,6 @@ export const FingerprintUtil = {
     let location = Get.location(sphereId, locationId);
 
     let penalties : FingerprintPenaltyList = {
-      missingInPocket:    0,
       unknownDeviceType:  0,
       missingCrownstones: 0,
       missingTransform:   0,
@@ -206,10 +210,6 @@ export const FingerprintUtil = {
     if (!sphere || !location) { return penalties; }
 
     let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
-
-    if (!FingerprintUtil.hasInPocketSet(location)) {
-      penalties.missingInPocket = -20;
-    }
 
     if (fingerprint.createdOnDeviceType === null) {
       penalties.unknownDeviceType = -20;
@@ -221,7 +221,7 @@ export const FingerprintUtil = {
     if (amountOfCrownstonesAtCreation < amountOfCrownstones) {
       let ratio = (amountOfCrownstonesAtCreation / amountOfCrownstones) * 100;
       let penalty = (100 - ratio);
-      penalties.missingCrownstones = penalty;
+      penalties.missingCrownstones = -penalty;
     }
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
@@ -253,6 +253,10 @@ export const FingerprintUtil = {
 
     let totalSamples : Record<FingerprintType, number> = {IN_HAND:0, IN_POCKET:0, AUTO_COLLECTED: 0, FIND_AND_FIX: 0};
     let amountOfFingerprints = Object.keys(location.fingerprints.raw).length;
+
+    if (!FingerprintUtil.hasInPocketSet(location)) {
+      penalties.missingInPocket = -20;
+    }
 
     for (let fingerprintId in location.fingerprints.raw) {
       let fingerprintPenalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
@@ -288,6 +292,7 @@ export const FingerprintUtil = {
 
     let score = 100;
     let penalties = FingerprintUtil.calculateLocationPenalties(sphereId, locationId);
+    console.log("Location Penalties", penalties);
 
     for (let penalty in penalties) {
       score += penalties[penalty];

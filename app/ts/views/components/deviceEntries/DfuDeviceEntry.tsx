@@ -20,7 +20,7 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
 import { tell } from "../../../logic/constellation/Tellers";
-import { BlurEntry } from "../BlurEntries";
+import { BlurEntry, TappableBlurEntry } from "../BlurEntries";
 import { DfuDeviceEntryLabel, SetupDeviceEntryLabel } from "./submodules/DeviceLabels";
 import { SetupDeviceEntryIcon } from "./submodules/SetupDeviceEntryIcon";
 import { Get } from "../../../util/GetUtil";
@@ -201,7 +201,7 @@ export function DfuDeviceEntry_RoomOverview(props: DfuDeviceEntryProps) {
   let stone = Get.stone(props.sphereId, props.stoneId);
 
   return (
-    <BlurEntry
+    <TappableBlurEntry
       {...props}
       title={props.name ?? stone?.config?.name}
       heightOffset={10}

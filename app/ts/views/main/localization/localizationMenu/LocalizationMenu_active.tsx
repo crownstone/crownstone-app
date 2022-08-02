@@ -100,7 +100,6 @@ function RoomItem(props) {
 
   let score = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
 
-
   return (
     <TouchableOpacity style={{
       flexDirection:'row',

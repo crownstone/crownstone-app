@@ -28,7 +28,7 @@ import { DataUtil } from "../../../util/DataUtil";
 import { HubUtil } from "../../../util/HubUtil";
 import { useDatabaseChange } from "../hooks/databaseHooks";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import { BlurEntry, BlurEntryProps, DraggableBlurEntry } from "../BlurEntries";
+import { BlurEntry, BlurEntryProps, DraggableBlurEntry, TappableBlurEntry } from "../BlurEntries";
 import { DeviceEntryIcon } from "./submodules/DeviceEntryIcon";
 import { HubEntryLabel, SetupDeviceEntryLabel } from "./submodules/DeviceLabels";
 import { SetupDeviceEntryIcon } from "./submodules/SetupDeviceEntryIcon";
@@ -220,7 +220,7 @@ interface SetupDeviceEntryProps {
 
 export function SetupDeviceEntry_RoomOverview(props: SetupDeviceEntryProps) {
   return (
-    <BlurEntry
+    <TappableBlurEntry
       {...props}
       title={props.item.name}
       heightOffset={10}

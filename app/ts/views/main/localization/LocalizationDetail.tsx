@@ -74,9 +74,9 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
         }
           <Improvements {...props} score={score} penalties={penalties} />
 
-        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <View style={{height:25}} /> }
-        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <Text style={styles.boldLeftExplanation}>{"Further improve localization by:"}</Text> }
-        { FingerprintUtil.isScoreGoodEnough(score) || true &&  <ListEditableItems items={items} /> }
+        { FingerprintUtil.isScoreGoodEnough(score) &&  <View style={{height:25}} /> }
+        { FingerprintUtil.isScoreGoodEnough(score) &&  <Text style={styles.boldLeftExplanation}>{"Further improve localization by:"}</Text> }
+        { FingerprintUtil.isScoreGoodEnough(score) &&  <ListEditableItems items={items} /> }
 
         <View style={{height:25}} />
         <Text style={styles.boldLeftExplanation}>{"Permanently delete all localization data for this room for a fresh start. This will affect the localization for everyone..."}</Text>
@@ -159,8 +159,22 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
 }
 
 function StarImprovement(props) {
+  let stars = getStars(-1*props.penalty, 13, colors.green, false);
+  if (stars.length > 3) {
+    return (
+      <View style={{alignItems:'center', justifyContent:'center', width: 45, height: 50}}>
+        <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+        <Text style={{color:colors.green.hex, fontWeight:'bold'}}>+</Text>
+        {stars.slice(0,3)}
+        </View>
+        <View style={{flexDirection:'row'}}>
+          {stars.slice(3)}
+        </View>
+      </View>
+    );
+  }
   return (
-    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: 30}}>
+    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: 45, height: 50}}>
       <Text style={{color:colors.green.hex, fontWeight:'bold'}}>+</Text>
       {getStars(-1*props.penalty, 13, colors.green, false)}
     </View>
