@@ -23,6 +23,7 @@ import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { Icon } from '../../components/Icon';
+import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
@@ -56,7 +57,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
 }
 
 SetupLocalization.options = (props) => {
-  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.isModal ?? false });
+  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.isModal ?? false, help: () => { openLocalizationHelpWebsite(); } });
 }
 
 

@@ -11,9 +11,12 @@ export function getLearnAboutLocalizationItems(items: any[]) {
     testID: 'ImproveLocalization',
     icon: <Icon name='md-book' size={25} color={colors.blueDark.hex}/>,
     callback: () => {
-      Linking.openURL('https://crownstone.rocks/positioning-users/').catch(err => {})
+      openLocalizationHelpWebsite();
     }
   });
   items.push({label: "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!",  type:'explanation', below: true});
 }
 
+export function openLocalizationHelpWebsite() {
+  Linking.openURL('https://crownstone.rocks/positioning-users/').catch(err => {})
+}

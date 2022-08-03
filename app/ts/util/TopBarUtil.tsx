@@ -27,6 +27,7 @@ export const TopBarUtil = {
     if (props === null) { return; }
 
     let leftButtons = [];
+    let rightButtons = [];
     // if (props.left) {
     //   leftButtons.push({
     //     id: props.left.id,
@@ -91,7 +92,17 @@ export const TopBarUtil = {
       }
     }
 
-    let rightButtons = [];
+    if (props.help) {
+      rightButtons.push({
+        id: 'topBarHelp',
+        component: {
+          name:'topbarRightHelpButton',
+          passProps: {
+            onPress: props.help,
+          }
+        },
+      })
+    }
 
     if (props.nav) {
       rightButtons.push(getButtonComponent(props.nav.id, props.nav.text));

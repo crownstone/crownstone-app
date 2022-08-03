@@ -10,7 +10,6 @@ import {useDatabaseChange} from "../components/hooks/databaseHooks";
 import {Get} from "../../util/GetUtil";
 import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
-import {LocalizationUtil} from "../../util/LocalizationUtil";
 import {DataUtil} from "../../util/DataUtil";
 
 export function SphereOverviewSideBar(props) {
@@ -29,7 +28,7 @@ export function SphereOverviewSideBar(props) {
 
   let blinkBehaviour = false;
   let blinkAdding    = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
-  let badgeLocalization = !blinkLocalizationIcon && LocalizationUtil.getLocationsInNeedOfAttention(activeSphere.id).length > 0 ? "!" : false;
+  let badgeLocalization = !blinkLocalizationIcon && MenuNotificationUtil.isThereALocalizationBadge(activeSphere.id);
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>

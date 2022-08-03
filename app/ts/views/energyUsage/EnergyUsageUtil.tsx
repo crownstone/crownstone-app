@@ -6,13 +6,24 @@ import {DataUtil} from "../../util/DataUtil";
 import {PowerUsageCacher} from "../../backgroundProcesses/PowerUsageCacher";
 import { Get } from "../../util/GetUtil";
 
-const colorList = [
+const COLOR_LIST_LARGE = [
   colors.csBlueLighter.hex,
   colors.csBlue.hex,
   colors.csBlueDarker.hex,
   colors.blue.hex,
   colors.lightCsOrange.hex,
   colors.csOrange.hex,
+];
+
+const COLOR_LIST_MEDIUM = [
+  colors.csBlueDarker.hex,
+  colors.blue.hex,
+  colors.green.hex,
+];
+
+const COLOR_LIST_SMALL = [
+  colors.csBlue.hex,
+  colors.blue.hex,
 ];
 
 export const EnergyUsageUtil = {
@@ -111,7 +122,13 @@ function getScalingAndUnit(value, baseUnit: 'W' | 'Wh') : {scalingFactor: number
 
 function getColorMap(idArray: string[]) {
   const ColorCharmMixer = new Mixer();
-  let gradient = ColorCharmMixer.linear([colorList], idArray.length, 'hcl').toHex();
+  let list;
+
+  if      (idArray.length > 10) { list = COLOR_LIST_LARGE;  }
+  else if (idArray.length > 5)  { list = COLOR_LIST_MEDIUM; }
+  else                          { list = COLOR_LIST_SMALL;   }
+
+  let gradient = ColorCharmMixer.linear([list], idArray.length, 'hcl').toHex();
   let colorMap = {};
   let index = 0;
   for (let id of idArray) {

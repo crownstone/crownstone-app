@@ -97,7 +97,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   // }
 
   // show localization alert (takes precendence over messages)
-  if (SIDEBAR_STATE.open === false && !blinkMenuIcon && LocalizationUtil.getLocationsInNeedOfAttention(sphereId).length > 0) {
+  if (SIDEBAR_STATE.open === false && !blinkMenuIcon && MenuNotificationUtil.isThereALocalizationBadge(sphereId)) {
     badgeMenuIcon = "!";
   }
 

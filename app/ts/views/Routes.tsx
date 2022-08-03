@@ -6,7 +6,7 @@ import {colors} from "../views/styles";
 import {
   TopbarButton,
   TopbarEmptyButton,
-  TopbarLeftButtonNav,
+  TopbarLeftButtonNav, TopbarRightHelpButton,
   TopbarRightMoreButton
 } from "../views/components/topbar/TopbarButton";
 import {CancelButton} from "../views/components/topbar/CancelButton";
@@ -32,6 +32,7 @@ export const loadRoutes = function() {
   Navigation.registerComponent("topbarCancelButton",       () => gestureHandlerRootHOC(CancelButton));
   Navigation.registerComponent("topbarLeftButton",         () => gestureHandlerRootHOC(TopbarLeftButtonNav));
   Navigation.registerComponent("topbarRightMoreButton",    () => gestureHandlerRootHOC(TopbarRightMoreButton));
+  Navigation.registerComponent("topbarRightHelpButton",    () => gestureHandlerRootHOC(TopbarRightHelpButton));
   Navigation.registerComponent("topbarButton",             () => gestureHandlerRootHOC(TopbarButton));
   Navigation.registerComponent("topbarEmptyButton",        () => gestureHandlerRootHOC(TopbarEmptyButton));
 

@@ -5,26 +5,11 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocalizationMenu", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  View, Alert, Linking
-} from "react-native";
-
-
-import { colors, deviceStyles, background } from "../../styles";
-import {Background} from "../../components/Background";
-import {IconButton} from "../../components/IconButton";
-import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { ListEditableItems } from "../../components/ListEditableItems";
 import {
   DataUtil,
   enoughCrownstonesForIndoorLocalization
 } from "../../../util/DataUtil";
-import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";

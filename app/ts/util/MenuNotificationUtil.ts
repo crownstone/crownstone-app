@@ -2,6 +2,7 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from "./DataUtil";
 import { Get } from "./GetUtil";
 import { core } from "../Core";
 import {FingerprintUtil} from "./FingerprintUtil";
+import {LocalizationUtil} from "./LocalizationUtil";
 
 
 export const MenuNotificationUtil = {
@@ -18,5 +19,18 @@ export const MenuNotificationUtil = {
             enoughForLocalizationInLocations    &&
             requiresFingerprints                &&
             state.app.indoorLocalizationEnabled;
+  },
+
+  isThereALocalizationBadge: function(sphereId: string) : BadgeIndicator {
+    let indicator = LocalizationUtil.getLocationsInNeedOfAttention(sphereId).length > 0 ? "!" : false;
+
+    let state  = core.store.getState();
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+
+    if (sphere.state.present && state.app.indoorLocalizationEnabled) {
+      return indicator;
+    }
+    return false;
   }
 };

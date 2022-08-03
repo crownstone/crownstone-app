@@ -24,6 +24,7 @@ interface topbarOptions {
   // right button presets
   rightLoading?: boolean,
   nav?: topbarNavComponent,
+  help?: () => void,
   edit? : boolean,
   clear? : boolean,
   save? : boolean,
