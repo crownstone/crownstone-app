@@ -130,8 +130,7 @@ function checkToRemoveBadFingerprints(sphereId, locationId) {
   let location = Get.location(sphereId, locationId);
   let actions = [];
   for (let fingerprintId in location.fingerprints.raw) {
-    let penalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
-    if (penalties.unknownDeviceType || !FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
+    if (!FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
       actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId, locationId, fingerprintId});
     }
   }

@@ -8,13 +8,11 @@ import {
 import { Icon } from "../../../components/Icon";
 import { colors, menuStyles, screenWidth } from "../../../styles";
 import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
-import { Background } from "../../../components/Background";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import { Get } from "../../../../util/GetUtil";
-import { FINGERPRINT_SCORE_THRESHOLD, FingerprintUtil } from "../../../../util/FingerprintUtil";
-import { RoomList } from "../../../components/RoomList";
-import {LocalizationUtil} from "../../../../util/LocalizationUtil";
+import { FingerprintUtil } from "../../../../util/FingerprintUtil";
+import { LocalizationUtil } from "../../../../util/LocalizationUtil";
 
 
 
@@ -50,7 +48,7 @@ export function LocalizationMenu_active(props) {
   let goodLocations      = LocalizationUtil.getLocationsWithGoodFingerprints(props.sphereId);
   let alreadyPadded      = true;
   if (locationsAttention.length > 0) {
-    items.push({label: "THESE NEED ATTENTION!",  type:'explanation', alreadyPadded: alreadyPadded});
+    items.push({label: "THESE ROOMS NEED ATTENTION",  type:'explanation', alreadyPadded: alreadyPadded});
     alreadyPadded = !alreadyPadded;
   }
 
@@ -62,7 +60,7 @@ export function LocalizationMenu_active(props) {
     <SettingsBackground testID={"LocalizationMenu_active"}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
         <ListEditableItems items={items} />
-        <LocalizationLocationList sphereId={props.sphereId} locations={locationsAttention} backgroundColor={colors.csOrange.rgba(0.35)}  />
+        <LocalizationLocationList sphereId={props.sphereId} locations={locationsAttention} backgroundColor={colors.csOrange.rgba(0.5)}  />
         <ListEditableItems items={secondItems} />
         <LocalizationLocationList sphereId={props.sphereId} locations={goodLocations} />
       </ScrollView>

@@ -75,7 +75,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
   navigationButtonPressed({buttonId}) {
     if (buttonId === 'cancel') {
       this.collector.stop();
-      NavigationUtil.back();
+      NavigationUtil.dismissModal();
     }
   }
 

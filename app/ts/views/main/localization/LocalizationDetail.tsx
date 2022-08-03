@@ -39,7 +39,7 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
     type:'navigation',
     label: 'Add more training data...',
     callback: () => {
-      NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, minRequiredSamples: 20});
+      NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, isModal: true, minRequiredSamples: 20});
     },
   })
   items.push({
@@ -95,12 +95,12 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
       <ScrollView>
         <Text style={styles.header}>{"Training quality"}</Text>
         <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
-          { getStars(score, 30, colors.csBlue) }
+          { getStars(score, 30, FingerprintUtil.isScoreGoodEnough(score) ? colors.csBlue : colors.csOrange) }
         </View>
         <View style={{height:15}} />
         { FingerprintUtil.isScoreGoodEnough(score) ?
           <Text style={styles.boldLeftExplanation}>{"Add more stars by:"}</Text> :
-          <Text style={styles.boldLeftExplanation}>{"Address the issues by:"}</Text>
+          <Text style={styles.boldLeftExplanation}>{"Address the issue by:"}</Text>
         }
           <Improvements {...props} score={score} penalties={penalties} />
 

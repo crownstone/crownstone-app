@@ -155,7 +155,7 @@ export const FingerprintUtil = {
     let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
 
     if (fingerprint.createdOnDeviceType === null) {
-      penalties.unknownDeviceType = -20;
+      penalties.unknownDeviceType = -50;
     }
 
     let amountOfCrownstonesAtCreation    = Object.keys(fingerprint.crownstonesAtCreation).length;
@@ -201,8 +201,10 @@ export const FingerprintUtil = {
       penalties.missingInPocket = -20;
     }
 
+    // create this here so we have a list of indices to loop over afterwards.
+    let fingerprintPenalties;
     for (let fingerprintId in location.fingerprints.raw) {
-      let fingerprintPenalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
+      fingerprintPenalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
       for (let penalty in fingerprintPenalties) {
         penalties[penalty] += fingerprintPenalties[penalty];
       }
@@ -215,7 +217,7 @@ export const FingerprintUtil = {
     }
 
     // average out the penalties
-    for (let penalty in penalties) {
+    for (let penalty in fingerprintPenalties) {
       penalties[penalty] /= amountOfFingerprints;
     }
 
