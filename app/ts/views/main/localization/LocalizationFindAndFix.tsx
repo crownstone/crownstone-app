@@ -46,6 +46,10 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
 
       if (this.sortedDistanceArray.length > 0 && this.sortedDistanceArray[0] !== this.props.locationId) {
         this.collector.collectDatapoint();
+        // we will remove the datapoint that caused the error as long as that can be done safely.
+        // the deleteLocation function will check if we will allow this.
+        this.collector.deleteLastBestDatapoint();
+
         this.setState({collectedPoints: this.state.collectedPoints + 1, fixing: true});
         if (Platform.OS === 'android') {
           Vibration.vibrate([0,400]);

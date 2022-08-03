@@ -37,7 +37,10 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
         newState.data                  = update(action.data.data, newState.data);
 
         newState.updatedAt             = getTime(action.data.updatedAt);
-        newState.createdAt             = getTime(action.data.createdAt);
+
+        if (action.type === 'ADD_FINGERPRINT_V2') {
+          newState.createdAt = getTime(action.data.createdAt);
+        }
         return newState;
       }
       return state;
@@ -106,7 +109,10 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
 
         newState.transformedAt           = getTime(action.data.transformedAt);
         newState.processedAt             = getTime(action.data.processedAt);
-        newState.createdAt               = getTime(action.data.createdAt);
+
+        if (action.type === 'ADD_PROCESSED_FINGERPRINT') {
+          newState.createdAt = getTime(action.data.createdAt);
+        }
         return newState;
       }
       return state;

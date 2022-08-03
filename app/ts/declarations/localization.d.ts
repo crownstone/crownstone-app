@@ -13,3 +13,15 @@ interface trainingDataProcessed {
 }
 
 type iBeaconHistory = [timestamp, ibeaconPackage[]];
+
+interface ChosenClassificationSampleData {
+  locationId: locationId,
+  fingerprintId: fingerprintId,
+  distance:number,
+  index:number,
+}
+
+interface ClassificationData {
+  closest: ChosenClassificationSampleData;
+  distanceMap: Record<locationId, number>;
+}

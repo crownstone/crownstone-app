@@ -3,6 +3,8 @@ import { KNN } from "../classifiers/knn";
 import { Get } from "../../util/GetUtil";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { NATIVE_BUS_TOPICS } from "../../Topics";
+import {core} from "../../Core";
+import {FingerprintUtil} from "../../util/FingerprintUtil";
 
 
 export class FingerprintCollectorLive {
@@ -17,6 +19,7 @@ export class FingerprintCollectorLive {
   classifier      : KNN;
 
   lastMeasurement : ibeaconPackage[];
+  lastClosestSampleData : ChosenClassificationSampleData;
 
 
   constructor(sphereId: string, locationId: string, type: FingerprintType) {
@@ -58,9 +61,36 @@ export class FingerprintCollectorLive {
 
 
   handleIbeacon(data: ibeaconPackage[]) {
-    let distanceMap = this.classifier.classifyWithDistanceMap(this.sphereId, data);
+    let result = this.classifier.classifyWithAllData(this.sphereId, data);
     this.lastMeasurement = data;
-    this.handleResult(distanceMap);
+    this.lastClosestSampleData = result.closest;
+    this.handleResult(result.distanceMap);
+  }
+
+
+  deleteLastBestDatapoint() {
+    // check if there was a last chosen sample.
+    if (this.lastClosestSampleData.fingerprintId === undefined) { return; };
+
+    let processedFingerprint = Get.processedFingerprint(this.sphereId, this.lastClosestSampleData.locationId, this.lastClosestSampleData.fingerprintId);
+
+    // check what the type of the fingerprint is in order to know if we are allowed to remove datapoints from it.
+    // We do not allow automatic removal of IN_HAND or IN_POCKET trained datasets. If that's what you want than you'll have to delete all data.
+    if (processedFingerprint.type === 'IN_HAND' || processedFingerprint.type === 'IN_POCKET') { return; }
+
+    let rawFingerprintId = processedFingerprint.fingerprintId;
+    let rawFingerprint = Get.fingerprint(this.sphereId, this.lastClosestSampleData.locationId, rawFingerprintId);
+
+    // remove the last datapoint from the raw fingerprint.
+    let data = rawFingerprint.data.splice(this.lastClosestSampleData.index, 1);
+
+    core.store.dispatch({
+      type:"UPDATE_FINGERPRINT_V2",
+      sphereId: this.sphereId,
+      locationId: this.lastClosestSampleData.locationId,
+      fingerprintId: rawFingerprintId,
+      data: {data:data}
+    });
   }
 
 

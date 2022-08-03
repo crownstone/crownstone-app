@@ -3,6 +3,8 @@ import {FingerprintUtil} from "../../util/FingerprintUtil";
 // import {Get} from "../../util/GetUtil";
 
 
+
+
 export class KNN {
   sortedSphereKeys : Record<sphereId,string[]> = {};
   fingerprints : Record<sphereId, Record<locationId, fingerprintSummary[]>> = {};
@@ -142,29 +144,53 @@ export class KNN {
   }
 
 
-  classifyWithDistanceMap(sphereId, packages : ibeaconPackage[]) : Record<locationId, number> {
+  /**
+   * There is code duplicate here to ensure the classify function is as lean as possible.
+   * This is used for the live collector.
+   * @param sphereId
+   * @param packages
+   */
+  classifyWithAllData(sphereId, packages : ibeaconPackage[]) : ClassificationData {
     let inputVector = this.preprocessIBeacon(packages);
-    let distanceMap = {};
+    let dataMap : ClassificationData = {
+      closest: {
+        locationId: null,
+        fingerprintId: null,
+        distance: Infinity,
+        index: null,
+      },
+      distanceMap: {}
+    };
 
     // find the closest fingerprint in the sphere.
     let sphereLocations = this.fingerprints[sphereId];
 
     for (let locationId in sphereLocations) {
-      distanceMap[locationId] = Infinity;
+      dataMap.distanceMap[locationId] = Infinity;
 
       let fingerprintsInLocation = sphereLocations[locationId];
       for (let fingerprint of fingerprintsInLocation) {
         // calculate the distance between the inputVector and the fingerprint
+        let measurementCounter = 0;
         for (let fingerprintVector of fingerprint.dataset) {
           let distance = KNNgetDistance(inputVector[sphereId], fingerprintVector);
-          if (distance < distanceMap[locationId]) {
-            distanceMap[locationId] = distance;
+          if (distance < dataMap.distanceMap[locationId]) {
+            dataMap.distanceMap[locationId] = distance;
           }
+
+          if (distance < dataMap.closest.distance) {
+            dataMap.closest.locationId = locationId;
+            dataMap.closest.fingerprintId = fingerprint.id;
+            dataMap.closest.distance = distance;
+            dataMap.closest.index = measurementCounter;
+          }
+
+          measurementCounter++;
         }
       }
     }
 
-    return distanceMap;
+    return dataMap;
   }
 
 
