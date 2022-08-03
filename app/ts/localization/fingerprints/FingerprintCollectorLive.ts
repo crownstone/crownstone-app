@@ -4,12 +4,11 @@ import { Get } from "../../util/GetUtil";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { NATIVE_BUS_TOPICS } from "../../Topics";
 import {core} from "../../Core";
-import {FingerprintUtil} from "../../util/FingerprintUtil";
 
 
 export class FingerprintCollectorLive {
   subscriptions = [];
-  handleResult  = (distanceMap : Record<locationId, number>) => {};
+  handleResult  = (result: ClassificationData) => {};
 
   startTime       : timestamp;
   sphereId        : string;
@@ -61,10 +60,10 @@ export class FingerprintCollectorLive {
 
 
   handleIbeacon(data: ibeaconPackage[]) {
-    let result = this.classifier.classifyWithAllData(this.sphereId, data);
+    let result = this.classifier.classifyWithVerboseData(this.sphereId, data);
     this.lastMeasurement = data;
     this.lastClosestSampleData = result.closest;
-    this.handleResult(result.distanceMap);
+    this.handleResult(result);
   }
 
 

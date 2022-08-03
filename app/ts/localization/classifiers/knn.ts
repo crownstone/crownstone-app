@@ -150,7 +150,7 @@ export class KNN {
    * @param sphereId
    * @param packages
    */
-  classifyWithAllData(sphereId, packages : ibeaconPackage[]) : ClassificationData {
+  classifyWithVerboseData(sphereId, packages : ibeaconPackage[]) : ClassificationData {
     let inputVector = this.preprocessIBeacon(packages);
     let dataMap : ClassificationData = {
       closest: {

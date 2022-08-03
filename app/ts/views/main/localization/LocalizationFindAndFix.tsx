@@ -37,15 +37,17 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
 
     this.collector = new FingerprintCollectorLive(this.props.sphereId, this.props.locationId, 'FIND_AND_FIX');
     this.collector.handleResult = (result) => {
-      this.distanceMap = result;
+      this.distanceMap = result.distanceMap;
       this.sortedDistanceArray = Object.keys(this.distanceMap);
       this.sortedDistanceArray.sort((a, b) => {
         return this.distanceMap[a] - this.distanceMap[b];
       });
 
-
-      if (this.sortedDistanceArray.length > 0 && this.sortedDistanceArray[0] !== this.props.locationId) {
+      // there was a misclassification, so we need to fix it
+      if (result.closest.locationId !== this.props.locationId) {
+        // Add the new datapoint to the location fingerprint collection
         this.collector.collectDatapoint();
+
         // we will remove the datapoint that caused the error as long as that can be done safely.
         // the deleteLocation function will check if we will allow this.
         this.collector.deleteLastBestDatapoint();
