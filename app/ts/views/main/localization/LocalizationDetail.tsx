@@ -23,6 +23,8 @@ import { Get } from "../../../util/GetUtil";
 import {FingerprintUtil, PenaltyList} from "../../../util/FingerprintUtil";
 import {getStars} from "./localizationMenu/LocalizationMenu_active";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
+import {LocalizationUtil} from "../../../util/LocalizationUtil";
+import {DataUtil} from "../../../util/DataUtil";
 
 
 export function LocalizationDetail(props: {sphereId: string, locationId: string}) {
@@ -60,7 +62,7 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
           [
             {text: 'Cancel', style: 'cancel'},
             {text: 'Delete data!', style:'destructive', onPress: () => {
-              FingerprintUtil.deleteAllCollectedData(props.sphereId, props.locationId);
+              LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
               NavigationUtil.back();
             }},
           ],
@@ -70,6 +72,20 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
     },
     {
       type: 'explanation', label:'Careful, you will need to retrain this room again if you delete all the data.', below: true
+    }];
+
+
+  let devButton = [
+    {
+      type:  'button',
+      label: 'Manage fingerprints',
+      style: {color: colors.blue.hex},
+      callback: () => {
+        NavigationUtil.launchModal("LocalizationFingerprintManager", {sphereId: props.sphereId, locationId: props.locationId});
+      }
+    },
+    {
+      type: 'explanation', label:'DEV: Delete individual fingerprints', below: true
     }];
 
 
@@ -95,6 +111,7 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
         <View style={{height:25}} />
         <Text style={styles.boldLeftExplanation}>{"Permanently delete all localization data for this room for a fresh start. This will affect the localization for everyone..."}</Text>
         <ListEditableItems items={deleteButton} />
+        { DataUtil.isDeveloper() && <ListEditableItems items={devButton} /> }
       </ScrollView>
 
     </Background>
@@ -120,7 +137,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
       icon: <StarImprovement penalty={penalties.missingInPocket} />,
       numberOfLines:2,
       callback: () => {
-        NavigationUtil.launchModal("RoomTraining_inPocket_intro", {sphereId: props.sphereId, locationId: props.locationId});
+        NavigationUtil.launchModal("RoomTraining_inPocket_intro", {sphereId: props.sphereId, locationId: props.locationId, isModal:true});
       }
     }]);
   }
@@ -132,7 +149,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
       icon: <StarImprovement penalty={penalties.unknownDeviceType + penalties.insufficientAmountOfData} />,
       numberOfLines:2,
       callback: () => {
-        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId});
+        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, isModal:true});
       }
     }]);
   }
@@ -144,7 +161,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
       icon: <StarImprovement penalty={penalties.missingCrownstones} />,
       numberOfLines:2,
       callback: () => {
-        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId});
+        NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, isModal:true});
       }
     }]);
   }
@@ -192,7 +209,7 @@ function StarImprovement(props) {
       <Text style={{color:colors.green.hex, fontWeight:'bold'}}>+</Text>
       {getStars(-1*props.penalty, 13, colors.green, false)}
     </View>
-  )
+  );
 }
 
 

@@ -20,7 +20,6 @@ import {Icon} from "../components/Icon";
 import { core } from "../../Core";
 import {
   DataUtil,
-  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../util/DataUtil";
 import { Get } from "../../util/GetUtil";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
@@ -31,6 +30,8 @@ import { HeaderTitle } from "../components/HeaderTitle";
 import {useSidebarState} from "../components/hooks/eventHooks";
 import {SIDEBAR_STATE} from "../components/animated/SideBarView";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
+import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -87,8 +88,18 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   let sphere = Get.sphere(sphereId);
 
   let blinkMenuIconForLocalization = MenuNotificationUtil.isThereALocalizationAlert(sphereId);
-
   let blinkMenuIcon = !arrangingRooms && SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
+
+  let badgeMenuIcon : BadgeIndicator = false;
+  // show number of messages
+  // if (MessageCenter.hasUnreadMessages(sphereId)) {
+  //   badgeMenuIcon = MessageCenter.hasUnreadMessages(sphereId)
+  // }
+
+  // show localization alert (takes precendence over messages)
+  if (SIDEBAR_STATE.open === false && !blinkMenuIcon && LocalizationUtil.getLocationsInNeedOfAttention(sphereId).length > 0) {
+    badgeMenuIcon = "!";
+  }
 
   return (
     <React.Fragment>
@@ -107,7 +118,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
       <TopBarBlur xlight disabledBlur={arrangingRooms} showNotifications={!arrangingRooms} blink={{left: blinkMenuIcon}}>
         { arrangingRooms ?
           <ArrangingHeader viewId={viewId} setRearrangeRooms={setRearrangeRooms}/> :
-          <SphereHeader sphere={sphere} openSideMenu={openSideMenu} blinkMenuIcon={blinkMenuIcon}/>
+          <SphereHeader sphere={sphere} openSideMenu={openSideMenu} blinkMenuIcon={blinkMenuIcon} badgeMenuIcon={badgeMenuIcon} />
         }
       </TopBarBlur>
     </React.Fragment>
@@ -115,10 +126,10 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 }
 
 
-function SphereHeader({sphere, openSideMenu, blinkMenuIcon}) {
+function SphereHeader({sphere, openSideMenu, blinkMenuIcon, badgeMenuIcon}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
-      <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} badge={"!"} />
+      <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} badge={badgeMenuIcon} />
       <TouchableOpacity onPress={openSideMenu} style={{alignItems:'center', justifyContent:'center'}}>
         <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>

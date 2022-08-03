@@ -8,7 +8,7 @@ import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../s
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
-
+import Video from 'react-native-video';
 
 
 
@@ -24,7 +24,14 @@ export function RoomTraining_inHand_intro(props) {
         <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>
 
         <View style={{flex:1}}/>
-        <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
+        <Video
+          source={require('../../../../assets/video/preview.mp4')}
+          style={{height:0.35*screenHeight, width:screenWidth}}
+          repeat={true}
+          playInBackground={false}
+          resizeMode={'cover'}
+        />
+        {/*<View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>*/}
         <View style={{flex:1}}/>
 
         <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>
@@ -41,5 +48,5 @@ export function RoomTraining_inHand_intro(props) {
 }
 
 RoomTraining_inHand_intro.options = (props) => {
-  return TopBarUtil.getOptions({title: `Training session`});
+  return TopBarUtil.getOptions({title: `Training session`, closeModal: props.isModal});
 }

@@ -128,6 +128,7 @@ import { SelectCrownstone } from "./selection/SelectCrownstone";
 import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
 import { LocalizationDetail } from "./main/localization/LocalizationDetail";
 import {LocalizationFindAndFix} from "./main/localization/LocalizationFindAndFix";
+import {LocalizationFingerprintManager} from "./main/localization/LocalizationFingerprintManager";
 
 
 export const Views = {
@@ -240,6 +241,7 @@ export const Views = {
   LocalizationDetail:                LocalizationDetail,
   LocalizationCrownstoneMoved:       LocalizationCrownstoneMoved,
   LocalizationFindAndFix:            LocalizationFindAndFix,
+  LocalizationFingerprintManager:    LocalizationFingerprintManager,
 
 
   // Overlays:

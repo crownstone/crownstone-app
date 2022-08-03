@@ -9,12 +9,12 @@ import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../s
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {FingerprintUtil} from "../../../util/FingerprintUtil";
+import {FINGERPRINT_SIZE_THRESHOLD, FingerprintUtil} from "../../../util/FingerprintUtil";
 import {core} from "../../../Core";
 import { FingerprintCollector } from "../../../localization/fingerprints/FingerprintCollector";
 
 
-export const MIN_DATA_COUNT = 10;
+export const MIN_DATA_COUNT = 120;
 
 export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType, componentId: string, minRequiredSamples?: number}, any> {
   static options(props) {
@@ -130,8 +130,8 @@ function checkToRemoveBadFingerprints(sphereId, locationId) {
   let location = Get.location(sphereId, locationId);
   let actions = [];
   for (let fingerprintId in location.fingerprints.raw) {
-    let score = FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
-    if (!FingerprintUtil.isScoreGoodEnough(score)) {
+    let penalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
+    if (penalties.unknownDeviceType || !FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
       actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId, locationId, fingerprintId});
     }
   }

@@ -464,6 +464,9 @@ const fontAwesomeCorrections = {
 const materialIconsCorrections = {
 
 };
+const zocialIconsCorrections = {
+
+};
 
 
 
@@ -479,6 +482,7 @@ export const iconCorrectionsIOS = {
   ionicons: ioniconCorrectionsIOS,
   ionicons5: ion5CorrectionsIOS,
   evilIcons: evilIconsCorrectionsIOS,
+  zocial: zocialIconsCorrections,
   fiCS1: fiCS1IconsCorrectionsIOS,
   fiHS:  fiHSIconsCorrectionsIOS,
   fiE:   fiEIconsCorrectionsIOS,

@@ -24,6 +24,7 @@ import {Get} from "../../util/GetUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { IconCircle } from "./IconCircle";
 import { FingerprintUtil } from "../../util/FingerprintUtil";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
 
 
 
@@ -213,7 +214,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       ]
     };
 
-    let showLocalizationIcon = FingerprintUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
+    let showLocalizationIcon = LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);
 
     return (

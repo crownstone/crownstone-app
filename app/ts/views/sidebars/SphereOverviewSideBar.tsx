@@ -1,7 +1,6 @@
 import * as React from 'react';
-import {Image, TextStyle, TouchableOpacity, View, Text, Share} from "react-native";
+import {Image, TextStyle, TouchableOpacity, View, Text, Alert} from "react-native";
 import {colors, screenWidth, tabBarHeight} from "../styles";
-import { Icon } from "../components/Icon";
 import DeviceInfo from "react-native-device-info";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SPHERE_ID_STORE } from "../main/SphereOverview";
@@ -11,6 +10,8 @@ import {useDatabaseChange} from "../components/hooks/databaseHooks";
 import {Get} from "../../util/GetUtil";
 import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
+import {DataUtil} from "../../util/DataUtil";
 
 export function SphereOverviewSideBar(props) {
   useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated']);
@@ -28,6 +29,7 @@ export function SphereOverviewSideBar(props) {
 
   let blinkBehaviour = false;
   let blinkAdding    = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
+  let badgeLocalization = !blinkLocalizationIcon && LocalizationUtil.getLocationsInNeedOfAttention(activeSphere.id).length > 0 ? "!" : false;
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
@@ -35,17 +37,47 @@ export function SphereOverviewSideBar(props) {
       <Image source={require('../../../assets/images/crownstoneLogo.png')} style={{width:factor * 300, height: factor*300, tintColor: colors.white.hex}}/>
       <View style={{height:50}}/>
 
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Add items"}     callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={23} icon={'md-add-circle'}   highlight={blinkAdding} />
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Localization"}  callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-locationPin1'} highlight={blinkLocalizationIcon} />
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Behaviour"}     callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }} size={22} icon={'c1-brain'}           highlight={blinkBehaviour} />
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Messages"}      callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
-                    iconImage={<Image source={require('../../../assets/images/icons/mail.png')} style={{tintColor: colors.white.hex}} />}
+      <SideMenuLink
+        closeSideMenu={props.closeSideMenu}
+        label={"Add items"}
+        callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+        size={23}
+        icon={'md-add-circle'}
+        highlight={blinkAdding}
+      />
+      <SideMenuLink
+        closeSideMenu={props.closeSideMenu}
+        label={"Localization"}
+        callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+        size={22}
+        icon={'c1-locationPin1'}
+        highlight={blinkLocalizationIcon}
+        badge={badgeLocalization}
+      />
+      <SideMenuLink
+        closeSideMenu={props.closeSideMenu}
+        label={"Behaviour"}
+        callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+        size={22}
+        icon={'c1-brain'}
+        highlight={blinkBehaviour}
+      />
+      <SideMenuLink
+        closeSideMenu={props.closeSideMenu}
+        label={"Messages"}
+        callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+        size={21}
+        icon={'zo-email'}
       />
       <View style={{height:50}}/>
-      {amountOfSpheres > 1 &&
-        <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'}        />}
-      <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"}     callback={() => { }} size={22} icon={'ios-bug'}         />
-
+      {
+        amountOfSpheres > 1 &&
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'} />
+      }
+      {
+        DataUtil.isDeveloper() &&
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"} callback={() => { Alert.alert("TODO", "implement") }} size={22} icon={'ios-bug'}/>
+      }
       <View style={{flex:1}}/>
       <Text style={{color: colors.white.rgba(0.5)}}>{"App v"+DeviceInfo.getReadableVersion()}</Text>
       <View style={{height: tabBarHeight + 5}} />
@@ -54,7 +86,7 @@ export function SphereOverviewSideBar(props) {
 }
 
 
-function SideMenuLink(props) {
+function SideMenuLink(props: {closeSideMenu:() => void, label: string, callback: () => void, size: number, icon: string, highlight?: boolean, badge?: BadgeIndicator}) {
   let linkStyle : TextStyle = {
     color: colors.white.hex,
     fontSize: 20,
@@ -67,7 +99,7 @@ function SideMenuLink(props) {
       props.callback();
     }}>
       <View style={{width: 25, height:50, justifyContent:'center', alignItems:'center'}}>
-        {props.iconImage ?? <HighlightableWhiteIcon name={props.icon} size={props.size} enabled={props.highlight} quick={true} /> }
+        <HighlightableWhiteIcon name={props.icon} size={props.size} enabled={props.highlight} quick={true} badge={props.badge}/>
       </View>
       <HighlightableLabel width={0.75*screenWidth} height={50} style={linkStyle} label={props.label} enabled={props.highlight} quick={true}></HighlightableLabel>
     </TouchableOpacity>

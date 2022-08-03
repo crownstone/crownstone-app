@@ -14,6 +14,7 @@ import { SettingsBackground } from "../../../components/SettingsBackground";
 import { Get } from "../../../../util/GetUtil";
 import { FINGERPRINT_SCORE_THRESHOLD, FingerprintUtil } from "../../../../util/FingerprintUtil";
 import { RoomList } from "../../../components/RoomList";
+import {LocalizationUtil} from "../../../../util/LocalizationUtil";
 
 
 
@@ -45,15 +46,16 @@ export function LocalizationMenu_active(props) {
   items.push({label: "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!",  type:'explanation', below: true});
 
 
-  let locationsAttention = FingerprintUtil.getLocationsInNeedOfAttention(props.sphereId);
-  let goodLocations      = FingerprintUtil.getLocationsWithGoodFingerprints(props.sphereId);
-
+  let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
+  let goodLocations      = LocalizationUtil.getLocationsWithGoodFingerprints(props.sphereId);
+  let alreadyPadded      = true;
   if (locationsAttention.length > 0) {
-    items.push({label: "THESE NEED ATTENTION!",  type:'explanation', alreadyPadded: true});
+    items.push({label: "THESE NEED ATTENTION!",  type:'explanation', alreadyPadded: alreadyPadded});
+    alreadyPadded = !alreadyPadded;
   }
 
   if (goodLocations.length > 0) {
-    secondItems.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: true});
+    secondItems.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: alreadyPadded});
   }
 
   return (

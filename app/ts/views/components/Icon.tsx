@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
+import ZocialIcons from 'react-native-vector-icons/dist/Zocial';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 import Entypo from 'react-native-vector-icons/dist/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
@@ -79,6 +80,11 @@ export function Icon(props) {
     offsetStyle = offset(props,'materialIcons');
     correctedName = props.name.substr(3);
     return <MaterialIcons {...props} {...getProps(correctedName, offsetStyle, style)} />
+  }
+  else if (prefix3 == 'zo-') {
+    offsetStyle = offset(props,'zocial');
+    correctedName = props.name.substr(3);
+    return <ZocialIcons {...props} {...getProps(correctedName, offsetStyle, style)} />
   }
   else {
     offsetStyle = offset(props,'ionicons');

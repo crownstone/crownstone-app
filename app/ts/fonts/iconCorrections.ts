@@ -9,6 +9,7 @@ export const iconCorrections = {
   c1:            Platform.OS === 'android' ? iconCorrectionsAndroid.c1            : iconCorrectionsIOS.c1,
   c2:            Platform.OS === 'android' ? iconCorrectionsAndroid.c2            : iconCorrectionsIOS.c2,
   c3:            Platform.OS === 'android' ? iconCorrectionsAndroid.c3            : iconCorrectionsIOS.c3,
+  zocial:        Platform.OS === 'android' ? iconCorrectionsAndroid.zocial        : iconCorrectionsIOS.zocial,
   entypo:        Platform.OS === 'android' ? iconCorrectionsAndroid.entypo        : iconCorrectionsIOS.entypo,
   fontAwesome:   Platform.OS === 'android' ? iconCorrectionsAndroid.fontAwesome   : iconCorrectionsIOS.fontAwesome,
   fontAwesome5:  Platform.OS === 'android' ? iconCorrectionsAndroid.fontAwesome5  : iconCorrectionsIOS.fontAwesome5,

@@ -1,6 +1,5 @@
 import { core } from "../Core";
 import { Get } from "./GetUtil";
-import {enoughCrownstonesInLocationsForIndoorLocalization} from "./DataUtil";
 import DeviceInfo from "react-native-device-info";
 import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
@@ -85,44 +84,6 @@ export const FingerprintUtil = {
   },
 
 
-  /**
-   * True is we need to gather fingerprints in this location
-   * @param sphereId
-   * @param locationId
-   */
-  shouldTrainLocation: function(sphereId: sphereId, locationId: locationId) : boolean {
-    let location = Get.location(sphereId, locationId);
-    if (!location) { return false; }
-
-    let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
-    let state = core.store.getState();
-
-    if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
-    if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
-
-    if (Object.keys(location.fingerprints.raw).length === 0) {
-      return true;
-    }
-    return false;
-
-    // if (Object.keys(location.fingerprints.raw).length > 0) {
-    //   let hasGoodFingerprint = false
-    //   for (let fingerprintId in location.fingerprints.raw) {
-    //     if (FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
-    //       hasGoodFingerprint = true;
-    //       break;
-    //     }
-    //   }
-    //
-    //   if (hasGoodFingerprint) {
-    //     return false; // already have fingerprints in this location
-    //   }
-    // }
-    //
-    // return true;
-  },
-
-
   requiresTransformation: function(fingerprint : FingerprintData) : boolean {
     if (!fingerprint.type) { return false; }
 
@@ -139,24 +100,6 @@ export const FingerprintUtil = {
   canTransform: function(sphereId: sphereId, fingerprint : FingerprintData) : boolean {
     // TODO: implement transforms.
     return false;
-  },
-
-
-  /**
-   * True is we need to gather fingerprints in this location
-   * @param sphereId
-   * @param locationId
-   */
-  shouldTrainLocationNow: function(sphereId: sphereId, locationId: locationId) : boolean {
-    if (FingerprintUtil.shouldTrainLocation(sphereId, locationId) === false) {
-      return false;
-    }
-
-    let sphere = Get.sphere(sphereId);
-    if (sphere.state.present   === false) { return false; } // cant train a room when not in the sphere
-    if (sphere.state.reachable === false) { return false; } // cant train a room when not in the sphere
-
-    return true;
   },
 
 
@@ -280,7 +223,6 @@ export const FingerprintUtil = {
       penalties.insufficientAmountOfData = -80 * (1-(totalSamples.IN_HAND/FINGERPRINT_SIZE_THRESHOLD));
     }
 
-
     return penalties;
   },
 
@@ -380,43 +322,4 @@ export const FingerprintUtil = {
 
     return copy;
   },
-
-
-
-  deleteAllCollectedData(sphereId: sphereId, locationId: locationId) : void {
-    core.store.dispatch({type:"REMOVE_ALL_FINGERPRINTS_V2", sphereId, locationId});
-  },
-
-
-  getLocationsInNeedOfAttention(sphereId: sphereId) : LocationData[] {
-    return checkLocations(sphereId, (location) => {
-      let score = FingerprintUtil.calculateLocationScore(sphereId, location.id);
-      return score < FINGERPRINT_SCORE_THRESHOLD;
-    });
-  },
-
-
-  getLocationsWithGoodFingerprints(sphereId: sphereId) : LocationData[] {
-    return checkLocations(sphereId, (location) => {
-      let score = FingerprintUtil.calculateLocationScore(sphereId, location.id);
-      return score >= FINGERPRINT_SCORE_THRESHOLD;
-    });
-  },
-
-
-}
-
-function checkLocations(sphereId: sphereId, comparator) : LocationData[] {
-  let sphere = Get.sphere(sphereId);
-  if (!sphere) { return []; }
-
-  let result = [];
-  let locations = Object.values(sphere.locations);
-  for (let location of locations) {
-    if (comparator(location)) {
-      result.push(location);
-    }
-  }
-
-  return result;
 }

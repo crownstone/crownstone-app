@@ -70,4 +70,4 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
   );
 }
 
-RoomTraining_conclusion.options = TopBarUtil.getOptions({title:"Training complete!"})
+RoomTraining_conclusion.options = TopBarUtil.getOptions({title:"Training complete!", disableBack: true});

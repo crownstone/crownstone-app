@@ -10,13 +10,13 @@ import {
 } from "react-native";
 
 import {
-  enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
+  getAmountOfStonesInLocation
 } from "../../util/DataUtil";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {BlurMessageBar, TouchableBlurMessageBar} from "./BlurEntries";
 import {core} from "../../Core";
 import {colors} from "../styles";
-import {FingerprintUtil} from "../../util/FingerprintUtil";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -44,7 +44,7 @@ export class RoomExplanation extends Component<any, any> {
       explanation =  lang("No_Crownstones_in_this_ro");
     }
 
-    if (FingerprintUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId)) {
+    if (LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
       buttonCallback = () => { NavigationUtil.launchModal( "SetupLocalization", { sphereId: this.props.sphereId, isModal: true }); }
     }

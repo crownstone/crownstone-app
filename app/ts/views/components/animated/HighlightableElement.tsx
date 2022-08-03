@@ -3,7 +3,7 @@ import { Animated, FlexAlignType, View, Text } from "react-native";
 import * as React from "react";
 import { colors } from "../../styles";
 
-export function HighlightableElement(props: {elements: JSX.Element[], width: number, height: number, enabled?: boolean, alignment?: FlexAlignType, jiggle?: boolean, quick?: boolean, badge?: BadgeIndicator}) {
+export function HighlightableElement(props: {elements: JSX.Element[], width: number, height: number, enabled?: boolean, alignment?: FlexAlignType, jiggle?: boolean, quick?: boolean, badge?: BadgeIndicator, badgeColor?: string}) {
   const opacity1Value = useRef(new Animated.Value(1));
   const opacity2Value = useRef(new Animated.Value(0));
   const opacity3Value = useRef(new Animated.Value(0));
@@ -111,7 +111,7 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity3Value.current}}>
         {props.elements[2]}
       </Animated.View>
-      <Badge indicator={props.badge} color={colors.red.hex}/>
+      <Badge indicator={props.badge} color={props.badgeColor ?? colors.red.hex}/>
     </Animated.View>
   );
 }
