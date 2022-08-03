@@ -25,13 +25,13 @@ export function RoomTraining_inHand_intro(props) {
 
         <View style={{flex:1}}/>
         <Video
-          source={require('../../../../assets/video/preview.mp4')}
+          source={require('../../../../assets/video/arm_test.mov')}
           style={{height:0.35*screenHeight, width:screenWidth}}
           repeat={true}
+          rate={0.1}
           playInBackground={false}
           resizeMode={'cover'}
         />
-        {/*<View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>*/}
         <View style={{flex:1}}/>
 
         <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>

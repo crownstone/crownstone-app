@@ -60,6 +60,6 @@ function DebugPopup() {
 
 function DebugCustomView() {
   setTimeout(() => {
-  NavigationUtil.launchModal("RoomTraining_inHand_intro",{"sphereId":"99e5f4a3-c7fe-4ac5-b8fb-eb094d63195a","locationId":"656e4c2-76df-4281-e6be-a729e94a594a", isModal:true})}
+  NavigationUtil.launchModal("RoomTraining",{"sphereId":"99e5f4a3-c7fe-4ac5-b8fb-eb094d63195a","locationId":"6755f567-8644-ecab-e070-87c59796f074"})}
   ,300);
 }

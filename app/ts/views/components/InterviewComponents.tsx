@@ -156,6 +156,7 @@ export function TextButton(props) {
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
       <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.black.hex} size={15} style={{padding:10}} />
       <Text style={[textStyle, {color: props.danger ? colors.red.hex : props.textColor}]}>{props.label}</Text>
+      { props.textAlign === "left" ? <View style={{flex:1}} /> : undefined }
     </TouchableOpacity>
   );
 }
@@ -171,6 +172,7 @@ function TextButtonWithIcon(props) {
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
       <Icon name={props.icon} color={props.iconColor || props.textColor || colors.csBlue.hex} size={42} style={{padding:10, paddingRight: 30}} />
       <Text style={[textStyle, {color: props.textColor, fontStyle:props.fontStyle || 'normal'}]}>{props.label}</Text>
+      { props.textAlign === "left" ? <View style={{flex:1}} /> : undefined }
     </TouchableOpacity>
   );
 }

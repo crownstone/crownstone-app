@@ -6,11 +6,10 @@ import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Background } from "../../components/Background";
 import {colors, screenHeight, screenWidth, styles, topBarHeight} from "../../styles";
-import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Languages } from "../../../Languages";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
-
+import {TextButtonLight} from "../../components/InterviewComponents";
 
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -34,12 +33,14 @@ export function RoomTraining(props) {
       <View style={{flex:1}}/>
 
       <Text style={styles.explanation}>{"I'll guide you in this process once we start."}</Text>
-      <Text style={styles.explanation}>{"Are you ready?"}</Text>
+      <Text style={styles.explanation}>{"Are you ready to get started?"}</Text>
       <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
-        <Button
-          backgroundColor={colors.blue.hex}
-          icon={"ios-play"}
-          label={ "Let's go! "}
+        <TextButtonLight
+          selected={false}
+          label={"Continue"}
+          danger={false}
+          textAlign={"right"}
+          testID={"RoomTraining_continue"}
           callback={() => { NavigationUtil.navigate('RoomTraining_inHand_intro', props); }}
         />
       </View>
