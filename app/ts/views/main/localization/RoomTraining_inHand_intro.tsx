@@ -9,6 +9,7 @@ import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
 import Video from 'react-native-video';
+import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
 
 
 
@@ -48,5 +49,5 @@ export function RoomTraining_inHand_intro(props) {
 }
 
 RoomTraining_inHand_intro.options = (props) => {
-  return TopBarUtil.getOptions({title: `Training session`, closeModal: props.isModal});
+  return TopBarUtil.getOptions({title: `Training session`, closeModal: props.isModal, help: () => { openLocalizationHelpWebsite(); } });
 }

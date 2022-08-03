@@ -10,6 +10,7 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Languages } from "../../../Languages";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
 import {TextButtonLight} from "../../components/InterviewComponents";
+import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
 
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -50,6 +51,6 @@ export function RoomTraining(props) {
 
 RoomTraining.options = (props) => {
   let location = Get.location(props.sphereId, props.locationId);
-  return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true});
+  return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, closeModal: true, help: () => { openLocalizationHelpWebsite(); } });
 };
 

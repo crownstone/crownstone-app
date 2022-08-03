@@ -14,7 +14,6 @@ import {core} from "../../../Core";
 import { FingerprintCollector } from "../../../localization/fingerprints/FingerprintCollector";
 
 
-export const MIN_DATA_COUNT = 120;
 
 export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType, componentId: string, minRequiredSamples?: number}, any> {
   static options(props) {
@@ -23,7 +22,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
   }
 
   trainingData : FingerprintCollector;
-  minRequiredSamples : number = MIN_DATA_COUNT;
+  minRequiredSamples : number = FINGERPRINT_SIZE_THRESHOLD;
 
   constructor(props) {
     super(props);

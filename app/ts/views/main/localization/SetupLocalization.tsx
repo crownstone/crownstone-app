@@ -81,7 +81,7 @@ function SetupFinished(props) {
             backgroundColor={colors.csBlue.hex}
             icon={'ios-play'}
             label={ "Finish!"}
-            callback={() => { NavigationUtil.dismissModal(); }}
+            callback={() => { NavigationUtil.dismissAllModals(); }}
           />
         </View>
       </ScrollView>

@@ -11,6 +11,7 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
 import { ScrollView } from 'react-native';
 import Video from 'react-native-video';
+import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
 
 
 
@@ -53,5 +54,5 @@ return (
 
 RoomTraining_inPocket_intro.options = (props) => {
   let location = Get.location(props.sphereId, props.locationId);
-  return TopBarUtil.getOptions({title: `Additional training`, closeModal: true});
+  return TopBarUtil.getOptions({title: `Additional training`, closeModal: true, help: () => { openLocalizationHelpWebsite(); } });
 }
