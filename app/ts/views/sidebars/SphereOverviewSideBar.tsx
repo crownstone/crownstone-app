@@ -10,7 +10,8 @@ import {useDatabaseChange} from "../components/hooks/databaseHooks";
 import {Get} from "../../util/GetUtil";
 import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
-import {DataUtil} from "../../util/DataUtil";
+import { DataUtil, enoughCrownstonesForIndoorLocalization } from "../../util/DataUtil";
+import { FingerprintUtil } from "../../util/FingerprintUtil";
 
 export function SphereOverviewSideBar(props) {
   useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated']);
@@ -47,7 +48,18 @@ export function SphereOverviewSideBar(props) {
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
         label={"Localization"}
-        callback={() => { NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
+        callback={() => {
+          if (
+            DataUtil.inSphere(SPHERE_ID_STORE.activeSphereId) &&
+            enoughCrownstonesForIndoorLocalization(SPHERE_ID_STORE.activeSphereId) &&
+            FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(SPHERE_ID_STORE.activeSphereId)
+          ) {
+            NavigationUtil.launchModal( "SetupLocalization",{sphereId: SPHERE_ID_STORE.activeSphereId, isModal: true});
+          }
+          else {
+            NavigationUtil.launchModal( "LocalizationMenu",{sphereId: SPHERE_ID_STORE.activeSphereId});
+          }
+        }}
         size={22}
         icon={'c1-locationPin1'}
         highlight={blinkLocalizationIcon}

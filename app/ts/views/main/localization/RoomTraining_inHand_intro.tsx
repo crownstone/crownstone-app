@@ -22,7 +22,7 @@ export function RoomTraining_inHand_intro(props) {
         <KeepAwake />
         <View style={{height:20}}/>
         <Text style={styles.boldExplanation}>{"Walk around the room with the phone in your hand, arm stretched out."}</Text>
-        <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible."}</Text>
+        <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible!"}</Text>
 
         <View style={{flex:1}}/>
         <Video
