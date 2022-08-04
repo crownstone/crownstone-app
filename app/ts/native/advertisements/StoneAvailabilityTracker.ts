@@ -154,7 +154,10 @@ export class StoneAvailabilityTrackerClass {
       this.handleMap[data.handle] = stoneId;
 
       LOGv.native("StoneAvailabilityTracker: registerStoneId stoneId, sphereId, rssi", stoneId, sphereId, rssi);
-      if (this.log[stoneId] === undefined) {
+      // the lastNotifiedRssi check is here because registerStoneId can be invoked by hearing about a CrownstoneId via the mesh.
+      // If this is the case, the lastNotifiedRssi is set to null. The changeStoneAvailablility event will be sent again to tell the system that a
+      // Crownstone is heard from directly for the first time.
+      if (this.log[stoneId] === undefined || this.log[stoneId].lastNotifiedRssi === null && rssi) {
         LOGd.native("StoneAvailabilityTracker: registerStoneId storing in LOG stoneId, sphereId, rssi", stoneId, sphereId, rssi);
         this.log[stoneId] = {t: now, rssi: data.rssi, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
         // new Crownstone detected this run!
