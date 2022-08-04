@@ -21,7 +21,14 @@ let loadNamesFromStack = (stack) => {
 };
 
 let tabBarComponentNames = [];
-export let topBarComponentNames = [];
+export let topBarComponentNames = [
+  "topbarCancelButton",
+  "topbarLeftButton",
+  "topbarRightHelpButton",
+  "topbarRightMoreButton",
+  "topbarButton",
+  "topbarEmptyButton",
+];
 
 
 // Listen for componentDidAppear screen events

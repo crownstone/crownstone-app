@@ -38,7 +38,7 @@ export function RoomTraining_inHand_intro(props) {
         <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
           <Button
-            backgroundColor={colors.blue.hex}
+            backgroundColor={colors.blue.rgba(0.75)}
             icon={'ios-play'}
             label={ "Start!"}
             callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND", minRequiredSamples: props.minRequiredSamples}); }}

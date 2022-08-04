@@ -11,6 +11,7 @@ import { Languages } from "../../../Languages";
 import {bindTopbarButtons} from "../../components/hooks/viewHooks";
 import {TextButtonLight} from "../../components/InterviewComponents";
 import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
+import { ScaledImage } from "../../components/ScaledImage";
 
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -29,9 +30,9 @@ export function RoomTraining(props) {
       <Text style={styles.boldExplanation}>{"In order for me to know when you are in this room, I need to learn a bit more about it."}</Text>
       <Text style={styles.explanation}>{"By walking around the room, I can listen for the Crownstone signals and recognise the room afterwards."}</Text>
 
-      <View style={{flex:1}}/>
-      <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
-      <View style={{flex:1}}/>
+      <View style={{flex:1, ...styles.centered}}>
+        <ScaledImage source={require("../../../../assets/images/map_focus.png")} sourceWidth={1193} sourceHeight={789} targetWidth={screenWidth*0.9} />
+      </View>
 
       <Text style={styles.explanation}>{"I'll guide you in this process once we start."}</Text>
       <Text style={styles.explanation}>{"Are you ready to get started?"}</Text>

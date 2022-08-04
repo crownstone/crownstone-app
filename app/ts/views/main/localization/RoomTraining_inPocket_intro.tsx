@@ -40,7 +40,7 @@ return (
         <Text style={styles.explanation}>{"Collect as much as you can!"}</Text>
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           <Button
-            backgroundColor={colors.blue.hex}
+            backgroundColor={colors.blue.rgba(0.75)}
             icon={'ios-play'}
             label={ "Start!"}
             callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_POCKET"}); }}

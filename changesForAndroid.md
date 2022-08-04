@@ -16,3 +16,5 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 
 RCT_EXTERN_METHOD(startIndoorLocalization)
 RCT_EXTERN_METHOD(stopIndoorLocalization)
+
+Add react-native-video

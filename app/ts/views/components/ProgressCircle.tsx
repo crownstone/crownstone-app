@@ -23,7 +23,7 @@ export class ProgressCircle extends Component<any, any> {
     return (
       <View style={style}>
         <Svg width={2*radius} height={2*radius}>
-          <Circle
+          { this.props.progress > 0 && <Circle
             r={radius-borderWidth}
             stroke={this.props.color}
             strokeWidth={0.5*borderWidth}
@@ -33,7 +33,7 @@ export class ProgressCircle extends Component<any, any> {
             y={radius}
             strokeLinecap="round"
             fill="transparent"
-          />
+          /> }
         </Svg>
       </View>
     )

@@ -8,6 +8,7 @@ import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {Spacer} from "../../components/Spacer";
 import {Get} from "../../../util/GetUtil";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";
+import { ScaledImage } from "../../components/ScaledImage";
 
 
 
@@ -52,15 +53,17 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
     <SettingsBackground testID={"SetupLocalization"}>
       <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: topBarHeight}} contentInsetAdjustmentBehavior={"never"}>
       <View style={{height:20}}/>
-      <View style={{height:0.25*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
+        <View style={{...styles.centered}}>
+          <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.9} />
+        </View>
       <Text style={styles.boldExplanation}>{label}</Text>
-        {showImprovementSuggestion && <Text style={styles.explanation}>{"You can further improve the performance by training in a different way too."}</Text> }
+        {showImprovementSuggestion && <Text style={styles.explanation}>{"You can further improve the performance by adding an in-pocket training set."}</Text> }
       <Spacer />
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           {showImprovementSuggestion && <Button
             backgroundColor={colors.blue.hex}
             icon={'ios-play'}
-            label={ "Further improve " + location.config.name + "!"}
+            label={ "Train in-pocket set"}
             callback={() => { NavigationUtil.navigate('RoomTraining_inPocket_intro', {sphereId: props.sphereId, locationId: props.locationId}); }}
           /> }
           { finalizationButton }

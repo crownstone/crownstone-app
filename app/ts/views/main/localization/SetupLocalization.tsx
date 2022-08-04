@@ -24,6 +24,7 @@ import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { Icon } from '../../components/Icon';
 import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
+import { ScaledImage } from "../../components/ScaledImage";
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
@@ -43,7 +44,9 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
         <View style={{height:30}}/>
         <Text style={styles.header}>{"To use indoor localization, we have to walk around each room to learn about the Crownstone signals in the rooms."}</Text>
         <View style={{height:30}}/>
-        <View style={{height:0.20*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
+        <View style={styles.centered}>
+          <ScaledImage source={require("../../../../assets/images/map_house.png")} sourceWidth={1185} sourceHeight={835} targetHeight={screenHeight*0.3} />
+        </View>
         <View style={{height:30}}/>
         <Text style={styles.explanation}>{toDoRooms.length > 1 ? "We need to gather data in these rooms:" : "Only one room left to do!"}</Text>
         <ListEditableItems items={toDoRooms} style={{width: screenWidth}}/>
@@ -68,7 +71,9 @@ function SetupFinished(props) {
         <View style={{height:30}}/>
         <Text style={styles.title}>{"All done!"}</Text>
         <View style={{height:30}}/>
-        <View style={{height:0.35*screenHeight, width:screenWidth, ...styles.centered, backgroundColor:colors.green.rgba(0.2)}}><Text>animation</Text></View>
+        <View style={styles.centered}>
+          <ScaledImage source={require("../../../../assets/images/map_house_finished.png")} sourceWidth={1193} sourceHeight={825} targetWidth={screenWidth} />
+        </View>
         <View style={{height:30}}/>
         <Text style={styles.explanation}>
           <Text>{"If you want to improve the localization performance later on, the "}</Text>
