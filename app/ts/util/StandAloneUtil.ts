@@ -583,7 +583,9 @@ export const xUtil = {
 
 
 const S4 = function () {
-  return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
+  // get a random hexadecimal number of 4 bytes
+  return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  // the |0 floors it to an integer, the 1+ ensures that we always have 5 bytes, of which take the last 4.
 };
 
 

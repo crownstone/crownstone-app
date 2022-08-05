@@ -46,6 +46,17 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
       this.dbState = core.store.getState();
       this.forceUpdate();
     }
+    if (buttonId === 'cancel') {
+      this.setState({ editField: null, editValue:null, committer: null });
+      TopBarUtil.updateOptions(this.props.componentId, {update:true,cancel:false, save:false});
+    }
+    if (buttonId === 'save') {
+      if (this.state.committer) {
+        this.state.committer();
+      }
+      this.setState({ editField: null, editValue:null, committer: null });
+      TopBarUtil.updateOptions(this.props.componentId, {update:true,cancel:false, save:false});
+    }
   }
 
   _getItems(stateSegment, expandedPath, url, baseKey, step) {
@@ -55,7 +66,18 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
     let keys = Object.keys(stateSegment);
     keys.forEach((key) => {
       if (typeof stateSegment[key] === 'object' && stateSegment[key] !== null) {
-        // this is nested
+        // this is nested, tapping it will open/close it
+
+        let shownValue = key;
+        if (isUUID(key)) {
+          if (stateSegment[key]?.config?.name) {
+            shownValue = stateSegment[key].config.name;
+          }
+          else if (stateSegment[key]?.name) {
+            shownValue = stateSegment[key].name;
+          }
+        }
+
         items.push(
           <TouchableOpacity key={url+'/'+key} style={[viewStyle,{paddingLeft: step*15 + 5, backgroundColor: colors.blue.rgba(0.1*step)}]} onPress={ () => {
             if (expandedPath[baseKey][key] !== undefined) {
@@ -66,50 +88,50 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
             }
             this.forceUpdate();
           }}>
-            <Text style={textStyle}>{key}</Text>
+            <Text style={textStyle}>{shownValue}</Text>
           </TouchableOpacity>
         );
         if (expandedPath[baseKey][key] !== undefined) {
           items = items.concat(this._getItems(stateSegment[key], expandedPath[baseKey], url+'/'+key, key, step+1))
         }
-      }
-      else {
-        let label = stateSegment[key];
-        let ignoreStep = false;
-        if (typeof label === 'string' && label.indexOf("{") !== -1 && label.indexOf("}") !== -1) {
-          let data = JSON.parse(stateSegment[key]);
-          label = "\n" + JSON.stringify(data, undefined, 2);
-          ignoreStep = true;
-        }
 
-        items.push(
-          <TouchableOpacity
-            key={url+'/'+key}
-            style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.blue.rgba(0.1*step)}]}
-            onPress={() => {
-              if (state.development.devAppVisible) {
-                if (this.state.editField !== null) {
-                  this.state.committer();
-                  this.setState({editField:null, editValue:null, committer:null});
-                }
-                else {
-                  this.setState({ editField: url + key, editValue: label, committer:() => {
-                    stateSegment[key] = this.state.editValue;
-                    StoreManager.persistor.persistChanges(null, this.dbState);
-                  }});
-                }
-              }
-            }}
-          >
-            {
-              this.state.editField === url+key ?
-                this.getEditField(stateSegment, key)
-                :
-                <Text style={textStyle}>{ key + ": " + label }</Text>
-            }
-          </TouchableOpacity>
-        );
+        return;
       }
+
+      let label = stateSegment[key];
+      let ignoreStep = false;
+
+      // if it is an object, stringify it.
+      if (typeof label === 'string' && label.indexOf("{") !== -1 && label.indexOf("}") !== -1) {
+        let data = JSON.parse(stateSegment[key]);
+        label = "\n" + JSON.stringify(data, undefined, 2);
+        ignoreStep = true;
+      }
+
+      items.push(
+        <TouchableOpacity
+          key={url+'/'+key}
+          style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.blue.rgba(0.1*step)}]}
+          onPress={() => {
+            // only for devs who have unlocked the dev app.
+            if (state.development.devAppVisible) {
+
+              if (this.state.editField === null) {
+                this.setState({ editField: url + key, editValue: label, committer:() => {
+                  stateSegment[key] = this.state.editValue;
+                  StoreManager.persistor.persistChanges(null, this.dbState);
+                }});
+
+                TopBarUtil.updateOptions(this.props.componentId, {update:false,cancel:true, save: true});
+              }
+            }
+          }}
+        >
+          {
+            this.state.editField === url+key ? this.getEditField(stateSegment, key) : <Text style={textStyle}>{ key + ": " + label }</Text>
+          }
+        </TouchableOpacity>
+      );
     })
 
     return items;
@@ -120,7 +142,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
     return (
       <TextEditInput
         autoFocus={true}
-        style={{paddingVertical: 15}}
+        style={{paddingVertical: 15, backgroundColor:colors.white.hex, borderRadius:3, borderColor: colors.black.rgba(0.1), borderWidth:1}}
         value={this.state.editValue}
         blurOnSubmit={true}
         callback={(value) => { this.setState({editValue: value}); }}
@@ -142,4 +164,11 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
 }
 
 
-
+function isUUID(value) {
+  if (value.length === 24) {
+    // check if the value is a hex string
+    return /^[0-9a-f]{24}$/i.test(value);
+  }
+  // check if the value is a uuid v4
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}

@@ -66,9 +66,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
       else {
         Bluenet.vibrate("success");
       }
-
     }
-
   }
 
   navigationButtonPressed({buttonId}) {
@@ -176,7 +174,6 @@ class TrainingAnimation extends Component<{count: number, requiredAmount: number
     }
 
 
-    let r = 1.1*size/2;
     let angles = [
       0.28*Math.PI,
       0.39*Math.PI,
