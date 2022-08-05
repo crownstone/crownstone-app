@@ -6,7 +6,8 @@ let defaultFingerprintData: FingerprintData = {
   id:                    null,
   cloudId:               null,
   type:                  null,
-  createdOnDeviceType:   null, // ${device type string}_${userId who collected it}
+  createdOnDeviceType:   null, // ${device type string}
+  createdByUser:         null, // ${userId who collected it}
   crownstonesAtCreation: {}, // maj_min as id representing the Crownstone.
   data:                  [],
   updatedAt:             0,
@@ -33,6 +34,7 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
         newState.cloudId               = update(action.data.cloudId, newState.cloudId);
         newState.type                  = update(action.data.type, newState.type);
         newState.createdOnDeviceType   = update(action.data.createdOnDeviceType, newState.createdOnDeviceType);
+        newState.createdByUser         = update(action.data.createdByUser, newState.createdByUser);
         newState.crownstonesAtCreation = update(action.data.crownstonesAtCreation, newState.crownstonesAtCreation);
         newState.data                  = update(action.data.data, newState.data);
 
@@ -84,6 +86,8 @@ let defaultProcessedFingerprintData: FingerprintProcessedData = {
   fingerprintId:           null, // processed based on parent id
   type:                    null,
   transformState:          null,
+  createdOnDeviceType:     null, // ${device type string}
+  createdByUser:           null, // ${userId who collected it}
   crownstonesAtCreation:   {}, // maj_min as id representing the Crownstone.
   data:                    [],
   processingParameterHash: null, // this contains the parameters used to process the data. (sigmoid)
@@ -106,6 +110,9 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
         newState.crownstonesAtCreation   = update(action.data.crownstonesAtCreation,   newState.crownstonesAtCreation);
         newState.data                    = update(action.data.data,                    newState.data);
         newState.processingParameterHash = update(action.data.processingParameterHash, newState.processingParameterHash);
+
+        newState.createdOnDeviceType   = update(action.data.createdOnDeviceType, newState.createdOnDeviceType);
+        newState.createdByUser         = update(action.data.createdByUser, newState.createdByUser);
 
         newState.transformedAt           = getTime(action.data.transformedAt);
         newState.processedAt             = getTime(action.data.processedAt);

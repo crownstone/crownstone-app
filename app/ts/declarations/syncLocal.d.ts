@@ -1,6 +1,7 @@
 type SupportedMappingType = 'ability'         |
                             'abilityProperty' |
                             'behaviour'       |
+                            'fingerprint'     |
                             'hub'             |
                             'location'        |
                             'scene'           |

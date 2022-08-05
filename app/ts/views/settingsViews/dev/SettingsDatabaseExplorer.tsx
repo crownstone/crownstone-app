@@ -26,6 +26,13 @@ const textStyle : TextStyle = {
   paddingVertical: 15
 }
 
+const italicTextStyle : TextStyle = {
+  fontSize: 14,
+  fontStyle:'italic',
+  fontWeight:'bold',
+  paddingVertical: 15
+}
+
 export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: "Database Explorer", update: true});
@@ -69,12 +76,20 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
         // this is nested, tapping it will open/close it
 
         let shownValue = key;
+        let usedStyle = textStyle;
         if (isUUID(key)) {
           if (stateSegment[key]?.config?.name) {
-            shownValue = stateSegment[key].config.name;
+            shownValue = stateSegment[key].config.name + " (from ID)";
           }
           else if (stateSegment[key]?.name) {
-            shownValue = stateSegment[key].name;
+            shownValue = stateSegment[key].name + " (from ID)";
+          }
+          else if (stateSegment[key]?.firstName) {
+            shownValue = stateSegment[key].firstName + " " + stateSegment[key].lastName + " (from ID)";
+          }
+
+          if (shownValue != key) {
+            usedStyle = italicTextStyle; // use the italic style to indicate we have modified the key
           }
         }
 
@@ -88,7 +103,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
             }
             this.forceUpdate();
           }}>
-            <Text style={textStyle}>{shownValue}</Text>
+            <Text style={usedStyle}>{shownValue}</Text>
           </TouchableOpacity>
         );
         if (expandedPath[baseKey][key] !== undefined) {

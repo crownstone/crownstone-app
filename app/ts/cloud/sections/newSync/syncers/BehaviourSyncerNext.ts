@@ -8,9 +8,6 @@ import { SyncUtil } from "../../../../util/SyncUtil";
 
 export class BehaviourSyncerNext extends SyncStoneInterface<behaviourWrapper, behaviourWrapper, cloud_Behaviour, cloud_Behaviour_settable> {
 
-  cloudStoneId : string;
-  localStoneId : string;
-
   constructor(options: SyncInterfaceOptions, cloudStoneId: string) {
     super(BehaviourTransferNext, options, cloudStoneId);
   }

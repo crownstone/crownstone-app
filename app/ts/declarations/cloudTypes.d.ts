@@ -87,6 +87,28 @@ interface cloud_Hub_settable {
   updatedAt?: string,
 }
 
+interface cloud_Fingerprint {
+  id: string,
+  type: FingerprintType,
+  createdOnDeviceType: string,
+  createdByUser: string,
+  data: FingerprintMeasurementData[],
+  locationId: string,
+  sphereId: string,
+  updatedAt: string,
+  createdAt: string,
+}
+
+interface cloud_Fingerprint_settable {
+  type?: FingerprintType,
+  createdOnDeviceType?: string,
+  createdByUser?: string,
+  locationId?: string,
+  data?: FingerprintMeasurementData[],
+  updatedAt?: string,
+  createdAt?: string,
+}
+
 interface cloud_LoginReply {
   id: string,
   userId: string,

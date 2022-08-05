@@ -1,5 +1,5 @@
 import {download, downloadFile, request} from '../cloudCore'
-import {DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD} from "../../ExternalConfig";
+import {CLOUD_ADDRESS, CLOUD_V2_ADDRESS, DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD} from "../../ExternalConfig";
 import {LOG, LOGe, LOGi, LOGw} from '../../logging/Log'
 import {xUtil} from "../../util/StandAloneUtil";
 import {Alert} from "react-native";
@@ -203,51 +203,57 @@ export const cloudApiBase = {
 
 
 function _getId(url, obj) : string {
-  let usersLocation = url.indexOf('users');
+  let endpoint = url.replace(CLOUD_ADDRESS,"").replace(CLOUD_V2_ADDRESS,"");
+
+  let usersLocation = endpoint.indexOf('users');
   if (usersLocation !== -1 && usersLocation < 3)
     return obj.userId;
 
-  let devicesLocation = url.indexOf('Devices');
+  let devicesLocation = endpoint.indexOf('Devices');
   if (devicesLocation !== -1 && devicesLocation < 3)
     return obj.deviceId;
 
-  let eventsLocation = url.indexOf('Events');
+  let eventsLocation = endpoint.indexOf('Events');
   if (eventsLocation !== -1 && eventsLocation < 3)
     return obj.eventId;
 
-  let spheresLocation = url.indexOf('Spheres');
+  let spheresLocation = endpoint.indexOf('Spheres');
   if (spheresLocation !== -1 && spheresLocation < 3)
     return obj.sphereId;
 
-  let locationsLocation = url.indexOf('Locations');
+  let spheresV2Location = endpoint.indexOf('spheres');
+  if (spheresV2Location !== -1 && spheresV2Location < 3)
+    return obj.sphereId;
+
+  let locationsLocation = endpoint.indexOf('Locations');
   if (locationsLocation !== -1 && locationsLocation < 3)
     return obj.locationId;
 
-  let stoneLocation = url.indexOf('Stones');
+  let stoneLocation = endpoint.indexOf('Stones');
   if (stoneLocation !== -1 && stoneLocation < 3)
     return obj.stoneId;
 
-  let sceneLocation = url.indexOf('Scenes');
+  let sceneLocation = endpoint.indexOf('Scenes');
   if (sceneLocation !== -1 && sceneLocation < 3)
     return obj.sceneId;
 
-  let sortedListsLocation = url.indexOf('SortedLists');
+  let sortedListsLocation = endpoint.indexOf('SortedLists');
   if (sortedListsLocation !== -1 && sortedListsLocation < 3)
     return obj.sortedListId;
 
-  let installationLocation = url.indexOf('AppInstallation');
+  let installationLocation = endpoint.indexOf('AppInstallation');
   if (installationLocation !== -1 && installationLocation < 3)
     return obj.installationId;
 
-  let hubLocation = url.indexOf('Hub');
+  let hubLocation = endpoint.indexOf('Hub');
   if (hubLocation !== -1 && hubLocation < 3)
     return obj.hubId;
 
-  let messagesLocation = url.indexOf('Messages');
+  let messagesLocation = endpoint.indexOf('Messages');
   if (messagesLocation !== -1 && messagesLocation < 3)
     return obj.messageId;
 
-  let toonsLocation = url.indexOf('Toons');
+  let toonsLocation = endpoint.indexOf('Toons');
   if (toonsLocation !== -1 && toonsLocation < 3)
     return obj.toonId;
 }

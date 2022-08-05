@@ -92,7 +92,7 @@ export class FingerprintCollector {
 
   store() {
     if (this.trainingData.length === 0) { return; }
-
+    let state = core.store.getState();
     let fingerprintId = xUtil.getUUID();
     core.store.dispatch({
       type:       'ADD_FINGERPRINT_V2',
@@ -102,6 +102,7 @@ export class FingerprintCollector {
       data: {
         type:                  this.type,
         createdOnDeviceType:   FingerprintUtil.getDeviceTypeDescription(), // ${device type string}_${userId who collected it}
+        createdByUserId:       state.user.userId,
         crownstonesAtCreation: this.crownstonesAtCreation, // maj_min as id representing the Crownstone.
         data:                  this.trainingData,
       }

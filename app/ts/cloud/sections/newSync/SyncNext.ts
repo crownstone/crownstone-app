@@ -121,7 +121,6 @@ export const SyncNext = {
 
     let sphereIdMap = {}
 
-
     if (syncResponse.user) {
       new UserSyncerNext(syncerOptions).process(syncResponse.user, reply)
     }

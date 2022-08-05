@@ -6,6 +6,7 @@ import { HubTransferNext }       from "../transferrers/HubTransferNext";
 import { BehaviourTransferNext } from "../transferrers/BehaviourTransferNext";
 import { AbilityTransferNext }   from "../transferrers/AbilityTransferNext";
 import { AbilityPropertyTransferNext } from "../transferrers/AbilityPropertyTransferNext";
+import { FingerprintTransferNext }     from "../transferrers/FingerprintTransferNext";
 
 
 export function mapLocalToCloud(item: any, type: SupportedMappingType) {
@@ -18,6 +19,8 @@ export function mapLocalToCloud(item: any, type: SupportedMappingType) {
       return BehaviourTransferNext.mapLocalToCloud(item as BehaviourData);
     case 'hub':
       return HubTransferNext.mapLocalToCloud(item as HubData);
+    case 'fingerprint':
+      return FingerprintTransferNext.mapLocalToCloud(item as FingerprintData);
     case 'location':
       return LocationTransferNext.mapLocalToCloud(item as LocationData);
     case 'scene':

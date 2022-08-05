@@ -142,6 +142,20 @@ export const DataUtil = {
     return null;
   },
 
+  getLocationFromFingerprintId: function(fingerprintId: string) : LocationData | null {
+    let state = core.store.getState()
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      for (let locationId in sphere.locations) {
+        let location = sphere.locations[locationId];
+        if (location.fingerprints.raw[fingerprintId] !== undefined) {
+          return location;
+        }
+      }
+    }
+    return null;
+  },
+
 
   getAuthorizationTokenFromSphere: function(sphere: SphereData) : string | null {
     return sphere.keys[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key ?? null;

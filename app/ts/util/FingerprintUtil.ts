@@ -85,10 +85,10 @@ export const FingerprintUtil = {
 
 
   requiresTransformation: function(fingerprint : FingerprintData) : boolean {
-    if (!fingerprint.type) { return false; }
+    if (!fingerprint.createdOnDeviceType) { return false; }
 
     let deviceType = DeviceInfo.getDeviceId();
-    let fingerprintDeviceType = fingerprint.type.split('_')[0];
+    let fingerprintDeviceType = fingerprint.createdOnDeviceType.split('_')[0];
 
     if (deviceType !== fingerprintDeviceType) {
       return true;
@@ -97,6 +97,7 @@ export const FingerprintUtil = {
     return false;
   },
 
+
   canTransform: function(sphereId: sphereId, fingerprint : FingerprintData) : boolean {
     // TODO: implement transforms.
     return false;
@@ -104,9 +105,7 @@ export const FingerprintUtil = {
 
 
   getDeviceTypeDescription(): string {
-    let state = core.store.getState();
-
-    return `${DeviceInfo.getDeviceId()}_${DeviceInfo.getDeviceType()}_${state.user.userId}`
+    return `${DeviceInfo.getDeviceId()}_${DeviceInfo.getDeviceType()}`
   },
 
 

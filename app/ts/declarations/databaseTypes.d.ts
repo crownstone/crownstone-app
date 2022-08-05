@@ -3,6 +3,7 @@ type locationId             = string;
 type stoneId                = string;
 type sceneId                = string;
 type hubId                  = string;
+type userId                 = string;
 type sphereUserId           = string;
 type databaseId             = string;
 type fingerprintId          = string;
@@ -36,22 +37,24 @@ interface EncryptionKeyData {
 
 interface DatabaseAction {
   type: ACTION_TYPE | 'NOT_REQUIRED',
-  sphereId?    : string,
-  locationId?  : string,
-  sceneId?     : string,
-  messageId?   : string,
-  stoneId?     : string,
-  keyId?       : string,
-  hubId?       : string,
-  behaviourId? : string,
-  abilityId?   : string,
-  propertyId?  : string,
-  userId?      : string,
-  toonId?      : string,
-  triggeredBySync? : boolean,
-  __test?          : boolean,
-  __purelyLocal?   : boolean,
-  __noEvents?      : boolean,
+  sphereId?               : string,
+  locationId?             : string,
+  fingerprintId?          : string,
+  fingerprintProcessedId? : string,
+  sceneId?                : string,
+  messageId?              : string,
+  stoneId?                : string,
+  keyId?                  : string,
+  hubId?                  : string,
+  behaviourId?            : string,
+  abilityId?              : string,
+  propertyId?             : string,
+  userId?                 : string,
+  toonId?                 : string,
+  triggeredBySync?        : boolean,
+  __test?                 : boolean,
+  __purelyLocal?          : boolean,
+  __noEvents?             : boolean,
   data?
 }
 
@@ -154,6 +157,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'UPDATE_NEW_LOCATION_FINGERPRINT'         |
                       'ADD_FINGERPRINT_V2'                      |
                       'UPDATE_FINGERPRINT_V2'                   |
+                      'UPDATE_FINGERPRINT_V2_CLOUD_ID'          |
                       'REMOVE_FINGERPRINT_V2'                   |
                       'ADD_PROCESSED_FINGERPRINT'               |
                       'UPDATE_PROCESSED_FINGERPRINT'            |
