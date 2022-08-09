@@ -14,6 +14,7 @@ export class PreferenceSyncer extends SyncingBase {
   constructor(
     actions: any[],
     transferPromises : any[],
+    applyPreferences: boolean,
     globalCloudIdMap? : syncIdMap,
   ) {
     super(actions, transferPromises, globalCloudIdMap);
@@ -23,13 +24,6 @@ export class PreferenceSyncer extends SyncingBase {
     return CLOUD.forDevice(this.deviceId).getPreferences();
   }
 
-  _getLocalData(store) {
-    let state = store.getState();
-    if (state && state.preferences) {
-      return state.preferences;
-    }
-    return {};
-  }
 
   sync(state) {
     this.deviceId = this._getDeviceId(state);
@@ -37,6 +31,8 @@ export class PreferenceSyncer extends SyncingBase {
 
     return this.download()
       .then((preferences_in_cloud) => {
+
+
         let preferenceMap = this.mapPreferences(state);
         this.checkInferredPreferences(preferenceMap, preferences_in_cloud, []);
 
@@ -62,9 +58,22 @@ export class PreferenceSyncer extends SyncingBase {
         let property = 'toon_enabled_agreementId.' + toons[toonId].toonAgreementId;
         preferenceMap[property] = {value: toons[toonId].enabled};
       });
+
+      // store locations of rooms in sphere overview
+      let locations = spheres[sphereId].locations;
+      let positions = {};
+      for (let locationId in locations) {
+        let location : LocationData = locations[locationId];
+        positions[locationId] = {x:location.layout.x, y:location.layout.y};
+      }
+      preferenceMap['sphere_overview_positions'] = {value: positions};
     });
 
     return preferenceMap;
+  }
+
+  applyPreferences(preferences_in_cloud) {
+
   }
 
 
@@ -76,6 +85,8 @@ export class PreferenceSyncer extends SyncingBase {
       let cloudId = preference_in_cloud.id;
       let property = preference_in_cloud.property;
       usedProperty[property] = true;
+
+      // this cleans up preferences from older versions of the app.
       if (preferenceMap[property] === undefined) {
         unusedPreferences.push(cloudId);
       }

@@ -7,7 +7,6 @@ import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getSyncIdMap} from "./modelSyncs/SyncingBase";
 import {Scheduler} from "../../../logic/Scheduler";
-import {FingerprintSyncer} from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";
 import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
 import {core} from "../../../Core";
@@ -114,17 +113,10 @@ export const sync = {
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
       })
-      // .then(() => {
-      //   LOG.info("Sync: DONE DeviceSyncer sync.");
-      //   LOG.info("Sync: START Fingerprint sync.");
-      //   let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, syncSphereIdMap);
-      //   return fingerprintSyncer.sync(state);
-      // })
-      .then((reloadOfTrackingRequiredResult) => {
-        reloadOfTrackingRequired = reloadOfTrackingRequiredResult;
+      .then((applyPreferences: boolean) => {
         LOG.info("Sync: DONE Fingerprint sync.");
         LOG.info("Sync: START Preferences sync.");
-        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
+        let preferenceSyncer = new PreferenceSyncer(actions, [], applyPreferences, globalCloudIdMap);
         return preferenceSyncer.sync(state);
       })
       // FINISHED SYNCING
@@ -137,7 +129,6 @@ export const sync = {
           if (CLOUD.__syncTriggerDatabaseEvents === false) {
             action.__noEvents = true
           }
-
         });
 
 

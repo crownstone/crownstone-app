@@ -19,7 +19,6 @@ class CloudPollerClass {
       return Promise.resolve();
     }
   }
-
 }
 
 export const CloudPoller = new CloudPollerClass();
