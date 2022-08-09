@@ -181,6 +181,7 @@ let combinedLocationReducer = combineReducers({
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE_USER':
+    case 'USER_EXIT_SPHERE':
       if (action.userId) {
         // we need to remove the user from all locations before removing him from sphere.
         let locationIds = Object.keys(state);

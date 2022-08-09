@@ -2,6 +2,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { cloudApiBase} from "./cloudApiBase";
 
 export const sortedLists = {
+
   createSortedList: function(data : any, background = true) {
     return cloudApiBase._setupRequest(
       'POST',
@@ -48,8 +49,5 @@ export const sortedLists = {
       );
     }
   },
-
-
-
 
 };

@@ -64,6 +64,7 @@ import { Platform } from "react-native";
    * Point to the production cloud.
    */
   export let CLOUD_ADDRESS    = 'https://cloud.crownstone.rocks/api/';
+  export let SSE_ADDRESS      = 'https://events.crownstone.rocks/sse/';
   export let CLOUD_V2_ADDRESS = 'https://next.crownstone.rocks/api/';
 
 

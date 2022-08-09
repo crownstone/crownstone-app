@@ -105,14 +105,14 @@ class NotificationParserClass {
             }
           }
           break;
-        case "userEnterSphere":
-        case "userExitSphere":
-        case "userExitLocation":
-        case "userEnterLocation":
-          if (notificationData.sphereId) {
-            CLOUD.syncUsers(notificationData.sphereId);
-          }
-          break;
+        // case "userEnterSphere":
+        // case "userExitSphere":
+        // case "userExitLocation":
+        // case "userEnterLocation":
+        //   if (notificationData.sphereId) {
+        //     CLOUD.syncUsers(notificationData.sphereId);
+        //   }
+        //   break;
         case "InvitationReceived":
           InviteCenter.checkForInvites();
           break;

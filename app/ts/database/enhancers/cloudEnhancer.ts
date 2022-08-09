@@ -228,6 +228,7 @@ function deleteFingerprint(action : { sphereId: sphereId, locationId: locationId
   }
 }
 
+
 function deleteAllFingerprints(action: DatabaseAction, oldState) {
   let existingSphere = oldState.spheres[action.sphereId];
   if (!existingSphere) { return; }
@@ -239,8 +240,6 @@ function deleteAllFingerprints(action: DatabaseAction, oldState) {
     }
   }
 }
-
-
 
 
 function handleHubUpdate(action, state) {

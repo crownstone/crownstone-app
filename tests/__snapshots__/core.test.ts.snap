@@ -47,6 +47,7 @@ Object {
     "remove": Object {
       "behaviours": Object {},
       "devices": Object {},
+      "fingerprints": Object {},
       "installations": Object {},
       "locations": Object {},
       "messages": Object {},
@@ -57,6 +58,7 @@ Object {
     "special": Object {
       "behaviours": Object {},
       "devices": Object {},
+      "fingerprints": Object {},
       "installations": Object {},
       "locations": Object {},
       "messages": Object {},

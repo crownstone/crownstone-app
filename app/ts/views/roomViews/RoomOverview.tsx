@@ -43,6 +43,7 @@ import { SceneCreateNewItem } from "../scenesViews/supportComponents/SceneCreate
 import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EventBusClass } from "../../util/EventBus";
 import { HeaderTitle } from "../components/HeaderTitle";
+import { Get } from "../../util/GetUtil";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -65,7 +66,7 @@ export const PERSISTED_DIMMING_OVERLAY_STATE = {
   value: false
 }
 
-export class RoomOverview extends LiveComponent<any, { switchView: boolean, scrollEnabled: boolean, editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
+export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -97,10 +98,14 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
       this.viewingRemotely = sphere.state.present === false;
     }
 
-    this.sortedList = SortingManager.getList(this.props.sphereId, className, this.props.locationId, this.getIdsInRoom());
+    let location = Get.location(this.props.sphereId, this.props.locationId);
+
+    this.sortedList = SortingManager.getList(
+      this.props.sphereId,
+      className,location?.config?.cloudId || this.props.locationId,
+      this.getIdsInRoom()
+    );
     this.state = {
-      switchView: false,
-      scrollEnabled: true,
       editMode: false,
       dimMode: PERSISTED_DIMMING_OVERLAY_STATE.value,
 
@@ -346,12 +351,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
 
     let itemArray = this._getItemList(stones, hubs);
 
-    let explanation = this.amountOfDimmableCrownstonesInLocation > 0 ?  lang("Tap_Crownstone_icon_to_go") : lang("No_dimmable_Crownstones_i");
-    if ( this.amountOfActiveCrownstonesInLocation === 0 ) {
-      explanation = lang("No_Crownstones_in_reach__");
-    }
-
-
     return (
       <BackgroundCustomTopBar image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
         <NestableScrollContainer
@@ -391,23 +390,6 @@ export class RoomOverview extends LiveComponent<any, { switchView: boolean, scro
             }}
           />
         </NestableScrollContainer>
-
-        <SlideFadeInView
-          visible={this.state.switchView}
-          style={{position:'absolute', bottom:0, width:screenWidth, height:60, alignItems:'center', justifyContent:'center'}}
-          height={80}
-          pointerEvents={'none'}
-        >
-          <View style={{
-            backgroundColor:colors.black.rgba(0.25),
-            borderRadius:30,
-            padding:10,
-            alignItems:'center', justifyContent:'center'}}>
-            <Text style={{ color: colors.white.hex, fontSize: 13, fontWeight:'bold'}}>{ explanation }</Text>
-          </View>
-        </SlideFadeInView>
-
-
 
         <TopBarBlur xxlight showNotifications={!this.state.editMode}>
           <RoomHeader

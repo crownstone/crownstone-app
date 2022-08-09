@@ -1,5 +1,5 @@
 import { CloudAddresses }                  from "../indirections/CloudAddresses";
-import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS } from "../../ExternalConfig";
+import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS, SSE_ADDRESS } from "../../ExternalConfig";
 import { CameraLibrarySettings }           from "../indirections/CameraLibraryInterface";
 import { CrownstoneSSE }                   from "../../logic/SSE";
 import { BridgeMock }                      from "./BridgeMock";
@@ -16,6 +16,7 @@ export const TestingFramework = {
     try {
       CloudAddresses.cloud_v1                 = json.cloud_v1          || CLOUD_ADDRESS;
       CloudAddresses.cloud_v2                 = json.cloud_v2          || CLOUD_V2_ADDRESS;
+      CloudAddresses.sse                      = json.sse               || SSE_ADDRESS;
       CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary  || false;
       CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary || false;
       BridgeConfig.mockBluenet                = json.mockBluenet       || false;

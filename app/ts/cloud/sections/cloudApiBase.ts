@@ -4,6 +4,7 @@ import {LOG, LOGe, LOGi, LOGw} from '../../logging/Log'
 import {xUtil} from "../../util/StandAloneUtil";
 import {Alert} from "react-native";
 import {core} from "../../Core";
+import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
 
 const RNFS = require('react-native-fs');
 
@@ -203,7 +204,7 @@ export const cloudApiBase = {
 
 
 function _getId(url, obj) : string {
-  let endpoint = url.replace(CLOUD_ADDRESS,"").replace(CLOUD_V2_ADDRESS,"");
+  let endpoint = url.replace(CloudAddresses.cloud_v1,"").replace(CloudAddresses.cloud_v2,"");
 
   let usersLocation = endpoint.indexOf('users');
   if (usersLocation !== -1 && usersLocation < 3)

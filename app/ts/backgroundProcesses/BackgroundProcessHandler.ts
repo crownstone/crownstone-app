@@ -52,6 +52,8 @@ import {StatusBarWatcher} from "./StatusBarWatcher";
 import {LocalizationCore} from "../localization/LocalizationCore";
 import {LocalizationMonitor} from "../localization/LocalizationMonitor";
 import { LocalizationDevDataLogger } from "../localization/LocalizationDevDataLogger";
+import { SseHandler } from "./SseHandler";
+import { SpherePresenceManager } from "./SpherePresenceManager";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -476,7 +478,9 @@ class BackgroundProcessHandlerClass {
     Permissions.init();
     PowerUsageCacher.init();
     Scheduler.init();
+    SseHandler.init();
     StoneAvailabilityTracker.init();
+    SpherePresenceManager.init();
     StoneDataSyncer.init();
     StoneManager.init();
     StoneDataSyncer.init();
