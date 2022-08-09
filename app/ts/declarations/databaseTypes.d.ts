@@ -13,7 +13,8 @@ interface SyncEvent {
   id: string,
   localId: string,
   sphereId: string,
-  stoneId: string,
+  locationId?: string,
+  stoneId?: string,
   cloudId: string,
   specialType: string,
 }

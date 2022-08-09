@@ -1,6 +1,7 @@
 type SyncCategory = 'bootloaders'     |
                     'features'        |
                     'firmwares'       |
+                    'fingerprints'    |
                     'hubs'            |
                     'keys'            |
                     'locations'       |
@@ -19,6 +20,7 @@ interface SyncIgnoreMap {
   bootloader:      boolean,
   features:        boolean,
   firmware:        boolean,
+  fingerprints:    boolean,
   hubs:            boolean,
   keys:            boolean,
   locations:       boolean,
@@ -37,6 +39,7 @@ interface SyncScopeMap {
   bootloader?:      boolean,
   features?:        boolean,
   firmware?:        boolean,
+  fingerprints?:    boolean,
   hubs?:            boolean,
   keys?:            boolean,
   locations?:       boolean,
@@ -70,6 +73,9 @@ interface SyncRequestSphereData {
     },
     features?: {
       [featureId: string]: RequestItemCoreType
+    }
+    fingerprints?: {
+      [fingerprintId: string]: RequestItemCoreType
     }
     locations?: {
       [locationId: string]: RequestItemCoreType
@@ -171,6 +177,11 @@ interface SyncRequestResponse_Sphere {
   features?: {
     [featureId: string] : {
       data: SyncResponseItemCore<cloud_SphereFeature>
+    }
+  },
+  fingerprints?: {
+    [fingerprintId: string] : {
+      data: SyncResponseItemCore<cloud_Fingerprint>
     }
   },
   locations?: {

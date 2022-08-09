@@ -43,8 +43,21 @@ export class FingerprintSyncerNext extends SyncLocationInterface<FingerprintData
     );
   }
 
+
+  // get the fingerprints out the locations and present them as a top-level dataobject for the sync.
   static prepare(sphere: SphereData) : {[itemId:string]: RequestItemCoreType} {
-    return SyncNext.gatherRequestData(sphere,{key:'fingerprints', type:'fingerprint'});
+    let fingerprints = {};
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprintId in location.fingerprints.raw) {
+        let fingerprint = location.fingerprints.raw[fingerprintId];
+        // this removes the automatically migrated fingerprints. These fields are mandatory but not available on the migrated datasets.
+        if (fingerprint.createdOnDeviceType && fingerprint.createdByUser) {
+          fingerprints[fingerprintId] = location.fingerprints.raw[fingerprintId];
+        }
+      }
+    }
+    return SyncNext.gatherRequestData({ fingerprints: fingerprints },{key:'fingerprints', type:'fingerprint'});
   }
 }
 

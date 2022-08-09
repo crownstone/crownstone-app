@@ -136,7 +136,7 @@ class CommandAPI_base {
       }
 
       LOGi.constellation("Commander: Loading command", command.type, allowMeshRelays,"id:", this.id);
-      // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
+      // this check is here so that we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
       let validHandleToPerformAction = false;
       for (let target of this.options.commandTargets) {
         if (target) {

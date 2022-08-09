@@ -15,6 +15,8 @@ import { SphereTransferNext } from "../../cloud/sections/newSync/transferrers/Sp
 import { UserTransferNext } from "../../cloud/sections/newSync/transferrers/UserTransferNext";
 import { StoneTransferNext } from "../../cloud/sections/newSync/transferrers/StoneTransferNext";
 import { SyncNext } from "../../cloud/sections/newSync/SyncNext";
+import { Get } from "../../util/GetUtil";
+import { FingerprintTransferNext } from "../../cloud/sections/newSync/transferrers/FingerprintTransferNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -165,8 +167,81 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       handleAbilityUpdate(action, newState);
       break;
 
+
+    case 'ADD_FINGERPRINT_V2':
+      // create fingerprint
+      createFingerprint(action, newState);
+      break;
+    case 'UPDATE_FINGERPRINT_V2':
+      // update fingerprint
+      updateFingerprint(action, newState);
+      break;
+    case 'REMOVE_ALL_FINGERPRINTS_V2':
+      // delete events for all fingerprints
+      deleteFingerprint(action, oldState);
+      break;
+    case 'REMOVE_FINGERPRINT_V2':
+      deleteAllFingerprints(action, oldState);
+      break;
+
   }
 }
+
+
+function createFingerprint(action : DatabaseAction, newState) {
+  let fingerprint = Get.fingerprint(action.sphereId, action.locationId, action.fingerprintId);
+  if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return; }
+
+  CLOUD.forSphere(action.sphereId)
+    .createFingerprintV2(FingerprintTransferNext.mapLocalToCloud(fingerprint))
+    .catch(() => {});
+}
+
+
+function updateFingerprint(action : DatabaseAction, newState) {
+  let fingerprint = Get.fingerprint(action.sphereId, action.locationId, action.fingerprintId);
+  if (!fingerprint?.cloudId) { return; }
+  if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return; }
+
+  CLOUD.forSphere(action.sphereId)
+    .updateFingerprintV2(action.fingerprintId, FingerprintTransferNext.mapLocalToCloud(fingerprint))
+    .catch(() => {});
+}
+
+
+function deleteFingerprint(action : { sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId } | DatabaseAction, oldState) {
+  let existingSphere = oldState.spheres[action.sphereId];
+  if (!existingSphere) { return; }
+  let existingLocaiton = existingSphere.locations[action.sphereId];
+  if (!existingLocaiton) { return; }
+  let deletedFingerprint = existingLocaiton.fingerprints.raw[action.fingerprintId];
+
+  if (deletedFingerprint && deletedFingerprint.cloudId) {
+    core.eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_REMOVE_FINGERPRINTS',
+      id: 'remove'+ action.fingerprintId,
+      localId: action.fingerprintId,
+      locationId: action.locationId,
+      sphereId: action.sphereId,
+      cloudId: deletedFingerprint.cloudId,
+    });
+  }
+}
+
+function deleteAllFingerprints(action: DatabaseAction, oldState) {
+  let existingSphere = oldState.spheres[action.sphereId];
+  if (!existingSphere) { return; }
+
+  for (let locationId in existingSphere.locations) {
+    let location = existingSphere.locations[locationId];
+    for (let fingerprintId in location.fingerprints.raw) {
+      deleteFingerprint({sphereId: action.sphereId, locationId: locationId, fingerprintId: fingerprintId}, oldState);
+    }
+  }
+}
+
+
+
 
 function handleHubUpdate(action, state) {
   let sphere = state.spheres[action.sphereId];

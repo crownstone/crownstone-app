@@ -41,7 +41,6 @@ export class FingerprintCollector {
         this.crownstonesAtCreation[FingerprintUtil.getStoneIdentifierFromStone(stone)] = true;
       }
     }
-
   }
 
 
@@ -102,7 +101,7 @@ export class FingerprintCollector {
       data: {
         type:                  this.type,
         createdOnDeviceType:   FingerprintUtil.getDeviceTypeDescription(), // ${device type string}_${userId who collected it}
-        createdByUserId:       state.user.userId,
+        createdByUser:         state.user.userId,
         crownstonesAtCreation: this.crownstonesAtCreation, // maj_min as id representing the Crownstone.
         data:                  this.trainingData,
       }

@@ -23,7 +23,6 @@ export class Command_MultiSwitch extends CommandBase implements BroadcastInterfa
   async broadcast(bleCommand: BleCommand) {
     let stoneSummary  = MapProvider.stoneHandleMap[bleCommand.commandTarget];
     let crownstoneId  = stoneSummary.cid; // this is the short id (uint8)
-
     return BluenetPromiseWrapper.broadcastSwitch(bleCommand.sphereId, crownstoneId, this.state, false)
   }
 

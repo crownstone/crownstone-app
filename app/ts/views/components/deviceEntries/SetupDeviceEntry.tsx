@@ -209,7 +209,6 @@ export class SetupDeviceEntry_addMenu extends Component<{handle, sphereId, callb
 }
 
 
-
 interface SetupDeviceEntryProps {
   item: { name: string, icon: string },
   testID?: string,
@@ -217,6 +216,7 @@ interface SetupDeviceEntryProps {
   handle?: string,
   callback?: () => void,
 }
+
 
 export function SetupDeviceEntry_RoomOverview(props: SetupDeviceEntryProps) {
   return (

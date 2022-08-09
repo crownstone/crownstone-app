@@ -204,6 +204,10 @@ class MapProviderClass {
           getFromItem(sphereId, sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
         })
       })
+
+      Object.keys(sphere.locations).forEach((locationId) => {
+        getFromItem(sphereId, sphere.locations[locationId].fingerprints.raw, this.cloud2localMap.fingerprints, this.local2cloudMap.fingerprints);
+      })
     });
 
 

@@ -13,15 +13,16 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
   mapLocalToCloud(localData: FingerprintData) : cloud_Fingerprint_settable {
     let location = DataUtil.getLocationFromFingerprintId(localData.id);
-    let cloudLocationId = MapProvider.local2cloudMap.stones[location.id];
+    let cloudLocationId = MapProvider.local2cloudMap.locations[location.id];
     let result : cloud_Fingerprint_settable = {
-      type: localData.type,
-      createdOnDeviceType: localData.type,
-      createdByUser: localData.type,
-      locationId: cloudLocationId,
-      data: localData.data,
-      updatedAt: new Date(localData.updatedAt).toISOString(),
-      createdAt: new Date(localData.createdAt).toISOString(),
+      type:                  localData.type,
+      createdOnDeviceType:   localData.createdOnDeviceType,
+      createdByUser:         localData.createdByUser,
+      crownstonesAtCreation: Object.keys(localData.crownstonesAtCreation),
+      locationId:            cloudLocationId,
+      data:                  localData.data,
+      updatedAt:             new Date(localData.updatedAt).toISOString(),
+      createdAt:             new Date(localData.createdAt).toISOString(),
     };
 
     return result;
@@ -30,15 +31,14 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
 
   mapCloudToLocal(cloudFingerprint: cloud_Fingerprint) : Partial<FingerprintData> {
     let result : Partial<FingerprintData> = {
-      // type:               cloudFingerprint.type as fingerprintType,
-      // data:               cloudFingerprint.data,
-      // activeDays:         cloudFingerprint.activeDays,
-      // idOnCrownstone:     cloudFingerprint.idOnCrownstone,
-      // syncedToCrownstone: cloudFingerprint.syncedToCrownstone,
-      // profileIndex:       cloudFingerprint.profileIndex,
-      // deleted:            cloudFingerprint.deleted,
-      // cloudId:            cloudFingerprint.id,
-      // updatedAt:          new Date(cloudFingerprint.updatedAt).valueOf()
+      cloudId:               cloudFingerprint.id,
+      type:                  cloudFingerprint.type,
+      createdOnDeviceType:   cloudFingerprint.createdOnDeviceType, // ${device type string}]
+      createdByUser:         cloudFingerprint.createdByUser,       // ${user id}
+      crownstonesAtCreation: xUtil.arrayToMap(cloudFingerprint.crownstonesAtCreation), // maj_min as id representing the Crownstone.
+      data:                  cloudFingerprint.data,
+      updatedAt:             new Date(cloudFingerprint.updatedAt).valueOf(),
+      createdAt:             new Date(cloudFingerprint.createdAt).valueOf(),
     };
 
     return result;
@@ -67,13 +67,13 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
   },
 
 
-  // async createOnCloud(localSphereId: string, localLocationId: string, data: FingerprintData) : Promise<cloud_Fingerprint> {
-  //   throw new Error("UNUSED");
-  // },
-  //
-  // async updateOnCloud(localSphereId: string, data: FingerprintData) : Promise<void> {
-  //   throw new Error("UNUSED");
-  // },
+  async createOnCloud(localSphereId: string, localLocationId: string, data: FingerprintData) : Promise<cloud_Fingerprint> {
+    return await CLOUD.forSphere(localSphereId).createFingerprintV2(FingerprintTransferNext.mapLocalToCloud(data));
+  },
+
+  async updateOnCloud(localSphereId: string, data: FingerprintData) : Promise<void> {
+    await CLOUD.forSphere(localSphereId).deleteFingerprintV2(data.cloudId, FingerprintTransferNext.mapLocalToCloud(data));
+  },
 
   async removeFromCloud(localSphereId: string, localId: string) : Promise<void> {
     await CLOUD.forSphere(localSphereId).deleteFingerprintV2(localId);

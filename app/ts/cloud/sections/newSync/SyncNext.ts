@@ -19,6 +19,7 @@ import { UserSyncerNext } from "./syncers/UserSyncerNext";
 import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
 import { SphereTransferNext } from "./transferrers/SphereTransferNext";
 import { Get } from "../../../util/GetUtil";
+import { FingerprintSyncerNext } from "./syncers/FingerprintSyncerNext";
 
 
 export const SyncNext = {
@@ -209,6 +210,16 @@ export const SyncNext = {
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply);
       }
 
+      if (sphereCloudResponse.fingerprints) {
+        let moduleReply = {};
+        for (let fingerprintId in sphereCloudResponse.fingerprints) {
+          let data = sphereCloudResponse.fingerprints[fingerprintId].data;
+          new FingerprintSyncerNext({cloudId: fingerprintId, ...sphereSyncBase}, data.data?.locationId)
+            .process(data, moduleReply);
+        }
+        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
+      }
+
       if (sphereCloudResponse.hubs) {
         let moduleReply = {};
         for (let hubId in sphereCloudResponse.hubs) {
@@ -291,6 +302,9 @@ export const SyncNext = {
       }
       if (scopeMap.toons) {
         result[sphere_cloudId].toons = ToonSyncerNext.prepare(sphere);
+      }
+      if (scopeMap.fingerprints) {
+        result[sphere_cloudId].fingerprints = FingerprintSyncerNext.prepare(sphere);
       }
     })
 

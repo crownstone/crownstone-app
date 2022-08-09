@@ -466,6 +466,15 @@ export const xUtil = {
     return true;
   },
 
+
+  arrayToMap: function(arr: string[]) : Record<string, true> {
+    let result = {};
+    for (let i = 0; i < arr.length; i++) {
+      result[arr[i]] = true;
+    }
+    return result;
+  },
+
   promiseBatchPerformer: function(arr : any[], method : PromiseCallback) : Promise<void> {
     if (arr.length === 0) {
       return new Promise((resolve, reject) => { resolve() });

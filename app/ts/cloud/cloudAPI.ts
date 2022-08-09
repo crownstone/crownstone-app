@@ -24,7 +24,7 @@ import { xUtil }             from "../util/StandAloneUtil";
 import { MapProvider }       from "../backgroundProcesses/MapProvider";
 import { hubs }              from "./sections/hub";
 import { syncNext }          from "./sections/syncNext";
-import {spheresNext} from "./sections/spheresNext";
+import { localization }      from "./sections/localization";
 
 function combineSections() {
   let result : any = {};
@@ -41,7 +41,7 @@ function combineSections() {
   xUtil.mixin(result, messages,          result);
   xUtil.mixin(result, preferences,       result);
   xUtil.mixin(result, spheres,           result);
-  xUtil.mixin(result, spheresNext,       result);
+  xUtil.mixin(result, localization,      result);
   xUtil.mixin(result, scenes,            result);
   xUtil.mixin(result, stones,            result);
   xUtil.mixin(result, stonesAbilities,   result);

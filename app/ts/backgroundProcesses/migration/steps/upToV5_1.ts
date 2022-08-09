@@ -67,6 +67,7 @@ function migrateFingerprints() {
         let data = getFingerprintData(fingerprint);
         actions.push({type:"ADD_FINGERPRINT_V2", sphereId, locationId, fingerprintId: newId, data: {
           type: "IN_HAND",
+          __purelyLocal: true, // this is here to avoid uploading it to the cloud.
           updatedAt: location.config.fingerprintUpdatedAt,
           createdAt: location.config.fingerprintUpdatedAt,
           crownstonesAtCreation: crownstonesAtCreation,

@@ -63,7 +63,7 @@ export function TappableBlurEntry(props: TappableBlurEntryProps) {
   return (
     <TouchableOpacity
       activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
-      onPress={() => { () => {console.log("TUPPERLY"); props.tapCallback && props.tapCallback()} }}
+      onPress={() => { props.tapCallback && props.tapCallback() }}
       style={{flex:1}}
     >
       <BlurEntry {...props} />

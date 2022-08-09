@@ -24,6 +24,7 @@ let getItemReducer = function(changeType, itemType) {
         newState.localId     = update(action.localId,       newState.localId);
         newState.sphereId    = update(action.sphereId,      newState.sphereId);
         newState.stoneId     = update(action.stoneId,       newState.stoneId);
+        newState.locationId  = update(action.locationId,    newState.locationId);
         newState.cloudId     = update(action.cloudId,       newState.cloudId);
         newState.specialType = update(action.specialType,   newState.specialType);
         return newState;
@@ -66,6 +67,7 @@ let getReducer = (changeType) => {
   return combineReducers({
     user:          itemReducerCreator('USER'),
     locations:     itemReducerCreator('LOCATIONS'),
+    fingerprints:  itemReducerCreator('FINGERPRINTS'),
     stones:        itemReducerCreator('STONES'),
     behaviours:    itemReducerCreator('BEHAVIOURS'),
     installations: itemReducerCreator('INSTALLATIONS'),
@@ -88,6 +90,7 @@ export default combineReducers({
  *
  * CLOUD_EVENT_REMOVE_LOCATIONS
  * CLOUD_EVENT_REMOVE_STONES
+ * CLOUD_EVENT_REMOVE_FINGERPRINTS
  * CLOUD_EVENT_REMOVE_INSTALLATIONS
  * CLOUD_EVENT_REMOVE_DEVICES
  * CLOUD_EVENT_REMOVE_MESSAGES
@@ -96,6 +99,7 @@ export default combineReducers({
  *
  * CLOUD_EVENT_SPECIAL_LOCATIONS
  * CLOUD_EVENT_SPECIAL_STONES
+ * CLOUD_EVENT_SPECIAL_FINGERPRINTS
  * CLOUD_EVENT_SPECIAL_INSTALLATIONS
  * CLOUD_EVENT_SPECIAL_BEHAVIOURS
  * CLOUD_EVENT_SPECIAL_DEVICES

@@ -95,6 +95,7 @@ export const sync = {
         return SyncNext.sync([
           'bootloaders',
           'firmwares',
+          'fingerprints',
           'hubs',
           'locations',
           'keys',

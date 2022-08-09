@@ -45,9 +45,12 @@ export const syncEvents = function(store) {
 
 const handleRemove = function(state, events, actions) {
   let promises = [];
-  let messageEventIds   = Object.keys(events.messages);
-  let behaviourEventIds = Object.keys(events.behaviours);
-  let sceneEventIds     = Object.keys(events.scenes);
+  let messageEventIds     = Object.keys(events.messages);
+  let behaviourEventIds   = Object.keys(events.behaviours);
+  let sceneEventIds       = Object.keys(events.scenes);
+  let fingerprintEventIds = Object.keys(events.fingerprints);
+
+
   messageEventIds.forEach((messageEventId) => {
     let payload : SyncEvent = events.messages[messageEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', id: messageEventId })};
@@ -63,7 +66,7 @@ const handleRemove = function(state, events, actions) {
   sceneEventIds.forEach((sceneEventId) => {
     let eventData : SyncEvent = events.scenes[sceneEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_SCENES', id: sceneEventId })};
-    if (!eventData.cloudId) { return success() }
+    if (!eventData.cloudId) { return success(); }
 
     promises.push(
       CLOUD.forSphere(eventData.sphereId).deleteScene(eventData.cloudId)
@@ -75,14 +78,32 @@ const handleRemove = function(state, events, actions) {
     );
   });
 
+
   behaviourEventIds.forEach((behaviourEventId) => {
     let eventData : SyncEvent = events.behaviours[behaviourEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', id: behaviourEventId })};
-    if (!eventData.cloudId) { return success() }
-    if (!eventData.stoneId) { return success() } // this is for items living under stones
+    if (!eventData.cloudId) { return success(); }
+    if (!eventData.stoneId) { return success(); } // this is for items living under stones
 
     promises.push(
       CLOUD.forStone(eventData.stoneId).deleteBehaviour(eventData.cloudId)
+        .then(() => { success(); })
+        .catch((err) => {
+          // already deleted
+          if (err?.status === 404) { success(); }
+        })
+    );
+  });
+
+
+  fingerprintEventIds.forEach((fingerprintEventId) => {
+    let eventData : SyncEvent = events.fingerprints[fingerprintEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_FINGERPRINTS', id: fingerprintEventId })};
+    if (!eventData.cloudId)    { return success(); }
+    if (!eventData.locationId) { return success(); } // this is for items living under locations
+
+    promises.push(
+      CLOUD.forSphere(eventData.sphereId).deleteFingerprintV2(eventData.cloudId)
         .then(() => { success(); })
         .catch((err) => {
           // already deleted
@@ -96,10 +117,10 @@ const handleRemove = function(state, events, actions) {
 
 const handleSpecial = function(state, events, actions) {
   let promises = [];
-  let messageIds = Object.keys(events.messages);
+  let messageIds       = Object.keys(events.messages);
   let locationEventIds = Object.keys(events.locations);
-  let sceneEventIds = Object.keys(events.scenes);
-  let userEventIds = Object.keys(events.user);
+  let sceneEventIds    = Object.keys(events.scenes);
+  let userEventIds     = Object.keys(events.user);
 
   messageIds.forEach((dbId) => {
     let payload = events.messages[dbId];
