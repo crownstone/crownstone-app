@@ -85,12 +85,12 @@ export class DEV_FirmwareTest extends LiveComponent<{
       if (sphereId === TESTING_SPHERE_ID) {
         MapProvider.stoneHandleMap[this.props.handle] = {
           id: null,
-          cid: 0,
+          cid: FocusManager.crownstoneState.stoneId,
           handle: this.props.handle,
           name: "devStone",
           sphereId: TESTING_SPHERE_ID,
-          stone: {},
-          stoneConfig: {},
+          stone: {config:{firmwareVersion:'5.0.0'}},
+          stoneConfig: {firmwareVersion:'5.0.0'},
         }
       }
       else {
