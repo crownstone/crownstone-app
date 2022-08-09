@@ -9,9 +9,8 @@ class CloudPollerClass {
   poll(forSync: boolean = false) : Promise<void> {
     if (!NotificationHandler.notificationPermissionGranted || forSync) {
       return new Promise<void>((resolve, reject) => { resolve(); })
-        .then(() => { return forSync ? null : CLOUD.syncUsers(); })
-        .then(() => { return                  InviteCenter.checkForInvites(); })
-        .then(() => { return                  MessageCenter.checkForMessages(); })
+        .then(() => { return InviteCenter.checkForInvites();   })
+        .then(() => { return MessageCenter.checkForMessages(); })
         .catch((err) => {
           LOGe.cloud("CloudPoller: Failed to poll.", err?.message);
         })
