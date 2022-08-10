@@ -33,6 +33,7 @@ import {base_core} from "../../Base_core";
 import {BackgroundProcessHandler} from "../../backgroundProcesses/BackgroundProcessHandler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomTopBarWrapper } from "../components/CustomTopBarWrapper";
+import {PreferenceSyncer} from "../../cloud/sections/sync/modelSyncs/PreferencesSyncer";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Login", key)(a,b,c,d,e);
@@ -361,7 +362,7 @@ export class Login extends Component<any, any> {
   downloadSettings(userId) {
     core.eventBus.emit('userActivated');
     
-    let parts = 1/5;
+    let parts = 1/6;
     let promises = [];
 
     // get more data on the user
@@ -427,6 +428,13 @@ export class Login extends Component<any, any> {
         else {
           core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
         }
+      })
+      .then(() => {
+        LOG.info("Login: step 5");
+        this.progress += parts;
+        core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Applying_preferences")});
+        let preferences = new PreferenceSyncer([],[]);
+        return preferences.applyDevicePreferences()
       })
       .catch((err) => {
         LOGe.info("Login: Failed to login.", err?.message);

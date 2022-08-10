@@ -29,8 +29,6 @@ let defaultSettings : LocationData = {
   layout: {
     x: null,
     y: null,
-    setOnThisDevice: false,
-    updatedAt: 0,
   }
 };
 
@@ -149,8 +147,6 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
         let newState = {...state};
         newState.x = update(action.data.x, newState.x);
         newState.y = update(action.data.y, newState.y);
-        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
-        newState.updatedAt = getTime(action.data.updatedAt || action.updatedAt);
         return newState;
       }
       return state;
@@ -158,8 +154,6 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
       let newState = {...state};
       newState.x = null;
       newState.y = null;
-      newState.setOnThisDevice = false;
-      newState.updatedAt = null;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout);

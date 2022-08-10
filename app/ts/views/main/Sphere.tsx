@@ -30,8 +30,6 @@ import { HeaderTitle } from "../components/HeaderTitle";
 import {useSidebarState} from "../components/hooks/eventHooks";
 import {SIDEBAR_STATE} from "../components/animated/SideBarView";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
-import {LocalizationUtil} from "../../util/LocalizationUtil";
-import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {

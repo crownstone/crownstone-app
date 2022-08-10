@@ -152,8 +152,6 @@ interface LocationData {
   layout: {
     x: number,
     y: number,
-    setOnThisDevice: boolean,
-    updatedAt: timestamp,
   }
 }
 

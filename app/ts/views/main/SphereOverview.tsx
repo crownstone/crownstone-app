@@ -30,14 +30,14 @@ import { DataUtil }                 from "../../util/DataUtil";
 import { Background, BackgroundCustomTopBar } from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
-import { SideBarView } from "../components/animated/SideBarView";
-import { SphereOverviewSideBar } from "../sidebars/SphereOverviewSideBar";
-import {useRef} from "react";
-import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
-import {Debug, DebugNotifications} from "../../DebugCalls";
-import { EditIcon, MenuButton } from "../components/EditIcon";
-import { HeaderTitle } from "../components/HeaderTitle";
-import { Get } from "../../util/GetUtil";
+import { SideBarView }              from "../components/animated/SideBarView";
+import { SphereOverviewSideBar }    from "../sidebars/SphereOverviewSideBar";
+import { useRef }                   from "react";
+import { NavBarBlur, TopBarBlur }   from "../components/NavBarBlur";
+import {Debug, DebugNotifications}  from "../../DebugCalls";
+import { EditIcon, MenuButton }     from "../components/EditIcon";
+import { HeaderTitle }              from "../components/HeaderTitle";
+import { Get }                      from "../../util/GetUtil";
 
 
 const ZOOM_LEVELS = {

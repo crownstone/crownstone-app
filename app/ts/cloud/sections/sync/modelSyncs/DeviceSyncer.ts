@@ -33,7 +33,6 @@ export class DeviceSyncer extends SyncingBase {
   userId: string;
   hasAllTrackingNumbers = false;
   currentDeviceId  = null;
-  applyPreferences = false;
 
   download() {
     return CLOUD.forUser(this.userId).getDevices()
@@ -58,9 +57,6 @@ export class DeviceSyncer extends SyncingBase {
         if (this.hasAllTrackingNumbers === false) {
           return this.handleTrackingNumbers(state);
         }
-      })
-      .then(() => {
-        return this.applyPreferences;
       })
   }
 
@@ -309,7 +305,6 @@ export class DeviceSyncer extends SyncingBase {
     this._verifyInstallation(state, matchingSpecs.id, installationId);
     // We now push the location of ourselves to the cloud.
     this._updateUserLocationInCloud(state, matchingSpecs.id);
-    this.applyPreferences = true;
   }
 
 

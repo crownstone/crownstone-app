@@ -5,7 +5,7 @@ import { cloudApiBase } from "./cloudApiBase";
 
 export const preferences = {
 
-  getPreferences: function (background = true) {
+  getPreferences: function (background = true) : Promise<cloud_Preference[]>{
     return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/preferences',
@@ -41,3 +41,4 @@ export const preferences = {
     );
   },
 };
+

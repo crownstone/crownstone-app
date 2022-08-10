@@ -592,8 +592,8 @@ export const DataUtil = {
     for (let i = 0; i < roomIdArray.length; i++) {
       let room = rooms[roomIdArray[i]];
       initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
-      if (room.layout.setOnThisDevice === false) {
-        usePhysics = true
+      if (room.layout.x === null || room.layout.y === null) {
+        usePhysics = true;
       }
     }
 

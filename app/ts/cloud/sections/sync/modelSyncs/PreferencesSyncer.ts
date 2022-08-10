@@ -7,6 +7,8 @@
 import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingBase} from "./SyncingBase";
+import {core} from "../../../../Core";
+import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
 
 export class PreferenceSyncer extends SyncingBase {
   deviceId: string;
@@ -14,7 +16,6 @@ export class PreferenceSyncer extends SyncingBase {
   constructor(
     actions: any[],
     transferPromises : any[],
-    applyPreferences: boolean,
     globalCloudIdMap? : syncIdMap,
   ) {
     super(actions, transferPromises, globalCloudIdMap);
@@ -31,9 +32,7 @@ export class PreferenceSyncer extends SyncingBase {
 
     return this.download()
       .then((preferences_in_cloud) => {
-
-
-        let preferenceMap = this.mapPreferences(state);
+        let preferenceMap = PreferenceProcessor.mapPreferences(state);
         this.checkInferredPreferences(preferenceMap, preferences_in_cloud, []);
 
         return Promise.all(this.transferPromises);
@@ -42,41 +41,26 @@ export class PreferenceSyncer extends SyncingBase {
       .then(() => { return this.actions; });
   }
 
-  // here we'll map certain values from our state to the cloud preferences map.
-  // preferences are stored per device.
-  mapPreferences(state) {
-    let preferenceMap = {};
 
-    let spheres = state.spheres;
-    let sphereIds = Object.keys(spheres);
-    sphereIds.forEach((sphereId) => {
+  /**
+   * Used once at login.
+   */
+  async applyDevicePreferences() {
+    let state = core.store.getState();
+    this.deviceId = this._getDeviceId(state);
+    if (!this.deviceId) { return; }
 
-      // SETUP PREFERENCES FOR TOON
-      let toons = spheres[sphereId].thirdParty.toons;
-      let toonIds = Object.keys(toons);
-      toonIds.forEach((toonId) => {
-        let property = 'toon_enabled_agreementId.' + toons[toonId].toonAgreementId;
-        preferenceMap[property] = {value: toons[toonId].enabled};
-      });
-
-      // store locations of rooms in sphere overview
-      let locations = spheres[sphereId].locations;
-      let positions = {};
-      for (let locationId in locations) {
-        let location : LocationData = locations[locationId];
-        positions[locationId] = {x:location.layout.x, y:location.layout.y};
-      }
-      preferenceMap['sphere_overview_positions'] = {value: positions};
-    });
-
-    return preferenceMap;
-  }
-
-  applyPreferences(preferences_in_cloud) {
-
+    let preferences_in_cloud = await this.download();
+    PreferenceProcessor.applyPreferences(state, preferences_in_cloud);
   }
 
 
+  /**
+   * Check if these preferences need to be updated or deleted.
+   * @param preferenceMap
+   * @param preferences_in_cloud
+   * @param unusedPreferences
+   */
   checkInferredPreferences(preferenceMap, preferences_in_cloud, unusedPreferences = []) {
     let usedProperty = {};
 
@@ -127,5 +111,86 @@ export class PreferenceSyncer extends SyncingBase {
 
     return deviceIds[0];
   }
+}
 
+
+
+const PreferenceProcessor = {
+  // here we'll map certain values from our state to the cloud preferences map.
+  // preferences are stored per device.
+  mapPreferences(state) {
+    let preferenceMap = {};
+
+    let spheres = state.spheres;
+    let sphereIds = Object.keys(spheres);
+    sphereIds.forEach((sphereId) => {
+      let sphere = state.spheres[sphereId];
+
+      // SETUP PREFERENCES FOR TOON
+      let toons = spheres[sphereId].thirdParty.toons;
+      let toonIds = Object.keys(toons);
+      toonIds.forEach((toonId) => {
+        let toon : ToonData = toons[toonId];
+        let property = prepareProperty(sphere, `toon_enabled.${toon.cloudId}`);
+        if (preferenceMap[property] === undefined) {
+          preferenceMap[property] = {value: {}};
+        }
+        preferenceMap[property].value = { enabled: toon.enabled };
+      });
+
+      // store locations of rooms in sphere overview
+      let locations = spheres[sphereId].locations;
+      let positions = {};
+      for (let locationId in locations) {
+        let location : LocationData = locations[locationId];
+        console.log(location.layout.x, typeof location.layout.x)
+        positions[location.config.cloudId || locationId] = {x: Math.round(location.layout.x), y: Math.round(location.layout.y)};
+      }
+      preferenceMap[prepareProperty(sphere, 'sphere_overview_positions')] = {value: positions};
+    });
+
+    return preferenceMap;
+  },
+
+
+  applyPreferences(state, preferences_in_cloud : cloud_Preference[]) {
+    let actions = [];
+    for (let preference of preferences_in_cloud) {
+      let {sphereId, property, props} = processProperty(preference.property);
+      switch (property) {
+        case 'sphere_overview_positions':
+          let positions = preference.value;
+          for (let locationCloudId in positions) {
+            let localLocationId = MapProvider.cloud2localMap.locations[locationCloudId] || locationCloudId;
+            actions.push({type:"SET_LOCATION_POSITIONS", sphereId, locationId: localLocationId, data: positions[locationCloudId]})
+          }
+          break;
+        case 'toon_enabled':
+          let toonId = props[0];
+          let data = preference.value;
+          let localToonId = MapProvider.cloud2localMap.toons[toonId];
+            actions.push({type:"TOON_UPDATE_SETTINGS", sphereId, toonId: localToonId, data: {enabled: data.enabled}})
+          break;
+      }
+    }
+
+    if (actions.length > 0) {
+      console.log("DISPATCHING", actions)
+      core.store.batchDispatch(actions);
+    }
+  }
+}
+
+// the property of the preference is ${sphereId}_{$propertyName}.${props}
+function processProperty(fullProperty: string) : {sphereId: string, sphereCloudId: string, property: string, props: string[]} {
+  let fullPropertyArray = fullProperty.split("_")
+  let sphereCloudId = fullPropertyArray[0];
+  let property = fullProperty.substr(sphereCloudId.length + 1);
+  let propertyArr = property.split(".");
+  let sphereId = MapProvider.cloud2localMap.spheres[sphereCloudId] || sphereCloudId;
+  return {sphereId, sphereCloudId, property: propertyArr[0], props: propertyArr.slice(1)};
+}
+
+function prepareProperty(sphere: SphereData, key) {
+  return `${sphere.config.cloudId}_${key}`
 }

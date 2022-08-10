@@ -87,6 +87,17 @@ interface cloud_Hub_settable {
   updatedAt?: string,
 }
 
+
+interface cloud_Preference {
+  property:  string,
+  value:     any,
+  id:        string,
+  deviceId:  string,
+  updatedAt: string,
+  createdAt: string,
+}
+
+
 interface cloud_Fingerprint {
   id: string,
   type: FingerprintType,

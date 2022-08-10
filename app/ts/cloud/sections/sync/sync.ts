@@ -65,7 +65,6 @@ export const sync = {
     //   }
     // });
 
-    let reloadOfTrackingRequired = false;
     let globalCloudIdMap = getSyncIdMap();
     let syncSphereIdMap = {};
 
@@ -113,10 +112,10 @@ export const sync = {
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
       })
-      .then((applyPreferences: boolean) => {
+      .then(() => {
         LOG.info("Sync: DONE Fingerprint sync.");
         LOG.info("Sync: START Preferences sync.");
-        let preferenceSyncer = new PreferenceSyncer(actions, [], applyPreferences, globalCloudIdMap);
+        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
         return preferenceSyncer.sync(state);
       })
       // FINISHED SYNCING
