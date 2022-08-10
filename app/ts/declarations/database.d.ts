@@ -24,10 +24,34 @@ interface SphereData {
   stones:      {[stoneId:    string]: StoneData},
   scenes:      {[sceneId:    string]: SceneData},
   hubs:        {[hubId:      string]: HubData},
-  messages:    {[messageId:  string]: any},
+  messages:    {[messageId:  string]: MessageData},
   thirdParty:  any,
   sortedLists: any,
   keys:        any,
+}
+
+interface MessageData {
+  id:         string,
+  config:     MessageDataConfig,
+  recipients: Record<userId, true>,
+  received:   Record<userId, timestamp>,
+  read:       Record<userId, timestamp>,
+}
+
+type MessageTriggerEvent = 'enter' | 'exit';
+
+interface MessageDataConfig {
+  cloudId: string | null,
+  triggerLocationId: locationId | null,
+  triggerEvent: MessageTriggerEvent,
+  everyoneInSphere: boolean,
+  everyoneInSphereIncludingOwner: boolean,
+  content: string,
+  senderId: userId,
+  sendFailed: boolean,
+  sent: boolean,
+  sentAt: timestamp,
+  updatedAt: timestamp,
 }
 
 interface SphereDataConfig {

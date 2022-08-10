@@ -87,6 +87,9 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
           else if (stateSegment[key]?.firstName) {
             shownValue = stateSegment[key].firstName + " " + stateSegment[key].lastName + " (from ID)";
           }
+          else if (stateSegment[key]?.config?.content) {
+            shownValue = stateSegment[key].config.content + " (from ID)";
+          }
 
           if (shownValue != key) {
             usedStyle = italicTextStyle; // use the italic style to indicate we have modified the key

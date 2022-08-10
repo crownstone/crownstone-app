@@ -97,7 +97,17 @@ export const Get = {
     return null;
   },
 
-  user() : UserData | null {
+  user() : UserData {
     return core.store.getState().user;
-  }
+  },
+
+  userId() : string {
+    return Get.user().userId;
+  },
+
+  message(sphereId, messageId) : MessageData | null {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return null; }
+    return sphere.messages[messageId] || null;
+  },
 }

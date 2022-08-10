@@ -1,4 +1,3 @@
-import {CLOUD} from "../cloud/cloudAPI";
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";
 import {LOGe} from "../logging/Log";
 import {NotificationHandler} from "../backgroundProcesses/NotificationHandler";

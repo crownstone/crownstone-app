@@ -104,6 +104,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         change.changeSphereSmartHomeState    ||
         change.updateSphereUser              ||
         change.changeStones                  ||
+        change.changeMessage                 ||
         change.changeHubs                    ||
         change.updateActiveSphere            ||
         change.updateLocationConfig          ||

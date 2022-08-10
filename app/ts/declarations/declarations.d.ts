@@ -307,5 +307,6 @@ interface sphereLogFormat {
 
 type PartialRecord<K extends keyof any, T> = Partial<Record<K,T>>;
 
-
+// a number will show that number, a string will show that string, a boolean true will only draw an empty circle
+// null, 0, false or undefined will not show the badge.
 type BadgeIndicator = number | string | boolean

@@ -12,7 +12,7 @@ import {
   View, ViewStyle
 } from "react-native";
 
-import {colors, screenWidth} from '../styles'
+import {colors, screenWidth, updateScreenHeight} from '../styles'
 import {IconButton} from "../components/IconButton";
 import {ANYWHERE_IN_SPHERE} from "./MessageAdd";
 import {ProfilePicture} from "../components/ProfilePicture";

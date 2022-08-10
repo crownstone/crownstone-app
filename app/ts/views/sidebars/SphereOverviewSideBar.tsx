@@ -12,9 +12,10 @@ import {HighlightableLabel} from "../components/animated/HighlightableLabel";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
 import { DataUtil, enoughCrownstonesForIndoorLocalization } from "../../util/DataUtil";
 import { FingerprintUtil } from "../../util/FingerprintUtil";
+import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 export function SphereOverviewSideBar(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated']);
+  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated', 'changeMessage']);
   let factor = 0.25;
 
   const state = core.store.getState();
@@ -30,6 +31,7 @@ export function SphereOverviewSideBar(props) {
   let blinkBehaviour = false;
   let blinkAdding    = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
   let badgeLocalization = !blinkLocalizationIcon && MenuNotificationUtil.isThereALocalizationBadge(activeSphere.id);
+  let badgeMessages = MessageCenter.getUnreadMessages(activeSphere.id);
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
@@ -79,6 +81,7 @@ export function SphereOverviewSideBar(props) {
         callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
         size={21}
         icon={'zo-email'}
+        badge={badgeMessages}
       />
       <View style={{height:50}}/>
       {

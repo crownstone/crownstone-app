@@ -30,6 +30,7 @@ import { HeaderTitle } from "../components/HeaderTitle";
 import {useSidebarState} from "../components/hooks/eventHooks";
 import {SIDEBAR_STATE} from "../components/animated/SideBarView";
 import { MenuNotificationUtil } from "../../util/MenuNotificationUtil";
+import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
 export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoomOutCallback, openSideMenu }) {
@@ -90,14 +91,22 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 
   let badgeMenuIcon : BadgeIndicator = false;
   // show number of messages
-  // if (MessageCenter.hasUnreadMessages(sphereId)) {
-  //   badgeMenuIcon = MessageCenter.hasUnreadMessages(sphereId)
-  // }
+  let unreadMessageCount = MessageCenter.getUnreadMessages(sphereId);
+  let badgeMessages = unreadMessageCount;
 
   // show localization alert (takes precendence over messages)
-  if (SIDEBAR_STATE.open === false && !blinkMenuIcon && MenuNotificationUtil.isThereALocalizationBadge(sphereId)) {
-    badgeMenuIcon = "!";
+  let badgeLocalization = SIDEBAR_STATE.open === false && !blinkMenuIcon && MenuNotificationUtil.isThereALocalizationBadge(sphereId);
+
+  if (badgeMessages > 0 && badgeLocalization) {
+    badgeMenuIcon = badgeMessages + "!";
   }
+  else if (badgeLocalization) {
+    badgeMenuIcon = '!';
+  }
+  else {
+    badgeMenuIcon = badgeMessages;
+  }
+
 
   return (
     <React.Fragment>

@@ -5,6 +5,7 @@ import {Util} from "../util/Util";
 import {MapProvider} from "./MapProvider";
 import {xUtil} from "../util/StandAloneUtil";
 import {core} from "../Core";
+import {Get} from "../util/GetUtil";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -108,12 +109,12 @@ class MessageCenterClass {
       sphereId: localSphereId,
       messageId: dbMessageId,
       data: {
-        senderId: cloudMessage.ownerId,
-        cloudId: cloudMessage.id,
-        content: cloudMessage.content,
+        senderId:          cloudMessage.ownerId,
+        cloudId:           cloudMessage.id,
+        content:           cloudMessage.content,
         everyoneInSphereIncludingOwner: cloudMessage.everyoneInSphereIncludingOwner,
-        everyoneInSphere: cloudMessage.everyoneInSphere,
-        triggerEvent: cloudMessage.triggerEvent,
+        everyoneInSphere:  cloudMessage.everyoneInSphere,
+        triggerEvent:      cloudMessage.triggerEvent,
         triggerLocationId: cloudMessage.triggerLocationId,
         recipientIds: recipientIds,
         sent: true,
@@ -294,7 +295,7 @@ class MessageCenterClass {
    * This will check for messages in the current location. It is self contained and can be called whenever.
    */
   checkForMessages() : Promise<void> {
-    LOGi.info("MessageCenter: Checking for messages...")
+    LOGi.info("MessageCenter: Checking for messages...");
     let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId();
 
@@ -311,6 +312,25 @@ class MessageCenterClass {
       return new Promise((resolve, reject) => { resolve(); })
     }
   }
+
+
+  getUnreadMessages(sphereId: sphereId) : number {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return 0; }
+
+    let myUserId = Get.userId();
+    let unreadMessageCount = 0;
+    for (let messageId in sphere.messages) {
+      let message = sphere.messages[messageId];
+
+      if (message.read[myUserId] === undefined) {
+        unreadMessageCount++;
+      }
+    }
+
+    return unreadMessageCount;
+  }
+
 }
 
 export const MessageCenter = new MessageCenterClass();

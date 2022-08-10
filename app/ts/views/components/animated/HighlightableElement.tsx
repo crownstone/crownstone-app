@@ -121,9 +121,9 @@ function Badge(props:{indicator: BadgeIndicator, color: string}) {
   if (props.indicator === 0 || props.indicator === undefined || props.indicator === false) {
     return <React.Fragment />;
   }
-  let size = 13;
+  let size = 15;
   return (
-    <View style={{position: 'absolute', top: -size/5, right: -size/5, width:size, height: size, alignItems:'center', justifyContent:'center', backgroundColor: props.color, borderRadius: 0.5*size}}>
+    <View style={{position: 'absolute', top: -size/4, right: -size/2.5, width:size, height: size, alignItems:'center', justifyContent:'center', backgroundColor: props.color, borderRadius: 0.5*size}}>
       {props.indicator !== true && <Text style={{color: 'white', fontSize: 10, fontWeight:'bold'}}>{props.indicator}</Text>}
     </View>  
   );

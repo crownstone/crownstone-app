@@ -143,7 +143,6 @@ const PreferenceProcessor = {
       let positions = {};
       for (let locationId in locations) {
         let location : LocationData = locations[locationId];
-        console.log(location.layout.x, typeof location.layout.x)
         positions[location.config.cloudId || locationId] = {x: Math.round(location.layout.x), y: Math.round(location.layout.y)};
       }
       preferenceMap[prepareProperty(sphere, 'sphere_overview_positions')] = {value: positions};
@@ -175,7 +174,6 @@ const PreferenceProcessor = {
     }
 
     if (actions.length > 0) {
-      console.log("DISPATCHING", actions)
       core.store.batchDispatch(actions);
     }
   }

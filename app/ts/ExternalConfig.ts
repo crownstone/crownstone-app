@@ -145,7 +145,7 @@ import { Platform } from "react-native";
   export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
 
   // interval for syncing sphere users with the cloud so you see their faces in the app.
-  export const CLOUD_POLLING_INTERVAL = 15; // s --> 10 seconds
+  export const CLOUD_POLLING_INTERVAL = 15; // s --> 15 seconds
 
   // The amount of time to wait until the promise manager gives up on a pending promise.
   export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute

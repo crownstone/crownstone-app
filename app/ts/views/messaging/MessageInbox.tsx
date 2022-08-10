@@ -16,11 +16,12 @@ import {
 
 
 import {
-  availableScreenHeight, background,
+  availableModalHeight,
+  background,
   colors,
   screenHeight,
-  screenWidth,
-  styles
+  screenWidth, statusBarHeight,
+  styles, topBarHeight
 } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
@@ -30,9 +31,10 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { Navigation } from "react-native-navigation";
 import { Background } from "../components/Background";
+import {Component} from "react";
+import {Get} from "../../util/GetUtil";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -49,11 +51,12 @@ export class MessageInbox extends LiveComponent<any, any> {
   }
 
 
+  messageReadStateWatcher: MessageReadStateWatcher;
   unsubscribeStoreEvents : any;
 
   constructor(props) {
     super(props);
-
+    this.messageReadStateWatcher = new MessageReadStateWatcher();
     this.init();
   }
 
@@ -170,7 +173,17 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         items.push({__item:
-          <View style={[styles.listView,{backgroundColor: backgroundColor, paddingRight:0, paddingLeft:0}]}>
+          <LifeCycleView
+            style={[styles.listView,{backgroundColor: backgroundColor, paddingRight:0, paddingLeft:0}]}
+            layout={(event) => {
+              let {y, height} = event.nativeEvent.layout;
+              this.messageReadStateWatcher.setMessagePosition(messageData.id, y, height);
+              console.log("setting messageId", message.config.content)
+            }}
+            unmount={() => {
+
+            }}
+          >
             <MessageEntry
               removeBadgeCallback={() => { this.clearMessageBadge(); }}
               message={message}
@@ -182,7 +195,7 @@ export class MessageInbox extends LiveComponent<any, any> {
               size={45}
               deleteMessage={ () => { core.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageData.id}) }}
             />
-          </View>
+          </LifeCycleView>
         })
       });
     }
@@ -231,23 +244,29 @@ export class MessageInbox extends LiveComponent<any, any> {
         let scrollView;
         if (items.length > 0) {
           scrollView = (
-            <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-              <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-                <View style={{height: 0.3*iconSize}} />
-                { headerText }
-                <View style={{height: 0.4*iconSize}} />
-                { iconButton }
-                <View style={{height: 0.1*iconSize}} />
-                <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
-                <View style={{height: 0.4*iconSize}} />
-              </View>
+            <ScrollView
+              onScroll={(event) => {
+                this.messageReadStateWatcher.scrollView(event.nativeEvent.contentOffset.y+statusBarHeight);
+              }}
+              scrollEventThrottle={32}
+              contentContainerStyle={{flexGrow:1, minHeight: availableModalHeight,  width: screenWidth, alignItems:'center'}}
+            >
+              <View style={{height: 0.3*iconSize}} />
+              { headerText }
+              <View style={{height: 0.4*iconSize}} />
+              { iconButton }
+              <View style={{height: 0.1*iconSize}} />
+              <ListEditableItems key="empty" items={items} style={{width:screenWidth}} onLayout={(event) => {
+                this.messageReadStateWatcher.setMessageStartPosition(event.nativeEvent.layout.y);
+              }} />
+              <View style={{height: 0.4*iconSize}} />
             </ScrollView>
           );
         }
         else {
           scrollView = (
-            <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-              <View style={{flex:1, minHeight: availableScreenHeight, width: screenWidth, alignItems:'center'}}>
+            <ScrollView style={{height: availableModalHeight, width: screenWidth}}>
+              <View style={{flex:1, minHeight: availableModalHeight, width: screenWidth, alignItems:'center'}}>
                 <View style={{height: 0.3*iconSize}} />
                 { headerText }
                 <View style={{height: 0.4*iconSize}} />
@@ -287,6 +306,102 @@ export class MessageInbox extends LiveComponent<any, any> {
           <View style={{flex:1}} />
         </Background>
       );
+    }
+  }
+}
+
+
+class LifeCycleView extends Component<any, any> {
+
+  constructor(props) {
+    super(props);
+  }
+
+  componentWillUnmount() {
+    if (this.props.unmount) {
+      this.props.unmount();
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.mount) {
+      this.props.mount();
+    }
+  }
+
+  render() {
+    return (
+      <View onLayout={(event) => { if (this.props.layout) { this.props.layout(event); }}} style={this.props.style} testID={this.props.testID}>
+        {this.props.children}
+      </View>
+    );
+  }
+
+}
+
+
+class MessageReadStateWatcher {
+
+  messageStartY       = Infinity;
+
+  offset   = 0;
+  messages = {};
+
+  constructor() {}
+
+  removeMessageId(messageId) {
+
+  }
+
+  setMessageStartPosition(messageStartY) {
+    this.messageStartY = messageStartY;
+  }
+
+
+  setMessagePosition(messageId, y, height) {
+    if (this.messages[messageId]) {
+
+    }
+
+    this.messages[messageId] = {y: y, height: height, inView: false};
+    this.isInView(messageId);
+  }
+
+  scrollView(newOffset) {
+    this.offset = newOffset;
+    this.evaluateAllMessages();
+  }
+
+  evaluateAllMessages() {
+    for (let messageId in this.messages) {
+      this.isInView(messageId);
+    }
+  }
+
+
+  isInView(messageId) {
+    let viewMessagesPageStart = this.messageStartY + this.offset;
+    let viewPageEnd           = screenHeight + this.offset;
+
+    if (this.messages[messageId]) {
+      // get the percentage of the message that is in view
+      let message = this.messages[messageId];
+      let messageHeight = message.height;
+      let pageY = message.y + this.messageStartY;
+      let viewY = pageY - this.offset;
+      let messageData = Get.message(core.store.getState().app.activeSphere, messageId);
+      if (messageData.config.content !== "Hello World XY 6") {
+        return;
+      }
+
+      if (viewY >= viewMessagesPageStart && viewY < viewPageEnd) {
+        // it is in the view
+        let percentageInView = ((viewY + messageHeight) - viewPageEnd) / messageHeight;
+        console.log('viewPageStart', Math.round(viewMessagesPageStart), 'offset', Math.round(this.offset), 'viewPageEnd', Math.round(viewPageEnd),"IN VIEW", messageData.config.content, viewY, message.y, percentageInView)
+      }
+      else {
+        console.log('viewPageStart', Math.round(viewMessagesPageStart), 'offset', Math.round(this.offset), 'viewPageEnd', Math.round(viewPageEnd),"IN VIEW", messageData.config.content, viewY, message.y, false)
+      }
     }
   }
 }
