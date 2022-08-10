@@ -19,7 +19,7 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
       createdOnDeviceType:   localData.createdOnDeviceType,
       createdByUser:         localData.createdByUser,
       crownstonesAtCreation: Object.keys(localData.crownstonesAtCreation),
-      locationId:            cloudLocationId,
+      locationId:            cloudLocationId || location.id,
       data:                  localData.data,
       updatedAt:             new Date(localData.updatedAt).toISOString(),
       createdAt:             new Date(localData.createdAt).toISOString(),

@@ -72,7 +72,7 @@ Object {
     "sphere_uuid2002-2003": Object {
       "config": Object {
         "cloudId": null,
-        "iBeaconUUID": undefined,
+        "iBeaconUUID": "uuid2004-2005",
         "latitude": null,
         "longitude": null,
         "name": "testSphere",
@@ -94,7 +94,7 @@ Object {
         "smartHomeEnabled": true,
       },
       "stones": Object {
-        "stone_uuid2004-2005": Object {
+        "stone_uuid2006-2007": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -158,7 +158,7 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "name": "stone_uuid2007",
+            "name": "stone_uuid2009",
             "type": "PLUG",
             "uicr": null,
             "uid": 1,
@@ -173,7 +173,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2004-2005",
+          "id": "stone_uuid2006-2007",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -192,7 +192,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "stone_uuid2008-2009": Object {
+        "stone_uuid2010-2011": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -256,7 +256,7 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "name": "stone_uuid2011",
+            "name": "stone_uuid2013",
             "type": "PLUG",
             "uicr": null,
             "uid": 2,
@@ -271,7 +271,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2008-2009",
+          "id": "stone_uuid2010-2011",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,
@@ -290,7 +290,7 @@ Object {
             "updatedAt": 1,
           },
         },
-        "stone_uuid2012-2013": Object {
+        "stone_uuid2014-2015": Object {
           "abilities": Object {
             "dimming": Object {
               "cloudId": null,
@@ -354,7 +354,7 @@ Object {
             "locationId": null,
             "locked": false,
             "macAddress": undefined,
-            "name": "stone_uuid2015",
+            "name": "stone_uuid2017",
             "type": "PLUG",
             "uicr": null,
             "uid": 3,
@@ -369,7 +369,7 @@ Object {
             "temperatureChip": false,
             "temperatureDimmer": false,
           },
-          "id": "stone_uuid2012-2013",
+          "id": "stone_uuid2014-2015",
           "keys": Object {},
           "lastUpdated": Object {
             "stoneTime": 0,

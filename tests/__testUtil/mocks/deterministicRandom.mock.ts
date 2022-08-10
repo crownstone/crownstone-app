@@ -38,6 +38,10 @@ export function mockRandom() {
           return "uuid" +RANDOM_COUNT++ + '-' + RANDOM_COUNT++;
         },
 
+        generateLocalId: () : string => {
+          return "uuid" +RANDOM_COUNT++ + '-' + RANDOM_COUNT++;
+        },
+
         getShortUUID : () : string => {
           return "uuid" +RANDOM_COUNT++;
         },

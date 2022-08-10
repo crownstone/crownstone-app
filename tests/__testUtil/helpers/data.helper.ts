@@ -32,6 +32,24 @@ interface SphereDataTest extends SphereDataConfig {
   id: string
 }
 
+export function createUser(config? : Partial<UserData>) {
+  // @ts-ignore
+  let userId = config?.id ?? 'user_' + xUtil.getUUID();
+  if (!config) { config = {}; }
+  core.store.dispatch({
+    type:"USER_LOG_IN",
+    data:{
+      firstName: "Test",
+      lastName:  "LastName",
+      userId:     userId,
+      ...config
+    }
+  });
+
+  let state = core.store.getState();
+  return state.user;
+}
+
 export function addSphere(config? : Partial<SphereDataTest>) {
   // @ts-ignore
   let sphereId = config?.id ?? 'sphere_' + xUtil.getUUID();
@@ -39,7 +57,7 @@ export function addSphere(config? : Partial<SphereDataTest>) {
   core.store.dispatch({
     type:"ADD_SPHERE",
     sphereId: sphereId,
-    data:{name: "testSphere", ...config}
+    data:{name: "testSphere", iBeaconUUID: xUtil.getUUID(), ...config}
   });
   MapProvider.refreshAll();
   lastUsedSphereId = sphereId;
@@ -59,6 +77,8 @@ export function addStone(config? : Partial<StoneDataConfig>) {
       name: getToken('stone'),
       uid: stoneCount,
       firmwareVersion:'5.4.0',
+      iBeaconMajor: Number('0x'+xUtil.getRandomByte()+xUtil.getRandomByte()),
+      iBeaconMinor: Number('0x'+xUtil.getRandomByte()+xUtil.getRandomByte()),
       ...config
     }
   });
