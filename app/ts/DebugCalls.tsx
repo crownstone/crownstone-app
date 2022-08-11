@@ -42,7 +42,7 @@ export function DebugOverlays() {
 }
 
 export function Debug() {
-  // DebugCustomView();
+  DebugCustomView();
   // DebugPopup()
 }
 
@@ -60,6 +60,6 @@ function DebugPopup() {
 
 function DebugCustomView() {
   setTimeout(() => {
-  NavigationUtil.launchModal("RoomTraining_conclusion",{"sphereId":"1aaef17a-48c9-f3de-8d0a-48b078f65ce5","locationId":"832b879a-deb6-636d-646-f5b027b37df","type":"IN_HAND"})}
-  ,300);
+    NavigationUtil.launchModal("MessageInbox", { "sphereId": "99e5f4a3-c7fe-4ac5-b8fb-eb094d63195a" })
+  },200);
 }

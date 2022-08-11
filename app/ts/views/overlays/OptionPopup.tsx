@@ -157,19 +157,21 @@ export class OptionPopup extends Component<any, any> {
           style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
           height={screenHeight}
           visible={this.state.visible}>
-          <SlideInFromBottomView
-            style={[styles.centered, {justifyContent:'flex-end', backgroundColor: 'transparent'}]}
-            height={screenHeight}
-            visible={this.state.visible}>
-            {this.getChildrenIOS()}
-            <TouchableOpacity
-              style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}}
-              onPress={() => { core.eventBus.emit("hidePopup");}}
-              testID={"optionsCancel"}
-            >
-              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
-            </TouchableOpacity>
-          </SlideInFromBottomView>
+          <TouchableOpacity activeOpacity={1} onPress={() => { core.eventBus.emit("hidePopup"); }}>
+            <SlideInFromBottomView
+              style={[styles.centered, {justifyContent:'flex-end', backgroundColor: 'transparent'}]}
+              height={screenHeight}
+              visible={this.state.visible}>
+              {this.getChildrenIOS()}
+              <TouchableOpacity
+                style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}}
+                onPress={() => { core.eventBus.emit("hidePopup");}}
+                testID={"optionsCancel"}
+              >
+                <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
+              </TouchableOpacity>
+            </SlideInFromBottomView>
+          </TouchableOpacity>
         </HiddenFadeInView>
       );
     }

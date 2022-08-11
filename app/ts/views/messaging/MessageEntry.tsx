@@ -23,9 +23,9 @@ import { core } from "../../Core";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export class MessageEntry extends Component<{
+  readMessage(): void
   deleteMessage(): void
   size: number,
-  removeBadgeCallback: any,
   self: any,
   sphere: any,
   sphereId: string,
@@ -237,7 +237,7 @@ export class MessageEntry extends Component<{
 
             if (this.props.read === false) {
               core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
-              this.props.removeBadgeCallback()
+              this.props.readMessage();
             }
           }}
         >

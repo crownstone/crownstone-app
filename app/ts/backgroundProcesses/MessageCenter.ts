@@ -6,6 +6,7 @@ import {MapProvider} from "./MapProvider";
 import {xUtil} from "../util/StandAloneUtil";
 import {core} from "../Core";
 import {Get} from "../util/GetUtil";
+import { Navigation } from "react-native-navigation";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -24,6 +25,12 @@ class MessageCenterClass {
       core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
       core.eventBus.on('enterRoom',   (data)     => { this._enterRoom(data); }); // data = {sphereId: sphereId, locationId: locationId}
       core.eventBus.on('exitRoom',    (data)     => { this._exitRoom(data); });  // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+        if (change.changeMessage) {
+          this.handleAppBadge();
+        }
+      });
 
     }
     this._initialized = true;
@@ -329,6 +336,12 @@ class MessageCenterClass {
     }
 
     return unreadMessageCount;
+  }
+
+
+
+  handleAppBadge() {
+    // remove badge on app.
   }
 
 }

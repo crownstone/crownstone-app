@@ -17,7 +17,6 @@ interface SphereData {
     reachable:        boolean,
     present:          boolean,
     smartHomeEnabled: boolean,
-    newMessageFound:  boolean,
   },
   users:       {[userId:     string]: SphereUserData},
   locations:   {[locationId: string]: LocationData},

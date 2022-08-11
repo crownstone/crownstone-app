@@ -29,7 +29,6 @@ let defaultSettings : SphereData = {
     reachable: false,
     present: false,
     smartHomeEnabled: true,
-    newMessageFound: false,
   },
   keys: {
     // these will be filled with an x number of keys used for encryption.
@@ -100,14 +99,6 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
         return newState;
       }
       return state;
-    case 'SET_SPHERE_MESSAGE_STATE': {
-      if (action.data) {
-        let newState = {...state};
-        newState.newMessageFound  = update(action.data.newMessageFound, newState.newMessageFound);
-        return newState;
-      }
-      return state;
-    }
     case 'SET_SPHERE_SMART_HOME_STATE': {
       if (action.data) {
         let newState = {...state};
