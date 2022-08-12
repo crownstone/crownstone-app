@@ -29,28 +29,31 @@ interface SphereData {
   keys:        any,
 }
 
-interface MessageData {
-  id:         string,
-  config:     MessageDataConfig,
-  recipients: Record<userId, true>,
-  received:   Record<userId, timestamp>,
-  read:       Record<userId, timestamp>,
-}
 
 type MessageTriggerEvent = 'enter' | 'exit';
 
-interface MessageDataConfig {
+interface MessageData {
+  id: string,
   cloudId: string | null,
+
   triggerLocationId: locationId | null,
-  triggerEvent: MessageTriggerEvent,
-  everyoneInSphere: boolean,
+  triggerEvent:      MessageTriggerEvent,
+  everyoneInSphere:  boolean,
   everyoneInSphereIncludingOwner: boolean,
-  content: string,
-  senderId: userId,
+  recipients: Record<userId, true>,
+
+  content:    string,
+
+  visible:    boolean,
+  notified:   boolean,
+  read:       boolean,
+  deleted:    boolean,
+
   sendFailed: boolean,
-  sent: boolean,
-  sentAt: timestamp,
-  updatedAt: timestamp,
+  senderId:   userId,
+  sent:       boolean,
+  sentAt:     timestamp,
+  updatedAt:  timestamp,
 }
 
 interface SphereDataConfig {

@@ -44,6 +44,7 @@ import { NestableDraggableFlatList, NestableScrollContainer } from "react-native
 import { EventBusClass } from "../../util/EventBus";
 import { HeaderTitle } from "../components/HeaderTitle";
 import { Get } from "../../util/GetUtil";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -122,10 +123,10 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     let stones = DataUtil.getStonesInLocation(this.props.sphereId, this.props.locationId);
     let hubs   = DataUtil.getHubsInLocation(  this.props.sphereId, this.props.locationId);
     let ids = [];
-    for (let id in stones) { ids.push(id); }
+    for (let id in stones) { ids.push(stones[id].config.cloudId || id); }
     for (let id in hubs)   {
       if (!stones[hubs[id].config.linkedStoneId]) {
-        ids.push(id);
+        hubs[id].config.cloudId || id;
       }
     }
     return ids;
@@ -307,17 +308,18 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
 
     let idList = this.sortedList.getDraggableList();
     let shownStones = {};
-    for (let id of idList) {
-      let item = stones[id] ?? hubs[id];
+    for (let cloudId of idList) {
+      let localId = MapProvider.cloud2localMap.stones[cloudId] ?? MapProvider.cloud2localMap.hubs[cloudId] ?? cloudId;
+      let item = stones[localId] ?? hubs[localId];
 
       // stone
       if ('handle' in item.config && shownHandles[item.config.handle] === undefined) {
-        shownStones[id] = true;
-        stoneArray.push({ type: 'stone', data: item, id: id });
+        shownStones[localId] = true;
+        stoneArray.push({ type: 'stone', data: item, id: localId });
       }
       else if ('linkedStoneId' in item.config && !shownStones[item.config.linkedStoneId]) {
         // do not show the same device twice
-        stoneArray.push({ type: 'hub', data: item, id: id });
+        stoneArray.push({ type: 'hub', data: item, id: localId });
       }
     }
 

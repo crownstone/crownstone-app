@@ -81,15 +81,15 @@ class NotificationParserClass {
           this._handleSetSwitchStateRemotely(notificationData, state); break;
         case 'newMessage':
           if (notificationData.id) {
-            CLOUD.getMessage(notificationData.id)
-              .then((result) => {
-                state = core.store.getState();
-                let notified = LocalNotifications._handleNewMessage(notificationData, state);
-                if (notified) {
-                  MessageCenter.storeMessage(result);
-                }
-              })
-              .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err?.message)})
+            // CLOUD.getMessage(notificationData.id)
+            //   .then((result) => {
+            //     state = core.store.getState();
+            //     let notified = LocalNotifications._handleNewMessage(notificationData, state);
+            //     if (notified) {
+            //       MessageCenter.storeMessage(result);
+            //     }
+            //   })
+            //   .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err?.message)})
           }
           break;
         case "sphereUsersUpdated":

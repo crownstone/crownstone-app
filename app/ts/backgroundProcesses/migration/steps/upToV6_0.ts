@@ -2,14 +2,18 @@ import {core} from "../../../Core";
 import {xUtil} from "../../../util/StandAloneUtil";
 import {RoomStockBackground} from "../../../views/styles";
 import { FingerprintUtil } from "../../../util/FingerprintUtil";
+import { Persistor } from "../../../database/persistor/Persistor";
+import { StoreManager } from "../../../database/storeManager";
 
-export const clean_upTo5_1 = async function() {
+export const clean_upTo6_0 = async function() {
+  return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : "messages"}}], "MIGRATED_6.0")
 }
 
-export const upTo5_1 = function(lastMigrationVersion, appVersion) {
+export const upTo6_0 = function(lastMigrationVersion, appVersion) {
   if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {
     loadRoomStockImages();
     migrateFingerprints();
+    // migrateMessages();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});
   }
 }

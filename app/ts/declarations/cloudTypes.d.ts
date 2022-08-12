@@ -307,20 +307,33 @@ interface cloud_SphereFeature {
 }
 
 interface cloud_Message {
-  id: string,
-  triggerEvent: string,
-  content: string,
-  everyoneInSphere: boolean;
+  id:                string,
+  triggerEvent:      string,
+  content:           string,
+  everyoneInSphere:  boolean;
   everyoneInSphereIncludingOwner: boolean;
-  deliveredAll: boolean;
   triggerLocationId: string,
-  ownerId: string,
-  recipients: cloud_User[];
-  delivered: cloud_MessageState[];
-  read: cloud_MessageState[];
-  sphereId: string,
+  ownerId:           string,
+
+  recipients: {id: userId}[];
+  readBy:     {id: userId}[];
+  deleteBy:   {id: userId}[];
+
+  sphereId:  string,
   createdAt: string,
   updatedAt: string,
+}
+
+interface cloud_Message_settable {
+  message: {
+    triggerEvent: string,
+    content: string,
+    everyoneInSphere: boolean;
+    everyoneInSphereIncludingOwner: boolean;
+    triggerLocationId: string,
+    updatedAt: string,
+  }
+  recipients: userId[];
 }
 
 interface cloud_Scene {
