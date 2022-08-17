@@ -81,7 +81,7 @@ interface SyncRequestSphereData {
       [locationId: string]: RequestItemCoreType
     },
     messages?:  {
-      [messageId: string]: RequestItemCoreType
+      [messageId: string]: SyncRequestMessageData
     },
     scenes?: {
       [sceneId: string]: RequestItemCoreType
@@ -121,6 +121,14 @@ interface SyncRequestStoneData {
     [behaviourId: string]: RequestItemCoreType
   }
 }
+
+interface SyncRequestMessageData {
+  new?: boolean,
+  data: UpdatedAt,
+  readBy?:    {[readById:string]:    RequestItemCoreType},
+  deletedBy?: {[deletedById:string]: RequestItemCoreType},
+}
+
 
 interface RequestItemCoreType {
   new?: boolean,
@@ -190,9 +198,7 @@ interface SyncRequestResponse_Sphere {
     }
   },
   messages?:  {
-    [messageId: string] : {
-      data: SyncResponseItemCore<cloud_Message>
-    }
+    [messageId: string] : SyncMessageResponse,
   },
   scenes?:  {
     [sceneId: string] : {
@@ -217,6 +223,13 @@ interface SyncRequestResponse_Sphere {
       data: SyncResponseCustomItemCore<cloud_UserData>
     }
   }
+}
+
+
+interface SyncMessageResponse {
+  data?:       SyncResponseItemCore<cloud_Message>,
+  readBy?:    {[stateId: string]: {data: SyncResponseItemCore<cloud_MessageState>}},
+  deletedBy?: {[stateId: string]: {data: SyncResponseItemCore<cloud_MessageState>}},
 }
 
 

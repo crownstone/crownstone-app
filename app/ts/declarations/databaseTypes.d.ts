@@ -48,6 +48,7 @@ interface DatabaseAction {
   keyId?                  : string,
   hubId?                  : string,
   behaviourId?            : string,
+  messageStateId?         : string,
   abilityId?              : string,
   propertyId?             : string,
   userId?                 : string,
@@ -245,6 +246,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'UPDATE_MESSAGE_CLOUD_ID'                 |
                       'ADD_MESSAGE'                             |
                       'APPEND_MESSAGE'                          |
+                      'REMOVE_MESSAGE_READ'                     |
                       'ADD_CLOUD_MESSAGE'                       |
                       'I_RECEIVED_MESSAGE'                      |
                       'REFRESH_DEFAULTS'                        |
@@ -253,7 +255,13 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'I_RECEIVED_MESSAGE'                      |
                       'RECEIVED_MESSAGE'                        |
                       'I_READ_MESSAGE'                          |
-                      'READ_MESSAGE'                            |
+                      'MARK_AS_READ'                            |
+                      'UPDATE_READ_MESSAGE_CLOUD_ID'            |
+                      'UPDATE_READ_MESSAGE'                     |
+                      'MARK_AS_DELETED'                         |
+                      'UPDATE_DELETE_MESSAGE_CLOUD_ID'          |
+                      'UPDATE_DELETE_MESSAGE'                   |
+                      'REMOVE_MESSAGE_DELETED'                  |
                       'REMOVE_MESSAGE'                          |
                       'RESET_APP_SETTINGS'                      |
                       'SET_NOTIFICATION_TOKEN'                  |

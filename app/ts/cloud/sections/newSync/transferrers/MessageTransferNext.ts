@@ -9,16 +9,12 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
   // this will be used for NEW data and REQUESTED data in the v2 sync process.
   mapLocalToCloud(localData: MessageData) : cloud_Message_settable {
     let result : cloud_Message_settable = {
-      message: {
-        triggerEvent:                   localData.triggerEvent,
-        content:                        localData.content,
-        everyoneInSphere:               localData.everyoneInSphere,
-        everyoneInSphereIncludingOwner: localData.everyoneInSphereIncludingOwner,
-        triggerLocationId:              MapProvider.local2cloudMap.locations[localData.triggerLocationId] ||
-                                          localData.triggerLocationId,
-        updatedAt:                      new Date(localData.updatedAt).toISOString()
-      },
-      recipients: Object.keys(localData.recipients)
+      triggerEvent:            localData.triggerEvent,
+      content:                 localData.content,
+      everyoneInSphere:        localData.everyoneInSphere,
+      includeSenderInEveryone: localData.includeSenderInEveryone,
+      triggerLocationId:       MapProvider.local2cloudMap.locations[localData.triggerLocationId] || localData.triggerLocationId,
+      updatedAt:               new Date(localData.updatedAt).toISOString()
     };
     return result;
   },
@@ -26,16 +22,20 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
 
    mapCloudToLocal(cloudMessage: cloud_Message) : Partial<MessageData> {
     let result : Partial<MessageData> = {
-      cloudId:           cloudMessage.id,
-      triggerLocationId: cloudMessage.triggerLocationId,
-      triggerEvent:      cloudMessage.triggerEvent as MessageTriggerEvent,
-      everyoneInSphere:  cloudMessage.everyoneInSphere,
-      everyoneInSphereIncludingOwner: cloudMessage.everyoneInSphereIncludingOwner,
-      content:           cloudMessage.content,
-      senderId:          cloudMessage.ownerId,
-      sentAt:            new Date(cloudMessage.createdAt).valueOf(),
-      updatedAt:         new Date(cloudMessage.updatedAt).valueOf(),
+      cloudId:                 cloudMessage.id,
+      triggerLocationId:       cloudMessage.triggerLocationId,
+      triggerEvent:            cloudMessage.triggerEvent as MessageTriggerEvent,
+      everyoneInSphere:        cloudMessage.everyoneInSphere,
+      includeSenderInEveryone: cloudMessage.includeSenderInEveryone,
+      content:                 cloudMessage.content,
+      senderId:                cloudMessage.ownerId,
+      sentAt:                  new Date(cloudMessage.createdAt).valueOf(),
+      updatedAt:               new Date(cloudMessage.updatedAt).valueOf(),
     };
+
+    if (cloudMessage.recipients) {
+      result.recipients = xUtil.arrayToMap(cloudMessage.recipients.map(r => r.userId));
+    }
 
     return result;
   },
@@ -54,7 +54,7 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
 
 
   getUpdateLocalAction(localSphereId: string, localItemId: string, data: Partial<MessageData>) : DatabaseAction {
-    return {type:"APPEND_MESSAGE", sphereId: localSphereId, messageId: localItemId, data: data }
+    return {type:"UPDATE_READ_MESSAGE", sphereId: localSphereId, messageId: localItemId, data: data }
   },
 
 
@@ -77,7 +77,6 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
 
 
   async removeFromCloud(localSphereId: string, localId: string) : Promise<void> {
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     await CLOUD.deleteMessage(localId);
   },
 

@@ -68,6 +68,30 @@ interface TransferStoneTool<LocalData,LocalDataSettable,CloudData,CloudDataSetta
 }
 
 
+interface TransferMessageTool<LocalData,LocalDataSettable,CloudData,CloudDataSettable> {
+
+  mapLocalToCloud(localData: LocalData) : CloudDataSettable
+
+  mapCloudToLocal(cloudData: CloudData, ...args) : Partial<LocalDataSettable>
+
+  getCreateLocalAction(localSphereId: string, localMessageId: string, data: Partial<LocalDataSettable>) : {id: string, action: DatabaseAction }
+
+  createLocal(localSphereId: string, localMessageId: string, data: Partial<LocalDataSettable>) : string
+
+  getUpdateLocalAction(localSphereId: string, localMessageId: string, localItemId: string, data: Partial<LocalDataSettable>) : DatabaseAction
+
+  getRemoveFromLocalAction(localSphereId: string, localMessageId: string, localItemId: string) : DatabaseAction
+
+  getUpdateLocalCloudIdAction(localSphereId: string, localMessageId: string, localItemId: string, cloudId: string) : DatabaseAction
+
+  createOnCloud(localSphereId: string, localMessageId: string, data: LocalData) : Promise<CloudData>
+
+  updateOnCloud(localMessageId: string, data: LocalData) : Promise<void>
+
+  removeFromCloud(localMessageId: string, localId: string) : Promise<void>
+}
+
+
 interface TransferLocationTool<LocalData,LocalDataSettable,CloudData,CloudDataSettable> {
 
   mapLocalToCloud(localData: LocalData) : CloudDataSettable

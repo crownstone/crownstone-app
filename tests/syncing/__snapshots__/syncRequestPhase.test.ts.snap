@@ -1,289 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Check if fingerprints are prepared for sync down 1`] = `
-Object {
-  "sphereCloudId": Object {
-    "data": Object {
-      "gpsLocation": Object {
-        "lat": null,
-        "lng": null,
-      },
-      "name": "testSphere",
-      "uid": null,
-      "updatedAt": "2022-01-01T12:00:00.000Z",
-      "uuid": "uuid2006-2007",
-    },
-    "fingerprints": Object {
-      "uuid2035-2036": Object {
-        "data": Object {
-          "createdAt": "2022-01-01T12:00:00.000Z",
-          "createdByUser": "user_uuid2002-2003",
-          "createdOnDeviceType": "undefined_undefined",
-          "crownstonesAtCreation": Array [
-            "56541_57055",
-            "58597_59111",
-            "60653_61167",
-          ],
-          "data": Array [
-            Object {
-              "data": Object {
-                "56541_57055": -65,
-                "58597_59111": -65,
-                "60653_61167": -65,
-              },
-              "dt": 0,
-            },
-          ],
-          "locationId": "location_uuid2032-2033",
-          "type": "IN_HAND",
-          "updatedAt": "2022-01-01T12:00:00.000Z",
-        },
-        "new": true,
-      },
-    },
-    "hubs": Object {},
-    "locations": Object {
-      "location_uuid2032-2033": Object {
-        "data": Object {
-          "icon": undefined,
-          "name": "stone_uuid2034",
-          "uid": null,
-          "updatedAt": "2022-01-01T12:00:00.000Z",
-        },
-        "new": true,
-      },
-    },
-    "scenes": Object {},
-    "stones": Object {
-      "stone_uuid2008-2009": Object {
-        "abilities": Object {
-          "dimming": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "dimming",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "softOnSpeed": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "softOnSpeed",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 8,
-                },
-                "new": true,
-              },
-            },
-          },
-          "switchcraft": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "switchcraft",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {},
-          },
-          "tapToToggle": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "tapToToggle",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "rssiOffset": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "rssiOffset",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 0,
-                },
-                "new": true,
-              },
-            },
-          },
-        },
-        "behaviours": Object {},
-        "data": Object {
-          "address": undefined,
-          "bootloaderVersion": null,
-          "description": "",
-          "firmwareVersion": "5.4.0",
-          "hardwareVersion": null,
-          "hidden": false,
-          "icon": "c2-pluginFilled",
-          "locationId": null,
-          "locked": false,
-          "major": 56541,
-          "minor": 57055,
-          "name": "stone_uuid2011",
-          "type": "PLUG",
-          "uicr": null,
-          "uid": 1,
-          "updatedAt": "2022-01-01T12:00:00.000Z",
-        },
-        "new": true,
-      },
-      "stone_uuid2016-2017": Object {
-        "abilities": Object {
-          "dimming": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "dimming",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "softOnSpeed": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "softOnSpeed",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 8,
-                },
-                "new": true,
-              },
-            },
-          },
-          "switchcraft": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "switchcraft",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {},
-          },
-          "tapToToggle": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "tapToToggle",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "rssiOffset": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "rssiOffset",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 0,
-                },
-                "new": true,
-              },
-            },
-          },
-        },
-        "behaviours": Object {},
-        "data": Object {
-          "address": undefined,
-          "bootloaderVersion": null,
-          "description": "",
-          "firmwareVersion": "5.4.0",
-          "hardwareVersion": null,
-          "hidden": false,
-          "icon": "c2-pluginFilled",
-          "locationId": null,
-          "locked": false,
-          "major": 58597,
-          "minor": 59111,
-          "name": "stone_uuid2019",
-          "type": "PLUG",
-          "uicr": null,
-          "uid": 2,
-          "updatedAt": "2022-01-01T12:00:00.000Z",
-        },
-        "new": true,
-      },
-      "stone_uuid2024-2025": Object {
-        "abilities": Object {
-          "dimming": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "dimming",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "softOnSpeed": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "softOnSpeed",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 8,
-                },
-                "new": true,
-              },
-            },
-          },
-          "switchcraft": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "switchcraft",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {},
-          },
-          "tapToToggle": Object {
-            "data": Object {
-              "enabled": false,
-              "syncedToCrownstone": true,
-              "type": "tapToToggle",
-              "updatedAt": "2022-01-01T12:00:00.000Z",
-            },
-            "new": true,
-            "properties": Object {
-              "rssiOffset": Object {
-                "data": Object {
-                  "syncedToCrownstone": true,
-                  "type": "rssiOffset",
-                  "updatedAt": "2022-01-01T12:00:00.000Z",
-                  "value": 0,
-                },
-                "new": true,
-              },
-            },
-          },
-        },
-        "behaviours": Object {},
-        "data": Object {
-          "address": undefined,
-          "bootloaderVersion": null,
-          "description": "",
-          "firmwareVersion": "5.4.0",
-          "hardwareVersion": null,
-          "hidden": false,
-          "icon": "c2-pluginFilled",
-          "locationId": null,
-          "locked": false,
-          "major": 60653,
-          "minor": 61167,
-          "name": "stone_uuid2027",
-          "type": "PLUG",
-          "uicr": null,
-          "uid": 3,
-          "updatedAt": "2022-01-01T12:00:00.000Z",
-        },
-        "new": true,
-      },
-    },
-    "toons": Object {},
-    "users": Object {},
-  },
-}
-`;
-
 exports[`Check if fingerprints are syncing 1`] = `
 Object {
   "sphereCloudId": Object {
@@ -333,6 +49,7 @@ Object {
         },
       },
     },
+    "messages": Object {},
     "scenes": Object {},
     "stones": Object {
       "stone_uuid2008-2009": Object {
@@ -714,8 +431,6 @@ Object {
           },
           "id": "location_uuid2032-2033",
           "layout": Object {
-            "setOnThisDevice": false,
-            "updatedAt": 0,
             "x": null,
             "y": null,
           },
@@ -727,7 +442,6 @@ Object {
       "sortedLists": Object {},
       "state": Object {
         "lastPresentTime": 0,
-        "newMessageFound": false,
         "present": false,
         "reachable": false,
         "smartHomeEnabled": true,
@@ -1059,4 +773,79 @@ Object {
     "userId": "user_uuid2002-2003",
   },
 }
+`;
+
+exports[`Check if messages are preparing their sync request payload 1`] = `
+Object {
+  "sphereCloudId": Object {
+    "messages": Object {
+      "cloudMessage": Object {
+        "data": Object {
+          "recipients": Array [
+            "memberId",
+          ],
+          "updatedAt": 1641038400000,
+        },
+        "deletedBy": Object {},
+        "readBy": Object {},
+      },
+      "messageId_uuid2008-2009": Object {
+        "data": Object {
+          "content": "testMessage",
+          "everyoneInSphere": false,
+          "includeSenderInEveryone": false,
+          "recipients": Array [
+            "memberId",
+          ],
+          "triggerEvent": null,
+          "triggerLocationId": null,
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "deletedBy": Object {
+          "deleted": Object {
+            "data": Object {
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+              "userId": "user_uuid2002-2003",
+            },
+            "new": true,
+          },
+        },
+        "new": true,
+        "readBy": Object {
+          "read": Object {
+            "data": Object {
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+              "userId": "user_uuid2002-2003",
+            },
+            "new": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`Check if messages can handle the cloud's sync reply: creationActions 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "cloudId": "dbId:MessageV2Repository:1",
+      "content": "hello",
+      "everyoneInSphere": false,
+      "includeSenderInEveryone": false,
+      "recipients": Object {
+        "dbId:UserRepository:3": true,
+      },
+      "senderId": undefined,
+      "sentAt": 0,
+      "triggerEvent": "enter",
+      "triggerLocationId": undefined,
+      "updatedAt": 0,
+    },
+    "messageId": "uuid2008-2009",
+    "sphereId": "sphere_uuid2004-2005",
+    "type": "ADD_MESSAGE",
+  },
+]
 `;

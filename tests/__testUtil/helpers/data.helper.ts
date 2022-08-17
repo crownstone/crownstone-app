@@ -90,6 +90,27 @@ export function addStone(config? : Partial<StoneDataConfig>) {
 }
 
 
+
+export function addMessage(config? : Partial<MessageData>, recipients: string[] = []) {
+  let messageId = 'messageId_' + xUtil.getUUID();
+  if (!config) { config = {}; }
+  core.store.dispatch({
+    type:"ADD_MESSAGE",
+    sphereId: lastUsedSphereId,
+    messageId,
+    data:{
+      content:"testMessage",
+      everyoneInSphere: recipients.length == 0,
+      recipients: xUtil.arrayToMap(recipients ?? []),
+      ...config
+    }
+  });
+
+  let message = Get.message(lastUsedSphereId, messageId);
+  return message;
+}
+
+
 export function addHub(config? : any) {
   let hubId = 'hub_' + xUtil.getUUID();
   hubCount++;

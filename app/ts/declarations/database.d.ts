@@ -39,21 +39,50 @@ interface MessageData {
   triggerLocationId: locationId | null,
   triggerEvent:      MessageTriggerEvent,
   everyoneInSphere:  boolean,
-  everyoneInSphereIncludingOwner: boolean,
+  includeSenderInEveryone: boolean,
   recipients: Record<userId, true>,
 
   content:    string,
 
   visible:    boolean,
   notified:   boolean,
-  read:       boolean,
-  deleted:    boolean,
+
+  read:       Record<string, MessageStateData>,
+  deleted:    Record<string, MessageStateData>,
 
   sendFailed: boolean,
   senderId:   userId,
   sent:       boolean,
   sentAt:     timestamp,
   updatedAt:  timestamp,
+}
+
+interface MessageData_settable {
+  cloudId: string | null,
+
+  triggerLocationId: locationId | null,
+  triggerEvent:      MessageTriggerEvent,
+  everyoneInSphere:  boolean,
+  includeSenderInEveryone: boolean,
+  recipients: Record<userId, true>,
+
+  content:    string,
+
+  visible:    boolean,
+  notified:   boolean,
+
+  sendFailed: boolean,
+  senderId:   userId,
+  sent:       boolean,
+  sentAt:     timestamp,
+  updatedAt:  timestamp,
+}
+
+interface MessageStateData {
+  id: string,
+  cloudId: string,
+  updatedAt: number,
+  value: boolean
 }
 
 interface SphereDataConfig {

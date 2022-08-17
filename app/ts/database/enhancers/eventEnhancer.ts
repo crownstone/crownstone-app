@@ -205,7 +205,6 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "ADD_CLOUD_MESSAGE":
       eventStatus.addedMessage = affectedIds;
     case "APPEND_MESSAGE":
-    case "READ_MESSAGE":
     case "RECEIVED_MESSAGE":
     case "REMOVE_MESSAGE":
     case "I_READ_MESSAGE":

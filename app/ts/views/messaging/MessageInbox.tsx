@@ -365,7 +365,6 @@ class MessageReadStateWatcher {
       let message = this.messages[messageId];
       let messageHeight = message.height;
       let pageY = message.y + this.messageStartY;
-      let messageData = Get.message(core.store.getState().app.activeSphere, messageId);
 
       if ((pageY+messageHeight) >= viewTop && pageY < viewBottom) {
         let percentageTop = (pageY+messageHeight-viewTop) / messageHeight;

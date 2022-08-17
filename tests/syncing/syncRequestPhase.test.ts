@@ -1,5 +1,5 @@
 import { resetMocks } from "../__testUtil/mocks/suite.mock";
-import {addLocation, addSphere, addStone, createUser} from "../__testUtil/helpers/data.helper";
+import {addLocation, addMessage, addSphere, addStone, createUser} from "../__testUtil/helpers/data.helper";
 import { core } from "../../app/ts/Core";
 import { SyncUtil } from "../../app/ts/util/SyncUtil";
 import {
@@ -9,6 +9,7 @@ import {FingerprintCollector} from "../../app/ts/localization/fingerprints/Finge
 import {evt_ibeacon, ibeaconPayload} from "../__testUtil/helpers/event.helper";
 import {SyncNext} from "../../app/ts/cloud/sections/newSync/SyncNext";
 import {getSyncIdMap} from "../../app/ts/cloud/sections/sync/modelSyncs/SyncingBase";
+import {MapProvider} from "../../app/ts/backgroundProcesses/MapProvider";
 
 beforeEach(async () => {
   resetMocks()
@@ -135,6 +136,67 @@ test("Check if fingerprints are syncing", async () => {
   core.store.batchDispatch(actions);
 
   expect(core.store.getState()).toMatchSnapshot()
+});
+
+test("Check if messages are preparing their sync request payload", async () => {
+  let user1 = createUser();
+  let sphere = addSphere({cloudId: 'sphereCloudId'});
+
+  let message = addMessage({},['memberId'])
+  let message2 = addMessage({cloudId:'cloudMessage'},['memberId']);
+
+  MapProvider.refreshAll();
+
+  core.store.dispatch({type:"MARK_AS_READ",   sphereId:sphere.id, messageId:message.id, messageStateId:'read', data: {value: true}})
+  core.store.dispatch({type:"MARK_AS_DELETED",sphereId:sphere.id, messageId:message.id, messageStateId:'deleted', data: {value: true}})
+
+  let syncState = SyncNext.composeState(core.store.getState(), {'messages':true});
+  expect(syncState).toMatchSnapshot();
+});
+
+
+
+test("Check if messages can handle the cloud's sync reply", async () => {
+  let user1 = createUser();
+  let sphere = addSphere({cloudId: 'sphereCloudId'});
+
+  let response : any = {
+    spheres:{
+     [sphere.config.cloudId]: {
+      messages:{
+        newMessageId1:{
+          data:{
+            data:{
+              content: 'hello',
+                createdAt: '1970-01-01T00:00:00.000Z',
+                everyoneInSphere: false,
+                id: 'dbId:MessageV2Repository:1',
+                includeSenderInEveryone: false,
+                recipients: [
+               {
+                userId: 'dbId:UserRepository:3',
+              },
+            ],
+              sphereId: [sphere.config.cloudId],
+              triggerEvent: 'enter',
+              updatedAt: '1970-01-01T00:00:00.000Z',
+            },
+            status: 'NEW_DATA_AVAILABLE',
+          },
+          deletedBy:{},
+          readBy:{},
+        },
+      },
+    },
+  },
+  }
+
+  let action = [];
+  let globalCloudIdMap = getSyncIdMap();
+  let syncState = await SyncNext.processSyncResponse(response, action, globalCloudIdMap);
+
+
+  expect(action).toMatchSnapshot("creationActions");
 });
 
 

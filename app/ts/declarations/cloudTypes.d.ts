@@ -311,13 +311,13 @@ interface cloud_Message {
   triggerEvent:      string,
   content:           string,
   everyoneInSphere:  boolean;
-  everyoneInSphereIncludingOwner: boolean;
+  includeSenderInEveryone: boolean;
   triggerLocationId: string,
   ownerId:           string,
 
-  recipients: {id: userId}[];
-  readBy:     {id: userId}[];
-  deleteBy:   {id: userId}[];
+  recipients: {userId: userId}[];
+  readBy:     {itemId: {id: string, userId: userId, updatedAt: string}};
+  deleteBy:   {itemId: {id: string, userId: userId, updatedAt: string}};
 
   sphereId:  string,
   createdAt: string,
@@ -325,15 +325,12 @@ interface cloud_Message {
 }
 
 interface cloud_Message_settable {
-  message: {
-    triggerEvent: string,
-    content: string,
-    everyoneInSphere: boolean;
-    everyoneInSphereIncludingOwner: boolean;
-    triggerLocationId: string,
-    updatedAt: string,
-  }
-  recipients: userId[];
+  triggerEvent: string,
+  content: string,
+  everyoneInSphere: boolean;
+  includeSenderInEveryone: boolean;
+  triggerLocationId: string,
+  updatedAt: string,
 }
 
 interface cloud_Scene {
@@ -356,15 +353,14 @@ interface cloud_Scene_settable {
 
 
 interface cloud_MessageState {
-  id: string
-  timestamp: string,
-  enabled: string,
-  syncedToCrownstone: string,
-  messageDeliveredId: string,
-  messageReadId: string,
-  userId: string,
-  sphereId: string,
-  createdAt: string,
+  id:        string
+  sphereId:  string,
+  userId:    string,
+  updatedAt: string,
+}
+
+interface cloud_MessageState_settable {
+  userId:    string,
   updatedAt: string,
 }
 

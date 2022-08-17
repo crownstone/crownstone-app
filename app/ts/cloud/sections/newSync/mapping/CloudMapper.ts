@@ -7,6 +7,9 @@ import { BehaviourTransferNext } from "../transferrers/BehaviourTransferNext";
 import { AbilityTransferNext }   from "../transferrers/AbilityTransferNext";
 import { AbilityPropertyTransferNext } from "../transferrers/AbilityPropertyTransferNext";
 import { FingerprintTransferNext }     from "../transferrers/FingerprintTransferNext";
+import {MessageTransferNext} from "../transferrers/MessageTransferNext";
+import {MessageReadTransferNext} from "../transferrers/MessageReadTransferNext";
+import {MessageDeletedTransferNext} from "../transferrers/MessageDeletedTransferNext";
 
 
 export function mapLocalToCloud(item: any, type: SupportedMappingType) {
@@ -23,6 +26,12 @@ export function mapLocalToCloud(item: any, type: SupportedMappingType) {
       return FingerprintTransferNext.mapLocalToCloud(item as FingerprintData);
     case 'location':
       return LocationTransferNext.mapLocalToCloud(item as LocationData);
+    case 'message':
+      return MessageTransferNext.mapLocalToCloud(item as MessageData);
+    case 'readBy':
+      return MessageReadTransferNext.mapLocalToCloud(item as MessageStateData);
+    case 'deletedBy':
+      return MessageDeletedTransferNext.mapLocalToCloud(item as MessageStateData);
     case 'scene':
       return SceneTransferNext.mapLocalToCloud(item as SceneData);
     case 'sphereUser':
