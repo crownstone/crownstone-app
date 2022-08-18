@@ -18,27 +18,27 @@ import {ANYWHERE_IN_SPHERE} from "./MessageAdd";
 import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
-import {MessageUtil} from "../../util/MessageUtil";
 import { core } from "../../Core";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { MessageCenter } from "../../backgroundProcesses/MessageCenter";
+import { MessageTransferNext } from "../../cloud/sections/newSync/transferrers/MessageTransferNext";
 
 export class MessageEntry extends Component<{
   readMessage(): void
   deleteMessage(): void
   size: number,
-  self: any,
-  sphere: any,
+  self: UserData,
+  sphere: SphereData,
   sphereId: string,
-  message: any,
+  message: MessageData,
   messageId: string,
   read: boolean,
 }, any> {
 
   _getRecipients() {
     let userArray = [];
-    let senderId = this.props.message.config.senderId;
-    if (this.props.message.config.senderId !== this.props.self.userId) {
+    let senderId = this.props.message.senderId;
+    if (this.props.message.senderId !== this.props.self.userId) {
       if (this.props.sphere.users[senderId]) {  // existing member
         let sphereMember = this.props.sphere.users[senderId];
         userArray.push({id: senderId, picture: sphereMember.picture, label: sphereMember.firstName})
@@ -64,7 +64,7 @@ export class MessageEntry extends Component<{
         }
       });
 
-      if (this.props.message.config.everyoneInSphere) {
+      if (this.props.message.everyoneInSphere) {
         userArray.push({icon: 'ios-people', label: lang("Everyone_in_",this.props.sphere.config.name)})
       }
 
@@ -136,10 +136,10 @@ export class MessageEntry extends Component<{
 
 
   _getSubText() {
-    if (this.props.message.config.sendFailed) {
+    if (this.props.message.sendFailed) {
       return <Text numberOfLines={1} style={{fontWeight:'bold',  fontSize:12, color: colors.red.hex}}>{ lang("Failed_to_send__tap_to_re") }</Text>
     }
-    else if (this.props.message.config.sendFailed === false && this.props.message.config.sent === false) {
+    else if (this.props.message.sendFailed === false && this.props.message.sent === false) {
       return (
         <View style={{flexDirection:"row", alignItems:'center'}}>
           <ActivityIndicator size="small" />
@@ -148,7 +148,7 @@ export class MessageEntry extends Component<{
       )
     }
     else {
-      let locationId = this.props.message.config.triggerLocationId;
+      let locationId = this.props.message.triggerLocationId;
 
       let locationName;
       if (locationId === ANYWHERE_IN_SPHERE || locationId === null) {
@@ -193,7 +193,7 @@ export class MessageEntry extends Component<{
         <View style={{flexDirection:'column', width: screenWidth - 2*iconSize - 50}}>
           <View style={{ flex:1 }} />
           <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:14, color: colors.black.rgba(0.5)}}>{label}</Text>
-          <Text style={{paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.config.content}</Text>
+          <Text style={{paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.content}</Text>
           { this._getSubText() }
           <View style={{ flex:1 }} />
         </View>
@@ -220,20 +220,14 @@ export class MessageEntry extends Component<{
       paddingBottom:  padding,
       justifyContent: 'center',
     };
-    if (this.props.message.config.sendFailed || this.props.read === false) {
+    if (this.props.message.sendFailed || this.props.read === false) {
       return (
         <TouchableOpacity
           style={style}
           onPress={() => {
-            if (this.props.message.config.sendFailed) {
+            if (this.props.message.sendFailed) {
               core.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent: false }});
-              MessageUtil.uploadMessage(
-                core.store,
-                this.props.sphereId,
-                this.props.messageId,
-                this.props.message.config,
-                Object.keys(this.props.message.recipients),
-              );
+              MessageTransferNext.createOnCloud(this.props.sphereId, this.props.message)
             }
 
             if (this.props.read === false) {

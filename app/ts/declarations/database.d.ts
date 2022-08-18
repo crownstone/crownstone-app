@@ -47,8 +47,8 @@ interface MessageData {
   visible:    boolean,
   notified:   boolean,
 
-  read:       {read:    MessageStateData},     // the 'id' is hardcoded since it is guarenteed to be a single entry.
-  deleted:    {deleted: MessageStateData},  // the 'id' is hardcoded since it is guarenteed to be a single entry.
+  read:       {} | {read:    MessageStateData},     // the 'id' is hardcoded since it is guarenteed to be a single entry.
+  deleted:    {} | {deleted: MessageStateData},  // the 'id' is hardcoded since it is guarenteed to be a single entry.
 
   sendFailed: boolean,
   senderId:   userId,

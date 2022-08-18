@@ -19,14 +19,13 @@ import {
 import {IconButton} from "../components/IconButton";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { ProfilePicture } from "../components/ProfilePicture";
-import {MessageUtil} from "../../util/MessageUtil";
-
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { MessageTransferNext } from "../../cloud/sections/newSync/transferrers/MessageTransferNext";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -41,7 +40,7 @@ export class MessageAdd extends LiveComponent<any, any> {
     super(props);
 
     this.state = {
-      everyoneInSphereIncludingOwner: true,
+      includeSenderInEveryone: true,
       triggerLocationId: ANYWHERE_IN_SPHERE,
       triggerEvent: 'enter',
       messageContent: '',
@@ -58,16 +57,16 @@ export class MessageAdd extends LiveComponent<any, any> {
   _createMessage() {
     if (this.state.messageContent.trim().length === 0) {
       Alert.alert(
-lang("_Message_is_empty____I_ca_header"),
-lang("_Message_is_empty____I_ca_body"),
+        lang("_Message_is_empty____I_ca_header"),
+        lang("_Message_is_empty____I_ca_body"),
 [{text:lang("_Message_is_empty____I_ca_left")}]);
       return;
     }
 
     if (Object.keys(this.state.recipients).length === 0) {
       Alert.alert(
-lang("_No_recipients____I_cant__header"),
-lang("_No_recipients____I_cant__body"),
+        lang("_No_recipients____I_cant__header"),
+        lang("_No_recipients____I_cant__body"),
 [{text:lang("_No_recipients____I_cant__left")}]);
       return;
     }
@@ -75,46 +74,28 @@ lang("_No_recipients____I_cant__body"),
     let state = core.store.getState();
 
     // gather array of recipients
-    let recipients = [];
+    let recipients = {};
     let recipientIds = Object.keys(this.state.recipients);
     recipientIds.forEach((recipientId) => {
       if (this.state.recipients[recipientId] === true && recipientId !== EVERYONE_IN_SPHERE) {
-        recipients.push(recipientId);
+        recipients[recipientId] = true;
       }
     });
 
     let everyoneInSphere = this.state.recipients[EVERYONE_IN_SPHERE] === true;
-    let everyoneInSphereIncludingOwner = everyoneInSphere && this.state.everyoneInSphereIncludingOwner;
+    let includeSenderInEveryone = everyoneInSphere && this.state.includeSenderInEveryone;
     let localLocationIdToTrigger = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
-    let messageId = xUtil.getUUID();
 
-    core.store.dispatch({
-      type:'ADD_MESSAGE',
-      sphereId: this.props.sphereId,
-      messageId: messageId,
-      data: {
-        triggerLocationId: localLocationIdToTrigger,
-        triggerEvent: this.state.triggerEvent,
-        content: this.state.messageContent,
-        everyoneInSphere: everyoneInSphere,
-        everyoneInSphereIncludingOwner: everyoneInSphereIncludingOwner,
-        senderId: state.user.userId,
-        recipientIds: recipients
-      }
+    let messageId = MessageTransferNext.createLocal(this.props.sphereId, {
+      triggerLocationId: localLocationIdToTrigger,
+      triggerEvent: this.state.triggerEvent,
+      content: this.state.messageContent,
+      everyoneInSphere: everyoneInSphere,
+      includeSenderInEveryone: includeSenderInEveryone,
+      senderId: state.user.userId,
+      recipients: recipients
     });
 
-    MessageUtil.uploadMessage(
-      core.store,
-      this.props.sphereId,
-      messageId,
-      { triggerLocationId: localLocationIdToTrigger,
-        triggerEvent: this.state.triggerEvent,
-        content: this.state.messageContent,
-        everyoneInSphere: everyoneInSphere,
-        everyoneInSphereIncludingOwner: everyoneInSphereIncludingOwner,
-      },
-      recipients
-    );
 
     NavigationUtil.dismissModal();
   }
@@ -217,9 +198,9 @@ lang("_No_recipients____I_cant__body"),
         icon: <View style={{paddingLeft: 12}}>
           <IconButton name='ios-body' size={22} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex, marginLeft:3, marginRight:7}}/>
         </View>,
-        value: this.state.everyoneInSphereIncludingOwner,
+        value: this.state.includeSenderInEveryone,
         callback: (newValue) => {
-          this.setState({everyoneInSphereIncludingOwner: newValue});
+          this.setState({includeSenderInEveryone: newValue});
         }
       });
     }

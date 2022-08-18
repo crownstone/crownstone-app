@@ -8,6 +8,7 @@ import {MapProvider} from "../backgroundProcesses/MapProvider";
 import {InviteCenter} from "../backgroundProcesses/InviteCenter";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import { StoneUtil } from "../util/StoneUtil";
+import { SPHERE_ID_STORE } from "../views/main/SphereOverview";
 
 class NotificationParserClass {
 
@@ -28,7 +29,8 @@ class NotificationParserClass {
   _handleLocalNotifications(messageData) {
     switch (messageData.type) {
       case 'newMessage':
-        NavigationUtil.navigateTab(2);
+        if (NavigationUtil.isModalOpen('MessageInbox')) { return; }
+        NavigationUtil.launchModal( "MessageInbox",{sphereId: messageData.sphereId});
         break;
     }
   }
@@ -81,15 +83,7 @@ class NotificationParserClass {
           this._handleSetSwitchStateRemotely(notificationData, state); break;
         case 'newMessage':
           if (notificationData.id) {
-            // CLOUD.getMessage(notificationData.id)
-            //   .then((result) => {
-            //     state = core.store.getState();
-            //     let notified = LocalNotifications._handleNewMessage(notificationData, state);
-            //     if (notified) {
-            //       MessageCenter.storeMessage(result);
-            //     }
-            //   })
-            //   .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err?.message)})
+            // TODO: handle notification for messageV2
           }
           break;
         case "sphereUsersUpdated":

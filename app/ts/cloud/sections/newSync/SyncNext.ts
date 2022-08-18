@@ -100,9 +100,9 @@ export const SyncNext = {
       syncRequest.user = { updatedAt: new Date(state?.user?.updatedAt).toISOString() };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
-    // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
+    console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
-    // console.log("SYNC response", JSON.stringify(response))
+    console.log("SYNC response", JSON.stringify(response))
     let sphereIdMap = await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
     // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
     for (let syncAction of nextActions) {
@@ -217,8 +217,13 @@ export const SyncNext = {
       if (sphereCloudResponse.messages) {
         let moduleReply = {};
         for (let messageId in sphereCloudResponse.messages) {
-          let messageResponse = sphereCloudResponse.messages[messageId]
+          console.log("parseMessage", cloudSphereId, messageId)
+          let messageResponse = sphereCloudResponse.messages[messageId];
+          console.log("MessageResponse", JSON.stringify(messageResponse, null,2))
           new MessageSyncerNext({cloudId: messageId, ...sphereSyncBase}).process(messageResponse.data, moduleReply);
+
+          console.log("parseMessage DONE", cloudSphereId, messageId)
+
           for (let itemId in messageResponse.readBy) {
             new MessageReadSyncerNext({cloudId: itemId, ...sphereSyncBase}, messageId).process(messageResponse.readBy[itemId].data, moduleReply);
           }

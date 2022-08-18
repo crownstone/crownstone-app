@@ -80,6 +80,10 @@ export class LocalizationCoreClass {
     }
   }
 
+  getCurrentLocation(sphereId: sphereId) : locationId | null | undefined {
+    return this.presence[sphereId];
+  }
+
   evaluateFingerprintManagers() {
     let spheres = core.store.getState().spheres;
 
@@ -99,8 +103,6 @@ export class LocalizationCoreClass {
     }
   }
 
-
-
   reset() {
     this.initialized = false;
 
@@ -112,7 +114,6 @@ export class LocalizationCoreClass {
 
     this.classifier.reset();
   }
-
 
   initClassifier() : Promise<void> {
     if (this.classifierInitializing) { return Promise.resolve(); }

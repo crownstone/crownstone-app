@@ -1,7 +1,7 @@
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
-  ScrollView, Text, TouchableOpacity, TextStyle, ViewStyle
+  ScrollView, Text, TouchableOpacity, TextStyle, ViewStyle, Alert
 } from "react-native";
 
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
@@ -87,8 +87,8 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
           else if (stateSegment[key]?.firstName) {
             shownValue = stateSegment[key].firstName + " " + stateSegment[key].lastName + " (from ID)";
           }
-          else if (stateSegment[key]?.config?.content) {
-            shownValue = stateSegment[key].config.content + " (from ID)";
+          else if (stateSegment[key]?.content) {
+            shownValue = stateSegment[key].content + " (from ID)";
           }
 
           if (shownValue != key) {
@@ -97,15 +97,24 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
         }
 
         items.push(
-          <TouchableOpacity key={url+'/'+key} style={[viewStyle,{paddingLeft: step*15 + 5, backgroundColor: colors.blue.rgba(0.1*step)}]} onPress={ () => {
-            if (expandedPath[baseKey][key] !== undefined) {
-              delete expandedPath[baseKey][key];
-            }
-            else {
-              expandedPath[baseKey][key] = {};
-            }
-            this.forceUpdate();
-          }}>
+          <TouchableOpacity key={url+'/'+key} style={[viewStyle,{paddingLeft: step*15 + 5, backgroundColor: colors.blue.rgba(0.1*step)}]}
+            onPress={ () => {
+              if (expandedPath[baseKey][key] !== undefined) {
+                delete expandedPath[baseKey][key];
+              }
+              else {
+                expandedPath[baseKey][key] = {};
+              }
+              this.forceUpdate();
+            }}
+            onLongPress={ () => {
+              Alert.alert("Delete entry?", "Are you sure you want to delete this entry?", [{text: "Cancel"}, {text: "Delete", onPress: async () => {
+                delete stateSegment[key];
+                await StoreManager.persistor.persistChanges(null, this.dbState);
+                this.forceUpdate()
+              }}]);
+            }}
+          >
             <Text style={usedStyle}>{shownValue}</Text>
           </TouchableOpacity>
         );

@@ -3,12 +3,14 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { cloudApiBase } from "./cloudApiBase";
 import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
 
+
+
 export const messages = {
 
-  createMessage: function (data : cloud_Message_settable, background) : Promise<cloud_Message> {
+  createMessage: function (data : cloud_Message_creation, background) : Promise<cloud_Message> {
     return cloudApiBase._setupRequest(
       'POST',
-      CloudAddresses.cloud_v2 + '/spheres/{id}/message',
+      CloudAddresses.cloud_v2 + 'spheres/{id}/message',
       { data: data, background: background },
       'body'
     );
@@ -18,7 +20,7 @@ export const messages = {
   getMessages: function (background) : Promise<cloud_Message[]>{
     return cloudApiBase._setupRequest(
       'GET',
-      CloudAddresses.cloud_v2 + '/spheres/{id}/messages',
+      CloudAddresses.cloud_v2 + 'spheres/{id}/messages',
       { background: background },
     );
   },
@@ -28,7 +30,7 @@ export const messages = {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'POST',
-      CloudAddresses.cloud_v2 + `/messages/${cloudMessageId}/markAsRead`,
+      CloudAddresses.cloud_v2 + `messages/${cloudMessageId}/markAsRead`,
       { background: background },
     );
   },
@@ -38,7 +40,7 @@ export const messages = {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'POST',
-      CloudAddresses.cloud_v2 + `/messages/${cloudMessageId}/markAsDeleted`,
+      CloudAddresses.cloud_v2 + `messages/${cloudMessageId}/markAsDeleted`,
       { background: background },
     );
   },
@@ -48,7 +50,7 @@ export const messages = {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'DELETE',
-      CloudAddresses.cloud_v2 + '/messages/' + cloudMessageId,
+      CloudAddresses.cloud_v2 + 'messages/' + cloudMessageId,
       { background: background }
     );
   },

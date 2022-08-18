@@ -75,6 +75,7 @@ export class SyncBaseInterface<LocalDataFormat, CloudDataFormat extends {id: str
         break;
       case "NOT_AVAILABLE":
         // Delete sphere from the store since it does not exist on the cloud.
+        console.log("WILL DELZet")
         this.removeFromLocal();
         break;
       case "VIEW":

@@ -13,7 +13,7 @@ export class MessageSyncerNext extends SyncSphereInterface<MessageData, MessageD
   }
 
   getLocalId(cloudItem: cloud_Message) {
-    return this.globalCloudIdMap.messages[cloudItem.id] || MapProvider.cloud2localMap.messages[cloudItem.id];
+    return this.globalCloudIdMap.messages[this.cloudId] || MapProvider.cloud2localMap.messages[this.cloudId];
   }
 
   createLocal(cloudData:cloud_Message) {

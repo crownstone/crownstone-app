@@ -27,8 +27,8 @@ let defaultState: MessageData = {
 
   visible:    false,
   notified:   false,
-  read:       {[MessageReadID]:    defaultMessageState},
-  deleted:    {[MessageDeletedId]: defaultMessageState},
+  read:       {},
+  deleted:    {},
 
   sendFailed: false,
   senderId:   null,
@@ -51,7 +51,6 @@ const messageReducer = (state = defaultState, action : DatabaseAction = {}) => {
       return state;
     case 'ADD_MESSAGE':
     case 'APPEND_MESSAGE':
-    case 'ADD_CLOUD_MESSAGE':
       if (action.data) {
         let newState = {...state};
         newState.updatedAt                      = update(action.data.updatedAt,                      newState.updatedAt);
@@ -149,7 +148,7 @@ const messageReadReducer = (state = defaultMessageState, action : DatabaseAction
 };
 
 // messageReducer
-const messageReadReducerBase = (state = {}, action : DatabaseAction = {}) => {
+const messageReadReducerBase = (state : MessageStateData | {} = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_MESSAGE_READ':
       let newState = {...state};
@@ -170,7 +169,7 @@ const messageReadReducerBase = (state = {}, action : DatabaseAction = {}) => {
   }
 };
 
-const messageDeletedReducer = (state = defaultMessageState, action : DatabaseAction = {}) => {
+const messageDeletedReducer = (state: MessageStateData | {}= {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_DELETE_MESSAGE_CLOUD_ID':
       if (action.data) {

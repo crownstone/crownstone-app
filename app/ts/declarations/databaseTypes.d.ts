@@ -273,7 +273,6 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'APPEND_MESSAGE'                          |
                       'REMOVE_MESSAGE_READ'                     |
                       'REFRESH_DEFAULTS'                        |
-                      'ADD_CLOUD_MESSAGE'                       |
                       'ADD_MESSAGE'                             |
                       'MARK_MESSAGE_AS_READ'                    |
                       'UPDATE_READ_MESSAGE_CLOUD_ID'            |
@@ -335,7 +334,6 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'UPDATE_SPHERE_CONFIG'                    |
                       'REFRESH_DEFAULTS'                        |
                       'RESET_SPHERE_PRESENCE_STATE'             |
-                      'SET_SPHERE_MESSAGE_STATE'                |
                       'SET_SPHERE_SMART_HOME_STATE'             |
                       'SET_SPHERE_STATE'                        |
                       'REFRESH_DEFAULTS'                        |
@@ -415,7 +413,6 @@ type DatabaseEventType = 'updateActiveSphere' |
   'changeUserDeveloperStatus'       |
   'changeDeveloperData'             |
   'changeDeviceData'                |
-  'changeMessageState'              |
   'addedMessage'                    |
   'changeMessage'                   |
   'iChangedMessage'                 |

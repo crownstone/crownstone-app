@@ -19,6 +19,7 @@ import { Get }                         from "../../util/GetUtil";
 import { FingerprintTransferNext }     from "../../cloud/sections/newSync/transferrers/FingerprintTransferNext";
 import { MessageReadTransferNext }     from "../../cloud/sections/newSync/transferrers/MessageReadTransferNext";
 import { MessageDeletedTransferNext }  from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
+import { MessageTransferNext } from "../../cloud/sections/newSync/transferrers/MessageTransferNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -143,6 +144,8 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       handleStoneState(action, newState, oldState, true);
       break;
 
+    case "ADD_MESSAGE":
+      handleMessageAdd(action, newState);
     case "REMOVE_MESSAGE":
       handleMessageRemove(action, newState, oldState); break;
     case "MARK_MESSAGE_AS_READ":
@@ -657,6 +660,16 @@ async function handleMessageMarkedAsDeleted(action: DatabaseAction, state) {
   }
   catch (err) {
     LOGe.cloud("CloudEnhancer: Error marking message as deleted", err);
+  }
+}
+
+async function handleMessageAdd(action: DatabaseAction, state) {
+  try {
+    let message = Get.message(action.sphereId, action.messageId);
+    await MessageTransferNext.createOnCloud(action.sphereId, message);
+  }
+  catch (err) {
+    LOGe.cloud("CloudEnhancer: Error creating message", err);
   }
 }
 

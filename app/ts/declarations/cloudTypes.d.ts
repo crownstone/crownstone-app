@@ -333,6 +333,18 @@ interface cloud_Message_settable {
   updatedAt: string,
 }
 
+interface cloud_Message_creation {
+  message: {
+    triggerEvent: string
+    content: string,
+    everyoneInSphere: boolean;
+    includeSenderInEveryone: boolean;
+    triggerLocationId: string,
+    updatedAt: string,
+  },
+  recipients: userId[];
+}
+
 interface cloud_Scene {
   id:              string,
   name:            string,

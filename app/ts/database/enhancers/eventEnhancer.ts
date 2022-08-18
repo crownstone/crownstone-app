@@ -199,10 +199,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "SET_RSSI_OFFSET":
     case "REMOVE_DEVICE":
       eventStatus.changeDeviceData = affectedIds; break;
-    case "SET_SPHERE_MESSAGE_STATE":
-      eventStatus.changeMessageState = affectedIds; break;
     case "ADD_MESSAGE":
-    case "ADD_CLOUD_MESSAGE":
       eventStatus.addedMessage = affectedIds;
     case "APPEND_MESSAGE":
     case "REMOVE_MESSAGE":

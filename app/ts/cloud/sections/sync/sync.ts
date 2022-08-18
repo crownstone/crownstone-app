@@ -70,7 +70,7 @@ export const sync = {
 
     let initialPermissionLevels = Permissions.getLevels(state)
 
-    let actions = [];
+    let actions: DatabaseAction[] = [];
     LOG.info("Sync: START syncEvents.");
     return syncEvents(core.store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
@@ -97,6 +97,7 @@ export const sync = {
           'hubs',
           'locations',
           'keys',
+          'messages',
           'sphereUsers',
           'scenes',
           // 'spheres',
@@ -178,7 +179,7 @@ export const sync = {
       .catch((err) => {
         LOG.info("Sync: Failed... Could dispatch ", actions.length, " actions!", actions);
         actions.forEach((action) => {
-          action.triggeredBySync = true;
+          action.__triggeredBySync = true;
         });
 
         // if (actions.length > 0) {

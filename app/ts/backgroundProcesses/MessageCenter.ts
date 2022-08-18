@@ -13,9 +13,10 @@ import {
 } from "../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
 import { MessageReadID, MessageReadTransferNext } from "../cloud/sections/newSync/transferrers/MessageReadTransferNext";
 import { DataUtil } from "../util/DataUtil";
+import { LocalizationCore } from "../localization/LocalizationCore";
+import { Alert, AppState } from "react-native";
 
-
-type MessageEventType = "ENTER_SPHERE" | "EXIT_SPHERE" | "ENTER_ROOM" | "EXIT_ROOM";
+const PushNotification = require('react-native-push-notification');
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -26,14 +27,32 @@ class MessageCenterClass {
     LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
 
-      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._checkForMessages("ENTER_SPHERE", sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._checkForMessages("EXIT_SPHERE", sphereId); });
-      core.eventBus.on('enterRoom',   (data)     => { this._checkForMessages("ENTER_ROOM", data.sphereId, data.locationId); }); // data = {sphereId: sphereId, locationId: locationId}
-      core.eventBus.on('exitRoom',    (data)     => { this._checkForMessages("EXIT_ROOM", data.sphereId, data.locationId); });  // data = {sphereId: sphereId, locationId: locationId}
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._checkForMessages("enter", sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._checkForMessages("exit", sphereId); });
+      core.eventBus.on('enterRoom',   (data)     => { this._checkForMessages("enter", data.sphereId, data.locationId); }); // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on('exitRoom',    (data)     => { this._checkForMessages("exit", data.sphereId, data.locationId); });  // data = {sphereId: sphereId, locationId: locationId}
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeMessage) {
-          this.handleAppBadge();
+          // check if we need to deliver a new message or if we need to change the badge.
+          let totalUnreadMessages = 0;
+          for (let sphereId in data.sphereIds) {
+            let currentLocation = LocalizationCore.getCurrentLocation(sphereId);
+
+            if (currentLocation !== undefined) {
+              // check if there is a message that is not notified
+              let sphere = Get.sphere(sphereId);
+              if (!sphere) { continue; }
+
+              if (sphere.state.present) {
+                this._checkForMessages("enter", sphereId, currentLocation);
+              }
+            }
+
+            totalUnreadMessages += this.getUnreadMessages(sphereId);
+          }
+
+          this.setAppBadge(totalUnreadMessages);
         }
       });
 
@@ -77,7 +96,7 @@ class MessageCenterClass {
 
   }
 
-  _checkForMessages(eventType: MessageEventType, sphereId: sphereId, locationId?: locationId) {
+  _checkForMessages(eventType: MessageTriggerEvent, sphereId: sphereId, locationId: locationId = null) {
     // check for all unnotified messages in the sphere is they will be triggered by this event
     let sphere = Get.sphere(sphereId);
     if (!sphere) { return; }
@@ -86,23 +105,13 @@ class MessageCenterClass {
       if (message.notified) { continue; }
 
       switch (eventType) {
-        case "ENTER_ROOM":
-          if (locationId && message.triggerLocationId === locationId && message.triggerEvent === "enter") {
+        case "enter":
+          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "enter") {
             this.showMessage(sphereId, message);
           }
           break;
-        case "EXIT_ROOM":
-          if (locationId && message.triggerLocationId === locationId && message.triggerEvent === "exit") {
-            this.showMessage(sphereId, message);
-          }
-          break;
-        case "ENTER_SPHERE":
-          if (message.triggerLocationId === null && message.triggerEvent === "enter") {
-            this.showMessage(sphereId, message);
-          }
-          break;
-        case "EXIT_SPHERE":
-          if (message.triggerLocationId === null && message.triggerEvent === "exit") {
+        case "exit":
+          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "exit") {
             this.showMessage(sphereId, message);
           }
           break;
@@ -113,297 +122,18 @@ class MessageCenterClass {
 
 
   showMessage(sphereId, message: MessageData) {
-    //  if on background:
-    //    send a local notification
-    //    badge the app
-    //  if on foreground:
-    //    show a notification in the app
+    let appState = AppState.currentState;
+    if (appState === "active") {
+      this.showForegroundMessage()
+    }
+    else {
+      LocalNotifications.showMessageNotification(sphereId, message)
+    }
   }
 
-
-  // _isMessageEqual(dbMessage, cloudMessage, cloudRecipientIds) {
-  //   if (
-  //     dbMessage.config.everyoneInSphere               === cloudMessage.everyoneInSphere &&
-  //     dbMessage.config.everyoneInSphereIncludingOwner === cloudMessage.everyoneInSphereIncludingOwner &&
-  //      (dbMessage.config.content === cloudMessage.content) &&
-  //       (
-  //         (!dbMessage.config.triggerLocationId && !cloudMessage.triggerLocationId) ||
-  //         (dbMessage.config.triggerLocationId === MapProvider.cloud2localMap.locations[cloudMessage.triggerLocationId])
-  //       )
-  //     ) {
-  //
-  //     let dbRecipientIds = Object.keys(dbMessage.recipients);
-  //     if (dbRecipientIds.length === cloudRecipientIds.length) {
-  //       for (let i = 0; i < dbRecipientIds.length; i++) {
-  //         if (cloudRecipientIds.includes(dbRecipientIds[i]) === false) {
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //     else {
-  //       return false;
-  //     }
-  //   }
-  //   else {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  // _processMessage(actions, state, cloudMessage, alreadyNotified) {
-  //   let notified = LocalNotifications._handleNewMessage(cloudMessage, state, alreadyNotified);
-  //   if (notified) {
-  //     this._generateMessageStoringActions(actions, state, cloudMessage);
-  //   }
-  //   return notified || alreadyNotified;
-  // }
-
-  // _findMatchingLocalMessageId(cloudMessage, state, recipientIds = null) {
-  //   if (recipientIds === null) {
-  //     recipientIds = [];
-  //     cloudMessage.recipients.forEach((idObject) => {
-  //       recipientIds.push(idObject.id);
-  //     });
-  //   }
-  //   let localSphereId = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
-  //   if (!localSphereId) { return null }
-  //
-  //   if (cloudMessage.ownerId === state.user.userId) {
-  //     let dbMessages = state.spheres[localSphereId].messages;
-  //     // this should check if we already have this message before storing it in the store.
-  //     // match recipients, content, triggerLocationId and triggerEvent for this.
-  //     let dbMessageIds = Object.keys(dbMessages);
-  //     for (let i = 0; i < dbMessageIds.length; i++) {
-  //       let dbMessage = dbMessages[dbMessageIds[i]];
-  //       let match = this._isMessageEqual(dbMessage, cloudMessage, recipientIds);
-  //       if (match) {
-  //         return dbMessageIds[i];
-  //       }
-  //     }
-  //   }
-  // }
-
-  // _generateMessageStoringActions(actions, state, cloudMessage) {
-  //   let recipientIds = [];
-  //   cloudMessage.recipients.forEach((idObject) => {
-  //     recipientIds.push(idObject.id);
-  //   });
-  //
-  //   let localMessageId = this._findMatchingLocalMessageId(cloudMessage, state, recipientIds);
-  //   let localSphereId  = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
-  //   if (!localSphereId) { return null }
-  //
-  //   let dbMessageId = localMessageId || xUtil.getUUID();
-  //
-  //   // add message to the store
-  //   actions.push({
-  //     type:'ADD_CLOUD_MESSAGE',
-  //     sphereId: localSphereId,
-  //     messageId: dbMessageId,
-  //     data: {
-  //       senderId:          cloudMessage.ownerId,
-  //       cloudId:           cloudMessage.id,
-  //       content:           cloudMessage.content,
-  //       everyoneInSphereIncludingOwner: cloudMessage.everyoneInSphereIncludingOwner,
-  //       everyoneInSphere:  cloudMessage.everyoneInSphere,
-  //       triggerEvent:      cloudMessage.triggerEvent,
-  //       triggerLocationId: cloudMessage.triggerLocationId,
-  //       recipientIds: recipientIds,
-  //       sent: true,
-  //     }
-  //   });
-  //
-  //   // indicate that you have received this message
-  //   actions.push({
-  //     type:'I_RECEIVED_MESSAGE',
-  //     sphereId: localSphereId,
-  //     messageId: dbMessageId,
-  //     data: {
-  //       userId: state.user.userId,
-  //       at: Date.now(),
-  //     }
-  //   });
-  //
-  //   // put the cloud's knowledge of the delivered state in the local database.
-  //   if (cloudMessage.delivered) {
-  //     cloudMessage.delivered.forEach((delivered) => {
-  //       actions.push({
-  //         type:'RECEIVED_MESSAGE',
-  //         sphereId: localSphereId,
-  //         messageId: dbMessageId,
-  //         data: {
-  //           userId: delivered.userId,
-  //           at: new Date(delivered.timestamp).valueOf(),
-  //         }
-  //       });
-  //     })
-  //   }
-  //
-  //   // put the cloud's knowledge of the read state in the local database.
-  //   if (cloudMessage.read) {
-  //     cloudMessage.read.forEach((read) => {
-  //       actions.push({
-  //         type:'READ_MESSAGE',
-  //         sphereId: localSphereId,
-  //         messageId: dbMessageId,
-  //         data: {
-  //           userId: read.userId,
-  //           at: new Date(read.timestamp).valueOf(),
-  //         }
-  //       });
-  //     })
-  //   }
-  // }
-
-  // storeMessage(cloudMessage) {
-  //   let actions = [];
-  //   let state = core.store.getState();
-  //   this._generateMessageStoringActions(actions, state, cloudMessage);
-  //   if (actions.length > 0) {
-  //     core.store.batchDispatch(actions);
-  //   }
-  // }
-
-  // deliveredMessage(localSphereId, localMessageId) {
-  //   let state = core.store.getState();
-  //   if (localMessageId) {
-  //     core.store.dispatch({
-  //       type: "I_RECEIVED_MESSAGE",
-  //       sphereId: localSphereId,
-  //       messageId: localMessageId,
-  //       data: {
-  //         userId: state.user.userId,
-  //         at: Date.now(),
-  //       }
-  //     });
-  //   }
-  // }
-
-  // readMessage(localSphereId, localMessageId) {
-  //   let state = core.store.getState();
-  //   if (localMessageId) {
-  //     core.store.dispatch({
-  //       type: "I_READ_MESSAGE",
-  //       sphereId: localSphereId,
-  //       messageId: localMessageId,
-  //       data: {userId: state.user.userId}
-  //     });
-  //   }
-  // }
-
-  newMessageStateInSphere(localSphereId, newMessageReceived : boolean = true) {
-    core.store.dispatch({
-      type: "SET_SPHERE_MESSAGE_STATE",
-      sphereId: localSphereId,
-      data: {newMessageFound: newMessageReceived}
-    });
+  showForegroundMessage() {
+    Alert.alert("Temporary POPOUP", "Message received")
   }
-
-  // _enterSphere(localSphereId) {
-  //   if (this._enterSphereInProgress === true) { return; }
-  //   this._enterSphereInProgress = true;
-  //
-  //   LOG.info("MessageCenter: enter sphere / already in sphere", localSphereId);
-  //   return this._handleMessageInSphere(localSphereId, 'enter')
-  //     .then(() => { this._enterSphereInProgress = false; })
-  //     .catch(() => {          this._enterSphereInProgress = false; })
-  // }
-  //
-  // _exitSphere(localSphereId) {
-  //   if (this._exitSphereInProgress === true) { return; }
-  //   this._exitSphereInProgress = true;
-  //
-  //   LOG.info("MessageCenter: exit sphere", localSphereId);
-  //   return this._handleMessageInSphere(localSphereId, 'exit')
-  //     .then(() => { this._exitSphereInProgress = false; })
-  //     .catch(() => {          this._exitSphereInProgress = false; })
-  // }
-  //
-  // _enterRoom(data : locationDataContainer) {
-  //   if (this._enterRoomInProgress === true) { return; }
-  //   this._enterRoomInProgress = true;
-  //
-  //   LOG.info("MessageCenter: enter room / already in room", data);
-  //   return this._handleMessageInLocation(data.sphereId, data.locationId, 'enter')
-  //     .then(() => { this._enterRoomInProgress = false; })
-  //     .catch(() => {          this._enterRoomInProgress = false; })
-  // }
-  //
-  // _exitRoom(data : locationDataContainer) {
-  //   if (this._exitRoomInProgress === true) { return; }
-  //   this._exitRoomInProgress = true;
-  //
-  //   LOG.info("MessageCenter: exit room", data);
-  //   return this._handleMessageInLocation(data.sphereId, data.locationId, 'exit')
-  //     .then(() => { this._exitRoomInProgress = false; })
-  //     .catch(() => {          this._exitRoomInProgress = false; })
-  // }
-  //
-  // _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
-  //   let state = core.store.getState();
-  //
-  //   return CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
-  //     .then((messages) => {
-  //       if (messages && Array.isArray(messages)) {
-  //         let actions = [];
-  //
-  //         let notified = false;
-  //         messages.forEach((cloudMessage) => {
-  //           if (cloudMessage.triggerEvent === triggerEvent) {
-  //             notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
-  //           }
-  //         });
-  //
-  //         if (actions.length > 0) {
-  //           core.store.batchDispatch(actions);
-  //         }
-  //       }
-  //     })
-  //     .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Location:", err?.message);})
-  // }
-
-  // _handleMessageInSphere(localSphereId, triggerEvent) {
-  //   let state = core.store.getState();
-  //
-  //   return CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
-  //     .then((messages) => {
-  //       if (messages && Array.isArray(messages)) {
-  //         let actions = [];
-  //         let notified = false;
-  //         messages.forEach((cloudMessage) => {
-  //           if (cloudMessage.triggerEvent === triggerEvent) {
-  //             notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
-  //           }
-  //         });
-  //         if (actions.length > 0) {
-  //           core.store.batchDispatch(actions);
-  //         }
-  //       }
-  //     })
-  //     .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Sphere:", err?.message);})
-  // }
-
-  /**
-   * This will check for messages in the current location. It is self contained and can be called whenever.
-   */
-  // checkForMessages() : Promise<void> {
-  //   LOGi.info("MessageCenter: Checking for messages...");
-  //   let state = core.store.getState();
-  //   let presentSphereId = Util.data.getPresentSphereId();
-  //
-  //   if (presentSphereId) {
-  //     let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
-  //     if (presentLocationId) {
-  //       return this._enterRoom({sphereId: presentSphereId, locationId: presentLocationId});
-  //     }
-  //     else {
-  //       return this._enterSphere(presentSphereId);
-  //     }
-  //   }
-  //   else {
-  //     return new Promise((resolve, reject) => { resolve(); })
-  //   }
-  // }
 
 
   getUnreadMessages(sphereId: sphereId) : number {
@@ -424,8 +154,13 @@ class MessageCenterClass {
 
 
 
-  handleAppBadge() {
-    // remove badge on app.
+  setAppBadge(amount: number) {
+    if (AppState.currentState === "active") {
+      PushNotification.setApplicationIconBadgeNumber(0);
+    }
+    else {
+      PushNotification.setApplicationIconBadgeNumber(amount);
+    }
   }
 
 }

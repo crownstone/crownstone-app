@@ -65,9 +65,32 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
 
   async createOnCloud(localSphereId: string, data: MessageData) : Promise<cloud_Message> {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    let cloudItem = await CLOUD.forSphere(cloudSphereId).createMessage(MessageTransferNext.mapLocalToCloud(data));
-    core.store.dispatch(MessageTransferNext.getUpdateLocalCloudIdAction(localSphereId, data.id, cloudItem.id));
-    return cloudItem;
+    try {
+      let mappedData = MessageTransferNext.mapLocalToCloud(data);
+      let cloudData = {
+        message: mappedData,
+        recpients: Object.keys(data.recipients),
+      }
+
+      let cloudItem = await CLOUD.forSphere(cloudSphereId).createMessage(cloudData);
+      core.store.dispatch(MessageTransferNext.getUpdateLocalCloudIdAction(localSphereId, data.id, cloudItem.id));
+      core.store.dispatch({
+        type: "APPEND_MESSAGE",
+        sphereId: localSphereId,
+        messageId: data.id,
+        data: { sentAt: cloudItem.createdAt, sent: true, sendFailed: false }
+      });
+      return cloudItem;
+    }
+    catch (error) {
+      core.store.dispatch({
+        type: "APPEND_MESSAGE",
+        sphereId: localSphereId,
+        messageId: data.id,
+        data: { sendFailed: true, sent: false, }
+      });
+      throw error;
+    }
   },
 
 
