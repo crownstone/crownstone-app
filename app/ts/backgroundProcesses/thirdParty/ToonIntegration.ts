@@ -62,7 +62,7 @@ class ToonIntegrationClass {
                 }
               })
               .then((toon) => {
-                let action = {
+                let action : DatabaseAction = {
                   type:    'UPDATE_TOON',
                   sphereId: presentSphereId,
                   toonId:   toonId,
@@ -113,7 +113,7 @@ class ToonIntegrationClass {
               }
             })
             .then((toon) => {
-              let action = {
+              let action : DatabaseAction = {
                 type:    'UPDATE_TOON',
                 sphereId: sphereId,
                 toonId:   toonId,

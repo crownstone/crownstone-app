@@ -37,7 +37,7 @@ const FAILED_DB_ERROR = 'FAILED_REPAIR_DB';
  */
 export class Persistor {
   userId : string;
-  store : any;
+  store : coreStore;
   initialized : boolean = false;
   userKeyCache : map = {};
   processPending = false;
@@ -246,7 +246,7 @@ export class Persistor {
       .then((initialState) => {
         if (abortHydration === false) {
           LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
-          this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
+          this.store.dispatch({type:"HYDRATE", data: {state: initialState}, __logLevel: LOG_LEVEL.verbose });
           // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
           // also add the app identifier if we don't already have one.
           this._refreshDatabase();
@@ -504,7 +504,7 @@ export class Persistor {
   _refreshDatabase() {
     LOGd.store("Persistor: Refreshing database");
     let state = this.store.getState();
-    let refreshActions = [];
+    let refreshActions : DatabaseAction[] = [];
     let sphereIds = Object.keys(state.spheres);
 
     // refresh all fields that do not have an ID requirement
@@ -512,7 +512,7 @@ export class Persistor {
     for (let i = 0; i < sphereIds.length; i++) {
       let sphereId = sphereIds[i];
 
-      refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
+      refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, __sphereOnly: true});
 
       if (state.spheres[sphereId].stones) {
         let stoneIds = Object.keys(state.spheres[sphereId].stones);

@@ -15,7 +15,7 @@ let defaultSettings : ToonData = {
 
 
 // toonReducer
-let toonReducer = (state = defaultSettings, action : any = {}) => {
+let toonReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -46,7 +46,7 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
         newState.cloudChangedProgram     = update(action.data.cloudChangedProgram,     newState.cloudChangedProgram);
         newState.cloudChangedProgramTime = update(action.data.cloudChangedProgramTime, newState.cloudChangedProgramTime);
 
-        newState.updatedAt       = getTime(action.data.timestamp || action.updatedAt);
+        newState.updatedAt       = getTime(action.data.timestamp || action.data.updatedAt);
         return newState;
       }
       return state;
@@ -75,7 +75,7 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
 
 
 // toon reducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_TOON':
       let stateCopy = {...state};

@@ -187,7 +187,7 @@ const abilityPropertyReducerHandler = (state = abilityPropertyFormat, action: an
       return state;
   }
 }
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'ADD_STONE':
       let newAbilityState = {

@@ -205,11 +205,11 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "ADD_CLOUD_MESSAGE":
       eventStatus.addedMessage = affectedIds;
     case "APPEND_MESSAGE":
-    case "RECEIVED_MESSAGE":
     case "REMOVE_MESSAGE":
-    case "I_READ_MESSAGE":
+    case "MARK_MESSAGE_AS_READ":
+    case "MARK_MESSAGE_AS_DELETED":
+    case "REMOVE_MESSAGE":
       eventStatus.changeMessage = affectedIds; break;
-    case "I_RECEIVED_MESSAGE":
       eventStatus.iChangedMessage = affectedIds; break;
     case "ADD_SCENE":
     case "REMOVE_SCENE":

@@ -16,7 +16,7 @@ let defaultFingerprintData: FingerprintData = {
 
 
 
-const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {}) => {
+const fingerprintDataReducer = (state = defaultFingerprintData, action : DatabaseAction = {}) => {
   switch (action.type) {
     case "UPDATE_FINGERPRINT_V2_CLOUD_ID":
       if (action.data) {
@@ -55,7 +55,7 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : any = {
 
 
 
-let fingerprintReducer = (state = {}, action : any = {}) => {
+let fingerprintReducer = (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_FINGERPRINTS_V2':
       return {};
@@ -97,7 +97,7 @@ let defaultProcessedFingerprintData: FingerprintProcessedData = {
 }
 
 
-const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData, action : any = {}) => {
+const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'ADD_PROCESSED_FINGERPRINT':
     case 'UPDATE_PROCESSED_FINGERPRINT':
@@ -132,7 +132,7 @@ const fingerprintProcessedDataReducer = (state = defaultProcessedFingerprintData
 
 
 
-const fingerprintProcessedReducer = (state = {}, action : any = {}) => {
+const fingerprintProcessedReducer = (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_FINGERPRINTS_V2':
       return {};

@@ -33,7 +33,7 @@ let defaultState = {
 };
 
 // developmentReducer
-export default (state = defaultState, action : any = {}) => {
+export default (state = defaultState, action : DatabaseAction = {}) => {
   let newState;
   switch (action.type) {
     case 'SET_LOGGING':

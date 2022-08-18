@@ -123,7 +123,7 @@ export const sync = {
         LOG.info("Sync: Finished. Dispatching ", actions.length, " actions!");
 
         actions.forEach((action) => {
-          action.triggeredBySync = true;
+          action.__triggeredBySync = true;
 
           if (CLOUD.__syncTriggerDatabaseEvents === false) {
             action.__noEvents = true

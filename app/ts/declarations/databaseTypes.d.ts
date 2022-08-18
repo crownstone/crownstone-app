@@ -1,15 +1,28 @@
-type sphereId               = string;
-type locationId             = string;
-type stoneId                = string;
-type sceneId                = string;
-type hubId                  = string;
-type userId                 = string;
-type sphereUserId           = string;
-type databaseId             = string;
-type fingerprintId          = string;
-type processedFingerprintId = string;
+type sphereId               = string; // this is the localId
+type locationId             = string; // this is the localId
+type stoneId                = string; // this is the localId
+type sceneId                = string; // this is the localId
+type hubId                  = string; // this is the localId
+type messageId              = string; // this is the localId
+type userId                 = string; // this is the localId
+type sphereUserId           = string; // this is the localId
+type databaseId             = string; // this is the localId
+type fingerprintId          = string; // this is the localId
+type processedFingerprintId = string; // this is the localId
 
-interface SyncEvent {
+type spherecloudId               = string; // this is the cloudId
+type locationcloudId             = string; // this is the cloudId
+type stonecloudId                = string; // this is the cloudId
+type scenecloudId                = string; // this is the cloudId
+type hubcloudId                  = string; // this is the cloudId
+type messagecloudId              = string; // this is the cloudId
+type usercloudId                 = string; // this is the cloudId
+type sphereUsercloudId           = string; // this is the cloudId
+type databasecloudId             = string; // this is the cloudId
+type fingerprintcloudId          = string; // this is the cloudId
+type processedFingerprintcloudId = string; // this is the cloudId
+
+interface SyncEventData {
   id: string,
   localId: string,
   sphereId: string,
@@ -37,24 +50,33 @@ interface EncryptionKeyData {
 }
 
 interface DatabaseAction {
-  type: ACTION_TYPE | 'NOT_REQUIRED',
+  type?: ACTION_TYPE | 'NOT_REQUIRED',
   sphereId?               : string,
   locationId?             : string,
   fingerprintId?          : string,
   fingerprintProcessedId? : string,
   sceneId?                : string,
   messageId?              : string,
+  messageStateId?         : 'read' | 'deleted',
+  hueBridgeId?            : string,
+  deviceId?               : string,
+  sortedListId?           : string,
+  installationId?         : string,
   stoneId?                : string,
   keyId?                  : string,
   hubId?                  : string,
   behaviourId?            : string,
-  messageStateId?         : string,
   abilityId?              : string,
   propertyId?             : string,
   userId?                 : string,
   toonId?                 : string,
-  triggeredBySync?        : boolean,
+
+  eventId?                : string,
+
+  __sphereOnly?           : boolean,
+  __triggeredBySync?      : boolean,
   __test?                 : boolean,
+  __logLevel?             : number,
   __purelyLocal?          : boolean,
   __noEvents?             : boolean,
   data?
@@ -94,13 +116,15 @@ type EVENT_ACTION_TYPES = 'CLOUD_EVENT_REMOVE_LOCATIONS'    |
                       'FINISHED_REMOVE_BEHAVIOURS'          |
                       'FINISHED_REMOVE_DEVICES'             |
                       'FINISHED_REMOVE_MESSAGES'            |
-                      'FINISHED_SPECIAL_USER'               |                          
-                      'FINISHED_SPECIAL_LOCATIONS'          |                                
-                      'FINISHED_SPECIAL_STONES'             |                            
-                      'FINISHED_SPECIAL_INSTALLATIONS'      |                                    
-                      'FINISHED_SPECIAL_DEVICES'            |                              
-                      'FINISHED_SPECIAL_MESSAGES'           |                              
-                      'FINISHED_SPECIAL_SCENES'                                         
+                      'FINISHED_REMOVE_FINGERPRINTS'        |
+                      'FINISHED_REMOVE_SCENES'              |
+                      'FINISHED_SPECIAL_USER'               |
+                      'FINISHED_SPECIAL_LOCATIONS'          |
+                      'FINISHED_SPECIAL_STONES'             |
+                      'FINISHED_SPECIAL_INSTALLATIONS'      |
+                      'FINISHED_SPECIAL_DEVICES'            |
+                      'FINISHED_SPECIAL_MESSAGES'           |
+                      'FINISHED_SPECIAL_SCENES'
 
 type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'INJECT_IDS'                              |
@@ -150,6 +174,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'REFRESH_DEFAULTS'                        |
                       'REMOVE_ALL_BEHAVIOURS_OF_STONE'          |
                       'REMOVE_STONE_BEHAVIOUR'                  |
+                      'REMOVE_USER_FROM_ALL_LOCATIONS'          |
                       'USER_ENTER_LOCATION'                     |
                       'USER_EXIT_LOCATION'                      |
                       'CLEAR_USERS_IN_LOCATION'                 |
@@ -247,18 +272,13 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES     |
                       'ADD_MESSAGE'                             |
                       'APPEND_MESSAGE'                          |
                       'REMOVE_MESSAGE_READ'                     |
-                      'ADD_CLOUD_MESSAGE'                       |
-                      'I_RECEIVED_MESSAGE'                      |
                       'REFRESH_DEFAULTS'                        |
                       'ADD_CLOUD_MESSAGE'                       |
                       'ADD_MESSAGE'                             |
-                      'I_RECEIVED_MESSAGE'                      |
-                      'RECEIVED_MESSAGE'                        |
-                      'I_READ_MESSAGE'                          |
-                      'MARK_AS_READ'                            |
+                      'MARK_MESSAGE_AS_READ'                    |
                       'UPDATE_READ_MESSAGE_CLOUD_ID'            |
                       'UPDATE_READ_MESSAGE'                     |
-                      'MARK_AS_DELETED'                         |
+                      'MARK_MESSAGE_AS_DELETED'                 |
                       'UPDATE_DELETE_MESSAGE_CLOUD_ID'          |
                       'UPDATE_DELETE_MESSAGE'                   |
                       'REMOVE_MESSAGE_DELETED'                  |

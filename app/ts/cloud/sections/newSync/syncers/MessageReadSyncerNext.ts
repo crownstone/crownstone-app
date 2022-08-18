@@ -1,7 +1,7 @@
 import { Get } from "../../../../util/GetUtil";
 import { SyncUtil } from "../../../../util/SyncUtil";
 import {SyncMessageInterface} from "./base/SyncMessageInterface";
-import {MessageReadTransferNext} from "../transferrers/MessageReadTransferNext";
+import { MessageReadID, MessageReadTransferNext } from "../transferrers/MessageReadTransferNext";
 
 
 
@@ -12,7 +12,7 @@ export class MessageReadSyncerNext extends SyncMessageInterface<MessageStateData
   }
 
   getLocalId() {
-    return 'read';
+    return MessageReadID;
   }
 
   createLocal(cloudData: cloud_MessageState) {
@@ -28,12 +28,12 @@ export class MessageReadSyncerNext extends SyncMessageInterface<MessageStateData
     let message = Get.message(this.localSphereId, this.localMessageId);
     if (!message) { return null; }
 
-    if (!message.read['read']) { return null; }
+    if (!message.read[MessageReadID]) { return null; }
 
     SyncUtil.constructReply(
       reply,
       ['messages', this.cloudMessageId, 'readBy', this.cloudId],
-      MessageReadTransferNext.mapLocalToCloud(message.read['read'])
+      MessageReadTransferNext.mapLocalToCloud(message.read[MessageReadID])
     );
   }
 }

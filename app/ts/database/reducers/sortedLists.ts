@@ -9,7 +9,7 @@ let defaultSettings : SortedListData = {
   updatedAt: 0,
 };
 
-let sortedListReducer = (state = defaultSettings, action : any = {}) => {
+let sortedListReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -49,7 +49,7 @@ let sortedListReducer = (state = defaultSettings, action : any = {}) => {
 
 
 // sortedListReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_SORTED_LIST':
       let stateCopy = {...state};

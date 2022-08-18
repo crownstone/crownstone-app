@@ -199,7 +199,7 @@ export class HubHelper {
    */
   async _setLocalHub(sphereId, stoneId, hubCloudId) {
     let hubId = xUtil.getUUID();
-    let type = "ADD_HUB";
+    let type : ACTION_TYPE = "ADD_HUB";
 
     if (!hubCloudId) {
       core.store.dispatch({

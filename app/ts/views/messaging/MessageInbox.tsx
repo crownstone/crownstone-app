@@ -349,7 +349,7 @@ class MessageReadStateWatcher {
 
   markAsRead(messageId) {
     if (this.messages[messageId]?.isRead === false) {
-      core.store.dispatch({type: "READ_MESSAGE", sphereId: this.sphereId, messageId: messageId, data:{userId: Get.userId()}});
+      MessageCenter.markMessageAsRead(this.sphereId, messageId);
       this.messages[messageId].isRead = true;
     }
   }

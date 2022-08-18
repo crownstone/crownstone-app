@@ -8,7 +8,6 @@ import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
 import {SyncingBase} from "./SyncingBase";
-import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { PresenceSyncer } from "./PresenceSyncer";
@@ -68,46 +67,19 @@ export class SphereSyncer extends SyncingBase {
         this.syncLocalSphereDown(localId, spheresInState[localId], sphere_from_cloud);
       }
       else {
-        // the sphere does not exist locally but it does exist in the cloud.
+        // the sphere does not exist locally, but it does exist in the cloud.
         // we create it locally.
         let creationData = SphereTransferNext.getCreateLocalAction(SphereTransferNext.mapCloudToLocal(sphere_from_cloud));
         this.actions.push(creationData.action);
         cloudIdMap[sphere_from_cloud.id] = creationData.id;
       }
 
-      this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
       return Promise.all(this.transferPromises)
     })
       .then(() => {
         this.globalCloudIdMap.spheres = cloudIdMap;
         return localSphereIdsSynced;
       })
-  }
-
-  syncChildren(store, localId, localSphere, sphere_from_cloud) {
-
-    let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let presenceSyncer    = new PresenceSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-
-    // sync sphere users
-    LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
-    this.transferPromises.push(
-      Promise.resolve()
-      .then(() => {
-        // LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
-        LOG.info("SphereSync ",localId,": START presenceSyncer sync.");
-        return presenceSyncer.sync(store);
-      })
-      .then(() => {
-        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
-        LOG.info("SphereSync ",localId,": START messageSyncer sync.");
-        // sync messages
-        return messageSyncer.sync(store);
-      })
-      .then(() => {
-        LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
-      })
-    );
   }
 
 

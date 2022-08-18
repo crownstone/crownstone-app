@@ -78,17 +78,17 @@ interface TransferMessageTool<LocalData,LocalDataSettable,CloudData,CloudDataSet
 
   createLocal(localSphereId: string, localMessageId: string, data: Partial<LocalDataSettable>) : string
 
-  getUpdateLocalAction(localSphereId: string, localMessageId: string, localItemId: string, data: Partial<LocalDataSettable>) : DatabaseAction
+  getUpdateLocalAction(localSphereId: string, localMessageId: string, data: Partial<LocalDataSettable>) : DatabaseAction
 
-  getRemoveFromLocalAction(localSphereId: string, localMessageId: string, localItemId: string) : DatabaseAction
+  getRemoveFromLocalAction(localSphereId: string, localMessageId: string) : DatabaseAction
 
-  getUpdateLocalCloudIdAction(localSphereId: string, localMessageId: string, localItemId: string, cloudId: string) : DatabaseAction
+  getUpdateLocalCloudIdAction(localSphereId: string, localMessageId: string, cloudId: string) : DatabaseAction
 
-  createOnCloud(localSphereId: string, localMessageId: string, data: LocalData) : Promise<CloudData>
+  createOnCloud(localSphereId: string, localMessageId: string) : Promise<CloudData>
 
   updateOnCloud(localMessageId: string, data: LocalData) : Promise<void>
 
-  removeFromCloud(localMessageId: string, localId: string) : Promise<void>
+  removeFromCloud(localMessageId: string) : Promise<void>
 }
 
 

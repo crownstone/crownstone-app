@@ -27,15 +27,15 @@ export class SyncMessageInterface<LocalDataFormat, LocalDataSettableFormat, Clou
   }
 
   updateLocal(cloudData: CloudDataFormat) {
-    this.actions.push(this.transferrer.getUpdateLocalAction(this.localSphereId, this.localMessageId, this.localId, this.transferrer.mapCloudToLocal(cloudData)));
+    this.actions.push(this.transferrer.getUpdateLocalAction(this.localSphereId, this.localMessageId, this.transferrer.mapCloudToLocal(cloudData)));
   }
 
   updateCloudId(cloudId, data) {
-    this.actions.push(this.transferrer.getUpdateLocalCloudIdAction(this.localSphereId, this.localMessageId, this.localId, cloudId));
+    this.actions.push(this.transferrer.getUpdateLocalCloudIdAction(this.localSphereId, this.localMessageId, cloudId));
   }
 
   removeFromLocal() {
-    this.actions.push(this.transferrer.getRemoveFromLocalAction(this.localSphereId, this.localMessageId, this.localId));
+    this.actions.push(this.transferrer.getRemoveFromLocalAction(this.localSphereId, this.localMessageId));
   }
 
   process(response: SyncResponseItemCore<CloudDataFormat>, reply: SyncRequestSphereData) {

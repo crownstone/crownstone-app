@@ -76,7 +76,7 @@ let defaultSettings : StoneData = {
 };
 
 
-let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => {
+let stoneConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_CLOUD_ID':
       if (action.data) {
@@ -155,7 +155,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
   }
 };
 
-let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
+let stoneStateReducer = (state = defaultSettings.state, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'CLEAR_STONE_USAGE':
       let newState          = {...state};
@@ -276,7 +276,7 @@ let combinedStoneReducer = combineReducers({
 });
 
 // stonesReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_STONE':
       let stateCopy = {...state};

@@ -21,6 +21,7 @@ import {StackedIcons} from "../components/StackedIcons";
 import {MessageUtil} from "../../util/MessageUtil";
 import { core } from "../../Core";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { MessageCenter } from "../../backgroundProcesses/MessageCenter";
 
 export class MessageEntry extends Component<{
   readMessage(): void
@@ -201,7 +202,7 @@ export class MessageEntry extends Component<{
           <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => {
             // we delete it and mark it read if required.
             if (this.props.read === false) {
-              core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+              MessageCenter.markMessageAsRead(this.props.sphereId, this.props.messageId);
             }
 
             this.props.deleteMessage();
@@ -236,7 +237,7 @@ export class MessageEntry extends Component<{
             }
 
             if (this.props.read === false) {
-              core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+              MessageCenter.markMessageAsRead(this.props.sphereId, this.props.messageId);
               this.props.readMessage();
             }
           }}

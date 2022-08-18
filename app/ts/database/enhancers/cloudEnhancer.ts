@@ -8,15 +8,17 @@ import { core }                        from "../../Core";
 import { BATCH }                       from "../reducers/BatchReducer";
 import { PICTURE_GALLERY_TYPES }       from "../../views/scenesViews/constants/SceneConstants";
 import { LocationTransferNext }        from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
-import { HubTransferNext } from "../../cloud/sections/newSync/transferrers/HubTransferNext";
-import { BehaviourTransferNext } from "../../cloud/sections/newSync/transferrers/BehaviourTransferNext";
-import { SceneTransferNext } from "../../cloud/sections/newSync/transferrers/SceneTransferNext";
-import { SphereTransferNext } from "../../cloud/sections/newSync/transferrers/SphereTransferNext";
-import { UserTransferNext } from "../../cloud/sections/newSync/transferrers/UserTransferNext";
-import { StoneTransferNext } from "../../cloud/sections/newSync/transferrers/StoneTransferNext";
-import { SyncNext } from "../../cloud/sections/newSync/SyncNext";
-import { Get } from "../../util/GetUtil";
-import { FingerprintTransferNext } from "../../cloud/sections/newSync/transferrers/FingerprintTransferNext";
+import { HubTransferNext }             from "../../cloud/sections/newSync/transferrers/HubTransferNext";
+import { BehaviourTransferNext }       from "../../cloud/sections/newSync/transferrers/BehaviourTransferNext";
+import { SceneTransferNext }           from "../../cloud/sections/newSync/transferrers/SceneTransferNext";
+import { SphereTransferNext }          from "../../cloud/sections/newSync/transferrers/SphereTransferNext";
+import { UserTransferNext }            from "../../cloud/sections/newSync/transferrers/UserTransferNext";
+import { StoneTransferNext }           from "../../cloud/sections/newSync/transferrers/StoneTransferNext";
+import { SyncNext }                    from "../../cloud/sections/newSync/SyncNext";
+import { Get }                         from "../../util/GetUtil";
+import { FingerprintTransferNext }     from "../../cloud/sections/newSync/transferrers/FingerprintTransferNext";
+import { MessageReadTransferNext }     from "../../cloud/sections/newSync/transferrers/MessageReadTransferNext";
+import { MessageDeletedTransferNext }  from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -73,7 +75,7 @@ export function CloudEnhancer({ getState }) {
 
 function handleAction(action : DatabaseAction, returnValue, newState, oldState) {
   // do not sync actions that have been triggered BY the cloud sync mechanism.
-  if (action.triggeredBySync === true || action.__test === true || action.__purelyLocal === true || action.__noEvents === true) {
+  if (action.__triggeredBySync === true || action.__test === true || action.__purelyLocal === true || action.__noEvents === true) {
     return returnValue;
   }
 
@@ -143,10 +145,10 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
 
     case "REMOVE_MESSAGE":
       handleMessageRemove(action, newState, oldState); break;
-    case "I_RECEIVED_MESSAGE":
-      handleMessageReceived(action, newState); break;
-    case "I_READ_MESSAGE":
-      handleMessageRead(action, newState); break;
+    case "MARK_MESSAGE_AS_READ":
+      handleMessageMarkedAsRead(action, newState); break;
+    case "MARK_MESSAGE_AS_DELETED":
+      handleMessageMarkedAsDeleted(action, newState); break;
 
     case "ADD_INSTALLATION":
     case "UPDATE_INSTALLATION_CONFIG":
@@ -219,11 +221,13 @@ function deleteFingerprint(action : { sphereId: sphereId, locationId: locationId
   if (deletedFingerprint && deletedFingerprint.cloudId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_FINGERPRINTS',
-      id: 'remove'+ action.fingerprintId,
-      localId: action.fingerprintId,
-      locationId: action.locationId,
-      sphereId: action.sphereId,
-      cloudId: deletedFingerprint.cloudId,
+      eventId: 'remove'+ action.fingerprintId,
+      data: {
+        localId: action.fingerprintId,
+        locationId: action.locationId,
+        sphereId: action.sphereId,
+        cloudId: deletedFingerprint.cloudId,
+      }
     });
   }
 }
@@ -242,7 +246,7 @@ function deleteAllFingerprints(action: DatabaseAction, oldState) {
 }
 
 
-function handleHubUpdate(action, state) {
+function handleHubUpdate(action : DatabaseAction, state) {
   let sphere = state.spheres[action.sphereId];
   if (!sphere) { return; }
   let hub = sphere.hubs[action.hubId] as HubData;
@@ -271,7 +275,7 @@ function handleHubUpdate(action, state) {
 }
 
 
-function handleAbilityUpdate(action, state) {
+function handleAbilityUpdate(action: DatabaseAction, state) {
   let sphere = state.spheres[action.sphereId];
   if (!sphere) { return; }
   let stone = sphere.stones[action.stoneId];
@@ -283,23 +287,23 @@ function handleAbilityUpdate(action, state) {
 
 
 // user in this case is self, the owner of the phone
-function handleUserInCloud(action, state) {
+function handleUserInCloud(action: DatabaseAction, state) {
   if (action.data.picture) {
     // in case the user has a pending delete profile picture request, we will finish this immediately so a new
     // picture will not be deleted.
     core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
-      id: 'uploadProfilePicture',
-      specialType: 'uploadProfilePicture'
+      eventId: 'uploadProfilePicture',
+      data: { specialType: 'uploadProfilePicture' }
     });
   }
   else if (action.data.picture === null) {
     core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
-      id: 'removeProfilePicture',
-      specialType: 'removeProfilePicture'
+      eventId: 'removeProfilePicture',
+      data: { specialType: 'removeProfilePicture' }
     });
   }
 
@@ -308,11 +312,11 @@ function handleUserInCloud(action, state) {
 
 
 
-function handleStoneInCloud(action, state) {
+function handleStoneInCloud(action: DatabaseAction, state) {
   _handleStone(action, state);
 }
 
-function _handleStone(action, state) {
+function _handleStone(action: DatabaseAction, state) {
   if (!Permissions.inSphere(action.sphereId).canUpdateCrownstone) { return; }
 
   let sphere = state.spheres[action.sphereId];
@@ -322,7 +326,7 @@ function _handleStone(action, state) {
     .catch(() => {});
 }
 
-function handleStoneLocationUpdateInCloud(action, state, oldState) {
+function handleStoneLocationUpdateInCloud(action: DatabaseAction, state, oldState) {
   let sphereId   = action.sphereId;
   let stoneId    = action.stoneId;
   let locationId = action.data.locationId;
@@ -338,29 +342,33 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
 }
 
 
-function handleLocationInCloud(action, state) {
+function handleLocationInCloud(action: DatabaseAction, state) {
   if (action.data.picture) {
     // in case the user has a pending delete location picture request, we will finish this immediately so a new
     // picture will not be deleted.
-    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', eventId: 'removeLocationPicture' + action.locationId });
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
-      id: 'uploadLocationPicture' + action.locationId,
-      localId: action.locationId,
-      sphereId: action.sphereId,
-      specialType: 'uploadLocationPicture'
+      eventId: 'uploadLocationPicture' + action.locationId,
+      data: {
+        localId: action.locationId,
+        sphereId: action.sphereId,
+        specialType: 'uploadLocationPicture'
+      }
     });
   }
   else if (action.data.picture === null) {
     // in case the user has a pending upload location picture request, we will finish this immediately so a new
     // picture will not be uploaded.
-    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', eventId: 'uploadLocationPicture' + action.locationId });
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
-      id: 'removeLocationPicture'+ action.locationId,
-      localId: action.locationId,
-      sphereId: action.sphereId,
-      specialType: 'removeLocationPicture'
+      eventId: 'removeLocationPicture'+ action.locationId,
+      data: {
+        localId: action.locationId,
+        sphereId: action.sphereId,
+        specialType: 'removeLocationPicture'
+      }
     });
   }
 
@@ -374,7 +382,7 @@ function handleLocationInCloud(action, state) {
 
 
 
-function handleSceneInCloud(action, newState, oldState) {
+function handleSceneInCloud(action: DatabaseAction, newState, oldState) {
   let existingSphere = oldState.spheres[action.sphereId];
   let newSphere = newState.spheres[action.sphereId];
   if (!existingSphere || !newSphere) { return }
@@ -387,15 +395,17 @@ function handleSceneInCloud(action, newState, oldState) {
       // picture will not be deleted.
       core.eventBus.emit("submitCloudEvent", {
         type: 'FINISHED_SPECIAL_SCENES',
-        id: 'removeScenePicture' + action.sceneId
+        eventId: 'removeScenePicture' + action.sceneId
       });
       core.eventBus.emit("submitCloudEvent", {
         type: 'CLOUD_EVENT_SPECIAL_SCENES',
-        id: 'uploadScenePicture' + action.sceneId,
-        localId: action.sceneId,
-        cloudId: existingScene.cloudId,
-        sphereId: action.sphereId,
-        specialType: 'uploadScenePicture'
+        eventId: 'uploadScenePicture' + action.sceneId,
+        data: {
+          localId: action.sceneId,
+          cloudId: existingScene.cloudId,
+          sphereId: action.sphereId,
+          specialType: 'uploadScenePicture'
+        },
       });
     }
     else if (existingScene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM &&
@@ -406,14 +416,16 @@ function handleSceneInCloud(action, newState, oldState) {
       // This is only in the case of an existing scene and picture.
       core.eventBus.emit("submitCloudEvent", {
         type: 'FINISHED_SPECIAL_SCENES',
-        id: 'uploadScenePicture' + action.sceneId
+        eventId: 'uploadScenePicture' + action.sceneId
       });
       core.eventBus.emit("submitCloudEvent", {
         type: 'CLOUD_EVENT_SPECIAL_SCENES',
-        id: 'removeScenePicture' + action.sceneId,
-        localId: action.sceneId,
-        sphereId: action.sphereId,
-        specialType: 'removeScenePicture'
+        eventId: 'removeScenePicture' + action.sceneId,
+        data: {
+          localId: action.sceneId,
+          sphereId: action.sphereId,
+          specialType: 'removeScenePicture'
+        },
       });
     }
   }
@@ -432,11 +444,13 @@ function handleSceneInCloud(action, newState, oldState) {
         if (scene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
           core.eventBus.emit("submitCloudEvent", {
             type: 'CLOUD_EVENT_SPECIAL_SCENES',
-            id: 'uploadScenePicture' + action.sceneId,
-            localId: action.sceneId,
-            cloudId: scene.cloudId,
-            sphereId: action.sphereId,
-            specialType: 'uploadScenePicture'
+            eventId: 'uploadScenePicture' + action.sceneId,
+            data: {
+              localId: action.sceneId,
+              cloudId: scene.cloudId,
+              sphereId: action.sphereId,
+              specialType: 'uploadScenePicture'
+            }
           });
         }
       })
@@ -449,7 +463,7 @@ function handleSceneInCloud(action, newState, oldState) {
 }
 
 
-function removeSceneInCloud(action, state, oldState) {
+function removeSceneInCloud(action: DatabaseAction, state, oldState) {
   let existingSphere = oldState.spheres[action.sphereId];
   if (existingSphere) {
     let existingScene = existingSphere.scenes[action.sceneId];
@@ -457,16 +471,18 @@ function removeSceneInCloud(action, state, oldState) {
     if (existingScene && existingScene.cloudId) {
       core.eventBus.emit("submitCloudEvent", {
         type: 'CLOUD_EVENT_REMOVE_SCENES',
-        id: 'remove'+ action.sceneId,
-        localId: action.sceneId,
-        sphereId: action.sphereId,
-        cloudId: existingScene.cloudId,
+        eventId: 'remove'+ action.sceneId,
+        data: {
+          localId: action.sceneId,
+          sphereId: action.sphereId,
+          cloudId: existingScene.cloudId,
+        }
       });
     }
   }
 }
 
-function handleSphereInCloud(action, state) {
+function handleSphereInCloud(action: DatabaseAction, state) {
   let sphere = state.spheres[action.sphereId];
 
   SphereTransferNext.updateOnCloud(sphere)
@@ -477,7 +493,7 @@ function handleSphereUserInCloud(action, state) {
 
 }
 
-function handleSphereStateOnDevice(action, state) {
+function handleSphereStateOnDevice(action: DatabaseAction, state) {
   let deviceId = Util.data.getCurrentDeviceId(state);
   if (deviceId) {
     if (state.user.uploadLocation === true) {
@@ -495,7 +511,7 @@ function handleSphereStateOnDevice(action, state) {
 }
 
 
-function handleUserLocationEnter(action, state) {
+function handleUserLocationEnter(action: DatabaseAction, state) {
   // only update the cloud if this is from the ACTIVE user
   if (action.data.userId === state.user.userId) {
     if (state.user.uploadLocation === true) {
@@ -507,12 +523,12 @@ function handleUserLocationEnter(action, state) {
   }
 }
 
-function handleUserLocationExit(action, state) {
+function handleUserLocationExit(action: DatabaseAction, state) {
   // we do not need to do anything here since the user leaving is the user entering another room. On sphere exit, both are cleared.
 }
 
 
-function handleStoneState(action, state, oldState, pureSwitch = false) {
+function handleStoneState(action: DatabaseAction, state, oldState, pureSwitch = false) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
@@ -523,7 +539,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
   }
 }
 
-function removeBehaviourInCloud(action, state, oldState) {
+function removeBehaviourInCloud(action: DatabaseAction, state, oldState) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
   let behaviourId = action.behaviourId;
@@ -538,22 +554,24 @@ function removeBehaviourInCloud(action, state, oldState) {
   if (behaviour.cloudId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_BEHAVIOURS',
-      id: 'remove'+ action.behaviourId,
-      localId: action.behaviourId,
-      sphereId: action.sphereId,
-      stoneId: action.stoneId,
-      cloudId: behaviour.cloudId,
+      eventId: 'remove'+ action.behaviourId,
+      data: {
+        localId: action.behaviourId,
+        sphereId: action.sphereId,
+        stoneId: action.stoneId,
+        cloudId: behaviour.cloudId,
+      }
     });
   }
 }
 
-function removeAllBehavioursForStoneInCloud(action, state) {
+function removeAllBehavioursForStoneInCloud(action: DatabaseAction, state) {
   // this is only used for devs, so we won't wrap it in the events
   let stoneId = action.stoneId;
   CLOUD.forStone(stoneId).deleteAllBehaviours()
 }
 
-function handleBehaviourInCloud(action, state) {
+function handleBehaviourInCloud(action: DatabaseAction, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
   let behaviourId = action.behaviourId;
@@ -577,7 +595,7 @@ function handleBehaviourInCloud(action, state) {
   }
 }
 
-function handleDeviceInCloud(action, state) {
+function handleDeviceInCloud(action: DatabaseAction, state) {
   let deviceId = action.deviceId;
   if (!deviceId) {
     LOGe.store("handleDeviceInCloud: invalid device id: ", deviceId);
@@ -605,7 +623,7 @@ function handleDeviceInCloud(action, state) {
 
 
 
-function handleInstallation(action, state) {
+function handleInstallation(action: DatabaseAction, state) {
   let installationId = action.installationId;
   if (!installationId) {
     LOGe.store("handleDeviceInCloud: invalid installationId: ", installationId);
@@ -620,28 +638,26 @@ function handleInstallation(action, state) {
   CLOUD.updateInstallation(installationId, data).catch(() => {});
 }
 
-function handleMessageReceived(action, state) {
-  let message = state.spheres[action.sphereId].messages[action.messageId];
-  core.eventBus.emit("submitCloudEvent", {
-    type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
-    sphereId: action.sphereId,
-    id: action.messageId + '_' + 'receivedMessage',
-    localId: action.messageId,
-    cloudId: message.config.cloudId,
-    specialType: 'receivedMessage'
-  });
+
+
+
+async function handleMessageMarkedAsRead(action: DatabaseAction, state) {
+  try {
+    await MessageReadTransferNext.createOnCloud(action.sphereId, action.messageId);
+  }
+  catch (err) {
+    LOGe.cloud("CloudEnhancer: Error marking message as read", err);
+  }
 }
 
-function handleMessageRead(action, state) {
-  let message = state.spheres[action.sphereId].messages[action.messageId];
-  core.eventBus.emit("submitCloudEvent", {
-    type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
-    sphereId: action.sphereId,
-    id: action.messageId + '_' + 'readMessage',
-    localId: action.messageId,
-    cloudId: message.config.cloudId,
-    specialType: 'readMessage'
-  })
+
+async function handleMessageMarkedAsDeleted(action: DatabaseAction, state) {
+  try {
+    await MessageDeletedTransferNext.createOnCloud(action.sphereId, action.messageId);
+  }
+  catch (err) {
+    LOGe.cloud("CloudEnhancer: Error marking message as deleted", err);
+  }
 }
 
 function handleMessageRemove(action, state, oldState) {
@@ -654,10 +670,12 @@ function handleMessageRemove(action, state, oldState) {
   if (message.config.senderId === oldState.user.userId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_MESSAGES',
-      sphereId: action.sphereId,
-      id: action.messageId,
-      localId: action.messageId,
-      cloudId: message.config.cloudId
+      eventId: action.messageId,
+      data: {
+        sphereId: action.sphereId,
+        localId: action.messageId,
+        cloudId: message.config.cloudId
+      }
     });
   }
 }

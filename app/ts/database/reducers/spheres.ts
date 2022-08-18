@@ -43,7 +43,7 @@ let defaultSettings : SphereData = {
   sortedLists: {},
 };
 
-let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
+let sphereConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_SPHERE_CLOUD_ID':
       if (action.data) {
@@ -80,7 +80,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
       }
       return state;
     case 'REFRESH_DEFAULTS':
-      if (action.sphereOnly === true) {
+      if (action.__sphereOnly === true) {
         return refreshDefaults(state, defaultSettings.config);
       }
     default:
@@ -89,7 +89,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
 };
 
 
-let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
+let sphereStateReducer = (state = defaultSettings.state, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'RESET_SPHERE_PRESENCE_STATE':
       if (action.data) {
@@ -144,7 +144,7 @@ let combinedSphereReducer = combineReducers({
 });
 
 // spheresReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE':
       let newState = {...state};

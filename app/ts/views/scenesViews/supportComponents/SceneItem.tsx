@@ -233,7 +233,7 @@ export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
   })
 
   if (deletedStones && sceneId) {
-    core.store.dispatch({type:"SCENE_UPDATE", sphereId, sceneId, data: { data: correctedList }})
+    core.store.dispatch({type:"UPDATE_SCENE", sphereId, sceneId, data: { data: correctedList }})
   }
   return correctedList;
 }

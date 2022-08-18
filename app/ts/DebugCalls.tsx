@@ -42,7 +42,7 @@ export function DebugOverlays() {
 }
 
 export function Debug() {
-  DebugCustomView();
+  // DebugCustomView();
   // DebugPopup()
 }
 

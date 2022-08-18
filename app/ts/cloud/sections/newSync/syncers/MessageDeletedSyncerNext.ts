@@ -1,7 +1,7 @@
 import { Get } from "../../../../util/GetUtil";
 import { SyncUtil } from "../../../../util/SyncUtil";
 import {SyncMessageInterface} from "./base/SyncMessageInterface";
-import {MessageDeletedTransferNext} from "../transferrers/MessageDeletedTransferNext";
+import { MessageDeletedId, MessageDeletedTransferNext } from "../transferrers/MessageDeletedTransferNext";
 
 
 export class MessageDeletedSyncerNext extends SyncMessageInterface<MessageStateData, MessageStateData, cloud_MessageState, cloud_MessageState_settable> {
@@ -11,7 +11,7 @@ export class MessageDeletedSyncerNext extends SyncMessageInterface<MessageStateD
   }
 
   getLocalId() {
-    return 'deleted';
+    return MessageDeletedId;
   }
 
   createLocal(cloudData: cloud_MessageState) {
@@ -27,12 +27,12 @@ export class MessageDeletedSyncerNext extends SyncMessageInterface<MessageStateD
     let message = Get.message(this.localSphereId, this.localMessageId);
     if (!message) { return null; }
 
-    if (!message.read['deleted']) { return null; }
+    if (!message.deleted[MessageDeletedId]) { return null; }
 
     SyncUtil.constructReply(
       reply,
       ['messages', this.cloudMessageId, 'deletedBy', this.cloudId],
-      MessageDeletedTransferNext.mapLocalToCloud(message.read['deleted'])
+      MessageDeletedTransferNext.mapLocalToCloud(message.deleted[MessageDeletedId])
     );
   }
 }

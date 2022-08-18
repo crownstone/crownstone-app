@@ -12,7 +12,7 @@ class CloudEventHandlerClass {
       this._eventSyncInProgress = false;
 
       let pendingActions = [];
-      core.eventBus.on("submitCloudEvent", (data: SyncEvent) => {
+      core.eventBus.on("submitCloudEvent", (data: {type: ACTION_TYPE, eventId: string, data: Partial<SyncEventData>}) => {
         if (!data) { return; }
 
         if (Array.isArray(data) && data.length > 0) {

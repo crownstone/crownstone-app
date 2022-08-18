@@ -53,8 +53,8 @@ export const LocalNotifications = {
               LOGi.messages("Matched message!");
               if (now - message.config.updatedAt < MESSAGE_SELF_SENT_TIMEOUT || now - message.config.sentAt < MESSAGE_SELF_SENT_TIMEOUT) {
                 LOGi.messages("LocalNotifications: Marking the message as delivered and read because it has been sent < 30 seconds ago:", now - message.config.sentAt, now - message.config.updatedAt);
-                MessageCenter.deliveredMessage(localSphereId, sphereMessageIds[i]);
-                MessageCenter.readMessage(localSphereId, sphereMessageIds[i]);
+                // MessageCenter.deliveredMessage(localSphereId, sphereMessageIds[i]);
+                // MessageCenter.readMessage(localSphereId, sphereMessageIds[i]);
                 return;
               }
               else {

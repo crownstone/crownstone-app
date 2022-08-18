@@ -172,12 +172,18 @@ interface background {
   detailsDark            : any,
 }
 
+
+interface coreStore {
+  getState: () => ReduxAppState,
+  dispatch: (action: DatabaseAction) => void,
+  batchDispatch: (actions: DatabaseAction[]) => void
+}
 interface core {
   bleState: {
     bleAvailable: boolean,
     bleBroadcastAvailable: boolean,
   },
-  store: { getState: () => ReduxAppState, dispatch: (action) => void, batchDispatch: (actions) => void },
+  store: coreStore,
   eventBus: any,
   nativeBus: NativeBus,
 }

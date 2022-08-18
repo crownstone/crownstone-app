@@ -33,7 +33,7 @@ let defaultSettings : LocationData = {
 };
 
 
-let userPresenceReducer = (state = [], action : any = {}) => {
+let userPresenceReducer = (state = [], action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'USER_ENTER_LOCATION':
       if (action.data && action.data.userId) {
@@ -53,7 +53,7 @@ let userPresenceReducer = (state = [], action : any = {}) => {
   }
 };
 
-let locationConfigReducer = (state = defaultSettings.config, action : any = {}) => {
+let locationConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_LOCATION_CLOUD_ID':
       if (action.data) {
@@ -140,7 +140,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
 };
 
 
-let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
+let layoutReducer = (state = defaultSettings.layout, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'SET_LOCATION_POSITIONS':
       if (action.data) {
@@ -172,8 +172,9 @@ let combinedLocationReducer = combineReducers({
 
 
 // locationsReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
+    case 'REMOVE_USER_FROM_ALL_LOCATIONS':
     case 'REMOVE_SPHERE_USER':
     case 'USER_EXIT_SPHERE':
       if (action.userId) {

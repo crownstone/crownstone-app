@@ -323,7 +323,16 @@ export const DataUtil = {
   },
 
 
-
+  getSphereIdContainingMessage(message: MessageData) : string | null {
+    let state = core.store.getState();
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      if (sphere.messages && sphere.messages[message.id]) {
+        return sphereId;
+      }
+    }
+    return null;
+  },
 
 
   getAmountOfCrownstonesInLocation: function(sphereId: string, locationId?) : number {

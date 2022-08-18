@@ -7,6 +7,15 @@ import {xUtil} from "../util/StandAloneUtil";
 import {core} from "../Core";
 import {Get} from "../util/GetUtil";
 import { Navigation } from "react-native-navigation";
+import {
+  MessageDeletedId,
+  MessageDeletedTransferNext
+} from "../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
+import { MessageReadID, MessageReadTransferNext } from "../cloud/sections/newSync/transferrers/MessageReadTransferNext";
+import { DataUtil } from "../util/DataUtil";
+
+
+type MessageEventType = "ENTER_SPHERE" | "EXIT_SPHERE" | "ENTER_ROOM" | "EXIT_ROOM";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -17,10 +26,10 @@ class MessageCenterClass {
     LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
 
-      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
-      core.eventBus.on('enterRoom',   (data)     => { this._enterRoom(data); }); // data = {sphereId: sphereId, locationId: locationId}
-      core.eventBus.on('exitRoom',    (data)     => { this._exitRoom(data); });  // data = {sphereId: sphereId, locationId: locationId}
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._checkForMessages("ENTER_SPHERE", sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._checkForMessages("EXIT_SPHERE", sphereId); });
+      core.eventBus.on('enterRoom',   (data)     => { this._checkForMessages("ENTER_ROOM", data.sphereId, data.locationId); }); // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on('exitRoom',    (data)     => { this._checkForMessages("EXIT_ROOM", data.sphereId, data.locationId); });  // data = {sphereId: sphereId, locationId: locationId}
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeMessage) {
@@ -31,6 +40,86 @@ class MessageCenterClass {
     }
     this._initialized = true;
   }
+
+  markMessageAsRead(sphereId: sphereId | MessageData, messageId: messageId) {
+    // mark the message as read in the database
+    let message: MessageData;
+    if (typeof sphereId !== "string") {
+      message = sphereId as MessageData;
+    }
+    else {
+      message = Get.message(sphereId, messageId);
+    }
+    let containedSphereId = DataUtil.getSphereIdContainingMessage(message);
+    MessageReadTransferNext.createLocal(containedSphereId, message.id, {value:true});
+  }
+
+  markMessageAsDeleted(sphereId: sphereId | MessageData, messageId: messageId) {
+    // if we are the owner, delete the message from the cloud.
+    // if not, mark the message as deleted from the device (and the cloud)
+    let message: MessageData;
+    if (typeof sphereId !== "string") {
+      message = sphereId as MessageData;
+    }
+    else {
+      message = Get.message(sphereId, messageId);
+    }
+    let containedSphereId = DataUtil.getSphereIdContainingMessage(message);
+
+    if (message.senderId === Get.userId()) {
+      // delete from cloud in cloudEnhancer
+      core.store.dispatch({type:"REMOVE_MESSAGE", sphereId: containedSphereId, messageId: messageId});
+    }
+    else {
+      // delete from device in cloudEnhancer
+      MessageDeletedTransferNext.createLocal(containedSphereId, message.id, {value:true});
+    }
+
+  }
+
+  _checkForMessages(eventType: MessageEventType, sphereId: sphereId, locationId?: locationId) {
+    // check for all unnotified messages in the sphere is they will be triggered by this event
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return; }
+    for (let messageId in sphere.messages) {
+      let message : MessageData = sphere.messages[messageId];
+      if (message.notified) { continue; }
+
+      switch (eventType) {
+        case "ENTER_ROOM":
+          if (locationId && message.triggerLocationId === locationId && message.triggerEvent === "enter") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+        case "EXIT_ROOM":
+          if (locationId && message.triggerLocationId === locationId && message.triggerEvent === "exit") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+        case "ENTER_SPHERE":
+          if (message.triggerLocationId === null && message.triggerEvent === "enter") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+        case "EXIT_SPHERE":
+          if (message.triggerLocationId === null && message.triggerEvent === "exit") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+      }
+    }
+  }
+
+
+
+  showMessage(sphereId, message: MessageData) {
+    //  if on background:
+    //    send a local notification
+    //    badge the app
+    //  if on foreground:
+    //    show a notification in the app
+  }
+
 
   // _isMessageEqual(dbMessage, cloudMessage, cloudRecipientIds) {
   //   if (
@@ -318,21 +407,19 @@ class MessageCenterClass {
 
 
   getUnreadMessages(sphereId: sphereId) : number {
-    // let sphere = Get.sphere(sphereId);
-    // if (!sphere) { return 0; }
-    //
-    // let myUserId = Get.userId();
-    // let unreadMessageCount = 0;
-    // for (let messageId in sphere.messages) {
-    //   let message = sphere.messages[messageId];
-    //
-    //   if (message.read[myUserId] === undefined) {
-    //     unreadMessageCount++;
-    //   }
-    // }
-    //
-    // return unreadMessageCount;
-    return 0;
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return 0; }
+
+    let unreadMessageCount = 0;
+    for (let messageId in sphere.messages) {
+      let message = sphere.messages[messageId];
+
+      if (message.read[MessageReadID].value === false && message.deleted[MessageDeletedId].value === false) {
+        unreadMessageCount++;
+      }
+    }
+
+    return unreadMessageCount;
   }
 
 

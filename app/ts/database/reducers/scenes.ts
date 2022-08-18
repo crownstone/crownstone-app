@@ -11,7 +11,7 @@ let defaultSettings : SceneData = {
   updatedAt: 0,
 };
 
-let sceneReducer = (state = defaultSettings, action : any = {}) => {
+let sceneReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -58,7 +58,7 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
 
 
 // stonesReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_SCENES':
       return {};
