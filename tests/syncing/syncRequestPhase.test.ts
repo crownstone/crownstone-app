@@ -147,8 +147,8 @@ test("Check if messages are preparing their sync request payload", async () => {
 
   MapProvider.refreshAll();
 
-  core.store.dispatch({type:"MARK_AS_READ",   sphereId:sphere.id, messageId:message.id, messageStateId:'read', data: {value: true}})
-  core.store.dispatch({type:"MARK_AS_DELETED",sphereId:sphere.id, messageId:message.id, messageStateId:'deleted', data: {value: true}})
+  core.store.dispatch({type:"MARK_MESSAGE_AS_READ",   sphereId:sphere.id, messageId:message.id, messageStateId:'read', data: {value: true}})
+  core.store.dispatch({type:"MARK_MESSAGE_AS_DELETED",sphereId:sphere.id, messageId:message.id, messageStateId:'deleted', data: {value: true}})
 
   let syncState = SyncNext.composeState(core.store.getState(), {'messages':true});
   expect(syncState).toMatchSnapshot();

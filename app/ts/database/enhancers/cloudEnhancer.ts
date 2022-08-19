@@ -20,9 +20,11 @@ import { FingerprintTransferNext }     from "../../cloud/sections/newSync/transf
 import { MessageReadTransferNext }     from "../../cloud/sections/newSync/transferrers/MessageReadTransferNext";
 import { MessageDeletedTransferNext }  from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
 import { MessageTransferNext } from "../../cloud/sections/newSync/transferrers/MessageTransferNext";
+import {STREAM_FULL_LOGS} from "../../ExternalConfig";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
+
     let highestLogLevel = 0;
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       for (let i = 0; i < action.payload.length; i++) {
@@ -32,22 +34,26 @@ export function CloudEnhancer({ getState }) {
     else {
       highestLogLevel = action.__logLevel;
     }
-
-    switch (highestLogLevel) {
-      case LOG_LEVEL.verbose:
-        LOGv.store('will dispatch', action); break;
-      case LOG_LEVEL.debug:
-        LOGd.store('will dispatch', action); break;
-      case LOG_LEVEL.info:
-        LOGi.store('will dispatch', action); break;
-      case LOG_LEVEL.warning:
-        LOGw.store('will dispatch', action); break;
-      case LOG_LEVEL.error:
-        LOGe.store('will dispatch', action); break;
-      case LOG_LEVEL.none:
-        break;
-      default:
-        LOGi.store('will dispatch', action);
+    if (STREAM_FULL_LOGS) {
+      LOGi.store('will dispatch', action);
+    }
+    else {
+      switch (highestLogLevel) {
+        case LOG_LEVEL.verbose:
+          LOGv.store('will dispatch', action); break;
+        case LOG_LEVEL.debug:
+          LOGd.store('will dispatch', action); break;
+        case LOG_LEVEL.info:
+          LOGi.store('will dispatch', action); break;
+        case LOG_LEVEL.warning:
+          LOGw.store('will dispatch', action); break;
+        case LOG_LEVEL.error:
+          LOGe.store('will dispatch', action); break;
+        case LOG_LEVEL.none:
+          break;
+        default:
+          LOGi.store('will dispatch', action);
+      }
     }
 
     // required for some of the actions
@@ -145,7 +151,7 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       break;
 
     case "ADD_MESSAGE":
-      handleMessageAdd(action, newState);
+      handleMessageAdd(action, newState); break;
     case "REMOVE_MESSAGE":
       handleMessageRemove(action, newState, oldState); break;
     case "MARK_MESSAGE_AS_READ":
@@ -675,19 +681,19 @@ async function handleMessageAdd(action: DatabaseAction, state) {
 
 function handleMessageRemove(action, state, oldState) {
   let message = oldState.spheres[action.sphereId].messages[action.messageId];
-  if (!message.config.cloudId) {
+  if (!message.cloudId) {
     return;
   }
 
   // if user is sender, delete in cloud.
-  if (message.config.senderId === oldState.user.userId) {
+  if (message.senderId === oldState.user.userId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_MESSAGES',
       eventId: action.messageId,
       data: {
         sphereId: action.sphereId,
         localId: action.messageId,
-        cloudId: message.config.cloudId
+        cloudId: message.cloudId
       }
     });
   }

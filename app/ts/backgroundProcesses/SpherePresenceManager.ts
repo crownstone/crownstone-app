@@ -1,6 +1,7 @@
 import { MapProvider } from "./MapProvider";
 import { core } from "../Core";
 import { CLOUD } from "../cloud/cloudAPI";
+import {ActiveSphereManager} from "./ActiveSphereManager";
 
 class SpherePresenceManagerClass {
 
@@ -19,6 +20,15 @@ class SpherePresenceManagerClass {
         this.wentToBackground = true;
       }
     });
+
+    core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (change.updateActiveSphere) {
+        CLOUD.syncUsers();
+      }
+    });
+
+    CLOUD.syncUsers();
   }
 
   /**

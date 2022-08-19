@@ -16,6 +16,10 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
       triggerLocationId:       MapProvider.local2cloudMap.locations[localData.triggerLocationId] || localData.triggerLocationId,
       updatedAt:               new Date(localData.updatedAt).toISOString()
     };
+
+    if (result.triggerLocationId === null) {
+      delete result.triggerLocationId;
+    }
     return result;
   },
 
@@ -69,7 +73,7 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
       let mappedData = MessageTransferNext.mapLocalToCloud(data);
       let cloudData = {
         message: mappedData,
-        recpients: Object.keys(data.recipients),
+        recipients: Object.keys(data.recipients),
       }
 
       let cloudItem = await CLOUD.forSphere(cloudSphereId).createMessage(cloudData);
@@ -110,4 +114,5 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
     return newItemData.id;
   }
 }
+
 

@@ -200,11 +200,6 @@ export class MessageEntry extends Component<{
         <View style={{ flex:1 }} />
         <View style={{height: rowHeight, width:60, alignItems: 'center', justifyContent:'center'}}>
           <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => {
-            // we delete it and mark it read if required.
-            if (this.props.read === false) {
-              MessageCenter.markMessageAsRead(this.props.sphereId, this.props.messageId);
-            }
-
             this.props.deleteMessage();
           }}/>
         </View>

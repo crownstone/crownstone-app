@@ -8,19 +8,19 @@ const sha1 = require('sha-1');
 class Logger {
   error(...args) {
     LOGe.info(...args);
-    console.error(...args);
+    // console.error(...args);
   }
   warn(...args) {
     LOGw.info(...args);
-    console.log(...args);
+    // console.log(...args);
   }
   info(...args) {
     LOGi.info(...args);
-    console.log(...args);
+    // console.log(...args);
   }
   debug(...args) {
     LOGd.info(...args);
-    console.log(...args);
+    // console.log(...args);
   }
 }
 

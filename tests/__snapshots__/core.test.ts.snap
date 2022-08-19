@@ -389,7 +389,6 @@ Object {
         },
       },
       "thirdParty": Object {
-        "hue": Object {},
         "toons": Object {},
       },
       "users": Object {},

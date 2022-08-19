@@ -100,6 +100,7 @@ export function addMessage(config? : Partial<MessageData>, recipients: string[] 
     messageId,
     data:{
       content:"testMessage",
+      triggerEvent: 'enter',
       everyoneInSphere: recipients.length == 0,
       recipients: xUtil.arrayToMap(recipients ?? []),
       ...config
@@ -135,8 +136,16 @@ export function addLocation(config? : any) {
   if (!config) { config = {}; }
   core.store.dispatch({type:"ADD_LOCATION", sphereId: lastUsedSphereId, locationId: locationId, data:{name: getToken('stone'), ...config}});
   MapProvider.refreshAll();
-  lastUsedStoneId = locationId;
   return Get.location(lastUsedSphereId, locationId);
+}
+
+export function addSphereUser(config? : any) {
+  let userId = 'sphereUser_' + xUtil.getUUID();
+  locationCount++;
+  if (!config) { config = {}; }
+  core.store.dispatch({type:"ADD_SPHERE_USER", sphereId: lastUsedSphereId, userId: userId, data:{name: getToken('user'), ...config}});
+  MapProvider.refreshAll();
+  return Get.sphereUser(lastUsedSphereId, userId);
 }
 
 export function createMockDatabase() {
@@ -159,5 +168,5 @@ export function createMockDatabase() {
 }
 
 export function loadDump(dumpState) {
-  core.store.dispatch({type:"HYDRATE", state: dumpState});
+  core.store.dispatch({type:"HYDRATE", data: {state: dumpState}});
 }

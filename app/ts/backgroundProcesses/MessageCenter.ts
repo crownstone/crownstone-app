@@ -84,7 +84,6 @@ class MessageCenterClass {
       message = Get.message(sphereId, messageId);
     }
     let containedSphereId = DataUtil.getSphereIdContainingMessage(message);
-
     if (message.senderId === Get.userId()) {
       // delete from cloud in cloudEnhancer
       core.store.dispatch({type:"REMOVE_MESSAGE", sphereId: containedSphereId, messageId: messageId});
@@ -127,12 +126,13 @@ class MessageCenterClass {
       this.showForegroundMessage()
     }
     else {
-      LocalNotifications.showMessageNotification(sphereId, message)
+      LocalNotifications.showMessageNotification(sphereId, message);
+      core.store.dispatch({type:"APPEND_MESSAGE", sphereId: sphereId, messageId: message.id, data:{notified:true}});
     }
   }
 
   showForegroundMessage() {
-    Alert.alert("Temporary POPOUP", "Message received")
+    Alert.alert("Temporary POPOUP", "Message received");
   }
 
 
@@ -143,8 +143,9 @@ class MessageCenterClass {
     let unreadMessageCount = 0;
     for (let messageId in sphere.messages) {
       let message = sphere.messages[messageId];
+      if (message.deleted?.[MessageDeletedId]?.value === true) { continue; }
 
-      if (message.read[MessageReadID].value === false && message.deleted[MessageDeletedId].value === false) {
+      if (message.read?.[MessageReadID]?.value !== true) {
         unreadMessageCount++;
       }
     }

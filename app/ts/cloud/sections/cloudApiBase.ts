@@ -195,7 +195,7 @@ export const cloudApiBase = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      LOGe.cloud("ERROR: HTML ERROR IN API:", reply, debugOptions);
+      LOGe.cloud("ERROR: HTML ERROR IN API:", JSON.stringify(reply, null, 2), debugOptions);
     }
     reject(reply);
   }

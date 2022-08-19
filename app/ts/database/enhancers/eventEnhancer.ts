@@ -343,6 +343,8 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
       eventStatus.changeHubs = affectedIds; break;
 
     case "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD":
+    case "UPDATE_READ_MESSAGE_CLOUD_ID":
+    case "REMOVE_USER_FROM_ALL_LOCATIONS":
       break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);

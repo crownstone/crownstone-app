@@ -7,7 +7,7 @@ import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddr
 
 export const messages = {
 
-  createMessage: function (data : cloud_Message_creation, background) : Promise<cloud_Message> {
+  createMessage: function (data : cloud_Message_creation, background = true) : Promise<cloud_Message> {
     return cloudApiBase._setupRequest(
       'POST',
       CloudAddresses.cloud_v2 + 'spheres/{id}/message',
@@ -17,7 +17,7 @@ export const messages = {
   },
 
 
-  getMessages: function (background) : Promise<cloud_Message[]>{
+  getMessages: function (background = true) : Promise<cloud_Message[]>{
     return cloudApiBase._setupRequest(
       'GET',
       CloudAddresses.cloud_v2 + 'spheres/{id}/messages',
@@ -26,7 +26,7 @@ export const messages = {
   },
 
 
-  markMessageAsRead: function (localMessageId, background) : Promise<cloud_MessageState> {
+  markMessageAsRead: function (localMessageId, background = true) : Promise<cloud_MessageState> {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'POST',
@@ -36,7 +36,7 @@ export const messages = {
   },
 
 
-  markMessageAsDeleted: function (localMessageId, background) : Promise<cloud_MessageState> {
+  markMessageAsDeleted: function (localMessageId, background = true) : Promise<cloud_MessageState> {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'POST',
@@ -46,7 +46,7 @@ export const messages = {
   },
 
 
-  deleteMessage: function (localMessageId, background) : Promise<cloud_MessageState> {
+  deleteMessage: function (localMessageId, background = true) : Promise<cloud_MessageState> {
     let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId;
     return cloudApiBase._setupRequest(
       'DELETE',

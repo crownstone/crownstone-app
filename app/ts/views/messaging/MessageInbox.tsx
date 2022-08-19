@@ -30,13 +30,13 @@ import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { ViewStateWatcher } from "../components/ViewStateWatcher";
-import { Navigation } from "react-native-navigation";
 import { Background } from "../components/Background";
-import {Component} from "react";
 import {Get} from "../../util/GetUtil";
 import { LifeCycleView } from "../components/LifeCycleView";
-import { MessageDeletedTransferNext } from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
+import {
+  MessageDeletedId,
+} from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
+import {MessageReadID} from "../../cloud/sections/newSync/transferrers/MessageReadTransferNext";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -72,6 +72,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
 
   componentWillUnmount() {
+    this.messageReadStateWatcher.resetTimers();
     this.unsubscribeStoreEvents();
   }
 
@@ -79,7 +80,6 @@ export class MessageInbox extends LiveComponent<any, any> {
   _getMessages() {
     let items = [];
 
-    let userId = Get.userId();
     let user   = Get.user();
     let sphere = Get.sphere(this.props.sphereId);
     let messageIds = Object.keys(sphere.messages);
@@ -90,9 +90,10 @@ export class MessageInbox extends LiveComponent<any, any> {
     messages.sort((a,b) => { return b.updatedAt - a.updatedAt; });
 
     for (let message of messages) {
+      if (message.deleted?.[MessageDeletedId]?.value === true) { continue; }
       let backgroundColor = colors.white.rgba(0.75);
       let read = true;
-      if (message.read[userId] === undefined) {
+      if (message.read?.[MessageReadID]?.value !== true) {
         read = false;
         backgroundColor = colors.green.hex;
       }
@@ -127,7 +128,6 @@ export class MessageInbox extends LiveComponent<any, any> {
   }
 
   render() {
-    let state = core.store.getState();
     let messageExplanationStyle : TextStyle = {
       color: colors.csBlueDarker.hex,
       textAlign: 'center',
@@ -173,7 +173,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     let headerText = <Text style={textStyle.specification}>{ lang("You_can_leave_messages_in") }</Text>;
 
     let scrollView;
-    if (items.length > 0) {
+    if (items.length > 1) { // min size is 1 since the items always have an explanation entry
       scrollView = (
         <ScrollView
           onScroll={(event) => {
@@ -240,14 +240,6 @@ class MessageReadStateWatcher {
     this.sphereId = sphereId;
   }
 
-  setSphereId(sphereId) {
-    if (this.sphereId !== sphereId) {
-      this.resetTimers();
-    }
-
-    this.sphereId = sphereId;
-  }
-
   resetTimers() {
     for (let messageId in this.messages) {
       clearTimeout(this.messages[messageId]?.timer);
@@ -258,13 +250,6 @@ class MessageReadStateWatcher {
     if (this.messages[messageId]) {
       clearTimeout(this.messages[messageId].timer);
       delete this.messages[messageId];
-    }
-  }
-
-  markMessageAsRead(messageId) {
-    if (this.messages[messageId]) {
-      clearTimeout(this.messages[messageId].timer);
-      this.messages[messageId].isRead = true;
     }
   }
 

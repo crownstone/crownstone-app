@@ -28,7 +28,7 @@ export class MessageReadSyncerNext extends SyncMessageInterface<MessageStateData
     let message = Get.message(this.localSphereId, this.localMessageId);
     if (!message) { return null; }
 
-    if (!message.read[MessageReadID]) { return null; }
+    if (!message.read?.[MessageReadID]) { return null; }
 
     SyncUtil.constructReply(
       reply,

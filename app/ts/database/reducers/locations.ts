@@ -39,13 +39,17 @@ let userPresenceReducer = (state = [], action : DatabaseAction = {}) => {
       if (action.data && action.data.userId) {
         return [...state, action.data.userId];
       }
+      return state;
     case 'USER_EXIT_LOCATION':
       if (action.data && action.data.userId) {
         let userIndex = state.indexOf(action.data.userId);
         if (userIndex !== -1) {
-          return [...state.slice(0, userIndex).concat(state.slice(userIndex + 1))]
+          let newState = [...state];
+          newState.splice(userIndex, 1);
+          return newState;
         }
       }
+      return state;
     case 'CLEAR_USERS_IN_LOCATION':
       return [];
     default:
@@ -179,19 +183,20 @@ export default (state = {}, action : DatabaseAction = {}) => {
     case 'USER_EXIT_SPHERE':
       if (action.userId) {
         // we need to remove the user from all locations before removing him from sphere.
-        let locationIds = Object.keys(state);
-        locationIds.forEach((locationId) => {
-          let location = state[locationId];
+        let newState = {...state};
+        for (let locationId in state) {
+          let location : LocationData = state[locationId];
           if (location.presentUsers.includes(action.userId)) {
-            return {
-              ...state,
-              ...{[locationId]: combinedLocationReducer(state[locationId],
-                {type:'USER_EXIT_LOCATION', sphereId: action.sphereId, locationId: locationId, data: {userId: action.userId}})}
-            };
+            let result = combinedLocationReducer(state[locationId], {
+              type: 'USER_EXIT_LOCATION',
+              sphereId: action.sphereId,
+              locationId: locationId,
+              data: {userId: action.userId}
+            });
+            newState[locationId] = result;
           }
-        });
-
-        return state;
+        }
+        return newState;
       }
     case 'REMOVE_LOCATION':
       let stateCopy = {...state};
