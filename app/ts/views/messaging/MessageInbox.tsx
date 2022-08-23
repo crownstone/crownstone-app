@@ -90,7 +90,12 @@ export class MessageInbox extends LiveComponent<any, any> {
     messages.sort((a,b) => { return b.updatedAt - a.updatedAt; });
 
     for (let message of messages) {
-      if (message.deleted?.[MessageDeletedId]?.value === true) { continue; }
+      // hide messages that are not visible to us yet.
+      if (message.visible === false && message.senderId !== user.userId) { continue; }
+
+      // hide messages that have been locally deleted.
+      if (message.deleted?.[MessageDeletedId]?.value === true)           { continue; }
+
       let backgroundColor = colors.white.rgba(0.75);
       let read = true;
       if (message.read?.[MessageReadID]?.value !== true) {
