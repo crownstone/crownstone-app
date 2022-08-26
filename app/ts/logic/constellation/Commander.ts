@@ -83,6 +83,8 @@ import {LOGd, LOGe, LOGi} from "../../logging/Log";
 import {Command_SetTimeViaBroadcast} from "./commandClasses/Command_SetTimeViaBroadcast";
 import {Command_GetUICR} from "./commandClasses/Command_GetUICR";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
+import {Command_setDoubleTapSwitchcraft} from "./commandClasses/Command_setDoubleTapSwitchcraft";
+import {Command_setDefaultDimValue} from "./commandClasses/Command_setDefaultDimValue";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -498,6 +500,12 @@ export class CommandAPI extends CommandMeshAPI {
   }
   async factoryResetHubOnly() : Promise<HubDataReply> {
     return this._load(new Command_FactoryResetHubOnly());
+  }
+  async setDoubleTapSwitchCraft(enabled: boolean) : Promise<void> {
+    return this._load(new Command_setDoubleTapSwitchcraft(enabled));
+  }
+  async setDefaultDimValue(dimValue: number) : Promise<void> {
+    return this._load(new Command_setDefaultDimValue(dimValue));
   }
 
   async disconnect() {

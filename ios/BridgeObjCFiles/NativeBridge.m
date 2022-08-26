@@ -189,6 +189,8 @@ RCT_EXTERN_METHOD(setVoltageMultiplier:(NSString *)handle value:(nonnull NSNumbe
 RCT_EXTERN_METHOD(getCurrentMultiplier:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setCurrentMultiplier:(NSString *)handle value:(nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setUartState:(NSString *)handle state:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDoubleTapSwitchCraft:(NSString *)handle enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDefaultDimValue:(NSString *)handle dimValue:(nonnull NSNumber *)dimValue callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(useHighFrequencyScanningInBackground:(nonnull NSNumber *)state)
 
 + (BOOL)requiresMainQueueSetup { return YES; }

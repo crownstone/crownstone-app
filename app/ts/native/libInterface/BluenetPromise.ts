@@ -248,6 +248,11 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   requestCloudId:              (handle: string) => { return BluenetPromise('requestCloudId', handle); },
   factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
   factoryResetHubOnly:         (handle: string) => { return BluenetPromise('factoryResetHubOnly', handle); },
+
+
+  setDoubleTapSwitchcraft:     (handle: handle, enabled: boolean) => { return BluenetPromise('setDoubleTapSwitchcraft', handle, enabled); },
+  setDefaultDimValue:          (handle: handle, dimValue: number) => { return BluenetPromise('setDefaultDimValue', handle, dimValue);     },
+
   getLaunchArguments:          () => { return BluenetPromise("getLaunchArguments"); },
 };
 

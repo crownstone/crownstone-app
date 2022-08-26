@@ -284,7 +284,10 @@ interface BluenetPromiseWrapperProtocol {
   getPowerSamples(handle: handle, type : PowersampleDataType)           : Promise<PowerSamples[]>,
 
   getUICR(handle: handle)                                               : Promise<UICRData>,
-  
+
+  setDoubleTapSwitchcraft(handle: handle, enabled:boolean)              : Promise<void>,
+  setDefaultDimValue(handle: handle, dimValue: number)                  : Promise<void>,
+
   setUartKey(handle: handle, uartKey: string)                           : Promise<void>,
 
   // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.

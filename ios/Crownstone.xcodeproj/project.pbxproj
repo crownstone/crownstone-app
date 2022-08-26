@@ -31,8 +31,6 @@
 		FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB31EAE320F001C625D /* BluenetIntegration.swift */; };
 		FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB41EAE320F001C625D /* JSONUtils.swift */; };
 		FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB61EAE320F001C625D /* NativeBridge.m */; };
-		FA58A22E2822627300553B1D /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA58A22D2822627300553B1D /* BluenetLib */; };
-		FA58A2722822629500553B1D /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA58A2712822629500553B1D /* BluenetLib */; };
 		FA59A6A5224CE5D300D58C9F /* AppDelegate_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA59A6A4224CE5D300D58C9F /* AppDelegate_old.swift */; };
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
@@ -360,6 +358,13 @@
 			remoteGlobalIDString = 0B9BD901B3EB04B824A157C85265F044;
 			remoteInfo = RNCPushNotificationIOS;
 		};
+		FA7FB6E128B8E0D20014FC44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B058F035CFD84ECBF8414E4EAE5834FC;
+			remoteInfo = "react-native-video";
+		};
 		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -575,6 +580,7 @@
 		FA59A6A4224CE5D300D58C9F /* AppDelegate_old.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate_old.swift; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		FA7FB6E328B8E0E00014FC44 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../../Dropbox/Crownstone/Projects/XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FA86C67E21CCEECD00811933 /* WatchTower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchTower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA86C68121CCEECD00811933 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -635,7 +641,6 @@
 			files = (
 				FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */,
 				FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */,
-				FA58A22E2822627300553B1D /* BluenetLib in Frameworks */,
 				F565541EA0E74560636016AB /* libPods-Crownstone.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,7 +656,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA58A2722822629500553B1D /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,6 +857,7 @@
 				FAEEF108281BDBF400868171 /* react-native-safe-area-context */,
 				FA274EA02410144F00D7C858 /* react-native-slider */,
 				FAB44C63276A244500E36078 /* react-native-splash-screen */,
+				FA7FB6E228B8E0D20014FC44 /* react-native-video */,
 				FACF166E26160CB500A9163F /* React-perflogger */,
 				FA274EA62410144F00D7C858 /* React-RCTAnimation */,
 				FA274EA82410144F00D7C858 /* React-RCTBlob */,
@@ -967,6 +972,7 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				FA7FB6E328B8E0E00014FC44 /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -1054,7 +1060,6 @@
 			packageProductDependencies = (
 				FA39A49C2743DAF100A63C79 /* BluenetShared */,
 				FAB44CA0276A28B300E36078 /* BluenetLib */,
-				FA58A22D2822627300553B1D /* BluenetLib */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1092,7 +1097,6 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FA58A2712822629500553B1D /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1151,7 +1155,6 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
 				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
-				FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1490,6 +1493,14 @@
 			name = RNCPushNotificationIOS;
 			path = libRNCPushNotificationIOS.a;
 			remoteRef = FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA7FB6E228B8E0D20014FC44 /* react-native-video */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "react-native-video";
+			path = "libreact-native-video.a";
+			remoteRef = FA7FB6E128B8E0D20014FC44 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA9F56A9263AE19600A8219A /* Pods-Crownstone-CrownstoneTests */ = {
@@ -2584,14 +2595,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
-			requirement = {
-				kind = exactVersion;
-				version = 29.1.0;
-			};
-		};
 		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
@@ -2607,16 +2610,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
 			productName = BluenetShared;
-		};
-		FA58A22D2822627300553B1D /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
-			productName = BluenetLib;
-		};
-		FA58A2712822629500553B1D /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA58A22C2822627300553B1D /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
-			productName = BluenetLib;
 		};
 		FAB44CA0276A28B300E36078 /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1001,6 +1001,8 @@ open class BluenetJS: RCTEventEmitter {
         _ = test!
     }
     
+    
+    
     @objc func factoryResetHub(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)
         wrapHubMethodForBluenet(
@@ -1188,6 +1190,16 @@ open class BluenetJS: RCTEventEmitter {
     @objc func getUICR(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)
         wrapForBluenet("getUICR", callback, GLOBAL_BLUENET.bluenet.device(handleUUID!).getUICRData(), handle)
+    }
+    
+    @objc func setDoubleTapSwitchcraft(_ handle: String, enabled: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+        let handleUUID = UUID(uuidString: handle)
+        wrapForBluenet("setDoubleTapSwitchcraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDoubleTapSwitchcraft(enabled: NSNumber(enabled).boolValue), handle)
+    }
+    
+    @objc func setDefaultDimValue(_ handle: String, dimValue: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+        let handleUUID = UUID(uuidString: handle)
+        wrapForBluenet("setDoubleTapSwitchCraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDefaultDimValue(dimValue: dimValue.uint), handle)
     }
 }
 
