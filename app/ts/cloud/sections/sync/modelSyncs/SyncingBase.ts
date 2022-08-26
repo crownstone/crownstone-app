@@ -137,7 +137,6 @@ export function getSyncIdMap() : syncIdMap {
     preferences:        {},
     stones:             {},
     scenes:             {},
-    sortedLists:        {},
     spheres:            {},
     schedules:          {},
     hubs:               {},

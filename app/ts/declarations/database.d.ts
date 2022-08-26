@@ -24,8 +24,8 @@ interface SphereData {
   scenes:      {[sceneId:    string]: SceneData},
   hubs:        {[hubId:      string]: HubData},
   messages:    {[messageId:  string]: MessageData},
+  sortedLists: {[sortedListId: string]: SortedListData },
   thirdParty:  any,
-  sortedLists: any,
   keys:        any,
 }
 

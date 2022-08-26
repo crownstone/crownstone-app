@@ -37,8 +37,6 @@ interface SortedListData {
   viewKey: string,
   referenceId: string,
   sortedList: string[],
-  cloudId: string,
-  updatedAt: number,
 }
 
 interface EncryptionKeyData {
@@ -200,6 +198,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'REMOVE_PROCESSED_FINGERPRINT'                 |
   'REMOVE_SCENE'                                 |
   'REMOVE_SORTED_LIST'                           |
+  'REMOVE_SORTED_LISTS'                          |
   'REMOVE_SPHERE'                                |
   'REMOVE_SPHERE_KEY'                            |
   'REMOVE_SPHERE_USER'                           |
@@ -272,7 +271,6 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'UPDATE_SCENE'                                 |
   'UPDATE_SCENE_CLOUD_ID'                        |
   'UPDATE_SORTED_LIST'                           |
-  'UPDATE_SORTED_LIST_CLOUD_ID'                  |
   'UPDATE_SPHERE_CLOUD_ID'                       |
   'UPDATE_SPHERE_CONFIG'                         |
   'UPDATE_SPHERE_KEY'                            |

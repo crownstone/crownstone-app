@@ -1,12 +1,10 @@
-import { getTime, refreshDefaults, update } from "./reducerUtil";
+import { refreshDefaults, update } from "./reducerUtil";
 
 let defaultSettings : SortedListData = {
   id:'',
   viewKey: null,
   referenceId: null,
   sortedList: [],
-  cloudId: null,
-  updatedAt: 0,
 };
 
 let sortedListReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
@@ -15,13 +13,6 @@ let sortedListReducer = (state = defaultSettings, action : DatabaseAction = {}) 
       let newState = {...state};
       newState.id = action.sortedListId;
       return newState;
-    case 'UPDATE_SORTED_LIST_CLOUD_ID':
-      if (action.data) {
-        let newState = {...state};
-        newState.cloudId = update(action.data.cloudId, newState.cloudId);
-        return newState;
-      }
-      return state;
     case 'ADD_SORTED_LIST':
     case 'UPDATE_SORTED_LIST':
       if (action.data) {
@@ -30,13 +21,12 @@ let sortedListReducer = (state = defaultSettings, action : DatabaseAction = {}) 
           newState.id = action.sortedListId;
         }
 
-        newState.viewKey     = update(action.data.viewKey,    newState.viewKey);
-        newState.referenceId = update(action.data.picture,    newState.referenceId);
+        newState.viewKey     = update(action.data.viewKey,     newState.viewKey);
+        newState.referenceId = update(action.data.referenceId, newState.referenceId);
         if (newState.sortedList) {
           let newList = [...newState.sortedList];
           newState.sortedList  = update(action.data.sortedList, newList);
         }
-        newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -51,6 +41,8 @@ let sortedListReducer = (state = defaultSettings, action : DatabaseAction = {}) 
 // sortedListReducer
 export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
+    case 'REMOVE_SORTED_LISTS':
+      return {};
     case 'REMOVE_SORTED_LIST':
       let stateCopy = {...state};
       delete stateCopy[action.sortedListId];

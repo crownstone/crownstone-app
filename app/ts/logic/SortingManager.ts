@@ -4,12 +4,6 @@ import { xUtil } from "../util/StandAloneUtil";
 
 export class SortingManager {
 
-  static getFromId(sphereId, sortedListId) : SortedListData | null {
-    let state = core.store.getState();
-    let sphere = state.spheres[sphereId];
-    return sphere.sortedLists[sortedListId] || null;
-  }
-
   /**
    * @param sphereId
    * @param viewKey         | this is a string like "RoomOverview" or "Scenes" that identifies which view it belongs to
@@ -114,23 +108,6 @@ export class SortingManager {
       core.store.batchDispatch(actions);
     }
   }
-
-  /**
-   * If we get a sortedList from the cloud, we need to map it to a local sorted list
-   * @param sortedList
-   */
-  static mapCloudToLocal(sortedList: {cloudId: string, data: string[], referenceId: string, [ key:string ]: any }) {
-
-  }
-
-  /**
-   * If we get a sortedList from the cloud, we need to map it to a local sorted list
-   * @param sortedList
-   */
-  static mapLocalToCloud(sortedList : SortedListData) {
-
-  }
-
 }
 
 export class SortedList {

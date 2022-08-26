@@ -89,7 +89,6 @@ interface syncIdMap {
   stones:            keyMap,
   fingerprints:      keyMap,
   scenes:            keyMap,
-  sortedLists:       keyMap,
   messages:          keyMap,
   spheres:           keyMap,
   schedules:         keyMap,

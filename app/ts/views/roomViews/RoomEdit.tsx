@@ -24,6 +24,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsBackground} from "../components/SettingsBackground";
 import {Get} from "../../util/GetUtil";
 import {Icon} from "../components/Icon";
+import {SortingManager} from "../../logic/SortingManager";
 
 
 
@@ -131,9 +132,14 @@ export class RoomEdit extends LiveComponent<any, any> {
         this._removePicture(this.state.picture);
 
         // remove the picture that belongs to the location.
-        if (location && location.config) {
+        if (location?.config) {
           this._removePicture(location.config.picture)
         }
+
+        if (location?.config?.cloudId) {
+          SortingManager.removeByReferenceId(location?.config?.cloudId);
+        }
+        SortingManager.removeByReferenceId(this.props.locationId);
 
         // jump back to root
         core.eventBus.emit('hideLoading');

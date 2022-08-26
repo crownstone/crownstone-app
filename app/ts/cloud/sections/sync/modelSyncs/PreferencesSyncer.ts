@@ -73,14 +73,14 @@ export class PreferenceSyncer extends SyncingBase {
       // this cleans up preferences from older versions of the app.
       if (preferenceMap[property] === undefined) {
         unusedPreferences.push(cloudId);
+        return;
       }
-      else {
-        if (preferenceMap[property].value !== preference_in_cloud.value) {
-          // update value of property in cloud
-          this.transferPromises.push(
-            CLOUD.forDevice(this.deviceId).updatePreference(cloudId, { property: property, value: preferenceMap[property].value })
-          );
-        }
+
+      if (preferenceMap[property].value !== preference_in_cloud.value) {
+        // update value of property in cloud
+        this.transferPromises.push(
+          CLOUD.forDevice(this.deviceId).updatePreference(cloudId, { property: property, value: preferenceMap[property].value })
+        );
       }
     });
 
@@ -126,7 +126,7 @@ const PreferenceProcessor = {
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
 
-      // SETUP PREFERENCES FOR TOON
+      // toon preferences
       let toons = spheres[sphereId].thirdParty.toons;
       let toonIds = Object.keys(toons);
       toonIds.forEach((toonId) => {
@@ -146,6 +146,16 @@ const PreferenceProcessor = {
         positions[location.config.cloudId || locationId] = {x: Math.round(location.layout.x), y: Math.round(location.layout.y)};
       }
       preferenceMap[prepareProperty(sphere, 'sphere_overview_positions')] = {value: positions};
+
+      // sorted lists
+      let sortedListIds = spheres[sphereId].sortedLists;
+      let sortedLists = [];
+      for (let sortedListId in sortedListIds) {
+        let sortedList = {...sortedListIds[sortedListId]};
+        delete sortedList.id;
+        sortedLists.push(sortedList);
+      }
+      preferenceMap[prepareProperty(sphere, `sorted_lists`)] = {value: sortedLists};
     });
 
     return preferenceMap;
@@ -169,6 +179,18 @@ const PreferenceProcessor = {
           let data = preference.value;
           let localToonId = MapProvider.cloud2localMap.toons[toonId];
             actions.push({type:"TOON_UPDATE_SETTINGS", sphereId, toonId: localToonId, data: {enabled: data.enabled}})
+          break;
+        case 'sortedLists':
+          let sortedLists = preference.value;
+          actions.push({type:"REMOVE_SORTED_LISTS", sphereId});
+          for (let sortedList of sortedLists) {
+            actions.push({
+              type: "ADD_SORTED_LIST",
+              sphereId,
+              sortedListId: sortedList.viewKey + "_" + sortedList.referenceId,
+              data: {sortedList}
+            })
+          }
           break;
       }
     }
