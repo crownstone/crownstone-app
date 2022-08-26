@@ -9,6 +9,7 @@ import {Scheduler} from "../logic/Scheduler";
 import {tell} from "../logic/constellation/Tellers";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import {Get} from "../util/GetUtil";
+import {ABILITY_PROPERTY_TYPE_ID} from "../database/reducers/stoneSubReducers/abilities";
 
 
 class StoneDataSyncerClass {
@@ -76,7 +77,7 @@ class StoneDataSyncerClass {
 
           // handle behaviours
           if (Permissions.inSphere(sphereId).canChangeBehaviours) {
-            let stone = DataUtil.getStone(sphereId, stoneId);
+            let stone = Get.stone(sphereId, stoneId);
             if (!stone) { return; }
 
             let behaviourIds = Object.keys(stone.behaviours);
@@ -105,7 +106,7 @@ class StoneDataSyncerClass {
     LOGi.info("StoneDataSyncer: Setting behaviour syncing trigger for ", sphereId, stoneId, sessionId);
     let id = sphereId+stoneId;
 
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return; }
 
     let behaviourIds = Object.keys(stone.behaviours);
@@ -196,7 +197,7 @@ class StoneDataSyncerClass {
   _syncDimmingAbility(sphereId : string, stoneId : string, abilityId: string) {
     LOGi.info("StoneDataSyncer: Checking if dimming needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone)   { return; }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }
@@ -248,7 +249,7 @@ class StoneDataSyncerClass {
   _syncSwitchcraftAbility(sphereId : string, stoneId : string, abilityId: string) {
     LOGi.info("StoneDataSyncer: Checking if switchcraft needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }
@@ -271,13 +272,61 @@ class StoneDataSyncerClass {
           }
         });
     }
+
+    let propertyId = ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft;
+    let doubleTapProperty = ability.properties[propertyId];
+    if (!doubleTapProperty) { return; }
+
+    if (doubleTapProperty.syncedToCrownstone === false) {
+      let target = typeof doubleTapProperty.valueTarget === 'string' ? (doubleTapProperty.valueTarget === 'true' ? true : false) : Boolean(doubleTapProperty.valueTarget);
+      LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft:doubleTapProperty", sphereId, stoneId);
+      tell(stone).setDoubleTapSwitchCraft(target)
+        .then(() => {
+          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft's doubletap feature", sphereId, stoneId, doubleTapProperty);
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, propertyId, data: { value: target}});
+          actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, propertyId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft's doubletap feature", sphereId, stoneId, err?.message);
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+    }
+
+    let secondPropertyId = ABILITY_PROPERTY_TYPE_ID.defaultDimValue;
+    let defaultDimValueProperty = ability.properties[secondPropertyId];
+    if (!defaultDimValueProperty) { return; }
+
+    if (defaultDimValueProperty.syncedToCrownstone === false) {
+      let target = Number(defaultDimValueProperty.valueTarget)
+      LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft:defaultDimValue", sphereId, stoneId);
+      tell(stone).setDefaultDimValue(target)
+        .then(() => {
+          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft's doubletap defaultDimValue feature", sphereId, stoneId, doubleTapProperty);
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, secondPropertyId, data: { value: target}});
+          actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, secondPropertyId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft's doubletap defaultDimValue feature", sphereId, stoneId, err?.message);
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+    }
   }
 
 
   _syncTapToToggle(sphereId : string, stoneId : string, abilityId: string) {
     LOGi.info("StoneDataSyncer: Checking if tap2toggle needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }

@@ -45,7 +45,7 @@ export class HubHelper {
 
   async _setup(sphereId, stoneId: string, createHubOnline: boolean) : Promise<{ hubId: string, cloudId: string }> {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     let handle = stone.config.handle;
     if (!stone) {
       throw new CodedError(1,"Invalid stone.");
@@ -149,7 +149,7 @@ export class HubHelper {
    */
   async createLocalHubInstance(sphereId, stoneId: string) : Promise<string> {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     let handle = stone.config.handle;
     if (!stone)               { throw new CodedError(1, "Invalid stone."); }
     if (!stone.config.handle) { throw new CodedError(2, "No handle.");     }

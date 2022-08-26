@@ -38,6 +38,7 @@ import { NoBehavioursYet } from "./DeviceSmartBehaviour_NoBehavioursYet";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 import {SettingsBackground} from "../../components/SettingsBackground";
+import {Get} from "../../../util/GetUtil";
 
 
 let className = "DeviceSmartBehaviour";
@@ -321,7 +322,7 @@ lang("_Success___Behaviour_has__body"),
 
 
 function getTopBarProps(props, viewState) {
-  const stone = DataUtil.getStone(props.sphereId,props.stoneId);
+  const stone = Get.stone(props.sphereId,props.stoneId);
   if (!stone) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Stone_deleted_"),

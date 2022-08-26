@@ -27,6 +27,7 @@ import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./constants/SceneConstants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
+import {Get} from "../../util/GetUtil";
 
 const SCENE_ADD_CLASSNAME = "SceneAdd";
 
@@ -336,7 +337,7 @@ lang("_Select_at_least_one______body"),
 export function StoneRow({sphereId, stoneId, locationName, selection, initialSelection}) {
   let [selected, setSelected] = useState(initialSelection || false);
   let [showExplanation, setShowExplanation] = useState(false);
-  let stone = DataUtil.getStone(sphereId, stoneId);
+  let stone = Get.stone(sphereId, stoneId);
 
   let height  = 80;
   let padding = 10;
@@ -408,7 +409,7 @@ export function StoneRow({sphereId, stoneId, locationName, selection, initialSel
 
 export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCallback, margins}) {
   let [switchState, setSwitchState] = useState(Number(state));
-  let stone = DataUtil.getStone(sphereId, stoneId);
+  let stone = Get.stone(sphereId, stoneId);
 
   let height  = 80;
   let padding = 10;

@@ -412,7 +412,7 @@
 //   handleTriggers(sphereId, stoneId, rssi) {
 //     if (!this.triggers[sphereId])          { return; }
 //
-//     let stone = DataUtil.getStone(sphereId, stoneId)
+//     let stone = Get.stone(sphereId, stoneId)
 //     if (!stone) { return; }
 //     if (!stone.config.handle) { return; }
 //
@@ -496,7 +496,7 @@
 //       amount = Math.min(allStoneIds.length, amount);
 //
 //       const handleStoneId = (stoneId) => {
-//         let stone = DataUtil.getStone(sphereId, stoneId);
+//         let stone = Get.stone(sphereId, stoneId);
 //         if (stone) {
 //           // send to BHC
 //           promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)

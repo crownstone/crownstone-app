@@ -22,11 +22,11 @@ import { ButtonBar } from "../../../components/editComponents/ButtonBar";
 import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { SliderBar } from "../../../components/editComponents/SliderBar";
-import { DataUtil } from "../../../../util/DataUtil";
 import { SwitchBar } from "../../../components/editComponents/SwitchBar";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 import { SettingsBackground } from "../../../components/SettingsBackground";
+import {Get} from "../../../../util/GetUtil";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -38,7 +38,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
     this.state = {
       softOnSpeed: Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget)
     }
@@ -87,7 +87,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
   }
 
   _getSoftOn() {
-    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
 
     if (stone) {
       if (xUtil.versions.canIUse(stone.config.firmwareVersion, '5.1.0') === false) {

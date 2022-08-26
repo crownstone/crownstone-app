@@ -338,12 +338,12 @@ interface AbilityData {
   }
 }
 
-type AbilityPropertyType = "rssiOffset" | "softOnSpeed";
+type AbilityPropertyType = "rssiOffset" | "softOnSpeed" | "doubleTapSwitchcraft" | "defaultDimValue";
 interface AbilityPropertyData {
   type:             AbilityPropertyType,
   cloudId:          string,
-  value:            string | number,
-  valueTarget:      string | number,
+  value:            string | number | boolean,
+  valueTarget:      string | number | boolean,
   syncedToCrownstone: boolean,
   updatedAt:        number
 }

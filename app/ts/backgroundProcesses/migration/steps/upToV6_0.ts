@@ -2,8 +2,8 @@ import {core} from "../../../Core";
 import {xUtil} from "../../../util/StandAloneUtil";
 import {RoomStockBackground} from "../../../views/styles";
 import { FingerprintUtil } from "../../../util/FingerprintUtil";
-import { Persistor } from "../../../database/persistor/Persistor";
 import { StoreManager } from "../../../database/storeManager";
+import {ABILITY_PROPERTY_TYPE_ID} from "../../../database/reducers/stoneSubReducers/abilities";
 
 export const clean_upTo6_0 = async function() {
   return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : "messages"}}], "MIGRATED_6.0")
@@ -13,9 +13,28 @@ export const upTo6_0 = function(lastMigrationVersion, appVersion) {
   if (xUtil.versions.isLower(lastMigrationVersion, appVersion, 4) || !lastMigrationVersion) {
     loadRoomStockImages();
     migrateFingerprints();
+    migrateAbilityProperties();
     // migrateMessages();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});
   }
+}
+
+function migrateAbilityProperties() {
+  let state = core.store.getState();
+  let actions : DatabaseAction[] = [];
+
+  for (let [sphereId, sphere] of Object.entries<SphereData>(state.spheres)) {
+    for (let [stoneId, stone] of Object.entries<StoneData>(sphere.stones)) {
+      actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'switchcraft', propertyId: ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft,
+        data: {type:ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft, value: false, valueTarget: false,  syncedToCrownstone: true, updatedAt: Date.now()}
+      });
+      actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'switchcraft', propertyId: ABILITY_PROPERTY_TYPE_ID.defaultDimValue,
+        data: {type:ABILITY_PROPERTY_TYPE_ID.defaultDimValue, value: 0, valueTarget: 0,  syncedToCrownstone: true, updatedAt: Date.now()}
+      });
+    }
+  }
+
+  core.store.batchDispatch(actions);
 }
 
 function loadRoomStockImages() {

@@ -213,7 +213,7 @@ interface cloud_AbilityProperty {
 
 interface cloud_AbilityProperty_settable {
   type:       AbilityPropertyType,
-  value:      number | string;
+  value:      number | string | boolean;
   syncedToCrownstone: boolean;
   updatedAt:  string,
 }

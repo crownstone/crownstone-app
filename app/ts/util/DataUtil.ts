@@ -185,15 +185,6 @@ export const DataUtil = {
   },
 
 
-  getStone(sphereId, stoneId) {
-    let state = core.store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!sphere) return null
-    let stone = sphere.stones[stoneId];
-    return stone || null;
-  },
-
-
   getHubByCloudId(sphereId, hubCloudId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -463,13 +454,13 @@ export const DataUtil = {
 
 
   getLocationIdFromStone: function(sphereId, stoneId) {
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     return stone.config.locationId;
   },
 
 
   getLocationUIdFromStone: function(sphereId, stoneId) {
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return null; }
     let location = DataUtil.getLocation(sphereId, stone.config.locationId)
     if (!location) { return null }

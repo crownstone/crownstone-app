@@ -13,6 +13,7 @@ import {DataUtil} from "../../util/DataUtil";
 import {connectTo} from "../../logic/constellation/Tellers";
 import {CommandAPI} from "../../logic/constellation/Commander";
 import {CodedError} from "../../util/Errors";
+import {Get} from "../../util/GetUtil";
 
 
 const networkError = 'network_error';
@@ -161,7 +162,7 @@ export class SetupHelper {
         finalizeSetupStoneAction.type = "UPDATE_STONE_CONFIG";
         actions.push(finalizeSetupStoneAction);
 
-        let stone = DataUtil.getStone(sphereId, localId);
+        let stone = Get.stone(sphereId, localId);
         if (stone) {
           let behaviours = stone.behaviours;
           let behaviourIds = Object.keys(behaviours);

@@ -1,6 +1,7 @@
 type sphereId               = string; // this is the localId
 type locationId             = string; // this is the localId
 type stoneId                = string; // this is the localId
+type abilityId              = string; // this is the localId
 type sceneId                = string; // this is the localId
 type hubId                  = string; // this is the localId
 type messageId              = string; // this is the localId
