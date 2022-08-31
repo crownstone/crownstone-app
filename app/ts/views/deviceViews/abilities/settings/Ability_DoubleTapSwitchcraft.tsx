@@ -76,53 +76,53 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
 
   render() {
     let stone = Get.stone(this.props.sphereId, this.props.stoneId);
-
-    let items = [];
-    items.push({
-      type:"switch",
-      icon: <Icon name="md-information-circle" size={30} radius={10} color={colors.green.hex} />,
-      value: this.state.doubleTapValue,
-      label: "Double Tap Switchcraft",
-      callback:(value) => {
-        this.setState({doubleTapSwitchcraft: value})
-        core.store.dispatch({
-          type:      "UPDATE_ABILITY_PROPERTY",
-          sphereId:   this.props.sphereId,
-          stoneId:    this.props.stoneId,
-          abilityId: 'switchcraft',
-          propertyId:'doubleTapSwitchcraft',
-          data: {
-            valueTarget: value,
-            syncedToCrownstone: false,
-          }});
-      }
-    });
-    if (this.state.doubleTapSwitchcraft) {
-      items.push({
-        __item:
-          <SliderBar
-            label={ "Default dim value"}
-            sliderHidden={true}
-            icon={<Icon name="ios-options" size={25} color={colors.darkPurple.hex} />}
-            callback={(value) => {
-              this.setState({defaultDimValue: value});
-              this.scheduleUpdateDimValue(value);
-            }}
-            min={10}
-            max={90}
-            value={this.state.defaultDimValue}
-            explanation={"Dim to " + this.state.defaultDimValue + "% if there's no active behaviour/twilight"}
-            explanationHeight={30}
-            testID={"SliderBar_hide"}
-          />
-      });
-    }
-    else {
-      items.push({type:'explanation', label: "Enable double tap switchcraft to configure it further..", below: true});
-    }
-
     if (xUtil.versions.canIUse(stone.config.firmwareVersion, '5.7.0')) {
       if (stone.abilities.dimming.enabledTarget) {
+
+        let items = [];
+        items.push({
+          type:"switch",
+          icon: <Icon name="md-information-circle" size={30} radius={10} color={colors.green.hex} />,
+          value: this.state.doubleTapValue,
+          label: "Double Tap Switchcraft",
+          callback:(value) => {
+            this.setState({doubleTapSwitchcraft: value})
+            core.store.dispatch({
+              type:      "UPDATE_ABILITY_PROPERTY",
+              sphereId:   this.props.sphereId,
+              stoneId:    this.props.stoneId,
+              abilityId: 'switchcraft',
+              propertyId:'doubleTapSwitchcraft',
+              data: {
+                valueTarget: value,
+                syncedToCrownstone: false,
+              }});
+          }
+        });
+        if (this.state.doubleTapSwitchcraft) {
+          items.push({
+            __item:
+              <SliderBar
+                label={ "Default dim value"}
+                sliderHidden={true}
+                icon={<Icon name="ios-options" size={25} color={colors.darkPurple.hex} />}
+                callback={(value) => {
+                  this.setState({defaultDimValue: value});
+                  this.scheduleUpdateDimValue(value);
+                }}
+                min={10}
+                max={90}
+                value={this.state.defaultDimValue}
+                explanation={"Dim to " + this.state.defaultDimValue + "% if there's no active behaviour/twilight"}
+                explanationHeight={30}
+                testID={"SliderBar_hide"}
+              />
+          });
+        }
+        else {
+          items.push({type:'explanation', label: "Enable double tap switchcraft to configure it further..", below: true});
+        }
+
         return (
           <SettingsBackground>
             <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>

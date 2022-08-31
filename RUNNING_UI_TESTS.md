@@ -29,7 +29,7 @@ npm install -g jest
 
 [Install applesimutils](https://github.com/wix/AppleSimulatorUtils)
 
-```angular2html
+```
 brew tap wix/brew
 brew install applesimutils
 ```
