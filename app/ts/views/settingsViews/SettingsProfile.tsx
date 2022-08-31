@@ -18,7 +18,7 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {background, colors, screenWidth, tabBarHeight} from "./../styles";
+import {background, colors, screenWidth, tabBarHeight, topBarHeight} from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
@@ -240,43 +240,41 @@ export class SettingsProfile extends LiveComponent<any, any> {
 
     return (
       <SettingsNavbarBackground testID={"SettingsProfile"}>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <View>
-            <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
-              <PictureCircle
-                isSquare={true}
-                value={this.state.picture}
-                callback={(pictureUrl) => {
-                  let newFilename = user.userId + '.jpg';
-                  processImage(pictureUrl, newFilename)
-                    .then((newPicturePath) => {
-                      this.setState({picture:newPicturePath});
-                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
-                      // update your settings in every sphere that you belong to.
-                      sphereIds.forEach((sphereId) => {
-                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
-                      });
-                    })
-                    .catch((err) => {
-                      LOG.info("PICTURE ERROR ",err)
-                    })
-                }}
-                removePicture={() => {
-                  FileUtil.safeDeleteFile(this.state.picture).catch(() => {});
-                  store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
-                  // update your settings in every sphere that you belong to.
-                  sphereIds.forEach((sphereId) => {
-                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
-                  });
-                  this.setState({picture:null});
-                }}
-                size={120} />
-            </View>
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
+          <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
+            <PictureCircle
+              isSquare={true}
+              value={this.state.picture}
+              callback={(pictureUrl) => {
+                let newFilename = user.userId + '.jpg';
+                processImage(pictureUrl, newFilename)
+                  .then((newPicturePath) => {
+                    this.setState({picture:newPicturePath});
+                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
+                    // update your settings in every sphere that you belong to.
+                    sphereIds.forEach((sphereId) => {
+                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
+                    });
+                  })
+                  .catch((err) => {
+                    LOG.info("PICTURE ERROR ",err)
+                  })
+              }}
+              removePicture={() => {
+                FileUtil.safeDeleteFile(this.state.picture).catch(() => {});
+                store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
+                // update your settings in every sphere that you belong to.
+                sphereIds.forEach((sphereId) => {
+                  store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
+                });
+                this.setState({picture:null});
+              }}
+              size={120} />
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
           { !this.state.showDevMenu &&
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
-              <View style={{width:screenWidth, height:80, backgroundColor: 'transparent'}} />
+              <View style={{flex:1, width: screenWidth, backgroundColor: 'transparent'}} />
             </TouchableWithoutFeedback>
           }
         </ScrollView>

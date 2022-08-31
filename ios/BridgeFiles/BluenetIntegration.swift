@@ -1194,12 +1194,12 @@ open class BluenetJS: RCTEventEmitter {
     
     @objc func setDoubleTapSwitchcraft(_ handle: String, enabled: NSNumber, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)
-        wrapForBluenet("setDoubleTapSwitchcraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDoubleTapSwitchcraft(enabled: NSNumber(enabled).boolValue), handle)
+        wrapForBluenet("setDoubleTapSwitchcraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDoubleTapSwitchcraft(enabled: enabled.boolValue), handle)
     }
     
     @objc func setDefaultDimValue(_ handle: String, dimValue: NSNumber, callback: @escaping RCTResponseSenderBlock) {
         let handleUUID = UUID(uuidString: handle)
-        wrapForBluenet("setDoubleTapSwitchCraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDefaultDimValue(dimValue: dimValue.uint), handle)
+        wrapForBluenet("setDoubleTapSwitchCraft", callback, GLOBAL_BLUENET.bluenet.state(handleUUID!).setDefaultDimValue(dimValue: dimValue.uint8Value), handle)
     }
 }
 

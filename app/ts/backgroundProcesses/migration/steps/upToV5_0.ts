@@ -22,9 +22,9 @@ function resetAbilities() {
     for (let [stoneId, stone] of Object.entries<StoneData>(sphere.stones)) {
       if (stone.abilities?.dimming && Object.keys(stone.abilities.dimming.properties).length > 0) { continue; }
 
-      let dimming     = stone.abilities.dimming ?? {};
-      let switchcraft = stone.abilities.switchcraft ?? {};
-      let tapToToggle = stone.abilities.tapToToggle ?? {};
+      let dimming     : any = stone.abilities.dimming ?? {};
+      let switchcraft : any = stone.abilities.switchcraft ?? {};
+      let tapToToggle : any = stone.abilities.tapToToggle ?? {};
 
 
       actions.push({type:"REMOVE_ALL_ABILITIES", sphereId, stoneId});

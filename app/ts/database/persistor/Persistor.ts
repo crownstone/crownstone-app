@@ -519,7 +519,7 @@ export class Persistor {
         stoneIds.forEach((stoneId) => {
           refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});
           for (let abilityId in state.spheres[sphereId].stones[stoneId].abilities) {
-            refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId, abilityId: abilityId});
+            refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId, abilityId: abilityId as abilityId});
           }
         });
       }

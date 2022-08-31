@@ -11,8 +11,7 @@ import {
 } from "react-native";
 
 
-import { background, colors, screenHeight, screenWidth, styles } from "../../../styles";
-import {Background} from "../../../components/Background";
+import { colors, screenHeight, screenWidth, styles } from "../../../styles";
 import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
 import { core } from "../../../../Core";
@@ -23,6 +22,8 @@ import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 import {SettingsBackground} from "../../../components/SettingsBackground";
+import {ListEditableItems} from "../../../components/ListEditableItems";
+import {Icon} from "../../../components/Icon";
 
 
 export class Ability_SwitchcraftSettings extends Component<any, any> {
@@ -36,6 +37,26 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
   }
 
   render() {
+    let items = [];
+    items.push({
+      type:"navigation",
+      icon: <Icon name="md-information-circle" size={30} radius={10} color={colors.green.hex} />,
+      label: lang("Installation___Informatio"),
+      callback:() => { this.props.information(); }
+    });
+    items.push({
+      type:"navigation",
+      icon: <Icon name="ion5-sunny" size={30} radius={10} color={colors.blue.hex} />,
+      label: "Double tap features",
+      callback:() => { NavigationUtil.navigate("Ability_DoubleTapSwitchcraft", {sphereId: this.props.sphereId, stoneId: this.props.stoneId}) }
+    });
+    items.push({
+      type:"button",
+      icon: <Icon name="md-remove-circle" size={30} radius={10} color={colors.menuRed.hex} />,
+      label: lang("Disable_Switchcraft"),
+      callback:() => { this.disable() }
+    });
+
     return (
       <SettingsBackground>
         <ScrollView >
@@ -48,21 +69,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
             <Text style={styles.explanation}>{ lang("Swichcraft_should_only_be") }</Text>
             <View style={{height:10}} />
             <View style={{width:screenWidth}}>
-              <Separator fullLength={true} />
-              <NavigationBar
-                setActiveElement={()=>{ }}
-                largeIcon={<IconButton name="md-information-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}} />}
-                label={ lang("Installation___Informatio")}
-                callback={() => { this.props.information(); }}
-              />
-              <Separator  />
-              <ButtonBar
-                setActiveElement={()=>{ }}
-                largeIcon={<IconButton name="md-remove-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />}
-                label={ lang("Disable_Switchcraft")}
-                callback={() => { this.disable() }}
-              />
-              <Separator fullLength={true} />
+              <ListEditableItems items={items} />
             </View>
             <View style={{height:100}} />
           </View>

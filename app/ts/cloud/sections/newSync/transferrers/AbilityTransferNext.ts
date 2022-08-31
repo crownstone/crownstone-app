@@ -31,18 +31,16 @@ export const AbilityTransferNext : TransferStoneTool<AbilityData, AbilityData, c
 
 
   getCreateLocalAction(localSphereId: string, localStoneId: string, data: Partial<AbilityData>) : {id: string, action: DatabaseAction } {
-    let newId = xUtil.generateLocalId();
-    let action : DatabaseAction = {type:"ADD_ABILITY", sphereId: localSphereId, stoneId: localStoneId, abilityId: newId, data: data };
-    return {id: newId, action};
+    throw "Abilities are fixed. They cannot be added dynamically."
   },
 
 
-  getUpdateLocalCloudIdAction(localSphereId: string, localStoneId: string, localItemId: string, cloudId: string) : DatabaseAction {
+  getUpdateLocalCloudIdAction(localSphereId: string, localStoneId: string, localItemId: abilityId, cloudId: string) : DatabaseAction {
     return {type:"UPDATE_ABILITY_CLOUD_ID", sphereId: localSphereId, stoneId: localStoneId, abilityId: localItemId, data: {cloudId}};
   },
 
 
-  getUpdateLocalAction(localSphereId: string, localStoneId: string, localItemId: string, data: Partial<AbilityData>) : DatabaseAction {
+  getUpdateLocalAction(localSphereId: string, localStoneId: string, localItemId: abilityId, data: Partial<AbilityData>) : DatabaseAction {
     return {
       type:      data.syncedToCrownstone ? "UPDATE_ABILITY_AS_SYNCED_FROM_CLOUD" : "UPDATE_ABILITY",
       sphereId:  localSphereId,

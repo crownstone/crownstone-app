@@ -66,7 +66,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
 
   render() {
     let stone = core.store.getState().spheres[this.props.sphereId].stones[this.props.stoneId];
-    let rssiOffsetTarget = Number(stone.abilities.tapToToggle.rssiOffsetTarget);
+    let rssiOffsetTarget = Number(stone.abilities.tapToToggle.properties.rssiOffset.valueTarget);
     return (
       <SettingsBackground>
         <ScrollView >

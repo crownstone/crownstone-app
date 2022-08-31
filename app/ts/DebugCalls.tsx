@@ -60,6 +60,6 @@ function DebugPopup() {
 
 function DebugCustomView() {
   setTimeout(() => {
-    NavigationUtil.launchModal("MessageInbox", { "sphereId": "99e5f4a3-c7fe-4ac5-b8fb-eb094d63195a" })
+    NavigationUtil.launchModal("Ability_DoubleTapSwitchcraft", {"sphereId":"f55e4c23-4ed4-8480-408b-1e227ba38bc3","stoneId":"ade1c4a7-5ec4-7db8-d830-e658265c804"})
   },200);
 }

@@ -129,6 +129,7 @@ import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
 import { LocalizationDetail } from "./main/localization/LocalizationDetail";
 import {LocalizationFindAndFix} from "./main/localization/LocalizationFindAndFix";
 import {LocalizationFingerprintManager} from "./main/localization/LocalizationFingerprintManager";
+import {Ability_DoubleTapSwitchcraft} from "./deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft";
 
 
 export const Views = {
@@ -172,6 +173,7 @@ export const Views = {
   Ability_SwitchcraftInformation:    Ability_SwitchcraftInformation,
   Ability_DimmerSettings:            Ability_DimmerSettings,
   Ability_SwitchcraftSettings:       Ability_SwitchcraftSettings,
+  Ability_DoubleTapSwitchcraft:      Ability_DoubleTapSwitchcraft,
   Ability_TapToToggleInformation:    Ability_TapToToggleInformation,
   Ability_TapToToggleSettings:       Ability_TapToToggleSettings,
   IconDebug:                         IconDebug,

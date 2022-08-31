@@ -1,7 +1,8 @@
 type sphereId               = string; // this is the localId
 type locationId             = string; // this is the localId
 type stoneId                = string; // this is the localId
-type abilityId              = string; // this is the localId
+type abilityId              = 'switchcraft'          | 'dimming'         | 'tapToToggle';                // this is the localId
+type propertyId             = 'doubleTapSwitchcraft' | 'defaultDimValue' | 'softOnSpeed' | 'rssiOffset'; // this is the localId
 type sceneId                = string; // this is the localId
 type hubId                  = string; // this is the localId
 type messageId              = string; // this is the localId
@@ -65,8 +66,8 @@ interface DatabaseAction {
   keyId?                  : string,
   hubId?                  : string,
   behaviourId?            : string,
-  abilityId?              : string,
-  propertyId?             : string,
+  abilityId?              : abilityId,
+  propertyId?             : propertyId,
   userId?                 : string,
   toonId?                 : string,
 

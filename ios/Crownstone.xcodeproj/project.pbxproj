@@ -47,6 +47,8 @@
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA0276A28B300E36078 /* BluenetLib */; };
+		FABAAD0928BF844B00D824A6 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FABAAD0828BF844B00D824A6 /* BluenetLib */; };
+		FABAAD4928BF847D00D824A6 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FABAAD4828BF847D00D824A6 /* BluenetLib */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -649,6 +651,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FABAAD0928BF844B00D824A6 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,6 +659,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FABAAD4928BF847D00D824A6 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1079,6 +1083,9 @@
 				FA86C68D21CCEECF00811933 /* PBXTargetDependency */,
 			);
 			name = WatchTower;
+			packageProductDependencies = (
+				FABAAD0828BF844B00D824A6 /* BluenetLib */,
+			);
 			productName = WatchTower;
 			productReference = FA86C67E21CCEECD00811933 /* WatchTower.app */;
 			productType = "com.apple.product-type.application.watchapp2";
@@ -1097,6 +1104,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
+				FABAAD4828BF847D00D824A6 /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -2148,7 +2156,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2191,7 +2199,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2359,7 +2367,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2422,7 +2430,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2475,7 +2483,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -2530,7 +2538,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 6.0.0;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
@@ -2612,6 +2620,14 @@
 			productName = BluenetShared;
 		};
 		FAB44CA0276A28B300E36078 /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BluenetLib;
+		};
+		FABAAD0828BF844B00D824A6 /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BluenetLib;
+		};
+		FABAAD4828BF847D00D824A6 /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BluenetLib;
 		};

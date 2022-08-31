@@ -150,7 +150,7 @@ interface StoneData {
     [behaviourId: string] : behaviourWrapper
   },
   abilities: {
-    [abilityId: string] : AbilityBaseData
+    [abilityId: string] : AbilityData
   },
   errors: {
     overCurrent:       boolean,
@@ -325,7 +325,7 @@ interface UserData {
   updatedAt:                          number,
 }
 
-type AbilityType = 'dimming' | 'switchcraft' | 'tapToToggle';
+type AbilityType = abilityId;
 interface AbilityData {
   enabled:            boolean | null,
   enabledTarget:      boolean,
@@ -334,11 +334,14 @@ interface AbilityData {
   syncedToCrownstone: boolean,
   updatedAt:          number,
   properties: {
-    [propertyId: string]: AbilityPropertyData
+    rssiOffset?:           AbilityPropertyData,
+    softOnSpeed?:          AbilityPropertyData,
+    doubleTapSwitchcraft?: AbilityPropertyData,
+    defaultDimValue?:      AbilityPropertyData,
   }
 }
 
-type AbilityPropertyType = "rssiOffset" | "softOnSpeed" | "doubleTapSwitchcraft" | "defaultDimValue";
+type AbilityPropertyType = propertyId;
 interface AbilityPropertyData {
   type:             AbilityPropertyType,
   cloudId:          string,

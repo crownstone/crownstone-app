@@ -1,11 +1,11 @@
 import { getTime, refreshDefaults, update } from "../reducerUtil";
 
-export const ABILITY_TYPE_ID = {
+export const ABILITY_TYPE_ID : Record<string, abilityId> = {
   dimming:     'dimming',
   switchcraft: 'switchcraft',
   tapToToggle: 'tapToToggle'
 }
-export const ABILITY_PROPERTY_TYPE_ID = {
+export const ABILITY_PROPERTY_TYPE_ID : Record<string,propertyId>= {
   softOnSpeed: 'softOnSpeed',
   rssiOffset:  'rssiOffset',
   doubleTapSwitchcraft: 'doubleTapSwitchcraft',

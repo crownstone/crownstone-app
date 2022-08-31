@@ -29,7 +29,7 @@ function migrateAbilityProperties() {
         data: {type:ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft, value: false, valueTarget: false,  syncedToCrownstone: true, updatedAt: Date.now()}
       });
       actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'switchcraft', propertyId: ABILITY_PROPERTY_TYPE_ID.defaultDimValue,
-        data: {type:ABILITY_PROPERTY_TYPE_ID.defaultDimValue, value: 0, valueTarget: 0,  syncedToCrownstone: true, updatedAt: Date.now()}
+        data: {type:ABILITY_PROPERTY_TYPE_ID.defaultDimValue, value: 40, valueTarget: 40,  syncedToCrownstone: true, updatedAt: Date.now()}
       });
     }
   }
