@@ -54,6 +54,7 @@ export class RoomPictureSelection extends LiveComponent<{
       type:"navigation",
       icon: <Icon name={'ion5-camera'} size={26} color={colors.csBlue.hex} />,
       label:'Custom background picture',
+      testID: 'customBackgroundPicture',
       callback: () => {
         this.setState({selecting:true});
         let unsubscribe = core.eventBus.on("hidePopup")
@@ -136,7 +137,7 @@ function RoomImage({name, selected, callback}) {
 
 
   return (
-    <TouchableOpacity style={{marginRight:margin, marginBottom: margin}} onPress={() => { callback(name); }}>
+    <TouchableOpacity style={{marginRight:margin, marginBottom: margin}} onPress={() => { callback(name); }} testID={`stockImage_${name}`}>
       <Image source={RoomStockBackground[name]} style={{width: width, height: width * aspect, borderRadius: 20}} />
       { selected &&  <SelectedCornerIcon inner size={30} /> }
     </TouchableOpacity>

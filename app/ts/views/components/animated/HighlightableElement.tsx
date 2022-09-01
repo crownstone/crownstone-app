@@ -105,12 +105,13 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity1Value.current}}>
         {props.elements[0]}
       </Animated.View>
-      <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity2Value.current}}>
+      { props.enabled && <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity2Value.current}}>
         {props.elements[1]}
-      </Animated.View>
-      <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity3Value.current}}>
+      </Animated.View> }
+      { props.enabled && <Animated.View style={{position:'absolute', top:0, left:0, right:0, bottom:0, justifyContent:'center', alignItems: props.alignment, opacity: opacity3Value.current}}>
         {props.elements[2]}
       </Animated.View>
+      }
       <Badge indicator={props.badge} color={props.badgeColor ?? colors.red.hex}/>
     </Animated.View>
   );
@@ -118,7 +119,7 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
 
 
 function Badge(props:{indicator: BadgeIndicator, color: string}) {
-  if (props.indicator === 0 || props.indicator === undefined || props.indicator === false) {
+  if (props.indicator === 0 || props.indicator === undefined || props.indicator === false || props.indicator === null) {
     return <React.Fragment />;
   }
   let size = 15;

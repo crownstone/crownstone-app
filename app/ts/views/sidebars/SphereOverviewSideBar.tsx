@@ -24,14 +24,16 @@ export function SphereOverviewSideBar(props) {
   let blinkLocalizationIcon = false;
   let activeSphere = Get.activeSphere();
 
+  let blinkBehaviour    : BadgeIndicator = false;
+  let badgeMessages     : BadgeIndicator = false;
+  let badgeLocalization : BadgeIndicator = false;
+  let blinkAdding       : BadgeIndicator = false;
   if (activeSphere) {
     blinkLocalizationIcon = MenuNotificationUtil.isThereALocalizationAlert(activeSphere.id);
+    blinkAdding           = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
+    badgeLocalization     = !blinkLocalizationIcon && MenuNotificationUtil.isThereALocalizationBadge(activeSphere.id);
+    badgeMessages         = MessageCenter.getUnreadMessages(activeSphere.id);
   }
-
-  let blinkBehaviour = false;
-  let blinkAdding    = Object.keys(activeSphere.locations).length == 0 || Object.keys(activeSphere.stones).length == 0;
-  let badgeLocalization = !blinkLocalizationIcon && MenuNotificationUtil.isThereALocalizationBadge(activeSphere.id);
-  let badgeMessages = MessageCenter.getUnreadMessages(activeSphere.id);
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
@@ -46,6 +48,7 @@ export function SphereOverviewSideBar(props) {
         size={23}
         icon={'md-add-circle'}
         highlight={blinkAdding}
+        testID={'addItems'}
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
@@ -66,6 +69,7 @@ export function SphereOverviewSideBar(props) {
         icon={'c1-locationPin1'}
         highlight={blinkLocalizationIcon}
         badge={badgeLocalization}
+        testID={'localization'}
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
@@ -74,6 +78,7 @@ export function SphereOverviewSideBar(props) {
         size={22}
         icon={'c1-brain'}
         highlight={blinkBehaviour}
+        testID={'behaviour'}
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
@@ -82,15 +87,16 @@ export function SphereOverviewSideBar(props) {
         size={21}
         icon={'zo-email'}
         badge={badgeMessages}
+        testID={'messages'}
       />
       <View style={{height:50}}/>
       {
         amountOfSpheres > 1 &&
-          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'} />
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'} testID={'changeSphere'} />
       }
       {
         DataUtil.isDeveloper() &&
-          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"} callback={() => { Alert.alert("TODO", "implement") }} size={22} icon={'ios-bug'}/>
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"} callback={() => { Alert.alert("TODO", "implement") }} size={22} icon={'ios-bug'} testID={'developer'} />
       }
       <View style={{flex:1}}/>
       <Text style={{color: colors.white.rgba(0.5)}}>{"App v"+DeviceInfo.getReadableVersion()}</Text>
@@ -100,7 +106,7 @@ export function SphereOverviewSideBar(props) {
 }
 
 
-function SideMenuLink(props: {closeSideMenu:() => void, label: string, callback: () => void, size: number, icon: string, highlight?: boolean, badge?: BadgeIndicator}) {
+function SideMenuLink(props: {closeSideMenu:() => void, label: string, callback: () => void, size: number, icon: string, highlight?: boolean, badge?: BadgeIndicator, testID?: string}) {
   let linkStyle : TextStyle = {
     color: colors.white.hex,
     fontSize: 20,
@@ -108,7 +114,7 @@ function SideMenuLink(props: {closeSideMenu:() => void, label: string, callback:
     paddingLeft:15,
   }
   return (
-    <TouchableOpacity style={{flexDirection:'row', height:50, alignItems:'center'}} onPress={() => {
+    <TouchableOpacity style={{flexDirection:'row', height:50, alignItems:'center'}} testID={props.testID} onPress={() => {
       props.closeSideMenu();
       props.callback();
     }}>

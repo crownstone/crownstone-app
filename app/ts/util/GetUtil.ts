@@ -4,8 +4,14 @@ export const Get = {
 
   activeSphere() : SphereData | null {
     let state = core.store.getState();
-    let activeSphere = state?.app?.activeSphere || null;
-    if (activeSphere) { return state.spheres[activeSphere] || null; }
+    let activeSphereId = state?.app?.activeSphere || null;
+    if (activeSphereId) { return state.spheres[activeSphereId] || null; }
+    else {
+      let sphereIds = Object.keys(state.spheres);
+      if (sphereIds.length > 0) {
+        return state.spheres[sphereIds[0]];
+      }
+    }
     return null;
   },
 

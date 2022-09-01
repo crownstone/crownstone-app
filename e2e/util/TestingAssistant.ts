@@ -1,6 +1,7 @@
 import { SphereMockInterface } from "./SphereMockInterface";
 import { MirrorDatabase }      from "./MirrorDatabase";
 import { BleMocks }            from "./BleMocks";
+import { delay } from "./TestUtil";
 
 type cloudId = string;
 
@@ -19,6 +20,16 @@ export class TestingAssistant {
 
 
   async update() {
+    await this._update();
+    // retry getting the active sphere after a small delay
+    if (this.activeSphereId === null) {
+      await delay(2000);
+      await this._update();
+    }
+  }
+
+
+  async _update() {
     await this.db.update();
     this.spheres = {};
     for (let sphereId in this.db.spheres) {

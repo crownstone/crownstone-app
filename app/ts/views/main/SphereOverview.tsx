@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
-import { Sphere }                   from './Sphere'
+import { Sphere, SphereHeader } from "./Sphere";
 import {
   availableModalHeight,
   availableScreenHeight, background,
@@ -312,14 +312,7 @@ function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
       <View style={{flex:3}} />
     </View>
     <TopBarBlur xlight blink={{left: true}}>
-      <View style={{flexDirection: 'row', alignItems:'center'}}>
-        <MenuButton onPress={props.openSideMenu} highlight={true} />
-        <TouchableOpacity onPress={props.openSideMenu} style={{alignItems:'center', justifyContent:'center'}}>
-          <HeaderTitle title={sphere?.config?.name} />
-        </TouchableOpacity>
-        <View style={{flex:1}} />
-        <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: props.sphereId})}} />
-      </View>
+      <SphereHeader sphere={sphere} openSideMenu={props.openSideMenu} blinkMenuIcon={true} badgeMenuIcon={null} />
     </TopBarBlur>
     </React.Fragment>
   );

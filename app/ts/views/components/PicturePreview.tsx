@@ -47,7 +47,7 @@ export class PicturePreview extends Component<any, any> {
             alignItems:'center',
             justifyContent:'center',
           }}
-          testID={this.props.testID_remove || "PictureRemove"}>
+          testID={this.props.testID || "PictureEdit"}>
             <Image style={{width:innerSize, height:height, borderRadius: 5}} source={imageURI} />
             <EditCornerIcon size={80/3} />
         </TouchableOpacity>
@@ -56,7 +56,11 @@ export class PicturePreview extends Component<any, any> {
     else {
       return (
         <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
-          <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:size}} testID={this.props.testID || "PictureCircle"}>
+          <TouchableOpacity
+            onPress={() => {this.triggerOptions()}}
+            style={{height:size}}
+            testID={this.props.testID || "PictureCircle"}
+          >
             <View>
               <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} outerBorderWidth={2} />
             </View>

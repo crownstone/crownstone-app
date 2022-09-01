@@ -47,7 +47,9 @@ export class SphereMockInterface {
 
   async checkForActive() : Promise<boolean> {
     let calls = await this._getCalledMethods('setLocationState');
+    console.log(new Date(), "CALLS", calls)
     for (let functionCall of calls.bluenet) {
+      console.log(this.sphereLocalId, functionCall.args, functionCall.args[4], this.sphereLocalId === functionCall.args[4]);
       if (this.sphereLocalId === functionCall.args[4]) {
         this.activeSphere = true;
         return true;

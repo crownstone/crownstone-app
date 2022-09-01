@@ -1,17 +1,30 @@
 import {
   $, delay, longPress, replaceText, screenshot, tap,
   tapAlertCancelButton,
-  tapAlertOKButton, tapReturnKey,
+  tapAlertOKButton, tapPossibleDuplicate, tapReturnKey,
   tapSingularAlertButton, waitToNavigate, waitToShow, waitToStart
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const Rooms_createRoom = () => {
-  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+  // if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be on the SphereOverview addRoom view', async () => {
     await waitToStart('SphereOverview_addRoom');
     await screenshot();
+
+  })
+
+  test('should be able to go to the add items page', async () => {
+    await tap('Sidebar_button_sphereName');
+    await delay(400);
+    await tap('addItems', 1000, 50);
+    await waitToNavigate('SphereAdd');
+  })
+
+  test('should be able to go to the add items page', async () => {
+    await tap('AddRoom');
+    await waitToNavigate('RoomAdd');
   })
 
   test('should be able to set a name', async () => {
@@ -40,6 +53,8 @@ export const Rooms_createRoom = () => {
 
   test('should be able to create the room', async () => {
     await tap('RoomAdd_CreateRoom');
+    await waitToNavigate('RoomOverview');
+    await tap("back");
     await waitToNavigate('SphereOverview');
   })
 };

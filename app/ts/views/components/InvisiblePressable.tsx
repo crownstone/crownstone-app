@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 
-export class InvisiblePressable extends Component<{onPressIn: () => void, style?: ViewStyle, disabled?: boolean}, any> {
+export class InvisiblePressable extends Component<{onPressIn: () => void, style?: ViewStyle, disabled?: boolean, testID?:string}, any> {
 
   _panResponder: any = {};
 
@@ -29,7 +29,7 @@ export class InvisiblePressable extends Component<{onPressIn: () => void, style?
 
   render() {
     return (
-      <View {...this._panResponder.panHandlers} style={{flex:1, ...this.props.style}}>
+      <View {...this._panResponder.panHandlers} style={{flex:1, ...this.props.style}} testID={this.props.testID}>
         { this.props.children }
       </View>
     );

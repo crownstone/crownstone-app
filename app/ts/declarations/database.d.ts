@@ -133,16 +133,7 @@ interface StoneData {
   lastUpdated: {
     stoneTime: timestamp,
   },
-  state: {
-    timeSet: boolean,
-    state: number,
-    previousState: number,
-    currentUsage: number,
-    behaviourOverridden: boolean,
-    dimmerReady: boolean,
-    powerFactor: number,
-    updatedAt: timestamp
-  },
+  state: StoneState,
   reachability: {
     lastSeen: timestamp,
   },
@@ -150,21 +141,34 @@ interface StoneData {
     [behaviourId: string] : behaviourWrapper
   },
   abilities: {
-    [abilityId: string] : AbilityData
+    [itemId in abilityId] : AbilityData
   },
-  errors: {
-    overCurrent:       boolean,
-    overCurrentDimmer: boolean,
-    temperatureChip:   boolean,
-    temperatureDimmer: boolean,
-    dimmerOnFailure:   boolean,
-    dimmerOffFailure:  boolean,
-    hasError:          boolean,
-  },
+  errors: StoneErrors,
   mesh:         any,
   lastUpdated:  any,
   reachability: any,
   keys:         any,
+}
+
+interface StoneErrors  {
+  overCurrent:       boolean,
+  overCurrentDimmer: boolean,
+  temperatureChip:   boolean,
+  temperatureDimmer: boolean,
+  dimmerOnFailure:   boolean,
+  dimmerOffFailure:  boolean,
+  hasError:          boolean,
+}
+
+interface StoneState {
+  timeSet: boolean,
+  state: number,
+  previousState: number,
+  currentUsage: number,
+  behaviourOverridden: boolean,
+  dimmerReady: boolean,
+  powerFactor: number,
+  updatedAt: timestamp
 }
 
 interface StoneDataConfig {

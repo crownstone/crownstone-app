@@ -582,7 +582,7 @@
 		FA59A6A4224CE5D300D58C9F /* AppDelegate_old.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate_old.swift; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
-		FA7FB6E328B8E0E00014FC44 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../../Dropbox/Crownstone/Projects/XCode/bluenet-lib"; sourceTree = "<group>"; };
+		FA7FFE7828C0BC9B002721EC /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FA86C67E21CCEECD00811933 /* WatchTower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchTower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA86C68121CCEECD00811933 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -976,7 +976,7 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FA7FB6E328B8E0E00014FC44 /* bluenet-lib */,
+				FA7FFE7828C0BC9B002721EC /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";

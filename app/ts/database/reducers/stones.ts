@@ -7,58 +7,47 @@ import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
 import abilityReducer      from './stoneSubReducers/abilities'
 import { STONE_TYPES } from "../../Enums";
 
-let defaultSettings : StoneData = {
-  id: undefined,
-  config: {
-    name: 'Crownstone Plug',
+
+let defaultConfig: StoneDataConfig = {
+  name: 'Crownstone Plug',
     description: '',
-    icon: 'c2-pluginFilled',
-    type: STONE_TYPES.plug,
-    uid: undefined, // new field to generalize between sphere, location and stone uid.
-    iBeaconMajor: undefined,
-    iBeaconMinor: undefined,
-    handle: undefined,
+  icon: 'c2-pluginFilled',
+  type: STONE_TYPES.plug,
+  uid: undefined, // new field to generalize between sphere, location and stone uid.
+  iBeaconMajor: undefined,
+  iBeaconMinor: undefined,
+  handle: undefined,
 
-    cloudId: null,
+  cloudId: null,
 
-    firmwareVersion: null,
-    bootloaderVersion: null,
-    hardwareVersion: null,
-    uicr: null,
+  firmwareVersion: null,
+  bootloaderVersion: null,
+  hardwareVersion: null,
+  uicr: null,
 
-    dfuResetRequired: false,
-    locationId: null,
+  dfuResetRequired: false,
+  locationId: null,
 
-    macAddress: undefined,
+  macAddress: undefined,
 
-    hidden: false,
-    locked: false,
+  hidden: false,
+  locked: false,
 
-    updatedAt: 1,
-  },
-  lastUpdated: {
-    stoneTime: 0,
-  },
-  state: {
-    timeSet: false,
-    state: 0.0,
-    previousState: 0.0,
-    currentUsage: 0,
-    behaviourOverridden: false,
-    dimmerReady: false,
-    powerFactor: null,
-    updatedAt: 1
-  },
-  reachability: {
-    lastSeen: null,
-  },
-  behaviours: {
-    // id: behaviourWrapper
-  },
-  abilities: {
-    // id: abilityBase
-  },
-  errors: {
+  updatedAt: 1,
+};
+
+const defaultState: StoneState = {
+  timeSet: false,
+  state: 0.0,
+  previousState: 0.0,
+  currentUsage: 0,
+  behaviourOverridden: false,
+  dimmerReady: false,
+  powerFactor: null,
+  updatedAt: 1
+}
+
+const defaultErrors : StoneErrors = {
     overCurrent: false,
     overCurrentDimmer: false,
     temperatureChip: false,
@@ -66,17 +55,10 @@ let defaultSettings : StoneData = {
     dimmerOnFailure: false,
     dimmerOffFailure: false,
     hasError: false,
-  },
-  mesh: {
-
-  },
-  keys: {
-
   }
-};
 
 
-let stoneConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
+let stoneConfigReducer = (state = defaultConfig, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_CLOUD_ID':
       if (action.data) {
@@ -149,13 +131,13 @@ let stoneConfigReducer = (state = defaultSettings.config, action : DatabaseActio
 
     case 'REFRESH_DEFAULTS':
 
-      return refreshDefaults(state, defaultSettings.config);
+      return refreshDefaults(state, defaultConfig);
     default:
       return state;
   }
 };
 
-let stoneStateReducer = (state = defaultSettings.state, action : DatabaseAction = {}) => {
+let stoneStateReducer = (state = defaultState, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'CLEAR_STONE_USAGE':
       let newState          = {...state};
@@ -196,7 +178,7 @@ let stoneStateReducer = (state = defaultSettings.state, action : DatabaseAction 
       }
       return state;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.state);
+      return refreshDefaults(state, defaultState);
     default:
       return state;
   }
@@ -204,7 +186,7 @@ let stoneStateReducer = (state = defaultSettings.state, action : DatabaseAction 
 
 
 
-let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
+let stoneErrorsReducer = (state = defaultErrors, action: any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
@@ -256,7 +238,7 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
       newState.hasError          = false;
       return newState;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.errors);
+      return refreshDefaults(state, defaultErrors);
     default:
       return state;
   }

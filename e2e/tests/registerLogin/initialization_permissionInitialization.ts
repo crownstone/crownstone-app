@@ -27,7 +27,7 @@ export const Initialization_permissionInitialization = () => {
       await waitToNavigate('permission_Notifications_view')
     }
     else {
-      await waitToNavigate('permission_AI_setup')
+      await waitToNavigate('SphereOverview')
     }
   })
 
@@ -35,16 +35,8 @@ export const Initialization_permissionInitialization = () => {
     test('accept notifications permissions', async () => {
       await screenshot();
       await tap('permission_sounds_fair')
-      await waitToNavigate('permission_AI_setup')
+      await waitToNavigate('SphereOverview')
     })
   }
 
-  test('set AI Name', async () => {
-    await replaceText('AI_name','James');
-    await tapReturnKey('AI_name')
-    await delay(500);
-    await screenshot();
-    await tap('permission_nice_to_meet_you')
-    await waitToNavigate('SphereOverview')
-  })
 };

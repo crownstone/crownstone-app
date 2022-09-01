@@ -15,9 +15,9 @@ function getLeftStyle(style : ViewStyle = {}) : ViewStyle {
   return {paddingHorizontal: 15, height: 35, justifyContent: 'center', alignItems:'flex-start', ...style}
 }
 
-export function MenuButton(props: {onPress: () => void, highlight?: boolean, badge?: BadgeIndicator, badgeColor?: string}) {
+export function MenuButton(props: {onPress: () => void, highlight?: boolean, badge?: BadgeIndicator, badgeColor?: string, testID?: string}) {
   return (
-    <TouchableOpacity onPress={props.onPress} style={getLeftStyle()}>
+    <TouchableOpacity onPress={props.onPress} style={getLeftStyle()} testID={props.testID}>
       <HighlightableBlackIcon name={'enty-menu'} size={25} enabled={props.highlight} badge={props.badge} badgeColor={props.badgeColor}/>
     </TouchableOpacity>
   );
@@ -25,7 +25,7 @@ export function MenuButton(props: {onPress: () => void, highlight?: boolean, bad
 
 export function EditIcon(props) {
   return (
-    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress} testID={props.testID ?? 'editIcon'}>
       <Icon name={'md-create'} size={25} color={color}/>
     </TouchableOpacity>
   );
@@ -34,7 +34,7 @@ export function EditIcon(props) {
 
 export function SettingsIconLeft(props) {
   return (
-    <TouchableOpacity style={getLeftStyle(props.style)} onPress={props.onPress}>
+    <TouchableOpacity style={getLeftStyle(props.style)} onPress={props.onPress} testID={props.testID ?? 'SettingsIconLeft'}>
       <HighlightableIcon name={'md-create'} size={25} color={color} enabled={props.highlight ?? false}/>
     </TouchableOpacity>
   );
@@ -58,7 +58,7 @@ export function DevIconRight(props) {
 
 export function EditDone(props) {
   return (
-    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress} testID={props.testID ?? 'editDone'}>
       <Text style={{...styles.viewButton, color: color, textAlign:'right'}}>Done</Text>
     </TouchableOpacity>
   );
@@ -73,7 +73,7 @@ export function BackIcon(props) {
       else {
         NavigationUtil.back();
       }
-    }}>
+    }} testID={props.testID ?? 'back'}>
       <Icon name={'fa5-arrow-left'} size={20} color={color}/>
     </TouchableOpacity>
   );

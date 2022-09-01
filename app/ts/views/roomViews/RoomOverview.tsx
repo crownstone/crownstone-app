@@ -448,10 +448,13 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
         activeOpacity={editMode ? 0.2 : 1.0}
         style={{alignItems:'center', justifyContent:'center'}}
         onPress={editMode ? launchEditModal : () => {}}
+        testID={'editRoomLabel'}
       >
         <HeaderTitle title={location.config.name} maxWidth={screenWidth-70-50-50}/>
       </TouchableOpacity>
-      <SlideSideFadeInView visible={editMode} width={50}><SettingsIconLeft onPress={launchEditModal} highlight={amountOfCrownstonesInLocation === 0}/></SlideSideFadeInView>
+      <SlideSideFadeInView visible={editMode} width={50}>
+        <SettingsIconLeft onPress={launchEditModal} highlight={amountOfCrownstonesInLocation === 0} testID={'editRoom'}/>
+      </SlideSideFadeInView>
       <View style={{flex:1, height:30}} />
       <SlideSideFadeInView visible={editMode} width={70}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
       <SlideSideFadeInView visible={!editMode} width={50}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>

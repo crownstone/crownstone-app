@@ -59,7 +59,7 @@ export class SideBarView extends Component<any, any> {
           <View style={{flex:1}}>{this.props.sideMenu}</View>
         </View>
         <Animated.View style={[styles.fullscreen, {left: this.state.leftOffset, borderRadius: this.state.borderRadius, marginVertical: this.state.margins, overflow:"hidden"}]}>
-          <InvisiblePressable onPressIn={() => { this.close(); }} disabled={!this.state.open}>
+          <InvisiblePressable onPressIn={() => { this.close(); }} disabled={!this.state.open} testID={'SphereOverviewCloseSidebar'}>
             <View pointerEvents={this.state.open ? 'none' : 'auto'} style={{flex:1}}>
               {this.props.content}
             </View>

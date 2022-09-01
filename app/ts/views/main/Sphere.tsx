@@ -133,11 +133,11 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
 }
 
 
-function SphereHeader({sphere, openSideMenu, blinkMenuIcon, badgeMenuIcon}) {
+export function SphereHeader({sphere, openSideMenu, blinkMenuIcon, badgeMenuIcon}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
-      <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} badge={badgeMenuIcon} />
-      <TouchableOpacity onPress={openSideMenu} style={{alignItems:'center', justifyContent:'center'}}>
+      <MenuButton onPress={openSideMenu} highlight={blinkMenuIcon} badge={badgeMenuIcon} testID={'Sidebar_button'}/>
+      <TouchableOpacity onPress={openSideMenu} style={{alignItems:'center', justifyContent:'center'}} testID={'Sidebar_button_sphereName'}>
         <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>
       <View style={{flex:1}} />

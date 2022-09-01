@@ -17,12 +17,12 @@ Follow the steps in that readme, and continue when the clouds are started.
 
 install the detox cli
 ```
-npm install -g detox
+npm install -g detox@19.11.0
 ```
 
 We use jest:
 ```
-npm install -g jest
+npm install -g jest@27
 ```
 
 ### iOS preperation
