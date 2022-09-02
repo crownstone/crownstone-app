@@ -36,6 +36,7 @@ import { Get } from "../../util/GetUtil";
 import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EditDone, EditIcon } from "../components/EditIcon";
+import { ContentNoSphere } from "../energyUsage/EnergyUsage";
 
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
@@ -216,7 +217,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       }
     }
     else {
-      content = <ScenesWithoutSpheres />;
+      return  <BackgroundCustomTopBarNavbar><ContentNoSphere /></BackgroundCustomTopBarNavbar>;
     }
 
 

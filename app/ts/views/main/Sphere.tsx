@@ -141,7 +141,7 @@ export function SphereHeader({sphere, openSideMenu, blinkMenuIcon, badgeMenuIcon
         <HeaderTitle title={sphere.config.name} />
       </TouchableOpacity>
       <View style={{flex:1}} />
-      <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} />
+      <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: sphere.id})}} testID={'editSphere'} />
     </View>
   );
 }

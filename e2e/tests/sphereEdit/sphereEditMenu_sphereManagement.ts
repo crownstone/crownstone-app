@@ -8,18 +8,15 @@ import {by, device, expect, element, waitFor} from 'detox';
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const SphereEditMenu_sphereManagement = () => {
-  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+  // if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be on the SphereEdit view', async () => {
     await waitToStart('SphereEdit');
+    await screenshot();
   })
 
   test("should not be able to leave the sphere as the only user", async () => {
-    await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
-    await tap("SphereEdit_settings");
-    await waitToNavigate('SphereEditSettings');
-    await screenshot();
-    await scrollDownUntilVisible('LeaveSphere', "SphereEditSettingsScrollView");
+    await scrollDownUntilVisible('LeaveSphere', "SphereEditScrollView");
     await tap("LeaveSphere")
     await screenshot();
     await tapAlertCancelButton();
@@ -31,7 +28,7 @@ export const SphereEditMenu_sphereManagement = () => {
   })
 
   test("should be able to delete sphere", async () => {
-    await scrollDownUntilVisible('DeleteSphere', "SphereEditSettingsScrollView");
+    await scrollDownUntilVisible('DeleteSphere', "SphereEditScrollView");
     await tap("DeleteSphere")
     await screenshot();
     await tapAlertCancelButton();
@@ -41,18 +38,12 @@ export const SphereEditMenu_sphereManagement = () => {
   })
 
   test("should be able to create a new sphere when you dont have any spheres", async () => {
-    await tap('edit')
+    await tap('editSphere')
     await waitToNavigate('SphereEdit');
     await screenshot();
     await tap("SphereEdit_createOnlySphere");
-    await waitToNavigate('AiStart');
-    await replaceText('AiName','James the Second');
-    await tapReturnKey('AiName');
-    await screenshot();
-    await tap('AiStart_OK');
-    await tapSingularAlertButton();
     await waitToNavigate('SphereOverview');
-    await tap('edit')
+    await tap('editSphere')
     await waitToNavigate('SphereEdit');
   })
 
@@ -91,23 +82,14 @@ export const SphereEditMenu_sphereManagement = () => {
     await waitToNavigate('AddSphereTutorial_intended');
     await scrollDownUntilVisible('AddSphere_create', "AddSphereTutorial_intended");
     await tap("AddSphere_create")
-    await waitToNavigate('AiStart');
+    await waitToNavigate('SphereOverview');
   })
 
-  test("should be able to name the AI", async () => {
-    await replaceText('AiName','James the Third');
-    await tapReturnKey('AiName');
-    await tap('AiStart_OK');
-    await tapSingularAlertButton();
-    await waitToNavigate("SphereOverview");
-  })
 
   test("should be able to tap the sphere change button", async () => {
-    await tap('SphereChangeButton');
-    await waitToNavigate("ZoomInstructionOverlay")
-    await screenshot();
-    await tap("ZoomInstructionsButton")
-    await waitToNavigate("SphereOverview_SphereLevel")
+    await tap('Sidebar_button');
+    await tap('changeSphere', 1000, 50);
+
     await screenshot();
   })
 
@@ -118,14 +100,11 @@ export const SphereEditMenu_sphereManagement = () => {
     await waitToNavigate("SphereOverview")
   })
 
-  test("should be able to delete all spheres", async () => {
+  test("should be able to delete the new sphere", async () => {
     await waitToNavigate("SphereOverview")
-    await tap('edit')
+    await tap('editSphere')
     await waitToNavigate('SphereEdit');
-    await scrollDownUntilVisible('SphereEdit_settings', "SphereEditScrollView");
-    await tap("SphereEdit_settings");
-    await waitToNavigate('SphereEditSettings');
-    await scrollDownUntilVisible('DeleteSphere', "SphereEditSettingsScrollView");
+    await scrollDownUntilVisible('DeleteSphere', "SphereEditScrollView");
     await tap("DeleteSphere")
     await tapAlertOKButton();
     await waitToNavigate('SphereOverview_SphereLevel');
@@ -134,7 +113,7 @@ export const SphereEditMenu_sphereManagement = () => {
     let sphereId = Assistant.getSphereIdMostRecent();
     await tap(`SphereCircle${sphereId}`);
     await waitToNavigate("SphereOverview");
-    await tap('edit');
+    await tap('editSphere');
     await waitToNavigate('SphereEdit');
   })
 };

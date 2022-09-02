@@ -2633,7 +2633,7 @@ export default {
   SphereOverview:{
     __filename: "../js/views/main/SphereOverview.tsx",
     No_Spheres_available_:                  function() { return "No Spheres available." },
-    Press_Edit_in_the_upper_r:              function() { return "Press Edit in the upper right corner to create your own Sphere or wait to be added to those of others." },
+    Press_Edit_in_the_upper_r:              function() { return "Press the edit icon in the upper right corner to create your own Sphere or wait to be added to those of others." },
     Sphere_Overview:                        function() { return "Sphere Overview" },
     Hello_there_:                           function() { return "Hello there!" },
     Move_rooms_around:                      function() { return "Move rooms around!" },

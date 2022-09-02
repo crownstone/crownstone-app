@@ -16,7 +16,7 @@ import {
   availableModalHeight,
   availableScreenHeight, background,
   colors,
-  overviewStyles, screenHeight, screenWidth, statusBarHeight, styles, tabBarHeight
+  overviewStyles, screenHeight, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import {SphereLevel}                from "./SphereLevel";
@@ -35,9 +35,11 @@ import { SphereOverviewSideBar }    from "../sidebars/SphereOverviewSideBar";
 import { useRef }                   from "react";
 import { NavBarBlur, TopBarBlur }   from "../components/NavBarBlur";
 import {Debug, DebugNotifications}  from "../../DebugCalls";
-import { EditIcon, MenuButton }     from "../components/EditIcon";
+import { EditIcon, MenuButton, MenuButtonPlaceholder } from "../components/EditIcon";
 import { HeaderTitle }              from "../components/HeaderTitle";
 import { Get }                      from "../../util/GetUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Spacer } from "../components/Spacer";
 
 
 const ZOOM_LEVELS = {
@@ -282,13 +284,22 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={backgroundOverride} testID={"SphereOverview_noSphere"}>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
-            <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>
-            <Text style={overviewStyles.subText}>{ lang("Press_Edit_in_the_upper_r") }</Text>
-          </View>
-        </AnimatedBackground>
+        <BackgroundCustomTopBar image={backgroundOverride} testID={"SphereOverview_noSphere"}>
+          <SafeAreaView style={{flexGrow:1, alignItems:'center', justifyContent:'center', top:0, left:0, bottom:0, right:0}}>
+            <View style={{height: topBarHeight}} />
+            {/*<Icon name="c1-sphere" size={120} color={colors.csBlue.hex} style={{padding:15}}/>*/}
+            <Text style={styles.boldExplanation}>{ lang("Press_Edit_in_the_upper_r") }</Text>
+            <View style={{flex:2}} />
+          </SafeAreaView>
+          <TopBarBlur xlight>
+            <View style={{flexDirection: 'row', alignItems:'center'}}>
+              <MenuButtonPlaceholder />
+              <HeaderTitle title={lang("No_Spheres_available_")} />
+              <View style={{flex:1}} />
+              <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: null})}} testID={'editSphere'} />
+            </View>
+          </TopBarBlur>
+        </BackgroundCustomTopBar>
       );
     }
   }

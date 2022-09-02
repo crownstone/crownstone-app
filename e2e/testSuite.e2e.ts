@@ -58,14 +58,14 @@ if (process.env.REUSE !== '1') {
   describe('Setup initial permissions',                  Initialization_permissionInitialization);
 }
 
-describe('Test if the sidebar works',                    SideBar_usage);
-//
-describe('Test room edit',                               Rooms_edit);
-describe('Test room deletion',                           Rooms_deleteAll);
-describe('Test room creation when there are no rooms',   Rooms_createRoom);
-//
-// describe('Test the Sphere Edit menu, start',             SphereEditMenu_start);
-// describe('Test the Sphere Edit menu, sphere management', SphereEditMenu_sphereManagement);
+// describe('Test if the sidebar works',                    SideBar_usage);
+
+// describe('Test room edit',                               Rooms_edit);
+// describe('Test room deletion',                           Rooms_deleteAll);
+// describe('Test room creation when there are no rooms',   Rooms_createRoom);
+
+describe('Test the Sphere Edit menu, start',             SphereEditMenu_start);
+describe('Test the Sphere Edit menu, sphere management', SphereEditMenu_sphereManagement);
 // describe('Test the Sphere Edit menu, rooms',             SphereEditMenu_rooms);
 // describe('Test the Sphere Edit menu, no crownstones',    SphereEditMenu_crownstones_empty);
 // describe('Test the Sphere Edit menu, users',             SphereEditMenu_users);

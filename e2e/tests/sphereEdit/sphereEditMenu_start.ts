@@ -13,7 +13,7 @@ export const SphereEditMenu_start = () => {
   })
 
   test('should go to the SphereEdit menu when you tap edit', async () => {
-    await tap('edit')
+    await tap('editSphere')
     await waitToNavigate('SphereEdit');
     await screenshot();
   })

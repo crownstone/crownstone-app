@@ -37,9 +37,9 @@ export function SphereOverviewSideBar(props) {
 
   return (
     <View style={{flex:1, backgroundColor: colors.csBlue.hex, paddingLeft:25}}>
-      <View style={{height:50}}/>
+      <View style={{height:50}} />
       <Image source={require('../../../assets/images/crownstoneLogo.png')} style={{width:factor * 300, height: factor*300, tintColor: colors.white.hex}}/>
-      <View style={{height:50}}/>
+      <View style={{height:50}} />
 
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}

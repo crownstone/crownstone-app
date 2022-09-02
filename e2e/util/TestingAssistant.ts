@@ -59,6 +59,7 @@ export class TestingAssistant {
     return candidate;
   }
 
+
   /**
    * Gets the cloud ID of the sphere
    * @param name
