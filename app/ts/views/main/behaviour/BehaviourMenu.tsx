@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationMenu", key)(a,b,c,d,e);
+  return Languages.get("BehaviourMenu", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {

@@ -899,8 +899,6 @@ export default {
   },
   IconShowcase:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/development/IconShowcase.tsx",
-    _part___i_:                             function() { return arguments[0] + " part " + (arguments[1] + arguments[2]) + " (" + arguments[3] + "i)" },
-    Pick_an_Icon:                           function() { return "Pick an Icon" },
   },
   InSphere:{
     __filename: "../js/views/settingsViews/diagnostics/InSphere.tsx",
@@ -1035,7 +1033,6 @@ export default {
     Retraining_the_room_on_th:              function() { return "Retraining the room on this device..." },
     Retraining_to_include_new:              function() { return "Retraining to include new Crownstones..." },
     Optimizing_for_your_phone:              function() { return "Optimizing for your phone..." },
-    Unknown_room:                           function() { return arguments[0] || "Unknown room" },
   },
   LocalizationFindAndFix:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationFindAndFix.tsx",

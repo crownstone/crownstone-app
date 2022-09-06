@@ -34,6 +34,33 @@ export default {
     Update_Crownstone_to_use_:              function() { return "Update de Crownstone om\ngeleidelijk dimmen aan te kunnen zetten!"; },
     __filename: "../../js/views/deviceViews/abilities/settings/Ability_DimmerSettings.tsx",
   },
+  Ability_DoubleTapSwitchcraft:{
+    __stringSameAsBaseLanguage: {
+      Double_Tap_Switchcraft_al:             false,
+      Tap_the_wall_switch_twice:             false,
+      The_dim_value_is_dependen:             false,
+      Double_Tap_Switchcraft_all:            false,
+      Tap_the_wall_switch_twice_:            false,
+      The_dim_value_is_dependent:            false,
+      Dimming_has_to_be_enabled:             false,
+      Update_this_Crownstone_to:             false,
+      Double_Tap_Switchcraft:                false,
+      Enable_double_tap_switchc:             false,
+      Double_tap_features:                   false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft.tsx",
+    Double_Tap_Switchcraft_al:              function() { return "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." },
+    Tap_the_wall_switch_twice:              function() { return "Tap the wall switch twice quickly to change between full on and the dimmed intensity." },
+    The_dim_value_is_dependen:              function() { return "The dim value is dependent on the twiligth and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
+    Double_Tap_Switchcraft_all:             function() { return "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." },
+    Tap_the_wall_switch_twice_:             function() { return "Tap the wall switch twice quickly to change between full on and the dimmed intensity." },
+    The_dim_value_is_dependent:             function() { return "The dim value is dependent on the twiligth and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
+    Dimming_has_to_be_enabled:              function() { return "Dimming has to be enabled in order to use double tap switchcraft." },
+    Update_this_Crownstone_to:              function() { return "Update this Crownstone to firmware 5.7.0 or higher to use double tap Switchcraft." },
+    Double_Tap_Switchcraft:                 function() { return "Double Tap Switchcraft" },
+    Enable_double_tap_switchc:              function() { return "Enable double tap switchcraft to configure it further.." },
+    Double_tap_features:                    function() { return "Double tap features" },
+  },
   Ability_SwitchcraftInformation:{
     __stringSameAsBaseLanguage: {
       Switchcraft_is_a_new__exp:             false,
@@ -71,6 +98,7 @@ export default {
       Tap_the_installation___in:             false,
       Swichcraft_should_only_be:             false,
       Switchcraft_Settings:                  false,
+      Double_tap_features:                   false,
     },
     Installation___Informatio:              function() { return "Installatie & Informatie"; },
     Disable_Switchcraft:                    function() { return "Zet Switchcraft uit"; },
@@ -79,6 +107,7 @@ export default {
     Swichcraft_should_only_be:              function() { return "Swichcraft mag alleen worden aangezet voor Crownstones die zijn aangesloten op een bestaande wandschakelaar."; },
     Switchcraft_Settings:                   function() { return "Switchcraft instellingen"; },
     __filename: "../../js/views/deviceViews/abilities/settings/Ability_SwitchcraftSettings.tsx",
+    Double_tap_features:                    function() { return "Double tap features" },
   },
   Ability_TapToToggleInformation:{
     __stringSameAsBaseLanguage: {
@@ -291,6 +320,7 @@ export default {
       Ill_start_at_:                         false,
       Thats_a_good_time_:                    false,
       _h:                                    false,
+      time:                                  false,
     },
     When_should_I_start_:                   function() { return "Wanneer moet ik beginnen?"; },
     When_am_I_finished_:                    function() { return "Wanneer ben ik klaar?"; },
@@ -307,6 +337,7 @@ export default {
     Thats_a_good_time_:                     function() { return "Volgende"; },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/AicoreTimeCustomization.tsx",
     _h:                                     function() { return "-2h" },
+    time:                                   function() { return "time" },
   },
   AicoreTimeCustomizationOverlay:{
     __stringSameAsBaseLanguage: {
@@ -536,6 +567,17 @@ export default {
     You_can_use_in_the_house_w:             function() { return "Je kan \"thuis\" gebruiken als je minder dan " + arguments[0] + " Crownstones hebt."; },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourBehaviourEditor.tsx",
   },
+  BehaviourMenu:{
+    __stringSameAsBaseLanguage: {
+      BEHAVIOUR:                             false,
+      Disable_behaviour:                     false,
+      Behaviour:                             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/behaviour/BehaviourMenu.tsx",
+    BEHAVIOUR:                              function() { return "BEHAVIOUR" },
+    Disable_behaviour:                      function() { return "Disable behaviour" },
+    Behaviour:                              function() { return "Behaviour" },
+  },
   Behaviour_CopyFromButton:{
     __stringSameAsBaseLanguage: {
       Copy_from___:                          false,
@@ -557,6 +599,17 @@ export default {
     _You_dont_have_permission_t_header:     function() { return "Je zal dit aan een admin of member moeten vragen."; },
     _You_dont_have_permission_t_body:       function() { return "Je hebt geen toegang om dit zelf aan te passen..."; },
     _You_dont_have_permission_t_left:       function() { return "OK"; },
+  },
+  Behaviour_SyncButton:{
+    __stringSameAsBaseLanguage: {
+      _Failed_to_sync_arguments_header:      false,
+      _Failed_to_sync_arguments_body:        false,
+      _Failed_to_sync_arguments_left:        false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/deviceViews/smartBehaviour/buttons/Behaviour_SyncButton.tsx",
+    _Failed_to_sync_arguments_header:       function() { return "Failed to sync" },
+    _Failed_to_sync_arguments_body:         function() { return arguments[0] ?? "Unknown reason." },
+    _Failed_to_sync_arguments_left:         function() { return "OK" },
   },
   BleStateOverlay:{
     __stringSameAsBaseLanguage: {
@@ -603,6 +656,15 @@ export default {
     Creating_Sphere___:                     function() { return "Sfeer aanmaken..."; },
     _new:                                   function() { return " nieuw"; },
   },
+  DebugCalls:{
+    __stringSameAsBaseLanguage: {
+      invited:                               false,
+      Bluetooth_disabled:                    false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/DebugCalls.tsx",
+    invited:                                function() { return "invited" },
+    Bluetooth_disabled:                     function() { return "Bluetooth disabled" },
+  },
   DevIconSelection:{
     __stringSameAsBaseLanguage: {
       HIDE:                                  false,
@@ -630,6 +692,9 @@ export default {
       Enable_so_you_can_tap_you:             false,
       To_adjust_the_distance_sen:            false,
       Usually__Built_in_Crownst:             false,
+      dimming:                               false,
+      switchcraft:                           false,
+      tapToToggle:                           false,
     },
     My_Abilities:                           function() { return "Mijn Talenten"; },
     These_are_the_things_I_ca:              function() { return "Dit zijn dingen die ik voor je kan doen!\nJe kan zelf aangeven hoe ik je het beste kan helpen!."; },
@@ -646,6 +711,9 @@ export default {
     To_adjust_the_distance_sen:             function() { return "Om de minimale afstand die nodig is voor Tik-'m-aan in te stellen voor alle Crownstones, kijk bij Instellingen -> App Instellingen. Als je het alleen voor deze Crownstone wilt aanpassen, klik op het tandwiel."; },
     Usually__Built_in_Crownst:              function() { return "Over het algemeen hebben de Inbouw Crownstones Tik-'m-aan uit staan. Als je het aanzet, kan je je telefoon dichtbij houden om te schakelen."; },
     __filename: "../../js/views/deviceViews/DeviceAbilities.tsx",
+    dimming:                                function() { return "dimming" },
+    switchcraft:                            function() { return "switchcraft" },
+    tapToToggle:                            function() { return "tapToToggle" },
   },
   DeviceEditAppearence:{
     __stringSameAsBaseLanguage: {
@@ -784,6 +852,13 @@ export default {
     Sockets:                                function() { return "Stopcontacten"; },
     __filename: "../js/views/deviceViews/DeviceIconSelection.tsx",
   },
+  DeviceLabels:{
+    __stringSameAsBaseLanguage: {
+      I_need_to_be_setup_again_:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/components/deviceEntries/submodules/DeviceLabels.tsx",
+    I_need_to_be_setup_again_:              function() { return "I need to be setup again... Tap me!" },
+  },
   DeviceOverview:{
     __stringSameAsBaseLanguage: {
       Edit:                                  false,
@@ -800,6 +875,15 @@ export default {
       Removing_this_Crownstone_:             false,
       Not_in_a_room:                         false,
       Settings:                              false,
+      You_can_only_lock_Crownst:             false,
+      CROWNSTONE_SETTINGS:                   false,
+      Appearence:                            false,
+      Change_name__icon__etc_:               false,
+      Enable_dimming__switchcra:             false,
+      Turn_on_if_when____:                   false,
+      Move_the_Crownstone_to_an:             false,
+      Unlock_Crownstone_switchL:             false,
+      Remove_Crownstone:                     false,
     },
     You_can_only_lock_Crownst:              function() { return "Alleen Crownstones zonder dimmer functie kunnen op slot worden gezet."; },
     Edit:                                   function() { return "Wijzig"; },
@@ -817,6 +901,14 @@ export default {
     Not_in_a_room:                          function() { return "Niet in een kamer"; },
     Settings:                               function() { return "Instellingen"; },
     __filename: "../js/views/deviceViews/DeviceOverview.tsx",
+    CROWNSTONE_SETTINGS:                    function() { return "CROWNSTONE SETTINGS" },
+    Appearence:                             function() { return "Appearence" },
+    Change_name__icon__etc_:                function() { return "Change name, icon, etc." },
+    Enable_dimming__switchcra:              function() { return "Enable dimming, switchcraft, etc." },
+    Turn_on_if_when____:                    function() { return "Turn on if/when ..." },
+    Move_the_Crownstone_to_an:              function() { return "Move the Crownstone to another room" },
+    Unlock_Crownstone_switchL:              function() { return arguments[0] ? "Unlock Crownstone switch" : "Lock Crownstone switch" },
+    Remove_Crownstone:                      function() { return "Remove Crownstone" },
   },
   DevicePowerUsage:{
     __stringSameAsBaseLanguage: {
@@ -857,6 +949,13 @@ export default {
     _Success___Behaviour_has__left:         function() { return "Geweldig!"; },
     Stone_deleted_:                         function() { return "Stone verwijderd."; },
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
+  },
+  DeviceSmartBehaviour_BehaviourSelector:{
+    __stringSameAsBaseLanguage: {
+      Tap_behaviours_to_copy_:               false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/deviceViews/smartBehaviour/DeviceSmartBehaviour_BehaviourSelector.tsx",
+    Tap_behaviours_to_copy_:                function() { return "Tap behaviours to copy!" },
   },
   DeviceSmartBehaviour_CopyStoneSelection:{
     __stringSameAsBaseLanguage: {
@@ -1272,10 +1371,12 @@ export default {
     __stringSameAsBaseLanguage: {
       The_dimmer_is_starting_up:             false,
       Smooth_sliding_will_be_av:             false,
+      Get_close_to_enable_dimmi:             false,
     },
     The_dimmer_is_starting_up:              function() { return "De dimmer is aan het opstarten..."; },
     Smooth_sliding_will_be_av:              function() { return "Het soepel schuiven zal beschikbaar zijn zodra ik dicht genoeg bij de Crownstone ben om het dimmen ervan mogelijk te maken."; },
     __filename: "../../js/views/components/DimmerSlider.tsx",
+    Get_close_to_enable_dimmi:              function() { return "Get close to enable dimming!" },
   },
   Dropdown:{
     __stringSameAsBaseLanguage: {
@@ -1286,12 +1387,53 @@ export default {
     Done:                                   function() { return "Klaar"; },
     __filename: "../js/views/components/editComponents/Dropdown.tsx",
   },
+  EditIcon:{
+    __stringSameAsBaseLanguage: {
+      Done:                                  false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/components/EditIcon.tsx",
+    Done:                                   function() { return "Done" },
+  },
   EditableItem:{
     __stringSameAsBaseLanguage: {
       ___UNHANDLED_for_:                     false,
     },
     ___UNHANDLED_for_:                      function() { return "" + arguments[0] + " - Bewerkbaar item onbekend type: " + arguments[1] + ""; },
     __filename: "../js/views/components/EditableItem.tsx",
+  },
+  EnergyUsage:{
+    __stringSameAsBaseLanguage: {
+      LIVE:                                  false,
+      Day:                                   false,
+      Week:                                  false,
+      Months:                                false,
+      Years:                                 false,
+      DEMO_MODE:                             false,
+      No_sphere_selected___:                 false,
+      Go_to_the_overview_and_se:             false,
+      _Coming_soon___Were_worki_header:      false,
+      _Coming_soon___Were_worki_body:        false,
+      _Coming_soon___Were_worki_left:        false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/energyUsage/EnergyUsage.tsx",
+    LIVE:                                   function() { return "LIVE" },
+    Day:                                    function() { return "Day" },
+    Week:                                   function() { return "Week" },
+    Months:                                 function() { return "Months" },
+    Years:                                  function() { return "Years" },
+    DEMO_MODE:                              function() { return "DEMO MODE" },
+    No_sphere_selected___:                  function() { return "No sphere selected..." },
+    Go_to_the_overview_and_se:              function() { return "Go to the overview and select a sphere." },
+    _Coming_soon___Were_worki_header:       function() { return "Coming soon!" },
+    _Coming_soon___Were_worki_body:         function() { return "We're working on integrating with existing hubs to gather historical data for you to see here!\n\nThese views are a taste of what's to come!" },
+    _Coming_soon___Were_worki_left:         function() { return "OK" },
+  },
+  EnergyUsageUtil:{
+    __stringSameAsBaseLanguage: {
+      W:                                     false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/energyUsage/EnergyUsageUtil.tsx",
+    W:                                      function() { return "W" },
   },
   ErrorContent:{
     __stringSameAsBaseLanguage: {
@@ -1453,6 +1595,10 @@ export default {
       DANGER:                                false,
       Not_in_a_room:                         false,
       Delete:                                false,
+      Appearence:                            false,
+      Change_name__icon__etc_:               false,
+      Move_the_hub_to_another_r:             false,
+      Remove_Hub:                            false,
     },
     Icon:                                   function() { return "Icoon"; },
     DANGER:                                 function() { return "GEVAARLIJK"; },
@@ -1460,6 +1606,10 @@ export default {
     Delete:                                 function() { return "Verwijderen"; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/js/views/hubViews/HubOverview.tsx",
     Removing_this_Hub_:                     function() { return "Removing this Hub from its Sphere will revert it back to factory defaults (and back in setup mode)." },
+    Appearence:                             function() { return "Appearence" },
+    Change_name__icon__etc_:                function() { return "Change name, icon, etc." },
+    Move_the_hub_to_another_r:              function() { return "Move the hub to another room." },
+    Remove_Hub:                             function() { return "Remove Hub" },
   },
   HubProblems:{
     __stringSameAsBaseLanguage: {
@@ -1493,6 +1643,7 @@ export default {
       Initialize_hub_:                       false,
       Fix_now__:                             false,
       The_hub_did_not_report:                false,
+      Enable_encryption__:                   false,
     },
     Fixing_issue___:                        function() { return "Probleem oplossen..."; },
     This_hub_has_no_Crownston:              function() { return "Deze hub is niet gelinkt aan een CrownstoneUSB. Je kan dit oplossen door de CrownstoneUSB die in de hub zit aan je sphere toe te voegen, of deze hub te verwijderen uit de Sfeer.\n\nAls de dongle al in je Sfeer zit, navigeer naar die dongle in de app en druk daar op de Probleem oplossen knop."; },
@@ -1525,6 +1676,7 @@ export default {
     Fix_now__:                              function() { return "Oplossen!"; },
     The_hub_did_not_report:                 function() { return "De hub heeft het afgelopen half uur niets tegen de cloud gezegd. Verbind de hub met het internet aub."; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/js/views/hubViews/HubOverview.tsx",
+    Enable_encryption__:                    function() { return "Enable encryption. " },
   },
   HubUtil:{
     __stringSameAsBaseLanguage: {
@@ -1578,6 +1730,11 @@ export default {
     Pick_an_Icon:                           function() { return "Kies een Icoon"; },
     __filename: "../../js/views/development/IconDevSelector.tsx",
   },
+  IconShowcase:{
+    __stringSameAsBaseLanguage: {
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/development/IconShowcase.tsx",
+  },
   InSphere:{
     __stringSameAsBaseLanguage: {
       Database_is_healthy:                   false,
@@ -1628,9 +1785,11 @@ export default {
   Interview:{
     __stringSameAsBaseLanguage: {
       Something_went_wrong__Plea:            false,
+      never:                                 false,
     },
     Something_went_wrong__Plea:             function() { return "Er is iets misgegaan. Probeer het alsjeblieft opnieuw."; },
     __filename: "../../js/views/components/Interview.tsx",
+    never:                                  function() { return "never" },
   },
   InterviewDark:{
     __stringSameAsBaseLanguage: {
@@ -1760,6 +1919,15 @@ export default {
     Save_selection_:                        function() { return "Selecteer!"; },
     __filename: "../../js/views/overlays/ListOverlay.tsx",
   },
+  LiveLists:{
+    __stringSameAsBaseLanguage: {
+      No_Crownstones_in_room:                false,
+      Waiting_to_hear_from_all_:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/energyUsage/components/LiveLists.tsx",
+    No_Crownstones_in_room:                 function() { return "No Crownstones in room" },
+    Waiting_to_hear_from_all_:              function() { return "Waiting to hear from all Crownstones in the room..." },
+  },
   LocalNotifications:{
     __stringSameAsBaseLanguage: {
       New_Message_Found:                     false,
@@ -1768,9 +1936,195 @@ export default {
     New_Message_Found:                      function() { return "Een inkomend berichtje!"; },
     New_Message_Found_n:                    function() { return "Een inkomend berichtje!"; },
   },
+  LocalizationCrownstoneMoved:{
+    __stringSameAsBaseLanguage: {
+      A_Crownstone_has_been_mov:             false,
+      We_can_update_the_rooms_t:             false,
+      If_we_do_not_do_this__the:             false,
+      Please_pick_a_Crownstone_:             false,
+      Quickfix:                              false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationCrownstoneMoved.tsx",
+    A_Crownstone_has_been_mov:              function() { return "A Crownstone has been moved.." },
+    We_can_update_the_rooms_t:              function() { return "We can update the rooms to use this information!" },
+    If_we_do_not_do_this__the:              function() { return "If we do not do this, the moved Crownstone can interfere with the ability to detect which room you are in." },
+    Please_pick_a_Crownstone_:              function() { return "Please pick a Crownstone first." },
+    Quickfix:                               function() { return "Quickfix" },
+  },
+  LocalizationDetail:{
+    __stringSameAsBaseLanguage: {
+      Training_quality:                      false,
+      Add_more_stars_by_:                    false,
+      Address_the_issue_by_:                 false,
+      Further_improve_localizat:             false,
+      Permanently_delete_all_lo:             false,
+      _Are_you_sure___You_will__header:      false,
+      _Are_you_sure___You_will__body:        false,
+      _Are_you_sure___You_will__left:        false,
+      _Are_you_sure___You_will__right:       false,
+      Add_more_training_data___:             false,
+      Find_and_fix_difficult_sp:             false,
+      DELETE_ALL_COLLECTED_DATA:             false,
+      Careful__you_will_need_to:             false,
+      Manage_fingerprints:                   false,
+      DEV__Delete_individual_fi:             false,
+      Adding_an_in_pocket_train:             false,
+      Retraining_the_room_on_th:             false,
+      Retraining_to_include_new:             false,
+      Optimizing_for_your_phone:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationDetail.tsx",
+    Training_quality:                       function() { return "Training quality" },
+    Add_more_stars_by_:                     function() { return "Add more stars by:" },
+    Address_the_issue_by_:                  function() { return "Address the issue by:" },
+    Further_improve_localizat:              function() { return "Further improve localization by:" },
+    Permanently_delete_all_lo:              function() { return "Permanently delete all localization data for this room for a fresh start. This will affect the localization for everyone..." },
+    _Are_you_sure___You_will__header:       function() { return "Are you sure?" },
+    _Are_you_sure___You_will__body:         function() { return "You will have to re-train the room to get it to work again." },
+    _Are_you_sure___You_will__left:         function() { return "Cancel" },
+    _Are_you_sure___You_will__right:        function() { return "Delete data!" },
+    Add_more_training_data___:              function() { return "Add more training data..." },
+    Find_and_fix_difficult_sp:              function() { return "Find and fix difficult spots..." },
+    DELETE_ALL_COLLECTED_DATA:              function() { return "DELETE ALL COLLECTED DATA" },
+    Careful__you_will_need_to:              function() { return "Careful, you will need to retrain this room again if you delete all the data." },
+    Manage_fingerprints:                    function() { return "Manage fingerprints" },
+    DEV__Delete_individual_fi:              function() { return "DEV: Delete individual fingerprints" },
+    Adding_an_in_pocket_train:              function() { return "Adding an in-pocket training set..." },
+    Retraining_the_room_on_th:              function() { return "Retraining the room on this device..." },
+    Retraining_to_include_new:              function() { return "Retraining to include new Crownstones..." },
+    Optimizing_for_your_phone:              function() { return "Optimizing for your phone..." },
+  },
+  LocalizationFindAndFix:{
+    __stringSameAsBaseLanguage: {
+      Move_around_to_find_mista:             false,
+      Any_mistake_will_be_fixed:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationFindAndFix.tsx",
+    Move_around_to_find_mista:              function() { return "Move around to find mistakes in the localization..." },
+    Any_mistake_will_be_fixed:              function() { return "Any mistake will be fixed and applied immediately!" },
+  },
+  LocalizationFingerprintManager:{
+    __stringSameAsBaseLanguage: {
+      Active_fingerprints:                   false,
+      _Are_you_sure___This_cann_header:      false,
+      _Are_you_sure___This_cann_body:        false,
+      _Are_you_sure___This_cann_left:        false,
+      _Are_you_sure___This_cann_right:       false,
+      TAP_TO_DELETE:                         false,
+      No_fingerprints_:                      false,
+      Unknown_room:                          false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationFingerprintManager.tsx",
+    Active_fingerprints:                    function() { return "Active fingerprints" },
+    _Are_you_sure___This_cann_header:       function() { return "Are you sure?" },
+    _Are_you_sure___This_cann_body:         function() { return "This cannot be undone and it will be removed for everyone" },
+    _Are_you_sure___This_cann_left:         function() { return "Cancel" },
+    _Are_you_sure___This_cann_right:        function() { return "Delete data!" },
+    TAP_TO_DELETE:                          function() { return "TAP TO DELETE" },
+    No_fingerprints_:                       function() { return "No fingerprints." },
+    Unknown_room:                           function() { return arguments[0] || "Unknown room" },
+  },
   LocalizationMenu:{
     __stringSameAsBaseLanguage: {
+      Localization:                          false,
     },
+    Localization:                           function() { return "Localization" },
+  },
+  LocalizationMenu_active:{
+    __stringSameAsBaseLanguage: {
+      CHANGES_AND_QUICKFIX:                  false,
+      I_have_moved_a_Crownstone:             false,
+      Improve_from_localization:             false,
+      If_the_localization_was_w:             false,
+      THESE_ROOMS_NEED_ATTENTIO:             false,
+      LOCALIZATION_TRAINING_QUA:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
+    CHANGES_AND_QUICKFIX:                   function() { return "CHANGES AND QUICKFIX" },
+    I_have_moved_a_Crownstone:              function() { return "I have moved a Crownstone.." },
+    Improve_from_localization:              function() { return "Improve from localization mistake..." },
+    If_the_localization_was_w:              function() { return "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!" },
+    THESE_ROOMS_NEED_ATTENTIO:              function() { return "THESE ROOMS NEED ATTENTION" },
+    LOCALIZATION_TRAINING_QUA:              function() { return "LOCALIZATION TRAINING QUALITY" },
+  },
+  LocalizationMenu_gettingStarted:{
+    __stringSameAsBaseLanguage: {
+      LETS_GET_STARTED:                      false,
+      Setup_localization_:                   false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_gettingStarted.tsx",
+    LETS_GET_STARTED:                       function() { return "LET'S GET STARTED" },
+    Setup_localization_:                    function() { return "Setup localization!" },
+  },
+  LocalizationMenu_notEnoughCrownstones:{
+    __stringSameAsBaseLanguage: {
+      To_use_indoor_localizatio:             false,
+      Buy_Crownstones_:                      false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_notEnoughCrownstones.tsx",
+    To_use_indoor_localizatio:              function() { return "To use indoor localization, have to have at least 4 Crownstones..." },
+    Buy_Crownstones_:                       function() { return "Buy Crownstones!" },
+  },
+  LocalizationMenu_notInSphere:{
+    __stringSameAsBaseLanguage: {
+      To_use_indoor_localizatio:             false,
+      You_have_to_be_in_the_sph:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_notInSphere.tsx",
+    To_use_indoor_localizatio:              function() { return "To use indoor localization, you have to be in the sphere..." },
+    You_have_to_be_in_the_sph:              function() { return "You have to be in the sphere to continue..." },
+  },
+  LocalizationMenu_shared:{
+    __stringSameAsBaseLanguage: {
+      Learn_about_indoor_locali:             false,
+      You_need_at_least___Crown:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_shared.tsx",
+    Learn_about_indoor_locali:              function() { return "Learn about indoor localization" },
+    You_need_at_least___Crown:              function() { return "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!" },
+  },
+  LocalizationQuickFix:{
+    __stringSameAsBaseLanguage: {
+      Localization_made_a_mista:             false,
+      Lets_learn_from_that_mist:             false,
+      Which_room_where_you_in_f:             false,
+      It_is_important_that_you_:             false,
+      Please_pick_a_location_fi:             false,
+      _You_were_in_the_____argu_header:      false,
+      _You_were_in_the_____argu_body:        false,
+      _You_were_in_the_____argu_left:        false,
+      _You_were_in_the_____argu_right:       false,
+      _Localization_has_been_im_header:      false,
+      _Localization_has_been_im_body:        false,
+      _Localization_has_been_im_left:        false,
+      _No_need_to_improve___Loc_header:      false,
+      _No_need_to_improve___Loc_body:        false,
+      _No_need_to_improve___Loc_left:        false,
+      _Better_safe_than_sorry___header:      false,
+      _Better_safe_than_sorry___body:        false,
+      _Better_safe_than_sorry___left:        false,
+      Quickfix:                              false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationQuickFix.tsx",
+    Localization_made_a_mista:              function() { return "Localization made a mistake.." },
+    Lets_learn_from_that_mist:              function() { return "Let's learn from that mistake!" },
+    Which_room_where_you_in_f:              function() { return "Which room where you in for the last 3 minutes?" },
+    It_is_important_that_you_:              function() { return "It is important that you really were in that room in all of the last 3 minutes!" },
+    Please_pick_a_location_fi:              function() { return "Please pick a location first." },
+    _You_were_in_the_____argu_header:       function() { return "You were in the " + arguments[0] + " for the last 3 minutes?" },
+    _You_were_in_the_____argu_body:         function() { return "This is important." },
+    _You_were_in_the_____argu_left:         function() { return "Yes" },
+    _You_were_in_the_____argu_right:        function() { return "I'm not sure.." },
+    _Localization_has_been_im_header:       function() { return "Localization has been improved!" },
+    _Localization_has_been_im_body:         function() { return "Added " + arguments[0] + " new datapoints!" },
+    _Localization_has_been_im_left:         function() { return "Great!" },
+    _No_need_to_improve___Loc_header:       function() { return "No need to improve!" },
+    _No_need_to_improve___Loc_body:         function() { return "Localization already placed you in that room for the last 3 minutes!" },
+    _No_need_to_improve___Loc_left:         function() { return "Great!" },
+    _Better_safe_than_sorry___header:       function() { return "Better safe than sorry!" },
+    _Better_safe_than_sorry___body:         function() { return "Stay in the room a little longer and try again after 3 minutes" },
+    _Better_safe_than_sorry___left:         function() { return "OK" },
+    Quickfix:                               function() { return "Quickfix" },
   },
   LocationHandler:{
     __stringSameAsBaseLanguage: {
@@ -2945,6 +3299,7 @@ export default {
       You_can_give_your_room_an:             false,
       You_can_always_change_thi:             false,
       Create_room:                           false,
+      roomAddCore:                           false,
     },
     _Max_amount_of_rooms_reac_header:       function() { return "Maximaal aantal kamers bereikt..."; },
     _Max_amount_of_rooms_reac_body:         function() { return "Je zal er een aantal moeten verwijderen voordat je een nieuwe kan maken."; },
@@ -2963,6 +3318,7 @@ export default {
     You_can_always_change_thi:              function() { return "Dit kan je altijd nog aanpassen in de instellingen van de kamer."; },
     Create_room:                            function() { return "Kamer maken!"; },
     __filename: "../../js/views/roomViews/RoomAddCore.tsx",
+    roomAddCore:                            function() { return "roomAddCore" },
   },
   RoomBanner:{
     __stringSameAsBaseLanguage: {
@@ -3012,6 +3368,8 @@ export default {
       Removing_this_room_in_the:             false,
       Remove_Room:                           false,
       Edit_Room:                             false,
+      ROOM_SETTINGS:                         false,
+      DANGER:                                false,
     },
     _Encountered_Cloud_Issue__header:       function() { return "Er is een Cloud-probleem opgetreden."; },
     _Encountered_Cloud_Issue__body:         function() { return "We kunnen deze kamer in de Cloud niet verwijderen. Probeer het later nog eens."; },
@@ -3027,6 +3385,8 @@ export default {
     Remove_Room:                            function() { return "Kamer verwijderen"; },
     Edit_Room:                              function() { return "Kamer bewerken"; },
     __filename: "../js/views/roomViews/RoomEdit.tsx",
+    ROOM_SETTINGS:                          function() { return "ROOM SETTINGS" },
+    DANGER:                                 function() { return "DANGER" },
   },
   RoomExplanation:{
     __stringSameAsBaseLanguage: {
@@ -3080,15 +3440,81 @@ export default {
     },
     __filename: "../js/views/roomViews/RoomOverview.tsx",
   },
+  RoomPictureSelection:{
+    __stringSameAsBaseLanguage: {
+      Custom_background_picture:             false,
+      Stock_background_picture_:             false,
+      Select_Image:                          false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/roomViews/RoomPictureSelection.tsx",
+    Custom_background_picture:              function() { return "Custom background picture" },
+    Stock_background_picture_:              function() { return "Stock background picture:" },
+    Select_Image:                           function() { return "Select Image" },
+  },
   RoomTraining:{
     __stringSameAsBaseLanguage: {
+      Continue:                              false,
+      right:                                 false,
+      In_order_for_me_to_know_w:             false,
+      By_walking_around_the_roo:             false,
+      Ill_guide_you_in_this_pro:             false,
+      Are_you_ready_to_get_star:             false,
     },
     __filename: "../js/views/roomViews/RoomTraining.tsx",
+    Continue:                               function() { return "Continue" },
+    right:                                  function() { return "right" },
+    In_order_for_me_to_know_w:              function() { return "In order for me to know when you are in this room, I need to learn a bit more about it." },
+    By_walking_around_the_roo:              function() { return "By walking around the room, I can listen for the Crownstone signals and recognise the room afterwards." },
+    Ill_guide_you_in_this_pro:              function() { return "I'll guide you in this process once we start." },
+    Are_you_ready_to_get_star:              function() { return "Are you ready to get started?" },
+  },
+  RoomTraining_conclusion:{
+    __stringSameAsBaseLanguage: {
+      never:                                 false,
+      You_can_further_improve_t:             false,
+      Training_complete_:                    false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/RoomTraining_conclusion.tsx",
+    never:                                  function() { return "never" },
+    You_can_further_improve_t:              function() { return "You can further improve the performance by adding an in-pocket training set." },
+    Training_complete_:                     function() { return "Training complete!" },
+  },
+  RoomTraining_inHand_intro:{
+    __stringSameAsBaseLanguage: {
+      Walk_around_the_room_with:             false,
+      Once_the_phone_vibrates__:             false,
+      Once_I_have_collected_eno:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/RoomTraining_inHand_intro.tsx",
+    Walk_around_the_room_with:              function() { return "Walk around the room with the phone in your hand, arm stretched out." },
+    Once_the_phone_vibrates__:              function() { return "Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible!" },
+    Once_I_have_collected_eno:              function() { return "Once I have collected enough information, I'll let you know!" },
+  },
+  RoomTraining_inPocket_intro:{
+    __stringSameAsBaseLanguage: {
+      never:                                 false,
+      We_walk_around_the_room_i:             false,
+      Stand_in_places_you_commo:             false,
+      Collect_as_much_as_you_ca:             false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/RoomTraining_inPocket_intro.tsx",
+    never:                                  function() { return "never" },
+    We_walk_around_the_room_i:              function() { return "We walk around the room in the same way as you'd do normally. Put your phone in your pocket and walk around the room." },
+    Stand_in_places_you_commo:              function() { return "Stand in places you commonly stand with the phone in your pocket. After this, take the phone out of your pocket and place it on surfaces in the room where it is likely to be normally." },
+    Collect_as_much_as_you_ca:              function() { return "Collect as much as you can!" },
   },
   RoomTraining_training:{
     __stringSameAsBaseLanguage: {
+      Listening___:                          false,
+      Move_around_the_room_to_c:             false,
+      Once_I_have_collected_eno:             false,
+      You_can_collect_more_if_y:             false,
     },
     __filename: "../js/views/roomViews/trainingComponents/RoomTraining_training.tsx",
+    Listening___:                           function() { return "Listening..." },
+    Move_around_the_room_to_c:              function() { return "Move around the room to collect the measurements!" },
+    Once_I_have_collected_eno:              function() { return "Once I have collected enough information, I'll let you know!" },
+    You_can_collect_more_if_y:              function() { return "You can collect more if you want. The more the better!" },
   },
   ScanningForSetupCrownstones:{
     __stringSameAsBaseLanguage: {
@@ -3284,6 +3710,7 @@ export default {
       Whos_participating_:                   false,
       Select_the_Crownstones_wh:             false,
       Crownstones_that_are_not_:             false,
+      sceneSelectCrownstones:                false,
     },
     _Select_at_least_one______header:       function() { return "Selecteer minstens één..."; },
     _Select_at_least_one______body:         function() { return "Ik snap niet waarom je een scène zou willen maken zonder Crownstones..."; },
@@ -3293,16 +3720,19 @@ export default {
     Select_the_Crownstones_wh:              function() { return "Kies de Crownstones die meedoen aan deze scène."; },
     Crownstones_that_are_not_:              function() { return "Niet geselecteerde Crownstones worden niet geschakeld als de scène wordt geactiveerd."; },
     __filename: "../../js/views/scenesViews/SceneSelectCrownstones.tsx",
+    sceneSelectCrownstones:                 function() { return "sceneSelectCrownstones" },
   },
   ScenesOverview:{
     __stringSameAsBaseLanguage: {
       Add_more_scenes_by_tappin:             false,
       You_do_not_have_permissio:             false,
       Ask_an_admin_in_your_Sphe:             false,
+      Scenes:                                false,
     },
     Add_more_scenes_by_tappin:              function() { return "Voeg meer scenes toe bij wijzigen!"; },
     You_do_not_have_permissio:              function() { return "Je hebt geen toegang om scenes aan te passen..."; },
     Ask_an_admin_in_your_Sphe:              function() { return "Vraag aan een beheerder om je te helpen!"; },
+    Scenes:                                 function() { return "Scenes" },
   },
   SeparatedItemList:{
     __stringSameAsBaseLanguage: {
@@ -3957,6 +4387,29 @@ export default {
     You_are_all_finished:                   function() { return "Klaar!"; },
     __filename: "../../js/views/addingCrownstones/SetupHub.tsx",
   },
+  SetupLocalization:{
+    __stringSameAsBaseLanguage: {
+      To_use_indoor_localizatio:             false,
+      We_need_to_gather_data_in:             false,
+      These_rooms_are_already_d:             false,
+      Pick_a_room_to_get_starte:             false,
+      All_done_:                             false,
+      If_you_want_to_improve_th:             false,
+      Improve_Localization:                  false,
+      _option_is_now_available_:             false,
+      Setup_Localization:                    false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/SetupLocalization.tsx",
+    To_use_indoor_localizatio:              function() { return "To use indoor localization, we have to walk around each room to learn about the Crownstone signals in the rooms." },
+    We_need_to_gather_data_in:              function() { return arguments[0] ? "We need to gather data in these rooms:" : "Only one room left to do!" },
+    These_rooms_are_already_d:              function() { return arguments[0] ? "These rooms are already done:" : "This room is already done:" },
+    Pick_a_room_to_get_starte:              function() { return "Pick a room to get started!" },
+    All_done_:                              function() { return "All done!" },
+    If_you_want_to_improve_th:              function() { return "If you want to improve the localization performance later on, the " },
+    Improve_Localization:                   function() { return "Improve Localization" },
+    _option_is_now_available_:              function() { return " option is now available from the localization menu." },
+    Setup_Localization:                     function() { return "Setup Localization" },
+  },
   SetupShared:{
     __stringSameAsBaseLanguage: {
       Next:                                  false,
@@ -4012,12 +4465,18 @@ export default {
       Ask_the_admin_of_this_Sph:             false,
       Ask_the_admin_of_this_SphHandle:       false,
       Crownstones_require_rooms:             false,
+      Cancel:                                false,
+      Move_the_rooms_:                       false,
+      Save:                                  false,
     },
     No_Crownstones_added_yet_:              function() { return "Nog geen Crownstones toegevoegd!"; },
     Ask_the_admin_of_this_Sph:              function() { return "Vraag de beheerder van deze Sfeer om er enkele toe te voegen!"; },
     Ask_the_admin_of_this_SphHandle:        function() { return "Vraag de beheerder van deze Sfeer om dit af te handelen."; },
     Crownstones_require_rooms:              function() { return "Crownstones vereisen kamers."; },
     __filename: "../js/views/main/Sphere.tsx",
+    Cancel:                                 function() { return "Cancel" },
+    Move_the_rooms_:                        function() { return "Move the rooms!" },
+    Save:                                   function() { return "Save" },
   },
   SphereDeleted:{
     __stringSameAsBaseLanguage: {
@@ -4198,14 +4657,44 @@ export default {
     Invited_User:                           function() { return "Uitgenodigde Gebruiker"; },
     __filename: "../js/views/main/editSubviews/SphereInvitedUser.tsx",
   },
+  SphereLevel:{
+    __stringSameAsBaseLanguage: {
+      Where_to_go_:                          false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/SphereLevel.tsx",
+    Where_to_go_:                           function() { return "Where to go?" },
+  },
   SphereOverview:{
     __stringSameAsBaseLanguage: {
       No_Spheres_available_:                 false,
       Press_Edit_in_the_upper_r:             false,
+      You_need_to_add_a_room_to:             false,
+      Tap_the_blinking_icon_on_:             false,
     },
     No_Spheres_available_:                  function() { return "Geen Sferen beschikbaar."; },
     Press_Edit_in_the_upper_r:              function() { return "Druk op Wijzig in de rechterbovenhoek om je eigen Sfeer te maken of wacht tot deze wordt toegevoegd aan die van anderen."; },
     __filename: "../js/views/main/SphereOverview.tsx",
+    You_need_to_add_a_room_to:              function() { return "You need to add a room to the sphere to place your Crownstones in." },
+    Tap_the_blinking_icon_on_:              function() { return "Tap the blinking icon on the top left to continue!" },
+  },
+  SphereOverviewSideBar:{
+    __stringSameAsBaseLanguage: {
+      Add_items:                             false,
+      Localization:                          false,
+      Behaviour:                             false,
+      Messages:                              false,
+      Change_sphere:                         false,
+      Developer:                             false,
+      App_v:                                 false,
+    },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/sidebars/SphereOverviewSideBar.tsx",
+    Add_items:                              function() { return "Add items" },
+    Localization:                           function() { return "Localization" },
+    Behaviour:                              function() { return "Behaviour" },
+    Messages:                               function() { return "Messages" },
+    Change_sphere:                          function() { return "Change sphere" },
+    Developer:                              function() { return "Developer" },
+    App_v:                                  function() { return "App v" + arguments[0] },
   },
   SphereUser:{
     __stringSameAsBaseLanguage: {

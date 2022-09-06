@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomEdit", key)(a,b,c,d,e);
+  return Languages.get("RoomPictureSelection", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import { Alert, ScrollView, Image, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
