@@ -209,9 +209,9 @@ export class  DeviceOverview extends LiveComponent<any, any> {
             return;
           }
           if (stone.config.locked) {
-            StoneUtil.lockCrownstone(this.props.sphereId, this.props.stoneId);
-          } else {
             StoneUtil.unlockCrownstone(this.props.sphereId, this.props.stoneId);
+          } else {
+            StoneUtil.lockCrownstone(this.props.sphereId, this.props.stoneId);
           }
         }
       });

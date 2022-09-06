@@ -572,7 +572,7 @@ async function setLockCrownstoneState(sphereId: string, stoneId: string, label: 
   core.eventBus.emit("showLoading", label);
   try {
     await tell(stone).lockSwitch(lockState);
-    core.eventBus.emit("showLoading", lang("Done!"));
+    core.eventBus.emit("showLoading", lang('Success_'));
     await Scheduler.delay(500);
     core.eventBus.emit("hideLoading");
     core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: sphereId, stoneId: stoneId, data: {locked: lockState}});
