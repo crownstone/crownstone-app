@@ -149,7 +149,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       <SceneItem
         key={id}
         scene={scene}
-        sceneId={scene}
+        sceneId={id}
         sphereId={activeSphereId}
         stateEditMode={this.state.editMode}
         dragAction={drag}

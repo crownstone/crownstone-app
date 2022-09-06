@@ -69,7 +69,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dr
         }}
         onLongPress={() => {
           if (editMode === true) {
-            triggerDrag()
+            triggerDrag();
           }
         }}
       >
