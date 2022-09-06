@@ -15,6 +15,7 @@
     "maintainTranslationsDelete": "node ../crownstone-app-translation-tools/maintainLanguageFiles.js --deleteLines true --deleteFiles true",
     "missingStringCheck": "node ../crownstone-app-translation-tools/checkForMissingStrings.js",
     "missingTranslationCheck": "node ../crownstone-app-translation-tools/textExtracterForTranslation.js",
+    "missingTranslationCheckApply": "node ../crownstone-app-translation-tools/textExtracterForTranslation.js --replace true",
     "translation": "open ../crownstone-app-translation-tools/interactive/serverInterface.html; node ../crownstone-app-translation-tools/interactive/server.js"
   },
   "dependencies": {
