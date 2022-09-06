@@ -32,7 +32,7 @@ export function AutoArrangeButton(props) {
           shadowRadius: 3,
           elevation: 1,
         }}
-        onPress={() => { core.eventBus.emit('physicsRun'+props.viewId, 150)}}>
+        onPress={() => { core.eventBus.emit('physicsRun'+props.viewId, 150)}} testID={'SphereRoomArranger_autoArrange'}>
         <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>{ lang("Auto_arrange_") }</Text>
       </TouchableOpacity>
     </HiddenFadeInView>

@@ -187,7 +187,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <SettingsNavbarBackground>
+      <SettingsNavbarBackground testID={'SettingsOverview'}>
         <ScrollView testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

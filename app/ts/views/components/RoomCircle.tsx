@@ -216,7 +216,6 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
     let showLocalizationIcon = LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);
-
     return (
       <TouchableOpacity
         onPressIn={(e)   => {

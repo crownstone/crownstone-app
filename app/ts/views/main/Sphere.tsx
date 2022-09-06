@@ -151,13 +151,13 @@ export function SphereHeader({sphere, openSideMenu, blinkMenuIcon, badgeMenuIcon
 function ArrangingHeader({viewId, setRearrangeRooms}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
-      <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:15}}>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:15}} testID={'cancel'}>
         <Text style={styles.viewButton}>Cancel</Text>
       </TouchableOpacity>
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
         <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{"Move the rooms!"}</Text>
       </View>
-      <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:15}}>
+      <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:15}} testID={'savePositions'}>
         <Text style={styles.viewButton}>Save</Text>
       </TouchableOpacity>
     </View>

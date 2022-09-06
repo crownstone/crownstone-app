@@ -27,6 +27,7 @@ import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
 import { Get } from "../../util/GetUtil";
 import { LocationTransferNext } from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
+import { LOGe } from "../../logging/Log";
 
 
 export class RoomAddCore extends LiveComponent<any, any> {
@@ -206,7 +207,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
 
 
 
-  createRoom() {
+  async createRoom() {
     this._removeUnusedPictures();
     let localId = xUtil.getUUID();
 
@@ -252,49 +253,46 @@ lang("_Max_amount_of_rooms_reac_body"),
     }
 
 
-    // create room.
-    core.store.dispatch({
-      type:'ADD_LOCATION',
-      sphereId: this.props.sphereId,
-      locationId: localId,
-      data: {
-        name: this.newRoomData.name,
-        icon: this.newRoomData.icon,
-        uid: nextUID
-      }});
+    let creationData : Partial<LocationDataConfig> =  {
+      name: this.newRoomData.name,
+      icon: this.newRoomData.icon,
+      uid: nextUID
+    };
+
 
     // if we have a picture:
     if (this.newRoomData.picture !== null) {
-      processImage(this.newRoomData.picture, localId + ".jpg", 1.0)
-        .then((picture) => {
-          core.store.dispatch({
-            type:'UPDATE_LOCATION_CONFIG',
-            sphereId: this.props.sphereId,
-            locationId: localId,
-            data: {
-              picture: picture,
-              pictureTaken: Date.now(),
-              pictureSource: "CUSTOM",
-              pictureId: null
-            }});
-        })
+      let picture = await processImage(this.newRoomData.picture, localId + ".jpg", 1.0).catch((err) => { LOGe.info("Could not process image for new location.", err); });
+      if (picture) {
+        creationData = {
+          ...creationData,
+          picture: picture,
+          pictureTaken: Date.now(),
+          pictureSource: "CUSTOM",
+          pictureId: null
+        };
+      }
     }
     else {
       let keys = Object.keys(RoomStockBackground);
       let randomImage = keys[Math.floor(Math.random()*keys.length)];
-      core.store.dispatch({
-        type:'UPDATE_LOCATION_CONFIG',
-        sphereId: this.props.sphereId,
-        locationId: localId,
-        data: {
-          picture: randomImage,
-          pictureSource: "STOCK",
-        }});
+      creationData = {...creationData,
+        picture: randomImage,
+        pictureSource: "STOCK",
+      };
 
     }
 
+    // create room.
+    core.store.dispatch({
+      type: 'ADD_LOCATION',
+      sphereId: this.props.sphereId,
+      locationId: localId,
+      data: creationData
+    });
+
     let location = Get.location(this.props.sphereId, localId);
-    LocationTransferNext.createOnCloud(this.props.sphereId, location).catch((err) => {});
+    await LocationTransferNext.createOnCloud(this.props.sphereId, location).catch((err) => {});
 
     if (this.props.isModal !== true) {
       NavigationUtil.back();

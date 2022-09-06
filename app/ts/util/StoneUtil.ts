@@ -562,8 +562,9 @@ export const StoneUtil = {
     if (stone.config.firmwareVersion && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
       return true;
     }
-    return false
+    return false;
   }
+
 };
 
 async function setLockCrownstoneState(sphereId: string, stoneId: string, label: string, lockState: boolean) {

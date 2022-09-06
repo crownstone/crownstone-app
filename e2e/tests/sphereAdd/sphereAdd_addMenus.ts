@@ -8,6 +8,8 @@ import {
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const SphereAdd_addMenus = () => {
+  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+
   test('should be on the SphereAdd view', async () => {
     await waitToNavigate("SphereAdd");
   });

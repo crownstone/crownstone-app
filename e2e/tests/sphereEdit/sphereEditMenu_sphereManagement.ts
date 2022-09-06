@@ -88,7 +88,7 @@ export const SphereEditMenu_sphereManagement = () => {
 
   test("should be able to tap the sphere change button", async () => {
     await tap('Sidebar_button');
-    await tap('changeSphere', 1000, 50);
+    await tap('changeSphere',50);
 
     await screenshot();
   })

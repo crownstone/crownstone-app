@@ -48,7 +48,7 @@ export async function clearText(id, timeout = 1000) {
   await delay(100);
 }
 
-export async function tap(id, timeout = 1000, visibility = 100) {
+export async function tap(id, visibility = 50, timeout = 1000 ) {
   await delay(100);
   let item = $(id);
   await waitFor(item).toBeVisible(visibility).withTimeout(timeout);
@@ -91,14 +91,14 @@ export async function shouldBeOn(id, timeout = 300) {
   await waitFor(item).toBeVisible().withTimeout(timeout);
 }
 
-export async function waitToNavigate(id, timeout = 3000) {
+export async function waitToNavigate(id, visibility = 80, timeout = 3000) {
   await delay(300);
   let item = $(id);
-  await waitFor(item).toBeVisible().withTimeout(timeout);
+  await waitFor(item).toBeVisible(visibility).withTimeout(timeout);
   await delay(300);
 }
 
-export async function waitToAppear(id, timeout = 2000, visibility = 99) {
+export async function waitToAppear(id, visibility = 99, timeout = 2000) {
   await delay(300);
   let item = $(id);
   await waitFor(item).toBeVisible(visibility).withTimeout(timeout);
@@ -125,11 +125,11 @@ export async function waitToBoot(id, timeout = 20e3) {
 }
 
 export async function scrollDownUntilVisible( itemId, scrollViewId ) {
-  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down');
+  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'down', 0.5, 0.5);
 }
 
 export async function scrollUpUntilVisible( itemId, scrollViewId ) {
-  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up');
+  await waitFor($(itemId)).toBeVisible(100).whileElement(by.id(scrollViewId)).scroll(150, 'up',0.5, 0.5);
 }
 
 export async function swipeNext( itemId ) {

@@ -83,7 +83,7 @@ export const Initialization_loginUser = () => {
     await tap('login_big_button')
     await screenshot();
     await delay(1000);
-    await waitToNavigate('PermissionIntroduction', 15000);
+    await waitToNavigate('PermissionIntroduction', 80, 15000);
   });
 
 };

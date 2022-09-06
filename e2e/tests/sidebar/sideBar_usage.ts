@@ -18,7 +18,7 @@ export const SideBar_usage = () => {
   test('should be able to open and close the sidebar', async () => {
     await tap('Sidebar_button')
     await screenshot();
-    await waitToAppear("addItems", 2000, 50);
+    await waitToAppear("addItems", 50);
     await tap('Sidebar_button')
     await screenshot();
     await waitToDisappear("addItems", 2000);

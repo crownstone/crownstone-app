@@ -34,10 +34,12 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("SphereAdd");
   });
 
+
   test('should be able to go to the AddCrownstone view', async () => {
     await tap("AddCrownstone_button");
     await waitToNavigate("AddCrownstone");
   });
+
 
   test('should be able to go to the scanningForSetupCrownstones', async () => {
     await tap("Plug");
@@ -46,6 +48,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("ScanningForSetupCrownstones");
     await Assistant.update();
   })
+
 
   test('should be able to see a setupCrownstone, pulse it and select it', async () => {
     let localId = await Assistant.getActiveSphereLocalId();
@@ -136,6 +139,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("ScanningForSetupCrownstones");
   })
 
+
   test("should be able to see a second crownstone and start the setup", async () => {
     let localId = await Assistant.getActiveSphereLocalId();
     await Assistant.ble.sendSetupAdvertisment(handle2);
@@ -143,6 +147,7 @@ export const SphereAdd_setup_crownstone = () => {
     await tap(`selectSetupEntry${handle2}`);
     await waitToNavigate('SetupCrownstone');
   })
+
 
   test("should be able to set a custom name", async () => {
     await shouldBeOn("SetupCrownstone");
@@ -152,6 +157,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("addCrownstone_iconPhase")
     await screenshot();
   })
+
 
   test("should be able to create new room via the stone setup", async () => {
     await shouldBeOn("addCrownstone_iconPhase");
@@ -168,12 +174,14 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate('addCrownstone_roomPhase')
   })
 
+
   test("should be able to place the second Crownstone in a room", async () => {
     await shouldBeOn("addCrownstone_roomPhase");
     let locationId = await Assistant.getRoomId(0)
     await tap(`crownstoneInLocation${locationId}`);
     await waitToNavigate("addCrownstone_waitToFinish")
   })
+
 
   test("should be able to setup the second Crownstone", async () => {
     await shouldBeOn('addCrownstone_waitToFinish');
@@ -186,6 +194,7 @@ export const SphereAdd_setup_crownstone = () => {
     await Assistant.ble.for(handle2).disconnectEvent();
     await waitToNavigate('addCrownstone_setupMore');
   })
+
 
   test("should show an error screen if setup fails", async () => {
     await tap("addCrownstone_addMore");
@@ -210,5 +219,4 @@ export const SphereAdd_setup_crownstone = () => {
     await tap("addCrownstone_tryLater");
     await waitToNavigate("SphereAdd");
   })
-
 };

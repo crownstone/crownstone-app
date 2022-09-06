@@ -274,7 +274,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
           image={backgroundOverride}
           lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
           hasTopBar={false}
-          testID={"SphereOverview"}
+          testID={this.state.arrangingRooms ? 'SphereRoomArranger' : 'SphereOverview'}
         >
           { this._getContent(activeSphereId) }
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />

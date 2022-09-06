@@ -36,7 +36,7 @@ import { SideBar_usage } from "./tests/sidebar/sideBar_usage";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
-  ONLY_ESSENTIALS: true,
+  ONLY_ESSENTIALS: false,
   LINK_DELAY:      3000,
 };
 
@@ -58,32 +58,31 @@ if (process.env.REUSE !== '1') {
   describe('Setup initial permissions',                  Initialization_permissionInitialization);
 }
 
-// describe('Test if the sidebar works',                    SideBar_usage);
+describe('Test if the sidebar works',                    SideBar_usage);
 
-// describe('Test room edit',                               Rooms_edit);
-// describe('Test room deletion',                           Rooms_deleteAll);
-// describe('Test room creation when there are no rooms',   Rooms_createRoom);
+describe('Test room edit',                               Rooms_edit);
+describe('Test room deletion',                           Rooms_deleteAll);
+describe('Test room creation when there are no rooms',   Rooms_createRoom);
 
 describe('Test the Sphere Edit menu, start',             SphereEditMenu_start);
 describe('Test the Sphere Edit menu, sphere management', SphereEditMenu_sphereManagement);
-// describe('Test the Sphere Edit menu, rooms',             SphereEditMenu_rooms);
-// describe('Test the Sphere Edit menu, no crownstones',    SphereEditMenu_crownstones_empty);
-// describe('Test the Sphere Edit menu, users',             SphereEditMenu_users);
-// describe('Test the Sphere Edit menu, integrations',      SphereEditMenu_integrations);
-// describe('Test the Sphere Edit menu, sphere settings',   SphereEditMenu_sphereSettings);
-// describe('Test the Sphere Edit menu, close',             SphereEditMenu_close);
-//
-// describe('Test the Settings menu, start',                Settings_start);
-// describe('Test the Settings menu, my account',           Settings_myAccount);
-// describe('Test the Settings menu, privacy',              Settings_privacy);
-// describe('Test the Settings menu, app settings',         Settings_appSettings);
-// describe('Test the Settings menu, help',                 Settings_help);
-// describe('Test the Settings menu, terms&conditions',     Settings_termsConditions);
-// describe('Test the Settings menu, logout',               Settings_logOut);
-//
-// describe('SphereAdd, start',                             SphereAdd_start);
-// describe('SphereAdd, add menus',                         SphereAdd_addMenus);
-// describe('SphereAdd, add crownstone menu exploration',   SphereAdd_addCrownstoneMenu);
-// describe('SphereAdd, add crownstone',                    SphereAdd_setup_crownstone);
-// describe('SphereAdd, close',                             SphereAdd_close);
-//
+describe('Test the Sphere Edit menu, rooms',             SphereEditMenu_rooms);
+describe('Test the Sphere Edit menu, users',             SphereEditMenu_users);
+describe('Test the Sphere Edit menu, integrations',      SphereEditMenu_integrations);
+describe('Test the Sphere Edit menu, sphere settings',   SphereEditMenu_sphereSettings);
+describe('Test the Sphere Edit menu, close',             SphereEditMenu_close);
+
+describe('Test the Settings menu, start',                Settings_start);
+describe('Test the Settings menu, my account',           Settings_myAccount);
+describe('Test the Settings menu, privacy',              Settings_privacy);
+describe('Test the Settings menu, app settings',         Settings_appSettings);
+describe('Test the Settings menu, help',                 Settings_help);
+describe('Test the Settings menu, terms&conditions',     Settings_termsConditions);
+describe('Test the Settings menu, logout',               Settings_logOut);
+
+describe('SphereAdd, start',                             SphereAdd_start);
+describe('SphereAdd, add menus',                         SphereAdd_addMenus);
+describe('SphereAdd, add crownstone menu exploration',   SphereAdd_addCrownstoneMenu);
+describe('SphereAdd, add crownstone',                    SphereAdd_setup_crownstone);
+describe('SphereAdd, close',                             SphereAdd_close);
+
