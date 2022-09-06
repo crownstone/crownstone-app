@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationMenu_gettingStarted", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   ScrollView,
@@ -26,9 +32,9 @@ export function LocalizationMenu_gettingStarted(props) {
     label = "You have to be in the sphere to setup indoor localization...";
   }
 
-  items.push({label: "LET'S GET STARTED",  type:'explanation'});
+  items.push({label: lang("LETS_GET_STARTED"),  type:'explanation'});
   items.push({
-    label: "Setup localization!",
+    label: lang("Setup_localization_"),
     type: 'navigation',
     disabled: disabled,
     testID: 'setupLocalization',

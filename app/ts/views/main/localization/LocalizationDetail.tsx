@@ -37,14 +37,14 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
   let items = [];
   items.push({
     type:'navigation',
-    label: 'Add more training data...',
+    label: lang("Add_more_training_data___"),
     callback: () => {
       NavigationUtil.launchModal("RoomTraining_inHand_intro", {sphereId: props.sphereId, locationId: props.locationId, isModal: true, minRequiredSamples: 20});
     },
   })
   items.push({
     type:'navigation',
-    label: 'Find and fix difficult spots...',
+    label: lang("Find_and_fix_difficult_sp"),
     callback: () => {
       NavigationUtil.launchModal("LocalizationFindAndFix", {sphereId: props.sphereId, locationId: props.locationId});
     },
@@ -53,15 +53,15 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
   let deleteButton = [
     {
       type:  'button',
-      label: 'DELETE ALL COLLECTED DATA',
+      label: lang("DELETE_ALL_COLLECTED_DATA"),
       numberOfLines:3,
       callback: () => {
         Alert.alert(
-          "Are you sure?",
-          "You will have to re-train the room to get it to work again.",
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Delete data!', style:'destructive', onPress: () => {
+lang("_Are_you_sure___You_will__header"),
+lang("_Are_you_sure___You_will__body"),
+[{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+            {
+text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
               LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
               NavigationUtil.back();
             }},
@@ -71,21 +71,21 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
       }
     },
     {
-      type: 'explanation', label:'Careful, you will need to retrain this room again if you delete all the data.', below: true
+      type: 'explanation', label: lang("Careful__you_will_need_to"), below: true
     }];
 
 
   let devButton = [
     {
       type:  'button',
-      label: 'Manage fingerprints',
+      label: lang("Manage_fingerprints"),
       style: {color: colors.blue.hex},
       callback: () => {
         NavigationUtil.launchModal("LocalizationFingerprintManager", {sphereId: props.sphereId, locationId: props.locationId});
       }
     },
     {
-      type: 'explanation', label:'DEV: Delete individual fingerprints', below: true
+      type: 'explanation', label: lang("DEV__Delete_individual_fi"), below: true
     }];
 
 
@@ -93,23 +93,23 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
     <Background>
       <View style={{height:topBarHeight}}/>
       <ScrollView>
-        <Text style={styles.header}>{"Training quality"}</Text>
+        <Text style={styles.header}>{ lang("Training_quality") }</Text>
         <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
           { getStars(score, 30, FingerprintUtil.isScoreGoodEnough(score) ? colors.csBlue : colors.csOrange) }
         </View>
         <View style={{height:15}} />
         { FingerprintUtil.isScoreGoodEnough(score) ?
-          <Text style={styles.boldLeftExplanation}>{"Add more stars by:"}</Text> :
-          <Text style={styles.boldLeftExplanation}>{"Address the issue by:"}</Text>
+          <Text style={styles.boldLeftExplanation}>{ lang("Add_more_stars_by_") }</Text> :
+          <Text style={styles.boldLeftExplanation}>{ lang("Address_the_issue_by_") }</Text>
         }
           <Improvements {...props} score={score} penalties={penalties} />
 
         { FingerprintUtil.isScoreGoodEnough(score) &&  <View style={{height:25}} /> }
-        { FingerprintUtil.isScoreGoodEnough(score) &&  <Text style={styles.boldLeftExplanation}>{"Further improve localization by:"}</Text> }
+        { FingerprintUtil.isScoreGoodEnough(score) &&  <Text style={styles.boldLeftExplanation}>{ lang("Further_improve_localizat") }</Text> }
         { FingerprintUtil.isScoreGoodEnough(score) &&  <ListEditableItems items={items} /> }
 
         <View style={{height:25}} />
-        <Text style={styles.boldLeftExplanation}>{"Permanently delete all localization data for this room for a fresh start. This will affect the localization for everyone..."}</Text>
+        <Text style={styles.boldLeftExplanation}>{ lang("Permanently_delete_all_lo") }</Text>
         <ListEditableItems items={deleteButton} />
         { DataUtil.isDeveloper() && <ListEditableItems items={devButton} /> }
       </ScrollView>
@@ -133,7 +133,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
   if (penalties.missingInPocket < 0) {
     improvements.push([penalties.missingInPocket,{
       type: 'navigation',
-      label: "Adding an in-pocket training set...",
+      label: lang("Adding_an_in_pocket_train"),
       icon: <StarImprovement penalty={penalties.missingInPocket} />,
       numberOfLines:2,
       callback: () => {
@@ -145,7 +145,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
   if (penalties.unknownDeviceType < 0 || penalties.insufficientAmountOfData < 0) {
     improvements.push([penalties.unknownDeviceType + penalties.insufficientAmountOfData,{
       type: 'navigation',
-      label: "Retraining the room on this device...",
+      label: lang("Retraining_the_room_on_th"),
       icon: <StarImprovement penalty={penalties.unknownDeviceType + penalties.insufficientAmountOfData} />,
       numberOfLines:2,
       callback: () => {
@@ -157,7 +157,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
   if (penalties.missingCrownstones < 0) {
     improvements.push([penalties.missingCrownstones, {
       type: 'navigation',
-      label: "Retraining to include new Crownstones...",
+      label: lang("Retraining_to_include_new"),
       icon: <StarImprovement penalty={penalties.missingCrownstones} />,
       numberOfLines:2,
       callback: () => {
@@ -169,7 +169,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
   if (penalties.missingTransform < 0) {
     improvements.push([penalties.missingTransform, {
       type:  'navigation',
-      label: 'Optimizing for your phone...',
+      label: lang("Optimizing_for_your_phone"),
       icon: <StarImprovement penalty={penalties.missingTransform} />,
       numberOfLines:2,
       callback: () => {}

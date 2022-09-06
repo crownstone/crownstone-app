@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("EnergyUsage", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { useState } from "react";
 import {
@@ -72,11 +78,11 @@ function EnergyUsageContent(props) {
     <React.Fragment>
       <ScrollView contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight, alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
         <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
-          <TimeButton selected={mode == "LIVE"}  label={"LIVE"}   callback={() => { setMode("LIVE"); }}   />
-          <TimeButton selected={mode == "DAY"}   label={"Day"}    callback={() => { setMode("DAY"); }}   />
-          <TimeButton selected={mode == "WEEK"}  label={"Week"}   callback={() => { setMode("WEEK"); }}  />
-          <TimeButton selected={mode == "MONTH"} label={"Months"} callback={() => { setMode("MONTH"); }} />
-          <TimeButton selected={mode == "YEAR"}  label={"Years"}  callback={() => { setMode("YEAR"); }}  />
+          <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE"); }}   />
+          <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY"); }}   />
+          <TimeButton selected={mode == "WEEK"}  label={ lang("Week")}   callback={() => { setMode("WEEK"); }}  />
+          <TimeButton selected={mode == "MONTH"} label={ lang("Months")} callback={() => { setMode("MONTH"); }} />
+          <TimeButton selected={mode == "YEAR"}  label={ lang("Years")}  callback={() => { setMode("YEAR"); }}  />
         </View>
         {
           mode !== "LIVE" && (
@@ -97,7 +103,7 @@ function EnergyUsageContent(props) {
               style={{backgroundColor: colors.csBlue.hex, height:40, ...styles.centered, width: screenWidth}}
               onPress={showDemoAlert}
             >
-              <Text style={{color: colors.white.hex, fontWeight: 'bold'}}>DEMO MODE</Text>
+              <Text style={{color: colors.white.hex, fontWeight: 'bold'}}>{ lang("DEMO_MODE") }</Text>
             </TouchableOpacity>
           )
         }
@@ -114,9 +120,9 @@ function EnergyUsageContent(props) {
 
 export function showDemoAlert() {
   Alert.alert(
-    "Coming soon!",
-    "We're working on integrating with existing hubs to gather historical data for you to see here!\n\nThese views are a taste of what's to come!",
-    [{text:"OK"}]
+lang("_Coming_soon___Were_worki_header"),
+lang("_Coming_soon___Were_worki_body"),
+[{text:lang("_Coming_soon___Were_worki_left")}]
   );
 }
 
@@ -125,8 +131,8 @@ export function ContentNoSphere(props) {
   return (
     <View style={{flex:1, alignItems:'flex-start', justifyContent:'center', paddingTop:topBarHeight}}>
       <View style={{flex:1}} />
-      <Text style={{fontSize:22, fontWeight:'bold', padding:30}}>{"No sphere selected..."}</Text>
-      <Text style={{fontSize:16, fontWeight:'bold', padding:30}}>{"Go to the overview and select a sphere."}</Text>
+      <Text style={{fontSize:22, fontWeight:'bold', padding:30}}>{ lang("No_sphere_selected___") }</Text>
+      <Text style={{fontSize:16, fontWeight:'bold', padding:30}}>{ lang("Go_to_the_overview_and_se") }</Text>
       <View style={{flex:3}} />
     </View>
   );

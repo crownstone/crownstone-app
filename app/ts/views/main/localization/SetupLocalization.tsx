@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SetupLocalization", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   ScrollView,
@@ -42,25 +48,25 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
     <SettingsBackground testID={"SetupLocalization"}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
         <View style={{height:30}}/>
-        <Text style={styles.header}>{"To use indoor localization, we have to walk around each room to learn about the Crownstone signals in the rooms."}</Text>
+        <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
         <View style={styles.centered}>
           <ScaledImage source={require("../../../../assets/images/map_house.png")} sourceWidth={1185} sourceHeight={835} targetHeight={screenHeight*0.3} />
         </View>
         <View style={{height:30}}/>
-        <Text style={styles.explanation}>{toDoRooms.length > 1 ? "We need to gather data in these rooms:" : "Only one room left to do!"}</Text>
+        <Text style={styles.explanation}>{ lang("We_need_to_gather_data_in",toDoRooms.length,1) }</Text>
         <ListEditableItems items={toDoRooms} style={{width: screenWidth}}/>
         <View style={{height:30}}/>
-        { finishedRooms.length > 0 && <Text style={styles.explanation}>{finishedRooms.length > 1 ? "These rooms are already done:" : "This room is already done:"}</Text> }
+        { finishedRooms.length > 0 && <Text style={styles.explanation}>{ lang("These_rooms_are_already_d",finishedRooms.length,1) }</Text> }
         { finishedRooms.length > 0 && <ListEditableItems items={finishedRooms} style={{width: screenWidth}}/> }
-        { toDoRooms.length > 1 && finishedRooms.length === 0 && <Text style={styles.header}>{"Pick a room to get started!"}</Text> }
+        { toDoRooms.length > 1 && finishedRooms.length === 0 && <Text style={styles.header}>{ lang("Pick_a_room_to_get_starte") }</Text> }
       </ScrollView>
     </SettingsBackground>
   );
 }
 
 SetupLocalization.options = (props) => {
-  return TopBarUtil.getOptions({ title: "Setup Localization", closeModal: props.isModal ?? false, help: () => { openLocalizationHelpWebsite(); } });
+  return TopBarUtil.getOptions({ title: lang("Setup_Localization"), closeModal: props.isModal ?? false, help: () => { openLocalizationHelpWebsite(); } });
 }
 
 
@@ -69,16 +75,16 @@ function SetupFinished(props) {
     <SettingsBackground testID={"SetupLocalization"}>
       <ScrollView contentContainerStyle={{alignItems:'center', minHeight: availableModalHeight }}>
         <View style={{height:30}}/>
-        <Text style={styles.title}>{"All done!"}</Text>
+        <Text style={styles.title}>{ lang("All_done_") }</Text>
         <View style={{height:30}}/>
         <View style={styles.centered}>
           <ScaledImage source={require("../../../../assets/images/map_house_finished.png")} sourceWidth={1193} sourceHeight={825} targetWidth={screenWidth} />
         </View>
         <View style={{height:30}}/>
         <Text style={styles.explanation}>
-          <Text>{"If you want to improve the localization performance later on, the "}</Text>
-          <Text style={{ fontWeight:'bold' }}>{"Improve Localization"}</Text>
-          <Text>{" option is now available from the localization menu."}</Text>
+          <Text>{ lang("If_you_want_to_improve_th") }</Text>
+          <Text style={{ fontWeight:'bold' }}>{ lang("Improve_Localization") }</Text>
+          <Text>{ lang("_option_is_now_available_") }</Text>
         </Text>
         <Spacer />
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>

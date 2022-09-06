@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationMenu_active", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   ScrollView,
@@ -19,9 +25,9 @@ import { LocalizationUtil } from "../../../../util/LocalizationUtil";
 export function LocalizationMenu_active(props) {
   let items = [];
   let secondItems = [];
-  items.push({label: "CHANGES AND QUICKFIX",  type:'explanation'});
+  items.push({label: lang("CHANGES_AND_QUICKFIX"),  type:'explanation'});
   items.push({
-    label: "I have moved a Crownstone..",
+    label: lang("I_have_moved_a_Crownstone"),
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
@@ -32,7 +38,7 @@ export function LocalizationMenu_active(props) {
   });
 
   items.push({
-    label: "Improve from localization mistake...",
+    label: lang("Improve_from_localization"),
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
@@ -41,19 +47,19 @@ export function LocalizationMenu_active(props) {
       NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
     }
   });
-  items.push({label: "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!",  type:'explanation', below: true});
+  items.push({label: lang("If_the_localization_was_w"),  type:'explanation', below: true});
 
 
   let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
   let goodLocations      = LocalizationUtil.getLocationsWithGoodFingerprints(props.sphereId);
   let alreadyPadded      = true;
   if (locationsAttention.length > 0) {
-    items.push({label: "THESE ROOMS NEED ATTENTION",  type:'explanation', alreadyPadded: alreadyPadded});
+    items.push({label: lang("THESE_ROOMS_NEED_ATTENTIO"),  type:'explanation', alreadyPadded: alreadyPadded});
     alreadyPadded = !alreadyPadded;
   }
 
   if (goodLocations.length > 0) {
-    secondItems.push({label: "LOCALIZATION TRAINING QUALITY",  type:'explanation', alreadyPadded: alreadyPadded});
+    secondItems.push({label: lang("LOCALIZATION_TRAINING_QUA"),  type:'explanation', alreadyPadded: alreadyPadded});
   }
 
   return (

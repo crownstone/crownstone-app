@@ -162,7 +162,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
   _getItems() {
     let items = [];
-    items.push({type: 'explanation', label:"ROOM SETTINGS"});
+    items.push({type: 'explanation', label: lang("ROOM_SETTINGS")});
     items.push({
       label: lang("Room_Name"),
       type: 'textEdit',
@@ -220,7 +220,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
 
     if (Permissions.inSphere(this.props.sphereId).removeRoom) {
-      items.push({type: 'explanation', label:"DANGER"});
+      items.push({type: 'explanation', label: lang("DANGER")});
       items.push({
         label: lang("Remove_Room"),
         type: 'button',

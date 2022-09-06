@@ -37,9 +37,9 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
     <Background>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
-      <Text style={styles.header}>{"Localization made a mistake.."}</Text>
-      <Text style={styles.boldExplanation}>{"Let's learn from that mistake!"}</Text>
-      <Text style={styles.explanation}>{"Which room where you in for the last 3 minutes?"}</Text>
+      <Text style={styles.header}>{ lang("Localization_made_a_mista") }</Text>
+      <Text style={styles.boldExplanation}>{ lang("Lets_learn_from_that_mist") }</Text>
+      <Text style={styles.explanation}>{ lang("Which_room_where_you_in_f") }</Text>
 
       <NavigationBar
         label={ locationId === null ? "Pick location" : location.config.name }
@@ -51,11 +51,11 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
         }}
       />
 
-      <Text style={styles.explanation}>{"It is important that you really were in that room in all of the last 3 minutes!"}</Text>
+      <Text style={styles.explanation}>{ lang("It_is_important_that_you_") }</Text>
       <Spacer />
       <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
         { locationId === null ?
-            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{"Please pick a location first."}</Text>
+            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{ lang("Please_pick_a_location_fi") }</Text>
           :
             <Button
               backgroundColor={colors.csBlue.hex}
@@ -64,10 +64,11 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
               label={ " Fix mistake! "}
               callback={() => {
                 Alert.alert(
-                "You were in the " + location.config.name + " for the last 3 minutes?",
-                "This is important.",
-                [{text:"Yes", style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
-                         {text:"I'm not sure..", style:'cancel', onPress: handleCancel} ],
+lang("_You_were_in_the_____argu_header",location.config.name),
+lang("_You_were_in_the_____argu_body"),
+[{text:lang("_You_were_in_the_____argu_left"), style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
+                         {
+text:lang("_You_were_in_the_____argu_right"), style:'cancel', onPress: handleCancel} ],
                 {cancelable:false}
                 );
               }}
@@ -99,19 +100,17 @@ function handleConfirm(sphereId, locationId) {
 
   if (amountOfNewDatapoints > 0) {
     Alert.alert(
-      "Localization has been improved!",
-      "Added " + amountOfNewDatapoints + " new datapoints!",
-      [{
-        text: "Great!",  onPress: () => { NavigationUtil.dismissModal(); }}],
+lang("_Localization_has_been_im_header"),
+lang("_Localization_has_been_im_body",amountOfNewDatapoints),
+[{text: lang("_Localization_has_been_im_left"),  onPress: () => { NavigationUtil.dismissModal(); }}],
       { cancelable: false }
     );
   }
   else {
     Alert.alert(
-      "No need to improve!",
-      "Localization already placed you in that room for the last 3 minutes!",
-      [{
-        text: "Great!", onPress: () => { NavigationUtil.dismissModal(); }}],
+lang("_No_need_to_improve___Loc_header"),
+lang("_No_need_to_improve___Loc_body"),
+[{text: lang("_No_need_to_improve___Loc_left"), onPress: () => { NavigationUtil.dismissModal(); }}],
       { cancelable: false }
     );
   }
@@ -119,12 +118,12 @@ function handleConfirm(sphereId, locationId) {
 
 function handleCancel() {
   Alert.alert(
-    "Better safe than sorry!",
-    "Stay in the room a little longer and try again after 3 minutes",
-    [{text:"OK", onPress: () => { NavigationUtil.dismissModal() }}],
+lang("_Better_safe_than_sorry___header"),
+lang("_Better_safe_than_sorry___body"),
+[{text:lang("_Better_safe_than_sorry___left"), onPress: () => { NavigationUtil.dismissModal() }}],
     {cancelable:false}
   );
 }
 
-LocalizationQuickFix.options = TopBarUtil.getOptions({ title: "Quickfix" });
+LocalizationQuickFix.options = TopBarUtil.getOptions({ title: lang("Quickfix")});
 

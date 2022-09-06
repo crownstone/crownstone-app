@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationMenu_notEnoughCrownstones", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   ScrollView,
@@ -11,14 +17,13 @@ import { getLearnAboutLocalizationItems, openLocalizationHelpWebsite } from "./L
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import { colors, screenHeight, screenWidth, styles } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
-import { Languages } from "../../../../Languages";
 import { Icon } from "../../../components/Icon";
 
 
 export function LocalizationMenu_notEnoughCrownstones(props) {
   let items = [];
   items.push({
-    label: "Buy Crownstones!",
+    label: lang("Buy_Crownstones_"),
     type: 'navigation',
     numberOfLines: 3,
     testID: 'ImproveLocalization',
@@ -34,7 +39,7 @@ export function LocalizationMenu_notEnoughCrownstones(props) {
     <SettingsBackground testID={"LocalizationMenu_notEnoughCrownstones"}>
       <ScrollView>
         <View style={{height:20}}/>
-        <Text style={styles.header}>{"To use indoor localization, have to have at least 4 Crownstones..."}</Text>
+        <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
         <View style={styles.centered}>
           <ScaledImage source={require("../../../../../assets/images/map_house_4_crownstones.png")} sourceWidth={1193} sourceHeight={842} targetWidth={screenWidth*0.9} />

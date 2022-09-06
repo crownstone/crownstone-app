@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationFindAndFix", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {Platform, Vibration, Text, View, TextStyle, ActivityIndicator} from "react-native";
 import { LiveComponent } from "../../LiveComponent";
@@ -114,8 +120,8 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
       <Background>
         <View style={{height: topBarHeight}} />
         <KeepAwake />
-        <Text style={styles.header}>{"Move around to find mistakes in the localization..."}</Text>
-        <Text style={styles.boldExplanation}>{"Any mistake will be fixed and applied immediately!"}</Text>
+        <Text style={styles.header}>{ lang("Move_around_to_find_mista") }</Text>
+        <Text style={styles.boldExplanation}>{ lang("Any_mistake_will_be_fixed") }</Text>
         <Text style={{...styles.boldExplanation, fontStyle:"italic"}}>{`Stay in the ${location.config.name} during this process!`}</Text>
 
         <SlideInViewLayoutAnimation visible={this.sortedDistanceArray.length > 0}>

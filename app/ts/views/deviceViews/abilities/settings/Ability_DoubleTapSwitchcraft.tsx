@@ -29,7 +29,7 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
   timeout;
 
   static options(props) {
-    return TopBarUtil.getOptions({title: "Double tap features"});
+    return TopBarUtil.getOptions({title: lang("Double_tap_features")});
   }
 
   constructor(props) {
@@ -84,7 +84,7 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
           type:"switch",
           icon: <Icon name="md-information-circle" size={30} radius={10} color={colors.green.hex} />,
           value: this.state.doubleTapValue,
-          label: "Double Tap Switchcraft",
+          label: lang("Double_Tap_Switchcraft"),
           callback:(value) => {
             this.setState({doubleTapSwitchcraft: value})
             core.store.dispatch({
@@ -120,16 +120,15 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
           });
         }
         else {
-          items.push({type:'explanation', label: "Enable double tap switchcraft to configure it further..", below: true});
+          items.push({type:'explanation', label: lang("Enable_double_tap_switchc"), below: true});
         }
 
         return (
           <SettingsBackground>
             <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
-              <Text style={styles.boldExplanation}>{ "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." }</Text>
-              <Text style={styles.explanation}>{ "Tap the wall switch twice quickly to change between full on and the dimmed intensity." }</Text>
-              <Text style={styles.explanation}>{ "The dim value is dependent on the twiligth and behaviour dim value and the time of day." +
-                " If there is no dimmed value in twilight or behaviour, the default value is used." }</Text>
+              <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
+              <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
+              <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
               <View style={{height:10}} />
               <View style={{width:screenWidth}}>
                 <ListEditableItems items={items} />
@@ -143,12 +142,11 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
       return (
         <SettingsBackground>
           <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
-            <Text style={styles.boldExplanation}>{ "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." }</Text>
-            <Text style={styles.explanation}>{ "Tap the wall switch twice quickly to change between full on and the dimmed intensity." }</Text>
-            <Text style={styles.explanation}>{ "The dim value is dependent on the twiligth and behaviour dim value and the time of day." +
-              " If there is no dimmed value in twilight or behaviour, the default value is used." }</Text>
+            <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_all") }</Text>
+            <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice_") }</Text>
+            <Text style={styles.explanation}>{ lang("The_dim_value_is_dependent") }</Text>
             <View style={{height:10}} />
-            <Text style={styles.boldExplanation}>{ "Dimming has to be enabled in order to use double tap switchcraft." }</Text>
+            <Text style={styles.boldExplanation}>{ lang("Dimming_has_to_be_enabled") }</Text>
           </ScrollView>
         </SettingsBackground>
       );
@@ -158,7 +156,7 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
     return (
       <SettingsBackground>
         <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
-          <Text style={styles.boldExplanation}>{ "Update this Crownstone to firmware 5.7.0 or higher to use double tap Switchcraft." }</Text>
+          <Text style={styles.boldExplanation}>{ lang("Update_this_Crownstone_to") }</Text>
         </ScrollView>
       </SettingsBackground>
     );

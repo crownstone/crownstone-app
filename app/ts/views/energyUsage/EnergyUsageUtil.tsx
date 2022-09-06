@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("EnergyUsageUtil", key)(a,b,c,d,e);
+}
 import * as React from "react";
 import {ActivityIndicator, Text, View} from "react-native";
 import {colors} from "../styles";
@@ -45,7 +51,7 @@ export const EnergyUsageUtil = {
       powerData.push(PowerUsageCacher.getRecentData(sphereId, stones[stoneId].config.handle));
     }
 
-    return <PendingEnergyState powerData={powerData} baseUnit={'W'} />
+    return <PendingEnergyState powerData={powerData} baseUnit={ lang("W")} />
   },
 
 
@@ -69,7 +75,7 @@ export const EnergyUsageUtil = {
     if (value === null) {
       value = PowerUsageCacher.getRecentData(sphereId, stone.config.handle);
     }
-    return <PendingEnergyState powerData={[value]} showCollection={false} baseUnit={'W'} />
+    return <PendingEnergyState powerData={[value]} showCollection={false} baseUnit={ lang("W")} />
   },
 
 
@@ -103,7 +109,7 @@ export const EnergyUsageUtil = {
 }
 
 
-function getScalingAndUnit(value, baseUnit: 'W' | 'Wh') : {scalingFactor: number, unit: string} {
+function getScalingAndUnit(value, baseUnit: string) : {scalingFactor: number, unit: string} {
   let unit = baseUnit as string;
   let scalingFactor = 1;
   if (value > 1e6) {
@@ -139,7 +145,7 @@ function getColorMap(idArray: string[]) {
 }
 
 
-function PendingEnergyState(props: {powerData: (number|null)[], showCollection?: boolean, baseUnit: 'W' | 'Wh'}) {
+function PendingEnergyState(props: {powerData: (number|null)[], showCollection?: boolean, baseUnit: string}) {
   let missingValues = 0;
   let sum = 0;
   for (let point of props.powerData) {

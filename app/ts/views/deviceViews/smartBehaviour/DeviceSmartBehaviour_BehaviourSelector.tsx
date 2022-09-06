@@ -116,7 +116,7 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
       <SettingsBackground>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</Text>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("Tap_behaviours_to_copy_") }</Text>
             <View style={{height: 0.2*iconSize}} />
 
             <View style={{flex:1}} />

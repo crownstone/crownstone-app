@@ -237,7 +237,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 function SceneHeader({editMode, setEditMode, endEditMode}) {
   return (
     <View style={{flexDirection:'row', paddingLeft: 15, alignItems:'center'}}>
-      <Text style={styles.viewHeader}>{'Scenes'}</Text>
+      <Text style={styles.viewHeader}>{ lang("Scenes") }</Text>
       <View style={{flex:1}} />
       {editMode ?
         <EditDone onPress={endEditMode} />

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationMenu_shared", key)(a,b,c,d,e);
+}
 import { Icon } from "../../../components/Icon";
 import { colors } from "../../../styles";
 import { Linking } from "react-native";
@@ -5,7 +11,7 @@ import * as React from "react";
 
 export function getLearnAboutLocalizationItems(items: any[]) {
   items.push({
-    label: "Learn about indoor localization",
+    label: lang("Learn_about_indoor_locali"),
     type: 'navigation',
     numberOfLines: 3,
     testID: 'ImproveLocalization',
@@ -14,7 +20,7 @@ export function getLearnAboutLocalizationItems(items: any[]) {
       openLocalizationHelpWebsite();
     }
   });
-  items.push({label: "You need at least 4 Crownstones to enable indoor localization. Find out why this is, and what it can do for you!",  type:'explanation', below: true});
+  items.push({label: lang("You_need_at_least___Crown"),  type:'explanation', below: true});
 }
 
 export function openLocalizationHelpWebsite() {

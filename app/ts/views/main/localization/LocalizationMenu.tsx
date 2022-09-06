@@ -40,6 +40,6 @@ export function LocalizationMenu(props) {
   return <LocalizationMenu_gettingStarted {...props} />;
 }
 
-LocalizationMenu.options = TopBarUtil.getOptions({ title: "Localization", closeModal: true });
+LocalizationMenu.options = TopBarUtil.getOptions({ title: lang("Localization"), closeModal: true });
 
 

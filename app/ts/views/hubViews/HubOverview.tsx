@@ -1,6 +1,11 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("HubOverview", key)(a,b,c,d,e);
+}
 import {LiveComponent} from "../LiveComponent";
 
-import {Languages} from "../../Languages"
 import * as React from 'react';
 
 import {Background} from '../components/Background'
@@ -34,9 +39,6 @@ import {HubHelper} from "../../native/setup/HubHelper";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import { OverlayUtil } from "../../util/OverlayUtil";
 
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("HubOverview", key)(a,b,c,d,e);
-}
 
 //
 export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
@@ -146,7 +148,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     items.push({
       id: 'My Account',
-      label: "Appearence",
+      label: lang("Appearence"),
       testID: 'Appearence',
       icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
@@ -154,7 +156,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
         NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
-    items.push({type: 'explanation', label: "Change name, icon, etc.", below: true});
+    items.push({type: 'explanation', label: lang("Change_name__icon__etc_"), below: true});
 
     let location = Get.location(this.props.sphereId, stone.config.locationId);
     let locationLabel = lang("Not_in_a_room");
@@ -171,11 +173,11 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
         OverlayUtil.callRoomSelectionOverlayForHubPlacement(this.props.sphereId, hub.id);
       }
     });
-    items.push({type: 'explanation', label: "Move the hub to another room.", below: true});
+    items.push({type: 'explanation', label: lang("Move_the_hub_to_another_r"), below: true});
 
     items.push({label: lang("DANGER"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label: "Remove Hub",
+      label: lang("Remove_Hub"),
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
       callback: () => {

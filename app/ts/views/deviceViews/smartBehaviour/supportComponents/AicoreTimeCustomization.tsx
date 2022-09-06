@@ -1,4 +1,9 @@
-import {Languages} from "../../../../Languages"
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
+}
 import React, {Component, useState} from 'react';
 import {Alert, Platform, Text, TextStyle, TouchableOpacity, View} from "react-native";
 // import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
@@ -20,9 +25,6 @@ import {ScaledImage} from "../../../components/ScaledImage";
 import {Icon} from "../../../components/Icon";
 import {OverlaySaveButton} from "../../../overlays/ListOverlay";
 
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
-}
 
 let timeReference = null;
 

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_inPocket_intro", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { Alert, Animated, Platform, Vibration, Text, View } from "react-native";
 
@@ -24,8 +30,8 @@ return (
       <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: topBarHeight}} contentInsetAdjustmentBehavior={"never"}>
         <KeepAwake />
         <View style={{height:20}}/>
-        <Text style={styles.boldExplanation}>{"We walk around the room in the same way as you'd do normally. Put your phone in your pocket and walk around the room."}</Text>
-        <Text style={styles.explanation}>{"Stand in places you commonly stand with the phone in your pocket. After this, take the phone out of your pocket and place it on surfaces in the room where it is likely to be normally."}</Text>
+        <Text style={styles.boldExplanation}>{ lang("We_walk_around_the_room_i") }</Text>
+        <Text style={styles.explanation}>{ lang("Stand_in_places_you_commo") }</Text>
 
         <View style={{flex:1}}/>
         <Video
@@ -37,7 +43,7 @@ return (
         />
         <View style={{flex:1}}/>
 
-        <Text style={styles.explanation}>{"Collect as much as you can!"}</Text>
+        <Text style={styles.explanation}>{ lang("Collect_as_much_as_you_ca") }</Text>
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           <Button
             backgroundColor={colors.blue.rgba(0.75)}

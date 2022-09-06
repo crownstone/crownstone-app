@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_inHand_intro", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { Text, View } from "react-native";
 
@@ -21,8 +27,8 @@ export function RoomTraining_inHand_intro(props) {
         <View style={{height: topBarHeight}} />
         <KeepAwake />
         <View style={{height:20}}/>
-        <Text style={styles.boldExplanation}>{"Walk around the room with the phone in your hand, arm stretched out."}</Text>
-        <Text style={styles.explanation}>{"Once the phone vibrates, move it to a new position and hold it there. Repeat this with as many unique positions as possible!"}</Text>
+        <Text style={styles.boldExplanation}>{ lang("Walk_around_the_room_with") }</Text>
+        <Text style={styles.explanation}>{ lang("Once_the_phone_vibrates__") }</Text>
 
         <View style={{flex:1}}/>
         <Video
@@ -35,7 +41,7 @@ export function RoomTraining_inHand_intro(props) {
         />
         <View style={{flex:1}}/>
 
-        <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>
+        <Text style={styles.explanation}>{ lang("Once_I_have_collected_eno") }</Text>
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
           <Button
             backgroundColor={colors.blue.rgba(0.75)}

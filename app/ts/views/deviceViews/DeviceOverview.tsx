@@ -141,10 +141,10 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     canSwitch = canSwitch && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION);
 
-    items.push({type: 'explanation', label: "CROWNSTONE SETTINGS"});
+    items.push({type: 'explanation', label: lang("CROWNSTONE_SETTINGS")});
     items.push({
       id: 'My Account',
-      label: "Appearence",
+      label: lang("Appearence"),
       testID: 'Appearence',
       icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
@@ -152,7 +152,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
         NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
-    items.push({type: 'explanation', label: "Change name, icon, etc.", below: true});
+    items.push({type: 'explanation', label: lang("Change_name__icon__etc_"), below: true});
 
     if (canSwitch) {
       items.push({
@@ -165,7 +165,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
           NavigationUtil.navigate("DeviceAbilities", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }
       });
-      items.push({type: 'explanation', label: "Enable dimming, switchcraft, etc.", below: true});
+      items.push({type: 'explanation', label: lang("Enable_dimming__switchcra"), below: true});
       items.push({
         id: 'behaviour',
         label: lang("Behaviour"),
@@ -176,7 +176,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
           NavigationUtil.navigate("DeviceSmartBehaviour", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }
       });
-      items.push({type: 'explanation', label: "Turn on if/when ...", below: true});
+      items.push({type: 'explanation', label: lang("Turn_on_if_when____"), below: true});
     }
 
     let location = Get.location(this.props.sphereId, stone.config.locationId);
@@ -194,12 +194,12 @@ export class  DeviceOverview extends LiveComponent<any, any> {
         OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId);
       }
     });
-    items.push({type: 'explanation', label: "Move the Crownstone to another room", below: true});
+    items.push({type: 'explanation', label: lang("Move_the_Crownstone_to_an"), below: true});
 
     if (canSwitch) {
       items.push({
         id: 'lock',
-        label: stone.config.locked ? "Unlock Crownstone switch" : "Lock Crownstone switch",
+        label: lang("Unlock_Crownstone_switchL",stone.config.locked),
         testID: 'Appearence',
         icon: <Icon name={'md-lock'} size={30} color={colors.blue.hex}/>,
         type: 'navigation',
@@ -219,7 +219,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
 
     items.push({label: lang("DANGER"), type: 'explanation', below: false});
     items.push({
-      label: "Remove Crownstone",
+      label: lang("Remove_Crownstone"),
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
       callback: () => {

@@ -209,7 +209,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
-          <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>Get close to enable dimming!</Text>
+          <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>{ lang("Get_close_to_enable_dimmi") }</Text>
         </View>
       );
     }

@@ -60,9 +60,9 @@ export function LocalizationCrownstoneMoved(props) {
     <Background>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
-      <Text style={styles.header}>{"A Crownstone has been moved.."}</Text>
-      <Text style={styles.boldExplanation}>{"We can update the rooms to use this information!"}</Text>
-      <Text style={styles.explanation}>{"If we do not do this, the moved Crownstone can interfere with the ability to detect which room you are in."}</Text>
+      <Text style={styles.header}>{ lang("A_Crownstone_has_been_mov") }</Text>
+      <Text style={styles.boldExplanation}>{ lang("We_can_update_the_rooms_t") }</Text>
+      <Text style={styles.explanation}>{ lang("If_we_do_not_do_this__the") }</Text>
       <View style={{height:30}}/>
 
       <NavigationBar
@@ -80,7 +80,7 @@ export function LocalizationCrownstoneMoved(props) {
       <Spacer />
       <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
         { stoneName === null ?
-            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{"Please pick a Crownstone first."}</Text>
+            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{ lang("Please_pick_a_Crownstone_") }</Text>
           :
             <Button
               backgroundColor={colors.csBlue.hex}
@@ -99,5 +99,5 @@ export function LocalizationCrownstoneMoved(props) {
 }
 
 
-LocalizationCrownstoneMoved.options = TopBarUtil.getOptions({ title: "Quickfix" });
+LocalizationCrownstoneMoved.options = TopBarUtil.getOptions({ title: lang("Quickfix")});
 

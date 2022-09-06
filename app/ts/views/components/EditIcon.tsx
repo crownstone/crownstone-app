@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("EditIcon", key)(a,b,c,d,e);
+}
 import { Icon } from "./Icon";
 import { colors, styles } from "../styles";
 import { Text, TouchableOpacity, View, ViewStyle } from "react-native";
@@ -66,7 +72,7 @@ export function DevIconRight(props) {
 export function EditDone(props) {
   return (
     <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress} testID={props.testID ?? 'editDone'}>
-      <Text style={{...styles.viewButton, color: color, textAlign:'right'}}>Done</Text>
+      <Text style={{...styles.viewButton, color: color, textAlign:'right'}}>{ lang("Done") }</Text>
     </TouchableOpacity>
   );
 }

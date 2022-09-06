@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_conclusion", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { SettingsBackground } from '../../components/SettingsBackground';
 import {TopBarUtil} from "../../../util/TopBarUtil";
@@ -57,7 +63,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
           <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.9} />
         </View>
       <Text style={styles.boldExplanation}>{label}</Text>
-        {showImprovementSuggestion && <Text style={styles.explanation}>{"You can further improve the performance by adding an in-pocket training set."}</Text> }
+        {showImprovementSuggestion && <Text style={styles.explanation}>{ lang("You_can_further_improve_t") }</Text> }
       <Spacer />
         <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
           {showImprovementSuggestion && <Button
@@ -73,4 +79,4 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
   );
 }
 
-RoomTraining_conclusion.options = TopBarUtil.getOptions({title:"Training complete!", disableBack: true});
+RoomTraining_conclusion.options = TopBarUtil.getOptions({title: lang("Training_complete_"), disableBack: true});

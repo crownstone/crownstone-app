@@ -1,6 +1,10 @@
 
 import { Languages } from "../../../../Languages"
 
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationMenu_notInSphere", key)(a,b,c,d,e);
+}
+
 import * as React from 'react';
 import {
   ScrollView,
@@ -25,8 +29,7 @@ export function LocalizationMenu_notInSphere(props) {
     type:"info",
     numberOfLines:2,
     style: {color: colors.black.rgba(0.3)},
-    label:"You have to be in the sphere to continue..."
-  });
+    label: lang("You_have_to_be_in_the_sph")});
   items.push({type:'spacer'});
   getLearnAboutLocalizationItems(items)
 
@@ -34,7 +37,7 @@ export function LocalizationMenu_notInSphere(props) {
     <SettingsBackground testID={"LocalizationMenu_notInSphere"}>
       <ScrollView>
         <View style={{height:20}}/>
-        <Text style={styles.header}>{"To use indoor localization, you have to be in the sphere..."}</Text>
+        <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
         <View style={styles.centered}>
           <ScaledImage source={require("../../../../../assets/images/map_house_4_crownstones.png")} sourceWidth={1193} sourceHeight={842} targetWidth={screenWidth*0.9} />

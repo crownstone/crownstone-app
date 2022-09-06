@@ -1,4 +1,9 @@
-import {Languages} from "../../Languages"
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("HubProblems", key)(a,b,c,d,e);
+}
 
 import {ActivityIndicator, Alert, Text, TextStyle, View, ViewStyle} from "react-native";
 import {colors, styles} from "../styles";
@@ -15,9 +20,6 @@ import {HubTransferNext} from "../../cloud/sections/newSync/transferrers/HubTran
 import {HubHelper} from "../../native/setup/HubHelper";
 import {HubUtil} from "../../util/HubUtil";
 
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("HubProblems", key)(a,b,c,d,e);
-}
 
 let textStyle : TextStyle = {textAlign:'center', fontSize:16, fontWeight:'bold'};
 let viewStyle : ViewStyle = {...styles.centered, flex:1, padding:15};
@@ -176,7 +178,7 @@ export function HubIssue_UART_ENCRYPTION_NOT_ENABLED(sphereId: string, stoneId: 
       <View style={{flex: 1}}/>
       <Button
         backgroundColor={colors.blue.rgba(0.5)}
-        label={"Enable encryption. "}
+        label={ lang("Enable_encryption__")}
         icon={"ios-build"}
         iconSize={14}
         callback={async () => {

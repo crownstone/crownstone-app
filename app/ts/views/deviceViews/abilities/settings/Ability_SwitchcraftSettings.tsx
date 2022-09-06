@@ -47,7 +47,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
     items.push({
       type:"navigation",
       icon: <Icon name="ion5-sunny" size={30} radius={10} color={colors.blue.hex} />,
-      label: "Double tap features",
+      label: lang("Double_tap_features"),
       callback:() => { NavigationUtil.navigate("Ability_DoubleTapSwitchcraft", {sphereId: this.props.sphereId, stoneId: this.props.stoneId}) }
     });
     items.push({

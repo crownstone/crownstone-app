@@ -152,13 +152,13 @@ function ArrangingHeader({viewId, setRearrangeRooms}) {
   return (
     <View style={{flexDirection: 'row', alignItems:'center'}}>
       <TouchableOpacity onPress={() => { core.eventBus.emit("reset_positions" + viewId); setRearrangeRooms(false);  }} style={{paddingHorizontal:15}} testID={'cancel'}>
-        <Text style={styles.viewButton}>Cancel</Text>
+        <Text style={styles.viewButton}>{ lang("Cancel") }</Text>
       </TouchableOpacity>
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-        <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{"Move the rooms!"}</Text>
+        <Text style={{fontSize:25, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Move_the_rooms_") }</Text>
       </View>
       <TouchableOpacity onPress={() => { core.eventBus.emit("save_positions" + viewId); }} style={{paddingHorizontal:15}} testID={'savePositions'}>
-        <Text style={styles.viewButton}>Save</Text>
+        <Text style={styles.viewButton}>{ lang("Save") }</Text>
       </TouchableOpacity>
     </View>
   )

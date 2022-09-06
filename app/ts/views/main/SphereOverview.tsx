@@ -317,9 +317,9 @@ function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
     <React.Fragment>
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center',}}>
       <View style={{flex:1}} />
-      <Text style={styles.header}>{ "You need to add a room to the sphere to place your Crownstones in." }</Text>
+      <Text style={styles.header}>{ lang("You_need_to_add_a_room_to") }</Text>
       <View style={{flex:0.1}} />
-      <Text style={styles.boldExplanation}>{ "Tap the blinking icon on the top left to continue!" }</Text>
+      <Text style={styles.boldExplanation}>{ lang("Tap_the_blinking_icon_on_") }</Text>
       <View style={{flex:3}} />
     </View>
     <TopBarBlur xlight blink={{left: true}}>

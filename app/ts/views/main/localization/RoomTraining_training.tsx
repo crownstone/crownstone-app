@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_training", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { Platform, Vibration, Text, View, ViewStyle, Animated } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
@@ -90,13 +96,13 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
         <View style={{height: topBarHeight}} />
         <KeepAwake />
         <View style={{height:30}}/>
-        <Text style={styles.header}>{"Listening..."}</Text>
-        <Text style={styles.boldExplanation}>{"Move around the room to collect the measurements!"}</Text>
+        <Text style={styles.header}>{ lang("Listening___") }</Text>
+        <Text style={styles.boldExplanation}>{ lang("Move_around_the_room_to_c") }</Text>
 
         <TrainingAnimation count={this.state.dataCount} requiredAmount={this.minRequiredSamples} />
 
-        { this.state.dataCount < this.minRequiredSamples  && <Text style={styles.explanation}>{"Once I have collected enough information, I'll let you know!"}</Text>}
-        { this.state.dataCount >= this.minRequiredSamples && <Text style={styles.explanation}>{"You can collect more if you want. The more the better!"}</Text>}
+        { this.state.dataCount < this.minRequiredSamples  && <Text style={styles.explanation}>{ lang("Once_I_have_collected_eno") }</Text>}
+        { this.state.dataCount >= this.minRequiredSamples && <Text style={styles.explanation}>{ lang("You_can_collect_more_if_y") }</Text>}
 
         <View style={{flex:1}}/>
 

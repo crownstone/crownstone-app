@@ -106,7 +106,7 @@ export class SphereLevel extends LiveComponent<any, any> {
         />
         <TopBarBlur disabledBlur>
           <View style={{paddingHorizontal:15}}>
-            <Text style={styles.viewHeaderLight}>{"Where to go?"}</Text>
+            <Text style={styles.viewHeaderLight}>{ lang("Where_to_go_") }</Text>
           </View>
         </TopBarBlur>
       </View>

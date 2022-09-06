@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LiveLists", key)(a,b,c,d,e);
+}
 import {Get} from "../../../util/GetUtil";
 import {AppState, View} from "react-native";
 import {colors, NORMAL_ROW_SIZE, screenWidth} from "../../styles";
@@ -125,13 +131,13 @@ function CrownstoneList(props: { open: boolean, locationId: locationId }) {
 
     if (items.length === 0) {
       items.push(
-        <InfoBar barHeight={0.6*NORMAL_ROW_SIZE} label={"No Crownstones in room"} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
+        <InfoBar barHeight={0.6*NORMAL_ROW_SIZE} label={ lang("No_Crownstones_in_room")} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
       );
     }
 
     if (showCollecting) {
       items.push(
-        <InfoBar barHeight={2*0.6*NORMAL_ROW_SIZE} label={"Waiting to hear from all Crownstones in the room..."} numberOfLines={2} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
+        <InfoBar barHeight={2*0.6*NORMAL_ROW_SIZE} label={ lang("Waiting_to_hear_from_all_")} numberOfLines={2} labelStyle={{fontSize:15, color: colors.black.rgba(0.3), paddingLeft:30, fontStyle:'italic'}} backgroundColor={"transparent"} />
       );
     }
   }

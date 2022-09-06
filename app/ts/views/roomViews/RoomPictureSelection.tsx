@@ -38,7 +38,7 @@ export class RoomPictureSelection extends LiveComponent<{
   locationId: locationId
 }, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Select Image", closeModal: true});
+    return TopBarUtil.getOptions({title: lang("Select_Image"), closeModal: true});
   }
 
   constructor(props) {
@@ -53,7 +53,7 @@ export class RoomPictureSelection extends LiveComponent<{
     items.push({
       type:"navigation",
       icon: <Icon name={'ion5-camera'} size={26} color={colors.csBlue.hex} />,
-      label:'Custom background picture',
+      label: lang("Custom_background_picture"),
       testID: 'customBackgroundPicture',
       callback: () => {
         this.setState({selecting:true});
@@ -66,7 +66,7 @@ export class RoomPictureSelection extends LiveComponent<{
     })
     items.push({
       type:"info",
-      label:'Stock background picture:',
+      label: lang("Stock_background_picture_"),
     })
 
     items.push({

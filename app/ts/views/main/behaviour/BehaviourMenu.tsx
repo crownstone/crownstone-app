@@ -49,7 +49,7 @@ export function BehaviourMenu(props: { sphereId: sphereId}) {
   }
   let items = [];
 
-  items.push({ label: "BEHAVIOUR", type: 'largeExplanation' });
+  items.push({ label: lang("BEHAVIOUR"), type: 'largeExplanation' });
   let label = "You can disable behaviour so your house reverts to a normal, dumb, home. This is often used if you have guests. Guests prefer not to be left in the dark...";
   let disabled = false;
   if (DataUtil.isBehaviourUsed(props.sphereId)) {
@@ -64,7 +64,7 @@ export function BehaviourMenu(props: { sphereId: sphereId}) {
   }
 
   items.push({
-    label: "Disable behaviour",
+    label: lang("Disable_behaviour"),
     type: 'switch',
     testID: 'Disable_behaviour',
     disabled: disabled,
@@ -87,4 +87,4 @@ export function BehaviourMenu(props: { sphereId: sphereId}) {
   );
 }
 
-BehaviourMenu.options = TopBarUtil.getOptions({ title: "Behaviour", closeModal: true })
+BehaviourMenu.options = TopBarUtil.getOptions({ title: lang("Behaviour"), closeModal: true })

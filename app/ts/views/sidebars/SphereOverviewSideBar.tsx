@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereOverviewSideBar", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {Image, TextStyle, TouchableOpacity, View, Text, Alert} from "react-native";
 import {colors, screenWidth, tabBarHeight} from "../styles";
@@ -43,7 +49,7 @@ export function SphereOverviewSideBar(props) {
 
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
-        label={"Add items"}
+        label={ lang("Add_items")}
         callback={() => { NavigationUtil.launchModal( "AddItemsToSphere",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
         size={23}
         icon={'md-add-circle'}
@@ -52,7 +58,7 @@ export function SphereOverviewSideBar(props) {
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
-        label={"Localization"}
+        label={ lang("Localization")}
         callback={() => {
           if (
             DataUtil.inSphere(SPHERE_ID_STORE.activeSphereId) &&
@@ -73,7 +79,7 @@ export function SphereOverviewSideBar(props) {
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
-        label={"Behaviour"}
+        label={ lang("Behaviour")}
         callback={() => { NavigationUtil.launchModal( "BehaviourMenu",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
         size={22}
         icon={'c1-brain'}
@@ -82,7 +88,7 @@ export function SphereOverviewSideBar(props) {
       />
       <SideMenuLink
         closeSideMenu={props.closeSideMenu}
-        label={"Messages"}
+        label={ lang("Messages")}
         callback={() => { NavigationUtil.launchModal( "MessageInbox",{sphereId: SPHERE_ID_STORE.activeSphereId}); }}
         size={21}
         icon={'zo-email'}
@@ -92,14 +98,14 @@ export function SphereOverviewSideBar(props) {
       <View style={{height:50}}/>
       {
         amountOfSpheres > 1 &&
-          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Change sphere"} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'} testID={'changeSphere'} />
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={ lang("Change_sphere")} callback={() => { core.eventBus.emit("VIEW_SPHERES"); }} size={22} icon={'c1-house'} testID={'changeSphere'} />
       }
       {
         DataUtil.isDeveloper() &&
-          <SideMenuLink closeSideMenu={props.closeSideMenu} label={"Developer"} callback={() => { Alert.alert("TODO", "implement") }} size={22} icon={'ios-bug'} testID={'developer'} />
+          <SideMenuLink closeSideMenu={props.closeSideMenu} label={ lang("Developer")} callback={() => { Alert.alert("TODO", "implement") }} size={22} icon={'ios-bug'} testID={'developer'} />
       }
       <View style={{flex:1}}/>
-      <Text style={{color: colors.white.rgba(0.5)}}>{"App v"+DeviceInfo.getReadableVersion()}</Text>
+      <Text style={{color: colors.white.rgba(0.5)}}>{ lang("App_v",DeviceInfo.getReadableVersion()) }</Text>
       <View style={{height: tabBarHeight + 5}} />
     </View>
   );

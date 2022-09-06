@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceLabels", key)(a,b,c,d,e);
+}
 import {SlideFadeInView} from "../../animated/SlideFadeInView";
 import {Text, TextStyle} from "react-native";
 import * as React from "react";
@@ -61,7 +67,7 @@ export function SetupDeviceEntryLabel() {
   // let label = editMode ? 'Hold to drag!' : activeLabel
 
   return (
-    <Text style={{ fontSize:13, fontStyle:'italic', paddingLeft:15 }}>{"I need to be setup again... Tap me!"}</Text>
+    <Text style={{ fontSize:13, fontStyle:'italic', paddingLeft:15 }}>{ lang("I_need_to_be_setup_again_") }</Text>
   );
 }
 

@@ -35,7 +35,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
   let fingerprintIds = Object.keys(location.fingerprints.raw);
   fingerprintIds.sort((a,b) => { return location.fingerprints.raw[a].updatedAt - location.fingerprints.raw[b].updatedAt });
 
-  items.push({type:"explanation", label:"TAP TO DELETE"})
+  items.push({type:"explanation", label: lang("TAP_TO_DELETE")})
   for (let fingerprintId of fingerprintIds) {
     let fp = location.fingerprints.raw[fingerprintId];
     let score = FingerprintUtil.calculateFingerprintScore(props.sphereId, props.locationId, fingerprintId);
@@ -45,11 +45,11 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
       numberOfLines:2,
       callback: () => {
         Alert.alert(
-          "Are you sure?",
-          "This cannot be undone and it will be removed for everyone",
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Delete data!', style:'destructive', onPress: () => {
+lang("_Are_you_sure___This_cann_header"),
+lang("_Are_you_sure___This_cann_body"),
+[{text: lang("_Are_you_sure___This_cann_left"), style: 'cancel'},
+            {
+text: lang("_Are_you_sure___This_cann_right"), style:'destructive', onPress: () => {
                 core.store.dispatch({type: 'REMOVE_FINGERPRINT_V2', sphereId: props.sphereId, locationId: props.locationId, fingerprintId: fingerprintId});
               }},
           ],
@@ -60,7 +60,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
   }
 
   if (fingerprintIds.length === 0) {
-    items.push({type:"info", label:"No fingerprints."})
+    items.push({type:"info", label: lang("No_fingerprints_")})
   }
 
   return (
@@ -68,7 +68,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
       <View style={{height:topBarHeight}}/>
       <ScrollView>
         <View style={{height:15}} />
-        <Text style={styles.header}>{"Active fingerprints"}</Text>
+        <Text style={styles.header}>{ lang("Active_fingerprints") }</Text>
         <View style={{height:15}} />
         <ListEditableItems items={items}/>
         <View style={{height:25}} />
@@ -81,7 +81,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
 LocalizationFingerprintManager.options = (props) => {
   let location = Get.location(props.sphereId, props.locationId);
 
-  return TopBarUtil.getOptions({ title: location?.config?.name || "Unknown room", closeModal:true });
+  return TopBarUtil.getOptions({ title: lang("Unknown_room",location.config.name), closeModal:true });
 }
 
 
