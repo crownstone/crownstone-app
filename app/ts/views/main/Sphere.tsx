@@ -73,7 +73,7 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
   }
 
   if (availableStones === 0 && floatingStones > 0 && noRoomsCurrentSphere) {
-    // This dude cant add rooms and floating Crownstones need to be put in rooms. Tell him how to continue.
+    // This user cant add rooms and floating Crownstones need to be put in rooms. Tell him how to continue.
     return (
       <View style={viewStyle}>
         <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
@@ -83,11 +83,11 @@ export function Sphere({sphereId, viewId, arrangingRooms, setRearrangeRooms, zoo
     )
   }
 
-  let shouldShowStatusCommunication = noStones === false && arrangingRooms === false
+  let shouldShowStatusCommunication = noStones === false && arrangingRooms === false;
   let sphere = Get.sphere(sphereId);
 
   let blinkMenuIconForLocalization = MenuNotificationUtil.isThereALocalizationAlert(sphereId);
-  let blinkMenuIcon = !arrangingRooms && SIDEBAR_STATE.open === false && blinkMenuIconForLocalization;
+  let blinkMenuIcon = !arrangingRooms && SIDEBAR_STATE.open === false && (blinkMenuIconForLocalization || noStones);
 
   let badgeMenuIcon : BadgeIndicator = false;
   // show number of messages
