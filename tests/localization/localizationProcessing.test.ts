@@ -160,7 +160,6 @@ test("LocalizationCore - classify", async () => {
     str += `improvement ${result} ${Math.round(100*results[result].rate)} ${Math.round(100*(results[result].rate - base[result].rate))}\n`
   }
 
-  console.log(str);
 
 });
 

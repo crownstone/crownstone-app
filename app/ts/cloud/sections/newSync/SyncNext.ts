@@ -217,12 +217,8 @@ export const SyncNext = {
       if (sphereCloudResponse.messages) {
         let moduleReply = {};
         for (let messageId in sphereCloudResponse.messages) {
-          console.log("parseMessage", cloudSphereId, messageId)
           let messageResponse = sphereCloudResponse.messages[messageId];
-          console.log("MessageResponse", JSON.stringify(messageResponse, null,2))
           new MessageSyncerNext({cloudId: messageId, ...sphereSyncBase}).process(messageResponse.data, moduleReply);
-
-          console.log("parseMessage DONE", cloudSphereId, messageId)
 
           for (let itemId in messageResponse.readBy) {
             new MessageReadSyncerNext({cloudId: itemId, ...sphereSyncBase}, messageId).process(messageResponse.readBy[itemId].data, moduleReply);

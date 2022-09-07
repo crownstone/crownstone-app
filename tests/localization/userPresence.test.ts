@@ -21,9 +21,7 @@ test("Using core in tests", async () => {
 
   expect(core.store.getState().spheres[sphere.id].locations[room1.id].presentUsers).toHaveLength(1);
 
-  console.log(core.store.getState().spheres[sphere.id].locations[room1.id].presentUsers)
   core.store.dispatch({type: "REMOVE_USER_FROM_ALL_LOCATIONS", sphereId: sphere.id, userId: sphereUser.id});
-  console.log(core.store.getState().spheres[sphere.id].locations[room1.id].presentUsers)
 
   expect(core.store.getState().spheres[sphere.id].locations[room1.id].presentUsers).toHaveLength(0);
 })

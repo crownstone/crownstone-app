@@ -82,7 +82,26 @@ Object {
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": Object {},
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
           },
           "tapToToggle": Object {
             "data": Object {
@@ -156,7 +175,26 @@ Object {
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": Object {},
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
           },
           "tapToToggle": Object {
             "data": Object {
@@ -230,7 +268,26 @@ Object {
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": Object {},
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
           },
           "tapToToggle": Object {
             "data": Object {
@@ -471,7 +528,24 @@ Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": Object {},
+              "properties": Object {
+                "defaultDimValue": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": 1641038400000,
@@ -569,7 +643,24 @@ Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": Object {},
+              "properties": Object {
+                "defaultDimValue": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": 1641038400000,
@@ -667,7 +758,24 @@ Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": Object {},
+              "properties": Object {
+                "defaultDimValue": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": Object {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": 1641038400000,
@@ -822,4 +930,28 @@ Object {
     },
   },
 }
+`;
+
+exports[`Check if messages can handle the cloud's sync reply: creationActions 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "cloudId": "dbId:MessageV2Repository:1",
+      "content": "hello",
+      "everyoneInSphere": false,
+      "includeSenderInEveryone": false,
+      "recipients": Object {
+        "dbId:UserRepository:3": true,
+      },
+      "senderId": undefined,
+      "sentAt": 0,
+      "triggerEvent": "enter",
+      "triggerLocationId": undefined,
+      "updatedAt": 0,
+    },
+    "messageId": "uuid2008-2009",
+    "sphereId": "sphere_uuid2004-2005",
+    "type": "ADD_MESSAGE",
+  },
+]
 `;
