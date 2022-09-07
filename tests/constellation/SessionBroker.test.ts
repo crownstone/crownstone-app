@@ -51,6 +51,7 @@ test("SessionBroker finish mesh command", async () => {
   turnOnCommander.turnOn();
   allowDimmingCommander.allowDimming(true)
 
+  await TestUtil.nextTick();
 
   // sessions for all items in the mesh should be requested
   expect(Object.keys(SessionManager._sessions).length).toBe(5)
@@ -63,6 +64,7 @@ test("SessionBroker finish mesh command", async () => {
   await mBluenetPromise.for(handle3).succeed.connect("operation");
   await mBluenetPromise.for(handle4).succeed.connect("operation");
 
+  await TestUtil.nextTick();
 
   await mBluenetPromise.for(handle2).succeed.turnOnMesh();
   await mBluenetPromise.for(handle3).succeed.allowDimming();

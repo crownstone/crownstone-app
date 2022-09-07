@@ -105,12 +105,12 @@ export function BlurEntry(props: BlurEntryProps) {
   return (
     <BlurView
       blurType={"light"}
-      blurAmount={5}
+      blurAmount={8}
       style={{
         flexDirection:'row',
         height: 70 + (props.heightOffset ?? 0),
         flex:1,
-        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5),
         marginHorizontal: 12,
         marginBottom: 12,
         borderRadius: appStyleConstants.roundness,
