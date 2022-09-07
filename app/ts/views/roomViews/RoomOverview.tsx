@@ -4,12 +4,10 @@ import { ScrollView, Text, TouchableOpacity, View} from "react-native";
 
 import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
 
-import {DataUtil, enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
+import {DataUtil} from "../../util/DataUtil";
 import {
   availableScreenHeight,
-  background,
-  colors, getRoomStockImage, RoomStockBackground,
-  screenHeight,
+  colors, getRoomStockImage,
   screenWidth,
   statusBarHeight,
   styles,

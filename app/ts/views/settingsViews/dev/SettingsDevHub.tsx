@@ -10,11 +10,14 @@ import { DataUtil } from "../../../util/DataUtil";
 import { HUB_API } from "../../../cloud/localHub/HubApi";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {SettingsBackground, SettingsNavbarBackground} from "../../components/SettingsBackground";
+import {TopBarUtil} from "../../../util/TopBarUtil";
 
 
 export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: string }, any> {
-
+  static options(props) {
+    return TopBarUtil.getOptions({title: 'Developer settings', closeModal: true});
+  }
 
   developerSettings: HubDevOptions = {}
 
@@ -138,7 +141,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
 
 
     return (
-      <SettingsNavbarBackground>
+      <SettingsBackground>
         <View style={{flex:0.25}} />
         <Text style={deviceStyles.header}>Hub developer options</Text>
         <View style={{flex:0.1}} />
@@ -146,7 +149,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
         <View style={{flex:0.1}} />
         <View style={{flex:0.25}} />
         <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-      </SettingsNavbarBackground>
+      </SettingsBackground>
     );
   }
 }

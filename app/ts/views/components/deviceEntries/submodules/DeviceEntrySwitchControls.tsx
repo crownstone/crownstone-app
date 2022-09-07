@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState} from 'react';
 
-import {STONE_TYPES} from "../../../../Enums";
 import {xUtil} from "../../../../util/StandAloneUtil";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../../../ExternalConfig";
 import {SlideFadeInView, SlideSideFadeInView} from "../../animated/SlideFadeInView";

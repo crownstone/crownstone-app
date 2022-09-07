@@ -17,10 +17,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 import {Get} from "../../../util/GetUtil";
 import {DraggableProps} from "../hooks/draggableHooks";
 import {useDatabaseChange} from "../hooks/databaseHooks";
-import {DraggableBlurEntry} from "../BlurEntries";
+import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../BlurEntries";
 import {HubEntryLabel} from "./submodules/DeviceLabels";
 import {useTimeout} from "../hooks/timerHooks";
 import {HubUtil} from "../../../util/HubUtil";
+import {SlideSideFadeInView} from "../animated/SlideFadeInView";
 
 interface HubEntryProps extends DraggableProps {
   sphereId: sphereId,
@@ -54,26 +55,42 @@ export function HubEntry(props: HubEntryProps) {
   return (
     <DraggableBlurEntry
       {...props}
+      settings
       title={name}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
-      control={(props) => { return (
-        <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={settingsCallback}>
-          {
-          hubProblem && !showStateIcon ? <ActivityIndicator size={"small"} /> :
-          hubProblem ?
-            <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
-            :
-            <View style={{width:30, height:30}} >
-              <View style={{position:'absolute', top:5, left:2, width:18, height:18, backgroundColor: colors.white.hex, borderRadius:9}} />
-              <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
-            </View>
+      control={(props) => {
+        return (
+          <SlideSideFadeInView visible={!props.editMode} width={75} style={{alignItems:'flex-end'}}>
+            <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={settingsCallback}>
+              {
+              hubProblem && !showStateIcon ? <ActivityIndicator size={"small"} /> :
+              hubProblem ?
+                <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
+                :
+                <View style={{width:30, height:30}} >
+                  <View style={{position:'absolute', top:5, left:2, width:18, height:18, backgroundColor: colors.white.hex, borderRadius:9}} />
+                  <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
+                </View>
 
-          }
-        </TouchableOpacity>
-        )
+              }
+            </TouchableOpacity>
+          </SlideSideFadeInView>
+        );
       }}
+      settingsItem={(props) => { return (
+        <React.Fragment>
+          <BlurEntryDevIcon
+            callback={() => { NavigationUtil.launchModal( "SettingsDevHub",{sphereId: props.sphereId, stoneId: props.stoneId, isModal: true}); }}
+            visible={props.editMode}
+          />
+          <BlurEntrySettingsIcon
+            callback={settingsCallback}
+            visible={props.editMode}
+          />
+
+        </React.Fragment>
+      )}}
       labelItem={(props) => { return <HubEntryLabel hub={hub} stone={stone} editMode={props.editMode}/> }}
-      editSettingsCallback={settingsCallback}
-    />
+      editSettingsCallback={settingsCallback}></DraggableBlurEntry>
   );
 }
