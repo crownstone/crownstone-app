@@ -50,16 +50,32 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 const className = "RoomOverview";
 
-interface RoomItemList {
-  id:             string,
-  handle?:        string,
-  name?:          string,
-  icon?:          string,
-  type:           'stone' | 'hub' | 'dfuStone' | 'setupStone',
-  data?:          any,
+interface RoomItem_stone {
+  type:         'stone'
+  id:            string,
+  data:          StoneData,
+}
+interface RoomItem_hub {
+  type:         'hub',
+  id:            string,
+  data:          HubData,
+}
+interface RoomItem_dfu {
+  type:          'dfuStone'
+  data:           any,
   advertisement?: any,
   deviceType?:    string,
 }
+interface RoomItem_setup {
+  type:          'setupStone',
+  id:             string,
+  handle:         string,
+  name:           string,
+  icon:           string,
+  advertisement?: any,
+  deviceType?:    string,
+}
+type RoomItem = RoomItem_stone | RoomItem_hub | RoomItem_dfu | RoomItem_setup;
 
 export const PERSISTED_DIMMING_OVERLAY_STATE = {
   value: false
@@ -157,7 +173,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.changeHubs)      ||
         (change.changeStones)
       ) {
-
         this.sortedList.mustContain(this.getIdsInRoom());
         this.forceUpdate();
         return;
@@ -171,8 +186,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     this.unsubscribeStoreEvents();
   }
 
-  renderDraggableItem = (item: RoomItemList, index: number, drag: () => void, isActive: boolean) => {
-    let id = item.id;
+  renderDraggableItem = (item: RoomItem, index: number, drag: () => void, isActive: boolean) => {
     if (item.type === 'dfuStone') {
       return (
         <DfuDeviceEntry_RoomOverview
@@ -186,7 +200,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     else if (item.type === 'setupStone') {
       return (
         <SetupDeviceEntry_RoomOverview
-          key={id + '_item'}
+          key={item.id + '_item'}
           sphereId={this.props.sphereId}
           handle={item.handle}
           item={item as {name: string, icon: string}}
@@ -217,8 +231,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       return (
         <HubEntry
           sphereId={this.props.sphereId}
-          stoneId={id}
-          key={id + '_item'}
+          stoneId={item.id}
+          key={item.id + '_item'}
           editMode={this.state.editMode}
 
           isBeingDragged={isActive}
@@ -230,9 +244,9 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     else if (item.type === 'stone') {
       return (
         <DeviceEntry
-          key={id + '_item'}
+          key={item.id + '_item'}
           sphereId={this.props.sphereId}
-          stoneId={id}
+          stoneId={item.id}
           dimMode={this.state.dimMode && !this.state.editMode}
           editMode={this.state.editMode}
 
@@ -246,8 +260,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       return (
         <HubEntry
           sphereId={this.props.sphereId}
-          key={id + '_item'}
-          hubId={id}
+          key={item.id + '_item'}
+          hubId={item.id}
           editMode={this.state.editMode}
 
           isBeingDragged={isActive}
@@ -258,22 +272,20 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     }
   }
 
-  _getItemList(stones : Record<stoneId, StoneData>, hubs: Record<hubId, HubData>) : RoomItemList[] {
-    let stoneArray : RoomItemList[] = [];
+  _getItemList(stones : Record<stoneId, StoneData>, hubs: Record<hubId, HubData>) : RoomItem[] {
+    let stoneArray : RoomItem[] = [];
     let stoneIds = Object.keys(stones);
     let shownHandles = {};
 
     if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
 
-      let dfuIds = Object.keys(dfuStones);
-      dfuIds.forEach((dfuId) => {
+      for (let dfuId in dfuStones) {
         if (dfuStones[dfuId].data && dfuStones[dfuId].data.locationId === this.props.locationId) {
           shownHandles[dfuStones[dfuId].advertisement.handle] = true;
-          dfuStones[dfuId].type = 'dfuStone';
-          stoneArray.push(dfuStones[dfuId]);
+          stoneArray.push({...dfuStones[dfuId], type: 'dfuStone'});
         }
-      });
+      };
 
     }
 
@@ -313,11 +325,11 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       // stone
       if ('handle' in item.config && shownHandles[item.config.handle] === undefined) {
         shownStones[localId] = true;
-        stoneArray.push({ type: 'stone', data: item, id: localId });
+        stoneArray.push({ type: 'stone', data: item as StoneData, id: localId });
       }
       else if ('linkedStoneId' in item.config && !shownStones[item.config.linkedStoneId]) {
         // do not show the same device twice
-        stoneArray.push({ type: 'hub', data: item, id: localId });
+        stoneArray.push({ type: 'hub', data: item as HubData, id: localId });
       }
     }
 
@@ -373,7 +385,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
             }}
             renderItem={({ item, index, drag, isActive }) => { return this.renderDraggableItem( item, index, drag, isActive ); }}
             keyExtractor={(item : any, index) => `${item.id}_item`}
-            onDragEnd={({ data }) => {
+            onDragEnd={({ data } : { data: RoomItem[] }) => {
               let dataToUse = [];
 
               let ids = this.getIdsInRoom();
@@ -381,10 +393,15 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
               for (let id of ids) { idMap[id] = true; }
 
               for (let i = 0; i < data.length; i++) {
-                if (idMap[data[i].id] !== undefined) {
-                  dataToUse.push(data[i].id);
+                if (data[i].type !== 'stone' && data[i].type !== 'hub') { continue; }
+
+                let castData : (RoomItem_stone | RoomItem_hub) = data[i] as (RoomItem_stone | RoomItem_hub);
+                let cloudId = castData.data?.config.cloudId || castData.id;
+                if (idMap[cloudId] !== undefined) {
+                  dataToUse.push(cloudId);
                 }
               }
+
               this.sortedList.update(dataToUse as string[]);
               this.setState({ dragging:false });
             }}
@@ -396,8 +413,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
             sphereId={this.props.sphereId}
             location={location}
             editMode={this.state.editMode}
-            setEditMode={() => { this.setState({editMode: true})}}
-            endEditMode={() => {this.setState({editMode: false})}}
+            setEditMode={() => { this.setState({editMode: true})  }}
+            endEditMode={() => { this.setState({editMode: false}) }}
           />
         </TopBarBlur>
         <NavBarBlur xxlight line/>

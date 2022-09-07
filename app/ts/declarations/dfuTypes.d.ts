@@ -14,3 +14,8 @@ type DFU_INFO  = "GETTING_INFORMATION"    | "OBTAINED_INFORMATION_CLOUD" | "OBTA
                  "UPDATE_PUT_IN_DFU_MODE" | "UPDATE_START"               | "UPDATE_PROGRESS"              | "UPDATE_SUCCESS" | "UPDATE_FAILED" |
                  "SETUP_START"            | "SETUP_PROGRESS"             | "SETUP_SUCCESS"                | "SETUP_FAILED"
 
+interface DfuStoneData {
+  advertisement: crownstoneBaseAdvertisement,
+  data: StoneMap | undefined,
+  sphereId: sphereId
+}

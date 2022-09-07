@@ -162,7 +162,7 @@ export class SortedList {
   }
 
   update(items : string[]) {
-    // dont persist if there is no change.
+    // don't persist if there is no change.
     if (xUtil.arrayCompare(items, this.sortedList) === true) {
       return;
     }

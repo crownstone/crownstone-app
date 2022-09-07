@@ -7,13 +7,14 @@ import {Scheduler} from "../../logic/Scheduler";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
 
+
 /**
  * This class keeps track of the Crownstones in DFU state.
  */
 class DfuStateHandlerClass {
   _uuid : string;
   _initialized : boolean = false;
-  _stonesInDfuMode : any = {};
+  _stonesInDfuMode : Record<handle, DfuStoneData> = {};
   _dfuTimeouts : any = {};
 
   _dfuInProgress = false;
@@ -120,23 +121,23 @@ class DfuStateHandlerClass {
     }
   }
 
-  areDfuStonesAvailable() {
+  areDfuStonesAvailable() : boolean {
     return (Object.keys(this._stonesInDfuMode).length > 0);
   }
 
-  getDfuStones() {
+  getDfuStones() : Record<handle, DfuStoneData> {
     return { ...this._stonesInDfuMode };
   }
 
-  getDfuHandles() {
+  getDfuHandles() : handle[] {
     return Object.keys(this._stonesInDfuMode);
   }
 
-  handleReservedForDfu(handle) {
+  handleReservedForDfu(handle) : boolean {
     return (this._stonesInDfuMode[handle] !== undefined);
   }
 
-  isDfuInProgress() {
+  isDfuInProgress() : boolean {
     return this._dfuInProgress;
   }
 

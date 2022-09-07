@@ -6,8 +6,6 @@ import { SlideSideFadeInView }          from "./animated/SlideFadeInView";
 import { BlurView }                     from "@react-native-community/blur";
 import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styles";
 import {DevIconRight, SettingsIconRight} from "./EditIcon";
-import {SettingsBackground} from "./SettingsBackground";
-import {core} from "../../Core";
 import { DataUtil } from "../../util/DataUtil";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
@@ -42,17 +40,18 @@ export interface TappableBlurEntryProps extends BlurEntryProps {
 
 interface DraggableBlurEntryProps extends DraggableProps, TappableBlurEntryProps {}
 
+
 export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
   // include draggable
   let {dragging, triggerDrag} = useDraggable(props.isBeingDragged, props.eventBus, props.dragAction);
   return (
     <TouchableOpacity
       activeOpacity={props.editMode ? 0.5 : 1.0}
-      onLongPress={() => { console.log("LONG PRESS"); if (props.editMode) { triggerDrag(); } }}
-      onPress={() => {console.log("LOG TAP");   if (props.tapCallback) { props.tapCallback() }}}
+      onLongPress={() => { if (props.editMode) { triggerDrag(); } }}
+      onPress={() => { if (props.tapCallback) { props.tapCallback() }}}
       style={{flexDirection:'row'}}
     >
-      {/*<SlideSideFadeInView visible={dragging} width={40} />*/}
+      <SlideSideFadeInView visible={dragging} width={40} />
       <BlurEntry {...props} />
     </TouchableOpacity>
   );
@@ -73,43 +72,37 @@ export function TappableBlurEntry(props: TappableBlurEntryProps) {
 
 export function BlurEntry(props: BlurEntryProps) {
   return (
-    // <TouchableOpacity
-    //   activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
-    //   onPress={() => { () => {console.log("TUPPERLY"); props.tapCallback && props.tapCallback()} }}
-    //   style={{flex:1}}
-    // >
-      <BlurView
-        blurType={"light"}
-        blurAmount={5}
-        style={{
-          flexDirection:'row',
-          height: 70 + (props.heightOffset ?? 0),
-          flex:1,
-          backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
-          marginHorizontal: 12,
-          marginBottom: 12,
-          borderRadius: appStyleConstants.roundness,
-          alignItems:'center',
-          paddingLeft: 15,
-          opacity: props.opacity ?? 1
-        }}>
-        { renderPropItem(props.iconItem,props) }
-        <View style={{ flex:1 }}>
-          { renderPropItem(props.paddingItem, props) }
-          {
-            typeof props.title === 'string' ?
-              <Text style={{...rowstyles.title, color: props.titleColor ?? rowstyles.title.color, paddingLeft:15}}>{props.title}</Text> :
-              renderPropItem(props.title, props)
-          }
-          { renderPropItem(props.labelItem, props) }
-        </View>
+    <BlurView
+      blurType={"light"}
+      blurAmount={5}
+      style={{
+        flexDirection:'row',
+        height: 70 + (props.heightOffset ?? 0),
+        flex:1,
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.4),
+        marginHorizontal: 12,
+        marginBottom: 12,
+        borderRadius: appStyleConstants.roundness,
+        alignItems:'center',
+        paddingLeft: 15,
+        opacity: props.opacity ?? 1
+      }}>
+      { renderPropItem(props.iconItem,props) }
+      <View style={{ flex:1 }}>
+        { renderPropItem(props.paddingItem, props) }
         {
-          props.settings && props.settingsItem && renderPropItem(props.settingsItem, props) ||
-          props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
+          typeof props.title === 'string' ?
+            <Text style={{...rowstyles.title, color: props.titleColor ?? rowstyles.title.color, paddingLeft:15}}>{props.title}</Text> :
+            renderPropItem(props.title, props)
         }
-        { renderPropItem(props.control, props) }
-      </BlurView>
-    // </TouchableOpacity>
+        { renderPropItem(props.labelItem, props) }
+      </View>
+      {
+        props.settings && props.settingsItem && renderPropItem(props.settingsItem, props) ||
+        props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
+      }
+      { renderPropItem(props.control, props) }
+    </BlurView>
   );
 }
 
