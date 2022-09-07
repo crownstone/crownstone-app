@@ -1,14 +1,12 @@
 import {cleanupSuiteAfterTest, moveTimeBy, prepareSuiteForTest, resetMocks} from "../__testUtil/mocks/suite.mock";
-import {addLocation, addSphere, addStone, loadDump} from "../__testUtil/helpers/data.helper";
+import { loadDump} from "../__testUtil/helpers/data.helper";
 import {KNN} from "../../app/ts/localization/classifiers/knn";
 import {localizationStateDump} from "../__statedumps/localization_stateDump";
-import {core} from "../../app/ts/Core";
-import {LocalizationCore, LocalizationCoreClass} from "../../app/ts/localization/LocalizationCore";
 import {Get} from "../../app/ts/util/GetUtil";
 import {FingerprintUtil} from "../../app/ts/util/FingerprintUtil";
 
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 
 
 let ibeaconData = [
@@ -79,89 +77,89 @@ test("Fingerprints - processing fingerprint", async () => {
   }
 })
 
-test("LocalizationCore - classify", async () => {
-  loadDump(localizationStateDump);
-  let sphereId = "8ee98df8-9013-7fc9-1155-3cc7410ec478";
-  let localizationCore = new LocalizationCoreClass();
-  let awaitable = localizationCore.init();
-  // profile this part
-  await moveTimeBy(30);
-  await awaitable;
-
-  localizationCore.enableLocalization();
-
-  let sphere = Get.sphere(sphereId);
-  let locationUidMap = {};
-  let locationMap = {};
-  for (let locationId in sphere.locations) {
-    locationUidMap[sphere.locations[locationId].config.uid] = locationId;
-    locationMap[locationId] = sphere.locations[locationId].config.name;
-  }
-
-  let dataPath = "/Users/alex/Dropbox/Crownstone/Projects/localization-research/datasets/users/Alex_de_Mulder/homeV1"
-  let items = fs.readdirSync(dataPath);
-
-  let results = {}
-  console.time("classify");
-  for (let item of items) {
-    if (String(item).includes(".json")) {
-      let data = JSON.parse(fs.readFileSync(path.join(dataPath, item)));
-      for (let datapoint of data.dataset) {
-        let packet = [];
-        for (let ibeaconId in datapoint.devices) {
-          let ibeaconArr = ibeaconId.replace("Maj:","").replace("Min:","").split("_");
-          packet.push({
-            id: ibeaconId,
-            uuid  : ibeaconArr[0],
-            major : ibeaconArr[1],
-            minor : ibeaconArr[2],
-            rssi  : datapoint.devices[ibeaconId],
-            referenceId : sphereId
-          })
-        }
-        let classification = localizationCore.handleIBeaconAdvertisement(packet);
-        let expectedId = locationUidMap[data.location.uid];
-        if (!results[locationMap[expectedId]]) { results[locationMap[expectedId]] = {total:0, correct:0, miss:0}; }
-
-        results[locationMap[expectedId]].total++;
-        if (classification[sphereId] === expectedId) {
-          results[locationMap[expectedId]].correct++;
-        }
-        else {
-          results[locationMap[expectedId]].miss++;
-        }
-      }
-    }
-  }
-  console.timeEnd("classify");
-
-  let base = {
-    'Living room': { total: 5351, correct: 4797, miss: 554, rate: 0.8964679499159036 },
-    Studeerkamer: { total: 2027, correct: 2024, miss: 3, rate: 0.9985199802664035 },
-    Badkamer: { total: 524, correct: 121, miss: 403, rate: 0.23091603053435114 },
-    'Gang Boven': { total: 421, correct: 148, miss: 273, rate: 0.3515439429928741 },
-    Gang: { total: 385, correct: 254, miss: 131, rate: 0.6597402597402597 },
-    Keuken: { total: 913, correct: 713, miss: 200, rate: 0.7809419496166484 },
-    Logeerkamer: { total: 761, correct: 368, miss: 393, rate: 0.4835742444152431 },
-    Slaapkamer: { total: 805, correct: 700, miss: 105, rate: 0.8695652173913043 },
-    Voordakkapel: { total: 615, correct: 0, miss: 615, rate: 0 },
-    Washok: { total: 513, correct: 255, miss: 258, rate: 0.49707602339181284 },
-    'Wc Beneden': { total: 420, correct: 305, miss: 115, rate: 0.7261904761904762 },
-    'Wc Boven': { total: 392, correct: 350, miss: 42, rate: 0.8928571428571429 },
-    Workshop: { total: 939, correct: 782, miss: 157, rate: 0.832800851970181 }
-  }
-
-  for (let result in base) {
-    base[result].rate = base[result].correct/base[result].total;
-  }
-  let str = ''
-  for (let result in results) {
-    results[result].rate = results[result].correct/results[result].total;
-    str += `improvement ${result} ${Math.round(100*results[result].rate)} ${Math.round(100*(results[result].rate - base[result].rate))}\n`
-  }
-
-
-});
+// test("LocalizationCore - classify", async () => {
+//   loadDump(localizationStateDump);
+//   let sphereId = "8ee98df8-9013-7fc9-1155-3cc7410ec478";
+//   let localizationCore = new LocalizationCoreClass();
+//   let awaitable = localizationCore.init();
+//   // profile this part
+//   await moveTimeBy(30);
+//   await awaitable;
+//
+//   localizationCore.enableLocalization();
+//
+//   let sphere = Get.sphere(sphereId);
+//   let locationUidMap = {};
+//   let locationMap = {};
+//   for (let locationId in sphere.locations) {
+//     locationUidMap[sphere.locations[locationId].config.uid] = locationId;
+//     locationMap[locationId] = sphere.locations[locationId].config.name;
+//   }
+//
+//   let dataPath = "/Users/alex/Dropbox/Crownstone/Projects/localization-research/datasets/users/Alex_de_Mulder/homeV1"
+//   let items = fs.readdirSync(dataPath);
+//
+//   let results = {}
+//   console.time("classify");
+//   for (let item of items) {
+//     if (String(item).includes(".json")) {
+//       let data = JSON.parse(fs.readFileSync(path.join(dataPath, item)));
+//       for (let datapoint of data.dataset) {
+//         let packet = [];
+//         for (let ibeaconId in datapoint.devices) {
+//           let ibeaconArr = ibeaconId.replace("Maj:","").replace("Min:","").split("_");
+//           packet.push({
+//             id: ibeaconId,
+//             uuid  : ibeaconArr[0],
+//             major : ibeaconArr[1],
+//             minor : ibeaconArr[2],
+//             rssi  : datapoint.devices[ibeaconId],
+//             referenceId : sphereId
+//           })
+//         }
+//         let classification = localizationCore.handleIBeaconAdvertisement(packet);
+//         let expectedId = locationUidMap[data.location.uid];
+//         if (!results[locationMap[expectedId]]) { results[locationMap[expectedId]] = {total:0, correct:0, miss:0}; }
+//
+//         results[locationMap[expectedId]].total++;
+//         if (classification[sphereId] === expectedId) {
+//           results[locationMap[expectedId]].correct++;
+//         }
+//         else {
+//           results[locationMap[expectedId]].miss++;
+//         }
+//       }
+//     }
+//   }
+//   console.timeEnd("classify");
+//
+//   let base = {
+//     'Living room': { total: 5351, correct: 4797, miss: 554, rate: 0.8964679499159036 },
+//     Studeerkamer: { total: 2027, correct: 2024, miss: 3, rate: 0.9985199802664035 },
+//     Badkamer: { total: 524, correct: 121, miss: 403, rate: 0.23091603053435114 },
+//     'Gang Boven': { total: 421, correct: 148, miss: 273, rate: 0.3515439429928741 },
+//     Gang: { total: 385, correct: 254, miss: 131, rate: 0.6597402597402597 },
+//     Keuken: { total: 913, correct: 713, miss: 200, rate: 0.7809419496166484 },
+//     Logeerkamer: { total: 761, correct: 368, miss: 393, rate: 0.4835742444152431 },
+//     Slaapkamer: { total: 805, correct: 700, miss: 105, rate: 0.8695652173913043 },
+//     Voordakkapel: { total: 615, correct: 0, miss: 615, rate: 0 },
+//     Washok: { total: 513, correct: 255, miss: 258, rate: 0.49707602339181284 },
+//     'Wc Beneden': { total: 420, correct: 305, miss: 115, rate: 0.7261904761904762 },
+//     'Wc Boven': { total: 392, correct: 350, miss: 42, rate: 0.8928571428571429 },
+//     Workshop: { total: 939, correct: 782, miss: 157, rate: 0.832800851970181 }
+//   }
+//
+//   for (let result in base) {
+//     base[result].rate = base[result].correct/base[result].total;
+//   }
+//   let str = ''
+//   for (let result in results) {
+//     results[result].rate = results[result].correct/results[result].total;
+//     str += `improvement ${result} ${Math.round(100*results[result].rate)} ${Math.round(100*(results[result].rate - base[result].rate))}\n`
+//   }
+//
+//
+// });
 
 
 test("Removal of Crownstone from fingerprints", async () => {

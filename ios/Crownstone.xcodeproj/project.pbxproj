@@ -582,7 +582,6 @@
 		FA59A6A4224CE5D300D58C9F /* AppDelegate_old.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate_old.swift; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
-		FA7FFE7828C0BC9B002721EC /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FA86C67E21CCEECD00811933 /* WatchTower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchTower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA86C68121CCEECD00811933 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -604,6 +603,7 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
+		FAC0FB3A28C8C22100402E40 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../../Dropbox/Crownstone/Projects/XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FAD98BAD2614C59C00E46E1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Thin.ttf"; path = "../app/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../app/assets/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
@@ -976,7 +976,7 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FA7FFE7828C0BC9B002721EC /* bluenet-lib */,
+				FAC0FB3A28C8C22100402E40 /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -2246,7 +2246,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2301,7 +2301,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

@@ -29,7 +29,7 @@ export const sync = {
   __syncTriggerDatabaseEvents: true,
   lastSyncTimestamp: 0,
 
-  sync: function (background = true, skipPermissions = false) {
+  sync: function (background = true, skipPermissions = false, skipPrefrences = false) {
     if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
@@ -114,10 +114,12 @@ export const sync = {
         return deviceSyncer.sync(state);
       })
       .then(() => {
-        LOG.info("Sync: DONE Fingerprint sync.");
-        LOG.info("Sync: START Preferences sync.");
-        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
-        return preferenceSyncer.sync(state);
+        if (skipPrefrences === false) {
+          LOG.info("Sync: DONE Fingerprint sync.");
+          LOG.info("Sync: START Preferences sync.");
+          let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
+          return preferenceSyncer.sync(state);
+        }
       })
       // FINISHED SYNCING
       .then(() => {

@@ -414,7 +414,7 @@ export class Login extends Component<any, any> {
         LOG.info("Login: step 3");
         this.progress += parts;
         core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
-        return CLOUD.sync(false, false);
+        return CLOUD.sync(false, false, true);
       })
       .then(() => {
         LOG.info("Login: step 4");
