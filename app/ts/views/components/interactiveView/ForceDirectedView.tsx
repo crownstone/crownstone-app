@@ -231,8 +231,8 @@ export class ForceDirectedView extends Component<{
             let nodeId = this._draggingNode.nodeId;
             let newX = this._dragInitialX + gestureState.dx / this._currentScale;
             let newY = this._dragInitialY + gestureState.dy / this._currentScale;
-            this.state.nodes[nodeId].x.setValue(newX);
-            this.state.nodes[nodeId].y.setValue(newY);
+            this.state.nodes[nodeId].x.setValue(snapToGrid(newX));
+            this.state.nodes[nodeId].y.setValue(snapToGrid(newY));
             this.nodes[nodeId].x = newX;
             this.nodes[nodeId].y = newY;
           }
@@ -865,4 +865,14 @@ function getDistance(touches) {
   let dx = firstTouch.pageX - secondTouch.pageX;
   let dy = firstTouch.pageY - secondTouch.pageY;
   return Math.max(10,Math.sqrt(dx*dx + dy*dy));
+}
+
+
+/**
+ * this method will take a position {x,y} and will map it within 10 pixels
+ */
+export function snapToGrid(x) {
+  let gridSize = (0.15*screenWidth)*0.125;
+  let result = Math.round(x / gridSize) * gridSize;
+  return result;
 }

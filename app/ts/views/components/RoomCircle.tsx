@@ -28,7 +28,7 @@ import {LocalizationUtil} from "../../util/LocalizationUtil";
 
 
 
-class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any, showErrorState: boolean}> {
+class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapAndHoldProgress: any, showErrorState: boolean}> {
   initializedPosition: any;
   usage: any;
   borderWidth: number;
@@ -60,12 +60,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     super(props);
 
     this.initializedPosition = true;
-    let initialX = props.pos.x._value;
-    let initialY = props.pos.y._value;
-
     this.state = {
-      top: new Animated.Value(initialY),
-      left: new Animated.Value(initialX),
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
       tapAndHoldProgress: 0,

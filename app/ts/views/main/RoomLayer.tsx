@@ -90,7 +90,6 @@ export function RoomLayer(props) {
     for (let roomId in roomData.initialPositions) {
       roomData.initialPositions[roomId].fixed = roomData.initialPositions[roomId].x !== null;
     }
-    let bottomOffset = 0.5*baseRadius;
     return (
       <ForceDirectedView
         ref={forceViewRef}
