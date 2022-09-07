@@ -11,9 +11,9 @@ import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { colors } from "../styles";
+import {colors, styles} from "../styles";
 import {
-  Alert, ScrollView,
+  Alert, ScrollView, Text,
   TouchableOpacity,
   View,
   ViewStyle
@@ -234,6 +234,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       }
     });
     items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
+    items.push({label: lang("firmware__",   stone.config.firmwareVersion,   lang("Not_checked_")), style: {fontSize: 10}, type:'explanation', below:true});
+
 
     return items;
   }

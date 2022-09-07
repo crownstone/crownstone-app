@@ -54,6 +54,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
   }
 
 
+  let goToSettingsCallback = () => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); };
   let tapCallback = undefined;
   let backgroundColor = undefined;
   if (StoneUtil.shouldUpdateBeforeBeingUsed(stone)) {
@@ -72,6 +73,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
       {...props}
       settings
       tapCallback={tapCallback}
+      longPressCallback={goToSettingsCallback}
       title={stone.config.name}
       backgroundColor={backgroundColor}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
@@ -84,7 +86,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
           visible={props.editMode}
         />
         <BlurEntrySettingsIcon
-          callback={() => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          callback={goToSettingsCallback}
           visible={props.editMode}
         />
 

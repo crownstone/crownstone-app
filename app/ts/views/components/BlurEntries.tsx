@@ -33,22 +33,39 @@ export interface BlurEntryProps {
 }
 
 
-export interface TappableBlurEntryProps extends BlurEntryProps {
-  tapCallback? : () => void
+export interface TappableBlurEntryProps extends BlurEntryProps, BlurEntryProps {
+  tapCallback?         : () => void
+  tapSettingsCallback? : () => void
+  longPressCallback?   : () => void
+  longPressSettingsCallback? : () => void
 }
 
 
-interface DraggableBlurEntryProps extends DraggableProps, TappableBlurEntryProps {}
+interface DraggableBlurEntryProps extends DraggableProps, BlurEntryProps {
+  tapCallback?         : () => void
+  tapSettingsCallback? : () => void
+  longPressCallback?   : () => void
+}
 
 
 export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
   // include draggable
   let {dragging, triggerDrag} = useDraggable(props.isBeingDragged, props.eventBus, props.dragAction);
+
+  let editOpacity = 0.5;
+  let opacity = props.tapCallback ? 0.5 : 1;
   return (
     <TouchableOpacity
-      activeOpacity={props.editMode ? 0.5 : 1.0}
-      onLongPress={() => { if (props.editMode) { triggerDrag(); } }}
-      onPress={() => { if (props.tapCallback) { props.tapCallback() }}}
+      activeOpacity={props.editMode ? editOpacity : opacity}
+      onLongPress={() => { if (props.editMode) { triggerDrag(); } else if (props.longPressCallback) { props.longPressCallback(); }}}
+      onPress={() => { if (props.tapCallback) {
+        if (props.editMode && props.tapSettingsCallback) {
+          props.tapSettingsCallback();
+        }
+        else {
+          props.tapCallback();
+        }
+      }}}
       style={{flexDirection:'row'}}
     >
       <SlideSideFadeInView visible={dragging} width={40} />
@@ -61,8 +78,22 @@ export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
 export function TappableBlurEntry(props: TappableBlurEntryProps) {
   return (
     <TouchableOpacity
-      activeOpacity={  props.tapCallback ? 0.3 : 1.0 }
-      onPress={() => { props.tapCallback && props.tapCallback() }}
+      activeOpacity={ props.tapCallback || props.editMode && (props.tapSettingsCallback) ? 0.3 : 1.0 }
+      onLongPress={() => {
+        if (props.editMode && props.longPressSettingsCallback) {
+          props.longPressSettingsCallback();
+        }
+        else if (props.longPressCallback) {
+          props.longPressCallback();
+        }}}
+      onPress={() => {
+        if (props.editMode && props.tapSettingsCallback) {
+          props.tapSettingsCallback();
+        }
+        else if (props.tapCallback) {
+          props.tapCallback();
+        }
+      }}
       style={{flex:1}}
     >
       <BlurEntry {...props} />

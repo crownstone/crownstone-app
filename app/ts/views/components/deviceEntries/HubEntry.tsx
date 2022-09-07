@@ -50,18 +50,19 @@ export function HubEntry(props: HubEntryProps) {
     changeHubs: hub?.id,
   });
 
-  let settingsCallback = () => {  NavigationUtil.launchModal( "HubOverview",{sphereId: props.sphereId, stoneId: hub?.config?.linkedStoneId || props.stoneId, hubId: props.hubId}); }
+  let goToSettingsCallback = () => {  NavigationUtil.launchModal( "HubOverview",{sphereId: props.sphereId, stoneId: hub?.config?.linkedStoneId || props.stoneId, hubId: props.hubId}); }
 
   return (
     <DraggableBlurEntry
       {...props}
       settings
       title={name}
+      longPressCallback={goToSettingsCallback}
       iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
       control={(props) => {
         return (
           <SlideSideFadeInView visible={!props.editMode} width={75} style={{alignItems:'flex-end'}}>
-            <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={settingsCallback}>
+            <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={goToSettingsCallback}>
               {
               hubProblem && !showStateIcon ? <ActivityIndicator size={"small"} /> :
               hubProblem ?
@@ -84,13 +85,13 @@ export function HubEntry(props: HubEntryProps) {
             visible={props.editMode}
           />
           <BlurEntrySettingsIcon
-            callback={settingsCallback}
+            callback={goToSettingsCallback}
             visible={props.editMode}
           />
 
         </React.Fragment>
       )}}
       labelItem={(props) => { return <HubEntryLabel hub={hub} stone={stone} editMode={props.editMode}/> }}
-      editSettingsCallback={settingsCallback}></DraggableBlurEntry>
+      editSettingsCallback={goToSettingsCallback}></DraggableBlurEntry>
   );
 }
