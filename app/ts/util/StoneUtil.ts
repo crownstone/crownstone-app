@@ -567,6 +567,7 @@ export const StoneUtil = {
 
 };
 
+
 async function setLockCrownstoneState(sphereId: string, stoneId: string, label: string, lockState: boolean) {
   let stone = Get.stone(sphereId, stoneId);
 

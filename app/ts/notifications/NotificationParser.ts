@@ -9,6 +9,8 @@ import {InviteCenter} from "../backgroundProcesses/InviteCenter";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import { StoneUtil } from "../util/StoneUtil";
 import { SPHERE_ID_STORE } from "../views/main/SphereOverview";
+import { Get } from "../util/GetUtil";
+import { MessageTransferNext } from "../cloud/sections/newSync/transferrers/MessageTransferNext";
 
 class NotificationParserClass {
 
@@ -81,9 +83,17 @@ class NotificationParserClass {
           this._handleMultiswitch(notificationData, state); break;
         case 'setSwitchStateRemotely':
           this._handleSetSwitchStateRemotely(notificationData, state); break;
-        case 'newMessage':
-          if (notificationData.id) {
-            // TODO: handle notification for messageV2
+        case 'messageAdded':
+          // only add this message if we do not already have it.
+          if (MapProvider.cloud2localMap.messages[notificationData.message?.id] !== undefined) { return; }
+
+          let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
+
+          if (!localSphereId) { return; }
+
+          if (MapProvider.cloud2localMap.spheres[notificationData.sphereId] !== undefined) {
+            // add this message to the local database. The eventEnhancer will handle the rest via the MessageCenter.
+            MessageTransferNext.createLocal(localSphereId, notificationData.message)
           }
           break;
         case "sphereUsersUpdated":
@@ -113,7 +123,7 @@ class NotificationParserClass {
       }
     }
     catch (err) {
-      LOGe.notifications("NotificationParser: Error during remote notificaiton handling", err?.message);
+      LOGe.notifications("NotificationParser: Error during remote notification handling", err?.message);
     }
   }
 

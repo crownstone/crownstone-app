@@ -116,4 +116,5 @@ export const Get = {
     if (!sphere) { return null; }
     return sphere.messages[messageId] || null;
   },
+
 }
