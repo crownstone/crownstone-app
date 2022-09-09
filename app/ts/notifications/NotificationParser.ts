@@ -165,21 +165,21 @@ class NotificationParserClass {
     if (!localSphereId || !localStoneId) { return; }
 
     let stone = state?.spheres[localSphereId]?.stones[localStoneId] || null;
-    if (stone) {
-      LOG.notifications("NotificationParser: switching based on notification", notificationData);
-      // remap existing 0..1 range from cloud to 0..100
-      let switchState = Number(notificationData.switchState);
+    if (!stone) { return; }
 
-      if (switchState > 0 && switchState <= 1) {
-        switchState = 100*switchState;
-      }
-      switchState = Math.min(100, Math.max(0,switchState));
-      if (switchState === 100) {
-        StoneUtil.turnOn(stone).catch(() => {})
-      }
-      else {
-        StoneUtil.multiSwitch(stone, switchState).catch(() => {})
-      }
+    LOG.notifications("NotificationParser: switching based on notification", notificationData);
+    // remap existing 0..1 range from cloud to 0..100
+    let switchState = Number(notificationData.switchState);
+
+    if (switchState > 0 && switchState <= 1) {
+      switchState = 100*switchState;
+    }
+    switchState = Math.min(100, Math.max(0,switchState));
+    if (switchState === 100) {
+      StoneUtil.turnOn(stone).catch(() => {})
+    }
+    else {
+      StoneUtil.multiSwitch(stone, switchState).catch(() => {})
     }
   }
 

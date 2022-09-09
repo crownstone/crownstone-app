@@ -142,9 +142,9 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
       return (
         <SettingsBackground>
           <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
-            <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_all") }</Text>
-            <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice_") }</Text>
-            <Text style={styles.explanation}>{ lang("The_dim_value_is_dependent") }</Text>
+            <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
+            <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
+            <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
             <View style={{height:10}} />
             <Text style={styles.boldExplanation}>{ lang("Dimming_has_to_be_enabled") }</Text>
           </ScrollView>

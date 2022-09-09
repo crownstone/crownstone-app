@@ -21,10 +21,10 @@ export default {
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft.tsx",
     Double_Tap_Switchcraft_al:              function() { return "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." },
     Tap_the_wall_switch_twice:              function() { return "Tap the wall switch twice quickly to change between full on and the dimmed intensity." },
-    The_dim_value_is_dependen:              function() { return "The dim value is dependent on the twiligth and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
+    The_dim_value_is_dependen:              function() { return "The dim value is dependent on the twilight and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
     Double_Tap_Switchcraft_all:             function() { return "Double Tap Switchcraft allows you to switch between the light being dimmed or fully on." },
     Tap_the_wall_switch_twice_:             function() { return "Tap the wall switch twice quickly to change between full on and the dimmed intensity." },
-    The_dim_value_is_dependent:             function() { return "The dim value is dependent on the twiligth and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
+    The_dim_value_is_dependent:             function() { return "The dim value is dependent on the twilight and behaviour dim value and the time of day." + " If there is no dimmed value in twilight or behaviour, the default value is used." },
     Dimming_has_to_be_enabled:              function() { return "Dimming has to be enabled in order to use double tap switchcraft." },
     Update_this_Crownstone_to:              function() { return "Update this Crownstone to firmware 5.7.0 or higher to use double tap Switchcraft." },
     Double_Tap_Switchcraft:                 function() { return "Double Tap Switchcraft" },
@@ -929,7 +929,6 @@ export default {
   Interview:{
     __filename: "../../js/views/components/Interview.tsx",
     Something_went_wrong__Plea:             function() { return "Something went wrong. Please retry." },
-    never:                                  function() { return "never" },
   },
   InterviewDark:{
     __filename: "../../js/_prototyping/InterviewDark.tsx",
@@ -1803,7 +1802,6 @@ export default {
   },
   RoomTraining_conclusion:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/RoomTraining_conclusion.tsx",
-    never:                                  function() { return "never" },
     You_can_further_improve_t:              function() { return "You can further improve the performance by adding an in-pocket training set." },
     Training_complete_:                     function() { return "Training complete!" },
   },
@@ -1815,7 +1813,6 @@ export default {
   },
   RoomTraining_inPocket_intro:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/RoomTraining_inPocket_intro.tsx",
-    never:                                  function() { return "never" },
     We_walk_around_the_room_i:              function() { return "We walk around the room in the same way as you'd do normally. Put your phone in your pocket and walk around the room." },
     Stand_in_places_you_commo:              function() { return "Stand in places you commonly stand with the phone in your pocket. After this, take the phone out of your pocket and place it on surfaces in the room where it is likely to be normally." },
     Collect_as_much_as_you_ca:              function() { return "Collect as much as you can!" },
