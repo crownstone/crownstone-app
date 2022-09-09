@@ -2,7 +2,8 @@ import {
   cleanupSuiteAfterTest,
   mBluenetPromise,
   mConstellationState,
-  moveTimeBy, prepareSuiteForTest,
+  moveTimeBy,
+  prepareSuiteForTest,
   TestHookCatcher
 } from "../__testUtil/mocks/suite.mock";
 import {TestUtil} from "../__testUtil/util/testUtil";
@@ -54,7 +55,8 @@ test("SessionBroker finish mesh command", async () => {
   await TestUtil.nextTick();
 
   // sessions for all items in the mesh should be requested
-  expect(Object.keys(SessionManager._sessions).length).toBe(5)
+  expect(Object.keys(SessionManager._sessions).length).toBe(5);
+
   // trigger connects by faking iBeacons which are in range.
   evt_ibeacon(-70, handle2);
   evt_ibeacon(-70, handle3);
@@ -64,11 +66,8 @@ test("SessionBroker finish mesh command", async () => {
   await mBluenetPromise.for(handle3).succeed.connect("operation");
   await mBluenetPromise.for(handle4).succeed.connect("operation");
 
-  await TestUtil.nextTick();
-
   await mBluenetPromise.for(handle2).succeed.turnOnMesh();
   await mBluenetPromise.for(handle3).succeed.allowDimming();
-
 
   expect(Object.keys(turnOnCommander.broker.pendingSessions).length).toBe(2);
   expect(Object.keys(turnOnCommander.broker.connectedSessions).length).toBe(3);
@@ -207,6 +206,7 @@ test("SessionBroker check the cleanup of closed public session", async () => {
 
   expect(api.broker.connectedSessions).toStrictEqual({});
 });
+
 
 test("SessionBroker do not re-request sessions on failure or finish of a single command", async () => {
   StoneAvailabilityTracker.init();

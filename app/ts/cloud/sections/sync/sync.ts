@@ -24,7 +24,6 @@ import { AppState } from "react-native";
  * @returns {Promise.<TResult>|*}
  */
 export const sync = {
-
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
   lastSyncTimestamp: 0,
