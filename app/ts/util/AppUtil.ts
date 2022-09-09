@@ -12,6 +12,7 @@ import {core} from "../Core";
 import {NavigationUtil} from "./navigation/NavigationUtil";
 import {Stacks} from "../views/Stacks";
 import { MapProvider } from "../backgroundProcesses/MapProvider";
+import { SseHandler } from "../backgroundProcesses/SseHandler";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AppUtil", key)(a, b, c, d, e);
@@ -112,6 +113,8 @@ export const AppUtil = {
     // });
     // TODO: Wait for possibly pending sync to stop
     core.eventBus.emit("showLoading", {text:lang("Logging_out_and_closing_a"), opacity:0.25});
+
+    SseHandler.stop();
 
     // clear position for this device.
     let state = store.getState();

@@ -7,7 +7,7 @@ import {
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const Rooms_deleteAll = () => {
-  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+  // if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be able to delete all rooms, one by one.', async () => {
     await Assistant.update();

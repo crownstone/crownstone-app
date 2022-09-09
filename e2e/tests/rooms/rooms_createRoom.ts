@@ -7,7 +7,7 @@ import {
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const Rooms_createRoom = () => {
-  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+  // if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be on the SphereOverview addRoom view', async () => {
     await waitToStart('SphereOverview_addRoom');

@@ -8,7 +8,7 @@ import {by, device, expect, element, waitFor} from 'detox';
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
 export const SphereEditMenu_sphereManagement = () => {
-  // if (CONFIG.ONLY_ESSENTIALS === true) { return; }
+  if (CONFIG.ONLY_ESSENTIALS === true) { return; }
 
   test('should be on the SphereEdit view', async () => {
     await waitToStart('SphereEdit');

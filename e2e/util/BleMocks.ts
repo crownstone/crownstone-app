@@ -59,6 +59,7 @@ export class BleMocks {
     );
 
     let textResult = await result.text();
+
     if (textResult !== "SUCCESS") {
       throw new Error(`BluenetPromise resolvePromise error CALL_DOES_NOT_EXIST for ${handle} ${functionName}`)
     }

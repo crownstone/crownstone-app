@@ -19,8 +19,7 @@ export class SseHandlerClass {
     if (this.initialized) { return; }
     this.initialized = true;
 
-    this.SSE = new CrownstoneSSE({sseUrl: CloudAddresses.sse});
-
+    this.SSE = new CrownstoneSSE({sseUrl: CloudAddresses.sse, loginUrl: CloudAddresses.cloud_v1 + 'users/login'});
     let state = core.store.getState();
     await this.SSE.loginHashed(state.user.email, state.user.passwordHash);
 

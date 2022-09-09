@@ -42,6 +42,7 @@ export const SphereAdd_setup_crownstone = () => {
 
 
   test('should be able to go to the scanningForSetupCrownstones', async () => {
+    await shouldBeOn('AddCrownstone');
     await tap("Plug");
     await waitToNavigate("installingPlug");
     await tap("installingPlugNext");
@@ -195,7 +196,6 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate('addCrownstone_setupMore');
   })
 
-
   test("should show an error screen if setup fails", async () => {
     await tap("addCrownstone_addMore");
     await waitToNavigate("ScanningForSetupCrownstones");
@@ -220,3 +220,4 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("SphereAdd");
   })
 };
+

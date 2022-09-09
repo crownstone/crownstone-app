@@ -32,7 +32,8 @@ import { SphereAdd_addCrownstoneMenu }      from "./tests/sphereAdd/sphereAdd_ad
 import { SphereAdd_addMenus }               from "./tests/sphereAdd/sphereAdd_addMenus";
 import { SphereAdd_setup_crownstone }       from "./tests/sphereAdd/sphereAdd_setup_crownstone";
 import { SphereAdd_close }                  from "./tests/sphereAdd/sphereAdd_close";
-import { SideBar_usage } from "./tests/sidebar/sideBar_usage";
+import { SideBar_usage }                    from "./tests/sidebar/sideBar_usage";
+import { SphereAdd_setup_more_crownstones } from "./tests/sphereAdd/sphereAdd_setup_more_crownstone";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
@@ -84,5 +85,6 @@ describe('SphereAdd, start',                             SphereAdd_start);
 describe('SphereAdd, add menus',                         SphereAdd_addMenus);
 describe('SphereAdd, add crownstone menu exploration',   SphereAdd_addCrownstoneMenu);
 describe('SphereAdd, add crownstone',                    SphereAdd_setup_crownstone);
+describe('SphereAdd, add more crownstones',              SphereAdd_setup_more_crownstones);
 describe('SphereAdd, close',                             SphereAdd_close);
 
