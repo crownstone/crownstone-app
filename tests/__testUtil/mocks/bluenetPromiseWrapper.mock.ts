@@ -265,7 +265,7 @@ class LibContainer {
 
 async function skipTurn() {
   return new Promise<void>((resolve, reject) => {
-    setTimeout(() => { resolve() },10)
+    setTimeout(() => { resolve() },0)
   })
 }
 
