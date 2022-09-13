@@ -3208,10 +3208,10 @@ crownstone-logger@^0.1.4:
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
 
-crownstone-sse@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/crownstone-sse/-/crownstone-sse-5.0.0.tgz#5cf4a138e3d39276c45c452a515326d8d9e30d8f"
-  integrity sha512-xd+Fbg90Y2hnf+HjdPyHWgAoHoj3+GGGY2WUXPp2PrAEbLSJwepcJJj5E1HqoVpAU9JIoaq+3P5m557PRhI7sg==
+crownstone-sse@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/crownstone-sse/-/crownstone-sse-5.3.0.tgz#d78d886738504618147218a2f7cd2ecb943f7f57"
+  integrity sha512-dg1/YkcpGt13ew0n0EFHcA9tWMF3lSs1er4Mfljp6BWWW2GV8vTCzC3VVfZjp9wponjDG+U7dTQ+2oSUGatAgA==
   dependencies:
     cross-fetch "^3.0.4"
     crownstone-logger "^0.1.4"

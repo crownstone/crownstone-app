@@ -12,7 +12,6 @@ export const SideBar_usage = () => {
   test('should be on the SphereOverview view', async () => {
     await waitToStart('SphereOverview');
     await screenshot();
-
   })
 
   test('should be able to open and close the sidebar', async () => {

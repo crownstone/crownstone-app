@@ -4,6 +4,7 @@ import { core } from "../Core";
 import { AppState } from "react-native";
 import { MapProvider } from "./MapProvider";
 import { SpherePresenceManager } from "./SpherePresenceManager";
+import DeviceInfo from "react-native-device-info";
 
 type SSE_STATE = "STARTING" | "STARTED" | "STOPPED" | "UNINITIALIZED";
 
@@ -19,7 +20,7 @@ export class SseHandlerClass {
     if (this.initialized) { return; }
     this.initialized = true;
 
-    this.SSE = new CrownstoneSSE({sseUrl: CloudAddresses.sse, loginUrl: CloudAddresses.cloud_v1 + 'users/login'});
+    this.SSE = new CrownstoneSSE({sseUrl: CloudAddresses.sse, loginUrl: CloudAddresses.cloud_v1 + 'users/login', projectName: `CrownstoneApp${DeviceInfo.getReadableVersion()}`});
     let state = core.store.getState();
     await this.SSE.loginHashed(state.user.email, state.user.passwordHash);
 
