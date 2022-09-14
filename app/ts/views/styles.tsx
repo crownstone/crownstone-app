@@ -2,10 +2,11 @@ import * as React from 'react';
 import {Dimensions, PixelRatio, Platform, StyleSheet, TextStyle} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
-import { LOG } from "../logging/Log";
+import {LOG, LOGi} from "../logging/Log";
 import { Navigation } from "react-native-navigation";
 
 export const deviceModel = DeviceInfo.getModel();
+export const deviceId    = DeviceInfo.getDeviceId();
 export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 1') !== -1;
 
 export let topBarMargin    = 0
@@ -23,6 +24,18 @@ export const UIconstants = Navigation.constantsSync();
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
+
+export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
+  topBarMargin    = 0
+  tabBarMargin    = insets.bottom;
+  tabBarHeight    = insets.top > 0 ? 49 + 34: 49;
+  statusBarHeight = Platform.OS === 'android' ? 24  :  (insets.top > 0 ? insets.top : 20); // Status bar in iOS is 20 high
+  topBarHeight    = Platform.OS === 'android' ? 54  :  (insets.top > 0 ? insets.top : 44) + statusBarHeight; // Status bar in iOS is 20 high
+
+  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+  availableModalHeight  = screenHeight - topBarHeight;
+}
+
 
 
 export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {

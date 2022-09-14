@@ -11,9 +11,10 @@ import {
   View, TextStyle
 } from "react-native";
 import { Background } from './../components/Background'
-import { background, colors } from "./../styles";
+import {background, colors, setInsets, styles} from "./../styles";
 
 import DeviceInfo from 'react-native-device-info';
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -28,6 +29,7 @@ export class Splash extends Component<any, any> {
 
     return (
       <Background fullScreen={true} image={background.main}>
+        <InsetSetter />
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
@@ -38,4 +40,12 @@ export class Splash extends Component<any, any> {
       </Background>
     );
   }
+}
+
+
+function InsetSetter(props) {
+  let insets = useSafeAreaInsets();
+  setInsets(insets);
+
+  return <React.Fragment/>
 }

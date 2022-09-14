@@ -19,6 +19,7 @@ import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -26,16 +27,27 @@ let versionStyle : TextStyle = {
   fontSize: 10,
 };
 
-export class LoginSplash extends Component<any, any> {
+export function LoginSplash(props) {
 
+  console.log("LoginSplash render", deviceModel)
 
-  render() {
-    console.log("LoginSplash render", deviceModel)
-    let factor = 0.2;
+  console.log("Device Manufacturer",    DeviceInfo.getManufacturer());     // e.g. Apple
+  console.log("Device Brand",           DeviceInfo.getBrand());            // e.g. Apple / htc / Xiaomi
+  console.log("Device Model",           DeviceInfo.getModel());            // e.g. iPhone 6
+  console.log("Device ID",              DeviceInfo.getDeviceId());         // e.g. iPhone7,2 / or the board on Android e.g. goldfish
+  console.log("System Name",            DeviceInfo.getSystemName());       // e.g. iPhone OS
+  console.log("System Version",         DeviceInfo.getSystemVersion());    // e.g. 9.0
+  console.log("Bundle ID",              DeviceInfo.getBundleId());         // e.g. com.learnium.mobile
+  console.log("Build Number",           DeviceInfo.getBuildNumber());      // e.g. 89
+  console.log("App Version",            DeviceInfo.getVersion());          // e.g. 1.1.0
+  console.log("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
+  console.log("Device Name",            DeviceInfo.getDeviceName());       // e.g. Becca's iPhone 6
+  let factor = 0.2;
 
-    return (
-      <BackgroundCustomTopBar testID={"LoginSplash"}>
-        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
+  return (
+    <BackgroundCustomTopBar testID={"LoginSplash"}>
+      <SafeAreaView style={{ flex: 1}}>
+        <View style={{alignItems:'center', justifyContent: 'center', flex:1 }}>
           <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
           <View style={{flex:2}} />
@@ -78,7 +90,7 @@ export class LoginSplash extends Component<any, any> {
             <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
           </View>
         </View>
-      </BackgroundCustomTopBar>
-    )
-  }
+      </SafeAreaView>
+    </BackgroundCustomTopBar>
+  );
 }

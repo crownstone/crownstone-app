@@ -15,6 +15,8 @@
 		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
 		FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D71FC46412001C8FD6 /* EventEmitter.swift */; };
 		FA0DD9CD21DFCCED00824ABF /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0DD9CC21DFCCED00824ABF /* DataStore.swift */; };
+		FA12D41D28D1EB0000B02BF3 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA12D41C28D1EB0000B02BF3 /* BluenetLib */; };
+		FA12D41F28D1EBC800B02BF3 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA12D41E28D1EBC800B02BF3 /* BluenetLib */; };
 		FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FA39A49C2743DAF100A63C79 /* BluenetShared */; };
 		FA39A5502744037700A63C79 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54D2744037700A63C79 /* main.m */; };
 		FA39A5512744037700A63C79 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54F2744037700A63C79 /* AppDelegate.m */; };
@@ -46,9 +48,6 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
-		FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA0276A28B300E36078 /* BluenetLib */; };
-		FABAAD0928BF844B00D824A6 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FABAAD0828BF844B00D824A6 /* BluenetLib */; };
-		FABAAD4928BF847D00D824A6 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FABAAD4828BF847D00D824A6 /* BluenetLib */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -562,7 +561,6 @@
 		FA0177D31FC46359001C8FD6 /* Portal.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Portal.swift; sourceTree = "<group>"; tabWidth = 2; };
 		FA0177D51FC46385001C8FD6 /* Logger.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		FA0177D71FC46412001C8FD6 /* EventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
-		FA068DD228CB23CE000A9058 /* bluenet-lib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bluenet-lib"; path = "../../XCode/bluenet-lib"; sourceTree = "<group>"; };
 		FA0DD9CC21DFCCED00824ABF /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FA12B79322450C84003B017E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA274E4A2410144E00D7C858 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
@@ -641,9 +639,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */,
 				FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */,
 				F565541EA0E74560636016AB /* libPods-Crownstone.a in Frameworks */,
+				FA12D41D28D1EB0000B02BF3 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -651,7 +649,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FABAAD0928BF844B00D824A6 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -659,7 +656,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FABAAD4928BF847D00D824A6 /* BluenetLib in Frameworks */,
+				FA12D41F28D1EBC800B02BF3 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -976,7 +973,6 @@
 		FAB44C9E276A289500E36078 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FA068DD228CB23CE000A9058 /* bluenet-lib */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -1063,7 +1059,7 @@
 			name = Crownstone;
 			packageProductDependencies = (
 				FA39A49C2743DAF100A63C79 /* BluenetShared */,
-				FAB44CA0276A28B300E36078 /* BluenetLib */,
+				FA12D41C28D1EB0000B02BF3 /* BluenetLib */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1084,7 +1080,6 @@
 			);
 			name = WatchTower;
 			packageProductDependencies = (
-				FABAAD0828BF844B00D824A6 /* BluenetLib */,
 			);
 			productName = WatchTower;
 			productReference = FA86C67E21CCEECD00811933 /* WatchTower.app */;
@@ -1104,7 +1099,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FABAAD4828BF847D00D824A6 /* BluenetLib */,
+				FA12D41E28D1EBC800B02BF3 /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1163,6 +1158,7 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
 				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
+				FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -2603,6 +2599,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 30.0.0;
+			};
+		};
 		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-shared";
@@ -2614,22 +2618,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FA12D41C28D1EB0000B02BF3 /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			productName = BluenetLib;
+		};
+		FA12D41E28D1EBC800B02BF3 /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			productName = BluenetLib;
+		};
 		FA39A49C2743DAF100A63C79 /* BluenetShared */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
 			productName = BluenetShared;
-		};
-		FAB44CA0276A28B300E36078 /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BluenetLib;
-		};
-		FABAAD0828BF844B00D824A6 /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BluenetLib;
-		};
-		FABAAD4828BF847D00D824A6 /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BluenetLib;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
