@@ -17,7 +17,7 @@ import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
 import { FileUtil } from "../../../util/FileUtil";
 import { from } from "../../../logic/constellation/Tellers";
-import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {SettingsBackground} from "../../components/SettingsBackground";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 const RNFS = require('react-native-fs');
 
@@ -88,8 +88,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     data.forEach((ibeacon) => {
       if (ibeacon.uuid.toLowerCase() !== this._ibeaconUuid.toLowerCase() ) { return; }
-      if (this._major && ibeacon.major !== this._major)                    { return; }
-      if (this._minor && ibeacon.minor !== this._minor)                    { return; }
+      if (this._major && Number(ibeacon.major) !== Number(this._major))                    { return; }
+      if (this._minor && Number(ibeacon.minor) !== Number(this._minor))                    { return; }
 
       this.setState({ibeaconPayload: xUtil.stringify(ibeacon, 2), ibeaconTimestamp: Date.now()});
     })
@@ -313,6 +313,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       }
     });
   }
+
   _getGPREGRET(items, stone) {
     items.push({
       label: "Get GPREGRET",
@@ -704,7 +705,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     }
 
     items.push({label: largeLabel, type: 'largeExplanation'});
-    items.push({label: "iBeacon UUID" + this._ibeaconUuid.toUpperCase() + "\nMajor:" + this._major+ "\nMinor:" +this._minor+ "\nHandle:" + this._handle, type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
+    items.push({label: "iBeacon UUID: \n" + this._ibeaconUuid.toUpperCase() + "\nMajor:" + this._major+ "\nMinor:" +this._minor+ "\nHandle:" + this._handle, type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
     items.push({label: "Latest iBeacon data:", type: 'largeExplanation', style:{paddingTop:0}});
     items.push({__item:
       <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
@@ -782,11 +783,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <SettingsNavbarBackground>
+      <SettingsBackground>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </SettingsNavbarBackground>
+      </SettingsBackground>
     );
   }
 }
