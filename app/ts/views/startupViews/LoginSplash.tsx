@@ -28,20 +28,8 @@ let versionStyle : TextStyle = {
 };
 
 export function LoginSplash(props) {
-
   console.log("LoginSplash render", deviceModel)
 
-  console.log("Device Manufacturer",    DeviceInfo.getManufacturer());     // e.g. Apple
-  console.log("Device Brand",           DeviceInfo.getBrand());            // e.g. Apple / htc / Xiaomi
-  console.log("Device Model",           DeviceInfo.getModel());            // e.g. iPhone 6
-  console.log("Device ID",              DeviceInfo.getDeviceId());         // e.g. iPhone7,2 / or the board on Android e.g. goldfish
-  console.log("System Name",            DeviceInfo.getSystemName());       // e.g. iPhone OS
-  console.log("System Version",         DeviceInfo.getSystemVersion());    // e.g. 9.0
-  console.log("Bundle ID",              DeviceInfo.getBundleId());         // e.g. com.learnium.mobile
-  console.log("Build Number",           DeviceInfo.getBuildNumber());      // e.g. 89
-  console.log("App Version",            DeviceInfo.getVersion());          // e.g. 1.1.0
-  console.log("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
-  console.log("Device Name",            DeviceInfo.getDeviceName());       // e.g. Becca's iPhone 6
   let factor = 0.2;
 
   return (

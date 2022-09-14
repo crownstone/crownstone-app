@@ -49,7 +49,6 @@ import { Platform } from "react-native";
    * Silence cloud will silently reject all cloud calls.
    */
   export let DISABLE_NATIVE = false;
-  DeviceInfo.isEmulator().then((result) => { DISABLE_NATIVE = result; })
   export let SILENCE_CLOUD  = false;
 
   /**
