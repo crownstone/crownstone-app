@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Check if fingerprints are syncing 1`] = `
-{
-  "sphereCloudId": {
-    "data": {
-      "gpsLocation": {
+Object {
+  "sphereCloudId": Object {
+    "data": Object {
+      "gpsLocation": Object {
         "lat": null,
         "lng": null,
       },
@@ -13,20 +13,20 @@ exports[`Check if fingerprints are syncing 1`] = `
       "updatedAt": "2022-01-01T12:00:00.000Z",
       "uuid": "uuid2006-2007",
     },
-    "fingerprints": {
-      "uuid2035-2036": {
-        "data": {
+    "fingerprints": Object {
+      "uuid2035-2036": Object {
+        "data": Object {
           "createdAt": "2022-01-01T12:00:00.000Z",
           "createdByUser": "user_uuid2002-2003",
           "createdOnDeviceType": "undefined_undefined",
-          "crownstonesAtCreation": [
+          "crownstonesAtCreation": Array [
             "56541_57055",
             "58597_59111",
             "60653_61167",
           ],
-          "data": [
-            {
-              "data": {
+          "data": Array [
+            Object {
+              "data": Object {
                 "56541_57055": -65,
                 "58597_59111": -65,
                 "60653_61167": -65,
@@ -41,30 +41,30 @@ exports[`Check if fingerprints are syncing 1`] = `
         "new": true,
       },
     },
-    "hubs": {},
-    "locations": {
-      "locationCloud": {
-        "data": {
+    "hubs": Object {},
+    "locations": Object {
+      "locationCloud": Object {
+        "data": Object {
           "updatedAt": 1641038400000,
         },
       },
     },
-    "messages": {},
-    "scenes": {},
-    "stones": {
-      "stone_uuid2008-2009": {
-        "abilities": {
-          "dimming": {
-            "data": {
+    "messages": Object {},
+    "scenes": Object {},
+    "stones": Object {
+      "stone_uuid2008-2009": Object {
+        "abilities": Object {
+          "dimming": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "dimming",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "softOnSpeed": {
-                "data": {
+            "properties": Object {
+              "softOnSpeed": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -74,17 +74,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "switchcraft": {
-            "data": {
+          "switchcraft": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "defaultDimValue": {
-                "data": {
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -92,8 +92,8 @@ exports[`Check if fingerprints are syncing 1`] = `
                 },
                 "new": true,
               },
-              "doubleTapSwitchcraft": {
-                "data": {
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -103,17 +103,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "tapToToggle": {
-            "data": {
+          "tapToToggle": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "tapToToggle",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "rssiOffset": {
-                "data": {
+            "properties": Object {
+              "rssiOffset": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -124,8 +124,8 @@ exports[`Check if fingerprints are syncing 1`] = `
             },
           },
         },
-        "behaviours": {},
-        "data": {
+        "behaviours": Object {},
+        "data": Object {
           "address": undefined,
           "bootloaderVersion": null,
           "description": "",
@@ -145,19 +145,19 @@ exports[`Check if fingerprints are syncing 1`] = `
         },
         "new": true,
       },
-      "stone_uuid2016-2017": {
-        "abilities": {
-          "dimming": {
-            "data": {
+      "stone_uuid2016-2017": Object {
+        "abilities": Object {
+          "dimming": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "dimming",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "softOnSpeed": {
-                "data": {
+            "properties": Object {
+              "softOnSpeed": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -167,17 +167,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "switchcraft": {
-            "data": {
+          "switchcraft": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "defaultDimValue": {
-                "data": {
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -185,8 +185,8 @@ exports[`Check if fingerprints are syncing 1`] = `
                 },
                 "new": true,
               },
-              "doubleTapSwitchcraft": {
-                "data": {
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -196,17 +196,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "tapToToggle": {
-            "data": {
+          "tapToToggle": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "tapToToggle",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "rssiOffset": {
-                "data": {
+            "properties": Object {
+              "rssiOffset": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -217,8 +217,8 @@ exports[`Check if fingerprints are syncing 1`] = `
             },
           },
         },
-        "behaviours": {},
-        "data": {
+        "behaviours": Object {},
+        "data": Object {
           "address": undefined,
           "bootloaderVersion": null,
           "description": "",
@@ -238,19 +238,19 @@ exports[`Check if fingerprints are syncing 1`] = `
         },
         "new": true,
       },
-      "stone_uuid2024-2025": {
-        "abilities": {
-          "dimming": {
-            "data": {
+      "stone_uuid2024-2025": Object {
+        "abilities": Object {
+          "dimming": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "dimming",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "softOnSpeed": {
-                "data": {
+            "properties": Object {
+              "softOnSpeed": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -260,17 +260,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "switchcraft": {
-            "data": {
+          "switchcraft": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "switchcraft",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "defaultDimValue": {
-                "data": {
+            "properties": Object {
+              "defaultDimValue": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -278,8 +278,8 @@ exports[`Check if fingerprints are syncing 1`] = `
                 },
                 "new": true,
               },
-              "doubleTapSwitchcraft": {
-                "data": {
+              "doubleTapSwitchcraft": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -289,17 +289,17 @@ exports[`Check if fingerprints are syncing 1`] = `
               },
             },
           },
-          "tapToToggle": {
-            "data": {
+          "tapToToggle": Object {
+            "data": Object {
               "enabled": false,
               "syncedToCrownstone": true,
               "type": "tapToToggle",
               "updatedAt": "2022-01-01T12:00:00.000Z",
             },
             "new": true,
-            "properties": {
-              "rssiOffset": {
-                "data": {
+            "properties": Object {
+              "rssiOffset": Object {
+                "data": Object {
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
                   "updatedAt": "2022-01-01T12:00:00.000Z",
@@ -310,8 +310,8 @@ exports[`Check if fingerprints are syncing 1`] = `
             },
           },
         },
-        "behaviours": {},
-        "data": {
+        "behaviours": Object {},
+        "data": Object {
           "address": undefined,
           "bootloaderVersion": null,
           "description": "",
@@ -332,15 +332,15 @@ exports[`Check if fingerprints are syncing 1`] = `
         "new": true,
       },
     },
-    "toons": {},
-    "users": {},
+    "toons": Object {},
+    "users": Object {},
   },
 }
 `;
 
 exports[`Check if fingerprints are syncing 2`] = `
-{
-  "app": {
+Object {
+  "app": Object {
     "activeSphere": null,
     "hasSeenDeviceSettings": false,
     "hasSeenSwitchView": false,
@@ -351,12 +351,12 @@ exports[`Check if fingerprints are syncing 2`] = `
     "tapToToggleEnabled": false,
     "updatedAt": 1,
   },
-  "devApp": {
+  "devApp": Object {
     "fastPhone": false,
     "sphereUsedForSetup": "DEV_APP_SPHERE_ID",
     "storeCrownstonesInCloud": false,
   },
-  "development": {
+  "development": Object {
     "debugRTCtoken": null,
     "devAppVisible": false,
     "firmwareEarlyAccessLevel": 0,
@@ -380,35 +380,35 @@ exports[`Check if fingerprints are syncing 2`] = `
     "useHighFrequencyScanningInBackground": false,
     "use_time_based_nonce": false,
   },
-  "devices": {},
-  "events": {
-    "remove": {
-      "behaviours": {},
-      "devices": {},
-      "fingerprints": {},
-      "installations": {},
-      "locations": {},
-      "messages": {},
-      "scenes": {},
-      "stones": {},
-      "user": {},
+  "devices": Object {},
+  "events": Object {
+    "remove": Object {
+      "behaviours": Object {},
+      "devices": Object {},
+      "fingerprints": Object {},
+      "installations": Object {},
+      "locations": Object {},
+      "messages": Object {},
+      "scenes": Object {},
+      "stones": Object {},
+      "user": Object {},
     },
-    "special": {
-      "behaviours": {},
-      "devices": {},
-      "fingerprints": {},
-      "installations": {},
-      "locations": {},
-      "messages": {},
-      "scenes": {},
-      "stones": {},
-      "user": {},
+    "special": Object {
+      "behaviours": Object {},
+      "devices": Object {},
+      "fingerprints": Object {},
+      "installations": Object {},
+      "locations": Object {},
+      "messages": Object {},
+      "scenes": Object {},
+      "stones": Object {},
+      "user": Object {},
     },
   },
-  "installations": {},
-  "spheres": {
-    "sphere_uuid2004-2005": {
-      "config": {
+  "installations": Object {},
+  "spheres": Object {
+    "sphere_uuid2004-2005": Object {
+      "config": Object {
         "cloudId": "sphereCloudId",
         "iBeaconUUID": "uuid2006-2007",
         "latitude": null,
@@ -417,12 +417,12 @@ exports[`Check if fingerprints are syncing 2`] = `
         "uid": null,
         "updatedAt": 1641038400000,
       },
-      "hubs": {},
+      "hubs": Object {},
       "id": "sphere_uuid2004-2005",
-      "keys": {},
-      "locations": {
-        "location_uuid2032-2033": {
-          "config": {
+      "keys": Object {},
+      "locations": Object {
+        "location_uuid2032-2033": Object {
+          "config": Object {
             "cloudId": "locationCloud",
             "fingerprintCloudId": null,
             "fingerprintParsed": null,
@@ -437,22 +437,22 @@ exports[`Check if fingerprints are syncing 2`] = `
             "uid": null,
             "updatedAt": 1641038400000,
           },
-          "fingerprints": {
-            "processed": {},
-            "raw": {
-              "uuid2035-2036": {
+          "fingerprints": Object {
+            "processed": Object {},
+            "raw": Object {
+              "uuid2035-2036": Object {
                 "cloudId": null,
                 "createdAt": 1641038400000,
                 "createdByUser": "user_uuid2002-2003",
                 "createdOnDeviceType": "undefined_undefined",
-                "crownstonesAtCreation": {
+                "crownstonesAtCreation": Object {
                   "56541_57055": true,
                   "58597_59111": true,
                   "60653_61167": true,
                 },
-                "data": [
-                  {
-                    "data": {
+                "data": Array [
+                  Object {
+                    "data": Object {
                       "56541_57055": -65,
                       "58597_59111": -65,
                       "60653_61167": -65,
@@ -464,17 +464,17 @@ exports[`Check if fingerprints are syncing 2`] = `
                 "type": "IN_HAND",
                 "updatedAt": 1641038400000,
               },
-              "uuid2037-2038": {
+              "uuid2037-2038": Object {
                 "cloudId": "newCloudFingerprint",
                 "createdAt": 1609459200000,
                 "createdByUser": "otherUser",
                 "createdOnDeviceType": "test_test",
-                "crownstonesAtCreation": {
+                "crownstonesAtCreation": Object {
                   "10_10": true,
                 },
-                "data": [
-                  {
-                    "data": {
+                "data": Array [
+                  Object {
+                    "data": Object {
                       "10_10": -52,
                     },
                     "dt": 123,
@@ -487,31 +487,31 @@ exports[`Check if fingerprints are syncing 2`] = `
             },
           },
           "id": "location_uuid2032-2033",
-          "layout": {
+          "layout": Object {
             "x": null,
             "y": null,
           },
-          "presentUsers": [],
+          "presentUsers": Array [],
         },
       },
-      "messages": {},
-      "scenes": {},
-      "sortedLists": {},
-      "state": {
+      "messages": Object {},
+      "scenes": Object {},
+      "sortedLists": Object {},
+      "state": Object {
         "lastPresentTime": 0,
         "present": false,
         "reachable": false,
         "smartHomeEnabled": true,
       },
-      "stones": {
-        "stone_uuid2008-2009": {
-          "abilities": {
-            "dimming": {
+      "stones": Object {
+        "stone_uuid2008-2009": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -524,12 +524,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -537,7 +537,7 @@ exports[`Check if fingerprints are syncing 2`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -550,12 +550,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -569,8 +569,8 @@ exports[`Check if fingerprints are syncing 2`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -591,7 +591,7 @@ exports[`Check if fingerprints are syncing 2`] = `
             "uid": 1,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -601,14 +601,14 @@ exports[`Check if fingerprints are syncing 2`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2008-2009",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -619,14 +619,14 @@ exports[`Check if fingerprints are syncing 2`] = `
             "updatedAt": 1,
           },
         },
-        "stone_uuid2016-2017": {
-          "abilities": {
-            "dimming": {
+        "stone_uuid2016-2017": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -639,12 +639,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -652,7 +652,7 @@ exports[`Check if fingerprints are syncing 2`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -665,12 +665,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -684,8 +684,8 @@ exports[`Check if fingerprints are syncing 2`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -706,7 +706,7 @@ exports[`Check if fingerprints are syncing 2`] = `
             "uid": 2,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -716,14 +716,14 @@ exports[`Check if fingerprints are syncing 2`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2016-2017",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -734,14 +734,14 @@ exports[`Check if fingerprints are syncing 2`] = `
             "updatedAt": 1,
           },
         },
-        "stone_uuid2024-2025": {
-          "abilities": {
-            "dimming": {
+        "stone_uuid2024-2025": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -754,12 +754,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -767,7 +767,7 @@ exports[`Check if fingerprints are syncing 2`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -780,12 +780,12 @@ exports[`Check if fingerprints are syncing 2`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -799,8 +799,8 @@ exports[`Check if fingerprints are syncing 2`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -821,7 +821,7 @@ exports[`Check if fingerprints are syncing 2`] = `
             "uid": 3,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -831,14 +831,14 @@ exports[`Check if fingerprints are syncing 2`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2024-2025",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -850,20 +850,20 @@ exports[`Check if fingerprints are syncing 2`] = `
           },
         },
       },
-      "thirdParty": {
-        "toons": {},
+      "thirdParty": Object {
+        "toons": Object {},
       },
-      "users": {},
+      "users": Object {},
     },
   },
-  "user": {
+  "user": Object {
     "accessToken": null,
     "appIdentifier": null,
     "betaAccess": false,
-    "bootloaderVersionsAvailable": {},
+    "bootloaderVersionsAvailable": Object {},
     "developer": false,
     "email": null,
-    "firmwareVersionsAvailable": {},
+    "firmwareVersionsAvailable": Object {},
     "firstName": "Test",
     "isNew": true,
     "language": null,
@@ -883,33 +883,33 @@ exports[`Check if fingerprints are syncing 2`] = `
 `;
 
 exports[`Check if messages are preparing their sync request payload 1`] = `
-{
-  "sphereCloudId": {
-    "messages": {
-      "cloudMessage": {
-        "data": {
-          "recipients": [
+Object {
+  "sphereCloudId": Object {
+    "messages": Object {
+      "cloudMessage": Object {
+        "data": Object {
+          "recipients": Array [
             "memberId",
           ],
           "updatedAt": 1641038400000,
         },
-        "deletedBy": {},
-        "readBy": {},
+        "deletedBy": Object {},
+        "readBy": Object {},
       },
-      "messageId_uuid2008-2009": {
-        "data": {
+      "messageId_uuid2008-2009": Object {
+        "data": Object {
           "content": "testMessage",
           "everyoneInSphere": false,
           "includeSenderInEveryone": false,
-          "recipients": [
+          "recipients": Array [
             "memberId",
           ],
           "triggerEvent": "enter",
           "updatedAt": "2022-01-01T12:00:00.000Z",
         },
-        "deletedBy": {
-          "deleted": {
-            "data": {
+        "deletedBy": Object {
+          "deleted": Object {
+            "data": Object {
               "updatedAt": "2022-01-01T12:00:00.000Z",
               "userId": "user_uuid2002-2003",
             },
@@ -917,9 +917,9 @@ exports[`Check if messages are preparing their sync request payload 1`] = `
           },
         },
         "new": true,
-        "readBy": {
-          "read": {
-            "data": {
+        "readBy": Object {
+          "read": Object {
+            "data": Object {
               "updatedAt": "2022-01-01T12:00:00.000Z",
               "userId": "user_uuid2002-2003",
             },
@@ -933,14 +933,14 @@ exports[`Check if messages are preparing their sync request payload 1`] = `
 `;
 
 exports[`Check if messages can handle the cloud's sync reply: creationActions 1`] = `
-[
-  {
-    "data": {
+Array [
+  Object {
+    "data": Object {
       "cloudId": "dbId:MessageV2Repository:1",
       "content": "hello",
       "everyoneInSphere": false,
       "includeSenderInEveryone": false,
-      "recipients": {
+      "recipients": Object {
         "dbId:UserRepository:3": true,
       },
       "senderId": undefined,

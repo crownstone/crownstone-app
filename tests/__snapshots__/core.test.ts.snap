@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Using core in tests 1`] = `
-{
-  "app": {
+Object {
+  "app": Object {
     "activeSphere": null,
     "hasSeenDeviceSettings": false,
     "hasSeenSwitchView": false,
@@ -13,12 +13,12 @@ exports[`Using core in tests 1`] = `
     "tapToToggleEnabled": false,
     "updatedAt": 1,
   },
-  "devApp": {
+  "devApp": Object {
     "fastPhone": false,
     "sphereUsedForSetup": "DEV_APP_SPHERE_ID",
     "storeCrownstonesInCloud": false,
   },
-  "development": {
+  "development": Object {
     "debugRTCtoken": null,
     "devAppVisible": false,
     "firmwareEarlyAccessLevel": 0,
@@ -42,35 +42,35 @@ exports[`Using core in tests 1`] = `
     "useHighFrequencyScanningInBackground": false,
     "use_time_based_nonce": false,
   },
-  "devices": {},
-  "events": {
-    "remove": {
-      "behaviours": {},
-      "devices": {},
-      "fingerprints": {},
-      "installations": {},
-      "locations": {},
-      "messages": {},
-      "scenes": {},
-      "stones": {},
-      "user": {},
+  "devices": Object {},
+  "events": Object {
+    "remove": Object {
+      "behaviours": Object {},
+      "devices": Object {},
+      "fingerprints": Object {},
+      "installations": Object {},
+      "locations": Object {},
+      "messages": Object {},
+      "scenes": Object {},
+      "stones": Object {},
+      "user": Object {},
     },
-    "special": {
-      "behaviours": {},
-      "devices": {},
-      "fingerprints": {},
-      "installations": {},
-      "locations": {},
-      "messages": {},
-      "scenes": {},
-      "stones": {},
-      "user": {},
+    "special": Object {
+      "behaviours": Object {},
+      "devices": Object {},
+      "fingerprints": Object {},
+      "installations": Object {},
+      "locations": Object {},
+      "messages": Object {},
+      "scenes": Object {},
+      "stones": Object {},
+      "user": Object {},
     },
   },
-  "installations": {},
-  "spheres": {
-    "sphere_uuid2002-2003": {
-      "config": {
+  "installations": Object {},
+  "spheres": Object {
+    "sphere_uuid2002-2003": Object {
+      "config": Object {
         "cloudId": null,
         "iBeaconUUID": "uuid2004-2005",
         "latitude": null,
@@ -79,28 +79,28 @@ exports[`Using core in tests 1`] = `
         "uid": null,
         "updatedAt": 1641038400000,
       },
-      "hubs": {},
+      "hubs": Object {},
       "id": "sphere_uuid2002-2003",
-      "keys": {},
-      "locations": {},
-      "messages": {},
-      "scenes": {},
-      "sortedLists": {},
-      "state": {
+      "keys": Object {},
+      "locations": Object {},
+      "messages": Object {},
+      "scenes": Object {},
+      "sortedLists": Object {},
+      "state": Object {
         "lastPresentTime": 0,
         "present": false,
         "reachable": false,
         "smartHomeEnabled": true,
       },
-      "stones": {
-        "stone_uuid2006-2007": {
-          "abilities": {
-            "dimming": {
+      "stones": Object {
+        "stone_uuid2006-2007": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -113,12 +113,12 @@ exports[`Using core in tests 1`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -126,7 +126,7 @@ exports[`Using core in tests 1`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -139,12 +139,12 @@ exports[`Using core in tests 1`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -158,8 +158,8 @@ exports[`Using core in tests 1`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -180,7 +180,7 @@ exports[`Using core in tests 1`] = `
             "uid": 1,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -190,14 +190,14 @@ exports[`Using core in tests 1`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2006-2007",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -208,14 +208,14 @@ exports[`Using core in tests 1`] = `
             "updatedAt": 1,
           },
         },
-        "stone_uuid2014-2015": {
-          "abilities": {
-            "dimming": {
+        "stone_uuid2014-2015": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -228,12 +228,12 @@ exports[`Using core in tests 1`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -241,7 +241,7 @@ exports[`Using core in tests 1`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -254,12 +254,12 @@ exports[`Using core in tests 1`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -273,8 +273,8 @@ exports[`Using core in tests 1`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -295,7 +295,7 @@ exports[`Using core in tests 1`] = `
             "uid": 2,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -305,14 +305,14 @@ exports[`Using core in tests 1`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2014-2015",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -323,14 +323,14 @@ exports[`Using core in tests 1`] = `
             "updatedAt": 1,
           },
         },
-        "stone_uuid2022-2023": {
-          "abilities": {
-            "dimming": {
+        "stone_uuid2022-2023": Object {
+          "abilities": Object {
+            "dimming": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "softOnSpeed": {
+              "properties": Object {
+                "softOnSpeed": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "softOnSpeed",
@@ -343,12 +343,12 @@ exports[`Using core in tests 1`] = `
               "type": "dimming",
               "updatedAt": 1641038400000,
             },
-            "switchcraft": {
+            "switchcraft": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "defaultDimValue": {
+              "properties": Object {
+                "defaultDimValue": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "defaultDimValue",
@@ -356,7 +356,7 @@ exports[`Using core in tests 1`] = `
                   "value": 0,
                   "valueTarget": 0,
                 },
-                "doubleTapSwitchcraft": {
+                "doubleTapSwitchcraft": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "doubleTapSwitchcraft",
@@ -369,12 +369,12 @@ exports[`Using core in tests 1`] = `
               "type": "switchcraft",
               "updatedAt": 1641038400000,
             },
-            "tapToToggle": {
+            "tapToToggle": Object {
               "cloudId": null,
               "enabled": false,
               "enabledTarget": false,
-              "properties": {
-                "rssiOffset": {
+              "properties": Object {
+                "rssiOffset": Object {
                   "cloudId": null,
                   "syncedToCrownstone": true,
                   "type": "rssiOffset",
@@ -388,8 +388,8 @@ exports[`Using core in tests 1`] = `
               "updatedAt": 1641038400000,
             },
           },
-          "behaviours": {},
-          "config": {
+          "behaviours": Object {},
+          "config": Object {
             "bootloaderVersion": null,
             "cloudId": null,
             "description": "",
@@ -410,7 +410,7 @@ exports[`Using core in tests 1`] = `
             "uid": 3,
             "updatedAt": 1641038400000,
           },
-          "errors": {
+          "errors": Object {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
             "hasError": false,
@@ -420,14 +420,14 @@ exports[`Using core in tests 1`] = `
             "temperatureDimmer": false,
           },
           "id": "stone_uuid2022-2023",
-          "keys": {},
-          "lastUpdated": {
+          "keys": Object {},
+          "lastUpdated": Object {
             "stoneTime": 0,
           },
-          "reachability": {
+          "reachability": Object {
             "lastSeen": null,
           },
-          "state": {
+          "state": Object {
             "behaviourOverridden": false,
             "currentUsage": 0,
             "dimmerReady": false,
@@ -439,20 +439,20 @@ exports[`Using core in tests 1`] = `
           },
         },
       },
-      "thirdParty": {
-        "toons": {},
+      "thirdParty": Object {
+        "toons": Object {},
       },
-      "users": {},
+      "users": Object {},
     },
   },
-  "user": {
+  "user": Object {
     "accessToken": null,
     "appIdentifier": null,
     "betaAccess": false,
-    "bootloaderVersionsAvailable": {},
+    "bootloaderVersionsAvailable": Object {},
     "developer": false,
     "email": null,
-    "firmwareVersionsAvailable": {},
+    "firmwareVersionsAvailable": Object {},
     "firstName": null,
     "isNew": true,
     "language": null,

@@ -76,7 +76,7 @@
     "@types/react-native": "^0.66.18",
     "@types/react-native-snap-carousel": "^3.7.4",
     "babel-jest": "^27.5.1",
-    "detox": "^19.11.0",
+    "detox": "^19.12.1",
     "jasmine-fail-fast": "^2.0.1",
     "jest": "^29.0.3",
     "jest-cli": "^27.5.1",
