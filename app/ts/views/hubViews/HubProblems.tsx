@@ -235,7 +235,7 @@ export function HubIssue_CLOUD_ID_MISSING(sphereId: string, stone: StoneData, hu
                 {type:"ADD_HUB", sphereId: sphereId, hubId: xUtil.getUUID(), data: HubTransferNext.mapCloudToLocal(hubCloudData, stone.id, stone.config.locationId)},
               ]);
             }
-            catch (err) {
+            catch (err : any) {
               if (err?.status === 404) {
                 // this item does not exist  in the cloud.. Factory reset required.
                 core.store.dispatch({ type: "REMOVE_HUB", sphereId: sphereId, hubId: hub.id });

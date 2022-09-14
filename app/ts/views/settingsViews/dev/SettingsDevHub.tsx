@@ -41,7 +41,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
         this.developerSettings = await HUB_API.getDeveloperOptions(hub);
         this.setState({obtainedSettings: true})
       }
-      catch (err) {
+      catch (err : any) {
         Alert.alert("Something went wrong", err,[{text:"Damn.."}]);
       }
     }
@@ -130,9 +130,9 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
           this.forceUpdate()
           core.eventBus.emit("hideLoading")
         }
-        catch (err) {
+        catch (err:any) {
           Alert.alert(
-            "Something went wrong", err,[{text:"Damn..", onPress:() => { core.eventBus.emit("hideLoading")}}],
+            "Something went wrong", String(err),[{text:"Damn..", onPress:() => { core.eventBus.emit("hideLoading")}}],
             { cancelable: false }
           );
         }

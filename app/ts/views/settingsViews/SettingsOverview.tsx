@@ -145,7 +145,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
                   try {
                     AppUtil.quit();
                   }
-                  catch(err) {
+                  catch(err : any) {
                     LOGe.info("Failed to quit.", err?.message);
                   }
                 }}

@@ -33,7 +33,7 @@ export class HubHelper {
     try {
       return this._setup(sphereId, stoneId, false);
     }
-    catch (err) {
+    catch (err : any) {
       // in case the hub advertention is lying and the hub is not setup, set it up now.
       if (err?.code === 3 && err?.errorType === HubReplyError.IN_SETUP_MODE) {
         LOGw.info("Setting up the hub now, the advertisment was lying...");
@@ -169,7 +169,7 @@ export class HubHelper {
         hubCloudId = requestedData.message;
         hubId = await this._setLocalHub(sphereId, stoneId, hubCloudId);
       }
-      catch (err) {
+      catch (err : any) {
         if (err?.message === "HUB_REPLY_TIMEOUT") {
           hubId = xUtil.getUUID();
           core.store.dispatch({

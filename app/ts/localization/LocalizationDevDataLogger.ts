@@ -207,7 +207,7 @@ async function deleteLocaliztionDataFiles() {
       await FileUtil.safeDeleteFile(urls[i]).catch(()=>{});
     }
   }
-  catch (err) {
+  catch (err : any) {
     // ignore.
   }
 }
@@ -225,7 +225,7 @@ async function getLocalizationDatasetUrls() {
     }
     return urls;
   }
-  catch (err) {
+  catch (err : any) {
     LOGw.info("Could not get localization urls");
     return [];
   }

@@ -195,7 +195,7 @@ export class SetupHub extends LiveComponent<{
         wrapUp();
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("Something went wrong with the hub setup", err?.message);
       if (this.abort) {
         return this._interview.setLockedCard("aborted");

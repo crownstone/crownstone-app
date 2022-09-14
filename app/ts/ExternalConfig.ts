@@ -202,7 +202,7 @@ if (RELEASE_MODE_USED === false && !IGNORE_LOCAL_CONFIG) {
     }
   }
   console.log("USING CONFIG", module.exports);
-  } catch (err) {
+  } catch (err : any) {
   // cant find local config. ignore import.
   }
 }

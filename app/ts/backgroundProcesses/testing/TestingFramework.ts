@@ -22,7 +22,7 @@ export const TestingFramework = {
       BridgeConfig.mockBluenet                = json.mockBluenet       || false;
       BridgeConfig.mockBridgeUrl              = json.mockBridgeUrl     || null;
     }
-    catch (err) {
+    catch (err : any) {
       console.log("TestingFramework: Something went wrong", err);
     }
 

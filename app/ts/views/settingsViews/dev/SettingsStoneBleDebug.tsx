@@ -198,7 +198,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           LOGe.info("STONE DEBUG INFORMATION: UPTIME", uptime);
           this.setState({debugInformationText: xUtil.getDurationFormat(uptime*1000)});
         }
-        catch (err) {
+        catch (err : any) {
           core.eventBus.emit("hideLoading");
           Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
         }

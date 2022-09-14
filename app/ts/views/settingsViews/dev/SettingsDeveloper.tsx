@@ -325,7 +325,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             try {
               throw new Error("Javascript escalated CRASH Induced")
             }
-            catch (err) {
+            catch (err : any) {
               throw err;
             }}},
           {text:"Crash Bridge",  callback: () => { Bluenet.crash(); }},
@@ -609,7 +609,7 @@ export async function shareData(shareDataType) {
     let result = await Share.open({ urls:urls })
     console.log(result)
   }
-  catch (err) {
+  catch (err : any) {
     LOGw.info("Something went wrong while sharing data:",err)
   }
 }
@@ -651,7 +651,7 @@ export async function shareDataViaRTC(shareDataType) {
   // //   await Scheduler.delay(1000)
   // //   core.eventBus.emit("hideLoading");
   // // }
-  // // catch (err) {
+  // // catch (err : any) {
   //   if      (err?.message === "CANNOT_CONNECT")           { core.eventBus.emit("showLoading", "Could not connect. Trying different method...") }
   //   else if (err?.message === "RECEIVED_INVALID")         { core.eventBus.emit("showLoading", "Transfer failed. Trying different method...") }
   //   else if (err?.message === "TRANSFER_ABORTED_TIMEOUT") { core.eventBus.emit("showLoading", "Transfer failed due to timeout. Trying different method...") }

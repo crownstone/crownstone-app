@@ -128,7 +128,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
                       console.log("Sharing this:", url)
                       await Share.open({ urls: [url] });
                     }
-                    catch (err) {
+                    catch (err : any) {
                       LOGw.info("Something went wrong while sharing data:",err)
                     }
                 }},

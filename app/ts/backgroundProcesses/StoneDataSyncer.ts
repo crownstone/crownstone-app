@@ -151,7 +151,7 @@ class StoneDataSyncerClass {
         return
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: Failed behaviour sync trigger", sphereId, stoneId, err, sessionId);
       if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
         // we ignore the duplicate error because a newer version of this behaviour is already being synced to this crownstone.
@@ -416,7 +416,7 @@ class StoneDataSyncerClass {
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: ERROR failed synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -433,7 +433,7 @@ class StoneDataSyncerClass {
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
-    catch(err) {
+    catch(err: any) {
       LOGe.info("StoneDataSyncer: ERROR updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -465,7 +465,7 @@ class StoneDataSyncerClass {
 
       core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
     }
-    catch(err) {
+    catch(err: any) {
       LOGi.info("StoneDataSyncer: ERROR Adding behaviour to Crownstone ", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -666,7 +666,7 @@ class StoneDataSyncerClass {
         this.updateMasterHash(sphereId, stoneId, masterHash);
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
       throw err;
     }
@@ -680,7 +680,7 @@ async function downloadBehavioursFromCloud(sphereId, stone) {
     try {
       await SyncNext.partialStoneSync(stoneId, "BEHAVIOURS")
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error downloading behaviours.", err)
     }
   }

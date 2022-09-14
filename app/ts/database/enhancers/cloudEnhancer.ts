@@ -654,7 +654,7 @@ async function handleMessageMarkedAsRead(action: DatabaseAction, state) {
   try {
     await MessageReadTransferNext.createOnCloud(action.sphereId, action.messageId);
   }
-  catch (err) {
+  catch (err : any) {
     LOGe.cloud("CloudEnhancer: Error marking message as read", err);
   }
 }
@@ -664,7 +664,7 @@ async function handleMessageMarkedAsDeleted(action: DatabaseAction, state) {
   try {
     await MessageDeletedTransferNext.createOnCloud(action.sphereId, action.messageId);
   }
-  catch (err) {
+  catch (err : any) {
     LOGe.cloud("CloudEnhancer: Error marking message as deleted", err);
   }
 }
@@ -674,7 +674,7 @@ async function handleMessageAdd(action: DatabaseAction, state) {
     let message = Get.message(action.sphereId, action.messageId);
     await MessageTransferNext.createOnCloud(action.sphereId, message);
   }
-  catch (err) {
+  catch (err : any) {
     LOGe.cloud("CloudEnhancer: Error creating message", err);
   }
 }

@@ -94,7 +94,7 @@ export class SetupHelper {
           this.uicr = await api.getUICR();
           LOG.info("SetupHelper: have uicr data: ", this.uicr);
         }
-        catch (err) {
+        catch (err : any) {
           LOGw.info("SetupHelper: Failed to get UICR data", err?.message)
         }
       }
@@ -204,7 +204,7 @@ export class SetupHelper {
 
       return { id: localId, familiarCrownstone: familiarCrownstone }
     }
-    catch (err) {
+    catch (err : any) {
       // Restore trigger state
       core.eventBus.emit("useTriggers");
       core.eventBus.emit("setupCancelled", this.handle);

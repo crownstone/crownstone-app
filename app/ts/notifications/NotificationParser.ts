@@ -122,7 +122,7 @@ class NotificationParserClass {
           break;
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.notifications("NotificationParser: Error during remote notification handling", err?.message);
     }
   }
@@ -154,7 +154,7 @@ class NotificationParserClass {
       try {
         return this._handleMultiswitch(notificationData, state);
       }
-      catch (err) {
+      catch (err : any) {
         // invalid payload. ignore. use setSwitchStateRemotely as fallback.
         LOGw.notifications("NotificationParser: Multiswitch handling failed", err?.message, "reverting to setSwitchStateRemotely");
       }
@@ -191,7 +191,7 @@ class NotificationParserClass {
         switchEventData = JSON.parse(switchEventData);
       }
     }
-    catch (err) {
+    catch (err : any) {
       // invalid payload. ignore.
       throw new Error("COULD_NOT_PARSE_EVENT_DATA");
     }

@@ -31,7 +31,7 @@ export async function connectTo(handle, sphereId: string | null = null, timeoutS
   try {
     await SessionManager.request(handle, privateId, true, timeoutSeconds);
   }
-  catch (err) {
+  catch (err : any) {
     SessionManager.revokeRequest(handle, privateId);
     throw err;
   }
@@ -61,7 +61,7 @@ export async function claimBluetooth(handle, timeoutSeconds = CLAIM_BLUETOOTH_TI
   try {
     await SessionManager.claimSession(handle, privateId, timeoutSeconds);
   }
-  catch (err) {
+  catch (err : any) {
     SessionManager.revokeRequest(handle, privateId);
     throw err;
   }

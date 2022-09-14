@@ -390,7 +390,7 @@ export const NavigationUtil = {
       NavState.popView();
       LOGi.nav("NavigationUtil: Going back baseStackBack ", backFrom, " success!");
     }
-    catch (err) {
+    catch (err : any) {
       LOGw.nav("NavigationUtil: Going back baseStackBack ", backFrom, " FAILED!", err?.message);
     }
   },

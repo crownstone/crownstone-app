@@ -175,7 +175,7 @@ export class SetupCrownstone extends LiveComponent<{
           this._interview.setLockedCard("problemBle");
         })
     }
-    catch (err) {
+    catch (err : any) {
       this._interview.setLockedCard("problem");
     }
 

@@ -104,7 +104,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       await action();
       this.setState({bleState: BLE_STATE_READY});
     }
-    catch (err) {
+    catch (err : any) {
       this.showBleError(err);
     }
   }

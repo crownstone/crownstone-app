@@ -38,7 +38,7 @@ export class Command_TrackedDeviceHeartbeat extends CommandBase implements Comma
         this.ttlMinutes
       );
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.constellation("Command: TrackedDeviceHeartBeat has generated error: ", err?.message, connectedHandle)
       switch (err?.message) {
         case "ERR_NOT_FOUND":

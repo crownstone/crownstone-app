@@ -7,7 +7,7 @@ import { NATIVE_BUS_TOPICS } from "../../Topics";
 
 export class FingerprintAppender {
   subscriptions = [];
-  handleResult  = (distanceMap : Record<sphereId, locationId>) => {};
+  handleResult  = (distanceMap) => {};
 
   startTime       : timestamp;
   sphereId        : string;

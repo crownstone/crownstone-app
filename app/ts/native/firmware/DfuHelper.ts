@@ -44,7 +44,7 @@ export class DfuHelper {
 
       await Scheduler.delay(3000)
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.dfu("DfuHelper: Error during putInDFU.", err?.message);
       commander.disconnect();
       throw err;

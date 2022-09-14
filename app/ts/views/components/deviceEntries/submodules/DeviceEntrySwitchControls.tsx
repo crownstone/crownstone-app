@@ -79,7 +79,7 @@ async function _switchCrownstone(stone, setPercentage) {
       setPercentage(newState);
     }
   }
-  catch (err) {
+  catch (err : any) {
     LOGe.info("DeviceEntry: Failed to switch", err?.message);
   }
 }

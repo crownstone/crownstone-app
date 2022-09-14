@@ -41,7 +41,7 @@ async function handler(hub, endpoint, callback = () => {}) {
     }
     return true;
   }
-  catch (err) {
+  catch (err : any) {
     if (err?.message === "REQUEST_TIMEOUT") {
       Alert.alert("Request timed out...","Are you on the same network?",[{text:"I'll check!", onPress:callback}], {cancelable: false})
     }

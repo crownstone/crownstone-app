@@ -112,7 +112,7 @@ export const StoneUtil = {
       core.eventBus.emit("hideLoading");
       Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err?.message);
       core.eventBus.emit("hideLoading");
       Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK'}]);
@@ -330,7 +330,7 @@ export const StoneUtil = {
       let setupMode = await BleUtil.detectCrownstone(stone.config.handle);
       return {found: true, mode: setupMode ? "setup" : "operation"};
     }
-    catch (err) {
+    catch (err : any) {
       return {found: false};
     }
   },
@@ -381,7 +381,7 @@ export const StoneUtil = {
         try {
           await StoneUtil.remove.crownstone.factoryReset(stone);
         }
-        catch (err) {
+        catch (err : any) {
           Alert.alert(
             lang("_Encountered_a_problem____header"),
             lang("_Encountered_a_problem____body"),
@@ -405,7 +405,7 @@ export const StoneUtil = {
         try {
           await StoneUtil.remove.crownstone.fromCloud(sphereId, stoneId);
         }
-        catch (err) {}
+        catch (err : any) {}
 
         core.eventBus.emit('hideLoading');
         StoneUtil.remove.shared.fromRedux(sphereId, stoneId,true);
@@ -424,7 +424,7 @@ export const StoneUtil = {
       fromCloud: async function(sphereId: sphereId, stoneId: stoneId)  {
         core.eventBus.emit('showLoading', lang("Removing_the_Crownstone_fr"));
         CLOUD.forSphere(sphereId).deleteStone(stoneId)
-          .catch((err) => {
+          .catch((err: any) => {
             return new Promise<void>((resolve, reject) => {
               if (err && err?.status === 404) {
                 resolve();
@@ -435,7 +435,7 @@ export const StoneUtil = {
               }
             })
           })
-          .catch((err) => {
+          .catch((err: any) => {
             LOG.info("error while asking the cloud to remove this crownstone", err?.message);
             core.eventBus.emit('hideLoading');
             Alert.alert(
@@ -453,7 +453,7 @@ export const StoneUtil = {
         try {
           await tell(stone).commandFactoryReset();
         }
-        catch(err) {
+        catch(err: any) {
           LOGe.info("DeviceEdit: error during removeCloudReset, commandFactoryReset phase.", err?.message);
           core.eventBus.emit('hideLoading');
           throw err;
@@ -489,14 +489,14 @@ export const StoneUtil = {
                   await helper.factoryResetHub(sphereId, stoneId);
                   StoneUtil.remove.shared.fromRedux(sphereId, stoneId);
                 }
-                catch (err) {
+                catch (err : any) {
                   core.eventBus.emit('hideLoading');
                   if (err?.message === "HUB_REPLY_TIMEOUT") {
                     Alert.alert(lang("The_hub_is_not_responding"),
                       lang("If_this_hub_is_broken__yo"),
                       [{
                         text: lang("Delete_anyway"), onPress: () => {
-                          StoneUtil.remove.crownstone.now(sphereId, stoneId).catch((err) => {});
+                          StoneUtil.remove.crownstone.now(sphereId, stoneId).catch((err2) => {});
                         }, style: 'destructive'
                       }, {text: lang("Cancel"), style: 'cancel'}]);
                   }
@@ -517,7 +517,7 @@ export const StoneUtil = {
         let hub = DataUtil.getHubByStoneId(sphereId, stoneId);
         if (hub && hub.config.cloudId) {
           CLOUD.deleteHub(hub.config.cloudId)
-            .catch((err) => {
+            .catch((err: any) => {
               return new Promise<void>((resolve, reject) => {
                 if (err && err?.status === 404) {
                   resolve();

@@ -99,7 +99,7 @@ export const HubUtil = {
       try {
         hubId = await helper.setup(sphereId, stoneId);
       }
-      catch(err) {
+      catch(err: any) {
         // if this hub is not in setup mode anymore, attempt to initalize it.
         if (err?.errorType === HubReplyError.NOT_IN_SETUP_MODE) {
           hubId = await helper.setUartKey(sphereId, stoneId);
@@ -118,7 +118,7 @@ export const HubUtil = {
       await HubUtil.fixMultipleHubs(sphereId, stoneId, source);
       await Scheduler.delay(3000);
     }
-    catch(err) {
+    catch(err: any) {
       LOGe.info("Problem settings up new hub", err?.message);
       Alert.alert(
         lang("_Something_went_wrong_____header"),
@@ -158,7 +158,7 @@ export const HubUtil = {
           }
         }
       }
-      catch(err) {
+      catch(err: any) {
         if (source === "ROOT" && err?.type === HubReplyError.IN_SETUP_MODE) {
           await HubUtil.createHub(sphereId, stoneId,'fixMultipleHubs')
           return

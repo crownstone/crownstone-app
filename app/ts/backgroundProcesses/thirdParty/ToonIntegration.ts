@@ -141,7 +141,7 @@ export function getActiveToonProgram(scheduleString : string) {
   try {
     scheduleObj = JSON.parse(scheduleString);
   }
-  catch (err) {
+  catch (err : any) {
     LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString);
     return null;
   }

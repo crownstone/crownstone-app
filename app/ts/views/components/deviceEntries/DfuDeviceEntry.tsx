@@ -128,7 +128,7 @@ export class DfuDeviceEntry extends Component<any, any> {
             await tell(this.props.handle).bootloaderToNormalMode();
             this.setState({restoring: false});
           }
-          catch (err) {
+          catch (err : any) {
             core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{firmwareVersion: null}});
             this.setState({restoring: false});
             NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
@@ -221,7 +221,7 @@ export function DfuDeviceEntry_RoomOverview(props: DfuDeviceEntryProps) {
                 await tell(props.handle).bootloaderToNormalMode();
                 setRestoring(false);
               }
-              catch (err) {
+              catch (err : any) {
                 core.store.dispatch({
                   type: "UPDATE_STONE_CONFIG",
                   sphereId: props.sphereId,

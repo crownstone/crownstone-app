@@ -47,7 +47,7 @@ export class Command_RegisterTrackedDevice extends CommandBase implements Comman
         this.ttlMinutes
       );
     }
-    catch (err) {
+    catch (err : any) {
       throw err;
     }
   }
