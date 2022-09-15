@@ -37,6 +37,7 @@ export class TestingAssistant {
       this.spheres[sphereId] = new SphereMockInterface(sphereId, sphere.data.data.uuid);
       await this.spheres[sphereId].loadSphereData();
       await this.spheres[sphereId].checkForActive();
+      this.ble.loadSphereData(sphere);
     }
     await this._getActiveSphereId();
   }

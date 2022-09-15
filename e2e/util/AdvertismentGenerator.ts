@@ -2,11 +2,6 @@ import fetch from 'node-fetch';
 
 export class AdvertisementGenerator {
 
-  ibeaconArray() {
-    // TODO: know how to get the iBeacon uuids
-    // Can ask the trackedCommand?
-  }
-
   static genericAdvertisement(handle: string, rssi: number) {
     return { handle, rssi };
   }

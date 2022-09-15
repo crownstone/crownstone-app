@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { AdvertisementGenerator } from "./AdvertismentGenerator";
 import { NATIVE_BUS_TOPICS } from "../../app/ts/Topics";
 import { bluenetPromise_targetedMethods } from "../../tests/__testUtil/mocks/bluenetPromiseWrapper.mock";
+import { iBeaconGenerator } from "./iBeaconGenerator";
 const sha1 = require('sha-1');
 
 const headers = {
@@ -12,6 +13,23 @@ const headers = {
 
 
 export class BleMocks {
+  ibeaconGenerator: iBeaconGenerator;
+
+  constructor() {
+    this.ibeaconGenerator = new iBeaconGenerator();
+  }
+
+
+  loadSphereData(sphere) {
+    this.ibeaconGenerator.loadSphere(sphere);
+  }
+
+
+  async sendIBeaconMessage(sphereId: string, locationId: string = null) {
+    let payload = this.ibeaconGenerator.generateIBeaconMessage(sphereId, locationId);
+    await this._sendAdvertisment(NATIVE_BUS_TOPICS.iBeaconAdvertisement, payload);
+  }
+
 
   for(handle: string) : { succeed: MockedLib, fail: MockedLibError, disconnectEvent: () => Promise<void> } {
     return {
