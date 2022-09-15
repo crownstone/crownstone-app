@@ -102,6 +102,7 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
+
     let sphere = this.db.spheres[this.activeSphereId];
     let locationIds = Object.keys(sphere.locations);
     return locationIds[roomIndex];
@@ -116,6 +117,7 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
+
     let locations = this.db.spheres[this.activeSphereId].locations;
     for (let locationId in locations) {
       if (locations[locationId].data.data.name === name) {
@@ -142,6 +144,29 @@ export class TestingAssistant {
       }
     }
     return false;
+  }
+
+  async getStoneId(stoneIndex: number = 0) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    return stoneIds[stoneIndex];
+  }
+
+  async getStone(stoneIndex: number = 0) {
+    let stoneId = await this.getStoneId(stoneIndex);
+    if (stoneId === null) {
+      return null;
+    }
+
+    return this.db[this.activeSphereId].stones[stoneId];
   }
 
 

@@ -20,7 +20,7 @@ export let screenHeight = Dimensions.get('window').height; // initial guess
 
 
 //TODO: Utilize these constants
-export const UIconstants = Navigation.constantsSync();
+// export const UIconstants = Navigation.constantsSync();
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;

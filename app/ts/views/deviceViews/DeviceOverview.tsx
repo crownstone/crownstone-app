@@ -106,6 +106,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
+    getTopBarProps(this.props);
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
@@ -145,7 +146,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     items.push({
       id: 'My Account',
       label: lang("Appearence"),
-      testID: 'Appearence',
+      testID: 'DeviceAppearence',
       icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
       callback: () => {
@@ -158,7 +159,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       items.push({
         id: 'abilities',
         label: lang("Abilities"),
-        testID: 'Appearence',
+        testID: 'DeviceAbilities',
         icon: <Icon name={'ios-school'} size={30} color={colors.csBlueLight.hex}/>,
         type: 'navigation',
         callback: () => {
@@ -169,7 +170,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       items.push({
         id: 'behaviour',
         label: lang("Behaviour"),
-        testID: 'Appearence',
+        testID: 'DeviceBehaviour',
         icon: <Icon name={'c1-brain'} size={30} color={colors.csBlue.hex}/>,
         type: 'navigation',
         callback: () => {
@@ -189,6 +190,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       label: locationLabel,
       icon:  <Icon name="md-cube" size={25} color={colors.green.hex} />,
       type:  'navigation',
+      testID: 'DeviceChangeRoom',
       style: {color: colors.blue.hex},
       callback: () => {
         OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId);
@@ -200,7 +202,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       items.push({
         id: 'lock',
         label: lang("Unlock_Crownstone_switchL",stone.config.locked),
-        testID: 'Appearence',
+        testID: 'DeviceUnlock',
         icon: <Icon name={'md-lock'} size={30} color={colors.blue.hex}/>,
         type: 'navigation',
         callback: () => {
@@ -222,6 +224,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
       label: lang("Remove_Crownstone"),
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
+      testID: 'DeviceRemove',
       callback: () => {
         Alert.alert(
           lang("_Are_you_sure___Removing__header"),
@@ -253,7 +256,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <SettingsBackground>
+      <SettingsBackground testID={"DeviceOverview"}>
         <ScrollView testID={'DeviceOverview_scrollview'}>
           <ListEditableItems items={this._getItems(stone)} />
         </ScrollView>

@@ -33,7 +33,7 @@ let cachedData = null;
 
 export function EnergyUsage(props) {
   return (
-    <BackgroundCustomTopBarNavbar>
+    <BackgroundCustomTopBarNavbar testID={'energyUsageTab'}>
       <EnergyUsageContent />
     </BackgroundCustomTopBarNavbar>
   );

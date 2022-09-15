@@ -72,6 +72,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
     <DraggableBlurEntry
       {...props}
       settings
+      testID={'deviceEntry_' + stone.config.cloudId}
       tapCallback={tapCallback}
       longPressCallback={goToSettingsCallback}
       title={stone.config.name}
@@ -88,6 +89,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
         <BlurEntrySettingsIcon
           callback={goToSettingsCallback}
           visible={props.editMode}
+          testID={`deviceEntry_${stone.config.cloudId}_edit`}
         />
 
         </React.Fragment>

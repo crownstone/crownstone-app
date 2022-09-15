@@ -86,6 +86,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     items.push({
       label: lang("Name"),
       type: 'textEdit',
+      testID: 'deviceEdit_name',
       placeholder:lang("Pick_a_name"),
       value: this.state.stoneName,
       callback: (newText) => {
@@ -95,6 +96,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     items.push({
       label: lang("Description"),
       type: 'textEdit',
+      testID: 'deviceEdit_description',
       placeholder:lang("Optional"),
       value: this.state.description,
       callback: (newText) => {
@@ -106,6 +108,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     items.push({
       label: lang("Icon"),
       type: 'icon',
+      testID: 'deviceEdit_icon',
       value: this.state.stoneIcon,
       callback: () => {
         NavigationUtil.navigate( "DeviceIconSelection",{
@@ -252,7 +255,7 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     let options = this.constructStoneOptions(stone, state);
 
     return (
-      <SettingsBackground>
+      <SettingsBackground testID={"DeviceEditAppearence"}>
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}

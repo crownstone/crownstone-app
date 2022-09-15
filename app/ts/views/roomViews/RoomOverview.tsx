@@ -364,6 +364,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     return (
       <BackgroundCustomTopBar image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
         <NestableScrollContainer
+          testID={'RoomOverview_NestableScrollContainer'}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight, paddingBottom: 2*tabBarHeight}}
         >

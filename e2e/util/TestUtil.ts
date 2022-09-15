@@ -220,10 +220,10 @@ export async function goToSphereOverviewTab() {
   await waitToNavigate('SphereOverview');
 }
 
-export async function goToMessagesTab() {
-  await waitFor($('bottomTab_messages')).toBeVisible(100).withTimeout(8000);
-  await tap('bottomTab_messages');
-  await waitToNavigate('MessageInbox');
+export async function goToEnergyUsageTab() {
+  await waitFor($('bottomTab_energyUsage')).toBeVisible(100).withTimeout(8000);
+  await tap('bottomTab_energyUsage');
+  await waitToNavigate('energyUsageTab');
 }
 
 

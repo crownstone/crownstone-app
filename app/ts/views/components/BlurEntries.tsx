@@ -38,6 +38,8 @@ export interface TappableBlurEntryProps extends BlurEntryProps, BlurEntryProps {
   tapSettingsCallback? : () => void
   longPressCallback?   : () => void
   longPressSettingsCallback? : () => void
+  testID?: string
+
 }
 
 
@@ -45,6 +47,7 @@ interface DraggableBlurEntryProps extends DraggableProps, BlurEntryProps {
   tapCallback?         : () => void
   tapSettingsCallback? : () => void
   longPressCallback?   : () => void
+  testID?: string,
 }
 
 
@@ -67,6 +70,7 @@ export function DraggableBlurEntry(props: DraggableBlurEntryProps) {
         }
       }}}
       style={{flexDirection:'row'}}
+      testID={props.testID}
     >
       <SlideSideFadeInView visible={dragging} width={40} />
       <BlurEntry {...props} />
@@ -137,12 +141,10 @@ export function BlurEntry(props: BlurEntryProps) {
   );
 }
 
-export function BlurEntrySettingsIcon(props: {callback: () => void, visible: boolean}) {
+export function BlurEntrySettingsIcon(props: {callback: () => void, visible: boolean, testID?: string}) {
   return (
     <SlideSideFadeInView visible={props.visible} width={60}>
-      <SettingsIconRight style={{height: 55}} onPress={() => {
-        props.callback();
-      }}/>
+      <SettingsIconRight style={{height: 55}} onPress={() => { props.callback(); }} testID={props.testID} />
     </SlideSideFadeInView>
   );
 }

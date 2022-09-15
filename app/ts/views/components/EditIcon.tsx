@@ -56,7 +56,7 @@ export function SettingsIconLeft(props) {
 
 export function SettingsIconRight(props) {
   return (
-    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress}>
+    <TouchableOpacity style={getRightStyle(props.style)} onPress={props.onPress} testID={props.testID}>
       <Icon name={'md-create'} size={25} color={color}/>
     </TouchableOpacity>
   );
