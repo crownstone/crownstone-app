@@ -9,16 +9,24 @@ interface ibeaconPackage {
 
 export class iBeaconGenerator {
   spheres = {};
+  stones  = {};
 
   loadSphere(sphere) {
     if (!sphere?.data?.data?.id) { return }
+    let stones = mapStones(sphere);
     this.spheres[sphere.data.data.id] = {
       config: sphere.data.data,
       locations: mapLocations(sphere),
+      stones: stones,
       iBeaconData:{
         uuid: sphere.data.data.uuid,
         sets: mapStoneSets(sphere),
       }};
+
+    for (let stoneId in stones) {
+      this.stones[stoneId] = stones[stoneId];
+    };
+
   }
 
   generateIBeaconMessage(sphereId, locationId = null) {
@@ -72,7 +80,7 @@ function mapStones(sphere) {
   stoneIds.sort();
   let result = {};
   for (let stoneId of stoneIds) {
-    result[stoneId] = stones[stoneId].data.data;
+    result[stoneId] = {handle: stones[stoneId].data?.data?.address, ...stones[stoneId].data.data};
   }
   return stones;
 }

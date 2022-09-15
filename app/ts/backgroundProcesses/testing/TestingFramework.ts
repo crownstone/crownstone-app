@@ -27,7 +27,6 @@ export const TestingFramework = {
     }
 
     if (BridgeConfig.mockBluenet && BridgeConfig.mockBridgeUrl) {
-      console.log("SETTING UP SSE FOR TESTS")
       await TestingFramework.setupSSE();
     }
   },

@@ -16,7 +16,7 @@ export class TestingAssistant {
 
   constructor() {
     this.db  = new MirrorDatabase();
-    this.ble = new BleMocks();
+    this.ble = new BleMocks(this.db);
   }
 
 
@@ -25,7 +25,6 @@ export class TestingAssistant {
       localSphereId = await this.getActiveSphereLocalId();
     }
     await this.ble._sendEvent( NATIVE_BUS_TOPICS.enterSphere, localSphereId );
-    await this.ble.sendIBeaconMessage( await this.getActiveSphereId() );
   }
 
 

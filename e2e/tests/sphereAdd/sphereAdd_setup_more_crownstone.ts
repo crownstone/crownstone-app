@@ -50,7 +50,7 @@ export const SphereAdd_setup_more_crownstones = () => {
       await tap(`crownstoneInLocation${locationId}`);
       await waitToNavigate("addCrownstone_waitToFinish")
       await Assistant.ble.for(handle).succeed.connect('setup');
-      await Assistant.ble.for(handle).succeed.getMACAddress('AB:CD:CA:FE:BA:0'+i);
+      await Assistant.ble.for(handle).succeed.getMACAddress(handle);
       await Assistant.ble.for(handle).succeed.getFirmwareVersion('5.6.4');
       await Assistant.ble.for(handle).succeed.getHardwareVersion('10106');
       await Assistant.ble.for(handle).succeed.getUICR(UICR_DATA);

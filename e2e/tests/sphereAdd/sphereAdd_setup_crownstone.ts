@@ -109,7 +109,7 @@ export const SphereAdd_setup_crownstone = () => {
     await Assistant.ble.for(handle1).succeed.connect('setup');
     await delay(100);
     await screenshot();
-    await Assistant.ble.for(handle1).succeed.getMACAddress('AB:CD:CA:FE:BA:BE');
+    await Assistant.ble.for(handle1).succeed.getMACAddress(handle1);
     await delay(100);
     await screenshot();
     await Assistant.ble.for(handle1).succeed.getFirmwareVersion('5.6.4');
@@ -187,7 +187,7 @@ export const SphereAdd_setup_crownstone = () => {
   test("should be able to setup the second Crownstone", async () => {
     await shouldBeOn('addCrownstone_waitToFinish');
     await Assistant.ble.for(handle2).succeed.connect('setup');
-    await Assistant.ble.for(handle2).succeed.getMACAddress('CD:AB:CA:FE:BA:BE');
+    await Assistant.ble.for(handle2).succeed.getMACAddress(handle2);
     await Assistant.ble.for(handle2).succeed.getFirmwareVersion('5.6.4');
     await Assistant.ble.for(handle2).succeed.getHardwareVersion('10106');
     await Assistant.ble.for(handle2).succeed.getUICR(UICR_DATA);

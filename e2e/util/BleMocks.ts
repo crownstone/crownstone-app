@@ -3,6 +3,7 @@ import { AdvertisementGenerator } from "./AdvertismentGenerator";
 import { NATIVE_BUS_TOPICS } from "../../app/ts/Topics";
 import { bluenetPromise_targetedMethods } from "../../tests/__testUtil/mocks/bluenetPromiseWrapper.mock";
 import { iBeaconGenerator } from "./iBeaconGenerator";
+import { MirrorDatabase } from "./MirrorDatabase";
 const sha1 = require('sha-1');
 
 const headers = {
@@ -14,8 +15,10 @@ const headers = {
 
 export class BleMocks {
   ibeaconGenerator: iBeaconGenerator;
+  db : MirrorDatabase;
 
-  constructor() {
+  constructor(db : MirrorDatabase) {
+    this.db = db;
     this.ibeaconGenerator = new iBeaconGenerator();
   }
 
@@ -108,6 +111,15 @@ export class BleMocks {
 
 
   async sendGenericAdvertisement(handle: string, rssi: number = -70) {
+    await this._sendEvent(
+      NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
+      AdvertisementGenerator.genericAdvertisement(handle, rssi)
+    );
+  }
+
+
+  async sendGenericStoneAdvertisement(stoneId, rssi = -70) {
+    let handle = this.ibeaconGenerator.stones[stoneId].handle;
     await this._sendEvent(
       NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
       AdvertisementGenerator.genericAdvertisement(handle, rssi)

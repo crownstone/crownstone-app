@@ -58,9 +58,13 @@ export const Stone_edit_abilities = () => {
   });
 
   test('should be able to sync dimming state to Crownstone', async () => {
-    // trigger an enter-sphere
+    // trigger an enter-sphere to wake the stone-data-syncer.
     await Assistant.update();
     await Assistant.enterSphere();
+
+    // trigger an advertisement from the Crownstone to trigger constellation
+    let stoneId = await Assistant.getStoneId(0);
+    await Assistant.ble.sendGenericStoneAdvertisement(stoneId);
   });
 
 
