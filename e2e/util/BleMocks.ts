@@ -27,7 +27,7 @@ export class BleMocks {
 
   async sendIBeaconMessage(sphereId: string, locationId: string = null) {
     let payload = this.ibeaconGenerator.generateIBeaconMessage(sphereId, locationId);
-    await this._sendAdvertisment(NATIVE_BUS_TOPICS.iBeaconAdvertisement, payload);
+    await this._sendEvent(NATIVE_BUS_TOPICS.iBeaconAdvertisement, payload);
   }
 
 
@@ -100,35 +100,28 @@ export class BleMocks {
   }
 
   async sendSetupAdvertisment(handle: string, rssi: number = -70) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.setupAdvertisement,
       AdvertisementGenerator.setupAdvertisement(handle, rssi)
     );
   }
 
-
-  async sendIbeaconAdvertisment(handle: string, rssi: number = -70) {
-    await this._sendAdvertisment(
-      NATIVE_BUS_TOPICS.setupAdvertisement,
-      AdvertisementGenerator.setupAdvertisement(handle, rssi)
-    );
-  }
 
   async sendGenericAdvertisement(handle: string, rssi: number = -70) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
       AdvertisementGenerator.genericAdvertisement(handle, rssi)
     );
   }
 
   async sendSetupProgress(progress: number) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.setupProgress,
       progress
     );
   }
 
-  async _sendAdvertisment(topic: string, data: any) {
+  async _sendEvent(topic: string, data: any) {
     let result = await fetch(
       'http://localhost:3100/event',
       {

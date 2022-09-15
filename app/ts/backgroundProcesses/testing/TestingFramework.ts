@@ -1,7 +1,7 @@
 import { CloudAddresses }                  from "../indirections/CloudAddresses";
 import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS, SSE_ADDRESS } from "../../ExternalConfig";
 import { CameraLibrarySettings }           from "../indirections/CameraLibraryInterface";
-import { CrownstoneSSE }                   from "../../logic/SSE";
+import { CrownstoneSSE }                   from "../../logic/DevSSE";
 import { BridgeMock }                      from "./BridgeMock";
 import { BridgeConfig }                    from "../../native/libInterface/BridgeConfig";
 

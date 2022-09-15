@@ -2,6 +2,7 @@ import { SphereMockInterface } from "./SphereMockInterface";
 import { MirrorDatabase }      from "./MirrorDatabase";
 import { BleMocks }            from "./BleMocks";
 import { delay } from "./TestUtil";
+import { NATIVE_BUS_TOPICS } from "../../app/ts/Topics";
 
 type cloudId = string;
 
@@ -19,7 +20,25 @@ export class TestingAssistant {
   }
 
 
+  async enterSphere(localSphereId: string = null) {
+    if (localSphereId === null) {
+      localSphereId = await this.getActiveSphereLocalId();
+    }
+    await this.ble._sendEvent( NATIVE_BUS_TOPICS.enterSphere, localSphereId );
+    await this.ble.sendIBeaconMessage( await this.getActiveSphereId() );
+  }
+
+
+  async exitSphere(localSphereId: string = null) {
+    if (localSphereId === null) {
+      localSphereId = await this.getActiveSphereId();
+    }
+    await this.ble._sendEvent( NATIVE_BUS_TOPICS.exitSphere, localSphereId );
+  }
+
+
   async update() {
+    console.log("Updating the database");
     await this._update();
     // retry getting the active sphere after a small delay
     if (this.activeSphereId === null) {
@@ -62,7 +81,7 @@ export class TestingAssistant {
 
 
   /**
-   * Gets the cloud ID of the sphere
+   * Gets the local ID of the sphere
    * @param name
    */
   async getActiveSphereLocalId() {
@@ -78,6 +97,19 @@ export class TestingAssistant {
     }
 
     return null;
+  }
+
+
+  /**
+   * Gets the cloud ID of the sphere
+   * @param name
+   */
+  async getActiveSphereId() {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    return this.activeSphereId ?? null;
   }
 
 

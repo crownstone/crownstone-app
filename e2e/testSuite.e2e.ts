@@ -93,6 +93,6 @@ if (process.env.REUSE !== '1') {
 // describe('SphereAdd, close',                             SphereAdd_close);
 
 describe('StoneEdit, start',                             Stone_edit_start);
-// describe('StoneEdit, start',                             Stone_edit_appearence);
-describe('StoneEdit, start',                             Stone_edit_abilities);
+// describe('StoneEdit, test appearance',                   Stone_edit_appearence);
+describe('StoneEdit, test abilities',                    Stone_edit_abilities);
 // describe('StoneEdit, close',                             Stone_edit_close);

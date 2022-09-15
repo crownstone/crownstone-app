@@ -12,13 +12,11 @@ export class iBeaconGenerator {
 
   loadSphere(sphere) {
     if (!sphere?.data?.data?.id) { return }
-
     this.spheres[sphere.data.data.id] = {
       config: sphere.data.data,
       locations: mapLocations(sphere),
-      stones: mapStones(sphere),
       iBeaconData:{
-        uuid: sphere.data.data.beaconUUID,
+        uuid: sphere.data.data.uuid,
         sets: mapStoneSets(sphere),
       }};
   }
@@ -48,12 +46,12 @@ export class iBeaconGenerator {
   }
 
   /**
-   * We will support up to 10 rooms. The rssi is determined at a minimum of -50, and incremented with 5*uid increment of the location.
+   * We will support up to 12 rooms. The rssi is determined at a minimum of -40, and incremented with -5*uid increment of the location.
    * This should be deterministic enough for classification. Classification does not care about duplicates nor checks for them.
    * @param locationId
    */
   _getRssi(location) {
-    return -50 + 5 * location.data.data.uid;
+    return -40 - 5 * location.data.data.uid;
   }
 }
 
@@ -87,5 +85,5 @@ function mapStoneSets(sphere) {
   for (let stoneId of stoneIds) {
     result[stoneId] = {major: stones[stoneId].data.data.major, minor: stones[stoneId].data.data.minor}
   }
-  return stones;
+  return result;
 }

@@ -7,16 +7,16 @@ const sha1 = require('sha-1');
 
 class Logger {
   error(...args) {
-    LOGe.info('DEV_SSE:', ...args);
+    console.log('ERR_DEV_SSE:', ...args);
   }
   warn(...args) {
-    LOGw.info('DEV_SSE:', ...args);
+    console.log('WARN_DEV_SSE:', ...args);
   }
   info(...args) {
-    LOGi.info('DEV_SSE:', ...args);
+    console.log('INF_DEV_SSE:', ...args);
   }
   debug(...args) {
-    LOGd.info('DEV_SSE:', ...args);
+    console.log('DEBUG_DEV_SSE:', ...args);
   }
 }
 
