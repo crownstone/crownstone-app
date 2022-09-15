@@ -53,9 +53,13 @@ export const Stone_edit_appearence = () => {
     await tap('save');
     await waitToNavigate('DeviceOverview');
     await screenshot();
+
+    // check if it was stored
     await tap(`DeviceAppearence`);
     await waitToNavigate('DeviceEditAppearence');
     await expect($("deviceEdit_name")).toHaveText('testStoneName');
+
+    // go back
     await tap("cancelBack");
     await waitToNavigate('DeviceOverview');
   });

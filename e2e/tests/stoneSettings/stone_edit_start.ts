@@ -35,21 +35,24 @@ export const Stone_edit_start = () => {
     await longPress(`deviceEntry_${stoneIdToPress}_edit`);
     await waitToNavigate('DeviceOverview');
     await screenshot();
-    await tap('closeModal');
-    await waitToNavigate('RoomOverview');
+    if (!CONFIG.ONLY_ESSENTIALS) {
+      await tap('closeModal');
+      await waitToNavigate('RoomOverview');
+    }
   })
 
-  test('should be able to go to stoneEdit of a Crownstone via edit icon', async () => {
-    await waitToNavigate('RoomOverview');
+  if (!CONFIG.ONLY_ESSENTIALS) {
+    test('should be able to go to stoneEdit of a Crownstone via edit icon', async () => {
+      await waitToNavigate('RoomOverview');
 
-    await tap(`editIcon`);
-    await waitToAppear(`editRoom`);
+      await tap(`editIcon`);
+      await waitToAppear(`editRoom`);
 
-    let stoneIdToPress = await Assistant.getStoneId(0);
-    await scrollDownUntilVisible(`deviceEntry_${stoneIdToPress}_edit`, 'RoomOverview_NestableScrollContainer');
-    await tap(`deviceEntry_${stoneIdToPress}_edit`);
-    await waitToNavigate('DeviceOverview');
-    await screenshot();
-  })
+      let stoneIdToPress = await Assistant.getStoneId(0);
+      await scrollDownUntilVisible(`deviceEntry_${stoneIdToPress}_edit`, 'RoomOverview_NestableScrollContainer');
+      await tap(`deviceEntry_${stoneIdToPress}_edit`);
+      await waitToNavigate('DeviceOverview');
+    })
+  }
 
 };

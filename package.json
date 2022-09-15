@@ -26,7 +26,7 @@
     "@react-native-community/picker": "^1.8.1",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-community/slider": "^4.1.12",
-    "crownstone-sse": "5.3.0",
+    "crownstone-sse": "5.4.1",
     "lottie-ios": "3.2.3",
     "lottie-react-native": "^5.0.1",
     "moment": "^2.29.1",
@@ -36,7 +36,6 @@
     "react-native-console-time-polyfill": "^1.2.3",
     "react-native-device-info": "^8.4.5",
     "react-native-draggable-flatlist": "^3.1.1",
-    "react-native-event-source": "^1.1.0",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^2.4.1",
     "react-native-image-picker": "^4.2.0",
@@ -60,12 +59,13 @@
     "react-native-video": "^5.2.0",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
+    "rn-eventsource-reborn": "^1.0.5",
     "sha-1": "0.1.1",
     "suncalc": "1.8.0"
   },
   "devDependencies": {
     "@babel/core": "7.19.0",
-    "@babel/preset-env":"^7.19.0",
+    "@babel/preset-env": "^7.19.0",
     "@babel/preset-typescript": "^7.18.6",
     "@bugsnag/source-maps": "^2.2.0",
     "@react-native-community/cli-debugger-ui": "^5.0.1",
@@ -91,7 +91,7 @@
     "react-test-renderer": "^17.0.2",
     "readline-sync": "^1.4.9",
     "tape": "~4.10.1",
-    "ts-jest":"^29.0.1",
+    "ts-jest": "^29.0.1",
     "typescript": "^4.8.3"
   }
 }

@@ -27,7 +27,7 @@ export class Ability_SwitchcraftInformation extends Component<any, any> {
   // "SwitchCraft is a new, experimental feature of the Crownstone that allows you to switch your lights with both Crownstone and an existing wall switch." +
   render() {
     return (
-      <SettingsBackground>
+      <SettingsBackground testID={'Ability_SwitchcraftInformation'}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />

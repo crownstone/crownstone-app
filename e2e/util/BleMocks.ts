@@ -88,6 +88,14 @@ export class BleMocks {
     );
   }
 
+
+  async sendIbeaconAdvertisment(handle: string, rssi: number = -70) {
+    await this._sendAdvertisment(
+      NATIVE_BUS_TOPICS.setupAdvertisement,
+      AdvertisementGenerator.setupAdvertisement(handle, rssi)
+    );
+  }
+
   async sendGenericAdvertisement(handle: string, rssi: number = -70) {
     await this._sendAdvertisment(
       NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,

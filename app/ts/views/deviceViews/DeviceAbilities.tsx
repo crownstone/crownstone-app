@@ -81,7 +81,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
     let canDim         = StoneUtil.canDim(stone);
 
     return (
-      <SettingsBackground>
+      <SettingsBackground testID={'DeviceAbilities'}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
@@ -126,7 +126,7 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
           { active && synced  ? <Text style={[deviceStyles.explanationText, {marginTop:3}]}>{ lang("Enabled") }</Text> : undefined}
         </View>
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end', alignItems:'center'}}>
-          <TouchableOpacity onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
+          <TouchableOpacity testID={`${props.type}_information`} onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color: helpColor, fontSize: 20, fontWeight:'300'}}>?</Text>
           </TouchableOpacity>
           {active && props.permissionGranted && (
@@ -136,7 +136,7 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
               <Icon name={'ios-settings'} color={colors.csBlueDark.rgba(0.8)} size={35}/>
             </TouchableOpacity>)
           }
-          { !active && props.permissionGranted && <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} /> }
+          { !active && props.permissionGranted && <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} testID={`${props.type}_toggle`} /> }
         </View>
       </View>
       <Explanation margin={margins+0.25*height} label={data.explanation} />

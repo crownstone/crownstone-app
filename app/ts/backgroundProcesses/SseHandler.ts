@@ -59,7 +59,7 @@ export class SseHandlerClass {
   stop() {
     if (!this.SSE) { return; }
 
-    this.SSE.stop();
+    this.SSE.closeEventSource();
     this.sseState = "STOPPED";
   }
 

@@ -4287,10 +4287,10 @@ crownstone-logger@^0.1.4:
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
 
-crownstone-sse@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/crownstone-sse/-/crownstone-sse-5.3.0.tgz#d78d886738504618147218a2f7cd2ecb943f7f57"
-  integrity sha512-dg1/YkcpGt13ew0n0EFHcA9tWMF3lSs1er4Mfljp6BWWW2GV8vTCzC3VVfZjp9wponjDG+U7dTQ+2oSUGatAgA==
+crownstone-sse@5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/crownstone-sse/-/crownstone-sse-5.4.1.tgz#a97e25f497120ab85575c3a5407b6698cd19bc69"
+  integrity sha512-G9MWg6XiJOK3eCIXJVfgAHhAuW09M6IxE9gqgyxmYZYikuUJG4OzMA8ROty0HezApaDtsN9GBxN9j2rlLQLCNA==
   dependencies:
     cross-fetch "^3.0.4"
     crownstone-logger "^0.1.4"
@@ -8227,11 +8227,6 @@ react-native-draggable-flatlist@^3.1.1:
   resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-3.1.1.tgz#b27009035153ed8d897217392447fb3c98316aea"
   integrity sha512-hvzfMgG+HPIYCpoYy+R+FaoylRc4HbcP+gvghG0ISGwsU8HETcM8WmUEAaDTr7EeKmnG1BbV43MMExMjIQXRmA==
 
-react-native-event-source@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-event-source/-/react-native-event-source-1.1.0.tgz#75a085df49d17ffd6ff31ffeb269dd64e21b841a"
-  integrity sha512-CAs76IW8kTrdy0okfV2KPopm7E9TL0uNAR+SRrN7iZ/ii0zBeHWuhD4Q2F8gRKvmkrEtCZ6uwnfYL2TFmK0QZg==
-
 react-native-fs@^2.18.0:
   version "2.18.0"
   resolved "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.18.0.tgz"
@@ -8796,6 +8791,13 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rn-eventsource-reborn@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/rn-eventsource-reborn/-/rn-eventsource-reborn-1.0.5.tgz#4d8cd5a201dc7b2f57f9533a875e31a5dc4d00bf"
+  integrity sha512-MvSxKYHh3tPAahtpKz8bE2+x+lHau2RZVRKBfM+60ywFDbTHoY6rYwVKjZ427nfCIn5RXfYCs6K/GJiz84/cQw==
+  dependencies:
+    event-target-shim "^5.0.1"
 
 rsvp@^4.8.4:
   version "4.8.5"

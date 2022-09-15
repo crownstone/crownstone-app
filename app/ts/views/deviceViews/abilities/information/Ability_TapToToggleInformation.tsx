@@ -25,7 +25,7 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
 
   render() {
     return (
-      <SettingsBackground>
+      <SettingsBackground testID={'Ability_TapToToggleInformation'}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />

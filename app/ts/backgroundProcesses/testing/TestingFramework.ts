@@ -27,18 +27,21 @@ export const TestingFramework = {
     }
 
     if (BridgeConfig.mockBluenet && BridgeConfig.mockBridgeUrl) {
+      console.log("SETTING UP SSE FOR TESTS")
       await TestingFramework.setupSSE();
     }
   },
 
   async setupSSE() {
     if (BridgeConfig.mockBluenet) {
-      console.log("init", BridgeConfig.mockBridgeUrl)
+      console.log("Set mock bluenet to url:", BridgeConfig.mockBridgeUrl)
       if (!TestingFramework.SSE) {
+        console.log("init SSE testFramework connection:", BridgeConfig.mockBridgeUrl)
         TestingFramework.SSE = new CrownstoneSSE({sseUrl: BridgeConfig.mockBridgeUrl+'sse'});
       }
       TestingFramework.SSE.accessToken = "TEST_DEV";
       await TestingFramework.SSE.start((event) => { BridgeMock.handleSSE(event); });
+      console.log("TestFramework SSE Started")
     }
   },
 
