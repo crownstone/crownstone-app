@@ -130,9 +130,7 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
             <Text style={{color: helpColor, fontSize: 20, fontWeight:'300'}}>?</Text>
           </TouchableOpacity>
           {active && props.permissionGranted && (
-            <TouchableOpacity onPress={() => {
-              data.settingsCallback();
-            }} style={{ paddingLeft: 10 }}>
+            <TouchableOpacity onPress={() => { data.settingsCallback(); }} testID={`${props.type}_settings`} style={{ paddingLeft: 10 }} >
               <Icon name={'ios-settings'} color={colors.csBlueDark.rgba(0.8)} size={35}/>
             </TouchableOpacity>)
           }

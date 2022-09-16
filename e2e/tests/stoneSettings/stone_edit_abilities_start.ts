@@ -1,26 +1,19 @@
-import { by, device, expect, element, waitFor } from 'detox';
 import {
-  $,
-  delay,
-  longPress,
-  replaceText,
   screenshot,
   tap,
-  tapAlertCancelButton,
-  tapAlertOKButton,
-  tapReturnKey,
-  tapSingularAlertButton, visitLink, waitToAppear, waitToDisappear,
+  visitLink,
   waitToNavigate,
-  waitToShow,
   waitToStart
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
-import { TestingAssistant } from "../../util/TestingAssistant";
 
-export const Stone_edit_abilities = () => {
+export const Stone_edit_abilities_start = () => {
 
   test('should be on the DeviceOverview view', async () => {
     await waitToStart('DeviceOverview');
+    // trigger an enter-sphere to wake the stone-data-syncer.
+    await Assistant.update();
+    await Assistant.enterSphere();
   });
 
   test('should be able to go to the Appearance view', async () => {
@@ -50,22 +43,4 @@ export const Stone_edit_abilities = () => {
       await waitToNavigate('DeviceAbilities');
     });
   }
-
-  test('should be able to enable dimming', async () => {
-    await tap('dimming_toggle');
-    await delay(300);
-    await screenshot();
-  });
-
-  test('should be able to sync dimming state to Crownstone', async () => {
-    // trigger an enter-sphere to wake the stone-data-syncer.
-    await Assistant.update();
-    await Assistant.enterSphere();
-
-    // trigger an advertisement from the Crownstone to trigger constellation
-    let stoneId = await Assistant.getStoneId(0);
-    await Assistant.ble.sendGenericStoneAdvertisement(stoneId);
-  });
-
-
 };

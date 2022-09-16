@@ -37,7 +37,8 @@ import { SphereAdd_setup_more_crownstones } from "./tests/sphereAdd/sphereAdd_se
 import { Stone_edit_start } from "./tests/stoneSettings/stone_edit_start";
 import { Stone_edit_close } from "./tests/stoneSettings/stone_edit_close";
 import { Stone_edit_appearence } from "./tests/stoneSettings/stone_edit_appearence";
-import { Stone_edit_abilities } from "./tests/stoneSettings/stone_edit_abilities";
+import {Stone_edit_abilities_start} from "./tests/stoneSettings/stone_edit_abilities_start";
+import {Stone_edit_abilities_dimming} from "./tests/stoneSettings/stone_edit_abilities_dimming";
 
 export const CONFIG = {
   IP_ADDRESS:      process.env.IP_ADDRESS,
@@ -94,5 +95,6 @@ if (process.env.REUSE !== '1') {
 
 describe('StoneEdit, start',                             Stone_edit_start);
 // describe('StoneEdit, test appearance',                   Stone_edit_appearence);
-describe('StoneEdit, test abilities',                    Stone_edit_abilities);
+describe('StoneEdit, test abilities',                    Stone_edit_abilities_start);
+describe('StoneEdit, test abilities, dimming',           Stone_edit_abilities_dimming);
 // describe('StoneEdit, close',                             Stone_edit_close);

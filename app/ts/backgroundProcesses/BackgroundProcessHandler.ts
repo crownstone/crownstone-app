@@ -111,7 +111,7 @@ class BackgroundProcessHandlerClass {
       core.eventBus.on('userActivated', () => {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser();
-      })
+      });
 
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
@@ -134,7 +134,7 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
-        OverlayManager.initStateOverlays()
+        OverlayManager.initStateOverlays();
 
         ActiveSphereManager.userIsLoggedIn = true;
 

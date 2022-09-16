@@ -192,6 +192,42 @@ export class TestingAssistant {
     return stoneIds[stoneIndex];
   }
 
+
+  /**
+   * The address is reused to store the handle, this way the test API has a way to get the handle from the cloud.
+   * @param stoneIndex
+   */
+  async getStoneHandle(stoneIndex: number = 0) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    return sphere.stones[stoneIds[stoneIndex]].data.data.address;
+  }
+
+  /**
+   * The address is reused to store the handle, this way the test API has a way to get the handle from the cloud.
+   * @param stoneIndex
+   */
+  async getStoneHandleFromId(stoneId: string) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    return sphere.stones[stoneId].address;
+  }
+
   async getStone(stoneIndex: number = 0) {
     let stoneId = await this.getStoneId(stoneIndex);
     if (stoneId === null) {

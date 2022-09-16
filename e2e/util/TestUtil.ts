@@ -48,6 +48,14 @@ export async function clearText(id, timeout = 1000) {
   await delay(100);
 }
 
+export async function setSliderToPosition(id, position, visibility = 50, timeout = 1000 ) {
+  await delay(100);
+  let item = $(id);
+  await waitFor(item).toBeVisible(visibility).withTimeout(timeout);
+  await item.adjustSliderToPosition(position);
+  await delay(200);
+}
+
 export async function tap(id, visibility = 50, timeout = 1000 ) {
   await delay(100);
   let item = $(id);

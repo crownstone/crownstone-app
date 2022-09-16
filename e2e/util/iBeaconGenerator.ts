@@ -26,7 +26,6 @@ export class iBeaconGenerator {
     for (let stoneId in stones) {
       this.stones[stoneId] = stones[stoneId];
     };
-
   }
 
   generateIBeaconMessage(sphereId, locationId = null) {
@@ -82,7 +81,7 @@ function mapStones(sphere) {
   for (let stoneId of stoneIds) {
     result[stoneId] = {handle: stones[stoneId].data?.data?.address, ...stones[stoneId].data.data};
   }
-  return stones;
+  return result;
 }
 
 function mapStoneSets(sphere) {

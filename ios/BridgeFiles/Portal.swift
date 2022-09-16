@@ -191,7 +191,6 @@ class BluenetContainer : NSObject {
       }
       prevValue = thing;
     }
-    
     GLOBAL_BLUENET.launchArguments = map
   }
 }
