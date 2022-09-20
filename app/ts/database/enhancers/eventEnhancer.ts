@@ -118,6 +118,11 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
       eventStatus.changeSphereState = affectedIds; break;
     case 'SET_SPHERE_SMART_HOME_STATE':
       eventStatus.changeSphereSmartHomeState = affectedIds; break;
+    case 'ADD_SPHERE_FEATURE':
+    case 'UPDATE_SPHERE_FEATURE':
+    case 'REMOVE_SPHERE_FEATURE':
+      eventStatus.changeSphereFeatures = affectedIds;
+      break;
     case 'ADD_SPHERE':
       eventStatus.addSphere = affectedIds;
       eventStatus.changeSpheres = affectedIds;

@@ -25,8 +25,15 @@ interface SphereData {
   hubs:        {[hubId:      string]: HubData},
   messages:    {[messageId:  string]: MessageData},
   sortedLists: {[sortedListId: string]: SortedListData },
+  features:  {
+    ENERGY_COLLECTION_PERMISSION?: FeatureData
+  },
   thirdParty:  any,
   keys:        any,
+}
+
+interface FeatureData {
+  enabled: boolean,
 }
 
 

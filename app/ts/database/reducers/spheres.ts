@@ -33,6 +33,7 @@ let defaultSettings : SphereData = {
   keys: {
     // these will be filled with an x number of keys used for encryption.
   },
+  features:    {},
   users:       {},
   locations:   {},
   stones:      {},
@@ -112,8 +113,8 @@ let sphereStateReducer = (state = defaultSettings.state, action : DatabaseAction
         let newState = {...state};
 
         newState.smartHomeEnabled = update(action.data.smartHomeEnabled, newState.smartHomeEnabled);
-        newState.reachable = update(action.data.reachable, newState.reachable);
-        newState.present = update(action.data.present, newState.present);
+        newState.reachable        = update(action.data.reachable, newState.reachable);
+        newState.present          = update(action.data.present, newState.present);
 
         return newState;
       }
@@ -122,6 +123,40 @@ let sphereStateReducer = (state = defaultSettings.state, action : DatabaseAction
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.state);
     default:
+      return state;
+  }
+};
+
+
+const featureDataReducer = (state : FeatureData = {enabled: false}, action : DatabaseAction = {}) => {
+  switch (action.type) {
+    case 'ADD_SPHERE_FEATURE':
+    case 'UPDATE_SPHERE_FEATURE':
+      if (action.data) {
+        let newState = {...state};
+        newState.enabled = update(action.data.enabled, newState.enabled);
+      }
+      return state;
+    default:
+      return state;
+  }
+}
+
+const featureReducer = (state = defaultSettings.features, action : DatabaseAction = {}) => {
+  switch (action.type) {
+    case 'REMOVE_SPHERE_FEATURE':
+      let newState = {...state};
+      delete newState[action.featureId];
+      return newState;
+    default:
+      if (action.featureId !== undefined) {
+        if (state[action.featureId] !== undefined || action.type === "ADD_SPHERE_FEATURE") {
+          return {
+            ...state,
+            ...{[action.featureId]: featureDataReducer(state[action.featureId], action)}
+          };
+        }
+      }
       return state;
   }
 };
@@ -136,6 +171,7 @@ let combinedSphereReducer = combineReducers({
   stones:      stonesReducer,
   scenes:      scenesReducer,
   hubs:        hubReducer,
+  features:    featureReducer,
   messages:    messageReducer,
   state:       sphereStateReducer,
   thirdParty:  thirdPartyReducer,

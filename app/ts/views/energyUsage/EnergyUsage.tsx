@@ -41,7 +41,7 @@ export function EnergyUsage(props) {
 
 
 function EnergyUsageContent(props) {
-  useDatabaseChange(['updateActiveSphere']);
+  useDatabaseChange(['updateActiveSphere', 'changeSphereFeatures']);
   let [mode, setMode] = useState<GRAPH_TYPE>("LIVE");
   let [startDate, setStartDate] = useState<number>(Date.now());
 
@@ -51,6 +51,18 @@ function EnergyUsageContent(props) {
   }
 
   let indicator;
+
+  switch(mode) {
+    case "LIVE":
+      break;
+    case "DAY":
+    case "WEEK":
+    case "MONTH":
+    case "YEAR":
+      // TODO: get sphere feature for energy usage.
+  }
+
+
   switch(mode) {
     case "LIVE":
       break;
@@ -78,37 +90,35 @@ function EnergyUsageContent(props) {
     <React.Fragment>
       <ScrollView contentContainerStyle={{paddingTop: topBarHeight-statusBarHeight, alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
         <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
-          <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE"); }}   />
-          <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY"); }}   />
-          <TimeButton selected={mode == "WEEK"}  label={ lang("Week")}   callback={() => { setMode("WEEK"); }}  />
+          <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
+          <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
+          <TimeButton selected={mode == "WEEK"}  label={ lang("Week")}   callback={() => { setMode("WEEK");  }} />
           <TimeButton selected={mode == "MONTH"} label={ lang("Months")} callback={() => { setMode("MONTH"); }} />
-          <TimeButton selected={mode == "YEAR"}  label={ lang("Years")}  callback={() => { setMode("YEAR"); }}  />
+          <TimeButton selected={mode == "YEAR"}  label={ lang("Years")}  callback={() => { setMode("YEAR");  }} />
         </View>
         {
           mode !== "LIVE" && (
-          <View style={{flexDirection:'row', justifyContent:'space-around',width: screenWidth, padding:10}}>
-            <TouchableOpacity style={leftRightStyle} onPress={() => {}}>
-              <Icon name={'enty-chevron-small-left'} size={23} color={colors.black.hex} />
-            </TouchableOpacity>
-            <Text style={{fontWeight:'bold'}}>{indicator}</Text>
-            <TouchableOpacity style={leftRightStyle} onPress={() => {}}>
-              <Icon name={'enty-chevron-small-right'} size={23} color={colors.black.hex} />
-            </TouchableOpacity>
-          </View>
+            <React.Fragment>
+              <View style={{flexDirection:'row', justifyContent:'space-around',width: screenWidth, padding:10}}>
+                <TouchableOpacity style={leftRightStyle} onPress={() => {}}>
+                  <Icon name={'enty-chevron-small-left'} size={23} color={colors.black.hex} />
+                </TouchableOpacity>
+                <Text style={{fontWeight:'bold'}}>{indicator}</Text>
+                <TouchableOpacity style={leftRightStyle} onPress={() => {}}>
+                  <Icon name={'enty-chevron-small-right'} size={23} color={colors.black.hex} />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={{backgroundColor: colors.csBlue.hex, height:40, ...styles.centered, width: screenWidth}}
+                onPress={showDemoAlert}
+              >
+                <Text style={{color: colors.white.hex, fontWeight: 'bold'}}>{ lang("DEMO_MODE") }</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={showDemoAlert}><EnergyGraphAxisSvg data={cachedData} type={mode} width={0.9*screenWidth} height={200} /></TouchableOpacity>
+              <RoomList mode={mode} data={cachedData} /> : <LiveRoomList />
+            </React.Fragment>
           )
         }
-        {
-          mode !== "LIVE" && (
-            <TouchableOpacity
-              style={{backgroundColor: colors.csBlue.hex, height:40, ...styles.centered, width: screenWidth}}
-              onPress={showDemoAlert}
-            >
-              <Text style={{color: colors.white.hex, fontWeight: 'bold'}}>{ lang("DEMO_MODE") }</Text>
-            </TouchableOpacity>
-          )
-        }
-        {mode !== "LIVE" && <TouchableOpacity onPress={showDemoAlert}><EnergyGraphAxisSvg data={cachedData} type={mode} width={0.9*screenWidth} height={200} /></TouchableOpacity>}
-        {mode !== "LIVE" ?  <RoomList mode={mode} data={cachedData} /> : <LiveRoomList /> }
       </ScrollView>
       <TopBarBlur xlight>
         <EnergyUsageHeader mode={mode} />

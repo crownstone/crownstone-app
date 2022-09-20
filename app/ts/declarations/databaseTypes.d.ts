@@ -53,6 +53,7 @@ interface DatabaseAction {
   type?: ACTION_TYPE | 'NOT_REQUIRED',
   sphereId?               : string,
   locationId?             : string,
+  featureId?              : string,
   fingerprintId?          : string,
   fingerprintProcessedId? : string,
   sceneId?                : string,
@@ -141,6 +142,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'ADD_SCENE'                                    |
   'ADD_SORTED_LIST'                              |
   'ADD_SPHERE'                                   |
+  'ADD_SPHERE_FEATURE'                           |
   'ADD_SPHERE_KEY'                               |
   'ADD_SPHERE_USER'                              |
   'ADD_STONE'                                    |
@@ -202,6 +204,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'REMOVE_SORTED_LIST'                           |
   'REMOVE_SORTED_LISTS'                          |
   'REMOVE_SPHERE'                                |
+  'REMOVE_SPHERE_FEATURE'                        |
   'REMOVE_SPHERE_KEY'                            |
   'REMOVE_SPHERE_USER'                           |
   'REMOVE_STONE'                                 |
@@ -275,6 +278,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'UPDATE_SORTED_LIST'                           |
   'UPDATE_SPHERE_CLOUD_ID'                       |
   'UPDATE_SPHERE_CONFIG'                         |
+  'UPDATE_SPHERE_FEATURE'                        |
   'UPDATE_SPHERE_KEY'                            |
   'UPDATE_SPHERE_USER'                           |
   'UPDATE_STONE_BEHAVIOUR'                       |
@@ -341,6 +345,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'changeSphereUsers'               |
   'updateSphereUser'                |
   'removeSphereUser'                |
+  'changeSphereFeatures'            |
   'changeSphereUserPresence'        |
   'changeStoneHandle'               |
   'addStone'                        |
