@@ -37,7 +37,7 @@ export class TestingAssistant {
 
 
   async update() {
-    console.log("Updating the database");
+    console.log("Updating the database...");
     await this._update();
     // retry getting the active sphere after a small delay
     if (this.activeSphereId === null) {

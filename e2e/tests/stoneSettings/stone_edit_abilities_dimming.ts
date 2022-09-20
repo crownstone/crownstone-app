@@ -34,24 +34,27 @@ export const Stone_edit_abilities_dimming = () => {
       await waitToNavigate("Ability_DimmerSettings")
     }
 
-    test('should be able to configure dimming use soft on', async () => {
+    // test('should be able to configure dimming use soft on', async () => {
+    //   await goToAbilitySettings();
+    //   await screenshot();
+    //
+    //   let stoneId = await Assistant.getStoneId(0);
+    //   let handle = await Assistant.getStoneHandle(0);
+    //
+    //   await scrollDownUntilVisible("sliderSoftOn_slider", 'AbilityDimming_scrollview')
+    //   await setSliderToPosition('sliderSoftOn_slider', 0.0);
+    //   await screenshot();
+    //
+    //   await Assistant.ble.sendGenericStoneAdvertisement(stoneId);
+    //   await Assistant.ble.for(handle).succeed.connect('operation');
+    //   await Assistant.ble.for(handle).succeed.setSoftOnSpeed();
+    //   await Assistant.ble.for(handle).succeed.disconnectCommand();
+    // });
+
+    test('should be able to configure dimming toggle soft on', async () => {
       await goToAbilitySettings();
       await screenshot();
 
-      let stoneId = await Assistant.getStoneId(0);
-      let handle = await Assistant.getStoneHandle(0);
-
-      await scrollDownUntilVisible("sliderSoftOn", 'AbilityDimming_scrollview')
-      await setSliderToPosition('sliderSoftOn', 0.75);
-      await screenshot();
-
-      await Assistant.ble.sendGenericStoneAdvertisement(stoneId);
-      await Assistant.ble.for(handle).succeed.connect('operation');
-      await Assistant.ble.for(handle).succeed.setSoftOnSpeed();
-      await Assistant.ble.for(handle).succeed.disconnectCommand();
-    });
-
-    test('should be able to configure dimming toggle soft on', async () => {
       let stoneId = await Assistant.getStoneId(0);
       let handle = await Assistant.getStoneHandle(0);
 

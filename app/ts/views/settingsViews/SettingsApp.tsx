@@ -137,10 +137,10 @@ export class SettingsApp extends LiveComponent<any, any> {
             }}
             min={-16}
             max={16}
-            value={-device.rssiOffset}
+            value={-1 * (device?.rssiOffset ?? -40)}
             explanation={this._getExplanation(-device.rssiOffset)}
             explanationHeight={this._getExplanationHeight(-device.rssiOffset)}
-            testID={"SliderBar_hide"}
+            testID={"SliderBar"}
           />
         )});
     }

@@ -65,7 +65,7 @@ export function SliderBar(props) {
           height: SLIDER_HEIGHT,
         }} >
           <Slider
-            testID={props.testID}
+            testID={props.testID + "_slider"}
             style={{ width: screenWidth - (30 + 20 + 0.25*(iconPadding + iconWidth)), height: SLIDER_HEIGHT }}
             minimumValue={props.min}
             maximumValue={props.max}
