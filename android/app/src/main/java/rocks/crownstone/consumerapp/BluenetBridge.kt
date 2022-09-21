@@ -2249,12 +2249,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			BaseTimeType.UNKNOWN -> return null
 			BaseTimeType.SUNRISE -> {
 				map.putString("type", "SUNRISE")
-				map.putInt("offsetMinutes", time.timeOffset * 60)
+				map.putInt("offsetMinutes", time.timeOffset / 60)
 				return map
 			}
 			BaseTimeType.SUNSET -> {
 				map.putString("type", "SUNSET")
-				map.putInt("offsetMinutes", time.timeOffset * 60)
+				map.putInt("offsetMinutes", time.timeOffset / 60)
 				return map
 			}
 			BaseTimeType.MIDNIGHT -> {
