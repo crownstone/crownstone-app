@@ -21,6 +21,7 @@ import { Icon }       from "../components/Icon";
 import { ListEditableItems }       from '../components/ListEditableItems'
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
 import {LocalizationCore} from "../../localization/LocalizationCore";
+import {Get} from "../../util/GetUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -205,6 +206,36 @@ export class SettingsApp extends LiveComponent<any, any> {
       type: 'explanation',
       below: true
     });
+
+    let revokeItems = [];
+    let spheres = core.store.getState().spheres;
+    for (let sphereId in spheres) {
+      if (Get.energyCollectionPermission(sphereId)) {
+        revokeItems.push({
+          type:'button',
+          label: 'Revoke for ' + spheres[sphereId].config.name,
+          callback: () => {
+            // TODO: disable from cloud.
+
+            // core.store.dispatch({type: 'REMOVE_SPHERE_FEATURE', sphereId: sphereId, featureId: 'ENERGY_COLLECTION_PERMISSION'});
+          }
+        })
+      }
+    }
+
+    if (revokeItems.length > 0) {
+      items.push({type: 'explanation', label: "ENERGY COLLECTION PERMISSION", alreadyPadded:true});
+      items = items.concat(revokeItems);
+      items.push({type: 'spacer'});
+      items.push({type: 'spacer'});
+    }
+
+
+
+
+
+
+
     return items;
   }
 

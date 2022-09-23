@@ -8,12 +8,11 @@ import {SlideFadeInView} from "../../animated/SlideFadeInView";
 import {Text, TextStyle} from "react-native";
 import * as React from "react";
 import {StoneAvailabilityTracker} from "../../../../native/advertisements/StoneAvailabilityTracker";
-import { colors } from "../../../styles";
 
 export function DeviceEntryLabel({stone, dimMode, editMode}) {
   let canDim  = stone.abilities.dimming.enabledTarget;
-  let visible = !canDim || canDim && !dimMode;
   let reachable = !StoneAvailabilityTracker.isDisabled(stone.id);
+  let visible = !canDim || !reachable || canDim && !dimMode;
 
   let style : TextStyle = { fontSize:13, fontStyle:'italic', fontWeight:'normal', paddingLeft:15 };
 

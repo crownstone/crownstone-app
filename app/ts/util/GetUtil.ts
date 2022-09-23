@@ -117,4 +117,10 @@ export const Get = {
     return sphere.messages[messageId] || null;
   },
 
+
+  energyCollectionPermission(sphereId: sphereId) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+    return sphere?.features?.ENERGY_COLLECTION_PERMISSION?.enabled ?? false;
+  }
 }

@@ -14,7 +14,7 @@ import { Icon } from "./Icon";
 export function Button(props) {
   let size = 22;
   let margin = 10;
-  let width = 0.85 * screenWidth;
+  let width = props.width ?? 0.85 * screenWidth;
   let height = 65;
   let fontSize = props.fontSize || 15;
   let marginTop = 5;
@@ -36,7 +36,7 @@ export function Button(props) {
   }
 
   return (
-    <View style={{width:width+(props.hideIcon ? 0 : marginSide), height: height + marginTop, margin: margin, overflow:"hidden"}}>
+    <View style={{width:width+marginSide, height: height + marginTop, margin: margin, overflow:"hidden"}}>
       <TouchableOpacity style={{
         width:           width,
         height:          height,
@@ -50,7 +50,7 @@ export function Button(props) {
         ...iconShift
       }}
       onPress={props.callback}>
-        <Text style={{fontSize:fontSize, fontWeight:'bold', color:colors.white.hex, textAlign:'center'}}>{props.label}</Text>
+        <Text style={{fontSize:fontSize, fontWeight:'bold', color: props.fontColor ?? colors.white.hex, textAlign:'center'}}>{props.label}</Text>
       </TouchableOpacity>
 
       {props.hideIcon === true ? null :

@@ -11,6 +11,7 @@ import {Assistant, CONFIG} from "../../testSuite.e2e";
 export const Stone_edit_abilities_dimming = () => {
 
 
+
   test('should be able to enable dimming and sync it', async () => {
     await tap('dimming_toggle');
     await delay(300);

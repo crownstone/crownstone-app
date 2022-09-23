@@ -86,7 +86,7 @@ async function _switchCrownstone(stone, setPercentage) {
 
 export function DeviceDimSlider({stone, editMode, dimMode, value, onChange}) {
   let canDim  = stone.abilities.dimming.enabledTarget;
-  let visible = canDim && !editMode && dimMode;
+  let visible = canDim && !editMode && dimMode && StoneAvailabilityTracker.isDisabled(stone.id) === false;
 
   return (
     <SlideFadeInView height={40} visible={visible} style={{paddingHorizontal:15}}>
@@ -112,7 +112,7 @@ export function DeviceDimSlider({stone, editMode, dimMode, value, onChange}) {
 
 export function DeviceDimTopPadding({stone, editMode, dimMode}) {
   let canDim  = stone.abilities.dimming.enabledTarget;
-  let visible = canDim && !editMode && dimMode;
+  let visible = canDim && !editMode && dimMode && StoneAvailabilityTracker.isDisabled(stone.id) === false;;
 
   return (
     <SlideFadeInView height={10} visible={visible}></SlideFadeInView>
