@@ -595,10 +595,8 @@ export class SetupHub extends LiveComponent<{
 
   render() {
     let backgroundImage = require('../../../assets/images/backgrounds/fadedLightBackground.jpg');
-    let textColor = colors.red.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor = this._interview.getTextColorFromCard() || textColor;
     }
 
     return (

@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import { ScrollView } from 'react-native';
+import {Alert, ScrollView} from 'react-native';
 import { Bluenet }    from '../../native/libInterface/Bluenet'
 import { CLOUD }      from '../../cloud/cloudAPI'
 import { LOG }        from '../../logging/Log'
@@ -34,7 +34,7 @@ export class SettingsApp extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.changeAppSettings) {
+      if (change.changeAppSettings || change.changeSphereFeatures) {
         this.forceUpdate();
       }
     });
@@ -214,10 +214,14 @@ export class SettingsApp extends LiveComponent<any, any> {
         revokeItems.push({
           type:'button',
           label: 'Revoke for ' + spheres[sphereId].config.name,
-          callback: () => {
-            // TODO: disable from cloud.
-
-            // core.store.dispatch({type: 'REMOVE_SPHERE_FEATURE', sphereId: sphereId, featureId: 'ENERGY_COLLECTION_PERMISSION'});
+          callback: async () => {
+            try {
+              await CLOUD.forSphere(sphereId).setEnergyUploadPermission(false)
+              core.store.dispatch({type: 'REMOVE_SPHERE_FEATURE', sphereId: sphereId, featureId: 'ENERGY_COLLECTION_PERMISSION'});
+            }
+            catch (err) {
+              Alert.alert("Could not revoke permission...", "Something went wrong while trying to revoke permission. Please try again later.", [{text:'OK'}]);
+            }
           }
         })
       }

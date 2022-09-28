@@ -36,7 +36,7 @@ import { Get } from "../../util/GetUtil";
 import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EditDone, EditIcon } from "../components/EditIcon";
-import { ContentNoSphere } from "../energyUsage/EnergyUsage";
+import {ContentNoSphere} from "../energyUsage/components/ContentNoSphere";
 
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;

@@ -5,6 +5,8 @@ import { user } from "./user";
 import { core } from "../../Core";
 import { CLOUD } from "../cloudAPI";
 import { SphereTransferNext } from "./newSync/transferrers/SphereTransferNext";
+import {cloudApiBase} from "./cloudApiBase";
+import {CloudAddresses} from "../../backgroundProcesses/indirections/CloudAddresses";
 
 export const spheres = {
 
@@ -226,4 +228,31 @@ export const spheres = {
       );
   },
 
+
+  getEnergyUploadPermission: function (background = true) {
+    return cloudApiBase._setupRequest(
+      'GET',
+      CloudAddresses.cloud_v2 + `spheres/{id}/energyUsageCollectionPermission`,
+      {background: background},
+      'body'
+    );
+  },
+
+  setEnergyUploadPermission: function (permission: boolean, background = true) {
+    return cloudApiBase._setupRequest(
+      'POST',
+      CloudAddresses.cloud_v2 + `spheres/{id}/energyUsageCollectionPermission?permission=${permission}`,
+      {background: background},
+      'body'
+    );
+  },
+
+  getEnergyUsage: function (start: timeISOString, end: timeISOString, range: EnergyUsageRange, background = true) : Promise<EnergyReturnData[]> {
+    return cloudApiBase._setupRequest(
+      'POST',
+      CloudAddresses.cloud_v2 + `spheres/{id}/energyUsage?start=${start}&end=${end}&range=${range}`,
+      {background: background},
+      'body'
+    );
+  }
 };

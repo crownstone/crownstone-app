@@ -4,12 +4,21 @@ export const Get = {
 
   activeSphere() : SphereData | null {
     let state = core.store.getState();
+    let activeSphereId = Get.activeSphereId();
+    if (activeSphereId) {
+      return state.spheres[activeSphereId] || null;
+    }
+    return null;
+  },
+
+  activeSphereId() : sphereId {
+    let state = core.store.getState();
     let activeSphereId = state?.app?.activeSphere || null;
-    if (activeSphereId) { return state.spheres[activeSphereId] || null; }
+    if (activeSphereId) { return activeSphereId || null; }
     else {
       let sphereIds = Object.keys(state.spheres);
       if (sphereIds.length > 0) {
-        return state.spheres[sphereIds[0]];
+        return sphereIds[0];
       }
     }
     return null;

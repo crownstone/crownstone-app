@@ -182,10 +182,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
 
   render() {
     let backgroundImage = background.main;
-    let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor = this._interview.getTextColorFromCard() || textColor;
     }
     return (
       <AnimatedBackground

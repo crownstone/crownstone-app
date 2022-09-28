@@ -5,7 +5,6 @@ import {colors, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {Alert, View} from "react-native";
 import * as React from "react";
-import {showDemoAlert} from "../EnergyUsage";
 
 
 export function RoomList(props: { data: EnergyData, mode: GRAPH_TYPE }) {
@@ -32,7 +31,7 @@ export function RoomList(props: { data: EnergyData, mode: GRAPH_TYPE }) {
         valueStyle={{textAlign:'right', paddingRight:15, fontSize:14, color: colors.black.rgba(0.4)}}
         valueRight
         customValueItem
-        callback={showDemoAlert}
+        callback={() => {}}
         icon={<IconButton name={activeSphere.locations[locationData.id].config.icon} size={20} color={colors.white.hex} buttonStyle={{backgroundColor: colorMap[locationData.id]}} />}
       />
     )

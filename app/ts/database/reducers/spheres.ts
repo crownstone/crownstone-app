@@ -135,6 +135,7 @@ const featureDataReducer = (state : FeatureData = {enabled: false}, action : Dat
       if (action.data) {
         let newState = {...state};
         newState.enabled = update(action.data.enabled, newState.enabled);
+        return newState;
       }
       return state;
     default:
