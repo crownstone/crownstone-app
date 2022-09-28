@@ -2,7 +2,7 @@ import {LiveComponent} from "../LiveComponent";
 
 import {Languages} from "../../Languages"
 import * as React from 'react';
-import {TouchableOpacity, View} from "react-native";
+import {Platform, TouchableOpacity, View} from "react-native";
 import {core} from "../../Core";
 import {Interview} from "../components/Interview";
 import {IconCircle} from "../components/IconCircle";
@@ -22,6 +22,7 @@ import {HubHelper} from "../../native/setup/HubHelper";
 import {LOGe, LOGi} from "../../logging/Log";
 import {Get} from "../../util/GetUtil";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupHub", key)(a,b,c,d,e);
@@ -594,21 +595,24 @@ export class SetupHub extends LiveComponent<{
 
   render() {
     let backgroundImage = require('../../../assets/images/backgrounds/fadedLightBackground.jpg');
+    let textColor = colors.red.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
+      textColor = this._interview.getTextColorFromCard() || textColor;
     }
 
     return (
-      <AnimatedBackground hasNavBar={false} image={backgroundImage}>
-        <KeepAwake />
-        <SafeAreaView>
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
-        </SafeAreaView>
+      <AnimatedBackground
+        fullScreen={true}
+        image={backgroundImage}
+        testID={'AddHub'}
+      >
+      <Interview
+        backButtonOverrideViewNameOrId={this.props.componentId}
+        ref={     (i) => { this._interview = i; }}
+        getCards={ () => { return this.getCards();}}
+        update={   () => { this.forceUpdate() }}
+      />
       </AnimatedBackground>
     );
   }
