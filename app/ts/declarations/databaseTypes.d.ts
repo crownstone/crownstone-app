@@ -227,6 +227,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'SET_NEW_FIRMWARE_VERSIONS'                    |
   'SET_NOTIFICATION_TOKEN'                       |
   'SET_RSSI_OFFSET'                              |
+  'SET_SPHERE_TIMEZONE'                          |
   'SET_SPHERE_GPS_COORDINATES'                   |
   'SET_SPHERE_SMART_HOME_STATE'                  |
   'SET_SPHERE_STATE'                             |

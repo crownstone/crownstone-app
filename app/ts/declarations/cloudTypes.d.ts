@@ -50,6 +50,7 @@ interface cloud_Sphere {
     lat: number,
     lng: number,
   },
+  timezone:  string,
   createdAt: string,
   updatedAt: string,
 }
@@ -61,6 +62,7 @@ interface cloud_Sphere_settable {
     lat?: localData.config.latitude,
     lng?: localData.config.longitude,
   },
+  timezone:  string,
   updatedAt: string,
 }
 

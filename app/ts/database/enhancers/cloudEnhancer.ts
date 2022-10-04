@@ -113,6 +113,7 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
       break;
+    case 'SET_SPHERE_TIMEZONE':
     case 'SET_SPHERE_GPS_COORDINATES':
     case 'UPDATE_SPHERE_CONFIG':
       handleSphereInCloud(action, newState);

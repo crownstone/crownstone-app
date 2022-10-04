@@ -126,6 +126,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case 'ADD_SPHERE':
       eventStatus.addSphere = affectedIds;
       eventStatus.changeSpheres = affectedIds;
+    case 'SET_SPHERE_TIMEZONE':
     case 'SET_SPHERE_GPS_COORDINATES':
     case 'UPDATE_SPHERE_CONFIG':
       eventStatus.changeSphereConfig = affectedIds; break;

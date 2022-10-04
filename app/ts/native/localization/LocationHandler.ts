@@ -9,6 +9,7 @@ import {core} from "../../Core";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {canUseIndoorLocalizationInSphere} from "../../util/DataUtil";
 import {LocalizationCore} from "../../localization/LocalizationCore";
+import { getTimeZone } from "react-native-localize";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocationHandler", key)(a,b,c,d,e);
@@ -70,6 +71,13 @@ class LocationHandlerClass {
     }
 
     LocalizationCore.enterSphere(sphereId);
+
+    let timezone = getTimeZone();
+    if (!sphere.config.timezone || (timezone && sphere.config.timezone !== timezone)) {
+      if (timezone) {
+        core.store.dispatch({type: 'SET_SPHERE_TIMEZONE', sphereId: sphereId, data: {timezone: timezone}});
+      }
+    }
 
     // We load the settings and start the localization regardless if we are already in the sphere. The calls themselves
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the

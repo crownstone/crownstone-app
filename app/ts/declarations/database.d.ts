@@ -100,6 +100,7 @@ interface SphereDataConfig {
 
   latitude:    number | null,
   longitude:   number | null,
+  timezone:    string | null,
 
   updatedAt:   timestamp,
 }

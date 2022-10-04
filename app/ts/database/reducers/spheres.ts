@@ -22,6 +22,7 @@ let defaultSettings : SphereData = {
     latitude: null,
     longitude: null,
 
+    timezone: null,
     updatedAt: 1,
   },
   state: {
@@ -61,6 +62,14 @@ let sphereConfigReducer = (state = defaultSettings.config, action : DatabaseActi
         newState.longitude = update(action.data.longitude, newState.longitude);
 
         newState.updatedAt = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'SET_SPHERE_TIMEZONE':
+      if (action.data) {
+        let newState = {...state};
+        newState.timezone = update(action.data.timezone, newState.timezone);
+        newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
