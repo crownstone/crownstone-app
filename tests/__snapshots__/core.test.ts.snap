@@ -76,6 +76,7 @@ exports[`Using core in tests 1`] = `
         "latitude": null,
         "longitude": null,
         "name": "testSphere",
+        "timezone": null,
         "uid": null,
         "updatedAt": 1641038400000,
       },

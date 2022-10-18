@@ -15,7 +15,7 @@ interface BarGraphTimeProps_Preconfigured {
   xStart: number,
   xEnd: number,
   yEnd: number,
-  data: EnergyData,
+  data: EnergyData | null,
   textHeight: number,
   textColor?: string,
   axisColor?: string,
@@ -24,7 +24,6 @@ interface BarGraphTimeProps_Preconfigured {
 
 interface BarGraphTimeProps extends BarGraphTimeProps_Preconfigured {
   amountOfValues: number,
-
   label: (value: number) => string | null;
 }
 

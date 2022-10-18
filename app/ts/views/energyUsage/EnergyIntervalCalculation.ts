@@ -92,6 +92,14 @@ export const EnergyIntervalCalculation = {
       let monthsDifference = (dateTo.getMonth() - dateFrom.getMonth());
       return yearsDifference*12 + monthsDifference;
     }
+  },
+
+  years: {
+    getNthSamplePoint(fromSamplePoint: number, n: number) : number {
+      let date = new Date(fromSamplePoint);
+      let firstOfMonth = new Date(date.getFullYear() + n, 0, 1).getTime();
+      return firstOfMonth;
+    },
   }
 }
 

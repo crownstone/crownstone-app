@@ -3,24 +3,27 @@ import { Rect } from "react-native-svg";
 import * as React from "react";
 
 
-export function BarGraphDataSvg(props: {data: EnergyData,yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number, valueFillFactor: number, callback: (index, locationId) => void}) {
+export function BarGraphDataSvg(props: {data: EnergyData | null,yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number, valueFillFactor: number, callback: (index, locationId) => void}) {
   let values = [];
-  let valueStep = props.width/props.data.data.length;
-  let valueWidth = valueStep * props.valueFillFactor;
 
-  for (let i = 0; i < props.data.data.length; i++) {
-    values.push(
-      <StackedBarValueSvg
-        data={props.data.data[i]}
-        colorMap={props.data.colorMap}
-        x={i*valueStep + props.xStart + 0.5*(valueStep*(1-props.valueFillFactor))}
-        y={props.height}
-        width={valueWidth}
-        maxHeight={props.valueMaxHeight}
-        maxValue={props.maxValue}
-        callback={(locationId) => { props.callback(i, locationId); }}
-      />
-    );
+  if (props.data) {
+    let valueStep = props.width/props.data.data.length;
+    let valueWidth = valueStep * props.valueFillFactor;
+
+    for (let i = 0; i < props.data.data.length; i++) {
+      values.push(
+        <StackedBarValueSvg
+          data={props.data.data[i]}
+          colorMap={props.data.colorMap}
+          x={i*valueStep + props.xStart + 0.5*(valueStep*(1-props.valueFillFactor))}
+          y={props.height}
+          width={valueWidth}
+          maxHeight={props.valueMaxHeight}
+          maxValue={props.maxValue}
+          callback={(locationId) => { props.callback(i, locationId); }}
+        />
+      );
+    }
   }
 
   return <React.Fragment>{values}</React.Fragment>;

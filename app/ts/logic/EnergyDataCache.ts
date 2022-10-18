@@ -1,6 +1,6 @@
-import {getEnergyRange} from "../views/energyUsage/EnergyUsage";
 import {CLOUD} from "../cloud/cloudAPI";
 import {LOGe} from "../logging/Log";
+import { getEnergyRange } from "../views/energyUsage/EnergyProcessingUtil";
 
 
 export class EnergyDataCache {
@@ -34,7 +34,7 @@ export class EnergyDataCache {
 
   async getData(date: Date | timestamp | timeISOString, mode: GRAPH_TYPE) : Promise<any> {
     date = new Date(date);
-    let range = getEnergyRange(date, 'DAY');
+    let range = getEnergyRange(date, mode);
 
     let container = this.dayData;
     switch (mode) {
@@ -51,7 +51,7 @@ export class EnergyDataCache {
 
     let getData = async () => {
       try {
-        let result = await CLOUD.forSphere(this.sphereId).getEnergyUsage(range.start, range.end, mode.toLowerCase());
+        let result = await CLOUD.forSphere(this.sphereId).getEnergyUsage(range.start.toISOString(), range.end.toISOString(), mode.toLowerCase());
         container[startDate] = {updateTime: Date.now(), data: result};
       }
       catch (err) {
@@ -70,7 +70,7 @@ export class EnergyDataCache {
         await getData();
         return container[startDate].data;
       }
-      container[startDate].data;
+      return container[startDate].data;
     }
   }
 

@@ -249,7 +249,7 @@ export const spheres = {
 
   getEnergyUsage: function (start: timeISOString, end: timeISOString, range: EnergyUsageRange, background = true) : Promise<EnergyReturnData[]> {
     return cloudApiBase._setupRequest(
-      'POST',
+      'GET',
       CloudAddresses.cloud_v2 + `spheres/{id}/energyUsage?start=${start}&end=${end}&range=${range}`,
       {background: background},
       'body'

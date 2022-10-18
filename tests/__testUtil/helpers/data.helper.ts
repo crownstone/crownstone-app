@@ -169,4 +169,5 @@ export function createMockDatabase() {
 
 export function loadDump(dumpState) {
   core.store.dispatch({type:"HYDRATE", data: {state: dumpState}});
+  MapProvider.refreshAll();
 }

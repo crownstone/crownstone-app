@@ -7,7 +7,7 @@ import {CLOUD} from "../../../cloud/cloudAPI";
 import * as React from "react";
 import {HistoricalEnergyUsage} from "./HistoricalEnergyUsage";
 
-export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode: GRAPH_TYPE, startDate: number, setStartDate: (date: number) => void, hasUploadPermission: boolean, checkedUploadPermission: boolean, setHasUploadPermission: (hasPermission: boolean) => void}) {
+export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode: GRAPH_TYPE, startDate: timestamp, setStartDate: (date: timestamp) => void, hasUploadPermission: boolean, checkedUploadPermission: boolean, setHasUploadPermission: (hasPermission: boolean) => void}) {
   if (props.checkedUploadPermission === false) {
     // we're still getting the permission state, waiting....
     return (

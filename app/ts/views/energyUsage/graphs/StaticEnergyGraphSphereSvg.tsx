@@ -11,7 +11,7 @@ import { BarGraphDataAxisSvg } from "./svg/BarGraphDataAxis";
 import { BarGraphDataSvg } from "./svg/BarGraphData";
 
 
-export function EnergyGraphAxisSvg(props : {data: EnergyData, height: number, width?:number, type: GRAPH_TYPE}) {
+export function EnergyGraphAxisSvg(props : {data: EnergyData | null, height: number, width?:number, type: GRAPH_TYPE}) {
   let dataSpacing     = 10;  // space between max data value and top of axis;
   let dataTextSpacing = 6;  // space between data values and axis
   let dataTextWidth   = 25; // width of the textAreas of the data values on the dataAxis
@@ -68,7 +68,9 @@ export function EnergyGraphAxisSvg(props : {data: EnergyData, height: number, wi
 
 
 
-function getMaxValue(data: EnergyData) {
+function getMaxValue(data: EnergyData | null) : number {
+  if (!data) { return 0}
+
   let max = -Infinity;
   for (let set of data.data) {
     let sum = 0;

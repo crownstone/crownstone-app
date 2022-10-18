@@ -54,6 +54,7 @@ import {LocalizationMonitor} from "../localization/LocalizationMonitor";
 import { LocalizationDevDataLogger } from "../localization/LocalizationDevDataLogger";
 import { SseHandler } from "./SseHandler";
 import { SpherePresenceManager } from "./SpherePresenceManager";
+import { EnergyUsageCacher } from "./EnergyUsageCacher";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -469,6 +470,7 @@ class BackgroundProcessHandlerClass {
     CloudEventHandler.init();
     DfuStateHandler.init();
     EncryptionManager.init();
+    EnergyUsageCacher.init();
     FirmwareWatcher.init();
     LocalizationCore.init();
     LocationHandler.init();

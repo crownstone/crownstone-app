@@ -55,16 +55,19 @@ export const EnergyUsageUtil = {
   },
 
 
-  getEnergyUsage: function(data, itemId) {
+  getEnergyUsage: function(data: EnergyData | null, itemId) {
     let sum = 0;
-    for (let dataPoint of data.data ) {
-      if (dataPoint[itemId]) {
-        sum += dataPoint[itemId];
+
+    if (data) {
+      for (let dataPoint of data.data) {
+        if (dataPoint[itemId]) {
+          sum += dataPoint[itemId];
+        }
       }
+
     }
 
-    let {scalingFactor, unit} = getScalingAndUnit(sum, 'Wh');
-
+    let { scalingFactor, unit } = getScalingAndUnit(sum, 'Wh');
     return `${(sum*scalingFactor).toFixed(1)} ${unit}`;
   },
 
@@ -89,7 +92,7 @@ export const EnergyUsageUtil = {
   },
 
 
-  getStoneColorList(sphereId, locationId) {
+  getStoneColorList(sphereId, locationId?) {
     let stones = DataUtil.getStonesInLocation(sphereId, locationId);
 
     // map the object to an array of names and ids

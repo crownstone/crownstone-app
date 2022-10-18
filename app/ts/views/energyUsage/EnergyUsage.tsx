@@ -26,9 +26,10 @@ import { HistoricalEnergyUsageOverview} from "./components/HistoricalEnergyUsage
 
 
 export function EnergyUsage(props) {
+  useDatabaseChange(['updateActiveSphere']);
   return (
     <BackgroundCustomTopBarNavbar testID={'energyUsageTab'}>
-      <EnergyUsageContent />
+      <EnergyUsageContent sphereId={Get.activeSphereId()}/>
     </BackgroundCustomTopBarNavbar>
   );
 }
@@ -38,6 +39,8 @@ async function checkUploadPermission(sphereId) {
     return await CLOUD.forSphere(sphereId).getEnergyUploadPermission();
   }
   catch (err) {}
+
+  // fallback.
   let sphere = Get.sphere(sphereId);
   if (sphere) {
     return sphere.features.ENERGY_COLLECTION_PERMISSION?.enabled ?? false;
@@ -52,43 +55,46 @@ async function checkUploadPermission(sphereId) {
 // }
 
 function EnergyUsageContent(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeSphereFeatures']);
+  useDatabaseChange(['changeSphereFeatures']);
 
-  let [sphereId, setSphereId]                               = useState<sphereId>(Get.activeSphereId());
   let [checkedUploadPermission, setCheckedUploadPermission] = useState<boolean>(false);
   let [hasUploadPermission,     setHasUploadPermission]     = useState<boolean>(false);
   let [mode, setMode]                                       = useState<GRAPH_TYPE>("LIVE");
   let [startDate, setStartDate]                             = useState<number>(Date.now());
 
-  if (sphereId !== Get.activeSphereId()) {
-    setSphereId(Get.activeSphereId());
+  useEffect(() => {
     setCheckedUploadPermission(false);
-  }
+  }, [props.sphereId])
 
   useEffect(() => {
     if (mode !== "LIVE" && checkedUploadPermission === false) {
-      checkUploadPermission(sphereId)
+      checkUploadPermission(props.sphereId)
         .then((result) => {
           setCheckedUploadPermission(true);
           setHasUploadPermission(result);
         })
     }
-  }, [mode, sphereId, checkedUploadPermission]);
+  }, [mode, props.sphereId, checkedUploadPermission]);
 
 
-  let activeSphere = Get.sphere(sphereId);
+  let activeSphere = Get.sphere(props.sphereId);
   if (!activeSphere) {
     return <ContentNoSphere />;
   }
 
-  let permission = Get.energyCollectionPermission(sphereId);
+  let permission = Get.energyCollectionPermission(props.sphereId);
   if (permission !== hasUploadPermission) {
     setHasUploadPermission(permission);
   }
 
   return (
     <React.Fragment>
-      <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: topBarHeight-statusBarHeight, alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
+      <ScrollView contentContainerStyle={{
+        flexGrow:1,
+        paddingTop: topBarHeight-statusBarHeight,
+        alignItems:'center', justifyContent:"center",
+        paddingBottom:2*tabBarHeight
+      }}>
         <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
           <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
           <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
@@ -99,7 +105,7 @@ function EnergyUsageContent(props) {
         {
           mode !== "LIVE" ?
             <HistoricalEnergyUsageOverview
-              sphereId={sphereId}
+              sphereId={props.sphereId}
               mode={mode}
               startDate={startDate}
               setStartDate={setStartDate}
@@ -127,33 +133,3 @@ function EnergyUsageHeader(props: {mode: GRAPH_TYPE}) {
 }
 
 
-
-export function getEnergyRange(date, range) : {start: Date, end: Date } {
-  if (range === "DAY") {
-    let start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    let end   = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
-    return {start, end};
-  }
-
-
-  if (range === 'WEEK') {
-    // get the monday of the week of the date as start and a week later as end
-    let start = new Date(date.getFullYear(), date.getMonth(), date.getDate() - (date.getDay()+6)%7);
-    let end   = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
-    return {start, end};
-  }
-
-
-  if (range === 'MONTH') {
-    let start = new Date(date.getFullYear(), date.getMonth(), 1);
-    let end   = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-    return {start, end};
-  }
-
-
-  if (range === 'YEAR') {
-    let start = new Date(date.getFullYear(), 0, 1);
-    let end   = new Date(date.getFullYear() + 1, 0, 1);
-    return {start, end};
-  }
-}

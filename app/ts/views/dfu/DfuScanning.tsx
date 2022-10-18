@@ -59,7 +59,6 @@ export class DfuScanning extends LiveComponent<any, any> {
     super(props);
 
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
-    console.log("this.stoneUpateData", this.stoneUpdateData);
   }
 
   navigationButtonPressed({ buttonId }) {

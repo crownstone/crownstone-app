@@ -15,13 +15,14 @@ class EnergyUsageCacherClass {
   init() {
     if (this.initialized === false) {
       this.initialized = true;
+      this.start();
     }
   }
 
   start() {
     if (this.started === false) {
       this.started = true;
-      this.unsubscribeEvent = core.eventBus().on("databaseChange", (data) => {
+      this.unsubscribeEvent = core.eventBus.on("databaseChange", (data) => {
         if (data.change.changeSpheres) {
           this.updateContainers();
         }
@@ -47,7 +48,7 @@ class EnergyUsageCacherClass {
 
     let containerIds = Object.keys(this.containers);
     for (let containerId of containerIds) {
-      if (sphereIds.includes(containerId)) {
+      if (!sphereIds.includes(containerId)) {
         delete this.containers[containerId];
       }
     }
@@ -56,8 +57,6 @@ class EnergyUsageCacherClass {
   getContainer(sphereId : string) {
     return this.containers[sphereId];
   }
-
-
 
 }
 
