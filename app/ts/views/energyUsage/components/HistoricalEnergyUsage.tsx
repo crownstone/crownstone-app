@@ -8,8 +8,6 @@ import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
 import {EnergyGraphAxisSvg} from "../graphs/StaticEnergyGraphSphereSvg";
 import {RoomList} from "./HistoricalDataLists";
-import {Get} from "../../../util/GetUtil";
-import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {EnergyIntervalCalculation} from "../EnergyIntervalCalculation";
 import { getEnergyRange, processPerLocation } from "../EnergyProcessingUtil";
 
@@ -37,10 +35,7 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
       }
     };
 
-    let interval = setInterval(() => {
-      getData();
-    }, 5*60e3 + 5000);
-
+    let interval = setInterval(() => { getData(); }, 5*60e3 + 5000);
 
     getData();
 

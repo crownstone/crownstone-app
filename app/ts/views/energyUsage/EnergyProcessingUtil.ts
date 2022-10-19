@@ -109,7 +109,8 @@ function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nth
         }
         if (datapointT > bucketEnd) {
           // startIndex = j;
-          stoneBuckets[stoneId][i] = (lastValue - (firstValue ?? 0)) / WattHour;
+          console.log("stoneId", stoneId, lastValue, firstValue, lastValue - firstValue);
+          stoneBuckets[stoneId][i] = Math.max(0,(lastValue - (firstValue ?? 0)) / WattHour);
           break;
         }
       }
