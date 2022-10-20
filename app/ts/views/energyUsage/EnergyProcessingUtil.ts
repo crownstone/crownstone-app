@@ -5,13 +5,10 @@ import { stonesBehaviours } from "../../cloud/sections/stonesBehaviours";
 import { EnergyUsageUtil } from "./EnergyUsageUtil";
 import { DataUtil } from "../../util/DataUtil";
 
-
 const WattHour = 3600;
 
-export function processPerLocation(sphereId: sphereId, range: {start: Date, end: Date}, data: EnergyReturnData[], mode: GRAPH_TYPE) : EnergyData {
-  let sphere    = Get.sphere(sphereId);
-  let locations = sphere.locations;
 
+export function processStoneBuckets(sphereId: sphereId, range: {start: Date, end: Date}, data: EnergyReturnData[], mode: GRAPH_TYPE) : StoneBucketEnergyData {
   let processed   = [];
   let accumulated = {};
 
@@ -53,24 +50,32 @@ export function processPerLocation(sphereId: sphereId, range: {start: Date, end:
       break;
   }
 
+  return {buckets: stoneBuckets, bucketCount: bucketCount};
+}
+
+
+export function bucketsToLocations(sphereId: sphereId, range: {start: Date, end: Date}, data: StoneBucketEnergyData) : EnergyData {
+  let sphere    = Get.sphere(sphereId);
+  let locations = sphere.locations;
+
   // loop over all locations and get the crownstones in that location. From the set of stones, get the energy usage.
   let locationData = {};
   for (let locationId in locations) {
-    locationData[locationId] = new Array(bucketCount).fill(0);
+    locationData[locationId] = new Array(data.bucketCount).fill(0);
 
     let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
-    for (let stoneId in stoneBuckets) {
+    for (let stoneId in data.buckets) {
       if (stonesInLocation[stoneId]) {
         // add the energy usage to the location.
-        for (let i = 0; i < bucketCount; i++) {
-          locationData[locationId][i] += stoneBuckets[stoneId][i];
+        for (let i = 0; i < data.bucketCount; i++) {
+          locationData[locationId][i] += data.buckets[stoneId][i];
         }
       }
     }
   }
 
   let result = [];
-  for (let i = 0; i < bucketCount; i++) {
+  for (let i = 0; i < data.bucketCount; i++) {
     result.push({});
     for (let locationId in locationData) {
       result[i][locationId] = locationData[locationId][i];
@@ -84,6 +89,25 @@ export function processPerLocation(sphereId: sphereId, range: {start: Date, end:
   }
 }
 
+export function filterBucketsForLocation(sphereId: sphereId, locationId: locationId, range: {start: Date, end: Date}, data: StoneBucketEnergyData) : EnergyData {
+  let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
+  let result = [];
+  for (let stoneId in data.buckets) {
+    if (stonesInLocation[stoneId]) {
+      for (let i = 0; i < data.bucketCount; i++) {
+        if (!result[i]) { result.push({}); }
+        result[i][stoneId] = data.buckets[stoneId][i];
+      }
+    }
+  }
+
+
+  return {
+    startTime:  range.start.valueOf(),
+    colorMap:   EnergyUsageUtil.getStoneColorList(sphereId, locationId),
+    data:       result,
+  }
+}
 
 function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nthCallback: (timestamp: timestamp, index: number) => timestamp) : Record<stoneId, number[]> {
   let stoneBuckets = {};
@@ -109,7 +133,11 @@ function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nth
         }
         if (datapointT > bucketEnd) {
           // startIndex = j;
-          stoneBuckets[stoneId][i] = (lastValue - (firstValue ?? 0)) / WattHour;
+          let energyUsed = (lastValue - (firstValue ?? 0)) / WattHour;
+          if (energyUsed < 0) {
+            energyUsed = lastValue / WattHour;
+          }
+          stoneBuckets[stoneId][i] = energyUsed;
           break;
         }
       }
@@ -117,14 +145,6 @@ function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nth
       bucketStart = bucketEnd;
     }
   }
-
-  // let data = [];
-  // for (let i = 0; i < bucketCount; i++) {
-  //   data.push({});
-  //   for (let stoneId in stoneBuckets) {
-  //     data[i][stoneId] = stoneBuckets[stoneId][i];
-  //   }
-  // }
 
   return stoneBuckets;
 }

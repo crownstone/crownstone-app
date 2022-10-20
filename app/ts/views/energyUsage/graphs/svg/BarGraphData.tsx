@@ -6,7 +6,7 @@ import * as React from "react";
 export function BarGraphDataSvg(props: {data: EnergyData | null,yStart: number, xStart: number, height:number, width:number, maxValue: number, valueMaxHeight: number, valueFillFactor: number, callback: (index, locationId) => void}) {
   let values = [];
 
-  if (props.data) {
+  if (props.data && props.maxValue > 0) {
     let valueStep = props.width/props.data.data.length;
     let valueWidth = valueStep * props.valueFillFactor;
 

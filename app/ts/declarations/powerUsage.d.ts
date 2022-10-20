@@ -6,3 +6,8 @@ interface EnergyData {
   colorMap: Record<itemId, string>,
   data: Record<itemId, number>[]
 }
+
+interface StoneBucketEnergyData {
+  buckets:     Record<stoneId, number[]>,
+  bucketCount: number
+};

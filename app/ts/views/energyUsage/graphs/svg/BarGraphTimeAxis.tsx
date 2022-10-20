@@ -50,7 +50,7 @@ export function BarGraphTimeAxis_Week(props: BarGraphTimeProps_Preconfigured) {
       {...props}
       amountOfValues={7}
       label={(value) => {
-        let startTime = props.data.startTime;
+        let startTime = props.data?.startTime ?? Date.now();
         let startDay = new Date(startTime).getDay()
 
         return DAY_SHORT_LABEL_MAP(DAY_INDICES_SUNDAY_START[(startDay+value)%7]);

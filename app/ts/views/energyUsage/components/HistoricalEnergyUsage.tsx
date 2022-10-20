@@ -7,16 +7,23 @@ import * as React from "react";
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
 import {EnergyGraphAxisSvg} from "../graphs/StaticEnergyGraphSphereSvg";
-import {RoomList} from "./HistoricalDataLists";
+import { CrownstoneList, RoomList } from "./HistoricalDataLists";
 import {Get} from "../../../util/GetUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {EnergyIntervalCalculation} from "../EnergyIntervalCalculation";
-import { getEnergyRange, processPerLocation } from "../EnergyProcessingUtil";
+import {
+  bucketsToLocations,
+  filterBucketsForLocation,
+  getEnergyRange,
+  processStoneBuckets
+} from "../EnergyProcessingUtil";
 
 export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_TYPE, startDate: number, setStartDate: (date: number) => void}) {
-  let [ data, setData ]       = useState<any>(null);
-  let [ processedData, setProcessedData ] = useState<EnergyData>(null);
-  let [ loading, setLoading ] = useState<boolean>(true);
+  let [ data,             setData ]             = useState<any>(null);
+  let [ preProcessedData, setPreProcessedData ] = useState<StoneBucketEnergyData>(null);
+  let [ processedData,    setProcessedData ]    = useState<EnergyData>(null);
+  let [ loading,          setLoading ]          = useState<boolean>(true);
+  let [ locationId,       setLocationId ]       = useState<locationId | null>(null);
 
   useEffect(() => {
     async function getData() {
@@ -29,8 +36,8 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
         let data = await container.getData(props.startDate, props.mode)
         setLoading(false);
         setData(data);
-
-        setProcessedData(processPerLocation(props.sphereId, getEnergyRange(props.startDate, props.mode), data, props.mode));
+        console.log("PREPROCESSING DATA");
+        setPreProcessedData(processStoneBuckets(props.sphereId, getEnergyRange(props.startDate, props.mode), data, props.mode));
       }
       catch (err : any) {
         console.error(err)
@@ -47,9 +54,23 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
     return () => { clearInterval(interval); };
   },[props.mode, props.startDate, props.sphereId]);
 
+  useEffect(() => {
+    console.log("---PROCESSING DATA");
+    if (!preProcessedData) { return; };
+    if (locationId) {
+      setProcessedData(filterBucketsForLocation(props.sphereId, locationId, getEnergyRange(props.startDate, props.mode), preProcessedData))
+    }
+    else {
+      setProcessedData(bucketsToLocations(props.sphereId, getEnergyRange(props.startDate, props.mode), preProcessedData))
+    }
+
+    console.log("preProcessedData", preProcessedData);
+    console.log("processedData",    processedData);
+  }, [preProcessedData, locationId]);
+
 
   let startDate = props.startDate;
-  let range = getEnergyRange(props.mode, startDate);
+  let range = getEnergyRange(startDate, props.mode);
 
   let indicator;
   let calculator;
@@ -87,7 +108,10 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
         </TouchableOpacity>
       </View>
       <EnergyGraphAxisSvg data={processedData} type={props.mode} width={0.9*screenWidth} height={200} />
-      <RoomList sphereId={props.sphereId} mode={props.mode} data={processedData} />
+      <View style={{flex:1}}>
+        { !locationId && <RoomList sphereId={props.sphereId} data={processedData} setLocationId={setLocationId} /> }
+        { locationId  && <CrownstoneList sphereId={props.sphereId} data={processedData} locationId={locationId} /> }
+      </View>
     </React.Fragment>
   );
 }
