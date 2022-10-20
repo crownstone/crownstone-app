@@ -53,14 +53,14 @@ export function EnergyGraphAxisSvg(props : {data: EnergyData | null, height: num
         spacing={dataSpacing}
       />
       {timeAxis}
-      <BarGraphDataSvg
-        {...dimensions}
-        data={props.data}
-        valueFillFactor={0.85}
-        maxValue={maxValue}
-        valueMaxHeight={valueMaxHeight}
-        callback={(index, locationId) => { console.log("Tapped hour", index, "room", locationId)}}
-      />
+      {/*<BarGraphDataSvg*/}
+      {/*  {...dimensions}*/}
+      {/*  data={props.data}*/}
+      {/*  valueFillFactor={0.85}*/}
+      {/*  maxValue={maxValue}*/}
+      {/*  valueMaxHeight={valueMaxHeight}*/}
+      {/*  callback={(index, locationId) => { console.log("Tapped hour", index, "room", locationId)}}*/}
+      {/*/>*/}
     </Svg>
   )
 }
