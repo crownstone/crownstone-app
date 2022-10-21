@@ -56,11 +56,12 @@ export function processStoneBuckets(sphereId: sphereId, range: {start: Date, end
 
 export function bucketsToLocations(sphereId: sphereId, range: {start: Date, end: Date}, data: StoneBucketEnergyData) : EnergyData {
   let sphere    = Get.sphere(sphereId);
-  let locations = sphere.locations;
+  let locations = DataUtil.getLocationsInSphereAlphabetically(sphereId);
 
   // loop over all locations and get the crownstones in that location. From the set of stones, get the energy usage.
   let locationData = {};
-  for (let locationId in locations) {
+  for (let location of locations) {
+    let locationId = location.id;
     locationData[locationId] = new Array(data.bucketCount).fill(0);
 
     let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
@@ -90,13 +91,14 @@ export function bucketsToLocations(sphereId: sphereId, range: {start: Date, end:
 }
 
 export function filterBucketsForLocation(sphereId: sphereId, locationId: locationId, range: {start: Date, end: Date}, data: StoneBucketEnergyData) : EnergyData {
-  let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
+  let stonesInLocation = DataUtil.getStonesInLocationAlphabetically(sphereId, locationId);
   let result = [];
-  for (let stoneId in data.buckets) {
-    if (stonesInLocation[stoneId]) {
+
+  for (let stone of stonesInLocation) {
+    if (data.buckets[stone.id]) {
       for (let i = 0; i < data.bucketCount; i++) {
         if (!result[i]) { result.push({}); }
-        result[i][stoneId] = data.buckets[stoneId][i];
+        result[i][stone.id] = data.buckets[stone.id][i];
       }
     }
   }

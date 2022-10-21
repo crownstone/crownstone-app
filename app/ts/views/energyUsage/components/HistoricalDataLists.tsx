@@ -6,6 +6,7 @@ import {IconButton} from "../../components/IconButton";
 import {Alert, View} from "react-native";
 import * as React from "react";
 import { DataUtil } from "../../../util/DataUtil";
+import { InfoBar } from "../../components/editComponents/InfoBar";
 
 
 export function RoomList(props: { sphereId: sphereId, data: EnergyData | null, setLocationId: (locationId: locationId) => void }) {
@@ -59,7 +60,7 @@ export function CrownstoneList(props: { sphereId: sphereId, locationId: location
     stones.sort((a,b) => { return a.name > b.name ? 1 : -1});
     for (let stoneData of stones) {
       items.push(
-        <NavigationBar
+        <InfoBar
           key={stoneData.id}
           backgroundColor={"transparent"}
           label={stoneData.name}

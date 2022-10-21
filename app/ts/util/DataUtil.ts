@@ -406,6 +406,18 @@ export const DataUtil = {
     return filteredStones;
   },
 
+  getStonesInLocationAlphabetically: function(sphereId : string, locationId?) : StoneData[] {
+    let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
+    let result = [];
+
+    for (let stoneId in stonesInLocation) {
+      result.push(stonesInLocation[stoneId]);
+    }
+
+    result.sort((a, b) =>  { return a.config.name > b.config.name ? 1 : -1});
+    return result;
+  },
+
   getHubsInLocation: function(sphereId : string, locationId?) : {[hubId: string]: HubData} {
     let state = core.store.getState();
     let filteredHubs = {};
