@@ -60,7 +60,6 @@ function EnergyUsageContent(props) {
   let [checkedUploadPermission, setCheckedUploadPermission] = useState<boolean>(false);
   let [hasUploadPermission,     setHasUploadPermission]     = useState<boolean>(false);
   let [mode, setMode]                                       = useState<GRAPH_TYPE>("LIVE");
-  let [startDate, setStartDate]                             = useState<number>(Date.now());
 
   useEffect(() => {
     setCheckedUploadPermission(false);
@@ -107,8 +106,6 @@ function EnergyUsageContent(props) {
             <HistoricalEnergyUsageOverview
               sphereId={props.sphereId}
               mode={mode}
-              startDate={startDate}
-              setStartDate={setStartDate}
               hasUploadPermission={hasUploadPermission}
               setHasUploadPermission={setHasUploadPermission}
               checkedUploadPermission={checkedUploadPermission}

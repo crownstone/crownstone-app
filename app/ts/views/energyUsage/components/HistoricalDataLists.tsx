@@ -48,7 +48,7 @@ export function CrownstoneList(props: { sphereId: sphereId, locationId: location
   let sphere = Get.sphere(props.sphereId);
   let stonesInLocation = DataUtil.getStonesInLocation(props.sphereId, props.locationId);
   let items = [];
-  if (sphere) {
+  if (sphere && props.data) {
     let stones = [];
     for (let stoneId in sphere.stones) {
       if (stonesInLocation[stoneId]) {

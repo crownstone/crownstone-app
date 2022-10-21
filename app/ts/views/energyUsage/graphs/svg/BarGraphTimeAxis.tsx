@@ -64,7 +64,7 @@ export function BarGraphTimeAxis_Month(props: BarGraphTimeProps_Preconfigured) {
   return (
     <BarGraphTimeAxisSvg
       {...props}
-      amountOfValues={props.data.data.length}
+      amountOfValues={props.data?.data?.length ?? 30}
       label={(value) => {
         if (value % 2 !== 0) {
           return null;

@@ -53,7 +53,7 @@ export const xUtil = {
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':00:00'
   },
 
-  getDateFormat: function(timestamp)  {
+  getDateFormat: function(timestamp : timestamp | Date)  {
     if (timestamp === 0) {
       return 'unknown';
     }

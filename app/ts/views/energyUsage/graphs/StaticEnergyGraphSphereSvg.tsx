@@ -25,6 +25,7 @@ export function EnergyGraphAxisSvg(props : {data: EnergyData | null, height: num
   let yStart          = 10; // area on top reserved for unit information etc.
   let yEnd            = props.height;
   let valueMaxHeight  = height - yStart - dataSpacing;
+  let valueFillFactor = 0.85;
 
   let dimensions = {width, height, xStart, xEnd, yStart, yEnd};
 
@@ -35,7 +36,9 @@ export function EnergyGraphAxisSvg(props : {data: EnergyData | null, height: num
     case "DAY":
       timeAxis = <BarGraphTimeAxis_Hours {...dimensions} textHeight={timeTextHeight} data={props.data}/>; break;
     case "WEEK":
-      timeAxis = <BarGraphTimeAxis_Week  {...dimensions} textHeight={timeTextHeight} data={props.data}/>; break;
+      timeAxis = <BarGraphTimeAxis_Week  {...dimensions} textHeight={timeTextHeight} data={props.data}/>;
+      valueFillFactor = 0.4;
+      break;
     case "MONTH":
       timeAxis = <BarGraphTimeAxis_Month {...dimensions} textHeight={timeTextHeight} data={props.data}/>; break;
     case "YEAR":
@@ -53,14 +56,14 @@ export function EnergyGraphAxisSvg(props : {data: EnergyData | null, height: num
         spacing={dataSpacing}
       />
       {timeAxis}
-      {/*<BarGraphDataSvg*/}
-      {/*  {...dimensions}*/}
-      {/*  data={props.data}*/}
-      {/*  valueFillFactor={0.85}*/}
-      {/*  maxValue={maxValue}*/}
-      {/*  valueMaxHeight={valueMaxHeight}*/}
-      {/*  callback={(index, locationId) => { console.log("Tapped hour", index, "room", locationId)}}*/}
-      {/*/>*/}
+      <BarGraphDataSvg
+        {...dimensions}
+        data={props.data}
+        valueFillFactor={valueFillFactor}
+        maxValue={maxValue}
+        valueMaxHeight={valueMaxHeight}
+        callback={(index, locationId) => { console.log("Tapped hour", index, "room", locationId)}}
+      />
     </Svg>
   )
 }

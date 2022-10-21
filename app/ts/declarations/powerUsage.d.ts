@@ -1,5 +1,6 @@
 type itemId = string;
-type GRAPH_TYPE = "LIVE" | "DAY" | "WEEK" | "MONTH" | "YEAR"
+type GRAPH_DATE_TYPE =  "DAY" | "WEEK" | "MONTH" | "YEAR"
+type GRAPH_TYPE = "LIVE" | GRAPH_DATE_TYPE
 
 interface EnergyData {
   startTime: timestamp,

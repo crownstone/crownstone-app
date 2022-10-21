@@ -67,7 +67,10 @@ export class EnergyDataCache {
     }
     else {
       if (container[startDate].updateTime < Date.now() - 4*60e3) {
-        await getData();
+        // only update data if the end date is not older than 10 minutes ago, if not, we expect the data to be the same.
+        if (range.end.getTime() >= Date.now() - 600e3) {
+          await getData();
+        }
         return container[startDate].data;
       }
       return container[startDate].data;

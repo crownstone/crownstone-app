@@ -137,6 +137,7 @@ function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nth
           if (energyUsed < 0) {
             energyUsed = lastValue / WattHour;
           }
+          if (energyUsed < 0.5) { energyUsed = 0; }
           stoneBuckets[stoneId][i] = energyUsed;
           break;
         }
@@ -151,7 +152,7 @@ function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nth
 
 
 
-export function getEnergyRange(date, mode) : {start: Date, end: Date } {
+export function getEnergyRange(date: Date | timestamp | timeISOString, mode: GRAPH_TYPE) : {start: Date, end: Date } {
   date = new Date(date);
 
   if (mode === "DAY") {
