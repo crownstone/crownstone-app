@@ -14,12 +14,13 @@ import {
 } from "react-native";
 
 import {Background, BackgroundCustomTopBar} from './../components/Background'
-import {background, colors, deviceModel, screenWidth, tabBarMargin} from "./../styles";
+import { background, colors, deviceModel, screenWidth, styles, tabBarMargin } from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
+import { Icon } from "../components/Icon";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -38,6 +39,11 @@ export function LoginSplash(props) {
         <View style={{alignItems:'center', justifyContent: 'center', flex:1 }}>
           <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
+          <View style={{flex:0.2}} />
+          <TouchableOpacity style={{flexDirection:'row', ...styles.centered}} onPress={() => { NavigationUtil.launchModal('CloudChoice'); }}>
+            <Icon name={'fa5-cloud'} size={20} color={colors.black.rgba(0.2)} />
+            <Text style={{color: colors.black.rgba(0.2), padding:5, fontWeight: 'bold'}}>{"Configure custom cloud"}</Text>
+          </TouchableOpacity>
           <View style={{flex:2}} />
           <View style={loginStyles.loginButtonContainer}>
             <View style={{flexDirection:'row'}}>

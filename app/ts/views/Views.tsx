@@ -118,18 +118,19 @@ import { DeviceError }                        from "./deviceViews/DeviceError";
 import { EnergyUsage }                        from "./energyUsage/EnergyUsage";
 import { BehaviourMenu }                      from "./main/behaviour/BehaviourMenu";
 import { RoomTraining }                       from "./main/localization/RoomTraining";
-import {RoomTraining_inHand_intro} from "./main/localization/RoomTraining_inHand_intro";
-import {RoomTraining_training} from "./main/localization/RoomTraining_training";
-import {RoomTraining_inPocket_intro} from "./main/localization/RoomTraining_inPocket_intro";
-import {RoomTraining_conclusion} from "./main/localization/RoomTraining_conclusion";
-import { LocalizationQuickFix } from "./main/localization/LocalizationQuickFix";
-import { LocalizationCrownstoneMoved } from "./main/localization/LocalizationCrownstoneMoved";
-import { SelectCrownstone } from "./selection/SelectCrownstone";
-import { SelectCrownstoneOverlay } from "./overlays/SelectCrownstoneOverlay";
-import { LocalizationDetail } from "./main/localization/LocalizationDetail";
-import {LocalizationFindAndFix} from "./main/localization/LocalizationFindAndFix";
-import {LocalizationFingerprintManager} from "./main/localization/LocalizationFingerprintManager";
-import {Ability_DoubleTapSwitchcraft} from "./deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft";
+import { RoomTraining_inHand_intro }          from "./main/localization/RoomTraining_inHand_intro";
+import { RoomTraining_training }              from "./main/localization/RoomTraining_training";
+import { RoomTraining_inPocket_intro }        from "./main/localization/RoomTraining_inPocket_intro";
+import { RoomTraining_conclusion }            from "./main/localization/RoomTraining_conclusion";
+import { LocalizationQuickFix }               from "./main/localization/LocalizationQuickFix";
+import { LocalizationCrownstoneMoved }        from "./main/localization/LocalizationCrownstoneMoved";
+import { SelectCrownstone }                   from "./selection/SelectCrownstone";
+import { SelectCrownstoneOverlay }            from "./overlays/SelectCrownstoneOverlay";
+import { LocalizationDetail }                 from "./main/localization/LocalizationDetail";
+import { LocalizationFindAndFix }             from "./main/localization/LocalizationFindAndFix";
+import { LocalizationFingerprintManager }     from "./main/localization/LocalizationFingerprintManager";
+import { Ability_DoubleTapSwitchcraft }       from "./deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft";
+import { CloudChoice }                        from "./startupViews/CloudChoice";
 
 
 export const Views = {
@@ -141,6 +142,7 @@ export const Views = {
   SetupLocalization:                 SetupLocalization,
   BehaviourMenu:                     BehaviourMenu,
 
+  CloudChoice:                       CloudChoice,
   SetupCrownstone:                   SetupCrownstone,
   SetupHub:                          SetupHub,
   ScanningForSetupCrownstones:       ScanningForSetupCrownstones,

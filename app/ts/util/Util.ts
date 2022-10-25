@@ -22,6 +22,13 @@ export const emailChecker = function(email) {
 };
 
 
+// function to check if a string is a valid URL without using the URL Method itself
+export const urlChecker = function(url) {
+  let reg = /^(http|https):\/\/[^ "]+$/;
+  return reg.test(url);
+}
+
+
 export const characterChecker = function (value) {
   let reg = /[\D]/g;
   return reg.test(value);

@@ -7,7 +7,6 @@ import { DataUtil } from "../../util/DataUtil";
 
 const WattHour = 3600;
 
-
 export function processStoneBuckets(sphereId: sphereId, range: {start: Date, end: Date}, data: EnergyReturnData[], mode: GRAPH_TYPE) : StoneBucketEnergyData {
   let processed   = [];
   let accumulated = {};

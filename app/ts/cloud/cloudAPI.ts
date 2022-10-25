@@ -2,6 +2,7 @@
 
 import { bootloader }        from './sections/bootloader'
 import { cloudApiBase, TokenStore } from "./sections/cloudApiBase";
+import { cloudHi }           from './sections/hi'
 import { devices }           from './sections/devices'
 import { firmware }          from './sections/firmware'
 import { fingerprints }      from './sections/fingerprints'
@@ -32,6 +33,7 @@ function combineSections() {
 
   // mixin all modules.
   xUtil.mixin(result, bootloader,        result);
+  xUtil.mixin(result, cloudHi,           result);
   xUtil.mixin(result, devices,           result);
   xUtil.mixin(result, firmware,          result);
   xUtil.mixin(result, fingerprints,      result);
