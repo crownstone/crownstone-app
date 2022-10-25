@@ -22,6 +22,7 @@ import { ListEditableItems }       from '../components/ListEditableItems'
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
 import {LocalizationCore} from "../../localization/LocalizationCore";
 import {Get} from "../../util/GetUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -207,6 +208,30 @@ export class SettingsApp extends LiveComponent<any, any> {
       below: true
     });
 
+    items.push({
+      label: "CUSTOM CLOUDS",
+      type: 'explanation',
+      alreadyPadded: true
+    });
+
+    items.push({
+      label: "Customize cloud address",
+      type: 'button',
+      icon: <Icon name="fa5-cloud" size={22} color={colors.csBlue.hex}/>,
+      style:{color:colors.csBlue.hex},
+      callback: () => {
+        NavigationUtil.launchModal("CloudChoice");
+      }
+    });
+
+    items.push({
+      label: "You can run your cloud locally if you want to.",
+      type: 'explanation',
+      below: true
+    });
+
+
+
     let revokeItems = [];
     let spheres = core.store.getState().spheres;
     for (let sphereId in spheres) {
@@ -228,7 +253,7 @@ export class SettingsApp extends LiveComponent<any, any> {
     }
 
     if (revokeItems.length > 0) {
-      items.push({type: 'explanation', label: "ENERGY COLLECTION PERMISSION", alreadyPadded:true});
+      items.push({type: 'explanation', label: "ENERGY COLLECTION PERMISSION", alreadyPadded:false});
       items = items.concat(revokeItems);
       items.push({type: 'spacer'});
       items.push({type: 'spacer'});
