@@ -49,7 +49,6 @@ import { Platform } from "react-native";
    * Silence cloud will silently reject all cloud calls.
    */
   export let DISABLE_NATIVE = false;
-  DeviceInfo.isEmulator().then((result) => { DISABLE_NATIVE = result; })
   export let SILENCE_CLOUD  = false;
 
   /**
@@ -64,6 +63,7 @@ import { Platform } from "react-native";
    * Point to the production cloud.
    */
   export let CLOUD_ADDRESS    = 'https://cloud.crownstone.rocks/api/';
+  export let SSE_ADDRESS      = 'https://events.crownstone.rocks/sse/';
   export let CLOUD_V2_ADDRESS = 'https://next.crownstone.rocks/api/';
 
 
@@ -144,7 +144,7 @@ import { Platform } from "react-native";
   export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
 
   // interval for syncing sphere users with the cloud so you see their faces in the app.
-  export const CLOUD_POLLING_INTERVAL = 15; // s --> 10 seconds
+  export const CLOUD_POLLING_INTERVAL = 15; // s --> 15 seconds
 
   // The amount of time to wait until the promise manager gives up on a pending promise.
   export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
@@ -201,7 +201,7 @@ if (RELEASE_MODE_USED === false && !IGNORE_LOCAL_CONFIG) {
     }
   }
   console.log("USING CONFIG", module.exports);
-  } catch (err) {
+  } catch (err : any) {
   // cant find local config. ignore import.
   }
 }

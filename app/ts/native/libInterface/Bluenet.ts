@@ -4,8 +4,10 @@ import { LOGi } from "../../logging/Log";
 import {BridgeConfig} from "./BridgeConfig";
 import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
 
-export let Bluenet;
-export let Bluenet_direct; // used for UI testing
+export let Bluenet : BridgeInterface;
+export let Bluenet_direct : BridgeInterface; // used for UI testing
+
+type vibrationType = "error" | "success" | "warning" |  "medium" | "heavy";
 
 const BluenetAPI = {
   clearTrackedBeacons:      () => { console.log("BluenetBridgeCall: clearTrackedBeacons: "); },        // called through BluenetPromiseWrapper --> must be promise.
@@ -21,9 +23,6 @@ const BluenetAPI = {
   stopScanning:             () => { console.log("BluenetBridgeCall: stopDFU:    "); },
   requestBleState:          () => { console.log("BluenetBridgeCall: requestBleState: "); },// Send events "bleStatus" and "locationStatus" with the current state.
 
-  startIndoorLocalization:  () => { console.log("BluenetBridgeCall: startIndoorLocalization: "); },
-  stopIndoorLocalization:   () => { console.log("BluenetBridgeCall: stopIndoorLocalization:  "); },
-
   requestLocation:          () => { console.log("BluenetBridgeCall: requestLocation:          "); },// Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
   requestLocationPermission:() => { console.log("BluenetBridgeCall: requestLocationPermission:"); },// Request for location permission during tutorial.
   trackIBeacon:             () => { console.log("BluenetBridgeCall: trackIBeacon:             "); },// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
@@ -31,13 +30,6 @@ const BluenetAPI = {
   pauseTracking:            () => { console.log("BluenetBridgeCall: pauseTracking:            "); },// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
   resumeTracking:           () => { console.log("BluenetBridgeCall: resumeTracking:           "); },// Start tracking again, with the list that is already there.
 
-  startCollectingFingerprint:  () => { console.log("BluenetBridgeCall: startCollectingFingerprint:  "); },
-  abortCollectingFingerprint:  () => { console.log("BluenetBridgeCall: abortCollectingFingerprint:  "); },
-  pauseCollectingFingerprint:  () => { console.log("BluenetBridgeCall: pauseCollectingFingerprint:  "); },
-  resumeCollectingFingerprint: () => { console.log("BluenetBridgeCall: resumeCollectingFingerprint: "); },
-  finalizeFingerprint:         () => { console.log("BluenetBridgeCall: finalizeFingerprint:         "); },       // called through BluenetPromiseWrapper --> must be promise. Promise return value is a stringified fingerprint
-
-  loadFingerprint:          () => { console.log("BluenetBridgeCall: loadFingerprint:       "); },
   getMACAddress:            () => { console.log("BluenetBridgeCall: getMACAddress:         "); },             // called through BluenetPromiseWrapper --> must be promise.
   commandFactoryReset:      () => { console.log("BluenetBridgeCall: commandFactoryReset:   "); },       // called through BluenetPromiseWrapper --> must be promise.
   recover:                  () => { console.log("BluenetBridgeCall: recover:               "); },                   // called through BluenetPromiseWrapper --> must be promise.
@@ -55,8 +47,6 @@ const BluenetAPI = {
   getFirmwareVersion:       () => { console.log("BluenetBridgeCall: getFirmwareVersion:      "); },
   getUICR:                  () => { console.log("BluenetBridgeCall: geUICR:                  "); },
   bootloaderToNormalMode:   () => { console.log("BluenetBridgeCall: bootloaderToNormalMode:  "); },
-  clearFingerprintsPromise: () => { console.log("BluenetBridgeCall: clearFingerprintsPromise:"); },
-  clearFingerprints:        () => { console.log("BluenetBridgeCall: clearFingerprints:       "); },
   setTime:                  () => { console.log("BluenetBridgeCall: setTime:                 "); },
   meshSetTime:              () => { console.log("BluenetBridgeCall: meshSetTime:             "); },
   batterySaving:            () => { console.log("BluenetBridgeCall: batterySaving:           "); }, // Called with true when app goes to background, lib can stop parsing service data. Can be called multiple times in short time.
@@ -98,7 +88,7 @@ const BluenetAPI = {
 
   isPeripheralReady:           () => { console.log("BluenetBridgeCall: isPeripheralReady"); },
   setSwitchState:              () => { console.log("BluenetBridgeCall: setSwitchState"); },
-  isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); },
+  isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); return true; },
   clearErrors:                 () => { console.log("BluenetBridgeCall: clearErrors"); },
   broadcastSwitch:             () => { console.log("BluenetBridgeCall: broadcastSwitch"); },
   addBehaviour:                () => { console.log("BluenetBridgeCall: addBehaviour"); },
@@ -140,12 +130,10 @@ const BluenetAPI = {
   turnOnBroadcast:                     () => { console.log("BluenetBridgeCall: turnOnBroadcast"); },
   broadcastBehaviourSettings:          () => { console.log("BluenetBridgeCall: broadcastBehaviourSettings"); },
 
-
   syncBehaviours:                      () => { console.log("BluenetBridgeCall: syncBehaviours"); },
   getBehaviourMasterHash:              () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
   setTimeViaBroadcast:                 () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
   broadcastExecute:                    () => { console.log("BluenetBridgeCall: broadcastExecute"); },
-
 
   transferHubTokenAndCloudId:          () => { console.log("BluenetBridgeCall: transferHubTokenAndCloudId"); },
   setUartKey:                          () => { console.log("BluenetBridgeCall: setUartKey"); },
@@ -171,15 +159,14 @@ const BluenetAPI = {
   setSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: setSoftOnSpeed"); },
   getSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: getSoftOnSpeed"); },
 
-
   getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
-
   addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
   removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
 
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
   getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
   gotoOsAppSettings:                    () => {console.log("BluenetBridgeCall: gotoSystemSettings"); },
+  vibrate:                              (type: vibrationType) => {console.log("BluenetBridgeCall: vibrate"); },
 
 };
 
@@ -187,6 +174,7 @@ if (DISABLE_NATIVE === true && BridgeConfig.mockBluenet === false) {
   // console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   // console.log("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
   // console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  //@ts-ignore
   Bluenet = BluenetAPI;
 }
 else if (NativeModules.BluenetJS) {
@@ -216,11 +204,15 @@ else if (NativeModules.BluenetJS) {
         return NativeModules.BluenetJS[key].apply(this, bluenetArguments);
       }
     })
+    //@ts-ignore
     Bluenet        = wrappedBluenet;
+    //@ts-ignore
     Bluenet_direct = NativeModules.BluenetJS;
   }
   else {
+    //@ts-ignore
     Bluenet        = NativeModules.BluenetJS;
+    //@ts-ignore
     Bluenet_direct = NativeModules.BluenetJS;
   }
 

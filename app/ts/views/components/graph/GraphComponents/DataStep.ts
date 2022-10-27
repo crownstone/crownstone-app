@@ -72,7 +72,7 @@ DataStep.prototype.formatValue = function(current) {
     return current.toPrecision(3);
   }
   else {
-    current.toPrecision(4)
+    return current.toPrecision(4)
   }
 };
 

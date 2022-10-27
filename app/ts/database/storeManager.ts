@@ -1,7 +1,6 @@
 import {Alert} from 'react-native'
 import {applyMiddleware, createStore} from 'redux'
 import CrownstoneReducer from './reducer'
-import {NativeEnhancer} from './enhancers/nativeEnhancer'
 import {CloudEnhancer} from './enhancers/cloudEnhancer'
 import {EventEnhancer} from './enhancers/eventEnhancer'
 import {LOG, LOGe} from '../logging/Log'
@@ -11,15 +10,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {batchActions, enableBatching} from "./reducers/BatchReducer";
 import {migrateBeforeInitialization} from "../backgroundProcesses/migration/StoreMigration";
 import {core} from "../Core";
+import { CloudAddresses } from "../backgroundProcesses/indirections/CloudAddresses";
 
 const LOGGED_IN_USER_ID_STORAGE_KEY = 'CrownstoneLoggedInUser';
+const CLOUD_ADDRESSES_STORAGE_KEY   = 'CrownstoneCloudAddresses';
 
 class StoreManagerClass {
   store : any;
   storeInitialized : any;
   storageKey : any;
   storageKeyBase : string;
-  userIdentificationStorageKey : string;
   writeToDiskTimeout : any;
   unsubscribe : any;
   persistor : Persistor;
@@ -30,7 +30,6 @@ class StoreManagerClass {
 
     this.storageKey = null;
     this.storageKeyBase = 'CrownstoneStore_';
-    this.userIdentificationStorageKey = 'CrownstoneLoggedInUser';
 
     this.writeToDiskTimeout = null;
     this.unsubscribe = null;
@@ -41,16 +40,36 @@ class StoreManagerClass {
   }
 
   _init() {
-    AsyncStorage.getItem(this.userIdentificationStorageKey) // this will just contain a string of the logged in user.
+    AsyncStorage.getItem(LOGGED_IN_USER_ID_STORAGE_KEY) // this will just contain a string of the logged in user.
       .then((userId) => {
         this._initializeStore(userId);
       })
       .catch((err) => { LOGe.store("StoreManager: Could not get store from AsyncStorage", err?.message)});
+
+    AsyncStorage.getItem(CLOUD_ADDRESSES_STORAGE_KEY) // this will just contain a string of the logged in user.
+      .then((cloudAddresses) => {
+        if (cloudAddresses !== null) {
+          let addressData = JSON.parse(cloudAddresses);
+          CloudAddresses.cloud_v1 = addressData.cloud_v1;
+          CloudAddresses.cloud_v2 = addressData.cloud_v2;
+          CloudAddresses.sse      = addressData.sse;
+        }
+      })
+      .catch((err) => { LOGe.store("StoreManager: Could not get cloudAddresses from AsyncStorage", err?.message)});
+  }
+
+  async persistCloudAddresses() {
+    let addresData = JSON.stringify(CloudAddresses);
+    await AsyncStorage.setItem(CLOUD_ADDRESSES_STORAGE_KEY, addresData);
   }
 
   _initializeStore(userId) {
     LOG.info("StoreManager: initializing Store");
-    this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer, PersistenceEnhancer));
+    this.store = createStore(
+      enableBatching(CrownstoneReducer),
+      {},
+      applyMiddleware(CloudEnhancer, EventEnhancer, PersistenceEnhancer)
+    );
     this.store.batchDispatch = (actions) => { return batchActions(this.store, actions); };
 
     migrateBeforeInitialization()
@@ -120,7 +139,7 @@ class StoreManagerClass {
       if (this.persistor.initialized) {
         this.persistor.persistFull()
           .then(() => {
-            return AsyncStorage.setItem(this.userIdentificationStorageKey, "");
+            return AsyncStorage.setItem(LOGGED_IN_USER_ID_STORAGE_KEY, "");
           })
           .then(() => {
             return this.persistor.endSession();

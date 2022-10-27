@@ -14,19 +14,24 @@ class FastFailure {
     let test = event.test;
     if (test.errors.length > 0) {
       console.warn("A test has encountered an Error. The rest of the tests will be aborted.");
-      console.info(formatResultsErrors([
-        {
-          ancestorTitles:[test.parent.name],
-          fullName:test.name,
-          failureDetails:test.errors[0][0],
-          failureMessages:[String(test.errors[0][0].stack)],
-          duration: test.duration,
-          numPassingAsserts:0,
-          status: "failed",
-          title: test.name,
-        }
-      ], cfg as any,{noStackTrace:false}));
-      process.exit()
+      try {
+        console.info(formatResultsErrors([
+          {
+            ancestorTitles: [test.parent.name],
+            fullName: test.name,
+            failureDetails: test.errors[0][0],
+            failureMessages: [String(test.errors[0][0].stack)],
+            duration: test.duration,
+            numPassingAsserts: 0,
+            status: "failed",
+            title: test.name,
+          }
+        ], cfg as any, {noStackTrace: false}));
+      }
+      catch (err) {
+        console.error("Failed printing error", err, test.errors);
+      }
+      process.exit();
     }
   }
 }

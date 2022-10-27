@@ -12,8 +12,9 @@ import {LOGe} from '../../../logging/Log'
 import {background, colors, screenWidth} from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereInvitedUser", key)(a,b,c,d,e);
@@ -133,7 +134,7 @@ export class SphereInvitedUser extends Component<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereInvitedUser"}>
+      <SettingsBackground testID={"SphereInvitedUser"}>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
@@ -143,7 +144,7 @@ export class SphereInvitedUser extends Component<any, any> {
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

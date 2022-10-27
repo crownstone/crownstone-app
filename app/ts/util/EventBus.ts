@@ -87,6 +87,17 @@ export class EventBusClass {
     }
   }
 
+  /**
+   * Emit after a tick to get let the calling function finish first
+   * @param topic
+   * @param callback
+   */
+  emitAfterTick(topic, callback) {
+    setTimeout(() => {
+      this.emit(topic, callback);
+    }, 0);
+  }
+
   once(topic, callback) {
     let unsubscriber = this.on(topic, (data: any) => {
       unsubscriber();

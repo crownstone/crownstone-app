@@ -38,13 +38,13 @@ export const Settings_logOut = () => {
     await replaceText('login_password','testPassword');
     await tapReturnKey('login_password');
     await tap('login_big_button')
-    await waitToNavigate('PermissionIntroduction', 15000);
+    await waitToNavigate('PermissionIntroduction', 80,15000);
     await tap('permission_i_understand')
     if (isIos()) {
       await waitToNavigate('permission_Notifications_view');
       await tap('permission_sounds_fair')
     }
-    await waitToNavigate('SphereOverview', 15000);
+    await waitToNavigate('SphereOverview', 80,15000);
     await goToSettingsTab()
   })
 };

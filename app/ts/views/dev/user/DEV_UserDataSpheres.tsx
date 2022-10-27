@@ -19,6 +19,7 @@ import { base_core } from "../../../Base_core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { AppUtil } from "../../../util/AppUtil";
+import { SettingsNavbarBackground } from '../../components/SettingsBackground';
 
 
 
@@ -70,7 +71,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
   render() {
     let state = core.store.getState();
     return (
-      <Background image={background.main} keyboardAvoid={true} hideNotifications={true}>
+      <SettingsNavbarBackground keyboardAvoid={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
@@ -106,9 +107,9 @@ export class DEV_UserData extends LiveComponent<any, any> {
                   }
                   else {
                     Alert.alert(
-"Sync already in progress",
-"Try again later",
-[{text:"OK"}]
+                "Sync already in progress",
+                "Try again later",
+                [{text:"OK"}]
                     );
                   }
                 }} />
@@ -145,10 +146,10 @@ export class DEV_UserData extends LiveComponent<any, any> {
                 }}
               />
             </View>
-            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.7)}} />
+            <View style={{height:30}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsNavbarBackground>
     );
   }
 }

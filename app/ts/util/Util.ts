@@ -22,6 +22,13 @@ export const emailChecker = function(email) {
 };
 
 
+// function to check if a string is a valid URL without using the URL Method itself
+export const urlChecker = function(url) {
+  let reg = /^(http|https):\/\/[^ "]+$/;
+  return reg.test(url);
+}
+
+
 export const characterChecker = function (value) {
   let reg = /[\D]/g;
   return reg.test(value);
@@ -157,7 +164,8 @@ export const Util = {
     return screenHeight < 600;
   },
 
-  canUpdate: function(stone, state) {
+  canUpdate: function(stone : StoneData) {
+    let state = core.store.getState();
     // only admins are allowed to update
     if (Permissions.activeSphere().seeUpdateCrownstone) {
       if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER) {

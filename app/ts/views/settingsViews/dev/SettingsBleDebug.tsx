@@ -3,15 +3,15 @@ import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { background, colors } from "../../styles";
-import {Util} from "../../../util/Util";
-import {IconCircle} from "../../components/IconCircle";
+import { colors, tabBarHeight } from "../../styles";
+import { Util } from "../../../util/Util";
+import { IconCircle } from "../../components/IconCircle";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
@@ -100,11 +100,11 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
-        <ScrollView keyboardShouldPersistTaps="always">
+      <SettingsNavbarBackground>
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{paddingBottom: tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

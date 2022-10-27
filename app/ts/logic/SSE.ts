@@ -1,5 +1,5 @@
 import {LOGd, LOGe, LOGi, LOGw} from "../logging/Log";
-import RNEventSource            from 'react-native-event-source'
+import { RNEventSource }        from 'rn-eventsource-reborn';
 import { SseClassGenerator }    from "crownstone-sse/rn";
 import { Scheduler }            from "../logic/Scheduler";
 
@@ -7,20 +7,16 @@ const sha1 = require('sha-1');
 
 class Logger {
   error(...args) {
-    LOGe.info(...args);
-    console.error(...args);
+    LOGe.info('SSE:', ...args);
   }
   warn(...args) {
-    LOGw.info(...args);
-    console.log(...args);
+    LOGw.info('SSE:', ...args);
   }
   info(...args) {
-    LOGi.info(...args);
-    console.log(...args);
+    LOGi.info('SSE:', ...args);
   }
   debug(...args) {
-    LOGd.info(...args);
-    console.log(...args);
+    LOGd.info('SSE:', ...args);
   }
 }
 

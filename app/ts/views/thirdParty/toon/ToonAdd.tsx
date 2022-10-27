@@ -9,7 +9,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 import {TextEditInput} from "../../components/editComponents/TextEditInput";
 import {LOGe} from "../../../logging/Log";
 import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import {LiveComponent} from "../../LiveComponent";
 import {CodedError} from "../../../util/Errors";

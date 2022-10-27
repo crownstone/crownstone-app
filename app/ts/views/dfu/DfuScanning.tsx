@@ -10,12 +10,12 @@ import {
   ScrollView, Text,
   View
 } from "react-native";
-import { background, colors, screenWidth, styles } from "../styles";
+import {background, colors, screenWidth, statusBarHeight, styles, topBarHeight} from "../styles";
 import { core } from "../../Core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn } from "../components/animated/FadeInView";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Scheduler } from "../../logic/Scheduler";
@@ -27,6 +27,7 @@ import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { Button } from "../components/Button";
+import {SettingsBackground} from "../components/SettingsBackground";
 
 const triggerId = "ScanningForDfu";
 
@@ -164,42 +165,42 @@ export class DfuScanning extends LiveComponent<any, any> {
 
 
   _renderer(item, index, stoneId) {
-    let visible = this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE || this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE
-    let backgroundColor = colors.lightGray.rgba(0.5);
-    let iconColor = colors.csBlue.rgba(0.2);
+    let visible = this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE || this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE;
+    let backgroundColor = colors.white.rgba(0.5);
+    let iconColor = colors.black.hex;
     let closeEnough = false;
+    let maxOpacity = 0.5;
 
     if (visible) {
       if (this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE) {
-        backgroundColor = colors.green.rgba(0.8);
-        iconColor = colors.csBlue.hex;
+        backgroundColor = colors.green.rgba(0.6);
+        iconColor = colors.black.hex;
         closeEnough = true;
+        maxOpacity = 1;
       }
       else {
-        backgroundColor = colors.white.rgba(0.8);
-        iconColor = colors.csBlue.hex;
+        backgroundColor = colors.white.rgba(0.4);
+        iconColor = colors.black.hex;
+        maxOpacity = 0.75;
       }
     }
 
     return (
-      <View key={stoneId + '_DFU_entry'}>
-        <FadeIn style={[styles.listView, {width: screenWidth, backgroundColor: backgroundColor}]}>
-          <DfuDeviceOverviewEntry
-            sphereId={this.props.sphereId}
-            stoneId={stoneId}
-            iconColor={iconColor}
-            backgroundColor={backgroundColor}
-            handle={item.handle}
-            item={item}
-            visible={visible}
-            closeEnough={closeEnough}
-          />
-        </FadeIn>
-      </View>
+      <FadeIn key={stoneId + '_DFU_entry'} style={{width: screenWidth}} maxOpacity={maxOpacity}>
+        <DfuDeviceOverviewEntry
+          sphereId={this.props.sphereId}
+          stoneId={stoneId}
+          iconColor={iconColor}
+          backgroundColor={backgroundColor}
+          visible={visible}
+          closeEnough={closeEnough}
+        />
+      </FadeIn>
     );
   }
 
-   _getStoneList() {
+  _getStoneList() {
+    this.stoneIdsToUpdate = [];
     let stoneArray = [];
     let idArray = [];
 
@@ -255,9 +256,6 @@ export class DfuScanning extends LiveComponent<any, any> {
       }
      }
 
-
-
-
      return { stoneArray, ids: idArray };
   }
 
@@ -268,28 +266,17 @@ export class DfuScanning extends LiveComponent<any, any> {
     this.stoneIdsToUpdate = [];
     const { stoneArray, ids } = this._getStoneList();
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+
+
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true}>
+      <Background fullScreen={true} image={background.main}>
+        <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
-        <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <ScanningForDFUCrownstonesBanner height={110} componentId={this.props.componentId} />
-          <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
-            <View style={{flex:1}} />
-            <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Collecting_nearby_Crownsto") }</Text>
-            <View style={{flex:1}} />
-          </View>
-        </View>
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
           <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Crownstones_turn_green_onc") }</Text>
         </View>
-        <ScrollView style={{position:'relative', top:-1}}>
-          <SeparatedItemList
-            style={{paddingBottom:140}}
-            items={stoneArray}
-            ids={ids}
-            separatorIndent={false}
-            renderer={this._renderer.bind(this)}
-          />
+        <ScrollView contentContainerStyle={{paddingTop:10}}>
+          { stoneArray.map((item, index) => { return this._renderer(item, index, ids[index])}) }
         </ScrollView>
         <SlideFadeInView visible={this.stoneIdsToUpdate.length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
           <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>

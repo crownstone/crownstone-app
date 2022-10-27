@@ -48,7 +48,7 @@ async function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAY
       });
     }
   }
-  catch (err) {
+  catch (err : any) {
     console.log("Failed to clean logs", amountOfDaysStored);
   }
 }
@@ -68,7 +68,7 @@ export async function getAppLogFileData() {
       }
     }
   }
-  catch (err) {
+  catch (err : any) {
     console.log("Failed to get data", err);
   }
 
@@ -105,7 +105,7 @@ export async function getLogData(prefix) {
       }
     }
   }
-  catch (err) {
+  catch (err : any) {
     console.log("Failed to get data", err);
   }
 

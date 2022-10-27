@@ -28,7 +28,7 @@ const secondMeshId = "secondMeshId";
 
 
 test("Check the direct teller", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   let apiPromise = connectTo(handle);
 
@@ -52,7 +52,7 @@ test("Check the direct teller", async () => {
 
 
 test("Check the direct teller with slowly incoming commands.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   let apiPromise = connectTo(handle);
 
@@ -84,7 +84,7 @@ test("Check the direct teller with slowly incoming commands.", async () => {
 
 
 test("Check basic tell for cleanup of session", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   let result = tell(handle).getFirmwareVersion();
 
@@ -107,7 +107,7 @@ test("Check basic tell for cleanup of session", async () => {
 
 
 test("Check connectTo error propagation", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   let caught = false;
@@ -124,7 +124,7 @@ test("Check connectTo error propagation", async () => {
 });
 
 test("Check connectTo and the sessionbroker work together", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   let commander : CommandAPI = null;
@@ -141,7 +141,7 @@ test("Check connectTo and the sessionbroker work together", async () => {
 
 
 test("Check pivate connected session error handling.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
 
   let commander : CommandAPI = null;
@@ -171,7 +171,7 @@ test("Check pivate connected session error handling.", async () => {
 
 
 test("Session manager sets a block on sessions, and allows something to claim it.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
@@ -189,7 +189,7 @@ test("Session manager sets a block on sessions, and allows something to claim it
 
 
 test("Timeout the request from the teller should also clean up the commands", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
@@ -212,7 +212,7 @@ test("Timeout the request from the teller should also clean up the commands", as
 
 
 test("Check if the broadcast method respects block", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
@@ -233,7 +233,7 @@ test("Check if the broadcast method respects block", async () => {
 
 
 test("Check if the broadcast method works", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 

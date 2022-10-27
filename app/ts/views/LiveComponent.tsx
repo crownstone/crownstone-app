@@ -1,8 +1,8 @@
 import * as React from 'react'; import { Component} from "react";
 import { AppState } from 'react-native';
-import { Navigation } from "react-native-navigation";
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
 import { core } from "../Core";
+import { Navigation } from "react-native-navigation";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {
@@ -27,7 +27,10 @@ export class LiveComponent<a, b> extends Component<a, b> {
     })
 
     let removeRefreshListener = core.eventBus.on("FORCE_RERENDER", () => {
-//      Navigation.mergeOptions(props.componentId, {});
+      // leave this commented out for Android.
+      // It could clear the drawbehind of the statusbar/topbar, causing it to draw behind the statusbar
+
+      // Navigation.mergeOptions(props.componentId, {});
       this.forceUpdate();
     });
 
@@ -56,14 +59,17 @@ export class LiveComponent<a, b> extends Component<a, b> {
       this.___navListener = Navigation.events().bindComponent(this);
 
       this.navigationButtonPressed = (data) => {
-        buttonPress.call(this,data);
+        buttonPress.call(this, data);
         if (data.buttonId === 'closeModal')  { NavigationUtil.dismissModal(); }
+        if (data.buttonId === 'cancelBack')  { NavigationUtil.back();         }
+        if (data.buttonId === 'backModal')   { NavigationUtil.back();         }
         if (data.buttonId === 'cancelModal') { NavigationUtil.dismissModal(); }
       }
     }
   }
 
-  navigationButtonPressed(data) { }
+  navigationButtonPressed(data) {
+  }
 
   forceUpdate(cb?) {
     if (AppState.currentState !== 'active') {

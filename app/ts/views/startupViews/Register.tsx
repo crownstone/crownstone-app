@@ -11,15 +11,15 @@ import {emailChecker, getImageFileFromUser, processImage} from "../../util/Util"
 import {background, colors, screenHeight, screenWidth, styles} from "../styles";
 
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Interview} from "../components/Interview";
 import {AnimatedBackground} from "../components/animated/AnimatedBackground";
-import {TopbarImitation} from "../components/TopbarImitation";
 import {PictureCircle} from "../components/PictureCircle";
 import {InterviewPasswordInput, InterviewTextInput} from "../components/InterviewComponents";
 import {FileUtil} from "../../util/FileUtil";
 import {Icon} from "../components/Icon";
 import {base_core} from "../../Base_core";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Register", key)(a,b,c,d,e);
@@ -203,8 +203,7 @@ export class Register extends LiveComponent<any, any> {
           return (
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
-                autoCompleteType={'username'}
-                autofocus={Platform.OS != "android"}
+                autofocus={true}
                 testID={'register-email'}
                 autoCapitalize={'none'}
                 focussed={this.focussingIndex === 0 || undefined}
@@ -374,24 +373,23 @@ export class Register extends LiveComponent<any, any> {
       <AnimatedBackground
         fullScreen={true}
         image={backgroundImage}
-        hideOrangeLine={false}
-        hideNotifications={true}
-        dimStatusBar={true}
+       
         testID={"registerView"}
       >
-        <TopbarImitation
+        <CustomTopBarWrapper
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}
-        />
-        <Interview
-          ref={     (i) => { this._interview = i;    }}
-          getCards={ () => { return this.getCards(); }}
-          update={   () => { this.forceUpdate();     }}
-          backButtonOverrideViewNameOrId={this.props.componentId}
-        />
+        >
+          <Interview
+            ref={     (i) => { this._interview = i;    }}
+            getCards={ () => { return this.getCards(); }}
+            update={   () => { this.forceUpdate();     }}
+            backButtonOverrideViewNameOrId={this.props.componentId}
+          />
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

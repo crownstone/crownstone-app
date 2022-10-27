@@ -8,16 +8,17 @@ import * as React from 'react';
 import {
   Platform, View
 } from "react-native";
-import {background, colors, screenHeight, screenWidth, styles} from "../styles";
+import {background, colors, screenHeight, styles} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarImitation } from "../components/TopbarImitation";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 import { core } from "../../Core";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
@@ -40,10 +41,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     let state = core.store.getState();
     let sphereId = this.props.sphereId;
     let sphere = state.spheres[sphereId];
-    if (sphere) {
-      if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
-        stateData.inSphere = true;
-      }
+    if (sphere && sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
+      stateData.inSphere = true;
     }
     this.state = stateData;
 
@@ -97,7 +96,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="c1-sphere" size={0.55*screenWidth} color={colors.white.rgba(1)} />
+              <Icon name="c1-house" size={100} color={colors.black.rgba(0.3)} />
             </View>
           </View>
         ),
@@ -118,20 +117,21 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={false} dimStatusBar={true}>
-        <TopbarImitation
+      <AnimatedBackground fullScreen={true} image={backgroundImage}>
+        <CustomTopBarWrapper
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) {NavigationUtil.dismissModal();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}
-        />
+        >
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return (this.state.inSphere ?  this.getCards() : this.getNotInSphereCard() ); }}
           update={   () => { this.forceUpdate() }}
         />
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

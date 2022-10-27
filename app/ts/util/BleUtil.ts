@@ -111,7 +111,7 @@ export const BleUtil = {
         }
         cleanup.unsubscribe();
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
-        resolve(advertisement.setupPackage);
+        resolve(advertisement);
       };
 
       LOGd.info("detectCrownstone: Subscribing To ", topic);
@@ -126,9 +126,10 @@ export const BleUtil = {
     })
   },
 
-  detectCrownstone: function(stoneHandle) {
+  detectCrownstone: async function(stoneHandle) : Promise<boolean> {
     this.cancelSearch();
-    return this._detect(stoneHandle, core.nativeBus.topics.advertisement);
+    let advertisement : crownstoneAdvertisement = await this._detect(stoneHandle, core.nativeBus.topics.advertisement);
+    return advertisement.serviceData.setupMode;
   },
 
   detectSetupCrownstone: function(stoneHandle) : Promise<void> {

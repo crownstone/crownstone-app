@@ -7,8 +7,8 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { FileUtil } from "../../../util/FileUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { background, colors, screenWidth } from "../../styles";
-import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
-import { Localization_LOG_PREFIX, LocalizationMonitor } from "../../../backgroundProcesses/LocalizationMonitor";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import {Localization_LOG_PREFIX, LocalizationMonitor} from "../../../localization/LocalizationMonitor";
 
 const RNFS = require('react-native-fs');
 
@@ -154,7 +154,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}
@@ -168,7 +168,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
             { this._getContent() }
           </View>
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

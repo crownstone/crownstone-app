@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Behaviour_SyncButton", key)(a,b,c,d,e);
+}
 import { colors } from "../../../styles";
 import { core } from "../../../../Core";
 import { StoneDataSyncer } from "../../../../backgroundProcesses/StoneDataSyncer";
@@ -20,10 +26,9 @@ export function BehaviourSyncButton({sphereId, stoneId}) {
           })
           .catch((err) => {
             Alert.alert(
-              "Failed to sync",
-              err?.message ?? "Unknown reason.",
-              [{
-                text: "OK", onPress: () => {
+lang("_Failed_to_sync_arguments_header"),
+lang("_Failed_to_sync_arguments_body",err.message),
+[{text: lang("_Failed_to_sync_arguments_left"), onPress: () => {
                   core.eventBus.emit("hideLoading");
                 }
               }],

@@ -11,7 +11,7 @@ import { colors, screenWidth} from "../../../styles";
 import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
 import { core } from "../../../../Core";
 import { Icon } from "../../../components/Icon";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import * as React from "react";
 import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 

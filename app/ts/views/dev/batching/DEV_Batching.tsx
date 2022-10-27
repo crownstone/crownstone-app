@@ -20,7 +20,7 @@ import {Background} from "../../components/Background";
 import {LiveComponent} from "../../LiveComponent";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
-import {NavigationUtil} from "../../../util/NavigationUtil";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {tell} from "../../../logic/constellation/Tellers";
 
 const RNFS = require('react-native-fs');
@@ -284,7 +284,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
   render() {
     if (this.state.dfuMode && this.state.dfuStarted === false) {
       return (
-        <Background image={background.main} hideNotifications={true} hasNavBar={false}>
+        <Background image={background.main} hasNavBar={false}>
           <ScrollView contentContainerStyle={{flexGrow:1}}>
             <View style={{flexGrow: 1, paddingVertical: 30, width: screenWidth}}>
               <ListEditableItems items={this._getDfuItems()} separatorIndent={true} />
@@ -304,7 +304,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
     }
 
     return (
-      <Background image={background.main} hideNotifications={true} hasNavBar={false}>
+      <Background image={background.main} hasNavBar={false}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <View style={{flex:1, maxHeight:15}}/>

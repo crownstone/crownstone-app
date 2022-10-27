@@ -18,7 +18,7 @@ let defaultState = {
 };
 
 // appReducer
-export default (state = defaultState, action : any = {}) => {
+export default (state = defaultState, action : DatabaseAction = {}) => {
   let newState;
   switch (action.type) {
     case 'RESET_APP_SETTINGS':

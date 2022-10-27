@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SceneItem", key)(a,b,c,d,e);
 }
 import { default as React, useEffect, useState }          from "react";
-import { colors, screenWidth, styles }                    from "../../styles";
+import {appStyleConstants, colors, screenWidth, styles} from "../../styles";
 import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST, SceneConstants } from "../constants/SceneConstants";
 import { SlideSideFadeInView }                            from "../../components/animated/SlideFadeInView";
@@ -13,41 +13,43 @@ import { Icon }                                           from "../../components
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SortingManager } from "../../../logic/SortingManager";
 import { IconCircle } from "../../components/IconCircle";
 import { migrateScene, migrateSceneSwitchData } from "../../../backgroundProcesses/migration/steps/upToV4_3";
 import { Util } from "../../../util/Util";
 import { tell } from "../../../logic/constellation/Tellers";
+import { useDraggable } from "../../components/hooks/draggableHooks";
 
-export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
+export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dragAction, isBeingDragged }) {
   const [editMode, setEditMode] = useState(stateEditMode);
-  // const [drag, setDrag] = useState(isBeingDragged);
   const [activated, setActivated] = useState(false);
   const [available, setAvailable] = useState(core.bleState.bleAvailable && core.bleState.bleBroadcastAvailable);
 
+  let {dragging, triggerDrag} = useDraggable(isBeingDragged, eventBus, dragAction);
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { return Util.bleWatcherEffect(setAvailable); });
-  // useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
   let color = colors.white.hex;
   let subtext = getLocationSubtext(sphereId, scene);
 
   if (activated) { subtext = lang("Setting_the_scene_"); }
   if (editMode)  { subtext = lang("Tap_to_edit_"); }
-  // if (drag)      { subtext = "Drag me up or down!"; }
+  if (dragging)  { subtext = "Drag me up or down!"; }
 
   let image = getScenePictureSource(scene);
 
   return (
     <View style={{
       flexDirection:'row',
-      borderRadius: SceneConstants.roundness,
+      borderRadius: appStyleConstants.roundness,
       overflow:'hidden',
       backgroundColor: 'transparent',
       width: screenWidth - 2*SceneConstants.padding,
       height: SceneConstants.sceneHeight,
-      alignItems:'center', marginBottom: 15
+      alignItems:'center',
+      marginBottom: SceneConstants.marginBottom,
+      alignSelf:'center'
     }}>
       <TouchableOpacity
         activeOpacity={editMode ? 0.7 : 0.3}
@@ -65,9 +67,13 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus}) {
             NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId});
           }
         }}
-        // onLongPress={dragAction}
+        onLongPress={() => {
+          if (editMode === true) {
+            triggerDrag();
+          }
+        }}
       >
-      {/*<SlideSideFadeInView visible={drag} width={40} />*/}
+      <SlideSideFadeInView visible={dragging} width={40} />
         { image ? <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
          : <MissingImage /> }
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>
@@ -227,7 +233,7 @@ export const verifySceneIntegrity = function(switchData, sphereId, sceneId) {
   })
 
   if (deletedStones && sceneId) {
-    core.store.dispatch({type:"SCENE_UPDATE", sphereId, sceneId, data: { data: correctedList }})
+    core.store.dispatch({type:"UPDATE_SCENE", sphereId, sceneId, data: { data: correctedList }})
   }
   return correctedList;
 }

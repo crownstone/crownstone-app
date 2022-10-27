@@ -22,12 +22,13 @@ import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {Util} from "../../../util/Util";
 import {
   enoughCrownstonesForIndoorLocalization,
-  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from "../../../util/DataUtil";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import {FingerprintUtil} from "../../../util/FingerprintUtil";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -86,9 +87,9 @@ export class ProblemWithLocalization extends Component<any, any> {
   _getLocalizationInfo() {
     let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId();
-    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, presentSphereId);
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, presentSphereId);
-    let requiresFingerprints = requireMoreFingerprints(state, presentSphereId);
+    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(presentSphereId);
+    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(presentSphereId);
+    let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(presentSphereId);
 
     let stones = state.spheres[presentSphereId].stones;
     let stoneIds = Object.keys(stones);
@@ -268,7 +269,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
-      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId) && stone.config.locationId !== null;
+      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId) && stone.config.locationId !== null;
 
       if (canDoIndoorLocalization) {
         return (
@@ -354,7 +355,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
       if (stone.config.type === STONE_TYPES.plug || ((stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne) && this.state.stoneTypeWarningRead === true)) {
-        if (stone.config.tapToToggle) {
+        if (stone.abilities.tapToToggle.enabledTarget) {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}

@@ -1,5 +1,3 @@
-import { EventBusClass } from "../../../app/ts/util/EventBus";
-import { AppState } from "react-native";
 import { xUtil } from "../../../app/ts/util/StandAloneUtil";
 import { TestUtil } from "../util/testUtil";
 

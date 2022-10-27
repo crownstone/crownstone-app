@@ -14,7 +14,7 @@ import {
 import { IconCircle } from '../components/IconCircle'
 import { getLocationNamesInSphere} from '../../util/DataUtil'
 
-import { availableModalHeight, colors, screenHeight, styles } from "../styles";
+import { availableModalHeight, colors, RoomStockBackground, screenHeight, styles } from "../styles";
 import { processImage, Util } from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
@@ -22,11 +22,12 @@ import {getRandomRoomIcon} from "./RoomIconSelection";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
 import { Get } from "../../util/GetUtil";
 import { LocationTransferNext } from "../../cloud/sections/newSync/transferrers/LocationTransferNext";
+import { LOGe } from "../../logging/Log";
 
 
 export class RoomAddCore extends LiveComponent<any, any> {
@@ -206,7 +207,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
 
 
 
-  createRoom() {
+  async createRoom() {
     this._removeUnusedPictures();
     let localId = xUtil.getUUID();
 
@@ -220,7 +221,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
       locationIds.sort((a, b) => {
         return locations[b].config.uid - locations[a].config.uid
       });
-      let latestUID = locations[locationIds[0]];
+      let latestUID = locations[locationIds[0]].config.uid;
 
       let back = () => {
         if (this.props.isModal !== true) {
@@ -252,27 +253,46 @@ lang("_Max_amount_of_rooms_reac_body"),
     }
 
 
-    // create room.
-    core.store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.newRoomData.name, icon: this.newRoomData.icon, uid: nextUID}});
+    let creationData : Partial<LocationDataConfig> =  {
+      name: this.newRoomData.name,
+      icon: this.newRoomData.icon,
+      uid: nextUID
+    };
+
 
     // if we have a picture:
     if (this.newRoomData.picture !== null) {
-      processImage(this.newRoomData.picture, localId + ".jpg", 1.0)
-        .then((picture) => {
-          core.store.dispatch({
-            type:'UPDATE_LOCATION_CONFIG',
-            sphereId: this.props.sphereId,
-            locationId: localId,
-            data: {
-              picture: picture,
-              pictureTaken: Date.now(),
-              pictureId: null
-            }});
-        })
+      let picture = await processImage(this.newRoomData.picture, localId + ".jpg", 1.0).catch((err) => { LOGe.info("Could not process image for new location.", err); });
+      if (picture) {
+        creationData = {
+          ...creationData,
+          picture: picture,
+          pictureTaken: Date.now(),
+          pictureSource: "CUSTOM",
+          pictureId: null
+        };
+      }
+    }
+    else {
+      let keys = Object.keys(RoomStockBackground);
+      let randomImage = keys[Math.floor(Math.random()*keys.length)];
+      creationData = {...creationData,
+        picture: randomImage,
+        pictureSource: "STOCK",
+      };
+
     }
 
+    // create room.
+    core.store.dispatch({
+      type: 'ADD_LOCATION',
+      sphereId: this.props.sphereId,
+      locationId: localId,
+      data: creationData
+    });
+
     let location = Get.location(this.props.sphereId, localId);
-    LocationTransferNext.createOnCloud(this.props.sphereId, location).catch((err) => {});
+    await LocationTransferNext.createOnCloud(this.props.sphereId, location).catch((err) => {});
 
     if (this.props.isModal !== true) {
       NavigationUtil.back();
@@ -286,11 +306,13 @@ lang("_Max_amount_of_rooms_reac_body"),
   render() {
     return (
       <Interview
-        backButtonOverrideViewNameOrId={"roomAddCore"}
+        backButtonOverrideViewNameOrId={ "roomAddCore" }
         ref={     (i) => { this._interview = i; }}
         getCards={ () => { return this.getCards();}}
         update={   () => { this.forceUpdate() }}
-        height={ this.props.height || availableModalHeight }
+        // height={ this.props.height || availableModalHeight }
+        paddingBottom={this.props.paddingBottom}
+        paddingTop={this.props.paddingTop}
       />
     );
   }

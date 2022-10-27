@@ -8,6 +8,7 @@ const headers = {
 export class SphereMockInterface {
 
   activeSphere = false;
+  activeTime = 0;
 
   ibeaconUuid:   string;
   sphereLocalId: string;
@@ -25,7 +26,9 @@ export class SphereMockInterface {
    */
   async loadSphereData() {
     let calls = await this._getCalledMethods('trackIBeacon');
-    for (let functionCall of calls.bluenet) {
+    let bluenetCalls = calls.bluenet;
+    bluenetCalls.sort((a,b) => { return b.t - a.t})
+    for (let functionCall of bluenetCalls) {
       if (functionCall.args[0] === this.ibeaconUuid) {
         this.sphereLocalId = functionCall.args[1];
         break;
@@ -50,6 +53,7 @@ export class SphereMockInterface {
     for (let functionCall of calls.bluenet) {
       if (this.sphereLocalId === functionCall.args[4]) {
         this.activeSphere = true;
+        this.activeTime = functionCall.t;
         return true;
       }
     }

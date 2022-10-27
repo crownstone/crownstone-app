@@ -11,11 +11,11 @@ export const SphereTransferNext : TransferTool<SphereData, SphereDataConfig, clo
       name: localData.config.name,
       uid:  localData.config.uid,
       uuid: localData.config.iBeaconUUID,
-      aiName: localData.config.aiName,
       gpsLocation: {
         lat: localData.config.latitude,
         lng: localData.config.longitude,
       },
+      timezone:  localData.config.timezone,
       updatedAt: new Date(localData.config.updatedAt).toISOString(),
     }
   },
@@ -26,9 +26,9 @@ export const SphereTransferNext : TransferTool<SphereData, SphereDataConfig, clo
       iBeaconUUID:       cloudItem.uuid, // ibeacon uuid
       uid:               cloudItem.uid,
       cloudId:           cloudItem.id,
-      aiName:            cloudItem.aiName,
-      latitude:          cloudItem.gpsLocation?.lat || undefined,
-      longitude:         cloudItem.gpsLocation?.lng || undefined,
+      latitude:          cloudItem.gpsLocation?.lat || null,
+      longitude:         cloudItem.gpsLocation?.lng || null,
+      timezone:          cloudItem.timezone || null,
       updatedAt:         new Date(cloudItem.updatedAt).valueOf(),
     }
   },

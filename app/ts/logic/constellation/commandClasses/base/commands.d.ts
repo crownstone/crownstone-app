@@ -52,9 +52,11 @@ type BridgeCommandType = "addBehaviour"                     |
                          "sendNoOp"                         |
                          "setCurrentMultiplier"             |
                          "setCurrentZero"                   |
+                         "setDefaultDimValue"               |
                          "setDimmerCurrentThreshold"        |
                          "setDimmerTempDownThreshold"       |
                          "setDimmerTempUpThreshold"         |
+                         "setDoubleTapSwitchcraft"          |
                          "setMaxChipTemp"                   |
                          "setPowerZero"                     |
                          "setSoftOnSpeed"                   |

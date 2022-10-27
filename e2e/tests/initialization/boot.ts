@@ -13,10 +13,11 @@ export async function boot() {
 
   let allArguments = {
     detoxEnableSynchronization: 0,
-    detoxURLBlacklistRegex: ' "http.*"',
+    detoxURLBlacklistRegex: 'http.*',
     ...launchArguments,
     "cloud_v1"          : `http://${CONFIG.IP_ADDRESS}:3000/api/`,
     "cloud_v2"          : `http://${CONFIG.IP_ADDRESS}:3050/api/`,
+    "sse"               : `http://${CONFIG.IP_ADDRESS}:8000/sse/`,
     "mockBridgeUrl"     : `http://${CONFIG.IP_ADDRESS}:3100/`,
     "mockCameraLibrary" : true,
     "mockImageLibrary"  : true,

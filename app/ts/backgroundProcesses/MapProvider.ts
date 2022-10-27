@@ -188,7 +188,7 @@ class MapProviderClass {
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig( sphereId, sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromItem(   sphereId, sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
       getFromConfig( sphereId, sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
       getFromConfig( sphereId, sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
       getFromConfig( sphereId, sphere.hubs,             this.cloud2localMap.hubs,       this.local2cloudMap.hubs);
@@ -203,6 +203,10 @@ class MapProviderClass {
         Object.keys(sphere.stones[stoneId].abilities).forEach((abilityId) => {
           getFromItem(sphereId, sphere.stones[stoneId].abilities[abilityId].properties, this.cloud2localMap.abilityProperties, this.local2cloudMap.abilityProperties);
         })
+      })
+
+      Object.keys(sphere.locations).forEach((locationId) => {
+        getFromItem(sphereId, sphere.locations[locationId].fingerprints.raw, this.cloud2localMap.fingerprints, this.local2cloudMap.fingerprints);
       })
     });
 

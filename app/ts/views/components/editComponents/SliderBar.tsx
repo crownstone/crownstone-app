@@ -8,7 +8,7 @@ import * as React from 'react'; import { useState } from "react";
 import {
   View, Text, TouchableOpacity
 } from "react-native";
-import { colors, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE, screenWidth, styles } from "../../styles";
+import {colors, LARGE_ROW_SIZE, menuStyles, MID_ROW_SIZE, NORMAL_ROW_SIZE, screenWidth, styles} from "../../styles";
 import Slider from "@react-native-community/slider";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 import { Icon } from "../Icon";
@@ -41,7 +41,7 @@ export function SliderBar(props) {
   }
 
   let content = (
-    <View style={{width:screenWidth, minHeight: navBarHeight, backgroundColor: colors.white.hex, padding:15}}>
+    <View style={{width:screenWidth, minHeight: navBarHeight, backgroundColor: menuStyles.listView.backgroundColor, padding:15}}>
       <View style={{width:screenWidth-30, height: navBarHeight-30, flexDirection:'row',  alignItems: 'center', justifyContent:'center',}}>
         { props.largeIcon  !== undefined ? <View style={[styles.centered, {width: iconWidth, paddingRight: iconPadding}]}>{props.largeIcon}</View> : undefined}
         { props.mediumIcon !== undefined ? <View style={[styles.centered, {width: iconWidth, paddingRight: iconPadding}]}>{props.mediumIcon}</View> : undefined}
@@ -65,6 +65,7 @@ export function SliderBar(props) {
           height: SLIDER_HEIGHT,
         }} >
           <Slider
+            testID={props.testID + "_slider"}
             style={{ width: screenWidth - (30 + 20 + 0.25*(iconPadding + iconWidth)), height: SLIDER_HEIGHT }}
             minimumValue={props.min}
             maximumValue={props.max}

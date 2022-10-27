@@ -8,14 +8,15 @@ import * as React from 'react';
 import {
   Linking,
   Platform,
+  View,
 } from "react-native";
-import { background, colors } from "../styles";
+import {background, colors, statusBarHeight} from "../styles";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarImitation } from "../components/TopbarImitation";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
+import { CustomTopBarWrapper } from "../components/CustomTopBarWrapper";
 
 
 export class AddCrownstone extends LiveComponent<any, any> {
@@ -181,26 +182,15 @@ export class AddCrownstone extends LiveComponent<any, any> {
 
   render() {
     let backgroundImage = background.main;
-    let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor = this._interview.getTextColorFromCard() || textColor;
     }
     return (
       <AnimatedBackground
         fullScreen={true}
         image={backgroundImage}
-        hideNotifications={true}
-        hideOrangeLine={true}
-        dimStatusBar={true}
         testID={'AddCrownstone'}
       >
-        <TopbarImitation
-          leftStyle={{color: textColor}}
-          left={Platform.OS === 'android' ? null : lang("Back")}
-          leftAction={() => {
-            if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
           ref={     (i) => { this._interview = i; }}

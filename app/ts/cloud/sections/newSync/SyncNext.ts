@@ -19,6 +19,11 @@ import { UserSyncerNext } from "./syncers/UserSyncerNext";
 import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
 import { SphereTransferNext } from "./transferrers/SphereTransferNext";
 import { Get } from "../../../util/GetUtil";
+import { FingerprintSyncerNext } from "./syncers/FingerprintSyncerNext";
+import {MessageSyncerNext} from "./syncers/MessageSyncerNext";
+import {MessageReadSyncerNext} from "./syncers/MessageReadSyncerNext";
+import {MessageReadTransferNext} from "./transferrers/MessageReadTransferNext";
+import {MessageDeletedSyncerNext} from "./syncers/MessageDeletedSyncerNext";
 
 
 export const SyncNext = {
@@ -92,7 +97,7 @@ export const SyncNext = {
 
     let state = core.store.getState()
     if (state?.user?.updatedAt) {
-      syncRequest.user = { updatedAt: state?.user?.updatedAt };
+      syncRequest.user = { updatedAt: new Date(state?.user?.updatedAt).toISOString() };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
     // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
@@ -120,7 +125,6 @@ export const SyncNext = {
     }
 
     let sphereIdMap = {}
-
 
     if (syncResponse.user) {
       new UserSyncerNext(syncerOptions).process(syncResponse.user, reply)
@@ -210,6 +214,33 @@ export const SyncNext = {
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply);
       }
 
+      if (sphereCloudResponse.messages) {
+        let moduleReply = {};
+        for (let messageId in sphereCloudResponse.messages) {
+          let messageResponse = sphereCloudResponse.messages[messageId];
+          new MessageSyncerNext({cloudId: messageId, ...sphereSyncBase}).process(messageResponse.data, moduleReply);
+
+          for (let itemId in messageResponse.readBy) {
+            new MessageReadSyncerNext({cloudId: itemId, ...sphereSyncBase}, messageId).process(messageResponse.readBy[itemId].data, moduleReply);
+          }
+          for (let itemId in messageResponse.deletedBy) {
+            new MessageDeletedSyncerNext({cloudId: itemId, ...sphereSyncBase}, messageId).process(messageResponse.deletedBy[itemId].data, moduleReply);
+          }
+        }
+        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply);
+      }
+
+      if (sphereCloudResponse.fingerprints) {
+        let moduleReply = {};
+        for (let fingerprintId in sphereCloudResponse.fingerprints) {
+          let data = sphereCloudResponse.fingerprints[fingerprintId].data;
+          new FingerprintSyncerNext({cloudId: fingerprintId, ...sphereSyncBase}, data.data?.locationId)
+            .process(data, moduleReply);
+        }
+        SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
+      }
+
+      // this order is important. The hub has dependencies on stones and locations
       if (sphereCloudResponse.hubs) {
         let moduleReply = {};
         for (let hubId in sphereCloudResponse.hubs) {
@@ -219,7 +250,6 @@ export const SyncNext = {
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
       }
 
-      // this order is important. The hub has dependencies on stones and locations
       if (sphereCloudResponse.toons) {
         let moduleReply = {};
         for (let toonId in sphereCloudResponse.toons) {
@@ -268,10 +298,6 @@ export const SyncNext = {
       let sphere_cloudId = sphere.config.cloudId;
       result[sphere_cloudId] = {};
 
-      function gather(options : GatherOptions) {
-        return SyncNext.gatherRequestData(sphere, options)
-      }
-
       if (scopeMap.spheres) {
         result[sphere_cloudId] = {data: SphereTransferNext.mapLocalToCloud(sphere)};
       }
@@ -292,6 +318,12 @@ export const SyncNext = {
       }
       if (scopeMap.toons) {
         result[sphere_cloudId].toons = ToonSyncerNext.prepare(sphere);
+      }
+      if (scopeMap.fingerprints) {
+        result[sphere_cloudId].fingerprints = FingerprintSyncerNext.prepare(sphere);
+      }
+      if (scopeMap.messages) {
+        result[sphere_cloudId].messages = MessageSyncerNext.prepare(sphere);
       }
     })
 

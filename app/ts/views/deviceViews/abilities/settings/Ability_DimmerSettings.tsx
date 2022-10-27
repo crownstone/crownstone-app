@@ -19,13 +19,14 @@ import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { SliderBar } from "../../../components/editComponents/SliderBar";
-import { DataUtil } from "../../../../util/DataUtil";
 import { SwitchBar } from "../../../components/editComponents/SwitchBar";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
+import { SettingsBackground } from "../../../components/SettingsBackground";
+import {Get} from "../../../../util/GetUtil";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -37,7 +38,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
     this.state = {
       softOnSpeed: Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget)
     }
@@ -86,56 +87,58 @@ export class Ability_DimmerSettings extends Component<any, any> {
   }
 
   _getSoftOn() {
-    let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+    let stone = Get.stone(this.props.sphereId, this.props.stoneId);
 
-    if (stone) {
-      if (xUtil.versions.canIUse(stone.config.firmwareVersion, '5.1.0') === false) {
-        return (
-          <View style={{backgroundColor: colors.white.hex, height:80, ...styles.centered}}>
-            <Text style={{fontSize: 16, textAlign:'center'}}>{lang("Update_Crownstone_to_use_")}</Text>
-          </View>
-        );
-      }
+    if (!stone) { return <React.Fragment />; }
+
+    if (xUtil.versions.canIUse(stone.config.firmwareVersion, '5.1.0') === false) {
       return (
-        <React.Fragment>
-          <SwitchBar
-            largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
-            label={lang("Use_smoothing")}
-            value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
-            callback={(value) => {
-              let numericValue = 8;
-              if (!value) {
-                numericValue = 100;
-              }
-              core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: numericValue }})
-              this.setState({softOnSpeed: numericValue})
-            }}
-          />
-            { Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 0 && Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 100 && (
-              <SliderBar
-                centerAlignLabel={true}
-                label={ lang("Should_I_fade_slowly_or_q") }
-                callback={(value) => {
-                  core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: value }})
-                  this.setState({softOnSpeed: value})
-                }}
-                min={1}
-                max={20}
-                value={this.state.softOnSpeed}
-                explanation={this._getExplanation(this.state.softOnSpeed)}
-              />
-            )}
-        </React.Fragment>
+        <View style={{backgroundColor: colors.white.hex, height:80, ...styles.centered}}>
+          <Text style={{fontSize: 16, textAlign:'center'}}>{lang("Update_Crownstone_to_use_")}</Text>
+        </View>
       );
     }
-    return <View/>
+
+    return (
+      <React.Fragment>
+        <SwitchBar
+          largeIcon={<IconButton name="md-bulb" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
+          label={lang("Use_smoothing")}
+          value={this.state.softOnSpeed !== 0 && this.state.softOnSpeed !== 100}
+          testID={"toggleSoftOn"}
+          callback={(value) => {
+            let numericValue = 8;
+            if (!value) {
+              numericValue = 100;
+            }
+            core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: numericValue }})
+            this.setState({softOnSpeed: numericValue})
+          }}
+        />
+          { Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 0 && Number(stone.abilities.dimming.properties.softOnSpeed.valueTarget) !== 100 && (
+            <SliderBar
+              centerAlignLabel={true}
+              label={ lang("Should_I_fade_slowly_or_q") }
+              callback={(value) => {
+                core.store.dispatch({type:"UPDATE_ABILITY_PROPERTY", sphereId: this.props.sphereId, stoneId: this.props.stoneId, abilityId: ABILITY_TYPE_ID.dimming, propertyId: ABILITY_PROPERTY_TYPE_ID.softOnSpeed, data: { valueTarget: value }})
+                this.setState({softOnSpeed: value})
+              }}
+              min={1}
+              max={20}
+              value={this.state.softOnSpeed}
+              testID={'sliderSoftOn'}
+              explanation={this._getExplanation(this.state.softOnSpeed)}
+            />
+          )}
+      </React.Fragment>
+    );
   }
 
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.lightBlurLighter}>
-        <ScrollView >
+      <SettingsBackground testID={"Ability_DimmerSettings"}>
+        <ScrollView testID={"AbilityDimming_scrollview"}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../../assets/images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
@@ -150,6 +153,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-information-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}} />}
                 label={ lang("Dimming_compatibility")}
+                testID={"dimmingCompatibility"}
                 callback={() => { this.props.information(); }}
               />
               <Separator  />
@@ -159,6 +163,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-remove-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />}
                 label={ lang("Disable_dimming")}
+                testID={"disableDimming"}
                 callback={() => { this.disable() }}
               />
               <Separator fullLength={true} />
@@ -166,7 +171,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

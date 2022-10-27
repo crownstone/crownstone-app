@@ -75,13 +75,13 @@ export const HubTransferNext : TransferSphereTool<HubData, HubDataConfig, cloud_
 
   async updateOnCloud(localSphereId: string, data: HubData) : Promise<void> {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    await CLOUD.forSphere(cloudSphereId).updateLocation(data.id, HubTransferNext.mapLocalToCloud(data));
+    await CLOUD.forSphere(cloudSphereId).updateHub(data.id, HubTransferNext.mapLocalToCloud(data));
   },
 
 
   async removeFromCloud(localSphereId: string, localId: string) : Promise<void> {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    await CLOUD.forSphere(cloudSphereId).deleteLocation(localId);
+    await CLOUD.forSphere(cloudSphereId).deleteHub(localId);
   },
 
   createLocal(localSphereId: string, data: Partial<any>) {

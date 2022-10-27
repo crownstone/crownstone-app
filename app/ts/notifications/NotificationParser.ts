@@ -1,5 +1,5 @@
 import {core} from "../Core";
-import {NavigationUtil} from "../util/NavigationUtil";
+import {NavigationUtil} from "../util/navigation/NavigationUtil";
 import {CLOUD} from "../cloud/cloudAPI";
 import {LocalNotifications} from "./LocalNotifications";
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";
@@ -8,6 +8,9 @@ import {MapProvider} from "../backgroundProcesses/MapProvider";
 import {InviteCenter} from "../backgroundProcesses/InviteCenter";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import { StoneUtil } from "../util/StoneUtil";
+import { SPHERE_ID_STORE } from "../views/main/SphereOverview";
+import { Get } from "../util/GetUtil";
+import { MessageTransferNext } from "../cloud/sections/newSync/transferrers/MessageTransferNext";
 
 class NotificationParserClass {
 
@@ -28,7 +31,8 @@ class NotificationParserClass {
   _handleLocalNotifications(messageData) {
     switch (messageData.type) {
       case 'newMessage':
-        NavigationUtil.navigateTab(2);
+        if (NavigationUtil.isModalOpen('MessageInbox')) { return; }
+        NavigationUtil.launchModal( "MessageInbox",{sphereId: messageData.sphereId});
         break;
     }
   }
@@ -79,17 +83,17 @@ class NotificationParserClass {
           this._handleMultiswitch(notificationData, state); break;
         case 'setSwitchStateRemotely':
           this._handleSetSwitchStateRemotely(notificationData, state); break;
-        case 'newMessage':
-          if (notificationData.id) {
-            CLOUD.getMessage(notificationData.id)
-              .then((result) => {
-                state = core.store.getState();
-                let notified = LocalNotifications._handleNewMessage(notificationData, state);
-                if (notified) {
-                  MessageCenter.storeMessage(result);
-                }
-              })
-              .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err?.message)})
+        case 'messageAdded':
+          // only add this message if we do not already have it.
+          if (MapProvider.cloud2localMap.messages[notificationData.message?.id] !== undefined) { return; }
+
+          let localSphereId = MapProvider.cloud2localMap.spheres[notificationData.sphereId];
+
+          if (!localSphereId) { return; }
+
+          if (MapProvider.cloud2localMap.spheres[notificationData.sphereId] !== undefined) {
+            // add this message to the local database. The eventEnhancer will handle the rest via the MessageCenter.
+            MessageTransferNext.createLocal(localSphereId, notificationData.message)
           }
           break;
         case "sphereUsersUpdated":
@@ -105,21 +109,21 @@ class NotificationParserClass {
             }
           }
           break;
-        case "userEnterSphere":
-        case "userExitSphere":
-        case "userExitLocation":
-        case "userEnterLocation":
-          if (notificationData.sphereId) {
-            CLOUD.syncUsers(notificationData.sphereId);
-          }
-          break;
+        // case "userEnterSphere":
+        // case "userExitSphere":
+        // case "userExitLocation":
+        // case "userEnterLocation":
+        //   if (notificationData.sphereId) {
+        //     CLOUD.syncUsers(notificationData.sphereId);
+        //   }
+        //   break;
         case "InvitationReceived":
           InviteCenter.checkForInvites();
           break;
       }
     }
-    catch (err) {
-      LOGe.notifications("NotificationParser: Error during remote notificaiton handling", err?.message);
+    catch (err : any) {
+      LOGe.notifications("NotificationParser: Error during remote notification handling", err?.message);
     }
   }
 
@@ -150,7 +154,7 @@ class NotificationParserClass {
       try {
         return this._handleMultiswitch(notificationData, state);
       }
-      catch (err) {
+      catch (err : any) {
         // invalid payload. ignore. use setSwitchStateRemotely as fallback.
         LOGw.notifications("NotificationParser: Multiswitch handling failed", err?.message, "reverting to setSwitchStateRemotely");
       }
@@ -161,21 +165,21 @@ class NotificationParserClass {
     if (!localSphereId || !localStoneId) { return; }
 
     let stone = state?.spheres[localSphereId]?.stones[localStoneId] || null;
-    if (stone) {
-      LOG.notifications("NotificationParser: switching based on notification", notificationData);
-      // remap existing 0..1 range from cloud to 0..100
-      let switchState = Number(notificationData.switchState);
+    if (!stone) { return; }
 
-      if (switchState > 0 && switchState <= 1) {
-        switchState = 100*switchState;
-      }
-      switchState = Math.min(100, Math.max(0,switchState));
-      if (switchState === 100) {
-        StoneUtil.turnOn(stone).catch(() => {})
-      }
-      else {
-        StoneUtil.multiSwitch(stone, switchState).catch(() => {})
-      }
+    LOG.notifications("NotificationParser: switching based on notification", notificationData);
+    // remap existing 0..1 range from cloud to 0..100
+    let switchState = Number(notificationData.switchState);
+
+    if (switchState > 0 && switchState <= 1) {
+      switchState = 100*switchState;
+    }
+    switchState = Math.min(100, Math.max(0,switchState));
+    if (switchState === 100) {
+      StoneUtil.turnOn(stone).catch(() => {})
+    }
+    else {
+      StoneUtil.multiSwitch(stone, switchState).catch(() => {})
     }
   }
 
@@ -187,7 +191,7 @@ class NotificationParserClass {
         switchEventData = JSON.parse(switchEventData);
       }
     }
-    catch (err) {
+    catch (err : any) {
       // invalid payload. ignore.
       throw new Error("COULD_NOT_PARSE_EVENT_DATA");
     }

@@ -9,21 +9,18 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth } from '../styles'
+import {styles, colors, screenWidth, menuStyles} from '../styles'
 
 
-export class Separator extends Component<any, any> {
+export class Separator extends Component<{color?: any, fullLength?: boolean}, any> {
   render() {
-    let opacity = 1;
-    if (this.props.opacity !== undefined && this.props.opacity !== null) {
-      opacity = this.props.opacity;
-    }
+
     if (this.props.fullLength === true)
-      return <View style={[styles.separator,{ backgroundColor: this.props.color || colors.black.rgba(opacity*0.25) }]} />;
+      return <View style={[menuStyles.separator,{ backgroundColor: this.props.color ?? menuStyles.separator.backgroundColor }]} />;
     else {
       return (
         <View style={{backgroundColor:'#fff'}}>
-          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end', backgroundColor: this.props.color || colors.black.rgba(opacity*0.25)}]}/>
+          <View style={[menuStyles.separator, {width:screenWidth-15, alignSelf:'flex-end', backgroundColor: this.props.color ?? menuStyles.separator.backgroundColor}]}/>
         </View>
       );
     }

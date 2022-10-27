@@ -6,15 +6,15 @@ import {colors} from "../views/styles";
 import {
   TopbarButton,
   TopbarEmptyButton,
-  TopbarLeftButtonNav,
+  TopbarLeftButtonNav, TopbarRightHelpButton,
   TopbarRightMoreButton
 } from "../views/components/topbar/TopbarButton";
 import {CancelButton} from "../views/components/topbar/CancelButton";
 import {OverlayManager} from "../backgroundProcesses/OverlayManager";
-import {NavigationUtil, topBarComponentNames} from "../util/NavigationUtil";
+import {NavigationUtil, topBarComponentNames} from "../util/navigation/NavigationUtil";
 import React from "react";
 import {IconShowcase} from "./development/IconShowcase";
-
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 let viewsLoaded = false;
 
@@ -25,15 +25,16 @@ export const loadRoutes = function() {
 
   // register all views
   Object.keys(Views).forEach((viewId) => {
-    Navigation.registerComponent(viewId,    () => Views[viewId]);
+    Navigation.registerComponent(viewId,    () => gestureHandlerRootHOC(Views[viewId]));
   });
 
   // register all custom components used by the navigator:
-  Navigation.registerComponent("topbarCancelButton",       () => CancelButton);
-  Navigation.registerComponent("topbarLeftButton",         () => TopbarLeftButtonNav);
-  Navigation.registerComponent("topbarRightMoreButton",    () => TopbarRightMoreButton);
-  Navigation.registerComponent("topbarButton",             () => TopbarButton);
-  Navigation.registerComponent("topbarEmptyButton",        () => TopbarEmptyButton);
+  Navigation.registerComponent("topbarCancelButton",       () => gestureHandlerRootHOC(CancelButton));
+  Navigation.registerComponent("topbarLeftButton",         () => gestureHandlerRootHOC(TopbarLeftButtonNav));
+  Navigation.registerComponent("topbarRightMoreButton",    () => gestureHandlerRootHOC(TopbarRightMoreButton));
+  Navigation.registerComponent("topbarRightHelpButton",    () => gestureHandlerRootHOC(TopbarRightHelpButton));
+  Navigation.registerComponent("topbarButton",             () => gestureHandlerRootHOC(TopbarButton));
+  Navigation.registerComponent("topbarEmptyButton",        () => gestureHandlerRootHOC(TopbarEmptyButton));
 
   topBarComponentNames.push("topbarCancelButton");
   topBarComponentNames.push("topbarLeftButton");
@@ -47,25 +48,25 @@ export const loadRoutes = function() {
 Navigation.events().registerAppLaunchedListener(() => {
   let defaultOptions : Options = {
     statusBar: {
-      visible: true,
-      drawBehind: false,
+      visible:    true,
+      drawBehind: true,
     },
     topBar: {
-      drawBehind: false,
-      background: { color: colors.csBlueDarker.hex },
+      drawBehind: true,
+      background: { color: 'transparent'},
       title: {
-        color: colors.white.hex,
+        color: colors.black.hex,
       },
     },
     bottomTabs: {
       titleDisplayMode: "alwaysShow",
-      backgroundColor: colors.csBlueDarker.hex,
+      backgroundColor: "transparent",
     },
     bottomTab: {
-      textColor: colors.white.hex,
+      textColor: colors.black.hex,
       selectedTextColor: colors.blue.hex,
       fontSize: 11,
-      iconColor: colors.white.hex,
+      iconColor: colors.black.hex,
       selectedIconColor: colors.blue.hex,
     },
     layout: {

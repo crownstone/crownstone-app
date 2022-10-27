@@ -14,8 +14,9 @@
 		FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D31FC46359001C8FD6 /* Portal.swift */; };
 		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
 		FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D71FC46412001C8FD6 /* EventEmitter.swift */; };
-		FA0691C1282BABF70049A102 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA0691C0282BABF70049A102 /* BluenetLib */; };
 		FA0DD9CD21DFCCED00824ABF /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0DD9CC21DFCCED00824ABF /* DataStore.swift */; };
+		FA12D41D28D1EB0000B02BF3 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA12D41C28D1EB0000B02BF3 /* BluenetLib */; };
+		FA12D41F28D1EBC800B02BF3 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FA12D41E28D1EBC800B02BF3 /* BluenetLib */; };
 		FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */ = {isa = PBXBuildFile; productRef = FA39A49C2743DAF100A63C79 /* BluenetShared */; };
 		FA39A5502744037700A63C79 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54D2744037700A63C79 /* main.m */; };
 		FA39A5512744037700A63C79 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA39A54F2744037700A63C79 /* AppDelegate.m */; };
@@ -28,6 +29,7 @@
 		FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F321CCF07000811933 /* RssiRowController.swift */; };
 		FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F221CCF07000811933 /* SwitchRowController.swift */; };
 		FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F121CCF07000811933 /* SliderRowController.swift */; };
+		FA4ADDE127F450D4005FB0CA /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4ADDE027F450D4005FB0CA /* Haptics.swift */; };
 		FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB31EAE320F001C625D /* BluenetIntegration.swift */; };
 		FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB41EAE320F001C625D /* JSONUtils.swift */; };
 		FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB61EAE320F001C625D /* NativeBridge.m */; };
@@ -46,9 +48,6 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
-		FAB44C9D276A279200E36078 /* BluenetLocalization in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44C9C276A279200E36078 /* BluenetLocalization */; };
-		FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA0276A28B300E36078 /* BluenetLib */; };
-		FAB44CA3276A28BD00E36078 /* BluenetLib in Frameworks */ = {isa = PBXBuildFile; productRef = FAB44CA2276A28BD00E36078 /* BluenetLib */; };
 		FADC2B2825F7B519000AE5A7 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1425F7B517000AE5A7 /* Roboto-Thin.ttf */; };
 		FADC2B2925F7B519000AE5A7 /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1525F7B518000AE5A7 /* flaticon_household.ttf */; };
 		FADC2B2A25F7B519000AE5A7 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B1625F7B518000AE5A7 /* Roboto-LightItalic.ttf */; };
@@ -69,7 +68,6 @@
 		FADC2B3925F7B519000AE5A7 /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */; };
 		FADC2B3A25F7B519000AE5A7 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */; };
 		FADC2B3B25F7B519000AE5A7 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */; };
-		FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */; };
 		FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF4F833256D1FDA00320825 /* HubPackets.swift */; };
 /* End PBXBuildFile section */
 
@@ -80,13 +78,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = Crownstone;
-		};
-		FA0691F9282BABF80049A102 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 72DE4BF3FB9CE0858E90F96FEF8A53AE;
-			remoteInfo = RNDateTimePicker;
 		};
 		FA274E7B2410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -263,13 +254,6 @@
 			remoteGlobalIDString = D5C775614AC76D44CECB6BE08B022F1F;
 			remoteInfo = ReactCommon;
 		};
-		FA274EB72410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FE615D58A030F19B5EB89E2F52F5B59A;
-			remoteInfo = ReactNativeNavigation;
-		};
 		FA274EB92410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -319,6 +303,13 @@
 			remoteGlobalIDString = 65D0A19C165FA1126B1360680FE6DB12;
 			remoteInfo = Yoga;
 		};
+		FA2FB1142821190B005A3F11 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C777CF2FB1E39A45CBBDB54E8693F471;
+			remoteInfo = RNReanimated;
+		};
 		FA345D9324111FEA00C288D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -333,13 +324,6 @@
 			remoteGlobalIDString = F4BDA69E3BCB0166D49FB679ABADCA00;
 			remoteInfo = fmt;
 		};
-		FA39A4962743C7AE00A63C79 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAF47B8D3BA5B9248FB8BA7EFB248038;
-			remoteInfo = HMSegmentedControl;
-		};
 		FA39A4982743C7AE00A63C79 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -347,12 +331,40 @@
 			remoteGlobalIDString = A5B49761F8D1EB12585DD45CAA2E489F;
 			remoteInfo = "React-logger";
 		};
+		FA58A26B2822627400553B1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EAF47B8D3BA5B9248FB8BA7EFB248038;
+			remoteInfo = HMSegmentedControl;
+		};
+		FA58A26D2822627400553B1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FE615D58A030F19B5EB89E2F52F5B59A;
+			remoteInfo = ReactNativeNavigation;
+		};
+		FA58A26F2822627400553B1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 72DE4BF3FB9CE0858E90F96FEF8A53AE;
+			remoteInfo = RNDateTimePicker;
+		};
 		FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 0B9BD901B3EB04B824A157C85265F044;
 			remoteInfo = RNCPushNotificationIOS;
+		};
+		FA7FB6E128B8E0D20014FC44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B058F035CFD84ECBF8414E4EAE5834FC;
+			remoteInfo = "react-native-video";
 		};
 		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -403,6 +415,13 @@
 			remoteGlobalIDString = 3EEAA606F6866DA20E6601B9655B1027;
 			remoteInfo = BugsnagReactNative;
 		};
+		FACBF71D287D68A0000CC582 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8F65F9361F2069CF9E9D751272968DE4;
+			remoteInfo = RNGestureHandler;
+		};
 		FACF166926160CB500A9163F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -424,12 +443,40 @@
 			remoteGlobalIDString = 666E72807891C591E025A75410CD2A26;
 			remoteInfo = "React-perflogger";
 		};
+		FADDB9A12812D84100BDB969 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 51BA97E8B5085EFFB47BC9C0B785CEA7;
+			remoteInfo = "lottie-ios";
+		};
+		FADDB9A32812D84100BDB969 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0F8D5091C801A6ECB9A173DA0E385A29;
+			remoteInfo = "lottie-react-native";
+		};
 		FAE05691243765B0003BE780 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = CC9CF62342D0D8A46D8176D06AABE411;
 			remoteInfo = "react-native-image-picker";
+		};
+		FAEEF107281BDBF400868171 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 52FCF98CEFF94C742080B6965D537AD0;
+			remoteInfo = "react-native-safe-area-context";
+		};
+		FAEEF109281BDBF400868171 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 50B5347C9A6E93B7D4CFC3673BA6FB7E;
+			remoteInfo = RNScreens;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -525,6 +572,7 @@
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
 		FA4722BD21DE7473008795C5 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
+		FA4ADDE027F450D4005FB0CA /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Crownstone-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA570EB31EAE320F001C625D /* BluenetIntegration.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = BluenetIntegration.swift; sourceTree = "<group>"; tabWidth = 4; };
 		FA570EB41EAE320F001C625D /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
@@ -575,7 +623,6 @@
 		FADC2B2525F7B518000AE5A7 /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../app/assets/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FADC2B2625F7B518000AE5A7 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BoldItalic.ttf"; path = "../app/assets/fonts/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		FADC2B2725F7B519000AE5A7 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Black.ttf"; path = "../app/assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
-		FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHandler.swift; sourceTree = "<group>"; };
 		FAF4F833256D1FDA00320825 /* HubPackets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPackets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -592,11 +639,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAB44CA1276A28B300E36078 /* BluenetLib in Frameworks */,
 				FA39A49D2743DAF100A63C79 /* BluenetShared in Frameworks */,
-				FA0691C1282BABF70049A102 /* BluenetLib in Frameworks */,
 				F565541EA0E74560636016AB /* libPods-Crownstone.a in Frameworks */,
-				FAB44C9D276A279200E36078 /* BluenetLocalization in Frameworks */,
+				FA12D41D28D1EB0000B02BF3 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,7 +656,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAB44CA3276A28BD00E36078 /* BluenetLib in Frameworks */,
+				FA12D41F28D1EBC800B02BF3 /* BluenetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,7 +813,7 @@
 				FA0177D31FC46359001C8FD6 /* Portal.swift */,
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
 				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
-				FAE4893126EB4D950023ED55 /* LocalizationHandler.swift */,
+				FA4ADDE027F450D4005FB0CA /* Haptics.swift */,
 			);
 			path = BridgeFiles;
 			sourceTree = "<group>";
@@ -790,7 +835,9 @@
 				FA274E7E2410144F00D7C858 /* FBReactNativeSpec */,
 				FA39A4952743C7AE00A63C79 /* fmt */,
 				FA274E822410144F00D7C858 /* glog */,
-				FA39A4972743C7AE00A63C79 /* HMSegmentedControl */,
+				FA58A26C2822627400553B1D /* HMSegmentedControl */,
+				FADDB9A22812D84100BDB969 /* lottie-ios */,
+				FADDB9A42812D84100BDB969 /* lottie-react-native */,
 				FA274E842410144F00D7C858 /* Pods-Crownstone */,
 				FA9F56A9263AE19600A8219A /* Pods-Crownstone-CrownstoneTests */,
 				FACF166A26160CB500A9163F /* RCT-Folly */,
@@ -808,8 +855,10 @@
 				FA274E9A2410144F00D7C858 /* react-native-image-resizer */,
 				FA274E9C2410144F00D7C858 /* react-native-keep-awake */,
 				FA274E9E2410144F00D7C858 /* react-native-maps */,
+				FAEEF108281BDBF400868171 /* react-native-safe-area-context */,
 				FA274EA02410144F00D7C858 /* react-native-slider */,
 				FAB44C63276A244500E36078 /* react-native-splash-screen */,
+				FA7FB6E228B8E0D20014FC44 /* react-native-video */,
 				FACF166E26160CB500A9163F /* React-perflogger */,
 				FA274EA62410144F00D7C858 /* React-RCTAnimation */,
 				FA274EA82410144F00D7C858 /* React-RCTBlob */,
@@ -820,14 +869,17 @@
 				FA274EB22410144F00D7C858 /* React-RCTText */,
 				FA274EB42410144F00D7C858 /* React-RCTVibration */,
 				FA274EB62410144F00D7C858 /* ReactCommon */,
-				FA274EB82410144F00D7C858 /* ReactNativeNavigation */,
+				FA58A26E2822627400553B1D /* ReactNativeNavigation */,
 				FA274EBA2410144F00D7C858 /* RNCAsyncStorage */,
 				FABC9F1B274E979C00831B7F /* RNCPicker */,
 				FA5C2BBD24165FEC00358011 /* RNCPushNotificationIOS */,
-				FA0691FA282BABF80049A102 /* RNDateTimePicker */,
+				FA58A2702822627400553B1D /* RNDateTimePicker */,
 				FA274EBC2410144F00D7C858 /* RNDeviceInfo */,
 				FA274EBE2410144F00D7C858 /* RNFS */,
+				FACBF71E287D68A0000CC582 /* RNGestureHandler */,
 				FA345D9424111FEA00C288D3 /* RNLocalize */,
+				FA2FB1152821190B005A3F11 /* RNReanimated */,
+				FAEEF10A281BDBF400868171 /* RNScreens */,
 				FAC6D17B24BCAA8A007AA96F /* RNShare */,
 				FA274EC02410144F00D7C858 /* RNSVG */,
 				FA274EC22410144F00D7C858 /* RNUncontrolledDatePickerIOS */,
@@ -1007,9 +1059,7 @@
 			name = Crownstone;
 			packageProductDependencies = (
 				FA39A49C2743DAF100A63C79 /* BluenetShared */,
-				FAB44C9C276A279200E36078 /* BluenetLocalization */,
-				FAB44CA0276A28B300E36078 /* BluenetLib */,
-				FA0691C0282BABF70049A102 /* BluenetLib */,
+				FA12D41C28D1EB0000B02BF3 /* BluenetLib */,
 			);
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
@@ -1029,6 +1079,8 @@
 				FA86C68D21CCEECF00811933 /* PBXTargetDependency */,
 			);
 			name = WatchTower;
+			packageProductDependencies = (
+			);
 			productName = WatchTower;
 			productReference = FA86C67E21CCEECD00811933 /* WatchTower.app */;
 			productType = "com.apple.product-type.application.watchapp2";
@@ -1047,7 +1099,7 @@
 			);
 			name = "WatchTower Extension";
 			packageProductDependencies = (
-				FAB44CA2276A28BD00E36078 /* BluenetLib */,
+				FA12D41E28D1EBC800B02BF3 /* BluenetLib */,
 			);
 			productName = "WatchTower Extension";
 			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
@@ -1106,8 +1158,7 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
 				FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */,
-				FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */,
-				FA0691BF282BABF70049A102 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
+				FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1128,14 +1179,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		FA0691FA282BABF80049A102 /* RNDateTimePicker */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = RNDateTimePicker;
-			path = libRNDateTimePicker.a;
-			remoteRef = FA0691F9282BABF80049A102 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274E7C2410144F00D7C858 /* DoubleConversion */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1336,14 +1379,6 @@
 			remoteRef = FA274EB52410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA274EB82410144F00D7C858 /* ReactNativeNavigation */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = ReactNativeNavigation;
-			path = libReactNativeNavigation.a;
-			remoteRef = FA274EB72410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274EBA2410144F00D7C858 /* RNCAsyncStorage */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1400,6 +1435,14 @@
 			remoteRef = FA274EC92410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA2FB1152821190B005A3F11 /* RNReanimated */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNReanimated;
+			path = libRNReanimated.a;
+			remoteRef = FA2FB1142821190B005A3F11 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA345D9424111FEA00C288D3 /* RNLocalize */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1416,14 +1459,6 @@
 			remoteRef = FA39A4942743C7AE00A63C79 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA39A4972743C7AE00A63C79 /* HMSegmentedControl */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			name = HMSegmentedControl;
-			path = libHMSegmentedControl.a;
-			remoteRef = FA39A4962743C7AE00A63C79 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA39A4992743C7AE00A63C79 /* React-logger */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1432,12 +1467,44 @@
 			remoteRef = FA39A4982743C7AE00A63C79 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA58A26C2822627400553B1D /* HMSegmentedControl */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = HMSegmentedControl;
+			path = libHMSegmentedControl.a;
+			remoteRef = FA58A26B2822627400553B1D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA58A26E2822627400553B1D /* ReactNativeNavigation */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = ReactNativeNavigation;
+			path = libReactNativeNavigation.a;
+			remoteRef = FA58A26D2822627400553B1D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA58A2702822627400553B1D /* RNDateTimePicker */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNDateTimePicker;
+			path = libRNDateTimePicker.a;
+			remoteRef = FA58A26F2822627400553B1D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA5C2BBD24165FEC00358011 /* RNCPushNotificationIOS */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			name = RNCPushNotificationIOS;
 			path = libRNCPushNotificationIOS.a;
 			remoteRef = FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA7FB6E228B8E0D20014FC44 /* react-native-video */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "react-native-video";
+			path = "libreact-native-video.a";
+			remoteRef = FA7FB6E128B8E0D20014FC44 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA9F56A9263AE19600A8219A /* Pods-Crownstone-CrownstoneTests */ = {
@@ -1480,6 +1547,14 @@
 			remoteRef = FAC9792226B2B31A008BB51D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FACBF71E287D68A0000CC582 /* RNGestureHandler */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNGestureHandler;
+			path = libRNGestureHandler.a;
+			remoteRef = FACBF71D287D68A0000CC582 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FACF166A26160CB500A9163F /* RCT-Folly */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1504,12 +1579,44 @@
 			remoteRef = FACF166D26160CB500A9163F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FADDB9A22812D84100BDB969 /* lottie-ios */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "lottie-ios";
+			path = "liblottie-ios.a";
+			remoteRef = FADDB9A12812D84100BDB969 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FADDB9A42812D84100BDB969 /* lottie-react-native */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "lottie-react-native";
+			path = "liblottie-react-native.a";
+			remoteRef = FADDB9A32812D84100BDB969 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FAE05692243765B0003BE780 /* react-native-image-picker */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			name = "react-native-image-picker";
 			path = "libreact-native-image-picker.a";
 			remoteRef = FAE05691243765B0003BE780 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAEEF108281BDBF400868171 /* react-native-safe-area-context */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = "react-native-safe-area-context";
+			path = "libreact-native-safe-area-context.a";
+			remoteRef = FAEEF107281BDBF400868171 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAEEF10A281BDBF400868171 /* RNScreens */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			name = RNScreens;
+			path = libRNScreens.a;
+			remoteRef = FAEEF109281BDBF400868171 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1761,12 +1868,12 @@
 				FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */,
 				FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
+				FA4ADDE127F450D4005FB0CA /* Haptics.swift in Sources */,
 				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
 				FA59A6A5224CE5D300D58C9F /* AppDelegate_old.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,
 				FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */,
-				FAE4893226EB4D950023ED55 /* LocalizationHandler.swift in Sources */,
 				FAF4F834256D1FDA00320825 /* HubPackets.swift in Sources */,
 				FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */,
 				FA39A5502744037700A63C79 /* main.m in Sources */,
@@ -2026,7 +2133,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
@@ -2045,7 +2152,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2055,6 +2162,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2068,7 +2176,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_BITCODE = NO;
@@ -2087,7 +2195,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2228,7 +2336,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2255,7 +2363,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
@@ -2292,7 +2400,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
@@ -2318,7 +2426,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2354,7 +2462,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2371,7 +2479,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
@@ -2410,7 +2518,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2426,7 +2534,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0.5;
+				MARKETING_VERSION = 6.0.0;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
@@ -2491,12 +2599,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FA0691BF282BABF70049A102 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
+		FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/crownstone/bluenet-ios-lib";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 29.1.0;
+				minimumVersion = 30.0.0;
 			};
 		};
 		FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */ = {
@@ -2507,39 +2615,23 @@
 				minimumVersion = 2.2.1;
 			};
 		};
-		FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "file:///Users/alex/Dropbox/Crownstone/Projects/XCode/bluenet-localization";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FA0691C0282BABF70049A102 /* BluenetLib */ = {
+		FA12D41C28D1EB0000B02BF3 /* BluenetLib */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA0691BF282BABF70049A102 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			package = FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
+			productName = BluenetLib;
+		};
+		FA12D41E28D1EBC800B02BF3 /* BluenetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA12D41B28D1EB0000B02BF3 /* XCRemoteSwiftPackageReference "bluenet-ios-lib" */;
 			productName = BluenetLib;
 		};
 		FA39A49C2743DAF100A63C79 /* BluenetShared */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FAD5FD8526270088005492CA /* XCRemoteSwiftPackageReference "bluenet-ios-shared" */;
 			productName = BluenetShared;
-		};
-		FAB44C9C276A279200E36078 /* BluenetLocalization */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FAE29C5626C13FA600CE3D37 /* XCRemoteSwiftPackageReference "bluenet-localization" */;
-			productName = BluenetLocalization;
-		};
-		FAB44CA0276A28B300E36078 /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BluenetLib;
-		};
-		FAB44CA2276A28BD00E36078 /* BluenetLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BluenetLib;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

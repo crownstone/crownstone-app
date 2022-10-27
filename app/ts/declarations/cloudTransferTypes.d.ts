@@ -81,21 +81,21 @@ interface keyMap {
 
 
 interface syncIdMap {
-  users:       keyMap,
-  locations:   keyMap,
-  abilities:   keyMap,
-  abilityProperties:   keyMap,
-  behaviours:  keyMap,
-  stones:      keyMap,
-  scenes:      keyMap,
-  sortedLists: keyMap,
-  messages:    keyMap,
-  spheres:     keyMap,
-  schedules:   keyMap,
-  devices:     keyMap,
-  toons:       keyMap,
-  hubs:        keyMap,
-  preferences: keyMap,
+  users:             keyMap,
+  locations:         keyMap,
+  abilities:         keyMap,
+  abilityProperties: keyMap,
+  behaviours:        keyMap,
+  stones:            keyMap,
+  fingerprints:      keyMap,
+  scenes:            keyMap,
+  messages:          keyMap,
+  spheres:           keyMap,
+  schedules:         keyMap,
+  devices:           keyMap,
+  toons:             keyMap,
+  hubs:              keyMap,
+  preferences:       keyMap,
 }
 
 

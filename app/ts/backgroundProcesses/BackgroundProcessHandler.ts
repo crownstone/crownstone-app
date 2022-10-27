@@ -25,7 +25,6 @@ import {LOG, LOGe, LOGw} from "../logging/Log";
 import {LogProcessor} from "../logging/LogProcessor";
 import {BleLogger} from "../native/advertisements/BleLogger";
 import {StoneManager} from "../native/advertisements/StoneManager";
-// import * as Sentry from "@sentry/react-native";
 import {ToonIntegration} from "./thirdParty/ToonIntegration";
 import {EncryptionManager} from "../native/libInterface/Encryption";
 import {BroadcastStateManager} from "./BroadcastStateManager";
@@ -45,11 +44,17 @@ import {SphereStateManager} from "./SphereStateManager";
 import {UptimeMonitor} from "./UptimeMonitor";
 import {TrackingNumberManager} from "./TrackingNumberManager";
 import {ActiveSphereManager} from "./ActiveSphereManager";
-import {LocalizationMonitor} from "./LocalizationMonitor";
 import {Languages} from "../Languages";
 import {OverlayManager} from "./OverlayManager";
-import {LocalizationLogger} from "./dev/LocalizationLogger";
 import {TestingFramework} from "./testing/TestingFramework";
+import DeviceInfo from "react-native-device-info";
+import {StatusBarWatcher} from "./StatusBarWatcher";
+import {LocalizationCore} from "../localization/LocalizationCore";
+import {LocalizationMonitor} from "../localization/LocalizationMonitor";
+import { LocalizationDevDataLogger } from "../localization/LocalizationDevDataLogger";
+import { SseHandler } from "./SseHandler";
+import { SpherePresenceManager } from "./SpherePresenceManager";
+import { EnergyUsageCacher } from "./EnergyUsageCacher";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -88,9 +93,9 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
-
       BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
-        base_core.sessionMemory.developmentEnvironment = result;
+        base_core.sessionMemory.developmentEnvironment = result || DeviceInfo.isEmulatorSync();
+        console.log("isDevelopmentEnvironment", base_core.sessionMemory.developmentEnvironment)
       });
 
       // hook into the back button handler for android.
@@ -99,13 +104,15 @@ class BackgroundProcessHandlerClass {
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();
 
+      // init the statekeeper of the color of the statusbar
+      StatusBarWatcher.init();
+
+
       // we first setup the event listeners since these events can be fired by the this.startStore().
-
-
       core.eventBus.on('userActivated', () => {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser();
-      })
+      });
 
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
@@ -128,7 +135,7 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
-        OverlayManager.initStateOverlays()
+        OverlayManager.initStateOverlays();
 
         ActiveSphereManager.userIsLoggedIn = true;
 
@@ -169,7 +176,7 @@ class BackgroundProcessHandlerClass {
         }
 
         if (Platform.OS === 'android') {
-          if (state.user.developer === true) {
+          if (DataUtil.isDeveloper()) {
             Bluenet.useHighFrequencyScanningInBackground(state.development.useHighFrequencyScanningInBackground);
           }
         }
@@ -199,8 +206,8 @@ class BackgroundProcessHandlerClass {
 
   setupLogging() {
     let state = core.store.getState();
-    Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
-    if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
+    Bluenet.enableLoggingToFile((DataUtil.isDeveloper() && state.development.logging_enabled === true) || LOG_TO_FILE === true);
+    if ((DataUtil.isDeveloper() && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
 
@@ -463,7 +470,9 @@ class BackgroundProcessHandlerClass {
     CloudEventHandler.init();
     DfuStateHandler.init();
     EncryptionManager.init();
+    EnergyUsageCacher.init();
     FirmwareWatcher.init();
+    LocalizationCore.init();
     LocationHandler.init();
     LocalizationMonitor.init();
     MessageCenter.init();
@@ -471,7 +480,9 @@ class BackgroundProcessHandlerClass {
     Permissions.init();
     PowerUsageCacher.init();
     Scheduler.init();
+    SseHandler.init();
     StoneAvailabilityTracker.init();
+    SpherePresenceManager.init();
     StoneDataSyncer.init();
     StoneManager.init();
     StoneDataSyncer.init();
@@ -486,9 +497,8 @@ class BackgroundProcessHandlerClass {
   }
 
   startDeveloperSingletons() {
-    let state = core.store.getState();
-    if (state.user.developer) {
-      LocalizationLogger.init();
+    if (DataUtil.isDeveloper()) {
+      LocalizationDevDataLogger.init();
     }
   }
 }

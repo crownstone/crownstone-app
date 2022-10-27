@@ -1,10 +1,10 @@
 import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Stacks } from "../../Stacks";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
 import { core } from "../../../Core";
-import { background, colors, styles } from "../../styles";
+import { background, colors, styles, topBarHeight } from "../../styles";
 import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import React from "react";
@@ -17,6 +17,7 @@ import { CommandAPI } from "../../../logic/constellation/Commander";
 import {TESTING_SPHERE_ID} from "../../../backgroundProcesses/dev/DevAppState";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {from, tell} from "../../../logic/constellation/Tellers";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 
 const BLE_STATE_READY = "ready";
@@ -103,7 +104,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       await action();
       this.setState({bleState: BLE_STATE_READY});
     }
-    catch (err) {
+    catch (err : any) {
       this.showBleError(err);
     }
   }
@@ -457,7 +458,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground image={backgroundImage} hideNotifications={true} >
+      <AnimatedBackground fullScreen image={backgroundImage} >
+        <View style={{height: topBarHeight}} />
         <BleStatusBar bleState={this.state.bleState} />
         <SlideInView hidden={true} height={50} visible={this.state.bleState !== BLE_STATE_READY && this.state.bleState !== BLE_STATE_BUSY}>
           <TouchableOpacity onPress={triggerErrorMessage} style={{paddingLeft: 10, paddingRight: 10, backgroundColor: colors.red.hex, borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2), height: 50, ...styles.centered}}>
@@ -467,6 +469,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
         </ScrollView>
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

@@ -9,10 +9,8 @@ import {
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {
   enoughCrownstonesForIndoorLocalization,
-  enoughCrownstonesInLocationsForIndoorLocalization,
-  requireMoreFingerprints
 } from "./DataUtil";
-import { core } from "../Core";
+import {FingerprintUtil} from "./FingerprintUtil";
 
 
 export const SphereUtil = {
@@ -84,10 +82,10 @@ export const SphereUtil = {
     let sphereIsPresent = sphere.state.present;
 
     // are there enough in total?
-    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state, sphereId);
+    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(sphereId);
 
     // do we need more fingerprints?
-    let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+    let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
     let noRooms = (sphereId ? Object.keys(sphere.locations).length : 0) == 0;
 
@@ -116,14 +114,11 @@ export const SphereUtil = {
           [{text: 'OK'}]
         );
       }
-      else if (enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId)) {
-        core.eventBus.emit("showLocalizationSetupStep2", sphereId);
-      }
     };
 
     return {
       showItem: showFinalizeIndoorNavigationButton,
-      action: showFinalizeIndoorNavigationCallback
+      action:   showFinalizeIndoorNavigationCallback
     }
 
   },

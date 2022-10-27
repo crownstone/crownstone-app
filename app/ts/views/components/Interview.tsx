@@ -1,4 +1,3 @@
-
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -19,6 +18,8 @@ import {
 import { ScaledImage } from "./ScaledImage";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import {BackButtonHandler} from "../../backgroundProcesses/BackButtonHandler";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useTopBarOffset} from "./CustomTopBarWrapper";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -46,13 +47,16 @@ let explanationStyle : TextStyle = {
   color: colors.csBlueDark.hex
 };
 
-export class Interview extends Component<{
+export interface InterviewProps {
   getCards() : interviewCards,
   backButtonOverrideViewNameOrId?: string,
-  height? : number,
+  paddingBottom? : number,
+  paddingTop? : number,
   scrollEnabled? : boolean,
   update?() : void,
-}, any> {
+}
+
+export class Interview extends Component<InterviewProps, any> {
 
   _carousel;
   responseHeaders : any;
@@ -94,7 +98,7 @@ export class Interview extends Component<{
 
   componentWillUnmount() {
     if (this.props.backButtonOverrideViewNameOrId) {
-      BackButtonHandler.clearOverride(this.props.backButtonOverrideViewNameOrId)
+      BackButtonHandler.clearOverride(this.props.backButtonOverrideViewNameOrId);
     }
   }
 
@@ -127,7 +131,7 @@ export class Interview extends Component<{
       this._carousel.snapToItem(this.activeCardIndex- 1);
     }
     else {
-      return false
+      return false;
     }
   }
 
@@ -172,9 +176,10 @@ export class Interview extends Component<{
           })
         }}
         card={item}
-        height={this.props.height}
         headerOverride={this.responseHeaders[this.state.cardIds[index]]}
         selectedOption={this.selectedOptions[index]}
+        paddingTop={this.props.paddingTop ?? 0}
+        paddingBottom={this.props.paddingBottom ?? 10}
       />
     )
   }
@@ -233,6 +238,7 @@ export class Interview extends Component<{
       cards.push(allCards[cardId]);
     });
 
+
     return (
       <Carousel
         scrollEnabled={this.props.scrollEnabled}
@@ -244,7 +250,6 @@ export class Interview extends Component<{
         removeClippedSubviews={Platform.OS === 'android' ? false : undefined /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
-        itemHeight={this.props.height || availableModalHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
         onBeforeSnapToItem={(indexToBe) => {
@@ -283,19 +288,22 @@ export class Interview extends Component<{
 
 function InterviewCard(props : {
   card: interviewCard,
+  paddingTop: number,
+  paddingBottom: number,
   headerOverride?: string,
-  height?: number,
   image?: any,
   selectedOption?: number,
   nextCard: (nextCard:string, value: interviewReturnData, index:number, option: interviewOption) => void
 }) {
   let [ editableInputState, setEditableInputState ] = useState("");
-  let [ textInput, setTextInput ] = useState("");
+  let [ textInput, setTextInput ]                   = useState("");
 
-  let header = props.headerOverride || props.card.header;
-  let subHeader = props.card.subHeader;
-  let explanation = props.card.explanation;
-  let options = props.card.options;
+  let insets        = useSafeAreaInsets();
+  let topBarOffsets = useTopBarOffset();
+  let header        = props.headerOverride || props.card.header;
+  let subHeader     = props.card.subHeader;
+  let explanation   = props.card.explanation;
+  let options       = props.card.options;
 
   let flexBeforeOptions = false;
   if (props.card.backgroundImage !== undefined || props.card.optionsBottom || props.card.optionsCenter || props.card.hasTextInputField || props.card.editableItem) {
@@ -311,10 +319,18 @@ function InterviewCard(props : {
 
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
   let card = props.card;
+
   return (
-    <View testID={card.testID}>
-      <ScrollView style={{height: props.height || availableModalHeight}} testID={props.card.scrollViewtestID}>
-        <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
+    <View testID={card.testID} style={{flex:1}}>
+      {/*<View testID={props.card.scrollViewtestID} style={{flex:1, backgroundColor:'red', paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom}}>*/}
+      <ScrollView
+        contentInsetAdjustmentBehavior={"never"}
+        testID={props.card.scrollViewtestID}
+        contentContainerStyle={{flexGrow:1, paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        disableScrollViewPanResponder={true}
+      >
           { header      && <Text style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text> }
           { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
           { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
@@ -361,7 +377,6 @@ function InterviewCard(props : {
               <View style={{flex:1}} /> :
               undefined
           }
-        </View>
       </ScrollView>
       {
         changingAlwaysOnTop &&

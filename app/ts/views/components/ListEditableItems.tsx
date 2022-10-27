@@ -24,6 +24,7 @@ export class ListEditableItems extends Component<any, any> {
     let items = this.props.items;
     return (
       <SeparatedItemList
+        onLayout={this.props.onLayout}
         items={ items }
         separatorIndent={ this.props.separatorIndent }
         renderer={ this._renderer.bind(this) }

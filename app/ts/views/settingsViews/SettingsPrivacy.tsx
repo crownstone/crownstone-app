@@ -19,6 +19,9 @@ import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import {Icon} from "../components/Icon";
+import {NavBarBlur} from "../components/NavBarBlur";
+import {SettingsNavbarBackground} from "../components/SettingsBackground";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -65,7 +68,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       value: user.uploadLocation,
       type: 'switch',
       testID: 'ShareLocation',
-      icon: <IconButton name="ios-pin" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      icon: <Icon name="ios-pin" size={22}  color={colors.green2.hex} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
@@ -81,7 +84,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       value: user.uploadSwitchState,
       type: 'switch',
       testID: 'ShareSwitchState',
-      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />,
+      icon: <Icon name="md-power" size={22}  color={colors.blue3.hex} buttonStyle={{backgroundColor:colors.blue3.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
     }});
@@ -96,7 +99,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       value: user.uploadDeviceDetails,
       type: 'switch',
       testID: 'SharePhoneDetails',
-      icon: <IconButton name="ios-phone-portrait" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      icon: <Icon name="ios-phone-portrait" size={25}  color={colors.darkPurple.hex} buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
       callback:(newValue) => {
         if (newValue === false) {
           let deviceId = Util.data.getCurrentDeviceId(state);
@@ -144,7 +147,7 @@ lang("_Whoops___We_could_not_re_body"),
       label: lang("Privacy_Policy"),
       type:'navigation',
       testID:'PrivacyPolicy',
-      icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
+      icon: <Icon name={'ios-cloudy'} size={25} color={colors.green.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
       callback: () => {
         Linking.openURL('https://crownstone.rocks/privacy-policy').catch(err => {});
       }
@@ -158,11 +161,12 @@ lang("_Whoops___We_could_not_re_body"),
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} testID={"SettingsPrivacy"}>
+      <SettingsNavbarBackground testID={"SettingsPrivacy"}>
         <ScrollView keyboardShouldPersistTaps="always" testID={'SettingsPrivacy_scrollView'}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+        <NavBarBlur xlight />
+      </SettingsNavbarBackground>
     );
   }
 }

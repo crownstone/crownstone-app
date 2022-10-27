@@ -16,9 +16,10 @@ import { AnimatedLoadingBar } from '../components/animated/AnimatedLoadingBar'
 import { HiddenFadeInView }         from '../components/animated/FadeInView'
 import { styles, colors , screenHeight} from '../styles'
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
 import { LOGi } from "../../logging/Log";
+import { BlurView } from "@react-native-community/blur";
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;
@@ -122,17 +123,23 @@ export class Processing extends Component<any, any> {
   render() {
     return (
       <HiddenFadeInView
-        style={[styles.fullscreen, {backgroundColor:colors.black.rgba(this.state.opacity || 0.75),justifyContent:'center', alignItems:'center'}]}
+        style={styles.fullscreen}
         height={screenHeight}
         duration={200}
         testID={"Processing"}
         visible={this.state.visible}>
-        <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >
-          <AnimatedLogo />
-        </View>
-        {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]} testID={"Processing_text"}>{this.state.text}</Text> : undefined}
-        {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} progressDuration={this.state.progressDuration} /> : undefined}
-        {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
+        <BlurView
+          blurType={'dark'}
+          blurAmount={2}
+          style={[styles.fullscreen,{justifyContent:'center', alignItems:'center'}]}
+        >
+          <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >
+            <AnimatedLogo />
+          </View>
+          {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]} testID={"Processing_text"}>{this.state.text}</Text> : undefined}
+          {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} progressDuration={this.state.progressDuration} /> : undefined}
+          {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
+        </BlurView>
       </HiddenFadeInView>
     );
   }

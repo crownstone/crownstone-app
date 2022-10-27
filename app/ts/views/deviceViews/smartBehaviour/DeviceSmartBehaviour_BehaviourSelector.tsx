@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
+  return Languages.get("DeviceSmartBehaviour_BehaviourSelector", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import { core } from "../../../Core";
@@ -18,9 +18,10 @@ import {
   screenWidth
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { Button } from "../../components/Button";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 /**
@@ -112,10 +113,10 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
     });
 
     return (
-      <Background image={background.main} hasNavBar={false}>
+      <SettingsBackground>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</Text>
+            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("Tap_behaviours_to_copy_") }</Text>
             <View style={{height: 0.2*iconSize}} />
 
             <View style={{flex:1}} />
@@ -145,7 +146,7 @@ export class DeviceSmartBehaviour_BehaviourSelector extends LiveComponent<any, a
             <View style={{flex:3}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

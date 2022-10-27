@@ -26,7 +26,7 @@ let defaultSettings : behaviourWrapper = {
   updatedAt: 1
 };
 
-let behaviourReducer = (state = defaultSettings, action : any = {}) => {
+let behaviourReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case "UPDATE_BEHAVIOUR_CLOUD_ID":
       if (action.data) {
@@ -91,7 +91,7 @@ let behaviourReducer = (state = defaultSettings, action : any = {}) => {
 
 
 // behaviour Reducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_BEHAVIOURS_OF_STONE':
       return {};

@@ -14,7 +14,7 @@ import { Icon } from "./Icon";
 export function Button(props) {
   let size = 22;
   let margin = 10;
-  let width = 0.85 * screenWidth;
+  let width = props.width ?? 0.85 * screenWidth;
   let height = 65;
   let fontSize = props.fontSize || 15;
   let marginTop = 5;
@@ -36,7 +36,7 @@ export function Button(props) {
   }
 
   return (
-    <View style={{width:width+(props.hideIcon ? 0 : marginSide), height: height + marginTop, margin: margin, overflow:"hidden"}}>
+    <View style={{width:width+marginSide, height: height + marginTop, margin: margin, overflow:"hidden"}}>
       <TouchableOpacity style={{
         width:           width,
         height:          height,
@@ -50,7 +50,7 @@ export function Button(props) {
         ...iconShift
       }}
       onPress={props.callback}>
-        <Text style={{fontSize:fontSize, fontWeight:'bold', color:colors.white.rgba(0.8), textAlign:'center'}}>{props.label}</Text>
+        <Text style={{fontSize:fontSize, fontWeight:'bold', color: props.fontColor ?? colors.white.hex, textAlign:'center'}}>{props.label}</Text>
       </TouchableOpacity>
 
       {props.hideIcon === true ? null :
@@ -71,37 +71,3 @@ export function Button(props) {
     </View>
   );
 }
-//
-// export function BehaviourQuestion(props) {
-//   let buttonStyle : ViewStyle = {
-//     width:60,
-//     height:60,
-//     borderRadius:20,
-//     alignItems:'center',
-//     backgroundColor: colors.white.rgba(0.2),
-//     justifyContent: 'center',
-//     padding:10,
-//   };
-//   return (
-//     <View style={{
-//       flexDirection:'row',
-//       width:screenWidth,
-//       height:60,
-//       borderRadius:20,
-//       margin:10,
-//     }}>
-//       <View style={{flex:1}} />
-//       <Text style={{fontSize:15, fontWeight:'bold', width:screenWidth - 170, color:colors.white.rgba(0.55)}}>{props.label}</Text>
-//
-//       <View style={{flex:1}} />
-//       <TouchableOpacity style={buttonStyle} onPress={props.yesCallback}>
-//         <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{ lang("Yes") }</Text>
-//       </TouchableOpacity>
-//       <View style={{flex:1}} />
-//       <TouchableOpacity style={buttonStyle} onPress={props.noCallback}>
-//         <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{ lang("No") }</Text>
-//       </TouchableOpacity>
-//       <View style={{flex:1}} />
-//     </View>
-//   );
-// }

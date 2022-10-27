@@ -1,12 +1,26 @@
 import { core } from "../Core";
 
-
 export const Get = {
 
   activeSphere() : SphereData | null {
     let state = core.store.getState();
-    let activeSphere = state?.app?.activeSphere || null;
-    if (activeSphere) { return state.spheres[activeSphere] || null; }
+    let activeSphereId = Get.activeSphereId();
+    if (activeSphereId) {
+      return state.spheres[activeSphereId] || null;
+    }
+    return null;
+  },
+
+  activeSphereId() : sphereId {
+    let state = core.store.getState();
+    let activeSphereId = state?.app?.activeSphere || null;
+    if (activeSphereId) { return activeSphereId || null; }
+    else {
+      let sphereIds = Object.keys(state.spheres);
+      if (sphereIds.length > 0) {
+        return sphereIds[0];
+      }
+    }
     return null;
   },
 
@@ -71,7 +85,51 @@ export const Get = {
     return sphere?.thirdParty?.toon?.[toonId] || null;
   },
 
-  user() : UserData | null {
+  fingerprint(sphereId: string, locationId: string, fingerprintId) : FingerprintData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    return location.fingerprints?.raw[fingerprintId] || null;
+  },
+
+  processedFingerprint(sphereId: string, locationId: string, fingerprintId) : FingerprintProcessedData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    return location.fingerprints?.processed[fingerprintId] || null;
+  },
+
+  processedFingerprintFromRawId(sphereId: string, locationId: string, fingerprintId) : FingerprintProcessedData | null {
+    let location = Get.location(sphereId,locationId);
+    if (!location) { return null; }
+
+    for (let processedFingerprint of Object.values(location.fingerprints.processed)) {
+      if (processedFingerprint.fingerprintId === fingerprintId) {
+        return processedFingerprint;
+      }
+    }
+
+    return null;
+  },
+
+  user() : UserData {
     return core.store.getState().user;
+  },
+
+  userId() : string {
+    return Get.user().userId;
+  },
+
+  message(sphereId, messageId) : MessageData | null {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return null; }
+    return sphere.messages[messageId] || null;
+  },
+
+
+  energyCollectionPermission(sphereId: sphereId) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+    return sphere?.features?.ENERGY_COLLECTION_PERMISSION?.enabled ?? false;
   }
 }

@@ -11,7 +11,7 @@ import {
   TouchableOpacity
 } from "react-native";
 
-import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE, menuStyles} from "../../styles";
 import { Icon } from "../Icon";
 import { core } from "../../../Core";
 
@@ -35,9 +35,9 @@ export class NumericGetSet extends Component<any, any> {
 
 
     return (
-      <View style={[styles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || '#ffffff', width: screenWidth}]}>
+      <View style={[menuStyles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || menuStyles.listView.backgroundColor, width: screenWidth}]}>
         <Text
-          style={[styles.listTextLarge, this.props.labelStyle, this.props.style, {minWidth: 0.2*screenWidth, paddingRight:5}]}
+          style={[menuStyles.listTextLarge, this.props.labelStyle, this.props.style, {minWidth: 0.2*screenWidth, paddingRight:5}]}
           numberOfLines={1}
           adjustsFontSizeToFit={true}
           minimumFontScale={0.75}

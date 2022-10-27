@@ -13,7 +13,7 @@ let defaultSettings = {
   updatedAt: 1
 };
 
-let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
+let sphereUserReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -60,7 +60,7 @@ let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
 };
 
 // sphereUserReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE_USER':
       let newState = {...state};

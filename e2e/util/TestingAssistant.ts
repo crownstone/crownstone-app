@@ -1,6 +1,8 @@
 import { SphereMockInterface } from "./SphereMockInterface";
 import { MirrorDatabase }      from "./MirrorDatabase";
 import { BleMocks }            from "./BleMocks";
+import { delay } from "./TestUtil";
+import { NATIVE_BUS_TOPICS } from "../../app/ts/Topics";
 
 type cloudId = string;
 
@@ -14,11 +16,38 @@ export class TestingAssistant {
 
   constructor() {
     this.db  = new MirrorDatabase();
-    this.ble = new BleMocks();
+    this.ble = new BleMocks(this.db);
+  }
+
+
+  async enterSphere(localSphereId: string = null) {
+    if (localSphereId === null) {
+      localSphereId = await this.getActiveSphereLocalId();
+    }
+    await this.ble._sendEvent( NATIVE_BUS_TOPICS.enterSphere, localSphereId );
+  }
+
+
+  async exitSphere(localSphereId: string = null) {
+    if (localSphereId === null) {
+      localSphereId = await this.getActiveSphereId();
+    }
+    await this.ble._sendEvent( NATIVE_BUS_TOPICS.exitSphere, localSphereId );
   }
 
 
   async update() {
+    console.log("Updating the database...");
+    await this._update();
+    // retry getting the active sphere after a small delay
+    if (this.activeSphereId === null) {
+      await delay(2000);
+      await this._update();
+    }
+  }
+
+
+  async _update() {
     await this.db.update();
     this.spheres = {};
     for (let sphereId in this.db.spheres) {
@@ -26,6 +55,7 @@ export class TestingAssistant {
       this.spheres[sphereId] = new SphereMockInterface(sphereId, sphere.data.data.uuid);
       await this.spheres[sphereId].loadSphereData();
       await this.spheres[sphereId].checkForActive();
+      this.ble.loadSphereData(sphere);
     }
     await this._getActiveSphereId();
   }
@@ -48,8 +78,9 @@ export class TestingAssistant {
     return candidate;
   }
 
+
   /**
-   * Gets the cloud ID of the sphere
+   * Gets the local ID of the sphere
    * @param name
    */
   async getActiveSphereLocalId() {
@@ -65,6 +96,19 @@ export class TestingAssistant {
     }
 
     return null;
+  }
+
+
+  /**
+   * Gets the cloud ID of the sphere
+   * @param name
+   */
+  async getActiveSphereId() {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    return this.activeSphereId ?? null;
   }
 
 
@@ -90,6 +134,7 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
+
     let sphere = this.db.spheres[this.activeSphereId];
     let locationIds = Object.keys(sphere.locations);
     return locationIds[roomIndex];
@@ -104,6 +149,7 @@ export class TestingAssistant {
     if (!this.activeSphereId) {
       return null;
     }
+
     let locations = this.db.spheres[this.activeSphereId].locations;
     for (let locationId in locations) {
       if (locations[locationId].data.data.name === name) {
@@ -130,6 +176,65 @@ export class TestingAssistant {
       }
     }
     return false;
+  }
+
+  async getStoneId(stoneIndex: number = 0) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    return stoneIds[stoneIndex];
+  }
+
+
+  /**
+   * The address is reused to store the handle, this way the test API has a way to get the handle from the cloud.
+   * @param stoneIndex
+   */
+  async getStoneHandle(stoneIndex: number = 0) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    return sphere.stones[stoneIds[stoneIndex]].data.data.address;
+  }
+
+  /**
+   * The address is reused to store the handle, this way the test API has a way to get the handle from the cloud.
+   * @param stoneIndex
+   */
+  async getStoneHandleFromId(stoneId: string) : Promise<string | null> {
+    if (!this.activeSphereId) {
+      await this._getActiveSphereId();
+    }
+
+    if (!this.activeSphereId) {
+      return null;
+    }
+
+    let sphere = this.db.spheres[this.activeSphereId];
+    return sphere.stones[stoneId].address;
+  }
+
+  async getStone(stoneIndex: number = 0) {
+    let stoneId = await this.getStoneId(stoneIndex);
+    if (stoneId === null) {
+      return null;
+    }
+
+    return this.db[this.activeSphereId].stones[stoneId];
   }
 
 

@@ -280,7 +280,7 @@ export class BleCommandManagerClass {
         commandRemoved = true;
       }
     }
-    catch (err) {
+    catch (err : any) {
       errorWasThrown = true;
       errorDuringCommand = err;
       LOGw.constellation("BleCommandManager: Something went wrong while performing", command.command.type, handle, err?.message, command.id);

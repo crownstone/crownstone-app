@@ -1,12 +1,27 @@
-add bridge method "getLaunchArguments" 
+add bridge method vibrate(type: string);
 
-getLaunchArguments() :  Promise<string[]>
+this does not have to do anything, just be there. Android uses the RN vibration module.
 
-See bottom of this page on how to get them https://wix.github.io/Detox/docs/api/launch-args
+add https://github.com/computerjazz/react-native-draggable-flatlist
 
-These are cached once on boot and served when asked for it.
+remove bridge methods:
+RCT_EXTERN_METHOD(startCollectingFingerprint)
+RCT_EXTERN_METHOD(abortCollectingFingerprint)
+RCT_EXTERN_METHOD(pauseCollectingFingerprint)
+RCT_EXTERN_METHOD(resumeCollectingFingerprint)
+RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(clearFingerprints)
+RCT_EXTERN_METHOD(clearFingerprintsPromise:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)locationId fingerprint:(NSString *)fingerprint)
 
-I'm getting this from ios:
-["/Users/alex/Library/Developer/CoreSimulator/Devices/09DFB66B-EEE4-4449-B87B-B4D41CF4094B/data/Containers/Bundle/Application/2A28FBE6-9A52-49FB-98B2-C006BCC5B004/Crownstone.app/Crownstone", "--args", "-detoxServer", "ws://localhost:56869", "-detoxSessionId", "1ec83337-e290-e48b-39a6-53e0049c8931", "-localization", "en_us", "-detoxEnableSynchronization", "0", "-detoxDisableHierarchyDump", "YES"]
+RCT_EXTERN_METHOD(startIndoorLocalization)
+RCT_EXTERN_METHOD(stopIndoorLocalization)
 
-We'll have to see what it is that you get.
+Add react-native-video
+
+
+add bridge methods:
+RCT_EXTERN_METHOD(setDoubleTapSwitchCraft:(NSString *)handle enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDefaultDimValue:(NSString *)handle dimValue:(nonnull NSNumber *)dimValue callback:(RCTResponseSenderBlock)callback)
+
+add react-native-localize

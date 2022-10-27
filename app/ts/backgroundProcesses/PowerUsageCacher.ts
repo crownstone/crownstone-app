@@ -29,6 +29,9 @@ class PowerUsageCacherClass {
         if (data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
           this.processData(data);
         }
+        else if (data.serviceData.stateOfExternalCrownstone === true && data.serviceData.errorMode === false && data.serviceData.alternativeState === false) {
+
+        }
       });
     }
   }
@@ -82,6 +85,19 @@ class PowerUsageCacherClass {
     }
 
     return this.data[sphereId][handle];
+  }
+
+
+  getRecentData(sphereId, handle, timeout= 20) : number | null {
+    let data = this.getData(sphereId, handle);
+    if (data.length === 0) {
+      return null;
+    }
+    let lastPoint = data[data.length-1];
+    if (Date.now() - lastPoint.x > timeout*1000) {
+      return null;
+    }
+    return lastPoint.y;
   }
 
 

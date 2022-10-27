@@ -12,12 +12,13 @@ import {
   Text, TouchableOpacity, View
 } from "react-native";
 
-import { OverlayBox } from '../components/overlays/OverlayBox'
 import { colors, screenWidth, styles } from "../styles";
 import { InterviewTextInput } from "../components/InterviewComponents";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { core } from "../../Core";
 import { Icon } from "../components/Icon";
+import { PopupButton } from "./LocationPermissionOverlay";
+import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
 
 
 export class NumericOverlay extends Component<any, any> {
@@ -71,7 +72,7 @@ export class NumericOverlay extends Component<any, any> {
   render() {
     if (this.state.status !== "NONE") {
       return (
-        <OverlayBox
+        <SimpleOverlayBox
           visible={this.state.visible}
           overrideBackButton={false}
           canClose={true}
@@ -87,39 +88,40 @@ export class NumericOverlay extends Component<any, any> {
               <Icon name="ios-close-circle" size={0.5 * screenWidth} color={colors.red.rgba(0.8)}/>
             }
           </View>
-        </OverlayBox>
+        </SimpleOverlayBox>
       );
     }
-    else {
-      let content = (
-        <React.Fragment>
-          <View style={{flex:0.5}} />
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this._getTitle()}</Text>
-          <View style={{flex:0.5}} />
-          <InterviewTextInput
-            autofocus={true}
-            keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
-            placeholder={ "set value" }
-            value={this.state.value}
-            callback={(newValue) => {
-              if (newValue.indexOf(",") !== -1) {
-                if (newValue.indexOf(".") !== -1) {
-                  newValue = newValue.replace(",","");
-                }
-                else {
-                  newValue = newValue.replace(",",".");
-                }
+
+
+    let content = (
+      <React.Fragment>
+        <View style={{flex:0.5}} />
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this._getTitle()}</Text>
+        <View style={{flex:0.5}} />
+        <InterviewTextInput
+          autofocus={true}
+          keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
+          placeholder={ "set value" }
+          value={this.state.value}
+          callback={(newValue) => {
+            if (newValue.indexOf(",") !== -1) {
+              if (newValue.indexOf(".") !== -1) {
+                newValue = newValue.replace(",","");
               }
-              this.setState({value: newValue});
-            }}
-          />
-          <View style={{flex:0.5}} />
-          <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue3.hex, padding:15, textAlign:'center'}}>
-            {this._getText()}
-          </Text>
-          <View style={{flex:1}} />
-          {this.state.pending ? <ActivityIndicator size={"small"} /> : <TouchableOpacity
-            onPress={() => {
+              else {
+                newValue = newValue.replace(",",".");
+              }
+            }
+            this.setState({value: newValue});
+          }}
+        />
+        <View style={{flex:0.5}} />
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue3.hex, padding:15, textAlign:'center'}}>
+          {this._getText()}
+        </Text>
+        <View style={{flex:1}} />
+        {this.state.pending ? <ActivityIndicator size={"small"} /> : <PopupButton
+            callback={() => {
               if (this.state.value !== null) {
                 this.setState({pending: true})
                 this.props.data.callback(Number(this.state.value))
@@ -128,57 +130,45 @@ export class NumericOverlay extends Component<any, any> {
                 this.setState({ visible: false, value: null, ok: false })
                 NavigationUtil.closeOverlay(this.props.componentId);
               }
-            }}
-            style={[styles.centered, {
-              width: 0.4 * screenWidth,
-              height: 36,
-              borderRadius: 18,
-              borderWidth: 2,
-              borderColor: colors.blue3.rgba(0.5),
-            }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Set_") }</Text>
-          </TouchableOpacity>}
-          <View style={{height:30}} />
-        </React.Fragment>
-      )
+            }} label={lang("Set_")} />}
+        <View style={{height:30}} />
+      </React.Fragment>
+    )
 
 
-      if (Platform.OS === 'android') {
-        return (
-          <OverlayBox
-            visible={this.state.visible}
-            overrideBackButton={false}
-            canClose={true}
-            closeCallback={() => {
-              this.setState({ visible: false, value: null, ok: false });
-              NavigationUtil.closeOverlay(this.props.componentId);
-            }}
-          >
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-              {content}
-            </View>
-          </OverlayBox>
-        );
-      }
-      else {
-        return (
-          <TouchableOpacity activeOpacity={1.0} onPress={() => { Keyboard.dismiss() }} style={styles.centered}>
-            <OverlayBox
-              visible={this.state.visible}
-              overrideBackButton={false}
-              canClose={true}
-              closeCallback={() => {
-                this.setState({ visible: false, value: null, ok: false });
-                NavigationUtil.closeOverlay(this.props.componentId);
-              }}
-            >
-              <TouchableOpacity activeOpacity={1.0} onPress={() => { Keyboard.dismiss() }} style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                {content}
-              </TouchableOpacity>
-            </OverlayBox>
+    if (Platform.OS === 'android') {
+      return (
+        <SimpleOverlayBox
+          visible={this.state.visible}
+          overrideBackButton={false}
+          canClose={true}
+          closeCallback={() => {
+            this.setState({ visible: false, value: null, ok: false });
+            NavigationUtil.closeOverlay(this.props.componentId);
+          }}
+        >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            {content}
+          </View>
+        </SimpleOverlayBox>
+      );
+    }
+    else {
+      return (
+        <SimpleOverlayBox
+          visible={this.state.visible}
+          overrideBackButton={false}
+          canClose={true}
+          closeCallback={() => {
+            this.setState({ visible: false, value: null, ok: false });
+            NavigationUtil.closeOverlay(this.props.componentId);
+          }}
+        >
+          <TouchableOpacity activeOpacity={1.0} onPress={() => { Keyboard.dismiss() }} style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            {content}
           </TouchableOpacity>
-        );
-      }
+        </SimpleOverlayBox>
+      );
     }
   }
 }

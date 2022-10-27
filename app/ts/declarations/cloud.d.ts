@@ -16,3 +16,18 @@ interface RequestOptions {
   query?: {[paramName: string] : any},
   body?:  {[paramName: string] : any}
 }
+
+
+interface EnergyMeasurementData {
+  stoneId: string, t: timeISOString, energy: number
+}
+interface EnergyReturnData {
+  stoneId: string, timestamp: timeISOString, energyUsage: number
+}
+type timeISOString = string;
+type EnergyUsageRange = 'day' | 'week' | 'month' | 'year';
+
+type StoreReply = {
+  message: string,
+  count: number,
+}

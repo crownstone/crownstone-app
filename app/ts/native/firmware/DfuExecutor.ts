@@ -13,6 +13,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {SessionManager} from "../../logic/constellation/SessionManager";
 import {CommandAPI} from "../../logic/constellation/Commander";
 import {claimBluetooth} from "../../logic/constellation/Tellers";
+import {Get} from "../../util/GetUtil";
 
 
 export const DfuExecutionInformation = {
@@ -93,7 +94,7 @@ export class DfuExecutor {
     this.sessionUUID = xUtil.getUUID();
 
     let state = core.store.getState();
-    this.stone = StoneUtil.getStoneObject(this.sphereId, this.stoneId);
+    this.stone = Get.stone(this.sphereId, this.stoneId);
     this.handle = this.stone.config.handle;
     this.hardwareVersion = this.stone.config.hardwareVersion;
     this.userConfig = state.user;
@@ -253,7 +254,7 @@ export class DfuExecutor {
         this._setProgress(DfuPhases.GETTING_FIRMWARE_VERSION, this.currentStep, 0.2, DfuExecutionInformation.CROWNSTONE_FOUND);
         await this._prepareAndGetVersions(crownstoneMode);
       }
-      catch (err) {
+      catch (err : any) {
         this._handleError(err, DfuPhases.GETTING_VERSION_INFORMATION, DfuExecutionInformation.VERSION_OBTAINING_FAILED);
       }
 
@@ -266,7 +267,7 @@ export class DfuExecutor {
           await this._getBootloaderVersionFromDFU(crownstoneMode);
         }
       }
-      catch (err) {
+      catch (err : any) {
         this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.VERSION_OBTAINING_FAILED);
       }
 
@@ -287,7 +288,7 @@ export class DfuExecutor {
         this._setProgress(DfuPhases.PREPARING_FIRMWARE_STEPS, this.currentStep, 0.9, DfuExecutionInformation.OBTAINED_VERSIONS_FROM_STONE);
         await this._checkFirmwareOperations(newestFirmware);
       }
-      catch (err) {
+      catch (err : any) {
         this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.DOWNLOAD_FAILED);
       }
 
@@ -319,7 +320,7 @@ export class DfuExecutor {
         LOGi.dfu("DfuExecutor: Starting final setup...");
         await this.dfuHelper.setup(this.claimedCommander, crownstoneMode, this._getUpdateCallback(DfuPhases.SETUP, this.currentStep, true))
       }
-      catch (err) {
+      catch (err : any) {
         this._handleError(err, DfuPhases.SETUP, DfuExecutionInformation.SETUP_FAILED);
       }
 
@@ -329,7 +330,7 @@ export class DfuExecutor {
       this.runningDfuProcess = false;
       LOGi.dfu("DfuExecutor: DFU finshed.");
     }
-    catch (err) {
+    catch (err : any) {
       DfuStateHandler._dfuInProgress = false;
       this.runningDfuProcess = false;
       LOGi.dfu("DfuExecutor: DFU failed.");

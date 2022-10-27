@@ -1,5 +1,6 @@
 import {CLOUD} from '../../cloudAPI'
 import {LOGe} from "../../../logging/Log";
+import { MessageTransferNext } from "../newSync/transferrers/MessageTransferNext";
 
 const RNFS = require('react-native-fs');
 
@@ -43,15 +44,18 @@ export const syncEvents = function(store) {
 
 };
 
-const handleRemove = function(state, events, actions) {
+const handleRemove = function(state, events, actions : DatabaseAction[]) {
   let promises = [];
-  let messageEventIds   = Object.keys(events.messages);
-  let behaviourEventIds = Object.keys(events.behaviours);
-  let sceneEventIds     = Object.keys(events.scenes);
+  let messageEventIds     = Object.keys(events.messages);
+  let behaviourEventIds   = Object.keys(events.behaviours);
+  let sceneEventIds       = Object.keys(events.scenes);
+  let fingerprintEventIds = Object.keys(events.fingerprints);
+
+
   messageEventIds.forEach((messageEventId) => {
-    let payload : SyncEvent = events.messages[messageEventId];
-    let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', id: messageEventId })};
-    promises.push(CLOUD.forSphere(payload.sphereId).deleteMessage(payload.cloudId)
+    let payload : SyncEventData = events.messages[messageEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', eventId: messageEventId })};
+    promises.push(MessageTransferNext.removeFromCloud(payload.sphereId, payload.cloudId)
       .then(() => { success(); })
       .catch((err) => {
         // already deleted
@@ -61,9 +65,9 @@ const handleRemove = function(state, events, actions) {
 
 
   sceneEventIds.forEach((sceneEventId) => {
-    let eventData : SyncEvent = events.scenes[sceneEventId];
-    let success = () => { actions.push({type: 'FINISHED_REMOVE_SCENES', id: sceneEventId })};
-    if (!eventData.cloudId) { return success() }
+    let eventData : SyncEventData = events.scenes[sceneEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_SCENES', eventId: sceneEventId })};
+    if (!eventData.cloudId) { return success(); }
 
     promises.push(
       CLOUD.forSphere(eventData.sphereId).deleteScene(eventData.cloudId)
@@ -75,11 +79,12 @@ const handleRemove = function(state, events, actions) {
     );
   });
 
+
   behaviourEventIds.forEach((behaviourEventId) => {
-    let eventData : SyncEvent = events.behaviours[behaviourEventId];
-    let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', id: behaviourEventId })};
-    if (!eventData.cloudId) { return success() }
-    if (!eventData.stoneId) { return success() } // this is for items living under stones
+    let eventData : SyncEventData = events.behaviours[behaviourEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', eventId: behaviourEventId })};
+    if (!eventData.cloudId) { return success(); }
+    if (!eventData.stoneId) { return success(); } // this is for items living under stones
 
     promises.push(
       CLOUD.forStone(eventData.stoneId).deleteBehaviour(eventData.cloudId)
@@ -91,39 +96,35 @@ const handleRemove = function(state, events, actions) {
     );
   });
 
+
+  fingerprintEventIds.forEach((fingerprintEventId) => {
+    let eventData : SyncEventData = events.fingerprints[fingerprintEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_FINGERPRINTS', eventId: fingerprintEventId })};
+    if (!eventData.cloudId)    { return success(); }
+    if (!eventData.locationId) { return success(); } // this is for items living under locations
+
+    promises.push(
+      CLOUD.forSphere(eventData.sphereId).deleteFingerprintV2(eventData.cloudId)
+        .then(() => { success(); })
+        .catch((err) => {
+          // already deleted
+          if (err?.status === 404) { success(); }
+        })
+    );
+  });
+
   return Promise.all(promises);
 };
 
-const handleSpecial = function(state, events, actions) {
+const handleSpecial = function(state, events, actions : DatabaseAction[]) {
   let promises = [];
-  let messageIds = Object.keys(events.messages);
   let locationEventIds = Object.keys(events.locations);
-  let sceneEventIds = Object.keys(events.scenes);
-  let userEventIds = Object.keys(events.user);
-
-  messageIds.forEach((dbId) => {
-    let payload = events.messages[dbId];
-    let success = () => { actions.push({type: 'FINISHED_SPECIAL_MESSAGES', id: dbId })};
-
-    switch (payload.specialType) {
-      case 'receivedMessage':
-        promises.push(CLOUD.receivedMessage(payload.cloudId).then(() => { success(); }).catch((err) => {
-          // message we are trying to mark delivered is deleted. That's ok, the sender can delete the message.
-          if (err?.status === 404 || err?.status === 400) { success(); }
-        }));
-        break;
-      case 'readMessage':
-        promises.push(CLOUD.readMessage(payload.cloudId).then(() => { success(); }).catch((err) => {
-          // message we are trying to mark read is deleted. That's ok, the sender can delete the message.
-          if (err?.status === 404 || err?.status === 400) { success(); }
-        }));
-        break;
-    }
-  });
+  let sceneEventIds    = Object.keys(events.scenes);
+  let userEventIds     = Object.keys(events.user);
 
   userEventIds.forEach((userEventId) => {
     let payload = events.user[userEventId];
-    let success = () => { actions.push({type: 'FINISHED_SPECIAL_USER', id: userEventId })};
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_USER', eventId: userEventId })};
     switch (payload.specialType) {
       case 'removeProfilePicture':
         promises.push(CLOUD.removeProfileImage({background: true}).then(() => { success(); })
@@ -160,7 +161,7 @@ const handleSpecial = function(state, events, actions) {
 
   locationEventIds.forEach((locationEventId) => {
     let payload = events.locations[locationEventId];
-    let success = () => { actions.push({type: 'FINISHED_SPECIAL_LOCATIONS', id: locationEventId })};
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_LOCATIONS', eventId: locationEventId })};
 
     let sphere = state.spheres[payload.sphereId];
     if (!sphere) { return success(); }
@@ -204,7 +205,7 @@ const handleSpecial = function(state, events, actions) {
 
   sceneEventIds.forEach((sceneEventId) => {
     let payload = events.scenes[sceneEventId];
-    let success = () => { actions.push({type: 'FINISHED_SPECIAL_SCENES', id: sceneEventId })};
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_SCENES', eventId: sceneEventId })};
 
     let sphere = state.spheres[payload.sphereId];
     if (!sphere) { return success(); }

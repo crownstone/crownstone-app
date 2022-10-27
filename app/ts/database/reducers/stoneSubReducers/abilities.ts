@@ -1,13 +1,15 @@
 import { getTime, refreshDefaults, update } from "../reducerUtil";
 
-export const ABILITY_TYPE_ID = {
+export const ABILITY_TYPE_ID : Record<string, abilityId> = {
   dimming:     'dimming',
   switchcraft: 'switchcraft',
   tapToToggle: 'tapToToggle'
 }
-export const ABILITY_PROPERTY_TYPE_ID = {
+export const ABILITY_PROPERTY_TYPE_ID : Record<string,propertyId>= {
   softOnSpeed: 'softOnSpeed',
   rssiOffset:  'rssiOffset',
+  doubleTapSwitchcraft: 'doubleTapSwitchcraft',
+  defaultDimValue: 'defaultDimValue',
 }
 
 let abilityFormat : AbilityData = {
@@ -187,7 +189,7 @@ const abilityPropertyReducerHandler = (state = abilityPropertyFormat, action: an
       return state;
   }
 }
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'ADD_STONE':
       let newAbilityState = {
@@ -197,6 +199,10 @@ export default (state = {}, action : any = {}) => {
       }
 
       newAbilityState.dimming.properties     = {softOnSpeed: abilityPropertyReducer({...abilityPropertyFormat, type: 'softOnSpeed', value:8, valueTarget:8}, action)}
+      newAbilityState.switchcraft.properties = {
+        doubleTapSwitchcraft: abilityPropertyReducer({...abilityPropertyFormat, type: 'doubleTapSwitchcraft', value:false, valueTarget:false}, action),
+        defaultDimValue:      abilityPropertyReducer({...abilityPropertyFormat, type: 'defaultDimValue',      value:0,     valueTarget:0},     action),
+      }
       newAbilityState.tapToToggle.properties = {rssiOffset:  abilityPropertyReducer({...abilityPropertyFormat, type: 'rssiOffset'}, action)}
 
       return newAbilityState;

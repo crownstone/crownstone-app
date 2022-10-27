@@ -113,7 +113,6 @@ export class TopbarBackButton extends Component<any, any> {
 
 
 export class TopbarRightButton extends Component<any, any> {
-
   render() {
     return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarRightTouch}/>
   }
@@ -122,8 +121,14 @@ export class TopbarRightButton extends Component<any, any> {
 
 
 export class TopbarRightMoreButton extends Component<any, any> {
-
   render() {
     return <TopbarButton {...this.props} alignmentStyle={{ height:barHeight, width:80}} icon={<Icon name={'md-more'} color={colors.white.hex} size={30} />}/>
+  }
+}
+
+
+export class TopbarRightHelpButton extends Component<any, any> {
+  render() {
+    return <TopbarButton {...this.props} alignmentStyle={{ height:barHeight, width:30}} icon={<Icon name={'ion5-md-help-circle-outline'} color={colors.iosBlue.hex} size={30} />}/>
   }
 }

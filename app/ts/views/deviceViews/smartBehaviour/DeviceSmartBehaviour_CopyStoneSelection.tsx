@@ -7,24 +7,26 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../Core";
 import { Background } from "../../components/Background";
-import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View,Image, ViewStyle } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight, background,
   colors,
-  deviceStyles,
-  screenWidth
+  deviceStyles, getRoomStockImage,
+  screenWidth, statusBarHeight, topBarHeight
 } from "../../styles";
-import { LocationFlavourImage } from "../../roomViews/RoomOverview";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { useState } from "react";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { TopbarImitation } from "../../components/TopbarImitation";
-import { NotificationLine } from "../../components/NotificationLine";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { ABILITY_TYPE_ID } from "../../../database/reducers/stoneSubReducers/abilities";
+import {
+  SettingsCustomTopBarBackground,
+} from "../../components/SettingsBackground";
+import { CustomTopBarWrapper } from "../../components/CustomTopBarWrapper";
+import { LocationRow } from "../../selection/SelectCrownstone";
 
 
 
@@ -58,7 +60,6 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   static options = {
     topBar: { visible: false, height: 0 }
   };
-
 
   unsubscribeStoreEvents;
   callback;
@@ -142,42 +143,33 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   }
 
   render() {
-    let header = null
-    if (this.props.copyType === 'TO') {
-      header = lang("Who_I_shall_copy_my_behav")
-    }
-    else {
-      header = lang("Who_shall_I_copy_behaviou")
-    }
-
     return (
-      <Background image={background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
-        <TopbarImitation
+      <SettingsCustomTopBarBackground>
+        <CustomTopBarWrapper
           title={this.props.copyType === "FROM" ? lang("Copy_from_whom_") : lang("Copy_to_whom_")}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
           leftLabel={ lang("Back")}
           rightAction={() => {
             if (Object.keys(this.state.selectionMap).length === 0) {
               Alert.alert(
-lang("_No_Crownstone_selected___header"),
-lang("_No_Crownstone_selected___body"),
-[{text:lang("_No_Crownstone_selected___left")}]);
+                lang("_No_Crownstone_selected___header"),
+                lang("_No_Crownstone_selected___body"),
+        [{text:lang("_No_Crownstone_selected___left")}]
+              );
             }
             else {
               this.props.callback(Object.keys(this.state.selectionMap));
             }
           }}
           right={this.props.copyType === "FROM" ? null : lang("Select")}
-        />
-        <NotificationLine />
-        <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={{...deviceStyles.header, width: 0.85*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
-            <View style={{height:30}} />
-            { this._getLocationStoneList() }
-          </View>
-        </ScrollView>
-      </Background>
+        >
+          <ScrollView contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight}}>
+            <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
+              { this._getLocationStoneList() }
+            </View>
+          </ScrollView>
+        </CustomTopBarWrapper>
+      </SettingsCustomTopBarBackground>
     )
   }
 }
@@ -188,7 +180,7 @@ function LocationStoneList({location, sphereId, stoneDataArray, callback, origin
   }
   return (
     <React.Fragment>
-      <LocationRow location={location} />
+      <LocationRow sphereId={sphereId} locationId={location.id} />
       <StoneList stoneDataArray={stoneDataArray} sphereId={sphereId} callback={callback} dimmingRequired={dimmingRequired} behavioursRequired={behavioursRequired} originId={originId} />
       <View style={{height:50}} />
     </React.Fragment>
@@ -233,7 +225,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     width:screenWidth,
     height: height,
     padding:padding,
-    paddingLeft:30,
+    paddingLeft:20,
     flexDirection:'row',
     alignItems:'center',
     backgroundColor: colors.white.rgba(0.8),
@@ -357,20 +349,3 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
 
 }
 
-function LocationRow({location}) {
-  let height = 80;
-  let textBackgroundColor = "transparent";
-  if (location.config.picture) {
-    textBackgroundColor = colors.white.rgba(0.8);
-  }
-  return (
-    <View style={{width: screenWidth, borderColor: colors.black.rgba(0.5), borderBottomWidth: 1, borderTopWidth: 1}}>
-      <View style={{opacity: 0.8}}><LocationFlavourImage location={location} height={height}/></View>
-      <View style={{position:'absolute', top:0, left:0, width: screenWidth, height: height, justifyContent:'center'}}>
-        <View style={{backgroundColor: textBackgroundColor, width: 30 + (location.config.name.length || 0) * 14}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:10}}>{location.config.name}</Text>
-        </View>
-      </View>
-    </View>
-  )
-}

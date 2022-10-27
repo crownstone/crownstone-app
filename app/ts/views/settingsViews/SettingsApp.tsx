@@ -6,21 +6,23 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsApp", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  ScrollView} from 'react-native';
 
-import { IconButton } from '../components/IconButton'
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
-import { Bluenet } from '../../native/libInterface/Bluenet'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
-import { background, colors } from "../styles";
-import {Util} from "../../util/Util";
-import { core } from "../../Core";
+import {Alert, ScrollView} from 'react-native';
+import { Bluenet }    from '../../native/libInterface/Bluenet'
+import { CLOUD }      from '../../cloud/cloudAPI'
+import { LOG }        from '../../logging/Log'
+import { colors }     from "../styles";
+import { Util }       from "../../util/Util";
+import { core }       from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { SliderBar } from "../components/editComponents/SliderBar";
-import {DataUtil} from "../../util/DataUtil";
+import { SliderBar }  from "../components/editComponents/SliderBar";
+import { DataUtil }   from "../../util/DataUtil";
+import { Icon }       from "../components/Icon";
+import { ListEditableItems }       from '../components/ListEditableItems'
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
+import {LocalizationCore} from "../../localization/LocalizationCore";
+import {Get} from "../../util/GetUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -33,7 +35,7 @@ export class SettingsApp extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.changeAppSettings) {
+      if (change.changeAppSettings || change.changeSphereFeatures) {
         this.forceUpdate();
       }
     });
@@ -93,8 +95,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       type: 'dropdown',
       label: lang("Language"),
       buttons: false,
-      mediumIcon: <IconButton name="md-globe" buttonSize={38} size={28} radius={8} color="#fff"
-                              buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+      icon: <Icon name="md-globe" size={28} color={ colors.green.hex } />,
       value: state.user.language || Languages.defaultLanguage,
       dropdownHeight: 130,
       items: dropDownItems,
@@ -113,7 +114,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       value: state.app.tapToToggleEnabled,
       type: 'switch',
       testID: 'tapToToggle_switch',
-      mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      icon: <Icon name="md-color-wand" size={25} color={colors.purple.hex} />,
       callback:(newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
@@ -130,7 +131,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           <SliderBar
             label={ lang("Sensitivity")}
             sliderHidden={true}
-            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}} />}
+            icon={<Icon name="ios-options" size={25} color={colors.darkPurple.hex} />}
             callback={(value) => {
               let deviceId = Util.data.getCurrentDeviceId(state);
               core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: -value}})
@@ -138,10 +139,10 @@ export class SettingsApp extends LiveComponent<any, any> {
             }}
             min={-16}
             max={16}
-            value={-device.rssiOffset}
+            value={-1 * (device?.rssiOffset ?? -40)}
             explanation={this._getExplanation(-device.rssiOffset)}
             explanationHeight={this._getExplanationHeight(-device.rssiOffset)}
-            testID={"SliderBar_hide"}
+            testID={"SliderBar"}
           />
         )});
     }
@@ -159,7 +160,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
       testID:"useIndoorLocalization",
-      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      icon: <Icon name="c1-locationPin1" size={22} color={colors.blue.hex}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
@@ -170,7 +171,7 @@ export class SettingsApp extends LiveComponent<any, any> {
         Bluenet.setBackgroundScanning(newValue);
 
         if (newValue === false) {
-          Bluenet.stopIndoorLocalization();
+          LocalizationCore.disableLocalization();
 
           // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS IN THE CLOUD
           let deviceId = Util.data.getCurrentDeviceId(state);
@@ -197,7 +198,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           }
         }
         else {
-          Bluenet.startIndoorLocalization();
+          LocalizationCore.enableLocalization();
         }
       }
     });
@@ -206,16 +207,74 @@ export class SettingsApp extends LiveComponent<any, any> {
       type: 'explanation',
       below: true
     });
+
+    items.push({
+      label: "CUSTOM CLOUDS",
+      type: 'explanation',
+      alreadyPadded: true
+    });
+
+    items.push({
+      label: "Customize cloud address",
+      type: 'button',
+      icon: <Icon name="fa5-cloud" size={22} color={colors.csBlue.hex}/>,
+      style:{color:colors.csBlue.hex},
+      callback: () => {
+        NavigationUtil.launchModal("CloudChoice");
+      }
+    });
+
+    items.push({
+      label: "You can run your cloud locally if you want to.",
+      type: 'explanation',
+      below: true
+    });
+
+
+
+    let revokeItems = [];
+    let spheres = core.store.getState().spheres;
+    for (let sphereId in spheres) {
+      if (Get.energyCollectionPermission(sphereId)) {
+        revokeItems.push({
+          type:'button',
+          label: 'Revoke for ' + spheres[sphereId].config.name,
+          callback: async () => {
+            try {
+              await CLOUD.forSphere(sphereId).setEnergyUploadPermission(false)
+              core.store.dispatch({type: 'REMOVE_SPHERE_FEATURE', sphereId: sphereId, featureId: 'ENERGY_COLLECTION_PERMISSION'});
+            }
+            catch (err) {
+              Alert.alert("Could not revoke permission...", "Something went wrong while trying to revoke permission. Please try again later.", [{text:'OK'}]);
+            }
+          }
+        })
+      }
+    }
+
+    if (revokeItems.length > 0) {
+      items.push({type: 'explanation', label: "ENERGY COLLECTION PERMISSION", alreadyPadded:false});
+      items = items.concat(revokeItems);
+      items.push({type: 'spacer'});
+      items.push({type: 'spacer'});
+    }
+
+
+
+
+
+
+
     return items;
   }
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasNavBar={!this.props.modal} testID={"SettingsApp"}>
+      <SettingsNavbarBackground testID={"SettingsApp"}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

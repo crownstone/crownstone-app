@@ -5,13 +5,21 @@ import {Util} from "../util/Util";
 import {MapProvider} from "./MapProvider";
 import {xUtil} from "../util/StandAloneUtil";
 import {core} from "../Core";
+import {Get} from "../util/GetUtil";
+import { Navigation } from "react-native-navigation";
+import {
+  MessageDeletedId,
+  MessageDeletedTransferNext
+} from "../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
+import { MessageReadID, MessageReadTransferNext } from "../cloud/sections/newSync/transferrers/MessageReadTransferNext";
+import { DataUtil } from "../util/DataUtil";
+import { LocalizationCore } from "../localization/LocalizationCore";
+import { Alert, AppState } from "react-native";
+
+const PushNotification = require('react-native-push-notification');
 
 class MessageCenterClass {
   _initialized: boolean = false;
-  _enterSphereInProgress : boolean = false;
-  _exitSphereInProgress  : boolean = false;
-  _enterRoomInProgress   : boolean = false;
-  _exitRoomInProgress    : boolean = false;
 
   constructor() { }
 
@@ -19,298 +27,143 @@ class MessageCenterClass {
     LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
 
-      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._checkForMessages("enter", sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._checkForMessages("exit", sphereId); });
+      core.eventBus.on('enterRoom',   (data)     => { this._checkForMessages("enter", data.sphereId, data.locationId); }); // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on('exitRoom',    (data)     => { this._checkForMessages("exit", data.sphereId, data.locationId); });  // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+        if (change.changeMessage) {
+          // check if we need to deliver a new message or if we need to change the badge.
+          let totalUnreadMessages = 0;
+          for (let sphereId in data.sphereIds) {
+            let currentLocation = LocalizationCore.getCurrentLocation(sphereId);
+
+            if (currentLocation !== undefined) {
+              // check if there is a message that is not notified
+              let sphere = Get.sphere(sphereId);
+              if (!sphere) { continue; }
+
+              if (sphere.state.present) {
+                this._checkForMessages("enter", sphereId, currentLocation);
+              }
+            }
+
+            totalUnreadMessages += this.getUnreadMessages(sphereId);
+          }
+
+          this.setAppBadge(totalUnreadMessages);
+        }
+      });
 
     }
     this._initialized = true;
   }
 
-  _isMessageEqual(dbMessage, cloudMessage, cloudRecipientIds) {
-    if (
-      dbMessage.config.everyoneInSphere               === cloudMessage.everyoneInSphere &&
-      dbMessage.config.everyoneInSphereIncludingOwner === cloudMessage.everyoneInSphereIncludingOwner &&
-       (dbMessage.config.content === cloudMessage.content) &&
-        (
-          (!dbMessage.config.triggerLocationId && !cloudMessage.triggerLocationId) ||
-          (dbMessage.config.triggerLocationId === MapProvider.cloud2localMap.locations[cloudMessage.triggerLocationId])
-        )
-      ) {
-
-      let dbRecipientIds = Object.keys(dbMessage.recipients);
-      if (dbRecipientIds.length === cloudRecipientIds.length) {
-        for (let i = 0; i < dbRecipientIds.length; i++) {
-          if (cloudRecipientIds.indexOf(dbRecipientIds[i]) === -1) {
-            return false;
-          }
-        }
-      }
-      else {
-        return false;
-      }
+  markMessageAsRead(sphereId: sphereId | MessageData, messageId: messageId) {
+    // mark the message as read in the database
+    let message: MessageData;
+    if (typeof sphereId !== "string") {
+      message = sphereId as MessageData;
     }
     else {
-      return false;
+      message = Get.message(sphereId, messageId);
     }
-    return true;
+    let containedSphereId = DataUtil.getSphereIdContainingMessage(message);
+    MessageReadTransferNext.createLocal(containedSphereId, message.id, {value:true});
   }
 
-  _processMessage(actions, state, cloudMessage, alreadyNotified) {
-    let notified = LocalNotifications._handleNewMessage(cloudMessage, state, alreadyNotified);
-    if (notified) {
-      this._generateMessageStoringActions(actions, state, cloudMessage);
-    }
-    return notified || alreadyNotified;
-  }
-
-  _findMatchingLocalMessageId(cloudMessage, state, recipientIds = null) {
-    if (recipientIds === null) {
-      recipientIds = [];
-      cloudMessage.recipients.forEach((idObject) => {
-        recipientIds.push(idObject.id);
-      });
-    }
-    let localSphereId = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
-    if (!localSphereId) { return null }
-
-    if (cloudMessage.ownerId === state.user.userId) {
-      let dbMessages = state.spheres[localSphereId].messages;
-      // this should check if we already have this message before storing it in the store.
-      // match recipients, content, triggerLocationId and triggerEvent for this.
-      let dbMessageIds = Object.keys(dbMessages);
-      for (let i = 0; i < dbMessageIds.length; i++) {
-        let dbMessage = dbMessages[dbMessageIds[i]];
-        let match = this._isMessageEqual(dbMessage, cloudMessage, recipientIds);
-        if (match) {
-          return dbMessageIds[i];
-        }
-      }
-    }
-  }
-
-  _generateMessageStoringActions(actions, state, cloudMessage) {
-    let recipientIds = [];
-    cloudMessage.recipients.forEach((idObject) => {
-      recipientIds.push(idObject.id);
-    });
-
-    let localMessageId = this._findMatchingLocalMessageId(cloudMessage, state, recipientIds);
-    let localSphereId  = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
-    if (!localSphereId) { return null }
-
-    let dbMessageId = localMessageId || xUtil.getUUID();
-
-    // add message to the store
-    actions.push({
-      type:'ADD_CLOUD_MESSAGE',
-      sphereId: localSphereId,
-      messageId: dbMessageId,
-      data: {
-        senderId: cloudMessage.ownerId,
-        cloudId: cloudMessage.id,
-        content: cloudMessage.content,
-        everyoneInSphereIncludingOwner: cloudMessage.everyoneInSphereIncludingOwner,
-        everyoneInSphere: cloudMessage.everyoneInSphere,
-        triggerEvent: cloudMessage.triggerEvent,
-        triggerLocationId: cloudMessage.triggerLocationId,
-        recipientIds: recipientIds,
-        sent: true,
-      }
-    });
-
-    // indicate that you have received this message
-    actions.push({
-      type:'I_RECEIVED_MESSAGE',
-      sphereId: localSphereId,
-      messageId: dbMessageId,
-      data: {
-        userId: state.user.userId,
-        at: Date.now(),
-      }
-    });
-
-    // put the cloud's knowledge of the delivered state in the local database.
-    if (cloudMessage.delivered) {
-      cloudMessage.delivered.forEach((delivered) => {
-        actions.push({
-          type:'RECEIVED_MESSAGE',
-          sphereId: localSphereId,
-          messageId: dbMessageId,
-          data: {
-            userId: delivered.userId,
-            at: new Date(delivered.timestamp).valueOf(),
-          }
-        });
-      })
-    }
-
-    // put the cloud's knowledge of the read state in the local database.
-    if (cloudMessage.read) {
-      cloudMessage.read.forEach((read) => {
-        actions.push({
-          type:'READ_MESSAGE',
-          sphereId: localSphereId,
-          messageId: dbMessageId,
-          data: {
-            userId: read.userId,
-            at: new Date(read.timestamp).valueOf(),
-          }
-        });
-      })
-    }
-  }
-
-  storeMessage(cloudMessage) {
-    let actions = [];
-    let state = core.store.getState();
-    this._generateMessageStoringActions(actions, state, cloudMessage);
-    if (actions.length > 0) {
-      core.store.batchDispatch(actions);
-    }
-  }
-
-  deliveredMessage(localSphereId, localMessageId) {
-    let state = core.store.getState();
-    if (localMessageId) {
-      core.store.dispatch({
-        type: "I_RECEIVED_MESSAGE",
-        sphereId: localSphereId,
-        messageId: localMessageId,
-        data: {
-          userId: state.user.userId,
-          at: Date.now(),
-        }
-      });
-    }
-  }
-
-  readMessage(localSphereId, localMessageId) {
-    let state = core.store.getState();
-    if (localMessageId) {
-      core.store.dispatch({
-        type: "I_READ_MESSAGE",
-        sphereId: localSphereId,
-        messageId: localMessageId,
-        data: {userId: state.user.userId}
-      });
-    }
-  }
-
-  newMessageStateInSphere(localSphereId, newMessageReceived : boolean = true) {
-    core.store.dispatch({
-      type: "SET_SPHERE_MESSAGE_STATE",
-      sphereId: localSphereId,
-      data: {newMessageFound: newMessageReceived}
-    });
-  }
-
-  _enterSphere(localSphereId) {
-    if (this._enterSphereInProgress === true) { return; }
-    this._enterSphereInProgress = true;
-
-    LOG.info("MessageCenter: enter sphere / already in sphere", localSphereId);
-    return this._handleMessageInSphere(localSphereId, 'enter')
-      .then(() => { this._enterSphereInProgress = false; })
-      .catch(() => {          this._enterSphereInProgress = false; })
-  }
-
-  _exitSphere(localSphereId) {
-    if (this._exitSphereInProgress === true) { return; }
-    this._exitSphereInProgress = true;
-
-    LOG.info("MessageCenter: exit sphere", localSphereId);
-    return this._handleMessageInSphere(localSphereId, 'exit')
-      .then(() => { this._exitSphereInProgress = false; })
-      .catch(() => {          this._exitSphereInProgress = false; })
-  }
-
-  _enterRoom(data : locationDataContainer) {
-    if (this._enterRoomInProgress === true) { return; }
-    this._enterRoomInProgress = true;
-
-    LOG.info("MessageCenter: enter room / already in room", data);
-    return this._handleMessageInLocation(data.region, data.location, 'enter')
-      .then(() => { this._enterRoomInProgress = false; })
-      .catch(() => {          this._enterRoomInProgress = false; })
-  }
-
-  _exitRoom(data : locationDataContainer) {
-    if (this._exitRoomInProgress === true) { return; }
-    this._exitRoomInProgress = true;
-
-    LOG.info("MessageCenter: exit room", data);
-    return this._handleMessageInLocation(data.region, data.location, 'exit')
-      .then(() => { this._exitRoomInProgress = false; })
-      .catch(() => {          this._exitRoomInProgress = false; })
-  }
-
-  _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
-    let state = core.store.getState();
-
-    return CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
-      .then((messages) => {
-        if (messages && Array.isArray(messages)) {
-          let actions = [];
-
-          let notified = false;
-          messages.forEach((cloudMessage) => {
-            if (cloudMessage.triggerEvent === triggerEvent) {
-              notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
-            }
-          });
-
-          if (actions.length > 0) {
-            core.store.batchDispatch(actions);
-          }
-        }
-      })
-      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Location:", err?.message);})
-  }
-
-  _handleMessageInSphere(localSphereId, triggerEvent) {
-    let state = core.store.getState();
-
-    return CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
-      .then((messages) => {
-        if (messages && Array.isArray(messages)) {
-          let actions = [];
-          let notified = false;
-          messages.forEach((cloudMessage) => {
-            if (cloudMessage.triggerEvent === triggerEvent) {
-              notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
-            }
-          });
-          if (actions.length > 0) {
-            core.store.batchDispatch(actions);
-          }
-        }
-      })
-      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Sphere:", err?.message);})
-  }
-
-  /**
-   * This will check for messages in the current location. It is self contained and can be called whenever.
-   */
-  checkForMessages() : Promise<void> {
-    LOGi.info("MessageCenter: Checking for messages...")
-    let state = core.store.getState();
-    let presentSphereId = Util.data.getPresentSphereId();
-
-    if (presentSphereId) {
-      let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
-      if (presentLocationId) {
-        return this._enterRoom({region: presentSphereId, location: presentLocationId});
-      }
-      else {
-        return this._enterSphere(presentSphereId);
-      }
+  markMessageAsDeleted(sphereId: sphereId | MessageData, messageId: messageId) {
+    // if we are the owner, delete the message from the cloud.
+    // if not, mark the message as deleted from the device (and the cloud)
+    let message: MessageData;
+    if (typeof sphereId !== "string") {
+      message = sphereId as MessageData;
     }
     else {
-      return new Promise((resolve, reject) => { resolve(); })
+      message = Get.message(sphereId, messageId);
+    }
+    let containedSphereId = DataUtil.getSphereIdContainingMessage(message);
+    if (message.senderId === Get.userId()) {
+      // delete from cloud in cloudEnhancer
+      core.store.dispatch({type:"REMOVE_MESSAGE", sphereId: containedSphereId, messageId: messageId});
+    }
+    else {
+      // delete from device in cloudEnhancer
+      MessageDeletedTransferNext.createLocal(containedSphereId, message.id, {value:true});
+    }
+
+  }
+
+  _checkForMessages(eventType: MessageTriggerEvent, sphereId: sphereId, locationId: locationId = null) {
+    // check for all unnotified messages in the sphere is they will be triggered by this event
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return; }
+    for (let messageId in sphere.messages) {
+      let message : MessageData = sphere.messages[messageId];
+      if (message.notified) { continue; }
+
+      switch (eventType) {
+        case "enter":
+          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "enter") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+        case "exit":
+          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "exit") {
+            this.showMessage(sphereId, message);
+          }
+          break;
+      }
     }
   }
+
+
+
+  showMessage(sphereId, message: MessageData) {
+    let appState = AppState.currentState;
+    if (appState === "active") {
+      this.showForegroundMessage()
+    }
+    else {
+      LocalNotifications.showMessageNotification(sphereId, message);
+      core.store.dispatch({type:"APPEND_MESSAGE", sphereId: sphereId, messageId: message.id, data:{notified:true}});
+    }
+  }
+
+  showForegroundMessage() {
+    Alert.alert("Temporary POPOUP", "Message received");
+  }
+
+
+  getUnreadMessages(sphereId: sphereId) : number {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return 0; }
+
+    let unreadMessageCount = 0;
+    for (let messageId in sphere.messages) {
+      let message = sphere.messages[messageId];
+      if (message.deleted?.[MessageDeletedId]?.value === true) { continue; }
+
+      if (message.read?.[MessageReadID]?.value !== true) {
+        unreadMessageCount++;
+      }
+    }
+
+    return unreadMessageCount;
+  }
+
+
+
+  setAppBadge(amount: number) {
+    if (AppState.currentState === "active") {
+      PushNotification.setApplicationIconBadgeNumber(0);
+    }
+    else {
+      PushNotification.setApplicationIconBadgeNumber(amount);
+    }
+  }
+
 }
 
 export const MessageCenter = new MessageCenterClass();

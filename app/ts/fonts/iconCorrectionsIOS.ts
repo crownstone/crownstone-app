@@ -382,7 +382,7 @@ const ioniconCorrectionsIOS = {
   'ios-more':                      {change: false, top: +0.045, left: +0.000},
   'ios-wifi':                      {change: false, top: +0.045, left: +0.000},
   'ios-fastforward':               {change: false, top: +0.050, left: +0.050},
-  'ios-play':                      {change: false, top: +0.050, left: +0.050},
+  'ios-play':                      {change: true,  top: +0.020, left: +0.060},
 
   'md-locate':                     {change: false, top: +0.050, left: +0.005},
   'md-wifi':                       {change: false, top: -0.020, left: +0.005},
@@ -449,6 +449,24 @@ const fiHSIconsCorrectionsIOS = {
 const fiEIconsCorrectionsIOS = {
 
 };
+const ion5CorrectionsIOS = {
+  'ion5-add':                     {change: false, top: -0.00, left: 0.00},
+};
+const entypoCorrections = {
+
+};
+const fontAwesome5Corrections = {
+
+};
+const fontAwesomeCorrections = {
+
+};
+const materialIconsCorrections = {
+
+};
+const zocialIconsCorrections = {
+
+};
 
 
 
@@ -457,8 +475,14 @@ export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
+  materialIcons: materialIconsCorrections,
+  entypo: entypoCorrections,
+  fontAwesome: fontAwesomeCorrections,
+  fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsIOS,
+  ionicons5: ion5CorrectionsIOS,
   evilIcons: evilIconsCorrectionsIOS,
+  zocial: zocialIconsCorrections,
   fiCS1: fiCS1IconsCorrectionsIOS,
   fiHS:  fiHSIconsCorrectionsIOS,
   fiE:   fiEIconsCorrectionsIOS,

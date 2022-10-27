@@ -56,6 +56,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>flaticon_household.ttf</string>
+		<string>Ionicons.ttf</string>
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Bold.ttf</string>
 		<string>Roboto-BoldItalic.ttf</string>
@@ -101,7 +102,7 @@
 		<string>armv7</string>
 	</array>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
+	<string>UIStatusBarStyleDarkContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

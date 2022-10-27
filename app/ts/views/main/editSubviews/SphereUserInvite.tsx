@@ -16,9 +16,10 @@ import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 export class SphereUserInvite extends LiveComponent<any, any> {
   static options(props) {
@@ -163,11 +164,11 @@ export class SphereUserInvite extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.menu} testID={'SphereUserInvite'}>
+      <SettingsBackground testID={'SphereUserInvite'}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

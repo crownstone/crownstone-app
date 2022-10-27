@@ -9,10 +9,44 @@ import { FileUtil } from "./FileUtil";
 import * as RNLocalize from "react-native-localize";
 import { Get } from "./GetUtil";
 import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/constants/SceneConstants";
+import {StoneAvailabilityTracker} from "../native/advertisements/StoneAvailabilityTracker";
+import {FingerprintUtil} from "./FingerprintUtil";
 
 
 
 export const DataUtil = {
+
+
+  /**
+   * Does any stone in this sphere have behaviour?
+   * @param sphereId
+   */
+  isBehaviourUsed: function(sphereId: string) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+
+    for (let stoneId in sphere.stones) {
+      let stone = sphere.stones[stoneId];
+      for (let behaviourId in stone.behaviours) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+
+  /**
+   * Are you in the sphere at the moment?
+   * @param sphereId
+   */
+  inSphere: function(sphereId: string) : boolean {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return false; }
+
+    return sphere.state.present;
+  },
+
 
   /**
    * Call a callback on all stones in all spheres
@@ -77,6 +111,7 @@ export const DataUtil = {
   },
 
 
+
   /**
    * Get the ID of the device (phone model) we are currently using.
    * @param state
@@ -107,6 +142,21 @@ export const DataUtil = {
     return null;
   },
 
+  getLocationFromFingerprintId: function(fingerprintId: string) : LocationData | null {
+    let state = core.store.getState()
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      for (let locationId in sphere.locations) {
+        let location = sphere.locations[locationId];
+        if (location.fingerprints.raw[fingerprintId] !== undefined) {
+          return location;
+        }
+      }
+    }
+    return null;
+  },
+
+
   getAuthorizationTokenFromSphere: function(sphere: SphereData) : string | null {
     return sphere.keys[KEY_TYPES.SPHERE_AUTHORIZATION_TOKEN]?.key ?? null;
   },
@@ -125,6 +175,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getDevice: function(state) {
     let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
     if (state.devices && deviceId && state.devices[deviceId]) {
@@ -133,14 +184,6 @@ export const DataUtil = {
     return null;
   },
 
-
-  getStone(sphereId, stoneId) {
-    let state = core.store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!sphere) return null
-    let stone = sphere.stones[stoneId];
-    return stone || null;
-  },
 
   getHubByCloudId(sphereId, hubCloudId: string) : HubData | null {
     let state = core.store.getState();
@@ -158,6 +201,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getHubByStoneId(sphereId, stoneId: string) : HubData | null {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -173,6 +217,7 @@ export const DataUtil = {
     }
     return null;
   },
+
 
   getAllHubsWithStoneId(sphereId, stoneId: string) : HubData[] {
     let results = [];
@@ -213,6 +258,7 @@ export const DataUtil = {
     return behaviour || null;
   },
 
+
   getLocation(sphereId, locationId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -233,6 +279,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getPresentSphereIds: function() : string[] {
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
@@ -244,8 +291,6 @@ export const DataUtil = {
     }
     return result;
   },
-
-
 
 
   getReferenceId: function(state) : string {
@@ -269,7 +314,85 @@ export const DataUtil = {
   },
 
 
-  getStonesInLocation: function(state : any, sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
+  getSphereIdContainingMessage(message: MessageData) : string | null {
+    let state = core.store.getState();
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      if (sphere.messages && sphere.messages[message.id]) {
+        return sphereId;
+      }
+    }
+    return null;
+  },
+
+
+  getAmountOfCrownstonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    return Object.keys(stones).length;
+  },
+
+
+  getAmountOfDimmableStonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    let amount = 0;
+
+    for (let stoneId in stones) {
+      let stone = stones[stoneId];
+      if (stone.abilities.dimming.enabledTarget) {
+        amount += 1;
+      }
+    }
+
+    return amount;
+  },
+
+  getAmountOfActiveStonesInLocation: function(sphereId: string, locationId?) : number {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+    let amount = 0;
+
+    for (let stoneId in stones) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        amount += 1;
+      }
+    }
+    return amount;
+  },
+
+  areThereActiveStonesWithErrorsInLocation: function(sphereId: sphereId, locationId: locationId) : boolean {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+
+    for (let stoneId in stones) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        if (stones[stoneId].errors.hasError) {
+          return true;
+        }
+      }
+    }
+    return false;
+  },
+
+  getLocationsInSphere: function(sphereId: string) : Record<locationId, LocationData> {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+
+    if (!sphere) { return {}; }
+
+    return sphere.locations;
+  },
+
+  getLocationsInSphereAlphabetically: function(sphereId: string) : LocationData[] {
+    let locations = DataUtil.getLocationsInSphere(sphereId);
+
+    let locationArray = [];
+    for (let locationId in locations) {
+      locationArray.push({name: locations[locationId].config.name, id: locationId});
+    }
+
+    return locationArray.sort((a, b) =>  { return a.name > b.name ? 1 : -1});
+  },
+
+  getStonesInLocation: function(sphereId : string, locationId?) : {[stoneId: string]: StoneData} {
+    let state = core.store.getState();
     let filteredStones = {};
     if (sphereId !== undefined) {
       let stones = state.spheres[sphereId].stones;
@@ -283,7 +406,20 @@ export const DataUtil = {
     return filteredStones;
   },
 
-  getHubsInLocation: function(state : any, sphereId : string, locationId?) : {[hubId: string]: HubData} {
+  getStonesInLocationAlphabetically: function(sphereId : string, locationId?) : StoneData[] {
+    let stonesInLocation = DataUtil.getStonesInLocation(sphereId, locationId);
+    let result = [];
+
+    for (let stoneId in stonesInLocation) {
+      result.push(stonesInLocation[stoneId]);
+    }
+
+    result.sort((a, b) =>  { return a.config.name > b.config.name ? 1 : -1});
+    return result;
+  },
+
+  getHubsInLocation: function(sphereId : string, locationId?) : {[hubId: string]: HubData} {
+    let state = core.store.getState();
     let filteredHubs = {};
     if (sphereId !== undefined) {
       for (let [hubId, hub] of Object.entries<HubData>(state.spheres[sphereId].hubs)) {
@@ -330,13 +466,13 @@ export const DataUtil = {
 
 
   getLocationIdFromStone: function(sphereId, stoneId) {
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     return stone.config.locationId;
   },
 
 
   getLocationUIdFromStone: function(sphereId, stoneId) {
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return null; }
     let location = DataUtil.getLocation(sphereId, stone.config.locationId)
     if (!location) { return null }
@@ -441,16 +577,6 @@ export const DataUtil = {
   },
 
 
-  getAiName: function(state, sphereId) : string {
-    if (sphereId) {
-      return state.spheres[sphereId].config.aiName || 'AI';
-    }
-    else {
-      return 'AI';
-    }
-  },
-
-
 
   getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
     let items = [];
@@ -466,7 +592,8 @@ export const DataUtil = {
     return items;
   },
 
-  getLayoutDataRooms: function(state, sphereId) {
+  getLayoutDataRooms: function(sphereId) {
+    let state = core.store.getState();
     let initialPositions = {};
     let sphere = state.spheres[sphereId];
     let rooms = sphere.locations;
@@ -477,8 +604,8 @@ export const DataUtil = {
     for (let i = 0; i < roomIdArray.length; i++) {
       let room = rooms[roomIdArray[i]];
       initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
-      if (room.layout.setOnThisDevice === false) {
-        usePhysics = true
+      if (room.layout.x === null || room.layout.y === null) {
+        usePhysics = true;
       }
     }
 
@@ -534,6 +661,7 @@ export const DataUtil = {
     return true;
   },
 
+
   verifyPicturesInDatabase(state) {
     let spheres = state.spheres;
     let pictures = [];
@@ -545,9 +673,11 @@ export const DataUtil = {
       let scenes      = spheres[sphereId].scenes;
       let sphereUsers = spheres[sphereId].users;
 
+
       Object.keys(locations).forEach((locationId) => {
-        if (locations[locationId].config.picture || !locations[locationId].config.picture && locations[locationId].config.pictureId) {
-          pictures.push({picturePath: locations[locationId].config.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
+        let locationConfig = locations[locationId].config;
+        if (locationConfig.pictureSource !== "STOCK" && (locationConfig.picture || !locationConfig.picture && locationConfig.pictureId)) {
+          pictures.push({picturePath: locationConfig.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
         }
       });
       Object.keys(sphereUsers).forEach((userId) => {
@@ -579,8 +709,8 @@ export const DataUtil = {
           core.store.batchDispatch(actions);
         }
       })
-
   },
+
 
   verifyDatabaseSphere(sphere) {
     if (sphere.keys) {
@@ -598,6 +728,7 @@ export const DataUtil = {
 
     return true;
   },
+
 
   verifyDatabaseStonesInSphere(sphere) {
     let stoneIds = Object.keys(sphere.stones);
@@ -618,6 +749,7 @@ export const DataUtil = {
     if (!location) { return null }
     return location.config.uid;
   },
+
 
   getDevicePreferences(sphereId = null) {
     let state = core.store.getState();
@@ -727,9 +859,9 @@ export const getPresentUsersInLocation = function(state, sphereId, locationId, a
 };
 
 
-export const getCurrentPowerUsageInLocation = function(state, sphereId, locationId) {
+export const getCurrentPowerUsageInLocation = function(sphereId, locationId) {
   let usage = 0;
-  let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
+  let stones = DataUtil.getStonesInLocation(sphereId, locationId);
   let stoneIds = Object.keys(stones);
 
   for (let i = 0; i < stoneIds.length; i++) {
@@ -781,7 +913,10 @@ export const prepareStoreForUser = function() {
 };
 
 
-export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+export const canUseIndoorLocalizationInSphere = function (sphereId: string, state = null) {
+  if (state === null) {
+    state = core.store.getState();
+  }
   if (state.app.indoorLocalizationEnabled === false) {
     return false;
   }
@@ -791,27 +926,27 @@ export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
     return false;
 
   // are there enough?
-  let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state,sphereId);
+  let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
 
   // do we need more fingerprints?
-  let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+  let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
 
   // we have enough and we do not need more fingerprints.
   return !requiresFingerprints && enoughForLocalization;
 };
 
 
-export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
-  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
-    return false;
-  }
+export const enoughCrownstonesForIndoorLocalization = function(sphereId) : boolean {
+  let sphere = Get.sphere(sphereId);
+  if (!sphere) { return false; }
 
-  return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
+  return Object.keys(sphere.stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
 
-export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
-  if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+export const enoughCrownstonesInLocationsForIndoorLocalization = function(sphereId) {
+  let state = core.store.getState();
+  if (!(state?.spheres?.[sphereId]?.stones)) {
     return false;
   }
 
@@ -825,23 +960,4 @@ export const enoughCrownstonesInLocationsForIndoorLocalization = function(state,
     }
   });
   return count >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
-};
-
-
-export const requireMoreFingerprints = function (state, sphereId) {
-  // if we do not have a sphereId return false
-  if (!sphereId || !state)
-    return true;
-
-  // do we need more fingerprints?
-  let requiresFingerprints = false;
-  if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
-    let locationIds = Object.keys(state.spheres[sphereId].locations);
-    locationIds.forEach((locationId) => {
-      if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
-        requiresFingerprints = true;
-      }
-    });
-  }
-  return requiresFingerprints;
 };

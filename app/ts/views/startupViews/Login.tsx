@@ -1,36 +1,47 @@
 import {Languages} from "../../Languages"
 import * as React from 'react';
 import {Component} from 'react';
-import {Alert, Image, Platform, ScrollView, Text, TouchableHighlight, TouchableOpacity, View} from "react-native";
+import {
+  Alert,
+  Image,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View
+} from "react-native";
 import DeviceInfo from 'react-native-device-info';
 
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import {emailChecker, getImageFileFromUser} from "../../util/Util";
 import {CLOUD} from '../../cloud/cloudAPI'
 import {TextEditInput} from '../components/editComponents/TextEditInput'
-import {Background} from '../components/Background'
+import { Background, BackgroundCustomTopBar } from "../components/Background";
 import {StoreManager} from '../../database/storeManager'
 import loginStyles from './LoginStyles'
 import {background, colors, screenHeight, screenWidth, topBarHeight} from "../styles";
 import {DEBUG_MODE_ENABLED} from '../../ExternalConfig';
-import {TopbarImitation} from "../components/TopbarImitation";
 import {Icon} from "../components/Icon";
 import {FileUtil} from "../../util/FileUtil";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {createNewSphere} from "../../util/CreateSphere";
 import {Stacks} from "../Stacks";
 import {base_core} from "../../Base_core";
 // import * as Sentry from "@sentry/react-native";
 import {BackgroundProcessHandler} from "../../backgroundProcesses/BackgroundProcessHandler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomTopBarWrapper } from "../components/CustomTopBarWrapper";
+import {PreferenceSyncer} from "../../cloud/sections/sync/modelSyncs/PreferencesSyncer";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Login", key)(a,b,c,d,e);
 }
 
 
-const sha1    = require('sha-1');
-const RNFS    = require('react-native-fs');
+const sha1 = require('sha-1');
+const RNFS = require('react-native-fs');
 
 export class Login extends Component<any, any> {
   progress : number;
@@ -211,13 +222,20 @@ export class Login extends Component<any, any> {
   }
 
   render() {
-    let factor = 0.24;
+    let factor = 0.2;
     if (screenHeight < 500) {
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true} hideNotifications={true} keyboardAvoid={true} testID={"LoginView"}>
-        <TopbarImitation leftStyle={{color: colors.csBlueDarker.hex}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
+      <BackgroundCustomTopBar keyboardAvoid={true} testID={"LoginView"}>
+        <SafeAreaView>
+        <CustomTopBarWrapper
+          noBlur
+          leftStyle={{color: colors.csBlueDarker.hex}}
+          left={Platform.OS === 'android' ? null : lang("Back")}
+          leftAction={() => { NavigationUtil.back(); }}
+          style={{backgroundColor:'transparent', paddingTop:0}}
+        >
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
@@ -225,7 +243,6 @@ export class Login extends Component<any, any> {
             <View style={{flex:3, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
-                autoCompleteType={'email'}
                 ref={(input) => { this.emailInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
                 placeholder={lang("emailemail_address")}
@@ -242,7 +259,6 @@ export class Login extends Component<any, any> {
             <View style={{height:10, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
-                autoCompleteType={'password'}
                 autoCapitalize={"none"}
                 ref={(input) => { this.passwordInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
@@ -270,7 +286,9 @@ export class Login extends Component<any, any> {
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>
         </ScrollView>
-      </Background>
+        </CustomTopBarWrapper>
+        </SafeAreaView>
+      </BackgroundCustomTopBar>
     );
   }
 
@@ -344,7 +362,7 @@ export class Login extends Component<any, any> {
   downloadSettings(userId) {
     core.eventBus.emit('userActivated');
     
-    let parts = 1/5;
+    let parts = 1/6;
     let promises = [];
 
     // get more data on the user
@@ -396,7 +414,7 @@ export class Login extends Component<any, any> {
         LOG.info("Login: step 3");
         this.progress += parts;
         core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
-        return CLOUD.sync(false, false);
+        return CLOUD.sync(false, false, true);
       })
       .then(() => {
         LOG.info("Login: step 4");
@@ -410,6 +428,13 @@ export class Login extends Component<any, any> {
         else {
           core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
         }
+      })
+      .then(() => {
+        LOG.info("Login: step 5");
+        this.progress += parts;
+        core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Applying_preferences")});
+        let preferences = new PreferenceSyncer([],[]);
+        return preferences.applyDevicePreferences()
       })
       .catch((err) => {
         LOGe.info("Login: Failed to login.", err?.message);
@@ -435,13 +460,6 @@ export class Login extends Component<any, any> {
 
     Promise.all(promises)
       .then(() => {
-        // Sentry.addBreadcrumb({
-        //   category: 'login',
-        //   data: {
-        //     state:'finished'
-        //   }
-        // });
-
         LOG.info("Login: finished promises");
         core.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});
 

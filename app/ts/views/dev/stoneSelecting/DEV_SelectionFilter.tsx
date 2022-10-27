@@ -5,7 +5,7 @@
 //   return Languages.get("DEV_SelectionFilter", key)(a,b,c,d,e);
 // }
 import { SlideInView } from "../../components/animated/SlideInView";
-import { availableScreenHeight, colors, screenWidth, styles } from "../../styles";
+import { availableModalHeight, availableScreenHeight, colors, screenWidth, styles, tabBarHeight } from "../../styles";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { BigFilterButton, filterState } from "./DEV_SelectionComponents";
@@ -18,8 +18,8 @@ export function DEV_SelectionFilter(props:  {submit: () => void, visible: boolea
     <SlideInView
       hidden={true}
       visible={props.visible}
-      height={availableScreenHeight}
-      style={{width:screenWidth, height: availableScreenHeight,...styles.centered}}>
+      height={availableModalHeight}
+      style={{width:screenWidth, height: availableModalHeight,...styles.centered}}>
       <View style={{flex:1, maxHeight:30}}/>
       <Text style={{fontSize:20, fontWeight: 'bold'}}>{ "Select Filters:" }</Text>
       <View style={{flex:1}}/>
@@ -87,7 +87,7 @@ export function DEV_SelectionFilter(props:  {submit: () => void, visible: boolea
       >
         <Text style={{fontSize:20, fontWeight: 'bold'}}>{ "Let's go!" }</Text>
       </TouchableOpacity>
-      <View style={{flex:1, maxHeight:30}}/>
+      <View style={{flex:1}}/>
     </SlideInView>
   );
 }

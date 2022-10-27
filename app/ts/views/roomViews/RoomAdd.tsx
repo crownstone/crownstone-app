@@ -13,10 +13,10 @@ import {
 
 import { background, colors} from "../styles";
 
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarImitation } from "../components/TopbarImitation";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { RoomAddCore } from "./RoomAddCore";
-import { Background } from "../components/Background";
+import {Background, BackgroundCustomTopBar} from "../components/Background";
+import { CustomTopBarWrapper } from "../components/CustomTopBarWrapper";
 
 
 export class RoomAdd extends LiveComponent<any, any> {
@@ -28,8 +28,8 @@ export class RoomAdd extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background fullScreen={true} image={background.main} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true} testID={"RoomAdd"}>
-        <TopbarImitation
+      <BackgroundCustomTopBar testID={"RoomAdd"}>
+        <CustomTopBarWrapper
           leftStyle={{color: colors.black.hex}}
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._roomAddCoreReference.canGoBack() === false) {
@@ -40,9 +40,10 @@ export class RoomAdd extends LiveComponent<any, any> {
               NavigationUtil.back();
             }
           }}}
-          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+          leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} >
         <RoomAddCore {...this.props} ref={(roomAddCore) => { this._roomAddCoreReference = roomAddCore; }} />
-      </Background>
+        </CustomTopBarWrapper>
+      </BackgroundCustomTopBar>
     );
   }
 }

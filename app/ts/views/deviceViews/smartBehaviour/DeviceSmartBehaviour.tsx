@@ -16,12 +16,12 @@ import {
   colors,
   deviceStyles,
   screenHeight,
-  screenWidth, styles
+  screenWidth, styles, topBarHeight
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
@@ -37,6 +37,8 @@ import { Button } from "../../components/Button";
 import { NoBehavioursYet } from "./DeviceSmartBehaviour_NoBehavioursYet";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
+import {SettingsBackground} from "../../components/SettingsBackground";
+import {Get} from "../../../util/GetUtil";
 
 
 let className = "DeviceSmartBehaviour";
@@ -208,88 +210,85 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     });
 
     return (
-      <Background image={background.lightBlurLighter} hasNavBar={false}>
+      <SettingsBackground>
         {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-            <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
-            <View style={{height: 0.2*iconSize}} />
-            <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
-              <WeekDayList
-                data={{
-                  Mon: this.state.activeDay === DAY_INDICES_SUNDAY_START[1],
-                  Tue: this.state.activeDay === DAY_INDICES_SUNDAY_START[2],
-                  Wed: this.state.activeDay === DAY_INDICES_SUNDAY_START[3],
-                  Thu: this.state.activeDay === DAY_INDICES_SUNDAY_START[4],
-                  Fri: this.state.activeDay === DAY_INDICES_SUNDAY_START[5],
-                  Sat: this.state.activeDay === DAY_INDICES_SUNDAY_START[6],
-                  Sun: this.state.activeDay === DAY_INDICES_SUNDAY_START[0],
-                }}
-                tight={true}
-                darkTheme={false}
-                onChange={(fullData, day) => {
-                  if (this.state.activeDay !== day) {
-                    this.setState({activeDay:day})
-                  }
-                }}
-              />
-            </SlideFadeInView>
-            <SlideFadeInView visible={!this.state.editMode} height={0.1*iconSize + 90}>
-              <View style={{height: 0.1*iconSize}} />
-              <SmartBehaviourSummaryGraph behaviours={activeBehaviours} activityMap={activityMap} sphereId={this.props.sphereId} />
-            </SlideFadeInView>
-            { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>{ lang("This_Crownstone_is_locked") }</Text> }
-            <View style={{flex:1}} />
-            {behaviourComponents}
-            <View style={{flex:2}} />
+        <ScrollView contentContainerStyle={{flexGrow:1, alignItems:'center', paddingTop:30}}>
+          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
+          <View style={{height: 0.2*iconSize}} />
+          <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
+            <WeekDayList
+              data={{
+                Mon: this.state.activeDay === DAY_INDICES_SUNDAY_START[1],
+                Tue: this.state.activeDay === DAY_INDICES_SUNDAY_START[2],
+                Wed: this.state.activeDay === DAY_INDICES_SUNDAY_START[3],
+                Thu: this.state.activeDay === DAY_INDICES_SUNDAY_START[4],
+                Fri: this.state.activeDay === DAY_INDICES_SUNDAY_START[5],
+                Sat: this.state.activeDay === DAY_INDICES_SUNDAY_START[6],
+                Sun: this.state.activeDay === DAY_INDICES_SUNDAY_START[0],
+              }}
+              tight={true}
+              darkTheme={false}
+              onChange={(fullData, day) => {
+                if (this.state.activeDay !== day) {
+                  this.setState({activeDay:day})
+                }
+              }}
+            />
+          </SlideFadeInView>
+          <SlideFadeInView visible={!this.state.editMode} height={0.1*iconSize + 90}>
+            <View style={{height: 0.1*iconSize}} />
+            <SmartBehaviourSummaryGraph behaviours={activeBehaviours} activityMap={activityMap} sphereId={this.props.sphereId} />
+          </SlideFadeInView>
+          { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>{ lang("This_Crownstone_is_locked") }</Text> }
+          <View style={{flex:1}} />
+          {behaviourComponents}
+          <View style={{flex:2}} />
 
-            <SlideFadeInView visible={this.state.editMode} height={80}>
-              <Button
-                backgroundColor={colors.blue.rgba(0.5)}
-                label={ lang("Add_more___")}
-                callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
-              />
-            </SlideFadeInView>
-            <SlideFadeInView visible={this.state.editMode} height={80}>
-              <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} behavioursAvailable={behaviourIds.length > 0}/>
-            </SlideFadeInView>
-            <SlideFadeInView visible={this.state.editMode} height={80}>
-              <Button
-                backgroundColor={ colors.blue.rgba(0.5) }
-                label={ lang("Copy_to___") }
-                callback={() => {
-                  let requireDimming = StoneUtil.doBehavioursRequireDimming(this.props.sphereId, this.props.stoneId, behaviourIds);
+          <SlideFadeInView visible={this.state.editMode} height={80}>
+            <Button
+              backgroundColor={colors.blue.rgba(0.5)}
+              label={ lang("Add_more___")}
+              callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
+            />
+          </SlideFadeInView>
+          <SlideFadeInView visible={this.state.editMode} height={80}>
+            <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} behavioursAvailable={behaviourIds.length > 0}/>
+          </SlideFadeInView>
+          <SlideFadeInView visible={this.state.editMode} height={80}>
+            <Button
+              backgroundColor={ colors.blue.rgba(0.5) }
+              label={ lang("Copy_to___") }
+              callback={() => {
+                let requireDimming = StoneUtil.doBehavioursRequireDimming(this.props.sphereId, this.props.stoneId, behaviourIds);
 
-                  NavigationUtil.navigate('DeviceSmartBehaviour_CopyStoneSelection', {
-                    sphereId: this.props.sphereId,
-                    stoneId: this.props.stoneId,
-                    copyType: "TO",
-                    originId: this.props.stoneId,
-                    behavioursRequireDimming: requireDimming,
-                    callback:(stoneIds) => {
-                      this.copySelectedBehavioursToStones(stoneIds);
-                      BehaviourCopySuccessPopup();
-                    }});
-                }}
-                icon={'md-log-out'}
-                iconSize={14}
-                iconColor={colors.purple.blend(colors.blue, 0.5).rgba(0.75)}
-              />
-            </SlideFadeInView>
+                NavigationUtil.navigate('DeviceSmartBehaviour_CopyStoneSelection', {
+                  sphereId: this.props.sphereId,
+                  stoneId: this.props.stoneId,
+                  copyType: "TO",
+                  originId: this.props.stoneId,
+                  behavioursRequireDimming: requireDimming,
+                  callback:(stoneIds) => {
+                    this.copySelectedBehavioursToStones(stoneIds);
+                    BehaviourCopySuccessPopup();
+                  }});
+              }}
+              icon={'md-log-out'}
+              iconSize={14}
+              iconColor={colors.purple.blend(colors.blue, 0.5).rgba(0.75)}
+            />
+          </SlideFadeInView>
 
-            <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
-              <BehaviourSyncButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-            </SlideFadeInView>
+          <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
+            <BehaviourSyncButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
+          </SlideFadeInView>
 
-            <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
-              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceBehaviourPresent,roomBasedPresenceBehaviourPresent) }</Text>
-            </SlideFadeInView>
-
-            <View style={{height:30}} />
-          </View>
+          <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
+            <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceBehaviourPresent,roomBasedPresenceBehaviourPresent) }</Text>
+          </SlideFadeInView>
+          <View style={{height:topBarHeight+30}} />
         </ScrollView>
-      </Background>
-    )
+      </SettingsBackground>
+      );
   }
 }
 
@@ -323,18 +322,18 @@ lang("_Success___Behaviour_has__body"),
 
 
 function getTopBarProps(props, viewState) {
-  const stone = DataUtil.getStone(props.sphereId,props.stoneId);
+  const stone = Get.stone(props.sphereId,props.stoneId);
   if (!stone) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Stone_deleted_"),
-      closeModal: true,
+      backModal: true,
     }
     return NAVBAR_PARAMS_CACHE
   }
   if (Object.keys(stone.behaviours).length === 0 && viewState.editMode !== true) {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      closeModal: true,
+      backModal: true,
     };
     return NAVBAR_PARAMS_CACHE;
   }
@@ -343,14 +342,14 @@ function getTopBarProps(props, viewState) {
   if (viewState.editMode === true) {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      leftText: {id:'closeEdit', text:'Back'},
+      leftText: {id:'closeEdit', text:lang('Back')},
     };
   }
   else {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
       edit: Permissions.inSphere(props.sphereId).canChangeBehaviours,
-      closeModal: true,
+      backModal: true,
     };
   }
 

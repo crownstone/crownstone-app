@@ -1,7 +1,7 @@
 import { CloudAddresses }                  from "../indirections/CloudAddresses";
-import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS } from "../../ExternalConfig";
+import { CLOUD_ADDRESS, CLOUD_V2_ADDRESS, SSE_ADDRESS } from "../../ExternalConfig";
 import { CameraLibrarySettings }           from "../indirections/CameraLibraryInterface";
-import { CrownstoneSSE }                   from "../../logic/SSE";
+import { CrownstoneSSE }                   from "../../logic/DevSSE";
 import { BridgeMock }                      from "./BridgeMock";
 import { BridgeConfig }                    from "../../native/libInterface/BridgeConfig";
 
@@ -11,15 +11,18 @@ export const TestingFramework = {
   SSE: null,
 
   async initialize(json) {
+    if (!json) { return; }
+
     try {
       CloudAddresses.cloud_v1                 = json.cloud_v1          || CLOUD_ADDRESS;
       CloudAddresses.cloud_v2                 = json.cloud_v2          || CLOUD_V2_ADDRESS;
+      CloudAddresses.sse                      = json.sse               || SSE_ADDRESS;
       CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary  || false;
       CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary || false;
       BridgeConfig.mockBluenet                = json.mockBluenet       || false;
       BridgeConfig.mockBridgeUrl              = json.mockBridgeUrl     || null;
     }
-    catch (err) {
+    catch (err : any) {
       console.log("TestingFramework: Something went wrong", err);
     }
 
@@ -30,12 +33,14 @@ export const TestingFramework = {
 
   async setupSSE() {
     if (BridgeConfig.mockBluenet) {
-      console.log("init", BridgeConfig.mockBridgeUrl)
+      console.log("Set mock bluenet to url:", BridgeConfig.mockBridgeUrl)
       if (!TestingFramework.SSE) {
+        console.log("init SSE testFramework connection:", BridgeConfig.mockBridgeUrl)
         TestingFramework.SSE = new CrownstoneSSE({sseUrl: BridgeConfig.mockBridgeUrl+'sse'});
       }
       TestingFramework.SSE.accessToken = "TEST_DEV";
       await TestingFramework.SSE.start((event) => { BridgeMock.handleSSE(event); });
+      console.log("TestFramework SSE Started")
     }
   },
 

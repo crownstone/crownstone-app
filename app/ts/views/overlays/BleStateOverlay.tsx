@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 
 import { IconButton }         from '../components/IconButton'
-import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
+import {Icon} from "../components/Icon";
+import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -134,7 +135,7 @@ export class BleStateOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox
+      <SimpleOverlayBox
         visible={this.state.visible}
         overrideBackButton={false}
         canClose={true}
@@ -145,7 +146,7 @@ export class BleStateOverlay extends Component<any, any> {
             id: "bluetoothState",
             label: lang("Bluetooth_disabled"),
             icon: "ios-bluetooth",
-            backgroundColor: colors.csOrange.hex,
+            backgroundColor: colors.csOrange.rgba(0.5),
             callback: () => {
               NavigationUtil.showOverlay('BleStateOverlay', { notificationType: this.state.notificationType, type: this.state.type });
             }
@@ -154,20 +155,19 @@ export class BleStateOverlay extends Component<any, any> {
       >
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
-          <IconButton
+          <Icon
             name="ios-bluetooth"
             size={0.15*screenHeight}
-            color="#fff"
-            buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue3.hex, borderRadius: 0.03*screenHeight}}
+            color={colors.blue.hex}
           />
           <View style={{flex:1}} />
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15, }}>{this._getTitle()}</Text>
-          <Text style={{fontSize: 12, color: colors.blue3.hex, padding:15, textAlign:'center'}}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.black.hex, padding:15, }}>{this._getTitle()}</Text>
+          <Text style={{fontSize: 12, color: colors.black.hex, padding:15, textAlign:'center'}}>
             {this._getText()}
           </Text>
           <View style={{flex:1}} />
         </View>
-      </OverlayBox>
+      </SimpleOverlayBox>
     );
   }
 }

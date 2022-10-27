@@ -4,7 +4,7 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DfuDeviceEntry", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react'; import { Component, useState } from "react";
 import {
   Alert,
   TouchableOpacity,
@@ -17,9 +17,13 @@ import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { DfuUtil } from "../../../util/DfuUtil";
 import { tell } from "../../../logic/constellation/Tellers";
+import { BlurEntry, TappableBlurEntry } from "../BlurEntries";
+import { DfuDeviceEntryLabel, SetupDeviceEntryLabel } from "./submodules/DeviceLabels";
+import { SetupDeviceEntryIcon } from "./submodules/SetupDeviceEntryIcon";
+import { Get } from "../../../util/GetUtil";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -124,7 +128,7 @@ export class DfuDeviceEntry extends Component<any, any> {
             await tell(this.props.handle).bootloaderToNormalMode();
             this.setState({restoring: false});
           }
-          catch (err) {
+          catch (err : any) {
             core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{firmwareVersion: null}});
             this.setState({restoring: false});
             NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
@@ -180,4 +184,63 @@ export class DfuDeviceEntry extends Component<any, any> {
       </View>;
     }
   }
+}
+
+
+interface DfuDeviceEntryProps {
+  name:     string,
+  testID?:  string,
+  handle:   string,
+  sphereId: string,
+  stoneId:  string,
+}
+
+export function DfuDeviceEntry_RoomOverview(props: DfuDeviceEntryProps) {
+  let [restoring, setRestoring] = useState(false);
+
+  let stone = Get.stone(props.sphereId, props.stoneId);
+
+  return (
+    <TappableBlurEntry
+      {...props}
+      title={props.name ?? stone?.config?.name}
+      heightOffset={10}
+      backgroundColor={colors.purple.rgba(0.7)}
+      labelItem={<DfuDeviceEntryLabel restoring={restoring} />}
+      iconItem={<SetupDeviceEntryIcon icon={stone?.config?.icon || 'unknown'} />}
+      tapCallback={ async () => {
+        if (restoring !== true) {
+          if (Permissions.inSphere(props.sphereId).canUpdateCrownstone) {
+            let updatableStones = DfuUtil.getUpdatableStones(props.sphereId);
+            if (updatableStones.stones[props.stoneId]) {
+              NavigationUtil.launchModal("DfuIntroduction", { sphereId: props.sphereId });
+            }
+            else {
+              setRestoring(true);
+              try {
+                await tell(props.handle).bootloaderToNormalMode();
+                setRestoring(false);
+              }
+              catch (err : any) {
+                core.store.dispatch({
+                  type: "UPDATE_STONE_CONFIG",
+                  sphereId: props.sphereId,
+                  stoneId: props.stoneId,
+                  data: { firmwareVersion: null }
+                });
+                setRestoring(false);
+                NavigationUtil.launchModal("DfuIntroduction", { sphereId: props.sphereId });
+              }
+            }
+          }
+          else {
+            Alert.alert(
+              lang("_You_dont_have_permission_header"),
+              lang("_You_dont_have_permission_body"),
+              [{ text: lang("_You_dont_have_permission_left") }])
+          }
+        }
+      }}
+    />
+  );
 }

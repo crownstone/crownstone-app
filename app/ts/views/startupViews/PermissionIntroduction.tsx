@@ -17,48 +17,24 @@ import {
 } from "../styles";
 import { core } from "../../Core";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Stacks } from "../Stacks";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { LOG } from "../../logging/Log";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
-import { randomAiName } from "./AiStart";
 import { ScaledImage } from "../components/ScaledImage";
 import { Util } from "../../util/Util";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export class PermissionIntroduction extends LiveComponent<any, any> {
 
   _interview : Interview;
-  randomAiName : string = randomAiName();
 
   constructor(props) {
     super(props);
   }
 
-  componentWillUnmount(): void {
-  }
-
-  _checkAI() {
-    let state = core.store.getState();
-    let showAI = false;
-    if (state.user.isNew !== false) {
-      let sphereIds = Object.keys(state.spheres);
-      // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
-      if (sphereIds.length === 1) {
-        if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiName) {
-          showAI = true;
-        }
-      }
-    }
-
-    if (showAI) {
-      return 'ai'
-    }
-    core.eventBus.emit("userLoggedInFinished");
-    NavigationUtil.setRoot(Stacks.loggedIn());
-    return false;
-  }
 
   getCards() : interviewCards {
     return {
@@ -74,7 +50,10 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
             onSelect: (result) => {
               return LocationHandler.initializeTracking().then(() => {
                 if (Platform.OS === 'android') {
-                  return this._checkAI();
+                  core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+                  core.eventBus.emit("userLoggedInFinished");
+                  NavigationUtil.setRoot(Stacks.loggedIn());
+                  return;
                 }
                 return 'notifications';
               })
@@ -96,37 +75,9 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
             onSelect: (result) => {
               LOG.info("Sync: Requesting notification permissions during Login.");
               NotificationHandler.request();
-              return this._checkAI();
-            }
-          },
-        ]
-      },
-      ai: {
-        header: lang("Let_me_introduce_myself_"),
-        backgroundImage: require("../../../assets/images/backgrounds/lightBackground2_blur.jpg"),
-        subHeader: lang("Im_your_new_smart_home__n"),
-        component: <View style={{...styles.centered, flex:1}}>
-            <ScaledImage source={require("../../../assets/images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.3*availableModalHeight} />
-          </View>,
-        hasTextInputField: true,
-        textInputTestID: 'AI_name',
-        placeholder: this.randomAiName,
-        optionsBottom: true,
-        testID:'permission_AI_setup',
-        options: [
-          {
-            label: lang("Nice_to_meet_you_"),
-            testID: "permission_nice_to_meet_you",
-            onSelect: (result) => {
-              let name = result.textfieldState.trim() || this.randomAiName;
-              let state = core.store.getState();
-              let sphereIds = Object.keys(state.spheres);
               core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
-              core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereIds[0], data: {aiName: name}});
-
               core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn());
-              return false;
             }
           },
         ]
@@ -140,14 +91,12 @@ export class PermissionIntroduction extends LiveComponent<any, any> {
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
-      textColor       = this._interview.getTextColorFromCard()  || textColor;
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true} testID={"PermissionIntroduction"}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} testID={"PermissionIntroduction"}>
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
-          height={screenHeight - 0.5*tabBarMargin - statusBarHeight}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}

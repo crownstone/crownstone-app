@@ -13,7 +13,7 @@ import {
 
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class PictureGallerySelector extends Component<any, any> {

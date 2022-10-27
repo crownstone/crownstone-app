@@ -37,7 +37,7 @@ eventHelperSetActive(handle);
 
 test("Session manager registration and queue for shared connections.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -90,7 +90,7 @@ test("Session manager registration and queue for shared connections.", async () 
 
 test("Session manager registration and queue for private connections.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -141,7 +141,7 @@ test("Session manager registration and queue for private connections.", async ()
 
 test("Session manager failing shared connection.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -173,7 +173,7 @@ test("Session manager failing shared connection.", async () => {
 
 test("Session manager failing private connection.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -218,7 +218,7 @@ test("Session manager failing private connection.", async () => {
 
 test("Session manager request and revoke shared requests in different states.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -275,7 +275,7 @@ test("Session manager request and revoke shared requests in different states.", 
 
 test("Session manager request and revoke private requests in different states.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone()
   eventHelperSetActive(handle, sphere.id, stone1.id);
 
   let sessionManager = new SessionManagerClass();
@@ -313,7 +313,7 @@ test("Session manager request and revoke private requests in different states.",
 
 test("Session manager private connections cannot request the same session twice.", async () => {
   let sphere = addSphere();
-  let { stone: stone1, handle } = addStone({meshNetworkId: meshId});
+  let { stone: stone1, handle } = addStone({} );
   eventHelperSetActive(handle, sphere.id, stone1.id);
   let sessionManager = new SessionManagerClass();
   let id1 = 'commanderId_1';
@@ -333,7 +333,7 @@ test("Session manager private connections cannot request the same session twice.
 
 
 test("Session manager being paused with no active sessions. It should block new ones.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
@@ -350,7 +350,7 @@ test("Session manager being paused with no active sessions. It should block new 
 
 
 test("Session manager being paused with private connections. These should be awaited.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
@@ -378,13 +378,13 @@ test("Session manager being paused with private connections. These should be awa
 
 
 test("Session manager being paused with public connections. These should be closed.", async () => {
-  let db = createMockDatabase(meshId, secondMeshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   eventHelperSetActive(handle, db.sphere.id, db.stones[0].stone.id);
 
   let sessionManager = new SessionManagerClass();
   sessionManager.request(handle, "commander", false);
-  evt_ibeacon(-70)
+  evt_ibeacon(-70);
 
   let promise = { promise: new Promise(() => {}), resolve: jest.fn(), reject: jest.fn() };
   let options2 = getCommandOptions(db.sphere.id, [handle]);
@@ -399,7 +399,7 @@ test("Session manager being paused with public connections. These should be clos
   sessionManager.intiateBlock().then(() => { pauseFinished = true; })
 
   expect(pauseFinished).toBeFalsy();
-  await moveTimeBy(300)
+  await moveTimeBy(300);
 
   expect(mBluenetPromise.has(handle).called.allowDimming()).toBeFalsy();
   await mBluenetPromise.for(handle).succeed.setTime();
@@ -407,11 +407,12 @@ test("Session manager being paused with public connections. These should be clos
 
   evt_disconnected(handle);
 
-  await moveTimeBy(300)
+  await moveTimeBy(300);
+  await TestUtil.nextTick();
   expect(Object.keys(sessionManager._activeSessions).length).toBe(0)
   expect(pauseFinished).toBeFalsy();
 
-  await moveTimeBy(300)
+  await moveTimeBy(300);
   expect(pauseFinished).toBeTruthy();
 });
 
@@ -419,7 +420,7 @@ test("Session manager being paused with public connections. These should be clos
 
 
 test("Check usage of re-requesting by sessionManager", async () => {
-  let db = createMockDatabase(meshId);
+  let db = createMockDatabase();
   let handle = db.stones[0].handle;
   let commander1 = new CommandAPI(getCommandOptions(db.sphere.id, [handle], true));
 

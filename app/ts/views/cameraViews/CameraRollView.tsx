@@ -5,7 +5,7 @@
 //   return Languages.get("CameraRollView", key)(a,b,c,d,e);
 // }
 // import * as React from 'react'; import { Component } from 'react';
-// import { NavigationUtil } from "../../util/NavigationUtil";
+// import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 // import CameraRollPicker from 'react-native-camera-roll-picker';
 // import { LiveComponent } from "../LiveComponent";
 // import { colors, screenHeight, screenWidth } from "../styles";
@@ -26,7 +26,7 @@
 //   render() {
 //    return (
 //      <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
-//        <Background fullScreen={true} hideNotifications={true} hideOrangeLine={true}  dimStatusBar={true}>
+//        <Background fullScreen={true} hideOrangeLine={true} >
 //          <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
 //            <TopbarImitation
 //              leftStyle={{color: colors.white.hex}}

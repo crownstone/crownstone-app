@@ -20,11 +20,12 @@ import { core } from "../../../../Core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Separator } from "../../../components/Separator";
 import { ButtonBar } from "../../../components/editComponents/ButtonBar";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { NavigationBar } from "../../../components/editComponents/NavigationBar";
 import { SliderBar } from "../../../components/editComponents/SliderBar";
 import { Explanation } from "../../../components/editComponents/Explanation";
 import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
+import {SettingsBackground} from "../../../components/SettingsBackground";
 
 
 export class Ability_TapToToggleSettings extends Component<any, any> {
@@ -65,9 +66,9 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
 
   render() {
     let stone = core.store.getState().spheres[this.props.sphereId].stones[this.props.stoneId];
-    let rssiOffsetTarget = Number(stone.abilities.tapToToggle.rssiOffsetTarget);
+    let rssiOffsetTarget = Number(stone.abilities.tapToToggle.properties.rssiOffset.valueTarget);
     return (
-      <Background hasNavBar={false} image={background.lightBlurLighter}>
+      <SettingsBackground>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
@@ -122,7 +123,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }

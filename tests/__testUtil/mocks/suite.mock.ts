@@ -87,12 +87,10 @@ export const mConstellationState = mockConstellationUtil()
 
 import {Scheduler} from "../../../app/ts/logic/Scheduler";
 
-export const moveTimeBy = function(ms) {
+export const moveTimeBy = async function(ms) {
   advanceBy(ms);
   Scheduler.tick();
-  return new Promise<void>((resolve,reject) => {
-    setImmediate(() => { resolve(); })
-  })
+  await TestUtil.nextTick();
 }
 
 export const resetMocks = function() {

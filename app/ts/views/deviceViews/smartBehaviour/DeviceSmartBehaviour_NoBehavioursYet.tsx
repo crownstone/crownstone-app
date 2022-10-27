@@ -13,15 +13,16 @@ import {
   background,
   colors,
   deviceStyles,
-  screenWidth, styles
+  screenWidth, styles, topBarHeight
 } from "../../styles";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { ScaledImage } from "../../components/ScaledImage";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { Button } from "../../components/Button";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
+import {SettingsBackground} from "../../components/SettingsBackground";
 
 
 let className = "DeviceSmartBehaviour";
@@ -36,7 +37,7 @@ export function NoBehavioursYet(props) {
   let updateRequired = !xUtil.versions.canIUse(stone.config.firmwareVersion, '4.0.0')
 
   return (
-    <Background image={background.lightBlurLighter} hasNavBar={false}>
+    <SettingsBackground>
       <ScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>
@@ -87,9 +88,9 @@ export function NoBehavioursYet(props) {
           }
           { !updateRequired && <BehaviourCopyFromButton sphereId={props.sphereId} stoneId={props.stoneId} behavioursAvailable={false}/> }
           { state.development.show_sync_button_in_behaviour && <BehaviourSyncButton sphereId={props.sphereId} stoneId={props.stoneId} /> }
-          <View style={{height:30}} />
+          <View style={{height:topBarHeight+30}} />
         </View>
       </ScrollView>
-    </Background>
+    </SettingsBackground>
   )
 }

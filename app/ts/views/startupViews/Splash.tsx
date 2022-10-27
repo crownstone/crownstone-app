@@ -11,9 +11,10 @@ import {
   View, TextStyle
 } from "react-native";
 import { Background } from './../components/Background'
-import { background, colors } from "./../styles";
+import {background, colors, setInsets, styles} from "./../styles";
 
 import DeviceInfo from 'react-native-device-info';
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -24,12 +25,13 @@ let versionStyle : TextStyle = {
 
 export class Splash extends Component<any, any> {
   render() {
-    let factor = 0.25;
+    let factor = 0.2;
 
     return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={false}  hideOrangeLine={true} hideNotifications={true}>
+      <Background fullScreen={true} image={background.main}>
+        <InsetSetter />
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
-          <View style={{flex:0.5}} />
+          <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
           <View style={{flex:2}} />
           <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
@@ -38,4 +40,12 @@ export class Splash extends Component<any, any> {
       </Background>
     );
   }
+}
+
+
+function InsetSetter(props) {
+  let insets = useSafeAreaInsets();
+  setInsets(insets);
+
+  return <React.Fragment/>
 }

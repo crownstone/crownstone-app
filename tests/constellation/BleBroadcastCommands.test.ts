@@ -34,7 +34,7 @@ const meshId = "meshNetwork";
 const otherMeshId = "otherMeshNetwork";
 
 test("Broadcast command, check if it works for turnon", async () => {
-  let db = createMockDatabase(meshId, otherMeshId);
+  let db = createMockDatabase();
 
   let handle = db.stones[0].handle;
   let options = getCommandOptions(db.sphere.id, [handle]);
@@ -50,7 +50,7 @@ test("Broadcast command, check if it works for turnon", async () => {
 });
 
 test("Broadcast command, check if it works for multiswitch.", async () => {
-  let db = createMockDatabase(meshId, otherMeshId);
+  let db = createMockDatabase();
 
   let handle = db.stones[0].handle;
   let options = getCommandOptions(db.sphere.id, [handle]);
@@ -67,7 +67,7 @@ test("Broadcast command, check if it works for multiswitch.", async () => {
 
 
 test("Broadcast command, check if it stacks", async () => {
-  let db = createMockDatabase(meshId, otherMeshId);
+  let db = createMockDatabase();
   function loadTurnOn(stone) {
     let handle = stone.handle;
     let options = getCommandOptions(db.sphere.id, [handle]);
@@ -94,7 +94,7 @@ test("Broadcast command, check if it stacks", async () => {
 });
 
 test("Broadcast command, check if it throttles", async () => {
-  let db = createMockDatabase(meshId, otherMeshId);
+  let db = createMockDatabase();
   function loadTurnOn(stone) {
     let handle  = stone.handle;
     let options = getCommandOptions(db.sphere.id, [handle]);

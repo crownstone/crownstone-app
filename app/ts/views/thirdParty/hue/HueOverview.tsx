@@ -14,7 +14,7 @@ import {Background} from "../../components/Background";
 import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Button } from "../../components/Button";
 
 

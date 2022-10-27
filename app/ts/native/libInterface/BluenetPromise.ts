@@ -22,60 +22,60 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
 	  let id = (Math.random() * 1e8).toString(36);
 
     if (DISABLE_NATIVE === true && !BridgeConfig.mockBluenet) {
-      resolve()
+      console.log("Destroying command", functionName, bluenetArguments);
+      return resolve()
     }
-    else {
-      BugReportUtil.breadcrumb("BLE: Started Command",{
-        functionCalled: functionName,
-        id: id,
-        arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
-        t: Date.now(),
-        state: 'started',
-      }, "state");
 
-      let promiseResolver = (result) => {
-        delete OPEN_PROMISES[id];
-        LOGi.constellation("BluenetPromise: donePromise Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
+    BugReportUtil.breadcrumb("BLE: Started Command",{
+      functionCalled: functionName,
+      id: id,
+      arg: bluenetArguments.length > 0 ? bluenetArguments[0] : "NO_ARG",
+      t: Date.now(),
+      state: 'started',
+    }, "state");
 
-        if (result.error === true) {
-          LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          BugReportUtil.breadcrumb("BLE: Failed Command",{
-            functionCalled: functionName,
-            id: id,
-            t: Date.now(),
-            state: 'failed',
-            err: result.data
-          }, "state");
-          reject(new Error(result.data));
-        }
-        else {
-          LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          BugReportUtil.breadcrumb("BLE: Finished Command",{
-            functionCalled: functionName,
-            id: id,
-            t: Date.now(),
-            state: 'success',
-          }, "state");
-          resolve(result.data);
-        }
-      };
+    let promiseResolver = (result) => {
+      delete OPEN_PROMISES[id];
+      LOGi.constellation("BluenetPromise: donePromise Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
 
-
-      OPEN_PROMISES[id] = {function: functionName, params: bluenetArguments, appState: AppState.currentState, t: Date.now()};
-      LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
-      LOGi.constellation("BluenetPromise: newPromise  Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
-
-      if (BridgeConfig.mockBluenet) {
-        BridgeMock.callPromise(functionName, bluenetArguments, promiseResolver);
-        return;
+      if (result.error === true) {
+        LOGi.constellation("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+        BugReportUtil.breadcrumb("BLE: Failed Command",{
+          functionCalled: functionName,
+          id: id,
+          t: Date.now(),
+          state: 'failed',
+          err: result.data
+        }, "state");
+        reject(new Error(result.data));
       }
+      else {
+        LOGi.constellation("BluenetPromise: promise resolved in bridge: ", functionName, " with data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
+        BugReportUtil.breadcrumb("BLE: Finished Command",{
+          functionCalled: functionName,
+          id: id,
+          t: Date.now(),
+          state: 'success',
+        }, "state");
+        resolve(result.data);
+      }
+    };
 
-      // add the promise resolver to this list
-      bluenetArguments.push(promiseResolver);
 
-      // @ts-ignore
-      Bluenet[functionName].apply(this, bluenetArguments);
+    OPEN_PROMISES[id] = {function: functionName, params: bluenetArguments, appState: AppState.currentState, t: Date.now()};
+    LOGi.constellation("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
+    LOGi.constellation("BluenetPromise: newPromise  Amount of currently open promises:", Object.keys(OPEN_PROMISES).length);
+
+    if (BridgeConfig.mockBluenet) {
+      BridgeMock.callPromise(functionName, bluenetArguments, promiseResolver);
+      return;
     }
+
+    // add the promise resolver to this list
+    bluenetArguments.push(promiseResolver);
+
+    // @ts-ignore
+    Bluenet[functionName].apply(this, bluenetArguments);
   })
 };
 
@@ -116,7 +116,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets', dataObject); },
   requestLocation:                ()           => { return BluenetPromise('requestLocation');             },
   recover:                        (handle: string)     => { return BluenetPromise('recover', handle);             },                                // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
-  finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:            (handle: string)           => { return BluenetPromise('commandFactoryReset', handle);         },
 
   multiSwitch:                    (handle: string, arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch', handle, arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
@@ -135,7 +134,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   //new
   clearErrors:                    (handle: string, clearErrorJSON) => { return BluenetPromise('clearErrors', handle, clearErrorJSON); },
   restartCrownstone:              (handle: string)     => { return BluenetPromise('restartCrownstone', handle); },
-  clearFingerprintsPromise:       ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                        (handle: string, time) => { return BluenetPromise('setTime', handle, time); },
   setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string, enableTimeBasedNonce: boolean) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId, enableTimeBasedNonce); },
   meshSetTime:                    (handle: string, time) => { return BluenetPromise('meshSetTime', handle, time); },
@@ -250,6 +248,11 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   requestCloudId:              (handle: string) => { return BluenetPromise('requestCloudId', handle); },
   factoryResetHub:             (handle: string) => { return BluenetPromise('factoryResetHub', handle); },
   factoryResetHubOnly:         (handle: string) => { return BluenetPromise('factoryResetHubOnly', handle); },
+
+
+  setDoubleTapSwitchcraft:     (handle: handle, enabled: boolean) => { return BluenetPromise('setDoubleTapSwitchcraft', handle, enabled); },
+  setDefaultDimValue:          (handle: handle, dimValue: number) => { return BluenetPromise('setDefaultDimValue', handle, dimValue);     },
+
   getLaunchArguments:          () => { return BluenetPromise("getLaunchArguments"); },
 };
 

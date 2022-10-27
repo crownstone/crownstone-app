@@ -15,8 +15,8 @@ export const syncUsersInSphere = {
       let state = core.store.getState();
       let localSphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId;
       if (!localSphereId) {
-        let sphereId = state.app.activeSphere;
-        if (!sphereId) {
+        localSphereId = state.app.activeSphere;
+        if (!localSphereId) {
           return resolve();
         }
       }
@@ -35,7 +35,6 @@ export const syncUsersInSphere = {
       if (Object.keys(sphereUsers).length <= 1) {
         return resolve();
       }
-
 
       let actions = [];
       syncingUsersInSpheres[localSphereId] = true;

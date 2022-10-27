@@ -1,6 +1,7 @@
 type SyncCategory = 'bootloaders'     |
                     'features'        |
                     'firmwares'       |
+                    'fingerprints'    |
                     'hubs'            |
                     'keys'            |
                     'locations'       |
@@ -19,6 +20,7 @@ interface SyncIgnoreMap {
   bootloader:      boolean,
   features:        boolean,
   firmware:        boolean,
+  fingerprints:    boolean,
   hubs:            boolean,
   keys:            boolean,
   locations:       boolean,
@@ -37,6 +39,7 @@ interface SyncScopeMap {
   bootloader?:      boolean,
   features?:        boolean,
   firmware?:        boolean,
+  fingerprints?:    boolean,
   hubs?:            boolean,
   keys?:            boolean,
   locations?:       boolean,
@@ -71,11 +74,14 @@ interface SyncRequestSphereData {
     features?: {
       [featureId: string]: RequestItemCoreType
     }
+    fingerprints?: {
+      [fingerprintId: string]: RequestItemCoreType
+    }
     locations?: {
       [locationId: string]: RequestItemCoreType
     },
     messages?:  {
-      [messageId: string]: RequestItemCoreType
+      [messageId: string]: SyncRequestMessageData
     },
     scenes?: {
       [sceneId: string]: RequestItemCoreType
@@ -115,6 +121,14 @@ interface SyncRequestStoneData {
     [behaviourId: string]: RequestItemCoreType
   }
 }
+
+interface SyncRequestMessageData {
+  new?: boolean,
+  data: UpdatedAt,
+  readBy?:    {[readById:string]:    RequestItemCoreType},
+  deletedBy?: {[deletedById:string]: RequestItemCoreType},
+}
+
 
 interface RequestItemCoreType {
   new?: boolean,
@@ -173,15 +187,18 @@ interface SyncRequestResponse_Sphere {
       data: SyncResponseItemCore<cloud_SphereFeature>
     }
   },
+  fingerprints?: {
+    [fingerprintId: string] : {
+      data: SyncResponseItemCore<cloud_Fingerprint>
+    }
+  },
   locations?: {
     [locationId: string]: {
       data: SyncResponseItemCore<cloud_Location>,
     }
   },
   messages?:  {
-    [messageId: string] : {
-      data: SyncResponseItemCore<cloud_Message>
-    }
+    [messageId: string] : SyncMessageResponse,
   },
   scenes?:  {
     [sceneId: string] : {
@@ -206,6 +223,13 @@ interface SyncRequestResponse_Sphere {
       data: SyncResponseCustomItemCore<cloud_UserData>
     }
   }
+}
+
+
+interface SyncMessageResponse {
+  data?:       SyncResponseItemCore<cloud_Message>,
+  readBy?:    {[stateId: string]: {data: SyncResponseItemCore<cloud_MessageState>}},
+  deletedBy?: {[stateId: string]: {data: SyncResponseItemCore<cloud_MessageState>}},
 }
 
 

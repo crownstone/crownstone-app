@@ -18,14 +18,14 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { background, colors, screenWidth } from "./../styles";
+import {background, colors, screenWidth, tabBarHeight, topBarHeight} from "./../styles";
 import { IconButton } from "../components/IconButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
-import { CloudAddresses } from "../../backgroundProcesses/indirections/CloudAddresses";
+import { SettingsNavbarBackground} from "../components/SettingsBackground";
+import { DataUtil } from "../../util/DataUtil";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -52,7 +52,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
       picture: user.picture,
       firstName: user.firstName,
       lastName: user.lastName,
-      showDevMenu: state.user.developer || false
+      showDevMenu: DataUtil.isDeveloper()
     };
   }
 
@@ -169,7 +169,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({type:'spacer'});
 
     if (this.state.showDevMenu) {
-      if (user.developer !== true) {
+      if (!DataUtil.isDeveloper()) {
         items.push({
           label: lang("Enable_Developer_Mode"),
           value: false,
@@ -239,46 +239,46 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <BackgroundNoNotification image={background.menu} hideNotifications={true} testID={"SettingsProfile"}>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <View>
-            <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
-              <PictureCircle
-                isSquare={true}
-                value={this.state.picture}
-                callback={(pictureUrl) => {
-                  let newFilename = user.userId + '.jpg';
-                  processImage(pictureUrl, newFilename)
-                    .then((newPicturePath) => {
-                      this.setState({picture:newPicturePath});
-                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
-                      // update your settings in every sphere that you belong to.
-                      sphereIds.forEach((sphereId) => {
-                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
-                      });
-                    })
-                    .catch((err) => {
-                      LOG.info("PICTURE ERROR ",err)
-                    })
-                }}
-                removePicture={() => {
-                  FileUtil.safeDeleteFile(this.state.picture).catch(() => {});
-                  store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
-                  // update your settings in every sphere that you belong to.
-                  sphereIds.forEach((sphereId) => {
-                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
-                  });
-                  this.setState({picture:null});
-                }}
-                size={120} />
-            </View>
+      <SettingsNavbarBackground testID={"SettingsProfile"}>
+        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
+          <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
+            <PictureCircle
+              isSquare={true}
+              value={this.state.picture}
+              callback={(pictureUrl) => {
+                let newFilename = user.userId + '.jpg';
+                processImage(pictureUrl, newFilename)
+                  .then((newPicturePath) => {
+                    this.setState({picture:newPicturePath});
+                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
+                    // update your settings in every sphere that you belong to.
+                    sphereIds.forEach((sphereId) => {
+                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
+                    });
+                  })
+                  .catch((err) => {
+                    LOG.info("PICTURE ERROR ",err)
+                  })
+              }}
+              removePicture={() => {
+                FileUtil.safeDeleteFile(this.state.picture).catch(() => {});
+                store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
+                // update your settings in every sphere that you belong to.
+                sphereIds.forEach((sphereId) => {
+                  store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
+                });
+                this.setState({picture:null});
+              }}
+              size={120} />
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          { !this.state.showDevMenu &&
+            <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
+              <View style={{flex:1, width: screenWidth, backgroundColor: 'transparent'}} />
+            </TouchableWithoutFeedback>
+          }
         </ScrollView>
-        { !this.state.showDevMenu && <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
-          <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
-        </TouchableWithoutFeedback>}
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

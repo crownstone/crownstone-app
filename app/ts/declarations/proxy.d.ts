@@ -77,8 +77,6 @@ interface BluenetPromiseWrapperProtocol {
   getBootloaderVersion(handle: handle)                                  : Promise< string >,
   getHardwareVersion(handle: handle)                                    : Promise< string >,
 
-  finalizeFingerprint(sphereId: string, locationId: string)             : Promise< void >,
-
   /**
    * Returns when the BLE central has initialized (ready to scan/perform connections after boot)
    */
@@ -102,7 +100,6 @@ interface BluenetPromiseWrapperProtocol {
   setupCrownstone(handle: handle, dataObject: setupData)                : Promise< void >,
   requestLocation()                                                     : Promise< locationType >,
   recover(handle: handle)                                               : Promise< void >,
-  clearFingerprintsPromise()                                            : Promise< void >,
   setKeySets(keySets)                                                   : Promise< void >,
 
   // Mesh
@@ -286,8 +283,11 @@ interface BluenetPromiseWrapperProtocol {
   getSwitchHistory(handle: handle)                                      : Promise<SwitchHistory[]>,
   getPowerSamples(handle: handle, type : PowersampleDataType)           : Promise<PowerSamples[]>,
 
-  getUICR(handle: handle)                                               : Promise<UICRData>
-  
+  getUICR(handle: handle)                                               : Promise<UICRData>,
+
+  setDoubleTapSwitchcraft(handle: handle, enabled:boolean)              : Promise<void>,
+  setDefaultDimValue(handle: handle, dimValue: number)                  : Promise<void>,
+
   setUartKey(handle: handle, uartKey: string)                           : Promise<void>,
 
   // all methods that use the hubData pathway, can be rejected with error "HUB_REPLY_TIMEOUT" if the response in not quick enough.
@@ -295,8 +295,65 @@ interface BluenetPromiseWrapperProtocol {
   requestCloudId(handle: handle)                                        : Promise<HubDataReply>,
   factoryResetHub(handle: handle)                                       : Promise<HubDataReply>,
   factoryResetHubOnly(handle: handle)                                   : Promise<HubDataReply>,
-  getLaunchArguments()                                                  : Promise<Record<string, string>>
+  getLaunchArguments()                                                  : Promise<Record<string, string>>,
 }
+
+interface CrownstoneNames {
+  [sphereId: sphereId]: {
+    [stoneUID: string]: string
+  }
+}
+
+/** These methods are fire and forget **/
+interface BridgeInterface extends BluenetPromiseWrapperProtocol {
+  addListener:                            () =>  void,
+  batterySaving:                          (state: boolean) =>  void,
+  broadcastExecute:                       () =>  void,
+  clearLogs:                              () =>  void,
+  clearKeySets:                           () =>  void,
+  crash:                                  () =>  void,
+  enableLoggingToFile:                    (enableLogging: boolean) =>  void,
+  enableExtendedLogging:                  (enableLogging: boolean) =>  void,
+  getConstants:                           () =>  void,
+  gotoOsAppSettings:                      () =>  void,
+  initBroadcasting:                       () =>  void,
+  quitApp:                                () =>  void,
+  pauseTracking:                          () =>  void,
+  removeListeners:                        () =>  void,
+  requestBleState:                        () =>  void,
+  requestLocationPermission:              () =>  void,
+  rerouteEvents:                          () =>  void,
+  resetBle:                               () =>  void,
+  resumeTracking:                         () =>  void,
+  setBackgroundScanning:                  (state: boolean) =>  void,
+  setCrownstoneNames:                     (names: CrownstoneNames) =>  void,
+  setDevicePreferences:                   (rssiOffset: number, tapToToggle: boolean, ignoreForBehaviour: boolean, randomDeviceToken: number, useTimeBasedNonce: boolean) =>  void,
+  setLocationState:                       (sphereUID: number, locationUID: number, profileId: number, deviceToken: number, sphereId: sphereId) =>  void,
+  setSunTimes:                            (sunriseSecondsSinceMidnight: number, sundownSecondsSinceMidnight: number, sphereId: sphereId) =>  void,
+  setupFactoryReset:                      (hanlde: handle, callback: callback) =>  void,
+
+  startAdvertising:                       () =>  void,
+  stopAdvertising:                        () =>  void,
+
+  startScanningForCrownstonesUniqueOnly:  () =>  void,
+  startScanningForCrownstones:            () =>  void,
+
+  startScanning:                          () =>  void,
+  stopScanning:                           () =>  void,
+
+  trackIBeacon:                           (iBeaconUUID: string, sphereId: sphereId) =>  void,
+  stopTrackingIBeacon:                    (iBeaconUUID: string) =>  void,
+
+  subscribeToNearest:                     () =>  void,
+  subscribeToUnverified:                  () =>  void,
+  unsubscribeUnverified:                  () =>  void,
+  unsubscribeNearest:                     () =>  void,
+
+  useHighFrequencyScanningInBackground:   (state: boolean) =>  void,
+  viewsInitialized:                       () =>  void,
+  vibrate:                                (type: vibrationType) => void,
+}
+
 
 interface UICRData {
   board          : number, 
@@ -462,8 +519,8 @@ interface crownstoneAdvertisement extends crownstoneBaseAdvertisement {
 interface ibeaconPackage {
   id    : string, // uuid + "_Maj:" + string(major) + "_Min:" + string(minor)
   uuid  : string, // this is the iBeacon UUID in uppercase: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
-  major : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
-  minor : string, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
+  major : string | number, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
+  minor : string | number, // string because it is an ID that can get string operations, never calculations. Can be filled with int as well.
   rssi  : number,
   referenceId : string, // The sphere ID, as given in trackIBeacon().
 }
@@ -541,3 +598,11 @@ interface setupData {
   ibeaconMinor:       number,
 }
 
+
+interface SetupStoneSummary {
+  name: string,
+  icon: string,
+  type: StoneType,
+  rawType: DeviceType,
+  handle: string
+}

@@ -15,6 +15,6 @@ export const TestUtil = {
 
 function tick() {
   return new Promise<void>((resolve,reject) => {
-    setImmediate(() => { resolve(); })
+    setTimeout(() => { resolve(); },5)
   })
 }

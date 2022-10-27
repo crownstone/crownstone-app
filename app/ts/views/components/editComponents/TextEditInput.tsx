@@ -101,7 +101,6 @@ export class TextEditInput extends Component<any, any> {
         autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? "none" : this.props.autoCapitalize || 'words'}
         autoCorrect={  false }
-        autoCompleteType={ this.props.autoCompleteType }
         keyboardType={ this.props.visiblePassword ? 'visible-password' : (this.props.keyboardType || 'default')}
         blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}
         maxLength={    this.props.maxLength }

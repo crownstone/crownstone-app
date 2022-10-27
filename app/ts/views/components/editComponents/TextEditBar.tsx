@@ -12,9 +12,9 @@ import {
   View
 } from 'react-native';
 import { Icon } from '../Icon';
-import { styles, colors } from '../../styles'
+import {styles, colors, menuStyles} from '../../styles'
 import { TextEditInput } from './TextEditInput'
-import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
+import { emailChecker, characterChecker, numberChecker, urlChecker } from "../../../util/Util";
 
 export class TextEditBar extends Component<any, any> {
   verificationContent : any;
@@ -78,6 +78,8 @@ export class TextEditBar extends Component<any, any> {
     switch(this.props.validation) {
       case 'email':
         return emailChecker(value) ? 'valid' : 'errorInvalid';
+      case 'url':
+        return urlChecker(value) ? 'valid' : 'errorInvalid';
       case 'password':
         return this.validateCustom(value, {minLength: 1});
       default:
@@ -154,8 +156,8 @@ export class TextEditBar extends Component<any, any> {
 
   render() {
     return (
-      <View style={[styles.listView, {height:this.props.barHeight}]}>
-        { this.props.label !== null && <Text style={styles.listText}>{this.props.label}</Text> }
+      <View style={[menuStyles.listView, {height:this.props.barHeight}]}>
+        { this.props.label !== null && <Text style={menuStyles.listText}>{this.props.label}</Text> }
         <TextEditInput
           ref={this.refName}
           __validate={(value) => {this.validate(value)}}

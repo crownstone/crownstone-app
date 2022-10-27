@@ -5,6 +5,8 @@ import { core } from "../Core";
 export class PermissionBase {
   canEditSphere              = false; // a or m
 
+  canProvideEnergyPermission = false; // a
+
   useKeepAliveState          = false; // m
   setStoneTime               = false; // a or m
   setToonInCloud             = false; // a
@@ -140,6 +142,7 @@ export class PermissionClass extends PermissionBase {
         this.seeSetupCrownstone      = true; // admin
 
         this.canSetPositionInCloud   = true; // admin
+        this.canProvideEnergyPermission = true; // admin
 
         this.addRoom                 = true; // admin
         this.editRoom                = true; // admin

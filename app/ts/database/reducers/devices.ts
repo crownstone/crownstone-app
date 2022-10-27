@@ -25,7 +25,7 @@ let defaultSettings = {
   updatedAt: 1
 };
 
-let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
+let deviceConfigReducer = (state = defaultSettings, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -114,7 +114,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
 
 
 // devices Reducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_DEVICE':
       let newState = {...state};

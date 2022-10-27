@@ -6,14 +6,16 @@
 // }
 
 type timestamp = number;
+type rssi      = number;
+type sigmoid   = number;
 
 declare const global: {
   __DEV__: boolean,
 };
 
 interface locationDataContainer {
-  region:   string,
-  location: string,
+  sphereId: string,
+  locationId: string,
 }
 
 interface classificationContainer {
@@ -25,9 +27,11 @@ interface classificationContainer {
 type map = { [proptype: string] : boolean } | {}
 type numberMap = { [proptype: string] : number } | {}
 type stringMap = { [proptype: string] : string } | {}
-
+type colorString = string;
 
 type PromiseCallback = (any) => Promise<any>
+type voidCallback = () => void;
+type unsubscriber = () => void;
 
 interface color {
   hex:string,
@@ -39,53 +43,80 @@ interface color {
   hsvBlend?(color, number) : color,
 }
 
+
+interface UIBlinkSettings { left?: boolean, center?: boolean, right?: boolean };
+
 interface colorInterface {
-  csBlue:        color,
-  csBlueDark:    color,
-  csBlueDarker:  color,
-  csBlueDarkerDesat:  color,
-  csBlueLight:   color,
-  csBlueLighter: color,
-  csBlueLightDesat:   color,
-  csOrange:      color,
-  darkCsOrange:  color,
-  lightCsOrange: color,
+  csBlue:               color,
+  csBlueDark:           color,
+  csBlueDarker:         color,
+  csBlueDarkerDesat:    color,
+  csBlueLight:          color,
+  csBlueLighter:        color,
+  csBlueLightDesat:     color,
+  csOrange:             color,
+  lightCsOrange:        color,
   menuBackground:       color,
-  menuBackgroundDarker: color,
   menuText:             color,
-  menuTextSelected    : color,
-  menuTextSelectedDark: color,
-  white:        color,
-  black:        color,
-  gray:         color,
-  notConnected: color,
-  darkGray:     color,
-  darkGray2:    color,
-  lightGray2:   color,
-  lightGray:    color,
-  purple:       color,
-  darkPurple:   color,
-  darkerPurple: color,
-  blue3:         color,
-  blue2:        color,
-  blue:        color,
-  blueDark:    color,
-  green:        color,
-  green2:       color,
-  lightGreen:   color,
-  lightGreen2:  color,
-  darkGreen:    color,
-  red:          color,
-  darkRed:      color,
-  menuRed:      color,
-  iosBlue:      color,
-  iosBlueDark:  color,
-  lightBlue:    color,
-  lightBlue2:   color,
-  blinkColor1:  color,
-  blinkColor2:  color,
+  white:                color,
+  black:                color,
+  gray:                 color,
+  darkGray:             color,
+  darkGray2:            color,
+  lightGray2:           color,
+  lightGray:            color,
+  purple:               color,
+  darkPurple:           color,
+  darkerPurple:         color,
+  blue3:                color,
+  blue:                 color,
+  blueDark:             color,
+  green:                color,
+  green2:               color,
+  lightGreen:           color,
+  lightGreen2:          color,
+  darkGreen:            color,
+  red:                  color,
+  darkRed:              color,
+  menuRed:              color,
+  iosBlue:              color,
+  iosBlueDark:          color,
+  lightBlue:            color,
+  lightBlue2:           color,
+  blinkColor1:          color,
+  blinkColor2:          color,
   random() : any
 }
+
+type NativeBusTopic = "setupAdvertisement"              |
+                      "dfuAdvertisement"                |
+                      "advertisement"                   |
+                      "crownstoneAdvertisementReceived" |
+                      "unverifiedAdvertisementData"     |
+                      "setupProgress"                   |
+                      "dfuProgress"                     |
+                      "bleStatus"                       |
+                      "bleBroadcastStatus"              |
+                      "locationStatus"                  |
+                      "nearest"                         |
+                      "nearestSetup"                    |
+                      "tick"                            |
+                      "iBeaconAdvertisement"            |
+                      "enterSphere"                     |
+                      "exitSphere"                      |
+                      "enterRoom"                       |
+                      "exitRoom"                        |
+                      "currentRoom"                     |
+                      "currentLocationKNN"              |
+                      "libAlert"                        |
+                      "libPopup"                        |
+                      "classifierProbabilities"         |
+                      "classifierResult"                |
+                      "callbackUrlInvoked"              |
+                      "localizationPausedState"         |
+                      "connectedToPeripheral"           |
+                      "disconnectedFromPeripheral"
+
 
 interface NativeBusTopics {
   setupAdvertisement:              string,
@@ -106,8 +137,6 @@ interface NativeBusTopics {
   iBeaconAdvertisement:            string,
   enterSphere:                     string,
   exitSphere:                      string,
-  enterRoom:                       string,
-  exitRoom:                        string,
   currentRoom:                     string,
   currentLocationKNN:              string,
 
@@ -124,6 +153,7 @@ interface NativeBusTopics {
 }
 
 interface NativeBus {
+  emit: (topic: string, data: any) => void,
   topics: NativeBusTopics,
   on(topic : string, callback) : () => void,
   clearAllEvents() : void,
@@ -142,12 +172,18 @@ interface background {
   detailsDark            : any,
 }
 
+
+interface coreStore {
+  getState: () => ReduxAppState,
+  dispatch: (action: DatabaseAction) => void,
+  batchDispatch: (actions: DatabaseAction[]) => void
+}
 interface core {
   bleState: {
     bleAvailable: boolean,
     bleBroadcastAvailable: boolean,
   },
-  store: any,
+  store: coreStore,
   eventBus: any,
   nativeBus: NativeBus,
 }
@@ -241,9 +277,6 @@ interface GraphData {
   y: number,
 }
 
-type sphereId = string
-type stoneId  = string
-
 interface HubDataReply {
   protocolVersion: number,
   type:            string, // is the string name of the ReplyTypes. As of writing: success | error | dataReply
@@ -277,3 +310,9 @@ interface logFormat {
 interface sphereLogFormat {
   [key: string]: {[key: string] : {t: number, rssi: number, handle: string }}
 }
+
+type PartialRecord<K extends keyof any, T> = Partial<Record<K,T>>;
+
+// a number will show that number, a string will show that string, a boolean true will only draw an empty circle
+// null, 0, false or undefined will not show the badge.
+type BadgeIndicator = number | string | boolean

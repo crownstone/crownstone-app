@@ -2,6 +2,8 @@ import fetch from 'node-fetch';
 import { AdvertisementGenerator } from "./AdvertismentGenerator";
 import { NATIVE_BUS_TOPICS } from "../../app/ts/Topics";
 import { bluenetPromise_targetedMethods } from "../../tests/__testUtil/mocks/bluenetPromiseWrapper.mock";
+import { iBeaconGenerator } from "./iBeaconGenerator";
+import { MirrorDatabase } from "./MirrorDatabase";
 const sha1 = require('sha-1');
 
 const headers = {
@@ -12,6 +14,25 @@ const headers = {
 
 
 export class BleMocks {
+  ibeaconGenerator: iBeaconGenerator;
+  db : MirrorDatabase;
+
+  constructor(db : MirrorDatabase) {
+    this.db = db;
+    this.ibeaconGenerator = new iBeaconGenerator();
+  }
+
+
+  loadSphereData(sphere) {
+    this.ibeaconGenerator.loadSphere(sphere);
+  }
+
+
+  async sendIBeaconMessage(sphereId: string, locationId: string = null) {
+    let payload = this.ibeaconGenerator.generateIBeaconMessage(sphereId, locationId);
+    await this._sendEvent(NATIVE_BUS_TOPICS.iBeaconAdvertisement, payload);
+  }
+
 
   for(handle: string) : { succeed: MockedLib, fail: MockedLibError, disconnectEvent: () => Promise<void> } {
     return {
@@ -59,6 +80,7 @@ export class BleMocks {
     );
 
     let textResult = await result.text();
+
     if (textResult !== "SUCCESS") {
       throw new Error(`BluenetPromise resolvePromise error CALL_DOES_NOT_EXIST for ${handle} ${functionName}`)
     }
@@ -81,27 +103,37 @@ export class BleMocks {
   }
 
   async sendSetupAdvertisment(handle: string, rssi: number = -70) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.setupAdvertisement,
       AdvertisementGenerator.setupAdvertisement(handle, rssi)
     );
   }
 
+
   async sendGenericAdvertisement(handle: string, rssi: number = -70) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
+      NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
+      AdvertisementGenerator.genericAdvertisement(handle, rssi)
+    );
+  }
+
+
+  async sendGenericStoneAdvertisement(stoneId, rssi = -70) {
+    let handle = this.ibeaconGenerator.stones[stoneId].handle;
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.crownstoneAdvertisementReceived,
       AdvertisementGenerator.genericAdvertisement(handle, rssi)
     );
   }
 
   async sendSetupProgress(progress: number) {
-    await this._sendAdvertisment(
+    await this._sendEvent(
       NATIVE_BUS_TOPICS.setupProgress,
       progress
     );
   }
 
-  async _sendAdvertisment(topic: string, data: any) {
+  async _sendEvent(topic: string, data: any) {
     let result = await fetch(
       'http://localhost:3100/event',
       {

@@ -7,14 +7,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
 import { SlideFadeInView }  from '../animated/SlideFadeInView'
-import { styles, colors, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
+import {styles, colors, screenWidth, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, MID_ROW_SIZE, menuStyles} from "../../styles";
 import { Picker } from "@react-native-community/picker";
 
 
@@ -150,8 +149,8 @@ export class Dropdown extends Component<any, any> {
     if (Platform.OS === 'android') {
       return (
         <View>
-          <View style={[styles.listView, {height:this.props.barHeight}]}>
-            <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+          <View style={[menuStyles.listView, {height:this.props.barHeight}]}>
+            <Text style={[menuStyles.listText, this.props.labelStyle]}>{this.props.label}</Text>
             <View style={{flex:1}}>
               {this._getPicker()}
             </View>
@@ -162,25 +161,25 @@ export class Dropdown extends Component<any, any> {
     else {
       return (
         <View>
-          <TouchableHighlight onPress={() => {
+          <TouchableOpacity onPress={() => {
             if (this.state.open === true) {
               this.props.callback(this.state.value);
             }
             this.setState({open:!this.state.open});
           }} testID={this.props.testID}>
-            <View style={[styles.listView, {height: navBarHeight}]}>
+            <View style={[menuStyles.listView, {height: navBarHeight}]}>
               {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
               {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
               {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
               {this.props.valueRight === true ?
-                <Text style={[{fontSize:16}, this.props.labelStyle]}>{this.props.label}</Text>
+                <Text style={[menuStyles.valueText, this.props.labelStyle]}>{this.props.label}</Text>
                 :
-                <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+                <Text style={[menuStyles.listText, this.props.labelStyle]}>{this.props.label}</Text>
               }
               <Text style={[{flex:1, fontSize:16 }, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
             </View>
-          </TouchableHighlight>
-          <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
+          </TouchableOpacity>
+          <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor: menuStyles.listView.backgroundColor}}>
             <View style={{position:'relative', top: -0.5*(dropHeight - navBarHeight), height: dropHeight}}>
               {this._getPicker()}
             </View>

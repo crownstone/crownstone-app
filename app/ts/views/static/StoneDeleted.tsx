@@ -12,7 +12,7 @@ import {Background} from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { deviceStyles, screenWidth } from "../styles";
 import { TextButtonLight } from "../components/InterviewComponents";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 
 
 export class StoneDeleted extends Component<any, any> {

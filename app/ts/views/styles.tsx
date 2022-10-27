@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
+import {Dimensions, PixelRatio, Platform, StyleSheet, TextStyle} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
+import {LOG, LOGi} from "../logging/Log";
 import { Navigation } from "react-native-navigation";
-import { LOG } from "../logging/Log";
 
 export const deviceModel = DeviceInfo.getModel();
+export const deviceId    = DeviceInfo.getDeviceId();
 export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 1') !== -1;
 
 export let topBarMargin    = 0
@@ -17,13 +18,28 @@ export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isModernIosMode
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height; // initial guess
 
+
+//TODO: Utilize these constants
+// export const UIconstants = Navigation.constantsSync();
+
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
 
+export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
+  topBarMargin    = 0
+  tabBarMargin    = insets.bottom;
+  tabBarHeight    = insets.top > 0 ? 49 + 34: 49;
+  statusBarHeight = Platform.OS === 'android' ? 24  :  (insets.top > 0 ? insets.top : 20); // Status bar in iOS is 20 high
+  topBarHeight    = Platform.OS === 'android' ? 54  :  (insets.top > 0 ? insets.top : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
-let constantsUpdated = false;
+  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+  availableModalHeight  = screenHeight - topBarHeight;
+}
+
+
+
 export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
-  if (Platform.OS === 'android' && constantsUpdated === false) {
+  if (Platform.OS === 'android') {
     let heightOffset = 0;
     if (topBarAvailable) { heightOffset += topBarHeight; }
     if (tabBarAvailable) { heightOffset += tabBarHeight; }
@@ -34,12 +50,9 @@ export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
-
-      constantsUpdated = true;
     }
   }
 }
-
 export const stylesUpdateConstants = () =>  {
   return Navigation.constants()
     .then((constants) => {
@@ -66,52 +79,44 @@ export const MID_ROW_SIZE    = 62;
 export const NORMAL_ROW_SIZE = 54;
 
 export let colors : colorInterface = {
-  csBlue:               {hex:'#003E52'},
-  csBlueDark:           {hex:'#00283c'},
-  csBlueDarker:         {hex:'#00212b'},
-  csBlueDarkerDesat:    {hex:'#7f9095'},
-  csBlueLight:          {hex:'#006f84'},
-  csBlueLighter:        {hex:'#00b6cd'},
-  csBlueLightDesat:     {hex:'#2c9aa8'},
-  csOrange:             {hex:'#ff8400'},
-  darkCsOrange:         {hex:'#d97500'},
-  lightCsOrange:        {hex:'#ffa94d'},
-  // menuBackground:       {hex:'#00263e'},
-  menuBackground:       {hex:'#00212b'},
-  menuBackgroundDarker: {hex:'#00172c'},
-  // menuBackgroundDarker: {hex:'#001122'},
-  menuText:             {hex:'#fff'},
-  menuTextSelected:     {hex:'#3478f6'},
-  menuTextSelectedDark: {hex:'#245da8'},
-  white:                {hex:'#fff'},
-  black:                {hex:'#000'},
-  gray:                 {hex:'#ccc'},
-  notConnected:         {hex:'#00283c'},
-  darkGray:             {hex:'#555'},
-  darkGray2:            {hex:'#888'},
-  lightGray2:           {hex:'#dedede'},
-  lightGray:            {hex:'#eee'},
-  purple:               {hex:'#8a01ff'},
-  darkPurple:           {hex:'#5801a9'},
-  darkerPurple:         {hex:'#2a0051'},
-  blue:                 {hex:'#2daeff'},
-  blueDark:             {hex:'#2472ad'},
-  blue2:                {hex:'#2698e9'},
-  blue3:                {hex:'#0075c9'},
-  green:                {hex:'#a0eb58'},
-  lightGreen2:          {hex:'#bae97b'},
-  lightGreen:           {hex:'#caff91'},
-  green2:               {hex:'#4cd864'},
-  darkGreen:            {hex:'#1f4c43'},
-  red:                  {hex:'#ff3c00'},
-  darkRed:              {hex:'#cc0900'},
-  menuRed:              {hex:'#e00'},
-  iosBlue:              {hex:'#007aff'},
-  iosBlueDark:          {hex:'#002e5c'},
-  lightBlue:            {hex:'#a9d0f1'},
-  lightBlue2:           {hex:'#77c2f7'},
-  blinkColor1:          {hex:'#2daeff'},
-  blinkColor2:          {hex:'#a5dcff'},
+  csBlue:            {hex:'#003E52'},
+  csBlueDark:        {hex:'#00283c'},
+  csBlueDarker:      {hex:'#00212b'},
+  csBlueDarkerDesat: {hex:'#7f9095'},
+  csBlueLight:       {hex:'#006f84'},
+  csBlueLighter:     {hex:'#00b6cd'},
+  csBlueLightDesat:  {hex:'#2c9aa8'},
+  csOrange:          {hex:'#ff8400'},
+  lightCsOrange:     {hex:'#ffa94d'},
+  menuBackground:    {hex:'#00212b'},
+  menuText:          {hex:'#fff'},
+  white:             {hex:'#fff'},
+  black:             {hex:'#000'},
+  gray:              {hex:'#ccc'},
+  darkGray:          {hex:'#555'},
+  darkGray2:         {hex:'#888'},
+  lightGray2:        {hex:'#dedede'},
+  lightGray:         {hex:'#eee'},
+  purple:            {hex:'#8a01ff'},
+  darkPurple:        {hex:'#5801a9'},
+  darkerPurple:      {hex:'#2a0051'},
+  blue:              {hex:'#2daeff'},
+  blueDark:          {hex:'#2472ad'},
+  blue3:             {hex:'#0075c9'},
+  green:             {hex:'#a0eb58'},
+  lightGreen2:       {hex:'#bae97b'},
+  lightGreen:        {hex:'#caff91'},
+  green2:            {hex:'#4cd864'},
+  darkGreen:         {hex:'#1f4c43'},
+  red:               {hex:'#ff3c00'},
+  darkRed:           {hex:'#cc0900'},
+  menuRed:           {hex:'#e00'},
+  iosBlue:           {hex:'#3478f6'},
+  iosBlueDark:       {hex:'#002e5c'},
+  lightBlue:         {hex:'#a9d0f1'},
+  lightBlue2:        {hex:'#77c2f7'},
+  blinkColor1:       {hex:'#41b5ff'},
+  blinkColor2:       {hex:'#a5dcff'},
   random: () => {}
 };
 
@@ -209,7 +214,7 @@ export const styles = StyleSheet.create({
   },
   listView: {
     flexDirection: 'row',
-    backgroundColor: colors.white.hex,
+    backgroundColor: colors.white.rgba(0.5),
     paddingLeft:15,
     paddingRight:15,
     alignItems: 'center',
@@ -324,12 +329,76 @@ export const styles = StyleSheet.create({
   },
   explanation: {fontSize:15, padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center'},
   boldExplanation: {fontSize:15, padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontWeight:'bold'},
+  boldLeftExplanation: {fontSize:15, padding: 15, paddingTop:10, paddingBottom:10, textAlign:'left', fontWeight:'bold'},
   header: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:18, fontWeight:'bold'},
   title: { padding: 20, paddingTop:10, paddingBottom:10, textAlign:'center', fontSize:30, fontWeight:'bold'},
-  legendText: {fontSize:12, textAlign:'center', paddingTop:10}
+  legendText: {fontSize:12, textAlign:'center', paddingTop:10},
+  viewHeader: { fontSize: 30, fontWeight: 'bold', color: colors.black.hex,      maxWidth: screenWidth - 50 - 50},
+  viewHeaderLight: { fontSize: 30, fontWeight: 'bold', color: colors.white.hex, maxWidth: screenWidth - 50 - 50},
+  viewButton: { fontSize:16, fontWeight: 'bold', color: colors.white.hex },
 });
 
 let textColor = colors.csBlueDark;
+
+export const menuStyles = StyleSheet.create({
+  disabledListView: {
+    backgroundColor: colors.lightGray.rgba(0.5),
+    color: colors.black.rgba(0.3)
+  },
+  listView: {
+    flexDirection: 'row',
+    backgroundColor: colors.white.rgba(0.7),
+    paddingHorizontal:15,
+    alignItems: 'center',
+  },
+  collapsableContent: {
+    fontSize: 15,
+    paddingLeft:25,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 30,
+  },
+  listText:{
+    width:(1/3)*screenWidth,
+    fontSize: 16,
+  },
+  valueText:{
+    fontSize: 16,
+  },
+  listTextLarge:{
+    flex:10,
+    fontSize: 16,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: colors.black.rgba(0.03),
+  },
+  subText: {
+    fontSize:12,
+    color:colors.iosBlue.hex
+  },
+  explanationText: {
+    fontSize:13,
+    color: colors.darkGray.hex,
+  },
+  largeExplanationText: {
+    fontSize:15,
+    color: colors.darkGray.hex,
+  }
+});
+
+export const appStyleConstants = {
+  roundness:10,
+};
+
+
+export const rowstyles = StyleSheet.create({
+  title: {
+    fontSize: 16,
+    fontWeight:'bold',
+    color: colors.black.hex,
+  }
+});
 
 
 export const deviceStyles = StyleSheet.create({
@@ -337,7 +406,7 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 25,
     fontWeight:'bold',
-    textAlign:'center',
+    textAlign:'center', 
   },
   subHeader: {
     paddingTop:10,
@@ -425,9 +494,28 @@ export const overviewStyles = StyleSheet.create({
 
 
 export const background = {
-  main                   : require('../../assets/images/backgrounds/lightBackground2_blur.jpg'),
-  menu                   : require('../../assets/images/backgrounds/menuBackground.jpg'),
-  lightBlurLighter       : require('../../assets/images/backgrounds/lightBackground2_blur_lighter.jpg'),
-  lightBlurBW            : require('../../assets/images/backgrounds/lightBackground2_blur_bw.jpg'),
-  detailsDark            : require('../../assets/images/backgrounds/darkBackground4.jpg'),
+  main: require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
+  menu: require('../../assets/images/backgrounds/lightBackground3_blur.jpg'), //require('../../assets/images/backgrounds/menuBackground.jpg'),
+  dark: require('../../assets/images/backgrounds/darkBackground3.jpg'),
+}
+
+export const RoomStockBackground = {
+  darkRed    : require('../../assets/images/backgrounds/locationBackgrounds/darkRed.jpg'),
+  red        : require('../../assets/images/backgrounds/locationBackgrounds/red.jpg'),
+  orange     : require('../../assets/images/backgrounds/locationBackgrounds/orange.jpg'),
+  yellow     : require('../../assets/images/backgrounds/locationBackgrounds/yellow.jpg'),
+  blue       : require('../../assets/images/backgrounds/locationBackgrounds/blue.jpg'),
+  csBlue     : require('../../assets/images/backgrounds/locationBackgrounds/csBlue.jpg'),
+  darkBlue   : require('../../assets/images/backgrounds/locationBackgrounds/darkBlue.jpg'),
+  darkGreen  : require('../../assets/images/backgrounds/locationBackgrounds/darkGreen.jpg'),
+  green2     : require('../../assets/images/backgrounds/locationBackgrounds/green2.jpg'),
+  green      : require('../../assets/images/backgrounds/locationBackgrounds/green.jpg'),
+  lightGreen : require('../../assets/images/backgrounds/locationBackgrounds/lightGreen.jpg'),
+
+  base       : require('../../assets/images/backgrounds/lightBackground3_blur.jpg'),
+}
+
+
+export function getRoomStockImage(key) {
+  return RoomStockBackground[key] ?? RoomStockBackground.base;
 }

@@ -32,8 +32,7 @@ interface matchingSpecs {
 export class DeviceSyncer extends SyncingBase {
   userId: string;
   hasAllTrackingNumbers = false;
-  currentDeviceId = null;
-
+  currentDeviceId  = null;
 
   download() {
     return CLOUD.forUser(this.userId).getDevices()

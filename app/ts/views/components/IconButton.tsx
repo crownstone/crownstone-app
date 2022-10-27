@@ -14,6 +14,7 @@ export class IconButton extends Component<
     buttonSize?:      number,
     addIcon?:         boolean,
     radius?:          number,
+    circle?:          boolean,
     plusSize?:        number,
     addColor?:        string,
     buttonStyle?:     any,
@@ -31,7 +32,7 @@ export class IconButton extends Component<
         <View style={[{
           width: iconSize,
           height: iconSize,
-          borderRadius: this.props.radius || iconSize/5,
+          borderRadius:  this.props.circle ? iconSize/2 : (this.props.radius || (iconSize)/5),
           padding:0,
           margin:0,
           position:'relative',
@@ -63,7 +64,7 @@ export class IconButton extends Component<
         <View style={[{
           width: iconSize,
           height: iconSize,
-          borderRadius: this.props.radius || (iconSize)/5,
+          borderRadius: this.props.circle ? iconSize/2 : (this.props.radius || (iconSize)/5),
           padding:0,
           margin:0,
           }, styles.centered, this.props.buttonStyle

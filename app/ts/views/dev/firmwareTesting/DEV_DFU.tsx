@@ -1,9 +1,3 @@
-//
-// import { Languages } from "../../../Languages"
-//
-// function lang(key,a?,b?,c?,d?,e?) {
-//   return Languages.get("DEV_DFU", key)(a,b,c,d,e);
-// }
 import {LiveComponent} from "../../LiveComponent";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
@@ -15,6 +9,7 @@ import {background, colors, screenWidth} from "../../styles";
 import React from "react";
 import {AnimatedBackground} from "../../components/animated/AnimatedBackground";
 import {ListEditableItems} from "../../components/ListEditableItems";
+import { NavBarBlur, TopBarBlur } from "../../components/NavBarBlur";
 
 const RNFS = require('react-native-fs');
 
@@ -161,8 +156,6 @@ export class DEV_DFU extends LiveComponent<{
     }
 
 
-
-
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
@@ -192,10 +185,12 @@ export class DEV_DFU extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground image={backgroundImage} hideNotifications={true}>
+      <AnimatedBackground fullScreen image={backgroundImage}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
         </ScrollView>
+        <TopBarBlur xlight />
+        <NavBarBlur xlight />
       </AnimatedBackground>
     )
   }

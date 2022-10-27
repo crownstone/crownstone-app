@@ -2,12 +2,12 @@ import {LiveComponent} from "../LiveComponent";
 
 import {Languages} from "../../Languages"
 import * as React from 'react';
-import {TouchableOpacity, View} from "react-native";
+import {Platform, TouchableOpacity, View} from "react-native";
 import {core} from "../../Core";
 import {Interview} from "../components/Interview";
 import {IconCircle} from "../components/IconCircle";
 import {colors, screenHeight, screenWidth, styles} from "../styles";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {xUtil} from "../../util/StandAloneUtil";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {AnimatedBackground} from "../components/animated/AnimatedBackground";
@@ -21,6 +21,8 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 import {HubHelper} from "../../native/setup/HubHelper";
 import {LOGe, LOGi} from "../../logging/Log";
 import {Get} from "../../util/GetUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupHub", key)(a,b,c,d,e);
@@ -194,7 +196,7 @@ export class SetupHub extends LiveComponent<{
         wrapUp();
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("Something went wrong with the hub setup", err?.message);
       if (this.abort) {
         return this._interview.setLockedCard("aborted");
@@ -598,14 +600,17 @@ export class SetupHub extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true}>
-        <KeepAwake />
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+      <AnimatedBackground
+        fullScreen={true}
+        image={backgroundImage}
+        testID={'AddHub'}
+      >
+      <Interview
+        backButtonOverrideViewNameOrId={this.props.componentId}
+        ref={     (i) => { this._interview = i; }}
+        getCards={ () => { return this.getCards();}}
+        update={   () => { this.forceUpdate() }}
+      />
       </AnimatedBackground>
     );
   }

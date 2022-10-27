@@ -27,20 +27,44 @@ let lastUsedStoneId = null;
 let hubCount = 0;
 let stoneCount = 0;
 let locationCount = 0;
-export function addSphere(config? : any) {
-  let sphereId = 'sphere_' + xUtil.getUUID();
+
+interface SphereDataTest extends SphereDataConfig {
+  id: string
+}
+
+export function createUser(config? : Partial<UserData>) {
+  // @ts-ignore
+  let userId = config?.id ?? 'user_' + xUtil.getUUID();
+  if (!config) { config = {}; }
+  core.store.dispatch({
+    type:"USER_LOG_IN",
+    data:{
+      firstName: "Test",
+      lastName:  "LastName",
+      userId:     userId,
+      ...config
+    }
+  });
+
+  let state = core.store.getState();
+  return state.user;
+}
+
+export function addSphere(config? : Partial<SphereDataTest>) {
+  // @ts-ignore
+  let sphereId = config?.id ?? 'sphere_' + xUtil.getUUID();
   if (!config) { config = {}; }
   core.store.dispatch({
     type:"ADD_SPHERE",
     sphereId: sphereId,
-    data:{name: "testSphere", ...config}
+    data:{name: "testSphere", iBeaconUUID: xUtil.getUUID(), ...config}
   });
   MapProvider.refreshAll();
   lastUsedSphereId = sphereId;
   return Get.sphere(sphereId);
 }
 
-export function addStone(config? : any) {
+export function addStone(config? : Partial<StoneDataConfig>) {
   let stoneId = 'stone_' + xUtil.getUUID();
   stoneCount++;
   if (!config) { config = {}; }
@@ -53,6 +77,8 @@ export function addStone(config? : any) {
       name: getToken('stone'),
       uid: stoneCount,
       firmwareVersion:'5.4.0',
+      iBeaconMajor: Number('0x'+xUtil.getRandomByte()+xUtil.getRandomByte()),
+      iBeaconMinor: Number('0x'+xUtil.getRandomByte()+xUtil.getRandomByte()),
       ...config
     }
   });
@@ -62,6 +88,30 @@ export function addStone(config? : any) {
   let stone = Get.stone(lastUsedSphereId, stoneId);
   return { stone, handle: stone.config.handle };
 }
+
+
+
+export function addMessage(config? : Partial<MessageData>, recipients: string[] = []) {
+  let messageId = 'messageId_' + xUtil.getUUID();
+  if (!config) { config = {}; }
+  core.store.dispatch({
+    type:"ADD_MESSAGE",
+    sphereId: lastUsedSphereId,
+    messageId,
+    data:{
+      content:"testMessage",
+      triggerEvent: 'enter',
+      everyoneInSphere: recipients.length == 0,
+      recipients: xUtil.arrayToMap(recipients ?? []),
+      ...config
+    }
+  });
+
+  let message = Get.message(lastUsedSphereId, messageId);
+  return message;
+}
+
+
 export function addHub(config? : any) {
   let hubId = 'hub_' + xUtil.getUUID();
   hubCount++;
@@ -86,29 +136,38 @@ export function addLocation(config? : any) {
   if (!config) { config = {}; }
   core.store.dispatch({type:"ADD_LOCATION", sphereId: lastUsedSphereId, locationId: locationId, data:{name: getToken('stone'), ...config}});
   MapProvider.refreshAll();
-  lastUsedStoneId = locationId;
   return Get.location(lastUsedSphereId, locationId);
 }
 
-export function createMockDatabase(meshId, meshId2?) {
-  if (!meshId2) {
-    meshId2 = meshId;
-  }
+export function addSphereUser(config? : any) {
+  let userId = 'sphereUser_' + xUtil.getUUID();
+  locationCount++;
+  if (!config) { config = {}; }
+  core.store.dispatch({type:"ADD_SPHERE_USER", sphereId: lastUsedSphereId, userId: userId, data:{name: getToken('user'), ...config}});
+  MapProvider.refreshAll();
+  return Get.sphereUser(lastUsedSphereId, userId);
+}
 
+export function createMockDatabase() {
   let sphere = addSphere();
   let location1 = addLocation();
   let location2 = addLocation();
   let location3 = addLocation();
   let location4 = addLocation();
-  let stone1 = addStone({locationId: location2.id, meshNetworkId: meshId});
-  let stone2 = addStone({locationId: location2.id, meshNetworkId: meshId});
-  let stone3 = addStone({locationId: location3.id, meshNetworkId: meshId});
-  let stone4 = addStone({locationId: location4.id, meshNetworkId: meshId});
-  let stone5 = addStone({locationId: location1.id, meshNetworkId: meshId2});
-  let stone6 = addStone({locationId: location1.id, meshNetworkId: meshId2});
+  let stone1 = addStone({locationId: location2.id});
+  let stone2 = addStone({locationId: location2.id});
+  let stone3 = addStone({locationId: location3.id});
+  let stone4 = addStone({locationId: location4.id});
+  let stone5 = addStone({locationId: location1.id});
+  let stone6 = addStone({locationId: location1.id});
   return {
     sphere,
     locations: [location1, location2, location3, location4],
     stones: [stone1, stone2, stone3, stone4, stone5, stone6]
   };
+}
+
+export function loadDump(dumpState) {
+  core.store.dispatch({type:"HYDRATE", data: {state: dumpState}});
+  MapProvider.refreshAll();
 }

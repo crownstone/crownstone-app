@@ -7,9 +7,8 @@ import {
   View
 } from "react-native";
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { availableScreenHeight, background, colors, screenWidth, styles } from "../../styles";
+import {availableScreenHeight, colors, screenWidth, styles} from "../../styles";
 import { Scheduler } from "../../../logic/Scheduler";
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
@@ -18,11 +17,17 @@ import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
 import { FileUtil } from "../../../util/FileUtil";
 import { from } from "../../../logic/constellation/Tellers";
+import {SettingsBackground} from "../../components/SettingsBackground";
+import {TopBarUtil} from "../../../util/TopBarUtil";
 const RNFS = require('react-native-fs');
 
 const triggerId = "SettingsStoneBleDebug";
 
 export class SettingsStoneBleDebug extends LiveComponent<any, any> {
+  static options(props) {
+    return TopBarUtil.getOptions({title:  "BLE Debug", closeModal: props.isModal ?? false});
+  }
+
   unsubscribeNative : any[] = [];
   _crownstoneId : number;
   _ibeaconUuid : string;
@@ -35,14 +40,14 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
     const store = core.store;
-    let state = store.getState();
-    let sphere = state.spheres[props.sphereId];
-    let stone = sphere.stones[props.stoneId];
+    let state   = store.getState();
+    let sphere  = state.spheres[props.sphereId];
+    let stone   = sphere.stones[props.stoneId];
 
     this._ibeaconUuid  = sphere.config.iBeaconUUID;
     this._crownstoneId = stone ? stone.config.uid : null;
-    this._major        = stone ? stone.config.iBeaconMajor : null;
-    this._minor        = stone ? stone.config.iBeaconMinor : null;
+    this._major        = stone ? String(stone.config.iBeaconMajor) : null;
+    this._minor        = stone ? String(stone.config.iBeaconMinor) : null;
     this._handle       = stone ? stone.config.handle       : null;
 
     this.state = {
@@ -83,8 +88,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     data.forEach((ibeacon) => {
       if (ibeacon.uuid.toLowerCase() !== this._ibeaconUuid.toLowerCase() ) { return; }
-      if (this._major && ibeacon.major !== this._major)                    { return; }
-      if (this._minor && ibeacon.minor !== this._minor)                    { return; }
+      if (this._major && Number(ibeacon.major) !== Number(this._major))                    { return; }
+      if (this._minor && Number(ibeacon.minor) !== Number(this._minor))                    { return; }
 
       this.setState({ibeaconPayload: xUtil.stringify(ibeacon, 2), ibeaconTimestamp: Date.now()});
     })
@@ -193,7 +198,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
           LOGe.info("STONE DEBUG INFORMATION: UPTIME", uptime);
           this.setState({debugInformationText: xUtil.getDurationFormat(uptime*1000)});
         }
-        catch (err) {
+        catch (err : any) {
           core.eventBus.emit("hideLoading");
           Alert.alert("Something went wrong", formatError(err), [{text:"Damn."}]);
         }
@@ -308,6 +313,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       }
     });
   }
+
   _getGPREGRET(items, stone) {
     items.push({
       label: "Get GPREGRET",
@@ -699,7 +705,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     }
 
     items.push({label: largeLabel, type: 'largeExplanation'});
-    items.push({label: "iBeacon UUID" + this._ibeaconUuid.toUpperCase() + "\nMajor:" + this._major+ "\nMinor:" +this._minor+ "\nHandle:" + this._handle, type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
+    items.push({label: "iBeacon UUID: \n" + this._ibeaconUuid.toUpperCase() + "\nMajor:" + this._major+ "\nMinor:" +this._minor+ "\nHandle:" + this._handle, type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
     items.push({label: "Latest iBeacon data:", type: 'largeExplanation', style:{paddingTop:0}});
     items.push({__item:
       <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
@@ -777,11 +783,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <SettingsBackground>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsBackground>
     );
   }
 }

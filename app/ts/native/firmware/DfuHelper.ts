@@ -2,10 +2,10 @@ import {BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import {SetupStateHandler} from "../setup/SetupStateHandler";
 import {core} from "../../Core";
-import {StoneUtil} from "../../util/StoneUtil";
 import {delay} from "../../util/Util";
 import {CommandAPI} from "../../logic/constellation/Commander";
 import {Scheduler} from "../../logic/Scheduler";
+import {Get} from "../../util/GetUtil";
 
 export class DfuHelper {
   handle : any;
@@ -16,7 +16,7 @@ export class DfuHelper {
 
   // Ensure the provided cloudhelper has already gotten information and downloaded the bootloader/fw.
   constructor(sphereId, stoneId, stone?) {
-    stone = stone ? stone : StoneUtil.getStoneObject(sphereId, stoneId);
+    stone = stone ? stone : Get.stone(sphereId, stoneId);
     this.handle = stone.config.handle;
     this.sphereId = sphereId;
     this.stoneId = stoneId;
@@ -44,7 +44,7 @@ export class DfuHelper {
 
       await Scheduler.delay(3000)
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.dfu("DfuHelper: Error during putInDFU.", err?.message);
       commander.disconnect();
       throw err;

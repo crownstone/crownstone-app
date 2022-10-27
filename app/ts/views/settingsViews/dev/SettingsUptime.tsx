@@ -8,6 +8,7 @@ import { UPTIME_LOG_PREFIX, UptimeMonitor } from "../../../backgroundProcesses/U
 import { xUtil } from "../../../util/StandAloneUtil";
 import { background, colors, screenWidth } from "../../styles";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 const RNFS = require('react-native-fs');
 
@@ -179,7 +180,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hideNotifications={true}>
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}
@@ -193,7 +194,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
             { this._getContent() }
           </View>
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

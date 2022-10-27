@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { BlurView} from "@react-native-community/blur";
+import { colors } from "../../styles";
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
@@ -72,17 +73,17 @@ export class FadeInView extends Component<any, any> {
       // this will be the processing view after initialization.
       if (this.state.show === true) {
         return (
-          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
+          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID} pointerEvents={this.props.pointerEvents}>
             {this.props.children}
           </Animated.View>
         );
       }
-      return <View testID={this.props.testID} />;
+      return <View testID={this.props.testID}  pointerEvents={this.props.pointerEvents} />;
 
     }
     else {
       return (
-        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID}>
+        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]} testID={this.props.testID} pointerEvents={this.props.pointerEvents}>
           {this.props.children}
         </Animated.View>
       );
@@ -183,9 +184,9 @@ export class HiddenFadeInBlur extends Component<any, any> {
       return (
         <Animated.View style={{flex:1, overflow:'hidden', opacity:this.state.viewOpacity}} testID={this.props.testID}>
           <BlurView
-            style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
+            style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.csBlue.rgba(0.3)}}
             blurType="light"
-            blurAmount={6}
+            blurAmount={3}
           />
           <View style={this.props.style}>
             {this.props.children}

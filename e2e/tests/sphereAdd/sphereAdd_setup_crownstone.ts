@@ -34,18 +34,22 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("SphereAdd");
   });
 
+
   test('should be able to go to the AddCrownstone view', async () => {
     await tap("AddCrownstone_button");
     await waitToNavigate("AddCrownstone");
   });
 
+
   test('should be able to go to the scanningForSetupCrownstones', async () => {
+    await shouldBeOn('AddCrownstone');
     await tap("Plug");
     await waitToNavigate("installingPlug");
     await tap("installingPlugNext");
     await waitToNavigate("ScanningForSetupCrownstones");
     await Assistant.update();
   })
+
 
   test('should be able to see a setupCrownstone, pulse it and select it', async () => {
     let localId = await Assistant.getActiveSphereLocalId();
@@ -105,7 +109,7 @@ export const SphereAdd_setup_crownstone = () => {
     await Assistant.ble.for(handle1).succeed.connect('setup');
     await delay(100);
     await screenshot();
-    await Assistant.ble.for(handle1).succeed.getMACAddress('AB:CD:CA:FE:BA:BE');
+    await Assistant.ble.for(handle1).succeed.getMACAddress(handle1);
     await delay(100);
     await screenshot();
     await Assistant.ble.for(handle1).succeed.getFirmwareVersion('5.6.4');
@@ -136,6 +140,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("ScanningForSetupCrownstones");
   })
 
+
   test("should be able to see a second crownstone and start the setup", async () => {
     let localId = await Assistant.getActiveSphereLocalId();
     await Assistant.ble.sendSetupAdvertisment(handle2);
@@ -143,6 +148,7 @@ export const SphereAdd_setup_crownstone = () => {
     await tap(`selectSetupEntry${handle2}`);
     await waitToNavigate('SetupCrownstone');
   })
+
 
   test("should be able to set a custom name", async () => {
     await shouldBeOn("SetupCrownstone");
@@ -152,6 +158,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("addCrownstone_iconPhase")
     await screenshot();
   })
+
 
   test("should be able to create new room via the stone setup", async () => {
     await shouldBeOn("addCrownstone_iconPhase");
@@ -168,6 +175,7 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate('addCrownstone_roomPhase')
   })
 
+
   test("should be able to place the second Crownstone in a room", async () => {
     await shouldBeOn("addCrownstone_roomPhase");
     let locationId = await Assistant.getRoomId(0)
@@ -175,10 +183,11 @@ export const SphereAdd_setup_crownstone = () => {
     await waitToNavigate("addCrownstone_waitToFinish")
   })
 
+
   test("should be able to setup the second Crownstone", async () => {
     await shouldBeOn('addCrownstone_waitToFinish');
     await Assistant.ble.for(handle2).succeed.connect('setup');
-    await Assistant.ble.for(handle2).succeed.getMACAddress('CD:AB:CA:FE:BA:BE');
+    await Assistant.ble.for(handle2).succeed.getMACAddress(handle2);
     await Assistant.ble.for(handle2).succeed.getFirmwareVersion('5.6.4');
     await Assistant.ble.for(handle2).succeed.getHardwareVersion('10106');
     await Assistant.ble.for(handle2).succeed.getUICR(UICR_DATA);
@@ -210,5 +219,5 @@ export const SphereAdd_setup_crownstone = () => {
     await tap("addCrownstone_tryLater");
     await waitToNavigate("SphereAdd");
   })
-
 };
+

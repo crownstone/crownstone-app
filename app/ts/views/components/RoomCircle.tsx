@@ -7,31 +7,28 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  Alert,
   Animated,
-  Text,
+  Text, TouchableOpacity,
   View
-} from 'react-native';
+} from "react-native";
 
 import { styles, colors } from '../styles'
-import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-
-
-import {IconCircle} from "./IconCircle";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Circle } from "./Circle";
 import Svg from "react-native-svg";
 import { Circle as SvgCircle} from "react-native-svg";
 import {Get} from "../../util/GetUtil";
+import { DataUtil } from "../../util/DataUtil";
+import { IconCircle } from "./IconCircle";
+import { FingerprintUtil } from "../../util/FingerprintUtil";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
 
-let ALERT_TYPES = {
-  fingerprintNeeded : 'fingerPrintNeeded'
-};
 
 
-class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any}> {
+class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapAndHoldProgress: any, showErrorState: boolean}> {
   initializedPosition: any;
   usage: any;
   borderWidth: number;
@@ -40,46 +37,36 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   iconSize: number;
   textSize: number;
 
-  showAlert: string = null;
-
-  animationStarted: boolean;
-  animating: boolean;
-  animatedMoving: boolean;
+  animating = false;
 
   previousCircle: any;
   color: any;
 
   unsubscribeStoreEvents: any;
   unsubscribeControlEvents = [];
-  renderState: any;
 
   scaledUp = true;
   touching = false;
   touchTimeout = null;
   touchAnimation = null;
+  disableTouch = false;
+  moveDetected = false;
+  tapRegistered = false;
+  tapStart : number = 0;
 
+  cleanupRequired = false;
 
   constructor(props) {
     super(props);
 
     this.initializedPosition = true;
-    let initialX = props.pos.x._value;
-    let initialY = props.pos.y._value;
-
     this.state = {
-      top: new Animated.Value(initialY),
-      left: new Animated.Value(initialX),
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
-      tapAndHoldProgress: 0
+      tapAndHoldProgress: 0,
+      showErrorState: DataUtil.areThereActiveStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId),
     };
 
-    // this.energyLevels = [
-    //   {min: 0, max: 50, color: colors.green.hex},
-    //   {min: 50, max: 200, color: colors.orange.hex},
-    //   {min: 200, max: 1000, color: colors.red.hex},
-    //   {min: 1000, max: 4000, color: colors.darkRed.hex},
-    // ];
 
     this.usage = 0;
     // calculate the size of the circle based on the screen size
@@ -89,14 +76,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.iconSize = props.radius * 0.8;
     this.textSize = props.radius * 0.25;
 
-    this.animationStarted = false;
-    this.animating = false;
-    this.animatedMoving = false;
-
     this.previousCircle = undefined;
 
-    // set the usage initially
-    this.usage = getCurrentPowerUsageInLocation(core.store.getState(), props.sphereId, props.locationId);
+
   }
 
 
@@ -107,38 +89,42 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
       }
-      // only redraw if the power usage changes or if the settings of the room change
-      let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
       if (state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
-      if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
-        this.usage = usage;
+      let change = data.change;
+
+      if (
+        change.updateStoneErrors     ||
+        change.removeSphere          ||
+        change.changeSpheres
+      ) {
         this.forceUpdate();
       }
     });
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
-      this.handleTouchReleased(data);
+      this.cleanupRequired = false;
+      this.moveDetected    = false;
     }));
 
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
-      this.handleTap(data);
+
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasMultitapped' + this.props.viewId, (data) => {
+      this.disableTouch = true;
+      this.handleTouchReleased();
     }));
 
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
-      this.handleTouch(data);
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
+      this.handleTouchReleased();
+      this.disableTouch = false;
     }));
 
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
-      this.handleTouchReleased(data);
-    }));
-
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
-      this.handleDragging(data);
+    this.unsubscribeControlEvents.push(core.eventBus.on('userDragEvent' + this.props.viewId, (data) => {
+      this.moveDetected = true;
+      this.handleDragging();
     }));
   }
 
@@ -151,34 +137,40 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.unsubscribeStoreEvents();
   }
 
-
-
-
-  _getColor() {
-    if (this.props.viewingRemotely === true) {
-      return colors.green.rgba(0.5);
-    }
-    return colors.green.rgba(0.75);
+  getLocationIcon() {
+    let alertSize = this.outerDiameter*0.30;
+    return (
+      <TouchableOpacity
+        style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}
+        onPress={() => { NavigationUtil.launchModal("SetupLocalization",{sphereId: this.props.sphereId, isModal: true}); }}
+      >
+        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
+      </TouchableOpacity>
+    )
   }
 
+
   getIcon() {
-    let icon = core.store.getState()?.spheres[this.props.sphereId]?.locations[this.props.locationId]?.config?.icon || null;
+    let icon = Get.location(this.props.sphereId, this.props.locationId)?.config?.icon || null;
+    if (this.state.showErrorState) {
+      icon = 'ion5-warning'
+    }
     return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 
   }
 
   getCircle() {
-    let newColor = colors.green.rgba(0.75);
+    let innerColor = colors.green.rgba(0.75);
+    if (this.state.showErrorState) {
+      innerColor = colors.csOrange.rgba(0.6);
+    }
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
       <View>
         <Circle size={this.outerDiameter} color={colors.white.hex}>
           <Circle size={this.outerDiameter - (2/3)*innerOffset} color={colors.white.hex} borderColor={colors.lightGray.hex} borderWidth={ (1/3)*innerOffset }>
-            <Circle size={this.innerDiameter} color={newColor}>
-              <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
+            <Circle size={this.innerDiameter} color={innerColor}>
               {this.getIcon()}
-              </View>
-              {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("_W",this.usage) }</Text>}
             </Circle>
           </Circle>
         </Circle>
@@ -210,69 +202,74 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     }
   }
 
-  _getAlertIcon() {
-    let alertSize = this.outerDiameter*0.30;
-    return (
-      <View style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}>
-        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
-      </View>
-    )
-  }
-
   render() {
-    const state = core.store.getState();
-
-    // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
-    if (state.app.indoorLocalizationEnabled) {
-      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-      this.showAlert = null;
-      if (this.props.viewingRemotely !== true) {
-        if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-          this.showAlert = ALERT_TYPES.fingerprintNeeded;
-        }
-      }
-    }
-    else {
-      this.showAlert = null;
-    }
-
-    this.renderState = state;
     const animatedStyle = {
       transform: [
         { scale: this.state.scale },
       ]
     };
 
+    let showLocalizationIcon = LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);
-
     return (
+      <TouchableOpacity
+        onPressIn={(e)   => {
+          this.props.touch();
+          this.handleTouch();
+        }}
+        onPressOut={(e)  => {
+          this.checkIfTapped()
+          if (this.cleanupRequired) {
+            this.handleTouchReleased()
+          }
+        }}
+        onPress={() => { this.handleTap() }}
+        activeOpacity={1.0}
+      >
       <Animated.View
         style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}
         testID={`RoomCircle${room?.config?.cloudId}`}
       >
-        <View>
-          {this.getCircle()}
-          {this.showAlert !== null ? this._getAlertIcon() : undefined}
-          {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
-        </View>
+        {this.getCircle()}
+        {showLocalizationIcon ? this.getLocationIcon() : undefined}
+        {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
       </Animated.View>
-    )
+      </TouchableOpacity>
+    );
   }
 
-  handleTouch(data) {
+  checkIfTapped() {
+    setTimeout(() => {
+      if (Date.now() - this.tapStart < 500) {
+        if (this.moveDetected === false && this.tapRegistered === false) {
+          this.handleTap();
+        }
+      }
+    }, 25);
+  }
+
+  handleTouch() {
+    if (this.disableTouch) { return; }
+
+    this.tapStart = Date.now();
+
     // stop any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
 
     this.scaledUp = true;
+    this.cleanupRequired = true;
 
-    let tapAnimations = [];
-    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
-    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
-    Animated.parallel(tapAnimations).start();
+    if (this.props.allowTap) {
+      let tapAnimations = [];
+      this.animating = true;
+      tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70, useNativeDriver: false}));
+      tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
+      Animated.parallel(tapAnimations).start(() => { this.animating = false; });
 
-    this.touching = true;
-    this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+      this.touching = true;
+      this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+    }
   }
 
   _onHoldAnimation() {
@@ -280,16 +277,23 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   _onHoldProgress() {
-    if (this.touching) {
-      let nextStep = Math.min(1, this.state.tapAndHoldProgress + 0.04);
-      this.setState({ tapAndHoldProgress: nextStep });
-      if (nextStep >= 0.95) {
-        this.props.onHold();
-        this._clearHold();
+    if (!this.props.showHoldAnimation) {
+      if (this.state.tapAndHoldProgress !== 0) {
+        this.setState({tapAndHoldProgress:0});
       }
-      else {
-        this.touchAnimation = requestAnimationFrame(() => { this._onHoldProgress(); });
-      }
+      return;
+    }
+
+    if (!this.touching) { return; }
+
+    let nextStep = Math.min(1, this.state.tapAndHoldProgress + 0.03);
+    this.setState({ tapAndHoldProgress: nextStep });
+    if (nextStep >= 0.95) {
+      this.props.onHold();
+      this._clearHold();
+    }
+    else {
+      this.touchAnimation = requestAnimationFrame(() => { this._onHoldProgress(); });
     }
   }
 
@@ -302,42 +306,41 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     cancelAnimationFrame(this.touchAnimation);
   }
 
-  handleTouchReleased(data) {
+  handleTouchReleased() {
     if (this.scaledUp) {
       // stop any animation this node was doing.
-      this.state.scale.stopAnimation();
-      this.state.opacity.stopAnimation();
-
-      this.scaledUp = false;
-
-      let revertAnimations = [];
-      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
-      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
-      Animated.parallel(revertAnimations).start();
+      this.revertSize();
     }
 
+    this._clearHold();
+  }
+
+  handleDragging() {
+    // stop any animation this node was doing.
+    this.revertSize();
 
     this._clearHold();
   }
 
-  handleDragging(data) {
-    // stop any animation this node was doing.
-    this.state.scale.stopAnimation();
-    this.state.opacity.stopAnimation();
+  revertSize() {
+    if (this.animating) {
+      this.state.scale.stopAnimation();
+      this.state.opacity.stopAnimation();
+    }
 
-    this.scaledUp = false;
+    if (this.state.scale._value === 1 && this.state.opacity._value === 1) { return; }
 
     let revertAnimations = [];
+    this.animating = true;
     revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, useNativeDriver: false, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
-    Animated.parallel(revertAnimations).start();
-
-    this._clearHold();
+    Animated.parallel(revertAnimations).start(() => {this.animating = false; this.scaledUp = false;});
   }
 
-  handleTap(data) {
+  handleTap() {
+    if (!this.props.allowTap) { return; }
+
     this.scaledUp = false;
-    let handled = false;
 
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
@@ -345,19 +348,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
 
-    if (this.touching === true) {
-      if (this.showAlert !== null) {
-        if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
-          if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
-            handled = true;
-            NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-          }
-        }
-      }
-      if (handled === false) {
-        NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-      }
-    }
+    NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+    this.tapRegistered = true;
+    setTimeout(() => { this.tapRegistered = false; }, 50);
     this._clearHold();
   }
 }

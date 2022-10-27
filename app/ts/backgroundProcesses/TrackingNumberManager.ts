@@ -244,7 +244,7 @@ class TrackingNumberManagerClass {
       );
       this._lastTimeRegistrationViaBroadcast = Date.now();
     }
-    catch (err) {
+    catch (err : any) {
 
     }
   }
@@ -282,7 +282,7 @@ class TrackingNumberManagerClass {
           );
           updateTime = Date.now();
         }
-        catch (err) {
+        catch (err : any) {
           LOGe.info("TrackingNumberManager: SOMETHING WENT WRONG IN _updateMyDeviceTrackingRegistration", err?.message);
           if (err?.message === "ERR_ALREADY_EXISTS") {
             this._cycleMyDeviceTrackingToken(sphereId);

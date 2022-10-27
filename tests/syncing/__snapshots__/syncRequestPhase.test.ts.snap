@@ -1,0 +1,960 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Check if fingerprints are syncing 1`] = `
+{
+  "sphereCloudId": {
+    "data": {
+      "gpsLocation": {
+        "lat": null,
+        "lng": null,
+      },
+      "name": "testSphere",
+      "timezone": null,
+      "uid": null,
+      "updatedAt": "2022-01-01T12:00:00.000Z",
+      "uuid": "uuid2006-2007",
+    },
+    "fingerprints": {
+      "uuid2035-2036": {
+        "data": {
+          "createdAt": "2022-01-01T12:00:00.000Z",
+          "createdByUser": "user_uuid2002-2003",
+          "createdOnDeviceType": "undefined_undefined",
+          "crownstonesAtCreation": [
+            "56541_57055",
+            "58597_59111",
+            "60653_61167",
+          ],
+          "data": [
+            {
+              "data": {
+                "56541_57055": -65,
+                "58597_59111": -65,
+                "60653_61167": -65,
+              },
+              "dt": 0,
+            },
+          ],
+          "locationId": "locationCloud",
+          "type": "IN_HAND",
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "new": true,
+      },
+    },
+    "hubs": {},
+    "locations": {
+      "locationCloud": {
+        "data": {
+          "updatedAt": 1641038400000,
+        },
+      },
+    },
+    "messages": {},
+    "scenes": {},
+    "stones": {
+      "stone_uuid2008-2009": {
+        "abilities": {
+          "dimming": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "softOnSpeed": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 8,
+                },
+                "new": true,
+              },
+            },
+          },
+          "switchcraft": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "defaultDimValue": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
+          },
+          "tapToToggle": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "rssiOffset": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+            },
+          },
+        },
+        "behaviours": {},
+        "data": {
+          "address": undefined,
+          "bootloaderVersion": null,
+          "description": "",
+          "firmwareVersion": "5.4.0",
+          "hardwareVersion": null,
+          "hidden": false,
+          "icon": "c2-pluginFilled",
+          "locationId": null,
+          "locked": false,
+          "major": 56541,
+          "minor": 57055,
+          "name": "stone_uuid2011",
+          "type": "PLUG",
+          "uicr": null,
+          "uid": 1,
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "new": true,
+      },
+      "stone_uuid2016-2017": {
+        "abilities": {
+          "dimming": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "softOnSpeed": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 8,
+                },
+                "new": true,
+              },
+            },
+          },
+          "switchcraft": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "defaultDimValue": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
+          },
+          "tapToToggle": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "rssiOffset": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+            },
+          },
+        },
+        "behaviours": {},
+        "data": {
+          "address": undefined,
+          "bootloaderVersion": null,
+          "description": "",
+          "firmwareVersion": "5.4.0",
+          "hardwareVersion": null,
+          "hidden": false,
+          "icon": "c2-pluginFilled",
+          "locationId": null,
+          "locked": false,
+          "major": 58597,
+          "minor": 59111,
+          "name": "stone_uuid2019",
+          "type": "PLUG",
+          "uicr": null,
+          "uid": 2,
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "new": true,
+      },
+      "stone_uuid2024-2025": {
+        "abilities": {
+          "dimming": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "softOnSpeed": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 8,
+                },
+                "new": true,
+              },
+            },
+          },
+          "switchcraft": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "defaultDimValue": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+              "doubleTapSwitchcraft": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": false,
+                },
+                "new": true,
+              },
+            },
+          },
+          "tapToToggle": {
+            "data": {
+              "enabled": false,
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+            },
+            "new": true,
+            "properties": {
+              "rssiOffset": {
+                "data": {
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": "2022-01-01T12:00:00.000Z",
+                  "value": 0,
+                },
+                "new": true,
+              },
+            },
+          },
+        },
+        "behaviours": {},
+        "data": {
+          "address": undefined,
+          "bootloaderVersion": null,
+          "description": "",
+          "firmwareVersion": "5.4.0",
+          "hardwareVersion": null,
+          "hidden": false,
+          "icon": "c2-pluginFilled",
+          "locationId": null,
+          "locked": false,
+          "major": 60653,
+          "minor": 61167,
+          "name": "stone_uuid2027",
+          "type": "PLUG",
+          "uicr": null,
+          "uid": 3,
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "new": true,
+      },
+    },
+    "toons": {},
+    "users": {},
+  },
+}
+`;
+
+exports[`Check if fingerprints are syncing 2`] = `
+{
+  "app": {
+    "activeSphere": null,
+    "hasSeenDeviceSettings": false,
+    "hasSeenSwitchView": false,
+    "hasZoomedOutForSphereOverview": false,
+    "indoorLocalizationEnabled": true,
+    "migratedDataToVersion": null,
+    "notificationToken": null,
+    "tapToToggleEnabled": false,
+    "updatedAt": 1,
+  },
+  "devApp": {
+    "fastPhone": false,
+    "sphereUsedForSetup": "DEV_APP_SPHERE_ID",
+    "storeCrownstonesInCloud": false,
+  },
+  "development": {
+    "debugRTCtoken": null,
+    "devAppVisible": false,
+    "firmwareEarlyAccessLevel": 0,
+    "log_advertisements": 50,
+    "log_ble": 50,
+    "log_cloud": 30,
+    "log_constellation": 30,
+    "log_dfu": 30,
+    "log_events": 50,
+    "log_info": 30,
+    "log_native": 50,
+    "log_nav": 30,
+    "log_notifications": 30,
+    "log_scheduler": 50,
+    "log_store": 30,
+    "logging_enabled": false,
+    "nativeExtendedLogging": false,
+    "preview": false,
+    "show_rssi_values_in_mesh": false,
+    "show_sync_button_in_behaviour": false,
+    "useHighFrequencyScanningInBackground": false,
+    "use_time_based_nonce": false,
+  },
+  "devices": {},
+  "events": {
+    "remove": {
+      "behaviours": {},
+      "devices": {},
+      "fingerprints": {},
+      "installations": {},
+      "locations": {},
+      "messages": {},
+      "scenes": {},
+      "stones": {},
+      "user": {},
+    },
+    "special": {
+      "behaviours": {},
+      "devices": {},
+      "fingerprints": {},
+      "installations": {},
+      "locations": {},
+      "messages": {},
+      "scenes": {},
+      "stones": {},
+      "user": {},
+    },
+  },
+  "installations": {},
+  "spheres": {
+    "sphere_uuid2004-2005": {
+      "config": {
+        "cloudId": "sphereCloudId",
+        "iBeaconUUID": "uuid2006-2007",
+        "latitude": null,
+        "longitude": null,
+        "name": "testSphere",
+        "timezone": null,
+        "uid": null,
+        "updatedAt": 1641038400000,
+      },
+      "features": {},
+      "hubs": {},
+      "id": "sphere_uuid2004-2005",
+      "keys": {},
+      "locations": {
+        "location_uuid2032-2033": {
+          "config": {
+            "cloudId": "locationCloud",
+            "fingerprintCloudId": null,
+            "fingerprintParsed": null,
+            "fingerprintRaw": null,
+            "fingerprintUpdatedAt": 1,
+            "icon": undefined,
+            "name": "stone_uuid2034",
+            "picture": null,
+            "pictureId": null,
+            "pictureSource": null,
+            "pictureTaken": null,
+            "uid": null,
+            "updatedAt": 1641038400000,
+          },
+          "fingerprints": {
+            "processed": {},
+            "raw": {
+              "uuid2035-2036": {
+                "cloudId": null,
+                "createdAt": 1641038400000,
+                "createdByUser": "user_uuid2002-2003",
+                "createdOnDeviceType": "undefined_undefined",
+                "crownstonesAtCreation": {
+                  "56541_57055": true,
+                  "58597_59111": true,
+                  "60653_61167": true,
+                },
+                "data": [
+                  {
+                    "data": {
+                      "56541_57055": -65,
+                      "58597_59111": -65,
+                      "60653_61167": -65,
+                    },
+                    "dt": 0,
+                  },
+                ],
+                "id": "uuid2035-2036",
+                "type": "IN_HAND",
+                "updatedAt": 1641038400000,
+              },
+              "uuid2037-2038": {
+                "cloudId": "newCloudFingerprint",
+                "createdAt": 1609459200000,
+                "createdByUser": "otherUser",
+                "createdOnDeviceType": "test_test",
+                "crownstonesAtCreation": {
+                  "10_10": true,
+                },
+                "data": [
+                  {
+                    "data": {
+                      "10_10": -52,
+                    },
+                    "dt": 123,
+                  },
+                ],
+                "id": "uuid2037-2038",
+                "type": "IN_POCKET",
+                "updatedAt": 1640995200000,
+              },
+            },
+          },
+          "id": "location_uuid2032-2033",
+          "layout": {
+            "x": null,
+            "y": null,
+          },
+          "presentUsers": [],
+        },
+      },
+      "messages": {},
+      "scenes": {},
+      "sortedLists": {},
+      "state": {
+        "lastPresentTime": 0,
+        "present": false,
+        "reachable": false,
+        "smartHomeEnabled": true,
+      },
+      "stones": {
+        "stone_uuid2008-2009": {
+          "abilities": {
+            "dimming": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "softOnSpeed": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": 1641038400000,
+                  "value": 8,
+                  "valueTarget": 8,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": 1641038400000,
+            },
+            "switchcraft": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "defaultDimValue": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": 1641038400000,
+            },
+            "tapToToggle": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "rssiOffset": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": 1641038400000,
+            },
+          },
+          "behaviours": {},
+          "config": {
+            "bootloaderVersion": null,
+            "cloudId": null,
+            "description": "",
+            "dfuResetRequired": false,
+            "firmwareVersion": "5.4.0",
+            "handle": "handle1",
+            "hardwareVersion": null,
+            "hidden": false,
+            "iBeaconMajor": 56541,
+            "iBeaconMinor": 57055,
+            "icon": "c2-pluginFilled",
+            "locationId": null,
+            "locked": false,
+            "macAddress": undefined,
+            "name": "stone_uuid2011",
+            "type": "PLUG",
+            "uicr": null,
+            "uid": 1,
+            "updatedAt": 1641038400000,
+          },
+          "errors": {
+            "dimmerOffFailure": false,
+            "dimmerOnFailure": false,
+            "hasError": false,
+            "overCurrent": false,
+            "overCurrentDimmer": false,
+            "temperatureChip": false,
+            "temperatureDimmer": false,
+          },
+          "id": "stone_uuid2008-2009",
+          "keys": {},
+          "lastUpdated": {
+            "stoneTime": 0,
+          },
+          "reachability": {
+            "lastSeen": null,
+          },
+          "state": {
+            "behaviourOverridden": false,
+            "currentUsage": 0,
+            "dimmerReady": false,
+            "powerFactor": null,
+            "previousState": 0,
+            "state": 0,
+            "timeSet": false,
+            "updatedAt": 1,
+          },
+        },
+        "stone_uuid2016-2017": {
+          "abilities": {
+            "dimming": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "softOnSpeed": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": 1641038400000,
+                  "value": 8,
+                  "valueTarget": 8,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": 1641038400000,
+            },
+            "switchcraft": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "defaultDimValue": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": 1641038400000,
+            },
+            "tapToToggle": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "rssiOffset": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": 1641038400000,
+            },
+          },
+          "behaviours": {},
+          "config": {
+            "bootloaderVersion": null,
+            "cloudId": null,
+            "description": "",
+            "dfuResetRequired": false,
+            "firmwareVersion": "5.4.0",
+            "handle": "handle2",
+            "hardwareVersion": null,
+            "hidden": false,
+            "iBeaconMajor": 58597,
+            "iBeaconMinor": 59111,
+            "icon": "c2-pluginFilled",
+            "locationId": null,
+            "locked": false,
+            "macAddress": undefined,
+            "name": "stone_uuid2019",
+            "type": "PLUG",
+            "uicr": null,
+            "uid": 2,
+            "updatedAt": 1641038400000,
+          },
+          "errors": {
+            "dimmerOffFailure": false,
+            "dimmerOnFailure": false,
+            "hasError": false,
+            "overCurrent": false,
+            "overCurrentDimmer": false,
+            "temperatureChip": false,
+            "temperatureDimmer": false,
+          },
+          "id": "stone_uuid2016-2017",
+          "keys": {},
+          "lastUpdated": {
+            "stoneTime": 0,
+          },
+          "reachability": {
+            "lastSeen": null,
+          },
+          "state": {
+            "behaviourOverridden": false,
+            "currentUsage": 0,
+            "dimmerReady": false,
+            "powerFactor": null,
+            "previousState": 0,
+            "state": 0,
+            "timeSet": false,
+            "updatedAt": 1,
+          },
+        },
+        "stone_uuid2024-2025": {
+          "abilities": {
+            "dimming": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "softOnSpeed": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "softOnSpeed",
+                  "updatedAt": 1641038400000,
+                  "value": 8,
+                  "valueTarget": 8,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "dimming",
+              "updatedAt": 1641038400000,
+            },
+            "switchcraft": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "defaultDimValue": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "defaultDimValue",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+                "doubleTapSwitchcraft": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "doubleTapSwitchcraft",
+                  "updatedAt": 1641038400000,
+                  "value": false,
+                  "valueTarget": false,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "switchcraft",
+              "updatedAt": 1641038400000,
+            },
+            "tapToToggle": {
+              "cloudId": null,
+              "enabled": false,
+              "enabledTarget": false,
+              "properties": {
+                "rssiOffset": {
+                  "cloudId": null,
+                  "syncedToCrownstone": true,
+                  "type": "rssiOffset",
+                  "updatedAt": 1641038400000,
+                  "value": 0,
+                  "valueTarget": 0,
+                },
+              },
+              "syncedToCrownstone": true,
+              "type": "tapToToggle",
+              "updatedAt": 1641038400000,
+            },
+          },
+          "behaviours": {},
+          "config": {
+            "bootloaderVersion": null,
+            "cloudId": null,
+            "description": "",
+            "dfuResetRequired": false,
+            "firmwareVersion": "5.4.0",
+            "handle": "handle3",
+            "hardwareVersion": null,
+            "hidden": false,
+            "iBeaconMajor": 60653,
+            "iBeaconMinor": 61167,
+            "icon": "c2-pluginFilled",
+            "locationId": null,
+            "locked": false,
+            "macAddress": undefined,
+            "name": "stone_uuid2027",
+            "type": "PLUG",
+            "uicr": null,
+            "uid": 3,
+            "updatedAt": 1641038400000,
+          },
+          "errors": {
+            "dimmerOffFailure": false,
+            "dimmerOnFailure": false,
+            "hasError": false,
+            "overCurrent": false,
+            "overCurrentDimmer": false,
+            "temperatureChip": false,
+            "temperatureDimmer": false,
+          },
+          "id": "stone_uuid2024-2025",
+          "keys": {},
+          "lastUpdated": {
+            "stoneTime": 0,
+          },
+          "reachability": {
+            "lastSeen": null,
+          },
+          "state": {
+            "behaviourOverridden": false,
+            "currentUsage": 0,
+            "dimmerReady": false,
+            "powerFactor": null,
+            "previousState": 0,
+            "state": 0,
+            "timeSet": false,
+            "updatedAt": 1,
+          },
+        },
+      },
+      "thirdParty": {
+        "toons": {},
+      },
+      "users": {},
+    },
+  },
+  "user": {
+    "accessToken": null,
+    "appIdentifier": null,
+    "betaAccess": false,
+    "bootloaderVersionsAvailable": {},
+    "developer": false,
+    "email": null,
+    "firmwareVersionsAvailable": {},
+    "firstName": "Test",
+    "isNew": true,
+    "language": null,
+    "lastName": "LastName",
+    "passwordHash": null,
+    "picture": null,
+    "pictureId": null,
+    "seenTapToToggle": false,
+    "seenTapToToggleDisabledDuringSetup": false,
+    "updatedAt": 1,
+    "uploadDeviceDetails": true,
+    "uploadLocation": true,
+    "uploadSwitchState": true,
+    "userId": "user_uuid2002-2003",
+  },
+}
+`;
+
+exports[`Check if messages are preparing their sync request payload 1`] = `
+{
+  "sphereCloudId": {
+    "messages": {
+      "cloudMessage": {
+        "data": {
+          "recipients": [
+            "memberId",
+          ],
+          "updatedAt": 1641038400000,
+        },
+        "deletedBy": {},
+        "readBy": {},
+      },
+      "messageId_uuid2008-2009": {
+        "data": {
+          "content": "testMessage",
+          "everyoneInSphere": false,
+          "includeSenderInEveryone": false,
+          "recipients": [
+            "memberId",
+          ],
+          "triggerEvent": "enter",
+          "updatedAt": "2022-01-01T12:00:00.000Z",
+        },
+        "deletedBy": {
+          "deleted": {
+            "data": {
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+              "userId": "user_uuid2002-2003",
+            },
+            "new": true,
+          },
+        },
+        "new": true,
+        "readBy": {
+          "read": {
+            "data": {
+              "updatedAt": "2022-01-01T12:00:00.000Z",
+              "userId": "user_uuid2002-2003",
+            },
+            "new": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`Check if messages can handle the cloud's sync reply: creationActions 1`] = `
+[
+  {
+    "data": {
+      "cloudId": "dbId:MessageV2Repository:1",
+      "content": "hello",
+      "everyoneInSphere": false,
+      "includeSenderInEveryone": false,
+      "recipients": {
+        "dbId:UserRepository:3": true,
+      },
+      "senderId": undefined,
+      "sentAt": 0,
+      "triggerEvent": "enter",
+      "triggerLocationId": undefined,
+      "updatedAt": 0,
+    },
+    "messageId": "uuid2008-2009",
+    "sphereId": "sphere_uuid2004-2005",
+    "type": "ADD_MESSAGE",
+  },
+]
+`;

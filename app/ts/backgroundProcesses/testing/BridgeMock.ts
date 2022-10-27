@@ -17,14 +17,14 @@ class BridgeMockClass {
     this.promiseCalls[id] = {functionName, args, promiseResolver};
     let data = {id, function: functionName, args}
     fetch(`${BridgeConfig.mockBridgeUrl}callPromise`, {method:"POST", headers: defaultHeaders as any, body: JSON.stringify(data)})
-      .then(()     => { console.log("BridgeMock: Success performing mock callPromise."); })
+      .then(()     => { console.log("BridgeMock: Success performing mock callPromise:", functionName, args); })
       .catch((err) => { console.log("BridgeMock: Error while performing mock callPromise.", err?.message); })
   }
 
   callBluenet(functionName: string, args: any[]) {
     let data = { function: functionName, args };
     fetch(`${BridgeConfig.mockBridgeUrl}callBluenet`, {method:"POST", headers: defaultHeaders as any, body: JSON.stringify(data)})
-      .then(()     => { console.log("BridgeMock: Success performing mock callBluenet."); })
+      .then(()     => { console.log("BridgeMock: Success performing mock callBluenet:", functionName, args); })
       .catch((err) => { console.log("BridgeMock: Error while performing mock callBluenet.", err?.message); })
   }
 

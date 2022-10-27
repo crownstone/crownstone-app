@@ -12,14 +12,14 @@ import {
 
 
 import { PictureCircle }  from '../PictureCircle'
-import { styles} from '../../styles'
+import {menuStyles, styles} from '../../styles'
 
 export class PictureEdit extends Component<any, any> {
   render() {
       return (
         <View style={{flex:1}}>
-          <View style={[styles.listView, { justifyContent:'flex-start', alignItems:'center', height:this.props.barHeightLarge}]}>
-            <Text style={[styles.listText,{height:this.props.barHeightLarge - 20}]}>{this.props.label}</Text>
+          <View style={[menuStyles.listView, { justifyContent:'flex-start', alignItems:'center', height:this.props.barHeightLarge}]}>
+            <Text style={[menuStyles.listText,{height:this.props.barHeightLarge - 20}]}>{this.props.label}</Text>
             <PictureCircle {...this.props} />
           </View>
         </View>

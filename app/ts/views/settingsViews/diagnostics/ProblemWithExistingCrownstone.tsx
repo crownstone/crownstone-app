@@ -507,7 +507,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       await StoneUtil.multiSwitch(stone, stone.state.state > 0 ? 0 : 1, false);
       this.setState({switchedCrownstone: true});
     }
-    catch (err) {
+    catch (err : any) {
       if (err?.code === "NO_STONES_FOUND") {
         this.setState({switchedCrownstone: false, switchedCrownstoneNotNear: true});
       }

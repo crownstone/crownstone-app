@@ -1,6 +1,6 @@
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { core } from "../../../../Core";
-import { SyncViewInterface } from "./base/SyncViewInterface";
+import {SyncViewInterface} from "./base/SyncViewInterface";
 
 
 

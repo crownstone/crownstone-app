@@ -13,13 +13,14 @@ import {
   View, TextStyle, Pressable
 } from "react-native";
 
-import { Background } from './../components/Background'
-import {background, colors, deviceModel, screenWidth, tabBarMargin} from "./../styles";
+import {Background, BackgroundCustomTopBar} from './../components/Background'
+import { background, colors, deviceModel, screenWidth, styles, tabBarMargin } from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
-import { NavigationUtil } from "../../util/NavigationUtil";
-import {TestingFramework} from "../../backgroundProcesses/testing/TestingFramework";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
+import { Icon } from "../components/Icon";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -27,18 +28,22 @@ let versionStyle : TextStyle = {
   fontSize: 10,
 };
 
-export class LoginSplash extends Component<any, any> {
+export function LoginSplash(props) {
+  console.log("LoginSplash render", deviceModel)
 
+  let factor = 0.2;
 
-  render() {
-    console.log("LoginSplash render", deviceModel)
-    let factor = 0.25;
-
-    return (
-      <Background fullScreen={true} image={background.main} dimStatusBar={true}  hideNotifications={true} testID={"LoginSplash"}>
-        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
-          <View style={{flex:0.5}} />
+  return (
+    <BackgroundCustomTopBar testID={"LoginSplash"}>
+      <SafeAreaView style={{ flex: 1}}>
+        <View style={{alignItems:'center', justifyContent: 'center', flex:1 }}>
+          <View style={{flex:0.85}} />
           <Image source={require('../../../assets/images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606, tintColor: colors.black.hex}}/>
+          <View style={{flex:0.2}} />
+          <TouchableOpacity style={{flexDirection:'row', ...styles.centered}} onPress={() => { NavigationUtil.launchModal('CloudChoice'); }}>
+            <Icon name={'fa5-cloud'} size={20} color={colors.black.rgba(0.2)} />
+            <Text style={{color: colors.black.rgba(0.2), padding:5, fontWeight: 'bold'}}>{"Configure custom cloud"}</Text>
+          </TouchableOpacity>
           <View style={{flex:2}} />
           <View style={loginStyles.loginButtonContainer}>
             <View style={{flexDirection:'row'}}>
@@ -79,7 +84,7 @@ export class LoginSplash extends Component<any, any> {
             <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
           </View>
         </View>
-      </Background>
-    )
-  }
+      </SafeAreaView>
+    </BackgroundCustomTopBar>
+  );
 }

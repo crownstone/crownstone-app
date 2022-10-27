@@ -5,7 +5,7 @@ import {StoreManager} from '../../database/storeManager'
 import {BackgroundProcessHandler} from '../../backgroundProcesses/BackgroundProcessHandler'
 import {Splash} from "./Splash";
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {Stacks} from "../Stacks";
 import {stylesUpdateConstants} from "../../views/styles";
 import {Bluenet} from "../../native/libInterface/Bluenet";
@@ -38,9 +38,9 @@ export class Initializer extends Component<any, any> {
         core.eventBus.emit("userLoggedInFinished");
       }
 
-
       if (BackgroundProcessHandler.userLoggedInReady) {
         NavigationUtil.setRoot(Stacks.loggedIn());
+        // setTimeout(() => { NavigationUtil.launchModal("RoomAdd"); }, 300);
       }
       else if (BackgroundProcessHandler.userLoggedIn) {
         NavigationUtil.setRoot(Stacks.permissions());

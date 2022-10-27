@@ -209,7 +209,7 @@ export class Session {
     try {
       this.crownstoneMode = await BluenetPromiseWrapper.connect(this.handle, this.sphereId, this.privateId !== null);
     }
-    catch (err) {
+    catch (err : any) {
       LOGi.constellation("Session: Failed to connect", err?.message, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
       this.interactionModule.isDeactivated();
 
@@ -274,7 +274,7 @@ export class Session {
       let performedCommandId = await BleCommandManager.performCommand(this.handle, this.privateId);
       LOGi.constellation("Session: Finished available command.", performedCommandId, this.handle, this.identifier);
     }
-    catch(err) {
+    catch(err: any) {
       LOGi.constellation("Session: Failed to perform command.", availableCommandId, this.handle, this.identifier, err?.message);
       if (err?.message === "NOT_CONNECTED") {
         LOGe.constellation("Session: Race condition detected while performing command.", availableCommandId, this.handle, this.identifier, err?.message);
@@ -358,8 +358,8 @@ export class Session {
     try {
       await BleCommandManager.performClosingCommands(this.handle, this.privateId, this.crownstoneMode);
     }
-    catch (e) {
-      LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, e?.message);
+    catch (err: any) {
+      LOGd.constellation("Session: failed performing closing commands", this.handle, this.identifier, err?.message);
     }
 
     LOGi.constellation("Session: closing commands done.", this.handle, this.identifier);

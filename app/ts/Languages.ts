@@ -1,5 +1,5 @@
-import localization_en_us from "./localization/en/us/en_us";
-import localization_nl_nl from "./localization/nl/nl/nl_nl";
+import localization_en_us from "./languages/en/us/en_us";
+import localization_nl_nl from "./languages/nl/nl/nl_nl";
 import { core } from "./Core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS";

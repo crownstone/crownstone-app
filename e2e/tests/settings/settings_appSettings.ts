@@ -22,7 +22,7 @@ export const Settings_appSettings = () => {
   test('should be able enable tap-to-toggle globally', async () => {
     await tap('tapToToggle_switch');
     await screenshot()
-    await tap('SliderBar_hide');
+    await tap('SliderBar');
     await screenshot()
   })
 

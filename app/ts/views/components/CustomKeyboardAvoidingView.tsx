@@ -6,13 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
+  Animated, BackHandler, Keyboard,
   KeyboardAvoidingView,
   Platform,
+  View
 } from "react-native";
 
 import {
+  styles,
   screenHeight,
+  tabBarHeight,
+  colors,
+  screenWidth,
+  updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../styles";
 import { core } from "../../Core";
 
@@ -59,6 +65,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
         // }
       }));
     }
+
   }
 
   componentWillUnmount() {

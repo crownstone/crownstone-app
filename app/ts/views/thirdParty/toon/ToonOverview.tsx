@@ -19,7 +19,7 @@ import {CLOUD} from "../../../cloud/cloudAPI";
 
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 

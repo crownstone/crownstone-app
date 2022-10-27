@@ -7,9 +7,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Text,
+  Text, TouchableOpacity,
   View
-} from 'react-native';
+} from "react-native";
 
 import { colors } from '../styles'
 import { Icon } from './Icon';
@@ -98,20 +98,8 @@ class SphereCircleClass extends Component<any, any> {
       // const state = store.getState();
     });
 
-    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTapped' + this.props.viewId, (data) => {
-      this.handleTouchReleased(data);
-    }));
-
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.sphereId, (data) => {
-      this.handleTap(data);
-    }));
-
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.sphereId, (data) => {
-      this.handleTouch(data);
-    }));
-
-    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.sphereId, (data) => {
-      this.handleTouchReleased(data);
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+      this.handleTouchReleased();
     }));
   }
 
@@ -197,6 +185,12 @@ class SphereCircleClass extends Component<any, any> {
     };
 
     return (
+      <TouchableOpacity
+        onPressIn={(e)  => { this.props.touch(); this.handleTouch(); }}
+        onPressOut={(e) => { this.handleTouchReleased(); }}
+        onPress={() => { this.handleTap() }}
+        activeOpacity={1.0}
+      >
       <Animated.View
         style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}
         testID={`SphereCircle${sphere.config.cloudId}`}
@@ -204,10 +198,11 @@ class SphereCircleClass extends Component<any, any> {
         {this.getCircle(sphere)}
         {this.showAlert !== null ? this._getAlertIcon() : undefined}
       </Animated.View>
+      </TouchableOpacity>
     )
   }
 
-  handleTouch(data) {
+  handleTouch() {
     // top any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
@@ -220,7 +215,7 @@ class SphereCircleClass extends Component<any, any> {
     Animated.parallel(tapAnimations).start();
   }
 
-  handleTouchReleased(data) {
+  handleTouchReleased() {
     if (this.scaledUp) {
       // top any animation this node was doing.
       this.state.scale.stopAnimation();
@@ -236,7 +231,7 @@ class SphereCircleClass extends Component<any, any> {
   }
 
 
-  handleTap(data) {
+  handleTap() {
     // top any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();

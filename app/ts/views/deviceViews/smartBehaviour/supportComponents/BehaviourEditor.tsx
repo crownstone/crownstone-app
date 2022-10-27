@@ -26,7 +26,7 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { DataUtil } from "../../../../util/DataUtil";
@@ -338,6 +338,9 @@ export class BehaviourEditor extends LiveComponent<
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
 
+
+
+
     core.eventBus.emit("showDimLevelOverlay",{
       initialValue: this.behaviour.willDim() ? this.behaviour.getDimPercentage() : exampleBehaviour.getDimPercentage(),
       callback: (value) => {
@@ -357,7 +360,8 @@ export class BehaviourEditor extends LiveComponent<
         let items = [];
         Object.keys(sphere.locations).forEach((locationId) => {
           let location = sphere.locations[locationId];
-          items.push( {id: location.config.uid, component:<RoomList
+          items.push({id: location.config.uid, component:
+            <RoomList
               icon={location.config.icon}
               name={location.config.name}
               hideSubtitle={true}

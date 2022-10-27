@@ -71,11 +71,11 @@ class BroadcastStateManagerClass {
         this._handleExitSphere(exitSphereId);
       }));
 
-      this._listeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {// data = {region: sphereId, location: locationId}
-        this._presentLocationInSphere[data.region] = data.location;
-        LOGi.info("BroadcastStateManager: processing enter room in sphere", data.region, " location", data.location);
-        this._handleEnter(data.region, data.location);
-        TrackingNumberManager.updateMyDeviceTrackingRegistration(data.region);
+      this._listeners.push(core.eventBus.on('enterRoom', (data: locationDataContainer) => {// data = {sphereId: sphereId, locationId: locationId}
+        this._presentLocationInSphere[data.sphereId] = data.locationId;
+        LOGi.info("BroadcastStateManager: processing enter room in sphere", data.sphereId, " location", data.locationId);
+        this._handleEnter(data.sphereId, data.locationId);
+        TrackingNumberManager.updateMyDeviceTrackingRegistration(data.sphereId);
       }));
 
 

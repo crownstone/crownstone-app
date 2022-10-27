@@ -7,15 +7,14 @@ import {
 import { IconButton } from '../../components/IconButton'
 import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { background, colors, screenWidth } from "../../styles";
+import {background, colors, screenWidth, statusBarHeight, topBarHeight} from "../../styles";
 import { LiveComponent } from "../../LiveComponent";
 import { core } from "../../../Core";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Scheduler } from "../../../logic/Scheduler";
 import { Util } from "../../../util/Util";
-import { TopbarImitation } from "../../components/TopbarImitation";
 import { topBarStyle } from "../../components/topbar/TopbarStyles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
@@ -28,7 +27,6 @@ import { Stacks } from "../../Stacks";
 import { FileUtil } from "../../../util/FileUtil";
 import Share from "react-native-share";
 import { base_core } from "../../../Base_core";
-import { LocalizationLogger } from "../../../backgroundProcesses/dev/LocalizationLogger";
 import {LOG_file, LOGw} from "../../../logging/Log";
 
 // import { WebRtcClient } from "../../../logic/WebRtcClient";
@@ -36,6 +34,9 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {TIME_LAST_REBOOT} from "../../../backgroundProcesses/BackgroundProcessHandler";
 import {CloudAddresses} from "../../../backgroundProcesses/indirections/CloudAddresses";
+import { SettingsCustomTopBarNavbarBackground, } from "../../components/SettingsBackground";
+import { CustomTopBarWrapperWithLine} from "../../components/CustomTopBarWrapper";
+import { LocalizationDevDataLogger } from "../../../localization/LocalizationDevDataLogger";
 
 type emailDataType = "allBuffers" | "switchCraftBuffers" | "measurementBuffers" | "logs"
 
@@ -73,7 +74,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   componentDidMount() {
     // this is done on boot if the user was already a developer. This can be repeated without sideeffects.
-    LocalizationLogger.init();
+    LocalizationDevDataLogger.init();
 
     this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -210,7 +211,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             }}]) }},
             {text:"Delete localization datasets",  callback: () => {
             Alert.alert("Sure about that?","This will delete all collected Localization datasets.",[{text:'no'},{text:"yes", onPress: async () => {
-              await LocalizationLogger.clearDataFiles();
+              await LocalizationDevDataLogger.clearDataFiles();
               Alert.alert("Done!");
             }}]) }},
           ]})
@@ -324,7 +325,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
             try {
               throw new Error("Javascript escalated CRASH Induced")
             }
-            catch (err) {
+            catch (err : any) {
               throw err;
             }}},
           {text:"Crash Bridge",  callback: () => { Bluenet.crash(); }},
@@ -518,7 +519,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         store.batchDispatch(actions);
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
-        LocalizationLogger.destroy();
+        LocalizationDevDataLogger.destroy();
         NavigationUtil.back();
     }});
 
@@ -530,14 +531,15 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       type: 'explanation',
     });
     items.push({type: 'spacer'});
+    items.push({type: 'spacer'});
 
     return items;
   }
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} hasTopBar={false} hasNavBar={true} hideNotifications={true} hideOrangeLine={true} >
-        <TopbarImitation
+      <SettingsCustomTopBarNavbarBackground testID={"SettingsDev"}>
+        <CustomTopBarWrapperWithLine
           left={Platform.OS === 'android' ? null : "Back"}
           titleObject={
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
@@ -545,18 +547,17 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
                 <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ "Developer Menu" }</Text>
               </View>
             </TouchableWithoutFeedback>
-
           }
           leftAction={() => { NavigationUtil.back(); }}
-        />
-        <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
-        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
-          <SlideFadeInView visible={this.state.devAppVisible} height={120}>
-            <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
-          </SlideFadeInView>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
-        </ScrollView>
-      </BackgroundNoNotification>
+        >
+          <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1,paddingTop: topBarHeight-statusBarHeight}}>
+            <SlideFadeInView visible={this.state.devAppVisible} height={120}>
+              <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
+            </SlideFadeInView>
+            <ListEditableItems items={this._getItems()} separatorIndent={true} style={{flex:1}} />
+          </ScrollView>
+        </CustomTopBarWrapperWithLine>
+      </SettingsCustomTopBarNavbarBackground>
     );
   }
 }
@@ -608,7 +609,7 @@ export async function shareData(shareDataType) {
     let result = await Share.open({ urls:urls })
     console.log(result)
   }
-  catch (err) {
+  catch (err : any) {
     LOGw.info("Something went wrong while sharing data:",err)
   }
 }
@@ -650,7 +651,7 @@ export async function shareDataViaRTC(shareDataType) {
   // //   await Scheduler.delay(1000)
   // //   core.eventBus.emit("hideLoading");
   // // }
-  // // catch (err) {
+  // // catch (err : any) {
   //   if      (err?.message === "CANNOT_CONNECT")           { core.eventBus.emit("showLoading", "Could not connect. Trying different method...") }
   //   else if (err?.message === "RECEIVED_INVALID")         { core.eventBus.emit("showLoading", "Transfer failed. Trying different method...") }
   //   else if (err?.message === "TRANSFER_ABORTED_TIMEOUT") { core.eventBus.emit("showLoading", "Transfer failed due to timeout. Trying different method...") }
@@ -663,7 +664,7 @@ export async function shareDataViaRTC(shareDataType) {
 
     await shareData(shareDataType);
     Alert.alert("Delete datasets now?", "I could not see if the sharing was successful...", [{ text: "No" }, {
-      text: "Delete", style:'destructive', onPress: async () => { await LocalizationLogger.clearDataFiles(); }
+      text: "Delete", style:'destructive', onPress: async () => { await LocalizationDevDataLogger.clearDataFiles(); }
     }])
   // }
 }
@@ -673,8 +674,8 @@ export async function getShareDataFileUrls(shareDataType) : Promise<string[]> {
   let storagePath = FileUtil.getPath();
   let urls = [];
   if (shareDataType === SHARE_DATA_TYPE.localization) {
-    let fingerprintPath = await LocalizationLogger.storeFingerprints();
-    let logUrls = await LocalizationLogger.getURLS();
+    let fingerprintPath = await LocalizationDevDataLogger.storeFingerprints();
+    let logUrls = await LocalizationDevDataLogger.getURLS();
     logUrls.push(fingerprintPath);
     urls = logUrls.map((a) => { return "file://" + a })
   }

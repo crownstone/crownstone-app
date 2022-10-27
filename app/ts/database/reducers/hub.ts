@@ -31,7 +31,7 @@ let defaultSettings : HubData = {
 };
 
 
-const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => {
+const hubConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_HUB_CLOUD_ID':
       if (action.data) {
@@ -71,7 +71,7 @@ const hubConfigReducer = (state = defaultSettings.config, action : any = {}) => 
   }
 };
 
-const hubStateReducer = (state = defaultSettings.state, action : any = {}) => {
+const hubStateReducer = (state = defaultSettings.state, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_HUB_STATE':
       if (action.data) {
@@ -94,7 +94,7 @@ const hubStateReducer = (state = defaultSettings.state, action : any = {}) => {
 };
 
 
-const reachabilityReducer = (state = defaultSettings.reachability, action : any = {}) => {
+const reachabilityReducer = (state = defaultSettings.reachability, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_HUB_REACHABILITY':
       if (action.data) {
@@ -120,7 +120,7 @@ const hubReducer = combineReducers({
 
 
 // hubWrapperReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'REMOVE_ALL_HUBS':
       return {};

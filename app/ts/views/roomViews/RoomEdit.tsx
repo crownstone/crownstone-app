@@ -13,16 +13,18 @@ const sha1 = require('sha-1');
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { background, colors } from "./../styles";
+import {background, colors, getRoomStockImage, RoomStockBackground} from "./../styles";
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {Get} from "../../util/GetUtil";
+import {Icon} from "../components/Icon";
+import {SortingManager} from "../../logic/SortingManager";
 
 
 
@@ -41,14 +43,15 @@ export class RoomEdit extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    const state = core.store.getState();
-    const room  = state.spheres[props.sphereId].locations[props.locationId];
+    const room  = Get.location(this.props.sphereId, this.props.locationId);
+
 
     this.state = {
-      name:      room.config.name,
-      icon:      room.config.icon,
-      picture:   room.config.picture,
-      pictureId: room.config.pictureId,
+      name:        room.config.name,
+      icon:        room.config.icon,
+      picture:     room.config.picture,
+      pictureId:   room.config.pictureId,
+      pictureSource: room.config.pictureSource,
     };
   }
 
@@ -114,7 +117,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       })
       .then(() => {
         let removeActions = [];
-        let stones = Util.data.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
+        let stones = Util.data.getStonesInLocation(this.props.sphereId, this.props.locationId);
         let stoneIds = Object.keys(stones);
         removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let i = 0; i < stoneIds.length; i++) {
@@ -129,16 +132,20 @@ export class RoomEdit extends LiveComponent<any, any> {
         this._removePicture(this.state.picture);
 
         // remove the picture that belongs to the location.
-        if (location && location.config) {
+        if (location?.config) {
           this._removePicture(location.config.picture)
         }
+
+        if (location?.config?.cloudId) {
+          SortingManager.removeByReferenceId(location?.config?.cloudId);
+        }
+        SortingManager.removeByReferenceId(this.props.locationId);
 
         // jump back to root
         core.eventBus.emit('hideLoading');
         NavigationUtil.dismissModalAndBack();
 
-        // reload fingerprints.
-        LocationHandler.loadFingerprints();
+        // the removal of the fingerprint from the classifier is automatic due to the database change events.
 
       })
       .catch((err) => {
@@ -154,15 +161,8 @@ export class RoomEdit extends LiveComponent<any, any> {
 
 
   _getItems() {
-    const store = core.store;
-    const state = store.getState();
-    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
-
-    let ai = state.spheres[this.props.sphereId].config.aiName;
-
     let items = [];
-
-    items.push({label: lang("ROOM_SETTINGS"),  type:'explanation', below:false});
+    items.push({type: 'explanation', label: lang("ROOM_SETTINGS")});
     items.push({
       label: lang("Room_Name"),
       type: 'textEdit',
@@ -176,6 +176,8 @@ export class RoomEdit extends LiveComponent<any, any> {
         this.setState({name: newText});
       }
     });
+
+
     items.push({
       label: lang("Icon"),
       type: 'icon',
@@ -189,88 +191,40 @@ export class RoomEdit extends LiveComponent<any, any> {
         }
       })
     }});
+
     items.push({
       label: lang("Picture"),
-      type:  'picture',
+      type: 'pictureSelect',
       testID: 'roomPicture',
-      testID_remove: 'roomPicture_remove',
-      value: this.state.picture,
-      placeholderText: lang("Optional"),
-      callback:(image) => {
-        this.pictureTaken = true; this.setState({picture:image}); },
-      removePicture:() => {
-        this.removePictureQueue.push(this.state.picture);
-        this.setState({picture: null});
-      }
-    });
-
-    if (state.user.developer && room.config.fingerprintRaw) {
-      let hash = sha1(room.config.fingerprintRaw);
-      let h1 = Number(`0x${hash.substr(0, 10)}`);
-      let h2 = Number(`0x${hash.substr(10, 10)}`);
-      let h3 = Number(`0x${hash.substr(20, 10)}`);
-      let h4 = Number(`0x${hash.substr(30, 10)}`);
-
-      items.push({label: `DEV fingerprintHash: ${mapToEmoticon(h1)}${mapToEmoticon(h2)}${mapToEmoticon(h3)}${mapToEmoticon(h4)} (${(h3%0xFFFFF).toString(36)})`, type: 'explanation',  below:false});
-    }
-
-    // here we do the training if required and possible.
-    if (state.app.indoorLocalizationEnabled) {
-      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-      if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
-        items.push({label: lang("INDOOR_LOCALIZATION"), type: 'explanation',  below:false});
-        // if a fingerprint is already present:
-        if (room.config.fingerprintRaw) {
-          items.push({
-            label: lang("Retrain_Room"),
-            type: 'navigation',
-            testID:'roomRetrain',
-            icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
-            callback: () => {
-            Alert.alert(
-              lang("_Retrain_Room__Only_do_th_header"),
-              lang("_Retrain_Room__Only_do_th_body"),
-              [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
-                            {
-              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
-            ])
-          }});
-          items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
-        }
-        else {
-          items.push({
-            label: lang("Teach__to_find_you_",ai),
-            type: 'navigation',
-            icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />,
-            testID:'roomTrain',
-            callback: () => {
-              NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId});
+      stock: this.state.pictureSource === "STOCK",
+      value: this.state.pictureSource === "STOCK" ? getRoomStockImage(this.state.picture) : this.state.picture,
+      pictureSource: this.state.pictureSource,
+      customPictureSelector:() => {
+        NavigationUtil.launchModal('RoomPictureSelection', {
+          ...this.props, ...this.state,
+          selectImage: (name, pictureSource) => {
+            if (pictureSource === "CUSTOM") {
+              this.pictureTaken = true;
+              this.setState({picture: name, pictureSource: pictureSource});
             }
-          });
-          items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
-        }
-      }
-      else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
-        items.push({label: lang("You_can_only_train_this_r"), type: 'explanation',  below:false});
-        items.push({type: 'spacer', height:30});
-      }
-      else {
-        items.push({label: lang("Indoor_localization_on_ro"), type: 'explanation',  below:false});
-        items.push({type: 'spacer', height:30});
-      }
-    }
-    else {
-      items.push({label: lang("Enable_indoor_localizatio"), type: 'explanation',  below:false});
-      items.push({type: 'spacer', height:30});
-    }
+            else {
+              if (this.pictureTaken) {
+                this.removePictureQueue.push(this.state.picture);
+              }
+              this.pictureTaken = false;
+              this.setState({picture: name, pictureSource: pictureSource});
+            }
+          }})
+      },
+      });
 
 
     if (Permissions.inSphere(this.props.sphereId).removeRoom) {
+      items.push({type: 'explanation', label: lang("DANGER")});
       items.push({
         label: lang("Remove_Room"),
         type: 'button',
         testID: 'roomRemove',
-        icon: <IconButton name="ios-trash" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
             lang("_Are_you_sure___Removing__header"),
@@ -282,20 +236,13 @@ export class RoomEdit extends LiveComponent<any, any> {
             }])
         }
       });
-      items.push({
-        label: lang("Removing_this_Room_will_m"),
-        type: 'explanation',
-        below: true
-      });
     }
 
     return items;
   }
 
   _updateRoom() {
-    const store = core.store;
-    const state = store.getState();
-    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+    const room  = Get.location(this.props.sphereId, this.props.locationId);
 
     // remove all pictures that have been attempted except the one we will use.
     this._removeUnusedPictures();
@@ -310,21 +257,21 @@ export class RoomEdit extends LiveComponent<any, any> {
             data: {
               picture: picture,
               pictureTaken: Date.now(),
-              pictureId: null
+              pictureId: null,
+              pictureSource: "CUSTOM",
             }});
         })
     }
-
-    if (room.config.picture !== this.state.picture && this.state.picture === null) {
-      this._removePicture(room.config.picture);
+    else if (this.state.pictureSource === "STOCK" && room.config.pictureSource !== this.state.pictureSource || room.config.picture !== this.state.picture) {
       core.store.dispatch({
         type:'UPDATE_LOCATION_CONFIG',
         sphereId: this.props.sphereId,
         locationId: this.props.locationId,
         data: {
-          picture: null,
-          pictureTaken: null,
-          pictureId: null
+          picture: this.state.picture,
+          pictureTaken: Date.now(),
+          pictureId: null,
+          pictureSource: "STOCK",
         }});
     }
 
@@ -344,53 +291,15 @@ export class RoomEdit extends LiveComponent<any, any> {
 
 
   render() {
-    const state = core.store.getState();
-    this.viewingRemotely = state.spheres[this.props.sphereId].state.present === false;
+    let sphere = Get.sphere(this.props.sphereId);
+    this.viewingRemotely = sphere.state.present === false;
 
-    let backgroundImage = background.menu;
     return (
-      <BackgroundNoNotification hasNavBar={false} image={backgroundImage} testID={"RoomEdit"}>
+      <SettingsBackground testID={"RoomEdit"}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsBackground>
     );
   }
-}
-
-
-function mapToEmoticon(value) {
-  if (typeof value === 'string') {
-    value = Number(`0x${value}`);
-  }
-  let ranges = [
-    { min: 9193, max: 9203, length: 10 },
-    { min: 9800, max: 9811, length: 11 },
-    { min: 127377, max: 127386, length: 9 },
-    { min: 127538, max: 127546, length: 8 },
-    { min: 127744, max: 127777, length: 33 },
-    { min: 127780, max: 127891, length: 111 },
-    { min: 127902, max: 127984, length: 82 },
-    { min: 127991, max: 128253, length: 262 },
-    { min: 128255, max: 128317, length: 62 },
-    { min: 128336, max: 128359, length: 23 },
-    { min: 128371, max: 128377, length: 6 },
-    { min: 128506, max: 128591, length: 85 },
-    { min: 128640, max: 128709, length: 69 },
-    { min: 129296, max: 129304, length: 8 }
-
-  ];
-  let totalRange = 0;
-  for (let r of ranges) {
-    totalRange+=r.length;
-  }
-  let v = value%totalRange;
-  let s = 0;
-  for (let r of ranges) {
-    if (v >= s && v < s+r.length) {
-      return String.fromCodePoint(v - s + r.min);
-    }
-    s += r.length;
-  }
-  return null;
 }

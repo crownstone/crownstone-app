@@ -13,10 +13,11 @@ import {
 } from "react-native";
 
 import { Icon } from '../Icon';
-import { colors, screenWidth } from "../../styles";
+import {appStyleConstants, colors, screenWidth} from "../../styles";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../Core";
 import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";
+import {BlurView} from "@react-native-community/blur";
 
 
 export class DfuDeviceUpdaterEntry extends Component<any, any> {
@@ -133,18 +134,6 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     }
   }
 
-
-
-  _getIcon(stone) {
-    let color = this.props.iconColor || colors.green.rgba(0.8);
-    return (
-      <AnimatedCircle size={60} color={color}>
-        <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
-      </AnimatedCircle>
-    );
-  }
-
-
   _getDetailText() {
     if (this.state.isUpdating) {
       let progressLabel = null;
@@ -211,15 +200,26 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
 
     let shouldStillUpdate = !this.state.isUpdating && !this.state.updateSuccessful && !this.state.updateFailed;
     return (
-      <View style={[{height: this.baseHeight, width: screenWidth, overflow:'hidden', backgroundColor: colors.white.rgba(0.5)}]}>
+      <BlurView
+        blurType={"light"}
+        blurAmount={5}
+        style={{
+          flexDirection:'row',
+          height: this.baseHeight,
+          flex:1,
+          backgroundColor: this.props.backgroundColor ?? colors.white.rgba(0.4),
+          marginHorizontal: 12,
+          marginBottom: 12,
+          borderRadius: appStyleConstants.roundness,
+          alignItems:'center',
+          paddingLeft: 15,
+        }}>
         <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.phaseProgressWidth, backgroundColor: colors.iosBlue.rgba(0.20)}} />
         <Animated.View style={{position:'absolute', top:this.baseHeight-5, left:0, height: 5, width: this.state.totalProgressWidth, backgroundColor: colors.iosBlueDark.rgba(0.8)}} />
         <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.successIndicatorWidth, backgroundColor: colors.green.rgba(0.5)}} />
-        <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingLeft:15, paddingRight:15,}}>
+        <Icon name={stone.config.icon} size={35} color={colors.black.hex} />
+        <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingHorizontal:15, paddingVertical:3}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-            <View style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}>
-              {this._getIcon(stone) }
-            </View>
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '300'}}>{stone.config.name}</Text>
@@ -233,7 +233,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             { this.props.isUpdating ? <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} /> : null}
           </View>
         </View>
-      </View>
+      </BlurView>
     );
   }
 }

@@ -7,12 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import { availableScreenHeight, screenWidth } from "../styles";
+import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
+import { Text, TouchableOpacity, View } from "react-native";
+import {TopBarBlur} from "../components/NavBarBlur";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -20,6 +22,8 @@ export class SphereLevel extends LiveComponent<any, any> {
   _baseRadius;
   _currentSphere;
   _showingFloatingRoom;
+  _forceViewRef;
+
   unsubscribeEvents = [];
   unsubscribeStoreEvents;
   viewId: string;
@@ -41,9 +45,7 @@ export class SphereLevel extends LiveComponent<any, any> {
     };
 
     this.unsubscribeEvents = [];
-
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
-
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
@@ -79,6 +81,7 @@ export class SphereLevel extends LiveComponent<any, any> {
         pos={{x: nodePosition.x, y: nodePosition.y}}
         key={sphereId}
         selectSphere={() => { this.props.selectSphere(sphereId) }}
+        touch={() => { this._forceViewRef.nodeTouch(sphereId); }}
       />
     );
   }
@@ -86,21 +89,27 @@ export class SphereLevel extends LiveComponent<any, any> {
   render() {
     let state = core.store.getState();
     return (
-      <ForceDirectedView
-        viewId={this.viewId}
-        topOffset={0.3*this._baseRadius}
-        bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
-        drawToken={this.props.sphereId}
-        nodeIds={Object.keys(state.spheres)}
-        enablePhysics={true}
-        nodeRadius={this._baseRadius}
-        allowDrag={false}
-        height={availableScreenHeight}
-        zoomInCallback={ this.props.zoomInCallback }
-        zoomOutCallback={ this.props.zoomOutCallback }
-        renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
-        testID={"SphereOverview_SphereLevel"}
-      />
+      <View style={{flex:1}}>
+        <ForceDirectedView
+          ref={(r) => { this._forceViewRef = r }}
+          viewId={this.viewId}
+          topOffset={0.3*this._baseRadius}
+          bottomOffset={0.3*this._baseRadius}
+          drawToken={this.props.sphereId}
+          nodeIds={Object.keys(state.spheres)}
+          enablePhysics={true}
+          nodeRadius={this._baseRadius}
+          allowDrag={false}
+          height={availableScreenHeight}
+          renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
+          testID={"SphereOverview_SphereLevel"}
+        />
+        <TopBarBlur disabledBlur>
+          <View style={{paddingHorizontal:15}}>
+            <Text style={styles.viewHeaderLight}>{ lang("Where_to_go_") }</Text>
+          </View>
+        </TopBarBlur>
+      </View>
     );
   }
 }

@@ -7,7 +7,6 @@ import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getSyncIdMap} from "./modelSyncs/SyncingBase";
 import {Scheduler} from "../../../logic/Scheduler";
-import {FingerprintSyncer} from "./modelSyncs/FingerprintSyncer";
 // import * as Sentry from "@sentry/react-native";
 import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
 import {core} from "../../../Core";
@@ -25,12 +24,11 @@ import { AppState } from "react-native";
  * @returns {Promise.<TResult>|*}
  */
 export const sync = {
-
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
   lastSyncTimestamp: 0,
 
-  sync: function (background = true, skipPermissions = false) {
+  sync: function (background = true, skipPermissions = false, skipPrefrences = false) {
     if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
@@ -66,13 +64,12 @@ export const sync = {
     //   }
     // });
 
-    let reloadOfTrackingRequired = false;
     let globalCloudIdMap = getSyncIdMap();
     let syncSphereIdMap = {};
 
     let initialPermissionLevels = Permissions.getLevels(state)
 
-    let actions = [];
+    let actions: DatabaseAction[] = [];
     LOG.info("Sync: START syncEvents.");
     return syncEvents(core.store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
@@ -95,9 +92,11 @@ export const sync = {
         return SyncNext.sync([
           'bootloaders',
           'firmwares',
+          'fingerprints',
           'hubs',
           'locations',
           'keys',
+          'messages',
           'sphereUsers',
           'scenes',
           // 'spheres',
@@ -114,36 +113,22 @@ export const sync = {
         return deviceSyncer.sync(state);
       })
       .then(() => {
-        LOG.info("Sync: DONE DeviceSyncer sync.");
-        LOG.info("Sync: START Fingerprint sync.");
-        let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, syncSphereIdMap);
-        return fingerprintSyncer.sync(state);
-      })
-      .then((reloadOfTrackingRequiredResult) => {
-        reloadOfTrackingRequired = reloadOfTrackingRequiredResult;
-        LOG.info("Sync: DONE Fingerprint sync.");
-        LOG.info("Sync: START Preferences sync.");
-        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
-        return preferenceSyncer.sync(state);
+        if (skipPrefrences === false) {
+          LOG.info("Sync: DONE Fingerprint sync.");
+          LOG.info("Sync: START Preferences sync.");
+          let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
+          return preferenceSyncer.sync(state);
+        }
       })
       // FINISHED SYNCING
       .then(() => {
         LOG.info("Sync: Finished. Dispatching ", actions.length, " actions!");
-        let reloadTrackingRequired = false;
 
         actions.forEach((action) => {
-          action.triggeredBySync = true;
+          action.__triggeredBySync = true;
 
           if (CLOUD.__syncTriggerDatabaseEvents === false) {
             action.__noEvents = true
-          }
-
-          switch (action.type) {
-            case 'ADD_SPHERE':
-            case 'REMOVE_SPHERE':
-            case 'ADD_LOCATION':
-            case 'REMOVE_LOCATION':
-              reloadTrackingRequired = true; break;
           }
         });
 
@@ -163,10 +148,6 @@ export const sync = {
           NotificationHandler.request();
         }
 
-        if (reloadOfTrackingRequired === true) {
-          core.eventBus.emit("reloadTracking")
-        }
-
         LOG.info("Sync after: START Executing cloud poll.");
         CloudPoller.poll(true);
         LOG.info("Sync after: DONE Executing cloud poll.");
@@ -178,9 +159,8 @@ export const sync = {
           core.eventBus.emit("permissionsHaveBeenUpdated");
         }
 
-        return reloadTrackingRequired;
       })
-      .then((reloadTrackingRequired) => {
+      .then(() => {
         CLOUD.__currentlySyncing = false;
         CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
@@ -194,16 +174,13 @@ export const sync = {
 
         core.eventBus.emit("CloudSyncComplete");
 
-        if (reloadTrackingRequired) {
-          core.eventBus.emit("CloudSyncComplete_spheresChanged");
-        }
         console.log("SYNC COMPLETE!")
 
       })
       .catch((err) => {
         LOG.info("Sync: Failed... Could dispatch ", actions.length, " actions!", actions);
         actions.forEach((action) => {
-          action.triggeredBySync = true;
+          action.__triggeredBySync = true;
         });
 
         // if (actions.length > 0) {

@@ -54,7 +54,7 @@ class LibContainer {
   }
 
   loadGeneric(commandName, resolve: (data?: any) => void, reject: (err: any) => void, args: any) {
-    // console.log("Generic Promise received", commandName, args)
+    // console.log("Generic Promise received", commandName, args);
     if (this.genericActions[commandName] === undefined) {
       this.genericActions[commandName] = []
     }
@@ -66,7 +66,7 @@ class LibContainer {
       this.targetedActions[commandName] = {};
     }
 
-    // console.log("Targeted Promise received", commandName, handle, args)
+    // console.log("Targeted Promise received", commandName, handle, args);
     if (this.targetedActions[commandName][handle] === undefined) {
       this.targetedActions[commandName][handle] = {resolve, reject, args}
     }
@@ -76,11 +76,11 @@ class LibContainer {
   }
 
   succeed(): MockedGenericLib {
-    return this._getSuccessMethodsGeneric()
+    return this._getSuccessMethodsGeneric();
   }
 
   fail(): MockedGenericLibError {
-    return this._getErrorMethodsGeneric()
+    return this._getErrorMethodsGeneric();
   }
 
   for(handle: string) : Resolver {
@@ -265,7 +265,7 @@ class LibContainer {
 
 async function skipTurn() {
   return new Promise<void>((resolve, reject) => {
-    setImmediate(() => { resolve() })
+    setTimeout(() => { resolve() },0)
   })
 }
 

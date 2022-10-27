@@ -1,237 +1,97 @@
 import {Languages} from "../../../Languages"
 import * as React from 'react';
-import {Component} from 'react';
+import {Component, useRef, useState} from 'react';
 import {ActivityIndicator, Animated, Text, TouchableOpacity, View} from "react-native";
 
 import {Icon} from '../Icon';
-import {Util} from '../../../util/Util'
 import {colors, styles} from "../../styles";
-import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
-import {DeviceEntrySubText} from "./DeviceEntrySubText";
-import {xUtil} from "../../../util/StandAloneUtil";
-import {STONE_TYPES} from "../../../Enums";
-import {core} from "../../../Core";
-import {NavigationUtil} from "../../../util/NavigationUtil";
-import {StoneAvailabilityTracker} from "../../../native/advertisements/StoneAvailabilityTracker";
+import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {DataUtil} from "../../../util/DataUtil";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
-import {IconCircle} from "../IconCircle";
 import {CLOUD} from "../../../cloud/cloudAPI";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("HubEntry", key)(a,b,c,d,e);
 }
 
-import Timeout = NodeJS.Timeout;
+import {Get} from "../../../util/GetUtil";
+import {DraggableProps} from "../hooks/draggableHooks";
+import {useDatabaseChange} from "../hooks/databaseHooks";
+import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../BlurEntries";
+import {HubEntryLabel} from "./submodules/DeviceLabels";
+import {useTimeout} from "../hooks/timerHooks";
+import {HubUtil} from "../../../util/HubUtil";
+import {SlideSideFadeInView} from "../animated/SlideFadeInView";
 
+interface HubEntryProps extends DraggableProps {
+  sphereId: sphereId,
+  hubId?:   hubId,
+  stoneId?: stoneId,
+  editMode: boolean,
+}
 
-export class HubEntry extends Component<{
-  sphereId: string,
-  stoneId?: string,
-  hubId?: string,
+export function HubEntry(props: HubEntryProps) {
+  let [showStateIcon, setShowStateIcon] = useState(false);
+  useTimeout(() => { setShowStateIcon(true); }, 3000);
 
-  viewingRemotely: boolean,
+  let hub = Get.hub(props.sphereId, props.hubId) || DataUtil.getHubByStoneId(props.sphereId, props.stoneId);
+  let stone = Get.stone(props.sphereId, props.stoneId ?? hub.config.linkedStoneId);
+  if (!stone && !hub) {return <React.Fragment />;}
 
-  allowSwitchView?: boolean,
-  switchView?: boolean,
-  setSwitchView?: (state: boolean) => void,
+  let name = stone?.config?.name || hub?.config?.name;
+  let hubProblem = HubUtil.getProblems(props.sphereId, props.hubId, props.stoneId);
 
-  allowDeviceOverview?: boolean,
-  amountOfDimmableCrownstonesInLocation?: number,
-  hideExplanation?: boolean,
-  height?: number,
-  nearestInRoom?: boolean,
-  nearestInSphere?: boolean,
-  statusText?: string,
-  toggleScrollView?: (state: boolean) => void
-}, any> {
+  // update the switchstate based on the changes in the store
+  useDatabaseChange({
+    updateStoneState: props.stoneId,
+    changeStoneAvailability: props.stoneId,
+    hubLocationUpdated: props.hubId ?? hub?.id,
+    updateHubConfig: hub?.id,
+    changeHubs: hub?.id,
+  });
 
-  baseHeight : number;
-  unsubscribe = [];
-  animating = false;
-  id = xUtil.getUUID();
+  let goToSettingsCallback = () => {  NavigationUtil.launchModal( "HubOverview",{sphereId: props.sphereId, stoneId: hub?.config?.linkedStoneId || props.stoneId, hubId: props.hubId}); }
 
-
-  // these are used to determine persisting the switchstate.
-  actualState = 0;
-
-  showStateIconTimeout : Timeout;
-
-  revertToNormalViewTimeout = null;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      backgroundColor: new Animated.Value(0),
-      statusText:      null,
-      showStateIcon:   false,
-    };
-  }
-
-  componentDidMount() {
-    // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(core.eventBus.on('showErrorInOverview', (stoneId) => {
-      if (stoneId === this.props.stoneId) {
-        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 , useNativeDriver: false}).start();
-        setTimeout(() => {
-          Animated.timing(this.state.backgroundColor, { toValue: 0, useNativeDriver: false, duration: 2500 }).start();
-        }, 5000);
-      }
-    }));
-
-    this.unsubscribe.push(core.eventBus.on('databaseChange', (data) => {
-      let change = data.change;
-      if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
-        let change = data.change;
-        let state = core.store.getState();
-        let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-        if (!stone || !stone.config) { return; }
-        this.forceUpdate();
-        return
-      }
-    }));
-
-    this.showStateIconTimeout = setTimeout(() => { this.setState({showStateIcon:true})}, 3000);
-  }
-
-  componentWillUnmount() { // cleanup
-    clearTimeout(this.showStateIconTimeout);
-    this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
-  }
-
-
-  _basePressed(stone, hub) {
-    NavigationUtil.navigate( "HubOverview",{sphereId: this.props.sphereId, stoneId: hub?.config?.linkedStoneId || this.props.stoneId, hubId: this.props.hubId, viewingRemotely: this.props.viewingRemotely})
-  }
-
-  _getExplanationText(state, useSwitchView) {
-    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
-    let explanation = null;
-
-    if (this.props.hideExplanation !== true) {
-      if (state.app.hasSeenDeviceSettings === false) {
-        explanation = <Text style={explanationStyle}>{  lang("Tap_me_for_more_") }</Text>;
-      }
-      else if (state.app.hasSeenSwitchView !== true && this.props.amountOfDimmableCrownstonesInLocation > 1) {
-        explanation = <Text style={explanationStyle}>{ lang("Tap_icon_to_quickly_dim_y") }</Text>;
-      }
-    }
-
-    if (explanation) {
-      return <View style={{height:15}}>{explanation}</View>
-    }
-    return null;
-  }
-
-
-
-  render() {
-    let state = core.store.getState();
-    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    let backgroundColor = this.state.backgroundColor.interpolate({
-      inputRange: [0,10],
-      outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
-    });
-
-    let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId) || DataUtil.getHubById(this.props.sphereId, this.props.hubId);
-    let name = stone?.config?.name || hub?.config?.name;
-
-    let WrapperElement : any = TouchableOpacity;
-    let IconWrapperElement : any = TouchableOpacity;
-    let switchViewActive = false;
-    if (this.props.allowDeviceOverview === false) {
-      WrapperElement = View
-    }
-    if (this.props.allowSwitchView === false) {
-      IconWrapperElement = WrapperElement;
-      switchViewActive = false;
-    }
-
-    let height = this.props.height || 80;
-    let explanationText = this._getExplanationText(state, switchViewActive);
-
-    let hubProblem = false;
-
-    if (!hub) { hubProblem = true; }
-    else {
-      // not seen for too long.
-      if (CLOUD.lastSyncTimestamp > hub.config.lastSeenOnCloud && Date.now() - hub.config.lastSeenOnCloud > 1800 * 1000) {
-        hubProblem = true;
-      }
-
-      hubProblem = hubProblem || !hub.state.uartAlive;
-      hubProblem = hubProblem || !hub.state.uartAliveEncrypted;
-      hubProblem = hubProblem || !hub.state.uartEncryptionRequiredByCrownstone && hub.state.uartAliveEncrypted;
-      // hubProblem = hubProblem || hub.state.uartEncryptionRequiredByHub;
-      hubProblem = hubProblem || !hub.state.hubHasBeenSetup;
-      hubProblem = hubProblem || !hub.state.hubHasInternet;
-      hubProblem = hubProblem ||  hub.state.hubHasError;
-    }
-
-
-    return (
-      <Animated.View style={[styles.listView,{flexDirection: 'column', paddingRight:0, height: height, overflow:'hidden', backgroundColor:backgroundColor}]}>
-        <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <IconWrapperElement style={{ height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
-            if (this.props.allowSwitchView === false) {
-              return this._basePressed(stone, hub);
-            }
-
-            if (stone && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false &&
-              stone.config.firmwareVersion &&
-              (Util.canUpdate(stone, state) === true || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false)
-            ) {
-              NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
-              return;
-            }
-
-            clearTimeout(this.revertToNormalViewTimeout);
-            if (this.props.switchView === false && this.props.amountOfDimmableCrownstonesInLocation === 0) {
-              this.revertToNormalViewTimeout = setTimeout(() => { this.props.setSwitchView(false); }, 3000);
-            }
-            this.props.setSwitchView(!this.props.switchView);
-          }}>
-            {stone ?
-              <DeviceEntryIcon stone={stone} stoneId={this.props.stoneId} state={state} overrideStoneState={1} /> :
-              <IconCircle icon={'c1-router'} size={60} backgroundColor={colors.green.hex} color={'#ffffff'} />
-            }
-          </IconWrapperElement>
-          <WrapperElement
-            activeOpacity={ switchViewActive ? 1 : 0.2 }
-            style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}
-            onPress={() => { if (switchViewActive === false) { this._basePressed(stone, hub); }}}
-          >
-            <View style={{justifyContent:'center'}}>
-              <View style={{paddingLeft:20}}>
-                <Text style={{fontSize: 17}}>{name}</Text>
-                <DeviceEntrySubText
-                  statusTextOverride={this.props.statusText}
-                  statusText={this.state.statusText}
-                  deviceType={stone?.config?.type ?? STONE_TYPES.hub}
-                  rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
-                  disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
-                  nearestInSphere={this.props.nearestInSphere}
-                  nearestInRoom={this.props.nearestInRoom}
-                />
-                { explanationText }
-              </View>
-            </View>
-          </WrapperElement>
-          <WrapperElement
-            style={{height: this.baseHeight, width: 75, paddingRight:15, alignItems:'flex-end', justifyContent:'center'}}
-            onPress={() => { if (switchViewActive === false) { this._basePressed(stone, hub); }}}
-          >
-            {
-              hubProblem && !this.state.showStateIcon ? <ActivityIndicator size={"small"} /> :
+  return (
+    <DraggableBlurEntry
+      {...props}
+      settings
+      title={name}
+      longPressCallback={goToSettingsCallback}
+      iconItem={<DeviceEntryIcon stone={stone} stoneId={props.stoneId} />}
+      control={(props) => {
+        return (
+          <SlideSideFadeInView visible={!props.editMode} width={75} style={{alignItems:'flex-end'}}>
+            <TouchableOpacity style={{paddingRight:15, height:70, justifyContent:'center'}} onPress={goToSettingsCallback}>
+              {
+              hubProblem && !showStateIcon ? <ActivityIndicator size={"small"} /> :
               hubProblem ?
-              <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
+                <Icon name={'ios-warning'} size={30} color={colors.csOrange.hex} />
                 :
-              <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
+                <View style={{width:30, height:30}} >
+                  <View style={{position:'absolute', top:5, left:2, width:18, height:18, backgroundColor: colors.white.hex, borderRadius:9}} />
+                  <Icon name={'ios-checkmark-circle'} size={30} color={colors.green.hex} />
+                </View>
 
-            }
-          </WrapperElement>
-        </View>
-      </Animated.View>
-    );
-  }
+              }
+            </TouchableOpacity>
+          </SlideSideFadeInView>
+        );
+      }}
+      settingsItem={(props) => { return (
+        <React.Fragment>
+          <BlurEntryDevIcon
+            callback={() => { NavigationUtil.launchModal( "SettingsDevHub",{sphereId: props.sphereId, stoneId: props.stoneId, isModal: true}); }}
+            visible={props.editMode}
+          />
+          <BlurEntrySettingsIcon
+            callback={goToSettingsCallback}
+            visible={props.editMode}
+          />
+
+        </React.Fragment>
+      )}}
+      labelItem={(props) => { return <HubEntryLabel hub={hub} stone={stone} editMode={props.editMode}/> }}
+      editSettingsCallback={goToSettingsCallback}></DraggableBlurEntry>
+  );
 }

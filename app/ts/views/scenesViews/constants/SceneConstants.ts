@@ -8,7 +8,7 @@ let buttonWidth = 80;
 
 
 export let SceneConstants = {
-  roundness:   10,
+  marginBottom: 15,
   sceneHeight: sceneHeight,
   sceneImageWidth: sceneImageWidth,
   padding:     padding,
@@ -16,7 +16,6 @@ export let SceneConstants = {
   playWidth:   buttonWidth - 40,
   textWidth:   screenWidth - 2*padding - sceneImageWidth - buttonWidth - 10
 }
-
 
 export const PICTURE_GALLERY_TYPES = {
   STOCK: "STOCK",

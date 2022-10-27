@@ -6,6 +6,8 @@ interface topbarOptions {
   leftText?: {id: string, text:string},
   disableBack? : boolean,
   cancelModal? : boolean,
+  cancelBack? : boolean,
+  backModal? : boolean,
   closeModal? : boolean,
   cancel? : boolean,
   leftNav?: topbarNavComponent,
@@ -22,6 +24,7 @@ interface topbarOptions {
   // right button presets
   rightLoading?: boolean,
   nav?: topbarNavComponent,
+  help?: () => void,
   edit? : boolean,
   clear? : boolean,
   save? : boolean,
@@ -29,6 +32,8 @@ interface topbarOptions {
   next? : boolean,
   create? : boolean,
   update? : boolean,
+
+  darkBackground?: boolean,
 }
 
 interface topbarNavComponent {

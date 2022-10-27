@@ -1,11 +1,10 @@
 import {Languages} from "../Languages";
-import {Navigation} from "react-native-navigation";
 import {Platform} from "react-native";
 import {LoadingTopBarButton} from "../views/components/topbar/LoadingTopBarButton";
 import {ScaledImage} from "../views/components/ScaledImage";
 import * as React from "react";
-import {statusBarHeight, topBarHeight} from "../views/styles";
-import { LOGd, LOGi } from "../logging/Log";
+import {colors, statusBarHeight, topBarHeight} from "../views/styles";
+import {Navigation, Options} from "react-native-navigation";
 
 interface topBarOptionConfig {
   backButton?:        boolean,
@@ -17,21 +16,18 @@ interface topBarOptionConfig {
 export const TopBarUtil = {
 
   updateOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    let newOptions = TopBarUtil.getOptions(props, {...config, partialUpdate: true});
-    LOGd.info("TopBarUtil: MergeOptions 1", newOptions);
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}));
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: true}))
   },
 
   replaceOptions: function(componentId, props: topbarOptions, config: topBarOptionConfig = {}) {
-    let newOptions = TopBarUtil.getOptions(props, {...config, partialUpdate: false});
-    LOGd.info("TopBarUtil: MergeOptions 2", newOptions);
-    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}));
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, {...config, partialUpdate: false}))
   },
 
-  getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) {
+  getOptions: function(props : topbarOptions, config: topBarOptionConfig = {}) : Options {
     if (props === null) { return; }
 
     let leftButtons = [];
+    let rightButtons = [];
     // if (props.left) {
     //   leftButtons.push({
     //     id: props.left.id,
@@ -42,17 +38,22 @@ export const TopBarUtil = {
     //   })
     // }
 
-    if (props.leftText !== undefined) {
+    if (props.leftText) {
       leftButtons.push(getLeftButton(props.leftText.id, props.leftText.text));
     }
     if (props.disableBack === true && Platform.OS === 'ios') {
       leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
     }
-    if (props.closeModal !== undefined) {
+    if (props.closeModal) {
       leftButtons.push(getLeftButton('closeModal', Languages.get("__UNIVERSAL", "Back")()));
     }
-
-    if (props.cancelModal !== undefined) {
+    if (props.backModal) {
+      leftButtons.push(getLeftButton('backModal', Languages.get("__UNIVERSAL", "Back")()));
+    }
+    if (props.cancelBack) {
+      leftButtons.push(getLeftButton('cancelBack', Languages.get("__UNIVERSAL", "Back")()));
+    }
+    if (props.cancelModal) {
       leftButtons.push(getLeftButton('cancelModal', Languages.get("__UNIVERSAL", "Cancel")()));
     }
 
@@ -91,7 +92,17 @@ export const TopBarUtil = {
       }
     }
 
-    let rightButtons = [];
+    if (props.help) {
+      rightButtons.push({
+        id: 'topBarHelp',
+        component: {
+          name:'topbarRightHelpButton',
+          passProps: {
+            onPress: props.help,
+          }
+        },
+      })
+    }
 
     if (props.nav) {
       rightButtons.push(getButtonComponent(props.nav.id, props.nav.text));
@@ -129,7 +140,7 @@ export const TopBarUtil = {
       });
     }
 
-    let results = { topBar: { drawBehind: false } }
+    let results : Options = { topBar: { drawBehind: true } }
 
     if (config.backButton) {
       if (Platform.OS === 'android') {
@@ -140,23 +151,27 @@ export const TopBarUtil = {
     }
 
     if (config.partialUpdate) {
-      results.topBar["title"]        = {text: props.title};
-      results.topBar["rightButtons"] = rightButtons;
-      results.topBar["leftButtons"]  = leftButtons;
+      results.topBar.title        = {text: props.title};
+      results.topBar.rightButtons = rightButtons;
+      results.topBar.leftButtons  = leftButtons;
     }
     else {
-      if (props.title)             { results.topBar["title"]        = {text: props.title}; }
-      if (rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons;        }
-      if (leftButtons.length  > 0) { results.topBar["leftButtons"]  = leftButtons;         }
+      if (props.title)             { results.topBar.title        = {text: props.title}; }
+      if (rightButtons.length > 0) { results.topBar.rightButtons = rightButtons;        }
+      if (leftButtons.length  > 0) { results.topBar.leftButtons  = leftButtons;         }
     }
 
     if (config.clearEmptyButtons) {
-      if (!results.topBar['rightButtons']) { results.topBar['rightButtons'] = []; }
-      if (!results.topBar['leftButtons'])  { results.topBar['leftButtons']  = []; }
+      if (!results.topBar.rightButtons) { results.topBar.rightButtons = []; }
+      if (!results.topBar.leftButtons)  { results.topBar.leftButtons  = []; }
     }
 
     // console.log("Setting Topbar Options", JSON.stringify(results, null, 2))
 
+    if (props.darkBackground) {
+      results.topBar.title.color = colors.white.hex;
+      results.topBar.leftButtonColor = colors.white.hex;
+    }
 
     return results;
   },

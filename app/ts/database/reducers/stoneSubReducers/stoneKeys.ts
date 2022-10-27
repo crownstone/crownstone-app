@@ -8,7 +8,7 @@ let dataState = {
   ttl: 0
 };
 
-let keyReducer = (state = dataState, action : any = {}) => {
+let keyReducer = (state = dataState, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'INJECT_IDS':
       let newState = {...state};
@@ -37,7 +37,7 @@ let keyReducer = (state = dataState, action : any = {}) => {
 };
 
 // stoneKeyReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
     case "REMOVE_STONE_KEY":
       let stateCopy = {...state};

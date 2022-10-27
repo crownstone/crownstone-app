@@ -37,13 +37,12 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
 
     // check if we have to do things with the image
     let location = Get.location(this.localSphereId, this.localId);
-    if (location.config.pictureId !== cloudData.imageId) {
-      if (!cloudData.imageId) {
-        this.transferPromises.push(FileUtil.safeDeleteFile(location.config.picture));
-      }
-      else {
-        this._downloadLocationImage(cloudData);
-      }
+    if (!cloudData.imageId && location.config.pictureSource === "CUSTOM") {
+      this.transferPromises.push(FileUtil.safeDeleteFile(location.config.picture));
+    }
+    else if (cloudData.imageId !== location.config.pictureId || cloudData.imageId && !location.config.picture) {
+      // if there IS a custom image, but its not the same id as we have, download the new one
+      this._downloadLocationImage(cloudData)
     }
   }
 
@@ -55,7 +54,10 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
       LocationTransferNext.mapLocalToCloud(location)
     );
 
-    if (location.config.pictureId !== cloudData.imageId) {
+    if (location.config.pictureSource === "STOCK" && cloudData.stockPicture === null) {
+      this.transferPromises.push(CLOUD.forLocation(this.localId).deleteLocationPicture().catch((err) => {}));
+    }
+    else if (location.config.pictureId !== cloudData.imageId) {
       if (!location.config.pictureId) {
         this.transferPromises.push(CLOUD.forLocation(this.localId).deleteLocationPicture().catch((err) => {}))
       }
@@ -74,7 +76,7 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
       CLOUD.forLocation(cloudData.id).downloadLocationPicture(toPath)
         .then((picturePath) => {
           this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:
-              { picture: picturePath, pictureId: cloudData.imageId, pictureTaken: Date.now() }
+              { picture: picturePath, pictureId: cloudData.imageId, pictureSource:"CUSTOM", pictureTaken: Date.now() }
           });
         })
         .catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err?.message); })

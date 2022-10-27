@@ -11,10 +11,12 @@ import {LOG, LOGe} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 import {core} from "../../Core";
-import {NavigationUtil} from "../../util/NavigationUtil";
+import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../util/TopBarUtil";
 import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {tell} from "../../logic/constellation/Tellers";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsFactoryResetStep2", key)(a,b,c,d,e);
@@ -255,8 +257,9 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.main}>
-        <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
+      <SettingsBackground>
+        <SafeAreaView style={{flex:1}}>
+          <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.text]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information]}>{this.state.text}</Text>
@@ -273,8 +276,8 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
           <View style={{marginBottom: 20}}>
             <ActivityIndicator animating={true} color={colors.csBlueDark.hex} size="large"/>
           </View>
-        </View>
-      </BackgroundNoNotification>
+        </SafeAreaView>
+      </SettingsBackground>
     )
   }
 }

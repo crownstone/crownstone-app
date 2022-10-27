@@ -13,11 +13,11 @@ import {
 } from "react-native";
 
 import { Icon }         from '../components/Icon'
-import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../Core";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -107,37 +107,28 @@ export class LocationPermissionOverlay extends Component<any, any> {
         return lang("This_should_not_take_long");
     }
   }
+
+  _getToAppSettingsButton() {
+    return (
+      <PopupButton
+        callback={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
+        label={lang("toAppSettings")}
+      />
+    );
+  }
+
   _getButton() {
     switch (this.state.notificationType) {
       case "manualPermissionRequired":
       case "foreground":
-        return (
-          <TouchableOpacity
-            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
-            style={[styles.centered, {
-              width: 0.4 * screenWidth,
-              height: 36,
-              borderRadius: 18,
-              borderWidth: 2,
-              borderColor: colors.blue3.rgba(0.5),
-            }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("toAppSettings") }</Text>
-          </TouchableOpacity>
-        );
+        return this._getToAppSettingsButton()
       case "off":
       case "noPermission":
         return (
-          <TouchableOpacity
-            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.requestLocationPermission() }}
-            style={[styles.centered, {
-              width: 0.4 * screenWidth,
-              height: 36,
-              borderRadius: 18,
-              borderWidth: 2,
-              borderColor: colors.blue3.rgba(0.5),
-            }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Request_Permission") }</Text>
-          </TouchableOpacity>
+          <PopupButton
+            callback={() => { this.setState({waitingOnPermission: true}); Bluenet.requestLocationPermission() }}
+            label={lang("Request_Permission")}
+          />
         );
     }
   }
@@ -145,32 +136,52 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox
+      <SimpleOverlayBox
         visible={this.state.visible}
         overrideBackButton={false}
       >
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
           <Icon
-            name="ios-navigate"
+            name="c1-locationPin1"
             size={Math.min(120,Math.min(0.30*screenHeight, 0.5*screenWidth))}
-            color={colors.blue3.hex}
+            color={colors.blue.hex}
           />
           <View style={{flex:1}} />
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue3.hex, padding:5, textAlign:'center'}}>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:20, textAlign:'center'}}>
             {this._getTitle()}
           </Text>
-          <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue3.hex, padding:5, textAlign:'center'}}>
+          <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.black.hex, padding:20, textAlign:'center'}}>
             {this._getText()}
           </Text>
           <View style={{flex:1}} />
-          {this.state.showRequestFailed ?
-            <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
+          {this.state.showRequestFailed  || true?
+            <React.Fragment>
+              <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue.hex, padding: 25, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
+              {this._getToAppSettingsButton()}
+            </React.Fragment>
             : this._getButton()
           }
           <View style={{flex:1}} />
         </View>
-      </OverlayBox>
+      </SimpleOverlayBox>
     );
   }
+}
+
+
+export function PopupButton(props : {label: string, callback: () => void}) {
+  return (
+    <TouchableOpacity
+      onPress={props.callback}
+      style={[styles.centered, {
+        width: 0.6 * screenWidth,
+        height: 50,
+        borderRadius: 18,
+        borderWidth: 2,
+        borderColor: colors.blue.hex,
+      }]}>
+      <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.blue.hex}}>{props.label}</Text>
+    </TouchableOpacity>
+  );
 }

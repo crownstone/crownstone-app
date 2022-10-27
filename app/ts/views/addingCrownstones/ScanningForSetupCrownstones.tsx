@@ -9,15 +9,14 @@ import {
   ActivityIndicator,
   ScrollView, Text, TouchableOpacity,
   View} from "react-native";
-import { background, colors, screenWidth, styles } from "../styles";
+import { background, colors, screenWidth, styles, topBarHeight } from "../styles";
 import { core } from "../../Core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
-import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn} from "../components/animated/FadeInView";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BleUtil } from "../../util/BleUtil";
 import KeepAwake from 'react-native-keep-awake';
@@ -28,6 +27,7 @@ import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
 import { STONE_TYPES } from "../../Enums";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
+import { SetupDeviceEntry_addMenu } from "../components/deviceEntries/SetupDeviceEntry";
 
 export class ScanningForSetupCrownstones extends LiveComponent<{
   sphereId: string,
@@ -160,7 +160,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     return (
       <View key={stoneId + '_setup_entry'}>
         <FadeIn style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-          <SetupDeviceEntry
+          <SetupDeviceEntry_addMenu
             testID={`SetupDeviceEntry${item.handle}`}
             key={stoneId + '_setup_element'}
             sphereId={this.props.sphereId}
@@ -217,14 +217,14 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     let informationStyle = {...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle};
     return (
-      <Background hasNavBar={false} image={background.main} hideNotifications={true} testID={"ScanningForSetupCrownstones"}>
+      <Background hasNavBar={false} image={background.main} testID={"ScanningForSetupCrownstones"}>
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}
           onFocus={() => { this._startActiveScanning(); }}
           onBlur={ () => { this._stopActiveScanning();  }}
         />
-        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
+        <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden', marginTop: topBarHeight}}>
           <ScanningForSetupCrownstonesBanner componentId={this.props.componentId} height={100}/>
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>

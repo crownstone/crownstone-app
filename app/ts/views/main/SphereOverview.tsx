@@ -7,39 +7,39 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Text, View
+  Text, View, StatusBar, TouchableOpacity
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
-import { Sphere }                   from './Sphere'
-import { LOG, LOGd, LOGi } from "../../logging/Log";
+import { Sphere, SphereHeader } from "./Sphere";
 import {
+  availableModalHeight,
   availableScreenHeight, background,
   colors,
-  overviewStyles
+  overviewStyles, screenHeight, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
-import { SphereChangeButton }       from "./buttons/SphereChangeButton";
-import { AddItemButton }            from "./buttons/AddItemButton";
-import { SphereUtil }               from "../../util/SphereUtil";
 import {SphereLevel}                from "./SphereLevel";
-import {ZoomInstructionOverlay, ZoomInstructionsFooter} from "./ZoomInstructionOverlay";
 import { core }                     from "../../Core";
-import { NavigationUtil }           from "../../util/NavigationUtil";
+import { NavigationUtil }           from "../../util/navigation/NavigationUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
-import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
-import { Navigation }               from "react-native-navigation";
-import { TopBarUtil }               from "../../util/TopBarUtil";
 import { DataUtil }                 from "../../util/DataUtil";
-import { RoomAddCore }              from "../roomViews/RoomAddCore";
-import { Background }               from "../components/Background";
-import { SmartHomeStateButton }     from "./buttons/SmartHomeStateButton";
+import { Background, BackgroundCustomTopBar } from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
-import { DebugToolsButton }         from "./buttons/DebugToolsButton";
+import { SideBarView }              from "../components/animated/SideBarView";
+import { SphereOverviewSideBar }    from "../sidebars/SphereOverviewSideBar";
+import { useRef }                   from "react";
+import { NavBarBlur, TopBarBlur }   from "../components/NavBarBlur";
+import {Debug, DebugNotifications}  from "../../DebugCalls";
+import { EditIcon, MenuButton, MenuButtonPlaceholder } from "../components/EditIcon";
+import { HeaderTitle }              from "../components/HeaderTitle";
+import { Get }                      from "../../util/GetUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Spacer } from "../components/Spacer";
 
 
 const ZOOM_LEVELS = {
@@ -47,11 +47,14 @@ const ZOOM_LEVELS = {
   room: 'room'
 };
 
+export const SPHERE_ID_STORE = {
+  activeSphereId: null
+}
 
-export class SphereOverview extends LiveComponent<any, any> {
+
+export class SphereOverviewContent extends LiveComponent<any, any> {
   static options(props) {
-    getTopBarProps(core.store.getState(), props, {});
-    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+    return {topBar:{visible:false}}
   }
 
   unsubscribeEvents : any;
@@ -62,28 +65,24 @@ export class SphereOverview extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false, arrangingRooms: false };
+    this.state = { zoomLevel: ZOOM_LEVELS.room, arrangingRooms: false };
     this.viewId = xUtil.getUUID();
     ActiveSphereManager.updateActiveSphere();
   }
 
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit') {
-      let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
-      NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
-    }
-    if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
-    if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
-    if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
-  }
 
   componentDidMount() {
+    Debug();
+
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
+    this.unsubscribeEvents.push(core.eventBus.on("SET_ARRANGING_ROOMS", () => { this.setRearrangeRooms(true) }));
+
     this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
+    this.unsubscribeEvents.push(core.eventBus.on("VIEW_SPHERES", this._zoomOut));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -91,7 +90,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 
       if (change.removeSphere) {
         ActiveSphereManager.clearActiveSphere();
-        this._updateNavBar();
         this.setState({zoomLevel: ZOOM_LEVELS.sphere});
         return;
       }
@@ -105,8 +103,10 @@ export class SphereOverview extends LiveComponent<any, any> {
         change.hubLocationUpdated            ||
         change.stoneLocationUpdated          ||
         change.updateStoneCoreConfig         ||
+        change.changeSphereSmartHomeState    ||
         change.updateSphereUser              ||
         change.changeStones                  ||
+        change.changeMessage                 ||
         change.changeHubs                    ||
         change.updateActiveSphere            ||
         change.updateLocationConfig          ||
@@ -114,8 +114,8 @@ export class SphereOverview extends LiveComponent<any, any> {
         change.changeSpheres                 ||
         change.changeLocations
       ) {
+        console.log("Redraw triggered from Sphere Overview by:", Object.keys(change))
         this.forceUpdate();
-        this._updateNavBar();
       }
     });
   }
@@ -128,89 +128,67 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
+  _zoomIn = () => {
+    const state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
 
-  _updateNavBar() {
-    getTopBarProps(core.store.getState(), this.props, this.state);
-    let newOptions = TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE, {clearEmptyButtons:true});
-    LOGd.info("HubOverview: MergeOptions", newOptions);
-    Navigation.mergeOptions(this.props.componentId, newOptions);
+    if (!activeSphereId) { return; }
+
+    NavigationUtil.setTabBarOptions(colors.blue.hex, colors.csBlue.hex);
+    if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+      this.setState({zoomLevel: ZOOM_LEVELS.room});
+    }
   }
 
+  _zoomOut = () => {
+    const state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let amountOfSpheres = Object.keys(state.spheres).length;
 
-  _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
-    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
-      if (amountOfSpheres > 1) {
-        return <SphereChangeButton visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
-          let newState = {zoomLevel: ZOOM_LEVELS.sphere};
+    if (!activeSphereId) { return; }
+    if (this.state.arrangingRooms === true) { return; }
 
-          if (state.app.hasZoomedOutForSphereOverview === false) {
-            this._getInstructionScreen();
-          }
-
-          this.setState(newState, () => { this._updateNavBar(); })
-        }}/>
+    if (amountOfSpheres > 1) {
+      if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+        // tell the app the user has done this and we don't need to tell him any more.
+        if (state.app.hasZoomedOutForSphereOverview === false) {
+          core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
+        }
+        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
+        this.setState({zoomLevel: ZOOM_LEVELS.sphere});
+      }
+      else { // this is for convenience, it's not accurate but it'll do
+        this._zoomIn()
       }
     }
   }
 
 
-  _getAddButtonDescription(activeSphereId, noCrownstonesYet: boolean) {
-    if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-      return <AddCrownstoneButtonDescription visible={
-        noCrownstonesYet && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false
-      } />;
+  setRearrangeRooms(value) {
+    if (value === true) {
+      BackButtonHandler.override(this.props.componentId, () => {
+        core.eventBus.emit("reset_positions" + this.viewId);
+      });
+      NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
+
     }
+    else {
+      BackButtonHandler.clearOverride(this.props.componentId);
+      NavigationUtil.setTabBarOptions(colors.blue.hex, colors.black.hex);
+    }
+    this.setState({arrangingRooms: value});
   }
 
-
-  _getContent(state, amountOfSpheres, activeSphereId) {
-    let zoomOutCallback = () => {
-      if (!activeSphereId) { return; }
-      if (this.state.arrangingRooms === true) { return; }
-
-      if (amountOfSpheres > 1) {
-        if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-          // tell the app the user has done this and we don't need to tell him any more.
-          if (state.app.hasZoomedOutForSphereOverview === false) {
-            core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
-          }
-          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
-        }
-        else { // this is for convenience, it's not accurate but it'll do
-          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
-        }
-      }
-    };
-
-    let zoomInCallback = () => {
-      if (!activeSphereId) { return; }
-
-      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
-      }
-    };
-
-    let setRearrangeRooms = (value) => {
-      if (value === true) {
-        BackButtonHandler.override(this.props.componentId, () => {
-          core.eventBus.emit("reset_positions" + this.viewId);
-        })
-      }
-      else {
-        BackButtonHandler.clearOverride(this.props.componentId)
-      }
-      this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
-    };
-
+  _getContent(activeSphereId) {
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere && activeSphereId) {
       return (
         <Sphere
           viewId={this.viewId}
           sphereId={activeSphereId}
-          multipleSpheres={amountOfSpheres > 1}
-          zoomOutCallback={zoomOutCallback}
-          setRearrangeRooms={setRearrangeRooms}
+          zoomOutCallback={this._zoomOut}
+          setRearrangeRooms={(value) => { this.setRearrangeRooms(value); }}
           arrangingRooms={this.state.arrangingRooms}
+          openSideMenu={this.props.openSideMenu}
         />
       )
     }
@@ -222,58 +200,60 @@ export class SphereOverview extends LiveComponent<any, any> {
 
             // request latest location data.
             CLOUD.syncUsers();
-            this.setState({zoomLevel:ZOOM_LEVELS.room}, () => {  this._updateNavBar(); });
+            this._zoomIn();
           }}
-          zoomInCallback={zoomInCallback}
-          zoomOutCallback={zoomOutCallback}
         />
       );
     }
   }
 
-  _getInstructionScreen() {
-    core.eventBus.emit("showCustomOverlay", { content: <ZoomInstructionOverlay />, footer: <ZoomInstructionsFooter /> });
-  }
-
   render() {
     const state = core.store.getState();
-
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
     let backgroundOverride = background.main;
 
-    LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
+        // select your sphere.
+        NavigationUtil.setTabBarOptions(colors.csOrange.hex, colors.white.hex);
         return (
-          <AnimatedBackground image={require("../../../assets/images/backgrounds/sphereBackground.jpg")}>
-            { this._getContent(state, amountOfSpheres, activeSphereId) }
+          <AnimatedBackground
+            viewWrapper
+            image={background.dark}
+            lightStatusbar={true}
+            hasTopBar={false}
+            testID={"SphereOverview"}
+          >
+            { this._getContent(activeSphereId) }
           </AnimatedBackground>
         );
       }
 
       let activeSphere = state.spheres[activeSphereId];
+      SPHERE_ID_STORE.activeSphereId = activeSphereId;
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       backgroundOverride = background.main;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        backgroundOverride = require("../../../assets/images/backgrounds/sphereBackground.jpg");
+        SPHERE_ID_STORE.activeSphereId = null;
+        backgroundOverride = background.dark;
       }
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
           return (
-            <Background hideNotifications={true} image={background.main} testID={"SphereOverview_addRoom"}>
-              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main") } height={availableScreenHeight} />
-            </Background>
+            <BackgroundCustomTopBar testID={"SphereOverview_addRoom"} fullScreen={true}>
+              <RoomsRequired sphereId={activeSphereId} openSideMenu={this.props.openSideMenu} />
+            </BackgroundCustomTopBar>
           )
         }
 
         // retrofit: place all stones in a room.
-        let floatingStones = DataUtil.getStonesInLocation(state, activeSphereId, null);
-        let floatingHubs   = DataUtil.getHubsInLocation(state, activeSphereId, null);
+        let floatingStones = DataUtil.getStonesInLocation(activeSphereId, null);
+        let floatingHubs   = DataUtil.getHubsInLocation(activeSphereId, null);
         if (
           (Object.keys(floatingHubs).length > 0 || Object.keys(floatingStones).length > 0) &&
           Permissions.inSphere(activeSphereId).moveCrownstone
@@ -282,80 +262,83 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          backgroundOverride = require('../../../assets/images/backgrounds/blueprintBackgroundGray.jpg')
+          backgroundOverride = require('../../../assets/images/backgrounds/arranging.jpg')
         }
       }
 
+      SPHERE_ID_STORE.activeSphereId = activeSphereId;
 
       return (
-        <AnimatedBackground image={backgroundOverride} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere} testID={"SphereOverview"}>
-          { this._getAddButtonDescription(activeSphereId, noStones) }
-          { this._getContent(state, amountOfSpheres, activeSphereId) }
-          { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
-          { this._getAddButtonDescription(activeSphereId, noStones) }
-          <AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
+        <AnimatedBackground
+          viewWrapper
+          image={backgroundOverride}
+          lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
+          hasTopBar={false}
+          testID={this.state.arrangingRooms ? 'SphereRoomArranger' : 'SphereOverview'}
+        >
+          { this._getContent(activeSphereId) }
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
-          <SmartHomeStateButton
-            sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false && Permissions.inSphere(activeSphereId).canDisableBehaviour }
-          />
-          <DebugToolsButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
+          { this.state.zoomLevel === ZOOM_LEVELS.room && !this.state.arrangingRooms && <NavBarBlur xlight noLine /> }
         </AnimatedBackground>
       );
     }
     else {
       return (
-        <AnimatedBackground image={backgroundOverride} testID={"SphereOverview_noSphere"}>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
-            <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>
-            <Text style={overviewStyles.subText}>{ lang("Press_Edit_in_the_upper_r") }</Text>
-          </View>
-        </AnimatedBackground>
+        <BackgroundCustomTopBar image={backgroundOverride} testID={"SphereOverview_noSphere"}>
+          <SafeAreaView style={{flexGrow:1, alignItems:'center', justifyContent:'center', top:0, left:0, bottom:0, right:0}}>
+            <View style={{height: topBarHeight}} />
+            {/*<Icon name="c1-sphere" size={120} color={colors.csBlue.hex} style={{padding:15}}/>*/}
+            <Text style={styles.boldExplanation}>{ lang("Press_Edit_in_the_upper_r") }</Text>
+            <View style={{flex:2}} />
+          </SafeAreaView>
+          <TopBarBlur xlight>
+            <View style={{flexDirection: 'row', alignItems:'center'}}>
+              <MenuButtonPlaceholder />
+              <HeaderTitle title={lang("No_Spheres_available_")} />
+              <View style={{flex:1}} />
+              <EditIcon onPress={() => { NavigationUtil.launchModal('SphereEdit',{sphereId: null})}} testID={'editSphere'} />
+            </View>
+          </TopBarBlur>
+        </BackgroundCustomTopBar>
       );
     }
   }
 }
 
-function getTopBarProps(state, props, viewState) {
-  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
-  LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
-  if (viewState.arrangingRooms === true) {
-    NAVBAR_PARAMS_CACHE = {
-      title: lang("Move_rooms_around"),
-      cancel: true,
-      save:   true,
-    }
-  }
-  else if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
-    NAVBAR_PARAMS_CACHE = {
-      title: lang("Sphere_Overview"),
-      disableBack: true,
-    }
-  }
-  else {
-    if (sphereId === null) {
-      NAVBAR_PARAMS_CACHE = {
-        title: lang("Hello_there_"),
-        edit: true
-      }
-    }
-    else {
-      let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
-      NAVBAR_PARAMS_CACHE = {
-        title: sphere.config.name,
-        leftIcon: finalizeLocalization.showItem ? {
-          id: 'localization',
-          icon: require('../../../assets/images/icons/localizationIcon.png'),
-          iconSize: {width: 100, height:91},
-          onPress: finalizeLocalization.action
-        } : null,
-        edit: true,
-      }
-    }
-  }
 
-  return NAVBAR_PARAMS_CACHE;
+/**
+ * Tell the users that they need to add a room to the sphere.
+ * @param props
+ * @constructor
+ */
+function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
+  let sphere = Get.sphere(props.sphereId);
+  return (
+    <React.Fragment>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center',}}>
+      <View style={{flex:1}} />
+      <Text style={styles.header}>{ lang("You_need_to_add_a_room_to") }</Text>
+      <View style={{flex:0.1}} />
+      <Text style={styles.boldExplanation}>{ lang("Tap_the_blinking_icon_on_") }</Text>
+      <View style={{flex:3}} />
+    </View>
+    <TopBarBlur xlight blink={{left: true}}>
+      <SphereHeader sphere={sphere} openSideMenu={props.openSideMenu} blinkMenuIcon={true} badgeMenuIcon={null} />
+    </TopBarBlur>
+    </React.Fragment>
+  );
+}
+
+export function SphereOverview(props) {
+  let sideBarRef = useRef(null);
+
+  return (
+    <SideBarView
+      ref={sideBarRef}
+      content={ <SphereOverviewContent {...props} openSideMenu={() => { sideBarRef.current.open()}} closeSideMenu={() => { sideBarRef.current.close()}}/>}
+      sideMenu={<SphereOverviewSideBar            openSideMenu={() => { sideBarRef.current.open()}} closeSideMenu={() => { sideBarRef.current.close()}}/>}
+    />
+  )
 }
 
 

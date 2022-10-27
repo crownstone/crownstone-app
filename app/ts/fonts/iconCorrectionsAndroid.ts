@@ -355,16 +355,39 @@ const fiHSIconsCorrectionsAndroid = {
 const fiEIconsCorrectionsAndroid = {
 
 };
+const ion5CorrectionsAndroid = {
 
+};
 
+const entypoCorrections = {
+
+};
+const fontAwesome5Corrections = {
+
+};
+const fontAwesomeCorrections = {
+
+};
+const materialIconsCorrections = {
+
+};
+const zocialIconsCorrections = {
+
+};
 
 
 export const iconCorrectionsAndroid = {
   c1: c1CorrectionsAndroid,
   c2: c2CorrectionsAndroid,
   c3: c3CorrectionsAndroid,
+  materialIcons: materialIconsCorrections,
+  entypo: entypoCorrections,
+  fontAwesome: fontAwesomeCorrections,
+  fontAwesome5: fontAwesome5Corrections,
   ionicons: ioniconCorrectionsAndroid,
+  ionicons5: ion5CorrectionsAndroid,
   evilIcons: evilIconsCorrectionsAndroid,
+  zocial: zocialIconsCorrections,
   fiCS1: fiCS1IconsCorrectionsAndroid,
   fiHS:  fiHSIconsCorrectionsAndroid,
   fiE:   fiEIconsCorrectionsAndroid,

@@ -7,7 +7,7 @@ let dataState = {
 };
 
 // lastUpdatedReducer
-export default (state = dataState, action : any = {}) => {
+export default (state = dataState, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATED_STONE_TIME':
       let newState = {...state};

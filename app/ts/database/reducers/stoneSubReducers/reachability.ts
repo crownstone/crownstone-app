@@ -6,7 +6,7 @@ let defaultReachability = {
   lastSeen: null,
 };
 
-export default (state = defaultReachability, action : any = {}) => {
+export default (state = defaultReachability, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_REACHABILITY':
       if (action.data) {

@@ -22,13 +22,10 @@ class BluenetContainer : NSObject {
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
-  open var trainingHelper : TrainingHelper!
-
+  
   open var launchArguments = [String: String]()
   
   var watchStateManager: WatchStateManager!
-  
-  var localization : Localization!
   
   open var devEnvironment = false
   var watchBridge : WatchBridge!
@@ -42,20 +39,16 @@ class BluenetContainer : NSObject {
     self.watchBridge = WatchBridge()
     self.watchStateManager = WatchStateManager()
     
-    self.localization = Localization()
-    
     BluenetLib.setBluenetGlobals(appName: "Crownstone")
     
     BluenetLib.LOG.setTimestampPrinting(newState: true)
     
     self.bluenet = Bluenet(backgroundEnabled: true)
+    self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
     
     // use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
-    
-    self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
     
     // store the environment so the app can request it. This is used to determine which notification key we should use in our installation model in the cloud.
     #if DEBUG
@@ -67,7 +60,7 @@ class BluenetContainer : NSObject {
     #if CS_DEBUG
       self.devEnvironment = true
     #endif
-    
+
   }
   
   func subscribedToNearest() -> Bool {
@@ -104,10 +97,6 @@ class BluenetContainer : NSObject {
   
   func bluenetLocalizationOn(_ topic: String, _ callback: @escaping eventCallback) {
     self.subscriptions.append(self.bluenetLocalization.on(topic, callback))
-  }
-  
-  func localizationOn(_ topic: String, _ callback: @escaping eventCallback) {
-    self.subscriptions.append(self.localization.eventBus.on(topic, callback))
   }
   
   open func applicationDidEnterBackground() {
@@ -202,7 +191,6 @@ class BluenetContainer : NSObject {
       }
       prevValue = thing;
     }
-    
     GLOBAL_BLUENET.launchArguments = map
   }
 }

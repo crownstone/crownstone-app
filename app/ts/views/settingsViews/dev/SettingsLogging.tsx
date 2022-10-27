@@ -10,11 +10,12 @@ import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import {clearLogs, getAppLogFileData} from "../../../logging/LogUtil";
 import { core } from "../../../Core";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import {FileUtil} from "../../../util/FileUtil";
 import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
+import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 
 
 export class SettingsLogging extends LiveComponent<any, any> {
@@ -127,7 +128,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
                       console.log("Sharing this:", url)
                       await Share.open({ urls: [url] });
                     }
-                    catch (err) {
+                    catch (err : any) {
                       LOGw.info("Something went wrong while sharing data:",err)
                     }
                 }},
@@ -220,11 +221,11 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} >
+      <SettingsNavbarBackground>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

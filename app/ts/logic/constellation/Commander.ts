@@ -83,6 +83,8 @@ import {LOGd, LOGe, LOGi} from "../../logging/Log";
 import {Command_SetTimeViaBroadcast} from "./commandClasses/Command_SetTimeViaBroadcast";
 import {Command_GetUICR} from "./commandClasses/Command_GetUICR";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
+import {Command_setDoubleTapSwitchcraft} from "./commandClasses/Command_setDoubleTapSwitchcraft";
+import {Command_setDefaultDimValue} from "./commandClasses/Command_setDefaultDimValue";
 
 /**
  * The CommandAPI basically wraps all commands that you can send to a Crownstone. It contains a Collector (see below)
@@ -136,7 +138,7 @@ class CommandAPI_base {
       }
 
       LOGi.constellation("Commander: Loading command", command.type, allowMeshRelays,"id:", this.id);
-      // this check is here so we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
+      // this check is here so that we pass any errors down the promise chain, not immediately at the teller (which is not caught in a .catch)
       let validHandleToPerformAction = false;
       for (let target of this.options.commandTargets) {
         if (target) {
@@ -158,7 +160,7 @@ class CommandAPI_base {
       }
       return promiseContainer.promise;
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.constellation("Commander: Failed to load command", err?.message || 'unknown_error', "id:", this.id);
       throw err;
     }
@@ -498,6 +500,12 @@ export class CommandAPI extends CommandMeshAPI {
   }
   async factoryResetHubOnly() : Promise<HubDataReply> {
     return this._load(new Command_FactoryResetHubOnly());
+  }
+  async setDoubleTapSwitchCraft(enabled: boolean) : Promise<void> {
+    return this._load(new Command_setDoubleTapSwitchcraft(enabled));
+  }
+  async setDefaultDimValue(dimValue: number) : Promise<void> {
+    return this._load(new Command_setDefaultDimValue(dimValue));
   }
 
   async disconnect() {

@@ -14,9 +14,10 @@ import MapView, { Marker } from "react-native-maps";
 import { Util } from "../../../util/Util";
 import { BehaviourSubmitButton } from "../../deviceViews/smartBehaviour/supportComponents/BehaviourSubmitButton";
 import { ActivityIndicator, TouchableOpacity, View, ViewStyle } from "react-native";
-import { NavigationUtil } from "../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Icon } from "../../components/Icon";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 export class SphereEditMap extends LiveComponent<any, any> {
   static options(props) {
@@ -123,7 +124,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
 
 
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"SphereEditMap"}>
+      <SettingsBackground testID={"SphereEditMap"}>
         <MapView
           ref={(r) => { this.map = r }}
           style={{flex:1}}
@@ -159,7 +160,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
             testID={'UseLocation'}
           />
         </View>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

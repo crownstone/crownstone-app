@@ -1,7 +1,11 @@
 type SupportedMappingType = 'ability'         |
                             'abilityProperty' |
                             'behaviour'       |
+                            'fingerprint'     |
                             'hub'             |
+                            'message'         |
+                            'readBy'          |
+                            'deletedBy'       |
                             'location'        |
                             'scene'           |
                             'sphereUser'      |

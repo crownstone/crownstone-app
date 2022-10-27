@@ -9,6 +9,7 @@ import {Scheduler} from "../logic/Scheduler";
 import {tell} from "../logic/constellation/Tellers";
 import {SyncNext} from "../cloud/sections/newSync/SyncNext";
 import {Get} from "../util/GetUtil";
+import {ABILITY_PROPERTY_TYPE_ID} from "../database/reducers/stoneSubReducers/abilities";
 
 
 class StoneDataSyncerClass {
@@ -49,7 +50,7 @@ class StoneDataSyncerClass {
 
 
   update() {
-    LOGi.info("StoneDataSyncer: Update called.")
+    LOGd.info("StoneDataSyncer: Update called.")
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
@@ -76,7 +77,7 @@ class StoneDataSyncerClass {
 
           // handle behaviours
           if (Permissions.inSphere(sphereId).canChangeBehaviours) {
-            let stone = DataUtil.getStone(sphereId, stoneId);
+            let stone = Get.stone(sphereId, stoneId);
             if (!stone) { return; }
 
             let behaviourIds = Object.keys(stone.behaviours);
@@ -102,10 +103,10 @@ class StoneDataSyncerClass {
 
   async _setSyncBehaviourTrigger(sphereId, stoneId) : Promise<void> {
     let sessionId = xUtil.getShortUUID()
-    LOGi.info("StoneDataSyncer: Setting behaviour syncing trigger for ", sphereId, stoneId, sessionId);
+    LOGd.info("StoneDataSyncer: Setting behaviour syncing trigger for ", sphereId, stoneId, sessionId);
     let id = sphereId+stoneId;
 
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return; }
 
     let behaviourIds = Object.keys(stone.behaviours);
@@ -115,7 +116,7 @@ class StoneDataSyncerClass {
       let behaviourId = behaviourIds[k];
       let behaviour = stone.behaviours[behaviourId];
       if (this._shouldBehaviourBeSynced(behaviour)) {
-        LOGi.info("StoneDataSyncer: Attempting to sync behaviour", sphereId, stoneId, behaviourId, sessionId);
+        LOGd.info("StoneDataSyncer: Attempting to sync behaviour", sphereId, stoneId, behaviourId, sessionId);
         behaviourPromises.push(
           this._syncBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId).catch((err) => {
             if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
@@ -138,7 +139,7 @@ class StoneDataSyncerClass {
       return;
     }
 
-    LOGi.info("StoneDataSyncer: Executing behaviour syncing trigger for ", sphereId, stoneId, behaviourPromises.length, sessionId);
+    LOGd.info("StoneDataSyncer: Executing behaviour syncing trigger for ", sphereId, stoneId, behaviourPromises.length, sessionId);
     try {
       await Promise.all(behaviourPromises)
       LOGi.info("StoneDataSyncer: Syncing behaviour now...", sphereId, stoneId, sessionId);
@@ -150,7 +151,7 @@ class StoneDataSyncerClass {
         return
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: Failed behaviour sync trigger", sphereId, stoneId, err, sessionId);
       if (err?.message === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
         // we ignore the duplicate error because a newer version of this behaviour is already being synced to this crownstone.
@@ -194,18 +195,18 @@ class StoneDataSyncerClass {
 
 
   _syncDimmingAbility(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Checking if dimming needs to be synced..", sphereId, stoneId);
+    LOGd.info("StoneDataSyncer: Checking if dimming needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone)   { return; }
-    let ability = stone.abilities[abilityId];
+    let ability : AbilityData = stone.abilities[abilityId];
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
-      LOGi.info("StoneDataSyncer: Setting ability trigger for dimming", sphereId, stoneId);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for dimming", sphereId, stoneId);
       tell(stone).allowDimming(ability.enabledTarget)
         .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for dimming", sphereId, stoneId);
           let actions = [];
           actions.push({type: "UPDATE_ABILITY",         sphereId, stoneId, abilityId, data:{ enabled: ability.enabledTarget}});
           actions.push({type: "MARK_ABILITY_AS_SYNCED", sphereId, stoneId, abilityId});
@@ -225,10 +226,10 @@ class StoneDataSyncerClass {
     if (!softOnSpeedProperty) { return; }
 
     if (softOnSpeedProperty.syncedToCrownstone === false) {
-      LOGi.info("StoneDataSyncer: Setting ability trigger for dimming:softOnSpeed", sphereId, stoneId);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for dimming:softOnSpeed", sphereId, stoneId);
       tell(stone).setSoftOnSpeed(Number(softOnSpeedProperty.valueTarget))
         .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.softOnSpeed);
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for dimming speed", sphereId, stoneId, ability.properties.softOnSpeed);
           let actions = [];
           actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, propertyId, data: { value: Number(softOnSpeedProperty.valueTarget)}});
           actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, propertyId});
@@ -246,18 +247,18 @@ class StoneDataSyncerClass {
 
 
   _syncSwitchcraftAbility(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Checking if switchcraft needs to be synced..", sphereId, stoneId);
+    LOGd.info("StoneDataSyncer: Checking if switchcraft needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return }
     let ability = stone.abilities[abilityId];
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
-      LOGi.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for switchcraft", sphereId, stoneId);
       tell(stone).setSwitchCraft(ability.enabledTarget)
         .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft", sphereId, stoneId);
           let actions = [];
           actions.push({type: "UPDATE_ABILITY",         sphereId, stoneId, abilityId, data:{ enabled: ability.enabledTarget}});
           actions.push({type: "MARK_ABILITY_AS_SYNCED", sphereId, stoneId, abilityId});
@@ -271,19 +272,67 @@ class StoneDataSyncerClass {
           }
         });
     }
+
+    let propertyId = ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft;
+    let doubleTapProperty = ability.properties[propertyId];
+    if (!doubleTapProperty) { return; }
+
+    if (doubleTapProperty.syncedToCrownstone === false) {
+      let target = typeof doubleTapProperty.valueTarget === 'string' ? (doubleTapProperty.valueTarget === 'true' ? true : false) : Boolean(doubleTapProperty.valueTarget);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for switchcraft:doubleTapProperty", sphereId, stoneId);
+      tell(stone).setDoubleTapSwitchCraft(target)
+        .then(() => {
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft's doubletap feature", sphereId, stoneId, doubleTapProperty);
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, propertyId, data: { value: target}});
+          actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, propertyId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft's doubletap feature", sphereId, stoneId, err?.message);
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+    }
+
+    let secondPropertyId = ABILITY_PROPERTY_TYPE_ID.defaultDimValue;
+    let defaultDimValueProperty = ability.properties[secondPropertyId];
+    if (!defaultDimValueProperty) { return; }
+
+    if (defaultDimValueProperty.syncedToCrownstone === false) {
+      let target = Number(defaultDimValueProperty.valueTarget)
+      LOGd.info("StoneDataSyncer: Setting ability trigger for switchcraft:defaultDimValue", sphereId, stoneId);
+      tell(stone).setDefaultDimValue(target)
+        .then(() => {
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for switchcraft's doubletap defaultDimValue feature", sphereId, stoneId, doubleTapProperty);
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, secondPropertyId, data: { value: target}});
+          actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, secondPropertyId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err?.message !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            LOGe.info("StoneDataSyncer: ERROR Failed to sync ability trigger for switchcraft's doubletap defaultDimValue feature", sphereId, stoneId, err?.message);
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+    }
   }
 
 
   _syncTapToToggle(sphereId : string, stoneId : string, abilityId: string) {
-    LOGi.info("StoneDataSyncer: Checking if tap2toggle needs to be synced..", sphereId, stoneId);
+    LOGd.info("StoneDataSyncer: Checking if tap2toggle needs to be synced..", sphereId, stoneId);
     // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
-    let stone = DataUtil.getStone(sphereId, stoneId);
+    let stone = Get.stone(sphereId, stoneId);
     if (!stone) { return }
-    let ability = stone.abilities[abilityId];
+    let ability : AbilityData = stone.abilities[abilityId];
     if (!ability) { return; }
 
     if (ability.syncedToCrownstone === false) {
-      LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for tap2toggle", sphereId, stoneId);
       tell(stone).setTapToToggle(ability.enabledTarget)
         .then(() => {
           LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle", sphereId, stoneId);
@@ -306,12 +355,12 @@ class StoneDataSyncerClass {
     if (!rssiOffsetProperty) { return; }
 
     if (rssiOffsetProperty.syncedToCrownstone === false) {
-      LOGi.info("StoneDataSyncer: Setting ability trigger for tap2toggle:rssiOffsetProperty", sphereId, stoneId);
+      LOGd.info("StoneDataSyncer: Setting ability trigger for tap2toggle:rssiOffsetProperty", sphereId, stoneId);
       tell(stone).setTapToToggleThresholdOffset(Number(rssiOffsetProperty.valueTarget))
         .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.valueTarget);
+          LOGd.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.enabledTarget);
           let actions = [];
-          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, propertyId, data: { value: Number(ability.valueTarget)}});
+          actions.push({type: "UPDATE_ABILITY_PROPERTY",         sphereId, stoneId, abilityId, propertyId, data: { value: Number(ability.enabledTarget)}});
           actions.push({type: "MARK_ABILITY_PROPERTY_AS_SYNCED", sphereId, stoneId, abilityId, propertyId});
           core.store.batchDispatch(actions);
         })
@@ -330,7 +379,7 @@ class StoneDataSyncerClass {
 
 
   async _syncBehaviour(sphereId, stoneId, behaviourId, stone, behaviour : behaviourWrapper, sessionId) : Promise<void> {
-    LOGi.info("StoneDataSyncer: Executing trigger for behaviour", sphereId, stoneId, behaviourId, sessionId);
+    LOGd.info("StoneDataSyncer: Executing trigger for behaviour", sphereId, stoneId, behaviourId, sessionId);
     if (behaviour.deleted) {
       return this._removeBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId);
     }
@@ -358,16 +407,16 @@ class StoneDataSyncerClass {
       return
     }
 
-    LOGi.info("StoneDataSyncer: Syncing deleted behaviour which is already on Crownstone", sphereId, stoneId, behaviourId);
+    LOGd.info("StoneDataSyncer: Syncing deleted behaviour which is already on Crownstone", sphereId, stoneId, behaviourId);
     try {
       let returnData = await tell(stone).removeBehaviour(behaviour.idOnCrownstone)
 
-      LOGi.info("StoneDataSyncer: Successfully synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, sessionId);
+      LOGd.info("StoneDataSyncer: Successfully synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, sessionId);
       core.store.dispatch({type: "REMOVE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId});
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: ERROR failed synced deleted behaviour by deleting it from the Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -375,7 +424,7 @@ class StoneDataSyncerClass {
 
 
   async _updateBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId) {
-    LOGi.info("StoneDataSyncer: Updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, sessionId);
+    LOGd.info("StoneDataSyncer: Updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, sessionId);
     try {
       let returnData = await tell(stone).updateBehaviour(behaviour);
       LOGi.info("StoneDataSyncer: Successfully updated behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, sessionId);
@@ -384,7 +433,7 @@ class StoneDataSyncerClass {
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
     }
-    catch(err) {
+    catch(err: any) {
       LOGe.info("StoneDataSyncer: ERROR updating behaviour which is already on Crownstone", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -392,10 +441,10 @@ class StoneDataSyncerClass {
 
 
   async _addBehaviour(sphereId, stoneId, behaviourId, stone, behaviour, sessionId) {
-    LOGi.info("StoneDataSyncer: Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
+    LOGd.info("StoneDataSyncer: Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
     try {
       let returnData = await tell(stone).addBehaviour(behaviour)
-      LOGi.info("StoneDataSyncer: Successfully Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
+      LOGd.info("StoneDataSyncer: Successfully Adding behaviour to Crownstone", sphereId, stoneId, behaviourId, sessionId);
       let index = returnData.index;
       let masterHash = returnData.masterHash || null;
       this.updateMasterHash(sphereId, stoneId, masterHash);
@@ -416,7 +465,7 @@ class StoneDataSyncerClass {
 
       core.store.dispatch({type: "UPDATE_STONE_BEHAVIOUR", sphereId: sphereId, stoneId: stoneId, behaviourId: behaviourId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
     }
-    catch(err) {
+    catch(err: any) {
       LOGi.info("StoneDataSyncer: ERROR Adding behaviour to Crownstone ", sphereId, stoneId, behaviourId, err?.message, sessionId);
       throw err;
     }
@@ -617,7 +666,7 @@ class StoneDataSyncerClass {
         this.updateMasterHash(sphereId, stoneId, masterHash);
       }
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error Syncing!", err);
       throw err;
     }
@@ -631,7 +680,7 @@ async function downloadBehavioursFromCloud(sphereId, stone) {
     try {
       await SyncNext.partialStoneSync(stoneId, "BEHAVIOURS")
     }
-    catch (err) {
+    catch (err : any) {
       LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error downloading behaviours.", err)
     }
   }

@@ -34,7 +34,7 @@ export const AbilityPropertyTransferNext : TransferAbilityTool<AbilityPropertyDa
   },
 
 
-  getUpdateLocalAction(localSphereId: string, localStoneId: string, localAbilityId:string, localItemId: string, data: Partial<AbilityPropertyData>) : DatabaseAction {
+  getUpdateLocalAction(localSphereId: string, localStoneId: string, localAbilityId:abilityId, localItemId: propertyId, data: Partial<AbilityPropertyData>) : DatabaseAction {
     return {
       type: data.syncedToCrownstone ? "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD" : "UPDATE_ABILITY_PROPERTY",
       sphereId: localSphereId,
@@ -51,7 +51,7 @@ export const AbilityPropertyTransferNext : TransferAbilityTool<AbilityPropertyDa
   },
 
 
-  getUpdateLocalCloudIdAction(localSphereId: string, localStoneId: string, localAbilityId:string, localItemId: string, cloudId: string) : DatabaseAction {
+  getUpdateLocalCloudIdAction(localSphereId: string, localStoneId: string, localAbilityId: abilityId, localItemId: propertyId, cloudId: string) : DatabaseAction {
     return {type:"UPDATE_ABILITY_PROPERTY_CLOUD_ID",
       sphereId:   localSphereId,
       stoneId:    localStoneId,

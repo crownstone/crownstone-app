@@ -1,4 +1,5 @@
 import { Languages } from "../Languages";
+import { colors } from "./styles";
 
 export const Stacks = {
 
@@ -10,15 +11,6 @@ export const Stacks = {
     }
   },
 
-  aiStart: function(props) : StackData {
-    return {
-      stack: {
-        children: [
-          { component: {name: "AiStart", passProps: props} },
-        ],
-      },
-    }
-  },
 
   tutorial: function() : StackData {
     return {
@@ -51,42 +43,6 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
-    // return {
-    //   bottomTabs: {
-    //     id: 'bottomTabs',
-    //     children: [
-    //       {
-    //         stack: {
-    //           children: [
-    //             // { component: {name: "SettingsApp"} },
-    //             // { component: {name: "SetupHub"} },
-    //             { component: {name: "HubOverview", passProps: {"sphereId": "1e35534b-73ef-3695-df55-db27218dcb98", "stoneId": "5fc654eae2b8ba0004e3f5b3",} }},
-    //           ],
-    //           options: {
-    //             bottomTab: {
-    //               text: Languages.get("Tabs","Overview")(),
-    //               icon: require('../../assets/images/icons/house.png'),
-    //             }
-    //           }
-    //         }
-    //       },
-    //       {
-    //         stack: {
-    //           children: [
-    //             { component: {name: "SettingsOverview"} },
-    //           ],
-    //           options: {
-    //             bottomTab: {
-    //               text: Languages.get("Tabs","Settings")(),
-    //               icon: require('../../assets/images/icons/cog.png'),
-    //             }
-    //           }
-    //         }
-    //       },
-    //     ]
-    //   }
-    // }
-
     return {
       bottomTabs: {
         id: 'bottomTabs',
@@ -94,26 +50,35 @@ export const Stacks = {
           {
             stack: {
               children: [
-                // { component: {name: "SettingsApp"} },
-                { component: {name: "SphereOverview"} },
-                // { component: {name: "DeviceOverview", passProps: {sphereId: "18232301-e0f1-eb16-1de3-73a837d0ceb7", stoneId: "2517a0f9-c1f-79d2-7462-5708dd1d2cf0"}} },
+                {
+                  component: {
+                    id: 'SphereOverview',
+                    name: "SphereOverview"
+                  }
+                },
               ],
               options: {
+                topBar: { visible: false, drawBehind: true },
                 bottomTab: {
                   id: 'bottomTab_overview',
                   testID: 'bottomTab_overview',
-                  text: Languages.get("Tabs","Overview")(),
+                  text: Languages.get("Tabs", "Overview")(),
                   icon: require('../../assets/images/icons/house.png'),
-                }
+                },
               }
             }
           },
           {
             stack: {
               children: [
-                { component: {name: "ScenesOverview"} },
+                { component: {id: 'ScenesOverview', name: "ScenesOverview"} },
               ],
               options: {
+                topBar: { visible: false, drawBehind: true },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind:true
+                },
                 bottomTab: {
                   id: 'bottomTab_scenes',
                   testID: 'bottomTab_scenes',
@@ -126,14 +91,19 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "MessageInbox"} },
+                { component: {id: 'EnergyUsage', name: "EnergyUsage"} },
               ],
               options: {
+                topBar: { visible: false, drawBehind: true },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind:true
+                },
                 bottomTab: {
-                  id: 'bottomTab_messages',
-                  testID: 'bottomTab_messages',
-                  text: Languages.get("Tabs","Messages")(),
-                  icon: require('../../assets/images/icons/mail.png'),
+                  id: 'bottomTab_energyUsage',
+                  testID: 'bottomTab_energyUsage',
+                  text: Languages.get("Tabs","Energy")(),
+                  icon: require('../../assets/images/icons/graph.png'),
                 }
               }
             }
@@ -141,9 +111,16 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "SettingsOverview"} },
+                { component: {id: 'SettingsOverview',name: "SettingsOverview"} },
               ],
               options: {
+                topBar: {
+
+                },
+                bottomTabs:{
+                  backgroundColor: 'transparent',
+                  drawBehind: true
+                },
                 bottomTab: {
                   id: 'bottomTab_settings',
                   testID: 'bottomTab_settings',
@@ -174,6 +151,8 @@ export const Stacks = {
     return {
       bottomTabs: {
         id: 'bottomTabs',
+        titleDisplayMode: "alwaysShow",
+        backgroundColor: "transparent",
         children: [
           {
             stack: {
@@ -219,10 +198,33 @@ export const Stacks = {
     }
   },
 
-  DEV_firmwareTesting: function(props) : StackData {
+  DEV_firmwareTesting: function(props) {
     return {
+      statusBar: {
+        visible:    true,
+        drawBehind: true,
+      },
+      topBar: {
+        drawBehind: true,
+        background: { color: 'transparent'},
+        title: {
+          color: colors.black.hex,
+        },
+      },
+      bottomTab: {
+        textColor: colors.black.hex,
+        selectedTextColor: colors.blue.hex,
+        fontSize: 11,
+        iconColor: colors.black.hex,
+        selectedIconColor: colors.blue.hex,
+      },
+      layout: {
+        orientation: ['portrait'],
+      },
       bottomTabs: {
         id: 'bottomTabs',
+        titleDisplayMode: "alwaysShow",
+        backgroundColor: "transparent",
         children: [
           {
             stack: {

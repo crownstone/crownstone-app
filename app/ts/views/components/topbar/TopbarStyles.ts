@@ -13,9 +13,8 @@ if (Platform.OS === 'android') {
 
 export const topBarStyle = StyleSheet.create({
   topBar: {
-    backgroundColor: colors.csBlueDarker.hex,
+    backgroundColor: 'transparent',
     flexDirection: 'row',
-    paddingTop: statusBarHeight
   },
   topBarCenterView: {
     flex: 1,
@@ -45,11 +44,11 @@ export const topBarStyle = StyleSheet.create({
   titleText: {
     fontSize: 18,
     fontWeight:'bold',
-    color: 'white'
+    color: colors.black.hex,
   },
   text:{
     fontSize: 17,
-    color: colors.blue.hex
+    color: colors.iosBlue.hex
   },
   leftText:{
     fontSize: 14,

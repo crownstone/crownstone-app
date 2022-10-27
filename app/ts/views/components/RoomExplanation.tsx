@@ -7,15 +7,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text,
-  TouchableOpacity,
-  View
 } from "react-native";
 
 import {
-  enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
+  getAmountOfStonesInLocation
 } from "../../util/DataUtil";
-import { colors } from '../styles'
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import {BlurMessageBar, TouchableBlurMessageBar} from "./BlurEntries";
+import {core} from "../../Core";
+import {colors} from "../styles";
+import {LocalizationUtil} from "../../util/LocalizationUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -27,11 +28,10 @@ import { NavigationUtil } from "../../util/NavigationUtil";
  */
 export class RoomExplanation extends Component<any, any> {
   render() {
-    let state = this.props.state;
+    let state = core.store.getState();
     let sphereId = this.props.sphereId;
     let locationId = this.props.locationId;
     let explanation = this.props.explanation;
-    let boldExplanation = false;
 
     // check if we have special cases
     let amountOfStonesInRoom = getAmountOfStonesInLocation(state, sphereId, locationId);
@@ -44,55 +44,31 @@ export class RoomExplanation extends Component<any, any> {
       explanation =  lang("No_Crownstones_in_this_ro");
     }
 
-    if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
+    if (LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
-      boldExplanation = true;
-      buttonCallback = () => { NavigationUtil.launchModal( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+      buttonCallback = () => { NavigationUtil.launchModal( "SetupLocalization", { sphereId: this.props.sphereId, isModal: true }); }
     }
 
     if (explanation === undefined) {
-      return <View />
+      return <React.Fragment />
     }
-    else if (buttonCallback !== undefined) {
+
+    let label = <Text style={{fontSize: 15, fontWeight: 'bold', textAlign:'center'}}>{explanation}</Text>;
+
+    if (buttonCallback !== undefined) {
       return (
-        <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderTopWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-            <Text style={{fontSize: 15, fontWeight: boldExplanation ? 'bold' : undefined, color: colors.csBlueDark.hex, textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </TouchableOpacity>
+        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
+          {label}
+        </TouchableBlurMessageBar>
       );
     }
     else {
       return (
-        <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderTopWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-            <Text style={{fontSize: 15,  textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </View>
+        <BlurMessageBar marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
+          {label}
+        </BlurMessageBar>
       );
     }
   }
 }
 
-/**
- * The right item is the flickering icon for localization.
- * @param state
- * @param sphereId
- * @param locationId
- */
-function shouldShowTrainingButton(state, sphereId, locationId) {
-  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);
-  let sphere = state.spheres[sphereId];
-  if (!sphere) { return false; }
-
-  let location = sphere.locations[locationId];
-  if (!location) { return false; }
-
-  if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
-  if (sphere.state.present === true)        { return false; } // cant train a room when not in the sphere
-  if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
-
-  if (location.config.fingerprintRaw !== null) { return false; } // there already is a fingerprint, dont show animated training icon.
-
-  return true;
-}

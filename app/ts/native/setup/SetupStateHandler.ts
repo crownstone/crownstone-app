@@ -12,14 +12,6 @@ import {CommandAPI} from "../../logic/constellation/Commander";
 import {DataUtil} from "../../util/DataUtil";
 
 
-interface SetupStoneSummary {
-  name: string,
-  icon: string,
-  type: StoneType,
-  rawType: DeviceType,
-  handle: string
-}
-
 /**
  * This class keeps track of the Crownstones in setup state.
  */
@@ -214,24 +206,23 @@ class SetupStateHandlerClass {
 
 
   _getSetupSummary(advertisement : crownstoneAdvertisement) : SetupStoneSummary {
-    let type = advertisement.serviceData.deviceType;
     let payload : SetupStoneSummary = {
       handle : advertisement.handle,
-      rawType: type,
+      rawType: advertisement.serviceData.deviceType,
       name: 'Unsupported device',
       icon: 'Unknown',
       type: STONE_TYPES.unknown
     };
-    if (     type === 'plug')          { payload.name = 'Crownstone Plug';        payload.icon ='c2-pluginFilled'; payload.type = STONE_TYPES.plug;          }
-    else if (type === 'builtin')       { payload.name = 'Crownstone Builtin';     payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtin;       }
-    else if (type === 'builtinOne')    { payload.name = 'Crownstone Builtin One'; payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtinOne;    }
-    else if (type === 'guidestone')    { payload.name = 'Guidestone';             payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.guidestone;    }
-    else if (type === 'crownstoneUSB') { payload.name = 'Crownstone USB';         payload.icon ='c1-router';       payload.type = STONE_TYPES.crownstoneUSB; }
-    else if (type === 'hub')           { payload.name = 'Hub';                    payload.icon ='c1-router';       payload.type = STONE_TYPES.hub;           }
-    else if (type === 'socketF')       { payload.name = 'Crownstone Socket';      payload.icon ='fiE-plugin';      payload.type = STONE_TYPES.socketF;       }
-    else if (type === 'prototype_relay')        { payload.name = 'Prototype Relay';       payload.icon ='fiE-settings'; payload.type = STONE_TYPES.prototype_relay;        }
-    else if (type === 'prototype_relay_dimmer') { payload.name = 'Prototype RelayDimmer'; payload.icon ='fiE-settings'; payload.type = STONE_TYPES.prototype_relay_dimmer; }
-    else if (type === 'prototype_no_switching') { payload.name = 'Prototype NoSwitch';    payload.icon ='fiE-settings'; payload.type = STONE_TYPES.prototype_no_switching; }
+    if (     advertisement.serviceData.deviceType === 'plug')          { payload.name = 'Crownstone Plug';        payload.icon ='c2-pluginFilled'; payload.type = STONE_TYPES.plug;          }
+    else if (advertisement.serviceData.deviceType === 'builtin')       { payload.name = 'Crownstone Builtin';     payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtin;       }
+    else if (advertisement.serviceData.deviceType === 'builtinOne')    { payload.name = 'Crownstone Builtin One'; payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.builtinOne;    }
+    else if (advertisement.serviceData.deviceType === 'guidestone')    { payload.name = 'Guidestone';             payload.icon ='c2-crownstone';   payload.type = STONE_TYPES.guidestone;    }
+    else if (advertisement.serviceData.deviceType === 'crownstoneUSB') { payload.name = 'Crownstone USB';         payload.icon ='c1-router';       payload.type = STONE_TYPES.crownstoneUSB; }
+    else if (advertisement.serviceData.deviceType === 'hub')           { payload.name = 'Hub';                    payload.icon ='c1-router';       payload.type = STONE_TYPES.hub;           }
+    else if (advertisement.serviceData.deviceType === 'socketF')       { payload.name = 'Crownstone Socket';      payload.icon ='fiE-plugin';      payload.type = STONE_TYPES.socketF;       }
+    else if (advertisement.serviceData.deviceType === 'prototype_relay')        { payload.name = 'Prototype Relay';       payload.icon ='fiE-settings';    payload.type = STONE_TYPES.prototype_relay;        }
+    else if (advertisement.serviceData.deviceType === 'prototype_relay_dimmer') { payload.name = 'Prototype RelayDimmer'; payload.icon ='fiE-settings';    payload.type = STONE_TYPES.prototype_relay_dimmer; }
+    else if (advertisement.serviceData.deviceType === 'prototype_no_switching') { payload.name = 'Prototype NoSwitch';    payload.icon ='fiE-settings';    payload.type = STONE_TYPES.prototype_no_switching; }
     else {
       LOGd.info("UNKNOWN DEVICE in setup procedure", advertisement);
     }
@@ -289,7 +280,7 @@ class SetupStateHandlerClass {
     return helper.claim(sphereId, silent, commander);
   }
 
-  getSetupStones() {
+  getSetupStones() : Record<handle, SetupStoneSummary> {
     // make a copy of the data to make sure nothing can influence the data.
     return {...this._stonesInSetupStateTypes};
   }

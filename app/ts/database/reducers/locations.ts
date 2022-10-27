@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults, idReducerGenerator } from "./reducerUtil";
-
+import fingerprintReducer from './fingerprints'
 
 let defaultSettings : LocationData = {
   id: undefined,
@@ -11,6 +11,8 @@ let defaultSettings : LocationData = {
     picture: null,
     pictureTaken: null,
     pictureId: null,
+    pictureSource: null,
+
     cloudId: null,
     updatedAt: 1,
 
@@ -19,28 +21,35 @@ let defaultSettings : LocationData = {
     fingerprintParsed: null,
     fingerprintUpdatedAt: 1,
   },
+  fingerprints: {
+    raw: {},
+    processed: {},
+  },
   presentUsers: [],
   layout: {
     x: null,
     y: null,
-    setOnThisDevice: false,
-    updatedAt: 0,
   }
 };
 
-let userPresenceReducer = (state = [], action : any = {}) => {
+
+let userPresenceReducer = (state = [], action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'USER_ENTER_LOCATION':
       if (action.data && action.data.userId) {
         return [...state, action.data.userId];
       }
+      return state;
     case 'USER_EXIT_LOCATION':
       if (action.data && action.data.userId) {
         let userIndex = state.indexOf(action.data.userId);
         if (userIndex !== -1) {
-          return [...state.slice(0, userIndex).concat(state.slice(userIndex + 1))]
+          let newState = [...state];
+          newState.splice(userIndex, 1);
+          return newState;
         }
       }
+      return state;
     case 'CLEAR_USERS_IN_LOCATION':
       return [];
     default:
@@ -48,7 +57,7 @@ let userPresenceReducer = (state = [], action : any = {}) => {
   }
 };
 
-let locationConfigReducer = (state = defaultSettings.config, action : any = {}) => {
+let locationConfigReducer = (state = defaultSettings.config, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'UPDATE_LOCATION_CLOUD_ID':
       if (action.data) {
@@ -63,6 +72,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       newState.fingerprintRaw = null;
       newState.fingerprintParsed = null;
       newState.fingerprintCloudId = null;
+      newState.fingerprintUpdatedAt = null;
       return newState;
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {
@@ -101,6 +111,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.picture            = update(action.data.picture,           newState.picture);
         newState.pictureTaken       = update(action.data.pictureTaken,      newState.pictureTaken);
+        newState.pictureSource      = update(action.data.pictureSource,     newState.pictureSource);
         newState.pictureId          = update(action.data.pictureId,         newState.pictureId);
         newState.fingerprintRaw     = update(action.data.fingerprintRaw,    newState.fingerprintRaw);
         newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);
@@ -111,16 +122,19 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'LOCATION_UPDATE_PICTURE':
       if (action.data) {
         let newState = {...state};
-        newState.picture   = update(action.data.picture,    newState.picture  );
-        newState.pictureId = update(action.data.pictureId,  newState.pictureId);
+        newState.picture       = update(action.data.picture,       newState.picture);
+        newState.pictureId     = update(action.data.pictureId,     newState.pictureId);
+        newState.pictureSource = update(action.data.pictureSource, newState.pictureSource);
         return newState;
       }
       return state;
     case 'LOCATION_REPAIR_PICTURE':
       newState = {...state};
-      newState.picture    = null;
-      newState.pictureId  = null;
-      newState.updatedAt  = 0;
+      if (newState.pictureSource !== "STOCK") {
+        newState.picture = null;
+        newState.pictureId = null;
+        newState.updatedAt = 0;
+      }
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.config);
@@ -130,15 +144,13 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
 };
 
 
-let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
+let layoutReducer = (state = defaultSettings.layout, action : DatabaseAction = {}) => {
   switch (action.type) {
     case 'SET_LOCATION_POSITIONS':
       if (action.data) {
         let newState = {...state};
         newState.x = update(action.data.x, newState.x);
         newState.y = update(action.data.y, newState.y);
-        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
-        newState.updatedAt = getTime(action.data.updatedAt || action.updatedAt);
         return newState;
       }
       return state;
@@ -146,8 +158,6 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
       let newState = {...state};
       newState.x = null;
       newState.y = null;
-      newState.setOnThisDevice = false;
-      newState.updatedAt = null;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout);
@@ -160,29 +170,33 @@ let combinedLocationReducer = combineReducers({
   id:           idReducerGenerator("ADD_LOCATION", "locationId"),
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
+  fingerprints: fingerprintReducer,
   layout:       layoutReducer
 });
 
 
 // locationsReducer
-export default (state = {}, action : any = {}) => {
+export default (state = {}, action : DatabaseAction = {}) => {
   switch (action.type) {
+    case 'REMOVE_USER_FROM_ALL_LOCATIONS':
     case 'REMOVE_SPHERE_USER':
+    case 'USER_EXIT_SPHERE':
       if (action.userId) {
         // we need to remove the user from all locations before removing him from sphere.
-        let locationIds = Object.keys(state);
-        locationIds.forEach((locationId) => {
-          let location = state[locationId];
-          if (location.presentUsers.indexOf(action.userId) !== -1) {
-            return {
-              ...state,
-              ...{[locationId]: combinedLocationReducer(state[locationId],
-                {type:'USER_EXIT_LOCATION', sphereId: action.sphereId, locationId: locationId, data: {userId: action.userId}})}
-            };
+        let newState = {...state};
+        for (let locationId in state) {
+          let location : LocationData = state[locationId];
+          if (location.presentUsers.includes(action.userId)) {
+            let result = combinedLocationReducer(state[locationId], {
+              type: 'USER_EXIT_LOCATION',
+              sphereId: action.sphereId,
+              locationId: locationId,
+              data: {userId: action.userId}
+            });
+            newState[locationId] = result;
           }
-        });
-
-        return state;
+        }
+        return newState;
       }
     case 'REMOVE_LOCATION':
       let stateCopy = {...state};

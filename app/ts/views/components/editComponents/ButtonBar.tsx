@@ -6,13 +6,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE, menuStyles} from "../../styles";
 
 
 export class ButtonBar extends Component<any, any> {
@@ -27,17 +26,17 @@ export class ButtonBar extends Component<any, any> {
 
 
     return (
-      <TouchableHighlight onPress={() => {
+      <TouchableOpacity onPress={() => {
         this.props.setActiveElement && this.props.setActiveElement();
         this.props.callback()
       }} testID={this.props.testID}>
-        <View style={[styles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || '#ffffff'}]}>
+        <View style={[menuStyles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || this.props.backgroundColor || menuStyles.listView.backgroundColor}]}>
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           <Text style={[{fontSize:16, color:colors.menuRed.hex}, this.props.style]}>{this.props.label}</Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 }

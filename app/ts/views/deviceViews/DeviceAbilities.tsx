@@ -22,18 +22,24 @@ import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { AnimatedScaledImage } from "../components/animated/AnimatedScaledImage";
 import { Icon } from "../components/Icon";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { STONE_TYPES } from "../../Enums";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilities";
+import {SettingsBackground} from "../components/SettingsBackground";
+import {Get} from "../../util/GetUtil";
 import {StoneUtil} from "../../util/StoneUtil";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
-    const stone = core.store.getState().spheres[props.sphereId].stones[props.stoneId];
-    return TopBarUtil.getOptions({ title: stone.config.name, closeModal: true});
+    const stone = Get.stone(props.sphereId, props.stoneId);
+    return {
+      topBar: {
+        title: {text: stone?.config?.name},
+      }
+    }
   }
 
   unsubscribeStoreEvents;
@@ -68,26 +74,26 @@ export class DeviceAbilities extends LiveComponent<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
-    let permissionGranted = Permissions.inSphere(this.props.sphereId).canChangeAbilities
+    let permissionGranted = Permissions.inSphere(this.props.sphereId).canChangeAbilities;
 
     let canSwitch      = StoneUtil.canSwitch(stone);
     let hasSwitchcraft = StoneUtil.canSwitchCraft(stone);
     let canDim         = StoneUtil.canDim(stone);
 
     return (
-      <Background image={background.main} hasNavBar={false}>
+      <SettingsBackground testID={'DeviceAbilities'}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("These_are_the_things_I_ca",permissionGranted) }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            { canDim         && <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-            { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-            { canSwitch      && <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { canDim         && <Ability type={ lang("dimming")}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { hasSwitchcraft && <Ability type={ lang("switchcraft")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { canSwitch      && <Ability type={ lang("tapToToggle")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
           </View>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     )
   }
 }
@@ -120,17 +126,15 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
           { active && synced  ? <Text style={[deviceStyles.explanationText, {marginTop:3}]}>{ lang("Enabled") }</Text> : undefined}
         </View>
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end', alignItems:'center'}}>
-          <TouchableOpacity onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
+          <TouchableOpacity testID={`${props.type}_information`} onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color: helpColor, fontSize: 20, fontWeight:'300'}}>?</Text>
           </TouchableOpacity>
           {active && props.permissionGranted && (
-            <TouchableOpacity onPress={() => {
-              data.settingsCallback();
-            }} style={{ paddingLeft: 10 }}>
+            <TouchableOpacity onPress={() => { data.settingsCallback(); }} testID={`${props.type}_settings`} style={{ paddingLeft: 10 }} >
               <Icon name={'ios-settings'} color={colors.csBlueDark.rgba(0.8)} size={35}/>
             </TouchableOpacity>)
           }
-          { !active && props.permissionGranted && <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} /> }
+          { !active && props.permissionGranted && <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} testID={`${props.type}_toggle`} /> }
         </View>
       </View>
       <Explanation margin={margins+0.25*height} label={data.explanation} />

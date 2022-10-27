@@ -14,7 +14,7 @@ import { core } from "../../Core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
 import { colors, screenHeight, screenWidth, styles } from "../styles";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
@@ -27,6 +27,7 @@ import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
@@ -174,7 +175,7 @@ export class SetupCrownstone extends LiveComponent<{
           this._interview.setLockedCard("problemBle");
         })
     }
-    catch (err) {
+    catch (err : any) {
       this._interview.setLockedCard("problem");
     }
 
@@ -561,7 +562,7 @@ export class SetupCrownstone extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground hasNavBar={false} image={backgroundImage} hideNotifications={true} testID={'SetupCrownstone'}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} testID={'SetupCrownstone'}>
         <KeepAwake />
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}

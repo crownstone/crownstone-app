@@ -4,15 +4,20 @@ export const xUtil = {
 
   nextTick: function() {
     return new Promise<void>((resolve, reject) => {
-      setImmediate(() => { resolve() });
+      setTimeout(() => { resolve() },0);
     })
   },
 
-  pad: function(str) {
-    if (Number(str) < 10) {
-      return '0' + str;
+  pad: function(str : string | number, paddedLength : number= 2) {
+    let num = Number(str);
+
+    let newStr = String(str);
+    for (let i = 1; i < paddedLength; i++) {
+      if (num < Math.pow(10,i)) {
+        newStr = '0' + newStr;
+      }
     }
-    return str;
+    return newStr;
   },
 
 
@@ -48,7 +53,7 @@ export const xUtil = {
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':00:00'
   },
 
-  getDateFormat: function(timestamp)  {
+  getDateFormat: function(timestamp : timestamp | Date)  {
     if (timestamp === 0) {
       return 'unknown';
     }
@@ -461,6 +466,15 @@ export const xUtil = {
     return true;
   },
 
+
+  arrayToMap: function(arr: string[]) : Record<string, true> {
+    let result = {};
+    for (let i = 0; i < arr.length; i++) {
+      result[arr[i]] = true;
+    }
+    return result;
+  },
+
   promiseBatchPerformer: function(arr : any[], method : PromiseCallback) : Promise<void> {
     if (arr.length === 0) {
       return new Promise((resolve, reject) => { resolve() });
@@ -578,7 +592,9 @@ export const xUtil = {
 
 
 const S4 = function () {
-  return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
+  // get a random hexadecimal number of 4 bytes
+  return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  // the |0 floors it to an integer, the 1+ ensures that we always have 5 bytes, of which take the last 4.
 };
 
 

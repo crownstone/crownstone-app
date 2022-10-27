@@ -46,11 +46,11 @@ interface cloud_Sphere {
   uid: number,
   uuid: string,
   name: string,
-  aiName: string,
   gpsLocation?: {
     lat: number,
     lng: number,
   },
+  timezone:  string,
   createdAt: string,
   updatedAt: string,
 }
@@ -58,11 +58,11 @@ interface cloud_Sphere_settable {
   uid?: number,
   uuid?: string,
   name?: string,
-  aiName?: string,
   gpsLocation?: {
     lat?: localData.config.latitude,
     lng?: localData.config.longitude,
   },
+  timezone:  string,
   updatedAt: string,
 }
 
@@ -87,6 +87,41 @@ interface cloud_Hub_settable {
   linkedStoneId?: string,
   locationId?: string,
   updatedAt?: string,
+}
+
+
+interface cloud_Preference {
+  property:  string,
+  value:     any,
+  id:        string,
+  deviceId:  string,
+  updatedAt: string,
+  createdAt: string,
+}
+
+
+interface cloud_Fingerprint {
+  id: string,
+  type: FingerprintType,
+  createdOnDeviceType: string,
+  createdByUser: string,
+  crownstonesAtCreation: string[],
+  data: FingerprintMeasurementData[],
+  locationId: string,
+  sphereId: string,
+  updatedAt: string,
+  createdAt: string,
+}
+
+interface cloud_Fingerprint_settable {
+  type?: FingerprintType,
+  createdOnDeviceType?: string,
+  createdByUser?: string,
+  locationId?: string,
+  crownstonesAtCreation: string[],
+  data?: FingerprintMeasurementData[],
+  updatedAt?: string,
+  createdAt?: string,
 }
 
 interface cloud_LoginReply {
@@ -180,7 +215,7 @@ interface cloud_AbilityProperty {
 
 interface cloud_AbilityProperty_settable {
   type:       AbilityPropertyType,
-  value:      number | string;
+  value:      number | string | boolean;
   syncedToCrownstone: boolean;
   updatedAt:  string,
 }
@@ -193,14 +228,15 @@ interface SpherePresentPeople {
 
 
 interface cloud_Location {
-  name:      string,
-  uid:       number,
-  icon:      string,
-  id:        string,
-  imageId?:  string,
-  sphereId:  string,
-  updatedAt: string,
-  createdAt: string,
+  name:          string,
+  uid:           number,
+  icon:          string,
+  id:            string,
+  imageId?:      string,
+  stockPicture?: string,
+  sphereId:      string,
+  updatedAt:     string,
+  createdAt:     string,
 }
 
 
@@ -208,6 +244,7 @@ interface cloud_Location_settable {
   name?: string,
   uid?:  number,
   icon?: string,
+  stockPicture?:    string,
   updatedAt?: string,
 }
 
@@ -272,26 +309,48 @@ interface cloud_SphereFeature {
 }
 
 interface cloud_Message {
-  id: string,
+  id:                string,
+  triggerEvent:      string,
+  content:           string,
+  everyoneInSphere:  boolean;
+  includeSenderInEveryone: boolean;
+  triggerLocationId: string,
+  ownerId:           string,
+
+  recipients: {userId: userId}[];
+  readBy:     {itemId: {id: string, userId: userId, updatedAt: string}};
+  deleteBy:   {itemId: {id: string, userId: userId, updatedAt: string}};
+
+  sphereId:  string,
+  createdAt: string,
+  updatedAt: string,
+}
+
+interface cloud_Message_settable {
   triggerEvent: string,
   content: string,
   everyoneInSphere: boolean;
-  everyoneInSphereIncludingOwner: boolean;
-  deliveredAll: boolean;
+  includeSenderInEveryone: boolean;
   triggerLocationId: string,
-  ownerId: string,
-  recipients: cloud_User[];
-  delivered: cloud_MessageState[];
-  read: cloud_MessageState[];
-  sphereId: string,
-  createdAt: string,
   updatedAt: string,
+}
+
+interface cloud_Message_creation {
+  message: {
+    triggerEvent: string
+    content: string,
+    everyoneInSphere: boolean;
+    includeSenderInEveryone: boolean;
+    triggerLocationId: string,
+    updatedAt: string,
+  },
+  recipients: userId[];
 }
 
 interface cloud_Scene {
   id:              string,
   name:            string,
-  stockPicture?:    string,
+  stockPicture?:   string,
   customPictureId?: string,
   data:            string | {[stoneUID: string]:number},
   sphereId:        string,
@@ -302,22 +361,20 @@ interface cloud_Scene {
 interface cloud_Scene_settable {
   name?:            string,
   stockPicture?:    string,
-  customPictureId?: string,
   data?:            string,
   updatedAt?:       string | number
 }
 
 
 interface cloud_MessageState {
-  id: string
-  timestamp: string,
-  enabled: string,
-  syncedToCrownstone: string,
-  messageDeliveredId: string,
-  messageReadId: string,
-  userId: string,
-  sphereId: string,
-  createdAt: string,
+  id:        string
+  sphereId:  string,
+  userId:    string,
+  updatedAt: string,
+}
+
+interface cloud_MessageState_settable {
+  userId:    string,
   updatedAt: string,
 }
 

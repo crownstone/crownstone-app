@@ -15,12 +15,13 @@ import {
 
 import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { background, colors } from "../styles";
+import {background, colors, menuStyles, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import {SettingsNavbarBackground} from "../components/SettingsBackground";
 
 export class SettingsFAQ extends Component<any, any> {
   static options(props) {
@@ -31,6 +32,7 @@ export class SettingsFAQ extends Component<any, any> {
   _getItems() {
     let items = [];
 
+    let wrapperStyle = {paddingTop: menuStyles.collapsableContent.paddingTop, paddingBottom:menuStyles.collapsableContent.paddingBottom, paddingLeft:menuStyles.collapsableContent.paddingLeft};
     let appStoreLabel =  lang("App_Store");
     if (Platform.OS === 'android') {
       appStoreLabel =  lang("Play_Store");
@@ -46,7 +48,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question1',
       label: lang("____add_a_Crownstone_"),
       content:lang("You_just_have_to_hold_it_"),
-      contentHeight: 175
+      contentHeight: 195
     });
 
     items.push({
@@ -54,7 +56,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question2',
       label: lang("____add_someone_to_my_Sph"),
       content:lang("If_youre_an_Admin_or_Memb"),
-      contentHeight: 145
+      contentHeight: 165
     });
 
 
@@ -63,7 +65,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question3',
       label: lang("____create_a_room_"),
       content: lang("You_need_to_be_an_admin_o"),
-      contentHeight: 175
+      contentHeight: 195
     });
 
     items.push({
@@ -71,7 +73,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question4',
       label: lang("____move_a_Crownstone_to_"),
       content: lang("Moving_the_Crownstone_is_"),
-      contentHeight: 175
+      contentHeight: 195
     });
 
 
@@ -80,7 +82,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question5',
       label: lang("____dim_with_my_Crownston"),
       content:lang("Make_sure_dimming_is_enab"),
-      contentHeight: 200
+      contentHeight: 220
     });
 
     items.push({
@@ -88,7 +90,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question6',
       label: lang("____use_indoor_localizati"),
       content:lang("Indoor_localization_on_ro"),
-      contentHeight: 235
+      contentHeight: 255
     });
 
 
@@ -102,7 +104,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question7',
       label: lang("____a_new_Crownstone_wont"),
       content:lang("Make_sure_the_Crownstone_"),
-      contentHeight: 175
+      contentHeight: 195
     });
 
     items.push({
@@ -110,7 +112,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question8',
       label: lang("____a_Crownstone_is_on_Se"),
       content: lang("Ensure_there_is_power_on_"),
-      contentHeight: 155
+      contentHeight: 175
     });
 
     items.push({
@@ -118,8 +120,8 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question9',
       label: lang("____I_want_to_have_a_clea"),
       contentItem:
-        <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Sometimes_something_goes_") }</Text>
+        <View style={wrapperStyle}>
+          <Text style={menuStyles.collapsableContent}>{ lang("Sometimes_something_goes_") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
             label={ lang("Revert_to_Cloud_Data")}
@@ -131,7 +133,7 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-      contentHeight: 200
+      contentHeight: 220
     });
 
     items.push({
@@ -139,8 +141,8 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question10',
       label: lang("____my_Sphere_name_is_gon"),
       contentItem:
-        <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Sometimes_something_goes_w") }</Text>
+        <View style={wrapperStyle}>
+          <Text style={menuStyles.collapsableContent}>{ lang("Sometimes_something_goes_w") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
             label={ lang("Revert_to_Cloud_Data")}
@@ -151,7 +153,7 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-      contentHeight: 200
+      contentHeight: 220
     });
 
     items.push({
@@ -159,8 +161,8 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question11',
       label: lang("____it_always_says_No_Cro"),
       contentItem:
-        <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("It_could_be_that_youre_no") }</Text>
+        <View style={wrapperStyle}>
+          <Text style={menuStyles.collapsableContent}>{ lang("It_could_be_that_youre_no") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
             label={ lang("Revert_to_Cloud_Data")}
@@ -171,7 +173,7 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-      contentHeight: 275
+      contentHeight: 295
     });
 
     let label =  lang("If_that_fails__quit_the_a");
@@ -183,7 +185,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question12',
       label: lang("____the_setup_process_fai"),
       content: lang("Retry_a_few_times___If_th",label, appStoreLabel),
-      contentHeight: 245
+      contentHeight: 275
     });
 
     items.push({
@@ -191,7 +193,7 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question13',
       label: lang("____a_Crownstone_toggles_"),
       content:lang("This_could_happen_due_to_"),
-      contentHeight: 225
+      contentHeight: 245
     });
 
 
@@ -200,8 +202,8 @@ export class SettingsFAQ extends Component<any, any> {
       testID:'question14',
       label: lang("____I_need_to_factory_res"),
       contentItem:
-        <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Only_use_this_as_a_last_r") }</Text>
+        <View style={wrapperStyle}>
+          <Text style={menuStyles.collapsableContent}>{ lang("Only_use_this_as_a_last_r") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
             label={ lang("Reset_Crownstone")}
@@ -212,7 +214,7 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-      contentHeight: 175
+      contentHeight: 195
     });
 
     items.push({
@@ -255,11 +257,11 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification image={background.menu} testID={"SettingsFAQ"}>
-        <ScrollView testID={'SettingsFAQ_scrollview'}>
+      <SettingsNavbarBackground testID={"SettingsFAQ"}>
+        <ScrollView testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </BackgroundNoNotification>
+      </SettingsNavbarBackground>
     );
   }
 }

@@ -1,5 +1,5 @@
 import { BackHandler } from "react-native";
-import { NavigationUtil, NavState } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
 import { LOGd } from "../logging/Log";
 
 
@@ -30,49 +30,50 @@ class BackButtonHandlerClass {
    */
   init() {
     BackHandler.addEventListener('hardwareBackPress', () => {
-      // check if overlay
-      let isOverlayOpen = NavState.isOverlayOpen();
-
-      LOGd.nav("BackButtonHandlerClass: check if overlay is open", isOverlayOpen);
-      // Do not allow back button to change overlays.
-      if (isOverlayOpen) {
-        return true;
-      }
-
-      let activeViewData = NavState.getCurrentlyActiveComponentData();
-      LOGd.nav("BackButtonHandlerClass: check if activeViewData", activeViewData,  this.overrides);
-      if (activeViewData) {
-        if (this.overrides[activeViewData.name] !== undefined && this.overrides[activeViewData.name]() !== false) {
-          return true;
-        }
-        if (this.overrides[activeViewData.id] !== undefined && this.overrides[activeViewData.id]() !== false) {
-          return true;
-        }
-      }
-
-
-      let canGoBack = NavState.canGoBack();
-      LOGd.nav("BackButtonHandlerClass: check if we can go back", canGoBack);
-      if (canGoBack) {
-        NavigationUtil.back();
-        return true;
-      }
-
-
-      let isModalOpen = NavState.areModalsOpen();
-      LOGd.nav("BackButtonHandlerClass: check if a modal is open", isModalOpen);
-      if (isModalOpen) {
-        NavigationUtil.dismissModal();
-        return true;
-      }
-
-
-      let areOnBaseTab = NavState.isOnBaseTab();
-      LOGd.nav("BackButtonHandlerClass: check if we are on the base tab", areOnBaseTab);
-      if (!areOnBaseTab) {
-        NavigationUtil.navigateToBaseTab()
-        return true;
-      }
+      throw new Error("Not implemented BackHandler")
+      // // check if overlay
+      // let isOverlayOpen = NavState.isOverlayOpen();
+      //
+      // LOGd.nav("BackButtonHandlerClass: check if overlay is open", isOverlayOpen);
+      // // Do not allow back button to change overlays.
+      // if (isOverlayOpen) {
+      //   return true;
+      // }
+      //
+      // let activeViewData = NavState.getCurrentlyActiveComponentData();
+      // LOGd.nav("BackButtonHandlerClass: check if activeViewData", activeViewData,  this.overrides);
+      // if (activeViewData) {
+      //   if (this.overrides[activeViewData.name] !== undefined && this.overrides[activeViewData.name]() !== false) {
+      //     return true;
+      //   }
+      //   if (this.overrides[activeViewData.id] !== undefined && this.overrides[activeViewData.id]() !== false) {
+      //     return true;
+      //   }
+      // }
+      //
+      //
+      // let canGoBack = NavState.canGoBack();
+      // LOGd.nav("BackButtonHandlerClass: check if we can go back", canGoBack);
+      // if (canGoBack) {
+      //   NavigationUtil.back();
+      //   return true;
+      // }
+      //
+      //
+      // let isModalOpen = NavState.areModalsOpen();
+      // LOGd.nav("BackButtonHandlerClass: check if a modal is open", isModalOpen);
+      // if (isModalOpen) {
+      //   NavigationUtil.dismissModal();
+      //   return true;
+      // }
+      //
+      //
+      // let areOnBaseTab = NavState.isOnBaseTab();
+      // LOGd.nav("BackButtonHandlerClass: check if we are on the base tab", areOnBaseTab);
+      // if (!areOnBaseTab) {
+      //   NavigationUtil.navigateToBaseTab()
+      //   return true;
+      // }
 
       return false;
     })
