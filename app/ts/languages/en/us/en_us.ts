@@ -1026,7 +1026,7 @@ export default {
     DELETE_ALL_COLLECTED_DATA:              function() { return "DELETE ALL COLLECTED DATA" },
     Careful__you_will_need_to:              function() { return "Careful, you will need to retrain this room again if you delete all the data." },
     Manage_fingerprints:                    function() { return "Manage fingerprints" },
-    DEV__Delete_individual_fi:              function() { return "DEV: Delete individual fingerprints" },
+    DEV__Delete_individual_fi:              function() { return "Advanced: Delete individual fingerprints" },
     Adding_an_in_pocket_train:              function() { return "Adding an in-pocket training set..." },
     Retraining_the_room_on_th:              function() { return "Retraining the room on this device..." },
     Retraining_to_include_new:              function() { return "Retraining to include new Crownstones..." },

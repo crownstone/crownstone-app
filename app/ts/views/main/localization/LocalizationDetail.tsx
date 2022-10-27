@@ -75,7 +75,7 @@ text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () 
     }];
 
 
-  let devButton = [
+  let advancedButton = [
     {
       type:  'button',
       label: lang("Manage_fingerprints"),
@@ -111,7 +111,7 @@ text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () 
         <View style={{height:25}} />
         <Text style={styles.boldLeftExplanation}>{ lang("Permanently_delete_all_lo") }</Text>
         <ListEditableItems items={deleteButton} />
-        { DataUtil.isDeveloper() && <ListEditableItems items={devButton} /> }
+        { <ListEditableItems items={advancedButton} /> }
       </ScrollView>
 
     </Background>

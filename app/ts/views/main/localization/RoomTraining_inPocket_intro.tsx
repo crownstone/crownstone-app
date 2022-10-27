@@ -35,7 +35,7 @@ return (
 
         <View style={{flex:1}}/>
         <Video
-          source={require('../../../../assets/video/inpocket.mov')}
+          source={require('../../../../assets/video/in_pocket.mp4')}
           style={{height:0.35*screenHeight, width:screenWidth}}
           repeat={true}
           playInBackground={false}

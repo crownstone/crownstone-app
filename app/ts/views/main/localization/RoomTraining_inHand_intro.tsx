@@ -32,7 +32,7 @@ export function RoomTraining_inHand_intro(props) {
 
         <View style={{flex:1}}/>
         <Video
-          source={require('../../../../assets/video/arm_test.mov')}
+          source={require('../../../../assets/video/localization.mp4')}
           style={{height:0.35*screenHeight, width:screenWidth}}
           repeat={true}
           rate={0.1}

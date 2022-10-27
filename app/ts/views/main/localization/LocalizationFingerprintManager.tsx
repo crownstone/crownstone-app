@@ -45,11 +45,11 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
       numberOfLines:2,
       callback: () => {
         Alert.alert(
-lang("_Are_you_sure___This_cann_header"),
-lang("_Are_you_sure___This_cann_body"),
-[{text: lang("_Are_you_sure___This_cann_left"), style: 'cancel'},
+          lang("_Are_you_sure___This_cann_header"),
+          lang("_Are_you_sure___This_cann_body"),
+          [{text: lang("_Are_you_sure___This_cann_left"), style: 'cancel'},
             {
-text: lang("_Are_you_sure___This_cann_right"), style:'destructive', onPress: () => {
+              text: lang("_Are_you_sure___This_cann_right"), style:'destructive', onPress: () => {
                 core.store.dispatch({type: 'REMOVE_FINGERPRINT_V2', sphereId: props.sphereId, locationId: props.locationId, fingerprintId: fingerprintId});
               }},
           ],

@@ -1983,7 +1983,7 @@ export default {
     DELETE_ALL_COLLECTED_DATA:              function() { return "VERWIJDER ALLE VERZAMELDE DATA"; },
     Careful__you_will_need_to:              function() { return "Pas op, je zal deze kamer opnieuw moeten trainen als je dit doet."; },
     Manage_fingerprints:                    function() { return "Beheer de fingerprints"; },
-    DEV__Delete_individual_fi:              function() { return "DEV: Verwijder individuele fingerprints"; },
+    DEV__Delete_individual_fi:              function() { return "Geavanceerd: Verwijder individuele fingerprints"; },
     Adding_an_in_pocket_train:              function() { return "Voeg een broekzak-set toe..."; },
     Retraining_the_room_on_th:              function() { return "Hertrain deze kamer op deze telefoon..."; },
     Retraining_to_include_new:              function() { return "Hertrain om de nieuwe Crownstones te gebruiken..."; },
