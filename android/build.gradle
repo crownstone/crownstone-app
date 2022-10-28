@@ -11,6 +11,7 @@ buildscript {
 
         supportLibVersion = "28.0.0" // Used by bluenet
 
+        kotlinVersion = ext.kotlin_version // Used by react-native-gesture-handler
         RNNKotlinVersion = ext.kotlin_version  // Used by react-native-navigation
 //        RNNKotlinStdlib = "kotlin-stdlib-jdk8" // Used by react-native-navigation
         firebaseIidVersion = "21.1.0" // Used by react-native-device-info

@@ -86,3 +86,9 @@
 # Added according to https://reactnative.dev/docs/hermes
 -keep class com.facebook.hermes.unicode.** { *; }
 -keep class com.facebook.jni.** { *; }
+
+# Added according to https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation/
+# linked to from https://github.com/computerjazz/react-native-draggable-flatlist
+-keep class com.swmansion.reanimated.** { *; }
+-keep class com.facebook.react.turbomodule.** { *; }
+

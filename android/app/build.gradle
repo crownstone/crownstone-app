@@ -256,7 +256,6 @@ dependencies {
     implementation 'nl.komponents.kovenant:kovenant-functional:3.3.0'
     implementation 'no.nordicsemi.android:dfu:1.10.1'
     implementation project(':bluenet')
-    implementation project(':localization-lib-android')
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
