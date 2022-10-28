@@ -47,18 +47,8 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.classifierProbabilities, (data) => {
-      this.roomData = data;
-    }));
-    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.classifierResult, (data) => {
-      this.currentLocation = data.highestPredictionLabel;
-      setTimeout(() => { this.forceUpdate(); }, 50);
-    }));
     this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       this._amountOfStones = data.length;
-    }));
-    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentLocationKNN, (data) => {
-      this.knnLocation = data.location;
     }));
     this.unsubscribeNativeEvents.push(core.eventBus.on('enterRoom', (data) => {
       this.appLocation = data.locationId;

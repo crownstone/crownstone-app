@@ -11,7 +11,7 @@ import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
 import { Background } from "../../components/Background";
-import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
+import { colors, screenWidth, styles, topBarHeight } from "../../styles";
 import { Button } from "../../components/Button";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';

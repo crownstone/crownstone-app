@@ -7,16 +7,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Text, View, StatusBar, TouchableOpacity
+  Text, View,
 } from "react-native";
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
-import { Icon }                     from '../components/Icon'
 import { Sphere, SphereHeader } from "./Sphere";
 import {
-  availableModalHeight,
-  availableScreenHeight, background,
+  background,
   colors,
-  overviewStyles, screenHeight, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight
+  styles,
+  topBarHeight
 } from "../styles";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import {SphereLevel}                from "./SphereLevel";
@@ -27,19 +26,18 @@ import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
 import { DataUtil }                 from "../../util/DataUtil";
-import { Background, BackgroundCustomTopBar } from "../components/Background";
+import { BackgroundCustomTopBar } from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { SideBarView }              from "../components/animated/SideBarView";
 import { SphereOverviewSideBar }    from "../sidebars/SphereOverviewSideBar";
 import { useRef }                   from "react";
 import { NavBarBlur, TopBarBlur }   from "../components/NavBarBlur";
-import {Debug, DebugNotifications}  from "../../DebugCalls";
-import { EditIcon, MenuButton, MenuButtonPlaceholder } from "../components/EditIcon";
+import { Debug }  from "../../DebugCalls";
+import { EditIcon, MenuButtonPlaceholder } from "../components/EditIcon";
 import { HeaderTitle }              from "../components/HeaderTitle";
 import { Get }                      from "../../util/GetUtil";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Spacer } from "../components/Spacer";
 
 
 const ZOOM_LEVELS = {
