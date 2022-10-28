@@ -10,8 +10,8 @@ import {
   View
 } from "react-native";
 import { useState } from "react";
-import { BlurView} from "@react-native-community/blur";
 import { colors } from "../../styles";
+import {Blur} from "../Blur";
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
@@ -183,7 +183,7 @@ export class HiddenFadeInBlur extends Component<any, any> {
     if (this.state.show === true) {
       return (
         <Animated.View style={{flex:1, overflow:'hidden', opacity:this.state.viewOpacity}} testID={this.props.testID}>
-          <BlurView
+          <Blur
             style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.csBlue.rgba(0.3)}}
             blurType="light"
             blurAmount={3}

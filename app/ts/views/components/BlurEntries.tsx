@@ -3,10 +3,10 @@ import * as React from "react";
 import { DraggableProps, useDraggable } from "./hooks/draggableHooks";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SlideSideFadeInView }          from "./animated/SlideFadeInView";
-import { BlurView }                     from "@react-native-community/blur";
 import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styles";
 import {DevIconRight, SettingsIconRight} from "./EditIcon";
 import { DataUtil } from "../../util/DataUtil";
+import {Blur} from "./Blur";
 
 type ReactHOC = (props) => React.ComponentElement<any, any>
 
@@ -107,7 +107,7 @@ export function TappableBlurEntry(props: TappableBlurEntryProps) {
 
 export function BlurEntry(props: BlurEntryProps) {
   return (
-    <BlurView
+    <Blur
       blurType={"light"}
       blurAmount={8}
       style={{
@@ -137,7 +137,7 @@ export function BlurEntry(props: BlurEntryProps) {
         props.settings && <BlurEntrySettingsIcon visible={props.editMode} callback={props.editSettingsCallback} />
       }
       { renderPropItem(props.control, props) }
-    </BlurView>
+    </Blur>
   );
 }
 
@@ -170,7 +170,7 @@ export function renderPropItem(item: ReactHOC | React.ComponentElement<any, any>
 
 export function BlurMessageBar(props) {
   return (
-    <BlurView
+    <Blur
       blurType={'light'}
       blurAmount={2}
       style={{
@@ -186,7 +186,7 @@ export function BlurMessageBar(props) {
         backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5)
       }}>
       {props.children}
-    </BlurView>
+    </Blur>
   )
 }
 

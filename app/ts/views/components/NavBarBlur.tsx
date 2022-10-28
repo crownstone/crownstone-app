@@ -1,9 +1,9 @@
 import {colors, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight} from "../styles";
 import { View, ViewStyle } from "react-native";
-import {BlurView} from "@react-native-community/blur";
 import * as React from "react";
 import {NotificationLine} from "./NotificationLine";
 import { AnimatedCircle } from "./animated/AnimatedCircle";
+import {Blur} from "./Blur";
 
 
 export function NavBarBlur(props) {
@@ -18,7 +18,7 @@ export function NavBarBlur(props) {
   return (
     <React.Fragment>
       {props.noLine !== true && <View style={{position:'absolute', bottom:tabBarHeight, width:screenWidth, height:1, backgroundColor: colors.black.rgba(0.1)}} />}
-      <BlurView blurType={'light'} blurAmount={4} style={{
+      <Blur blurType={'light'} blurAmount={4} style={{
         position:'absolute',
         bottom:0,
         height:tabBarHeight,
@@ -26,7 +26,7 @@ export function NavBarBlur(props) {
         backgroundColor,
       }}>
         { props.line && <View style={{height:1, width: screenWidth, backgroundColor: colors.blue.rgba(0.45)}} /> }
-      </BlurView>
+      </Blur>
     </React.Fragment>
   );
 }
@@ -61,7 +61,7 @@ export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabled
 
   return (
     <View style={{ position:'absolute', top:0 }}>
-      <BlurView blurType={'light'} blurAmount={4} style={style} />
+      <Blur blurType={'light'} blurAmount={4} style={style} />
 
       { props.blink && props.blink.left  && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, left:27}}  /> }
       { props.blink && props.blink.right && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, right:27}} /> }

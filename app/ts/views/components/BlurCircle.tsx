@@ -1,17 +1,14 @@
 import * as React from 'react'; import { Component } from 'react';
-import {
-  View
-} from "react-native";
 
 import {styles} from '../styles'
-import {BlurView} from "@react-native-community/blur";
+import {Blur} from "./Blur";
 
 
 export class BlurCircle extends Component<{color: string, borderWidth?: number, borderColor?: string, size: number, style?: any}, any> {
   render() {
     let size = this.props.size;
     return (
-      <BlurView
+      <Blur
         blurAmount={5}
         blurType={'light'}
         style={[{
@@ -22,7 +19,7 @@ export class BlurCircle extends Component<{color: string, borderWidth?: number, 
       }, styles.centered, this.props.style]}
       >
         {this.props.children}
-      </BlurView>
+      </Blur>
     );
   }
 }

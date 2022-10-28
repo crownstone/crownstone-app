@@ -14,11 +14,11 @@ import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../s
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
 import {Bluenet} from "../../../native/libInterface/Bluenet";
-import {BlurView} from "@react-native-community/blur";
 import {Button} from "../../components/Button";
 import {SlideInViewLayoutAnimation} from "../../components/animated/SlideInViewLayoutAnimation";
 import {core} from "../../../Core";
 import { FingerprintCollectorLive } from "../../../localization/fingerprints/FingerprintCollectorLive";
+import { Blur } from "../../components/Blur";
 
 
 
@@ -200,7 +200,7 @@ function LocationItem(props: {location: LocationData, distance: number, index: n
   let fontStyle = {fontSize: 10*factor + 10, fontWeight: weight[props.index]} as TextStyle;
   return (
     <View style={{width: screenWidth, alignItems:'center'}}>
-      <BlurView blurType={'light'} style={{
+      <Blur blurType={'light'} style={{
         flexDirection:'row',
         height: 30*factor + 30,
         width: screenWidth*0.75,
@@ -209,7 +209,7 @@ function LocationItem(props: {location: LocationData, distance: number, index: n
         opacity: 0.8*factor+0.2
       }}>
         <Text style={fontStyle}>{`#${props.index+1} ${props.location.config.name}`}</Text>
-      </BlurView>
+      </Blur>
     </View>
   )
 }

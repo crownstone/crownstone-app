@@ -19,7 +19,8 @@ import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
 import { LOGi } from "../../logging/Log";
-import { BlurView } from "@react-native-community/blur";
+import {Blur} from "../components/Blur";
+
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;
@@ -128,7 +129,7 @@ export class Processing extends Component<any, any> {
         duration={200}
         testID={"Processing"}
         visible={this.state.visible}>
-        <BlurView
+        <Blur
           blurType={'dark'}
           blurAmount={2}
           style={[styles.fullscreen,{justifyContent:'center', alignItems:'center'}]}
@@ -139,7 +140,7 @@ export class Processing extends Component<any, any> {
           {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]} testID={"Processing_text"}>{this.state.text}</Text> : undefined}
           {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} progressDuration={this.state.progressDuration} /> : undefined}
           {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
-        </BlurView>
+        </Blur>
       </HiddenFadeInView>
     );
   }

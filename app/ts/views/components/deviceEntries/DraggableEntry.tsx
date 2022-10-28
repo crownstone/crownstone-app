@@ -8,13 +8,14 @@ import {SlideSideFadeInView} from "../animated/SlideFadeInView";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {DeviceEntryIcon} from "./submodules/DeviceEntryIcon";
 import { Get } from "../../../util/GetUtil";
-import { BlurView } from "@react-native-community/blur";
+
 import { SettingsIconRight } from "../EditIcon";
 import {DeviceDimSlider, DeviceDimTopPadding, DeviceSwitchControl} from "./submodules/DeviceEntrySwitchControls";
 import {DeviceEntryLabel} from "./submodules/DeviceLabels";
 import { useDatabaseChange } from "../hooks/databaseHooks";
 import { DraggableProps, useDraggable } from "../hooks/draggableHooks";
 import { useCleanup } from "../hooks/timerHooks";
+import { Blur } from '../Blur';
 
 
 interface DeviceEntryProps extends DraggableProps {
@@ -64,7 +65,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
   return (
     <TouchableOpacity activeOpacity={props.editMode ? 0.5 : 1.0} onLongPress={() => { if (props.editMode) { triggerDrag(); } }} style={{flexDirection:'row'}}>
       <SlideSideFadeInView visible={dragging} width={40} />
-      <BlurView
+      <Blur
         blurType={"light"}
         blurAmount={5}
         style={{
@@ -102,7 +103,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
           <SettingsIconRight style={{height:55}} onPress={() => {  NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId, viewingRemotely: props.viewingRemotely}); }}/>
         </SlideSideFadeInView>
         <DeviceSwitchControl stone={stone} editMode={props.editMode} dimMode={props.dimMode} setPercentage={(value) => { setPercentage(value); }} />
-      </BlurView>
+      </Blur>
     </TouchableOpacity>
   );
 }

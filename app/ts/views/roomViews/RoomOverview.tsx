@@ -33,7 +33,6 @@ import { HubEntry }                    from "../components/deviceEntries/HubEntr
 import { NavBarBlur, TopBarBlur }      from "../components/NavBarBlur";
 import { BackIcon, EditDone, EditIcon, SettingsIconLeft } from "../components/EditIcon";
 import { Icon }                        from "../components/Icon";
-import { BlurView }                    from "@react-native-community/blur";
 import { NotificationFiller }          from "../components/NotificationLine";
 import { SortedList, SortingManager }  from "../../logic/SortingManager";
 import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
@@ -41,6 +40,7 @@ import { EventBusClass }               from "../../util/EventBus";
 import { HeaderTitle }                 from "../components/HeaderTitle";
 import { Get }                         from "../../util/GetUtil";
 import { MapProvider }                 from "../../backgroundProcesses/MapProvider";
+import { Blur } from "../components/Blur";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -435,7 +435,7 @@ function DimmerSwitch({dimMode, setDimMode}) {
       position:'absolute',
       bottom: tabBarHeight + 5, right: 5
     }} onPress={() => { setDimMode(!dimMode); }}>
-      <BlurView
+      <Blur
         blurType={'light'}
         blurAmount={4}
         style={{...styles.centered, width: size, height: size, borderRadius: 15, backgroundColor: dimMode ? colors.green.rgba(0.4) : colors.blue.rgba(0.2)}}
@@ -446,7 +446,7 @@ function DimmerSwitch({dimMode, setDimMode}) {
         <SlideFadeInView style={styles.centered} visible={!dimMode} height={size}>
           <Icon name={'ion5-ios-bulb-outline'} size={42} color={colors.white.hex} />
         </SlideFadeInView>
-      </BlurView>
+      </Blur>
     </TouchableOpacity>
   );
 }

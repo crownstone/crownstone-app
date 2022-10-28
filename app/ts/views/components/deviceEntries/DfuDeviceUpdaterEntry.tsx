@@ -14,10 +14,9 @@ import {
 
 import { Icon } from '../Icon';
 import {appStyleConstants, colors, screenWidth} from "../../styles";
-import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../Core";
 import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";
-import {BlurView} from "@react-native-community/blur";
+import { Blur } from "../Blur";
 
 
 export class DfuDeviceUpdaterEntry extends Component<any, any> {
@@ -200,7 +199,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
 
     let shouldStillUpdate = !this.state.isUpdating && !this.state.updateSuccessful && !this.state.updateFailed;
     return (
-      <BlurView
+      <Blur
         blurType={"light"}
         blurAmount={5}
         style={{
@@ -233,7 +232,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             { this.props.isUpdating ? <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} /> : null}
           </View>
         </View>
-      </BlurView>
+      </Blur>
     );
   }
 }

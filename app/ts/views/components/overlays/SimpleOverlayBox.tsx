@@ -14,7 +14,7 @@ import {
 import { HiddenFadeInBlur} from "../animated/FadeInView";
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight, topBarHeight} from "../../styles";
-import {BlurView} from "@react-native-community/blur";
+import {Blur} from "../Blur";
 
 interface simpleOverlayBoxProps {
   overrideBackButton?: any,
@@ -105,14 +105,14 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
             <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
               {this.props.scrollable && <ScrollView contentContainerStyle={{flex:1, paddingTop: 60}}>{this.props.children}</ScrollView> }
               {!this.props.scrollable && <View style={{flex:1, paddingTop: 60}}>{this.props.children}</View> }
-              <BlurView blurType={'light'} blurAmount={3} style={{
+              <Blur blurType={'light'} blurAmount={3} style={{
                 position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,
                 borderRadius: 10, backgroundColor: colors.white.rgba(0.5),
                 justifyContent:'center',
                 paddingLeft:30
               }}>
                 { this._getTitle() }
-              </BlurView>
+              </Blur>
               { this._getCloseIcon(closeIconSize) }
               { this._getFooterComponent()}
             </View>

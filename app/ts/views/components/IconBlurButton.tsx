@@ -1,9 +1,8 @@
-import * as React from 'react'; import { Component } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { Icon } from './Icon'
+import * as React from 'react';
+import {  View } from 'react-native';
 import { styles, colors} from '../styles'
-import {BlurView} from "@react-native-community/blur";
 import { HighlightableIcon } from "./animated/HighlightableIcon";
+import {Blur} from "./Blur";
 
 /**
 
@@ -28,7 +27,7 @@ export function IconBlurButton(props: {
     let plusSize = props.plusSize || 0.3*iconSize;
     return (
       <View style={{width:iconSize+plusSize, height:iconSize+0.2*plusSize, overflow:'hidden'}}>
-        <BlurView blurType={'light'} style={[{
+        <Blur blurType={'light'} style={[{
           width: iconSize,
           height: iconSize,
           borderRadius:  props.circle ? iconSize/2 : (props.radius || (iconSize)/5),
@@ -39,7 +38,7 @@ export function IconBlurButton(props: {
           top:  0.2*plusSize
         }, styles.centered, props.buttonStyle]}>
           <HighlightableIcon {...props} enabled={props.highlight ?? false} />
-        </BlurView>
+        </Blur>
         <View style={[{
           width:plusSize,
           height:plusSize,
@@ -60,7 +59,7 @@ export function IconBlurButton(props: {
   }
   else {
     return (
-      <BlurView blurType={'light'} style={[{
+      <Blur blurType={'light'} style={[{
         width: iconSize,
         height: iconSize,
         borderRadius: props.circle ? iconSize/2 : (props.radius || (iconSize)/5),
@@ -69,7 +68,7 @@ export function IconBlurButton(props: {
         }, styles.centered, props.buttonStyle
       ]}>
         <HighlightableIcon {...props} enabled={props.highlight ?? false} />
-      </BlurView>
+      </Blur>
     )
   }
 }

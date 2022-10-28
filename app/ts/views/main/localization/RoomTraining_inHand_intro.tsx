@@ -24,32 +24,31 @@ export function RoomTraining_inHand_intro(props) {
 
   return (
     <Background>
-        <View style={{height: topBarHeight}} />
-        <KeepAwake />
-        <View style={{height:20}}/>
-        <Text style={styles.boldExplanation}>{ lang("Walk_around_the_room_with") }</Text>
-        <Text style={styles.explanation}>{ lang("Once_the_phone_vibrates__") }</Text>
+      <View style={{height: topBarHeight}} />
+      <KeepAwake />
+      <View style={{height:20}}/>
+      <Text style={styles.boldExplanation}>{ lang("Walk_around_the_room_with") }</Text>
+      <Text style={styles.explanation}>{ lang("Once_the_phone_vibrates__") }</Text>
 
-        <View style={{flex:1}}/>
-        <Video
-          source={require('../../../../assets/video/localization.mp4')}
-          style={{height:0.35*screenHeight, width:screenWidth}}
-          repeat={true}
-          rate={0.1}
-          playInBackground={false}
-          resizeMode={'cover'}
+      <View style={{flex:1}}/>
+      <Video
+        source={require('../../../../assets/video/localization.mp4')}
+        style={{height:0.35*screenHeight, width:screenWidth}}
+        repeat={true}
+        playInBackground={false}
+        resizeMode={'cover'}
+      />
+      <View style={{flex:1}}/>
+
+      <Text style={styles.explanation}>{ lang("Once_I_have_collected_eno") }</Text>
+      <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
+        <Button
+          backgroundColor={colors.blue.rgba(0.75)}
+          icon={'ios-play'}
+          label={ "Start!"}
+          callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND", minRequiredSamples: props.minRequiredSamples}); }}
         />
-        <View style={{flex:1}}/>
-
-        <Text style={styles.explanation}>{ lang("Once_I_have_collected_eno") }</Text>
-        <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
-          <Button
-            backgroundColor={colors.blue.rgba(0.75)}
-            icon={'ios-play'}
-            label={ "Start!"}
-            callback={() => { NavigationUtil.navigate('RoomTraining_training', {sphereId: props.sphereId, locationId: props.locationId, type: "IN_HAND", minRequiredSamples: props.minRequiredSamples}); }}
-          />
-        </View>
+      </View>
     </Background>
   );
 }

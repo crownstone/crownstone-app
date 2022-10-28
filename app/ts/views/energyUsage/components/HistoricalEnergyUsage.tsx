@@ -17,8 +17,9 @@ import {
   getEnergyRange,
   processStoneBuckets
 } from "../EnergyProcessingUtil";
-import { BlurView } from "@react-native-community/blur";
+
 import { ButtonBar } from "../../components/editComponents/ButtonBar";
+import {Blur} from "../../components/Blur";
 
 export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_TYPE}) {
   let [ preProcessedData, setPreProcessedData ] = useState<StoneBucketEnergyData>(null);
@@ -120,7 +121,7 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
       { location && <View style={{}}><Text>{`Energy usage in ${location.config.name}`}</Text></View> }
       <View>
       <EnergyGraphAxisSvg data={processedData} type={props.mode} width={0.9*screenWidth} height={200} />
-      { loading && <BlurView blurType="xlight" blurAmount={5} style={{position:'absolute', top:0, left:0, height:200, width: 0.9*screenWidth, ...styles.centered}}><ActivityIndicator size={'large'} color={colors.black.rgba(0.5)} /></BlurView> }
+      { loading && <Blur blurType="xlight" blurAmount={5} style={{position:'absolute', top:0, left:0, height:200, width: 0.9*screenWidth, ...styles.centered}}><ActivityIndicator size={'large'} color={colors.black.rgba(0.5)} /></Blur> }
       </View>
       <View style={{flex:1}}>
         { !locationId && <RoomList sphereId={props.sphereId} data={processedData} setLocationId={setLocationId} /> }

@@ -16,7 +16,7 @@ import {colors, screenWidth, screenHeight, statusBarHeight, appStyleConstants} f
 import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
-import {BlurView} from "@react-native-community/blur";
+import {Blur} from "../components/Blur";
 
 export class ListOverlay extends LiveComponent<any, any> {
   customContent : () => Component;
@@ -162,7 +162,7 @@ export function OverlaySaveButton(props : { label: string, backgroundColor: stri
   return (
     <View style={{flex:1, flexDirection:'row'}}>
       <View style={{flex:1}} />
-      <BlurView blurType={'light'} blurAmount={3} style={{
+      <Blur blurType={'light'} blurAmount={3} style={{
         height:50,
         flex:3,
         borderColor: colors.white.hex,
@@ -176,7 +176,7 @@ export function OverlaySaveButton(props : { label: string, backgroundColor: stri
         >
           <Text style={{fontSize:15, fontWeight:'bold'}}>{ props.label }</Text>
         </TouchableOpacity>
-      </BlurView>
+      </Blur>
       <View style={{flex:0.2}} />
     </View>
   );
