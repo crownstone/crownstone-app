@@ -28,7 +28,6 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
   let [ locationId,       setLocationId ]       = useState<locationId | null>(null);
   let [ startDate,        setStartDate ]        = useState<Record<GRAPH_DATE_TYPE, number> >({ DAY: Date.now(), WEEK: Date.now(), MONTH: Date.now(), YEAR: Date.now() });
 
-  console.log("RENDER WITH ", props);
 
   useEffect(() => {
     async function getData() {
@@ -40,7 +39,10 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
         }
         let data = await container.getData(startDate[props.mode], props.mode)
         console.log("Set PreProcessedData")
-        setPreProcessedData(processStoneBuckets(props.sphereId, getEnergyRange(startDate[props.mode], props.mode), data, props.mode));
+        if (!data) { console.log("No data!"); }
+        else       {
+          setPreProcessedData(processStoneBuckets(props.sphereId, getEnergyRange(startDate[props.mode], props.mode), data, props.mode));
+        }
         console.log("Set Loading")
         setLoading(false);
       }

@@ -5,8 +5,8 @@ import DeviceInfo from 'react-native-device-info';
 import {LOG, LOGi} from "../logging/Log";
 import { Navigation } from "react-native-navigation";
 
-export const deviceModel = DeviceInfo.getModel();
-export const deviceId    = DeviceInfo.getDeviceId();
+export const deviceModel    = DeviceInfo.getModel();
+export const deviceId       = DeviceInfo.getDeviceId();
 export let isModernIosModel = deviceModel.indexOf('iPhone X') !== -1 || deviceModel.indexOf('iPhone 1') !== -1;
 
 export let topBarMargin    = 0
@@ -17,7 +17,6 @@ export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isModernIosMode
 
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height; // initial guess
-
 
 //TODO: Utilize these constants
 // export const UIconstants = Navigation.constantsSync();
