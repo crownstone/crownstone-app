@@ -17,14 +17,9 @@ export const NATIVE_BUS_TOPICS : NativeBusTopics = {
   iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = ibeaconPackage[]
   enterSphere:          "enterSphere",                      // data type = string (sphereId)
   exitSphere:           "exitSphere",                       // data type = string (sphereId)
-  currentRoom:          "currentLocation",                  // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
-  currentLocationKNN:   "currentLocationKNN",               // Sent every time the location is calculated. data type = {region: sphereId, location: locationId}
 
   libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
   libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }
-
-  classifierProbabilities: "classifierProbabilities",       // data type = {locationId1: {sampleSize: number, probability: number }, locationId2: {sampleSize: number, probability: number }, ...}
-  classifierResult:        "classifierResult",              // data type = {highestPredictionLabel: string, highestPrediction: number } // highestPredictionLabel == locationId with highest probability and highestPrediction is that probability
 
   callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
   localizationPausedState: "localizationPausedState",       // data type = string (url)

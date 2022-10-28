@@ -137,14 +137,9 @@ interface NativeBusTopics {
   iBeaconAdvertisement:            string,
   enterSphere:                     string,
   exitSphere:                      string,
-  currentRoom:                     string,
-  currentLocationKNN:              string,
 
   libAlert:                        string,
   libPopup:                        string,
-
-  classifierProbabilities:         string,
-  classifierResult:                string,
 
   callbackUrlInvoked:              string,
   localizationPausedState:         string,

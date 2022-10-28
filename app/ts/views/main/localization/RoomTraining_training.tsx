@@ -20,10 +20,7 @@ import {core} from "../../../Core";
 import { FingerprintCollector } from "../../../localization/fingerprints/FingerprintCollector";
 import { Component } from "react";
 import { ProgressCircle } from "../../components/ProgressCircle";
-import { SlideInViewLayoutAnimation } from "../../components/animated/SlideInViewLayoutAnimation";
 import { SlideInView } from "../../components/animated/SlideInView";
-import { Circle } from "../../components/Circle";
-import { Icon } from "../../components/Icon";
 import { ScaledImage } from "../../components/ScaledImage";
 
 
@@ -35,7 +32,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
   }
 
   trainingData : FingerprintCollector;
-  minRequiredSamples : number = 1 //FINGERPRINT_SIZE_THRESHOLD;
+  minRequiredSamples : number = FINGERPRINT_SIZE_THRESHOLD;
 
   constructor(props) {
     super(props);
