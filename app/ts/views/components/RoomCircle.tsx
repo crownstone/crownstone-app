@@ -318,7 +318,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
   handleDragging() {
     // stop any animation this node was doing.
     this.revertSize();
-
     this._clearHold();
   }
 

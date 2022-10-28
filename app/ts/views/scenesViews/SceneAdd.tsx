@@ -312,6 +312,7 @@ lang("_Select_at_least_one______body"),
       <AnimatedBackground fullScreen={true} image={backgroundImage}>
         <CustomTopBarWrapper
           leftStyle={{color: textColor}}
+          dark
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => {
             if (this._interview.back() === false) {

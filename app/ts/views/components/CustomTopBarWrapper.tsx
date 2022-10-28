@@ -36,7 +36,7 @@ export function CustomTopBarWrapper(props) {
       <TopBarContext.Provider value={{height: topBarHeight - insets.top}}>
         {props.children}
       </TopBarContext.Provider>
-      { props.noBlur !== true && <TopBarBlur /> }
+      { props.noBlur !== true && <TopBarBlur dark={props.dark}/> }
       <View style={{
         position:'absolute', top:0, left:0, right:0,
         height: topBarHeight, paddingTop:insets.top,

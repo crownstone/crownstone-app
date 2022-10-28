@@ -9,7 +9,6 @@ import {Icon} from "../../components/Icon";
 import {EnergyGraphAxisSvg} from "../graphs/StaticEnergyGraphSphereSvg";
 import { CrownstoneList, RoomList } from "./HistoricalDataLists";
 import {Get} from "../../../util/GetUtil";
-import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {EnergyIntervalCalculation} from "../EnergyIntervalCalculation";
 import {
   bucketsToLocations,

@@ -32,7 +32,7 @@ export function NavBarBlur(props) {
 }
 
 
-export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabledBlur?: boolean, children?: any, showNotifications?: boolean, blink? : UIBlinkSettings}) {
+export function TopBarBlur(props: {dark?: boolean, xlight?: boolean, xxlight?: boolean, disabledBlur?: boolean, children?: any, showNotifications?: boolean, blink? : UIBlinkSettings}) {
   let backgroundColor = 'transparent';
   if (props.xlight) {
     backgroundColor = colors.white.rgba(0.4);
@@ -61,7 +61,7 @@ export function TopBarBlur(props: {xlight?: boolean, xxlight?: boolean, disabled
 
   return (
     <View style={{ position:'absolute', top:0 }}>
-      <Blur blurType={'light'} blurAmount={4} style={style} />
+      <Blur blurType={props.dark ? 'dark' : 'light'} blurAmount={4} style={style} />
 
       { props.blink && props.blink.left  && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, left:27}}  /> }
       { props.blink && props.blink.right && <Blinker style={{top: topBarHeight - (0.5*(topBarHeight - statusBarHeight)) - 4, right:27}} /> }

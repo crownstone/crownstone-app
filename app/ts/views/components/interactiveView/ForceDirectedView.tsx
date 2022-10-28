@@ -217,8 +217,18 @@ export class ForceDirectedView extends Component<{
         return false
       },
       onPanResponderMove: (evt, gestureState) => {
-        // console.log("onPanResponderMove", )
+        // console.log("onPanResponderMove", this._multiTouch, this._totalMovedX, this._totalMovedY, this._pressedNodeData)
         // The most recent move distance is gestureState.move{X,Y}
+        let threshold = 0;
+        if (Platform.OS === 'android') {
+          threshold = 1;
+        }
+        if (
+          (this._totalMovedX < 50 && this._totalMovedY < 50) &&               // We do not want to send too many events, only in the beginning of the move
+          (this._totalMovedX > threshold || this._totalMovedY > threshold) && // threshold is needed for android, onPanResponderMove is more sensitive on Android
+          this._multiTouchUsed === false) {
+          core.eventBus.emit('userDragEvent' + this.props.viewId);
+        }
 
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
@@ -237,7 +247,6 @@ export class ForceDirectedView extends Component<{
             this.nodes[nodeId].y = newY;
           }
           else if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
-            core.eventBus.emit('userDragEvent' + this.props.viewId);
             if (this._pressedNodeData !== false) {
               // do nothing
               if (this.props.allowDrag) {
