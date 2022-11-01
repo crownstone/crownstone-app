@@ -31,7 +31,7 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
         <Text style={styles.header}>{ 'User permission required.' }</Text>
         <Text style={styles.boldExplanation}>{ "If you'd like us to store your energy usage in the cloud, a sphere admin has to give permission." }</Text>
         <TouchableOpacity onPress={async () => {
-          Linking.openURL('https://crownstone.rocks/privacy');
+          Linking.openURL('https://crownstone.rocks/data-privacy-users/');
         }}>
           <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ "You can read about the way we store the data here." }</Text>
         </TouchableOpacity>
@@ -52,7 +52,7 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
         <Text style={styles.header}>{ 'User permission required.' }</Text>
         <Text style={styles.boldExplanation}>{ "If you'd like us to store your energy usage in the cloud, please provide permission by tapping the button below." }</Text>
         <TouchableOpacity onPress={async () => {
-          Linking.openURL('https://crownstone.rocks/privacy');
+          Linking.openURL('https://crownstone.rocks/data-privacy-users/');
         }}>
           <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ "You can read about the way we store the data here." }</Text>
         </TouchableOpacity>

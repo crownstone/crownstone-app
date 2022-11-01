@@ -19,7 +19,6 @@ RCT_EXTERN_METHOD(stopIndoorLocalization)
 
 Add react-native-video
 
-
 add bridge methods:
 RCT_EXTERN_METHOD(setDoubleTapSwitchCraft:(NSString *)handle enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setDefaultDimValue:(NSString *)handle dimValue:(nonnull NSNumber *)dimValue callback:(RCTResponseSenderBlock)callback)

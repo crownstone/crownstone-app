@@ -37,6 +37,7 @@ import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EditDone, EditIcon } from "../components/EditIcon";
 import {ContentNoSphere} from "../energyUsage/components/ContentNoSphere";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
@@ -74,7 +75,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
   initializeSortedList(activeSphereId, state) {
     let data = [];
     if (activeSphereId) {
-      let sceneIds = Object.keys(state.spheres[activeSphereId].scenes);
+      let activeSphere = Get.activeSphere();
+      let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
       this.sortedList = SortingManager.getList(activeSphereId, className, "Overview", sceneIds);
       data = this.sortedList.getDraggableList();
     }
@@ -98,7 +100,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
         TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
 
         if (activeSphere) {
-          let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
+          let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
           if (this.sortedList) {
             this.initializeSortedList(activeSphere, state);
             this.sortedList.mustContain(sceneIds);
@@ -143,7 +145,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
   renderDraggableItem = (id: string, index: number, drag: () => void, isActive: boolean) => {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
-    let scene = Get.scene(activeSphereId, id);
+    let scene = Get.scene(activeSphereId, MapProvider.cloud2localMap.scenes[id]);
     if (!scene) { return <View/> }
     return (
       <SceneItem
