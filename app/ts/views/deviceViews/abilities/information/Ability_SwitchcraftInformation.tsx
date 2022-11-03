@@ -17,6 +17,7 @@ import {IconButton} from "../../../components/IconButton";
 import {ScaledImage} from "../../../components/ScaledImage";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { SettingsBackground } from "../../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
 
 
 export class Ability_SwitchcraftInformation extends Component<any, any> {
@@ -28,7 +29,7 @@ export class Ability_SwitchcraftInformation extends Component<any, any> {
   render() {
     return (
       <SettingsBackground testID={'Ability_SwitchcraftInformation'}>
-        <ScrollView >
+        <SettingsScrollbar >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../../assets/images/switchCraft/switchCraftText.png')} sourceWidth={1000} sourceHeight={161} targetWidth={0.75*screenWidth} />
@@ -59,7 +60,7 @@ export class Ability_SwitchcraftInformation extends Component<any, any> {
             <Text style={styles.header}>{ lang("Enjoy_Switchcraft_") }</Text>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

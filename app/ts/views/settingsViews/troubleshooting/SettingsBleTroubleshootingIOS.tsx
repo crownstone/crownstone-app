@@ -15,6 +15,7 @@ import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 import { SettingsBackground } from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 
 
@@ -33,7 +34,7 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
     let imageWidth = 0.7*screenWidth;
     return (
       <SettingsBackground testID={"SettingsBleTroubleshooting"}>
-        <ScrollView >
+        <SettingsScrollbar>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <IconButton name="ios-bluetooth" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />
@@ -57,7 +58,7 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
             <Text style={styles.header}>{ lang("Enjoy_using_your_Crownsto") }</Text>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
   }

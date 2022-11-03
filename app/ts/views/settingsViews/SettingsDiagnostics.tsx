@@ -31,6 +31,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {NavBarBlur} from "../components/NavBarBlur";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
 import {SafeAreaView} from "react-native-safe-area-context";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -196,9 +197,9 @@ export class SettingsDiagnostics extends Component<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView contentContainerStyle={{minHeight:availableScreenHeight}}>
+        <SettingsScrollbar contentContainerStyle={{minHeight:availableScreenHeight}}>
           { this.getContent() }
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

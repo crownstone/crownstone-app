@@ -16,6 +16,7 @@ import { screenHeight, styles } from "../../../styles";
 import {ScaledImage} from "../../../components/ScaledImage";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import {SettingsBackground} from "../../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
 
 
 export class Ability_TapToToggleInformation extends Component<any, any> {
@@ -26,7 +27,7 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
   render() {
     return (
       <SettingsBackground testID={'Ability_TapToToggleInformation'}>
-        <ScrollView >
+        <SettingsScrollbar>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../../assets/images/overlayCircles/tapToToggle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
@@ -39,7 +40,7 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
             <Text style={styles.explanation}>{ lang("Tap_to_toggle_is_not_mean") }</Text>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

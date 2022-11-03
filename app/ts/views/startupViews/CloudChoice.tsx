@@ -32,6 +32,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { urlChecker } from "../../util/Util";
 import { core } from "../../Core";
 import { StoreManager } from "../../database/storeManager";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 
 
@@ -211,9 +212,9 @@ export class CloudChoice extends LiveComponent<any, {
   render() {
     return (
       <SettingsBackground>
-        <ScrollView style={{flex:1}}>
+        <SettingsScrollbar>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

@@ -30,7 +30,7 @@ export function RoomLayer(props) {
     nodeIds.forEach((nodeId) => {
       let node = nodes[nodeId];
       if (node.support === false && node.id !== null) {
-        actions.push({type:"SET_LOCATION_POSITIONS", sphereId: props.sphereId, locationId: nodeId, data:{ x: node.x, y: node.y, setOnThisDevice: true}})
+        actions.push({type:"SET_LOCATION_POSITIONS", sphereId: props.sphereId, locationId: nodeId, data:{ x: node.x, y: node.y, setOnThisDevice: true}});
       }
     });
     if (actions.length > 0) {
@@ -73,6 +73,8 @@ export function RoomLayer(props) {
   }
 
   let insets = useSafeAreaInsets()
+
+  console.log("USING INSETS", insets)
 
   let height = availableScreenHeight; // 1 is for the bottom light line above the navbar
   let offset = 0;

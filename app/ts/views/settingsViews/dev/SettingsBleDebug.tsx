@@ -12,6 +12,7 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
@@ -101,9 +102,9 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{paddingBottom: tabBarHeight}}>
+        <SettingsScrollbar keyboardShouldPersistTaps="always" contentContainerStyle={{paddingBottom: tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

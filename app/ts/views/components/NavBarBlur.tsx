@@ -1,5 +1,5 @@
 import {colors, screenWidth, statusBarHeight, styles, tabBarHeight, topBarHeight} from "../styles";
-import { View, ViewStyle } from "react-native";
+import { Platform, View, ViewStyle } from "react-native";
 import * as React from "react";
 import {NotificationLine} from "./NotificationLine";
 import { AnimatedCircle } from "./animated/AnimatedCircle";
@@ -9,9 +9,12 @@ import {Blur} from "./Blur";
 export function NavBarBlur(props) {
   let backgroundColor = 'transparent';
   if (props.xlight) {
-    backgroundColor = colors.white.rgba(0.4);
+    backgroundColor = colors.white.rgba(Platform.OS === 'ios' ? 0.4 : 0.9);
   }
   else if (props.xxlight) {
+    backgroundColor = colors.white.rgba(Platform.OS === 'ios' ? 0.6 : 1);
+  }
+  else if (Platform.OS === 'android') {
     backgroundColor = colors.white.rgba(0.6);
   }
 
@@ -35,10 +38,10 @@ export function NavBarBlur(props) {
 export function TopBarBlur(props: {dark?: boolean, xlight?: boolean, xxlight?: boolean, disabledBlur?: boolean, children?: any, showNotifications?: boolean, blink? : UIBlinkSettings}) {
   let backgroundColor = 'transparent';
   if (props.xlight) {
-    backgroundColor = colors.white.rgba(0.4);
+    backgroundColor = colors.white.rgba(Platform.OS === 'ios' ? 0.4 : 0.75);
   }
   else if (props.xxlight) {
-    backgroundColor = colors.white.rgba(0.6);
+    backgroundColor = colors.white.rgba(Platform.OS === 'ios' ? 0.6 : 0.9);
   }
 
   let style : ViewStyle = {

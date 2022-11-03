@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as React from 'react';
 import { Get } from "../../util/GetUtil";
 import { View, Image, Text, Alert, ScrollView } from "react-native";
-import { colors, getRoomStockImage, screenWidth, statusBarHeight, topBarHeight } from "../styles";
+import { colors, getRoomStockImage, screenWidth, statusBarHeight, topBarHeight, viewPaddingTop } from "../styles";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SettingsCustomTopBarBackground } from "../components/SettingsBackground";
 import { CustomTopBarWrapper } from "../components/CustomTopBarWrapper";
@@ -32,7 +32,7 @@ export function SelectCrownstone(props: {sphereId: sphereId, title: string, isMo
         }}
         right={props.rightLabel}
       >
-        <ScrollView contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight}}>
+        <ScrollView contentContainerStyle={{paddingTop: viewPaddingTop}}>
           <LocationLists
             sphereId={props.sphereId}
             callback={(stoneId) => { props.callback(stoneId); }}

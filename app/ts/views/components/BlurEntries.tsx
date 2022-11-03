@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { DraggableProps, useDraggable } from "./hooks/draggableHooks";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { SlideSideFadeInView }          from "./animated/SlideFadeInView";
 import {appStyleConstants, colors, rowstyles, screenWidth, styles} from "../styles";
 import {DevIconRight, SettingsIconRight} from "./EditIcon";
@@ -114,7 +114,7 @@ export function BlurEntry(props: BlurEntryProps) {
         flexDirection:'row',
         height: 70 + (props.heightOffset ?? 0),
         flex:1,
-        backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5),
+        backgroundColor: props.backgroundColor ?? colors.white.rgba(Platform.OS === 'ios' ? 0.5 : 0.85),
         marginHorizontal: 12,
         marginBottom: 12,
         borderRadius: appStyleConstants.roundness,

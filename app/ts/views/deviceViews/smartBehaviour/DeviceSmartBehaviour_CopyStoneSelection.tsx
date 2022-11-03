@@ -13,7 +13,7 @@ import {
   availableModalHeight, background,
   colors,
   deviceStyles, getRoomStockImage,
-  screenWidth, statusBarHeight, topBarHeight
+  screenWidth, statusBarHeight, topBarHeight, viewPaddingTop
 } from "../../styles";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
@@ -163,7 +163,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
           }}
           right={this.props.copyType === "FROM" ? null : lang("Select")}
         >
-          <ScrollView contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight}}>
+          <ScrollView contentContainerStyle={{paddingTop: viewPaddingTop}}>
             <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center'}}>
               { this._getLocationStoneList() }
             </View>

@@ -18,6 +18,7 @@ import {TopBarUtil} from "../../util/TopBarUtil";
 import {DataUtil} from "../../util/DataUtil";
 import { from, tell } from "../../logic/constellation/Tellers";
 import {SettingsBackground} from "../components/SettingsBackground";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceEditAppearence", key)(a,b,c,d,e);
@@ -256,10 +257,10 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"DeviceEditAppearence"}>
-        <ScrollView>
+        <SettingsScrollbar>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

@@ -118,7 +118,10 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
-      this.handleTouchReleased();
+      this.checkIfTapped()
+      // if (this.cleanupRequired) {
+      this.handleTouchReleased()
+      // }
       this.disableTouch = false;
     }));
 
@@ -214,16 +217,22 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     return (
       <TouchableOpacity
         onPressIn={(e)   => {
+          console.log("ON PRESS IN")
           this.props.touch();
           this.handleTouch();
         }}
-        onPressOut={(e)  => {
-          this.checkIfTapped()
-          if (this.cleanupRequired) {
-            this.handleTouchReleased()
-          }
+        // onPressOut={(e)  => {
+        //   console.log("ON PRESS OUT")
+        //   this.checkIfTapped()
+        //   if (this.cleanupRequired) {
+        //     this.handleTouchReleased()
+        //   }
+        //
+        // }}
+        onPress={() => {
+          console.log("ON PRESS");
+          this.handleTap();
         }}
-        onPress={() => { this.handleTap() }}
         activeOpacity={1.0}
       >
       <Animated.View

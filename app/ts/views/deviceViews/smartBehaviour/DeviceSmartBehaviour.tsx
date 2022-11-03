@@ -39,6 +39,7 @@ import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 import {SettingsBackground} from "../../components/SettingsBackground";
 import {Get} from "../../../util/GetUtil";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 
 let className = "DeviceSmartBehaviour";
@@ -212,7 +213,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     return (
       <SettingsBackground>
         {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
-        <ScrollView contentContainerStyle={{flexGrow:1, alignItems:'center', paddingTop:30}}>
+        <SettingsScrollbar contentContainerStyle={{flexGrow:1, alignItems:'center', paddingTop:30}}>
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
           <View style={{height: 0.2*iconSize}} />
           <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
@@ -286,7 +287,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceBehaviourPresent,roomBasedPresenceBehaviourPresent) }</Text>
           </SlideFadeInView>
           <View style={{height:topBarHeight+30}} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
       );
   }

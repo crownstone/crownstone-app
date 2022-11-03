@@ -15,6 +15,7 @@ import {core} from "../../../Core";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import {SettingsBackground} from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereInvitedUser", key)(a,b,c,d,e);
@@ -135,7 +136,7 @@ export class SphereInvitedUser extends Component<any, any> {
 
     return (
       <SettingsBackground testID={"SphereInvitedUser"}>
-        <ScrollView>
+        <SettingsScrollbar>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
               value={user && user.picture || undefined}
@@ -143,7 +144,7 @@ export class SphereInvitedUser extends Component<any, any> {
             />
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
   }

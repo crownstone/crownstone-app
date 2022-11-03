@@ -5,7 +5,7 @@ import * as React from 'react';
 import {Alert, Linking, Platform, ScrollView, Text, TouchableHighlight, View} from "react-native";
 
 import {ListEditableItems} from '../components/ListEditableItems'
-import {background, colors, screenWidth, styles, tabBarHeight} from "../styles";
+import { background, colors, screenWidth, styles, tabBarHeight, viewPaddingTop } from "../styles";
 
 import {core} from "../../Core";
 import {TopBarUtil} from "../../util/TopBarUtil";
@@ -16,6 +16,7 @@ import {getDevAppItems} from "./dev/SettingsDeveloper";
 import {Icon} from "../components/Icon";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
 import { DataUtil } from "../../util/DataUtil";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
@@ -188,9 +189,9 @@ export class SettingsOverview extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground testID={'SettingsOverview'}>
-        <ScrollView testID={'SettingsOverview_scrollview'}>
+        <SettingsScrollbar testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

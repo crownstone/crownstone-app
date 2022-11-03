@@ -15,6 +15,7 @@ import { background, colors} from "../styles";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsBackground} from "../components/SettingsBackground";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 
 
@@ -391,7 +392,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
 
     return (
       <SettingsBackground testID={"RoomIconSelection"}>
-        <ScrollView>
+        <SettingsScrollbar>
           <IconSelection
             categories={categories}
             icons={listOfIcons}
@@ -403,7 +404,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
               NavigationUtil.back();
             }}
           />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
   }

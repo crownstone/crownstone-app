@@ -50,6 +50,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     statusBar: {
       visible:    true,
       drawBehind: true,
+      backgroundColor: 'transparent'
     },
     topBar: {
       drawBehind: true,
@@ -57,10 +58,16 @@ Navigation.events().registerAppLaunchedListener(() => {
       title: {
         color: colors.black.hex,
       },
+      elevation:0
+    },
+    navigationBar:{
+      visible: true,
+      // backgroundColor: 'rgba(255,255,255,0.11)',
     },
     bottomTabs: {
       titleDisplayMode: "alwaysShow",
       backgroundColor: "transparent",
+      tabsAttachMode: "together",
     },
     bottomTab: {
       textColor: colors.black.hex,
@@ -72,13 +79,16 @@ Navigation.events().registerAppLaunchedListener(() => {
     layout: {
       orientation: ['portrait'],
     },
+    blurOnUnmount:true,
     modalPresentationStyle: Platform.OS === 'android' ? OptionsModalPresentationStyle.overCurrentContext : OptionsModalPresentationStyle.fullScreen
   };
 
+
   if (Platform.OS === 'android') {
-    defaultOptions.topBar["leftButtonColor"]  = "#fff";
-    defaultOptions.topBar["rightButtonColor"] = "#fff";
-    defaultOptions.topBar["backButton"]       = { color: "#fff", testID: "BackButton" };
+    defaultOptions.topBar["leftButtonColor"]  = "#000";
+    defaultOptions.topBar["rightButtonColor"] = "#000";
+    defaultOptions.topBar["backButton"]       = { color: "#000", testID: "BackButton" };
+    defaultOptions.bottomTabs["drawBehind"] = true;
   }
 
   Navigation.setDefaultOptions(defaultOptions);

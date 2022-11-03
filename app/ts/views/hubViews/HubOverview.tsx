@@ -38,6 +38,7 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {HubHelper} from "../../native/setup/HubHelper";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import { OverlayUtil } from "../../util/OverlayUtil";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 
 //
@@ -204,10 +205,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return (
       <SettingsBackground>
-        <ScrollView testID={'HubOverview_scrollview'} contentContainerStyle={{paddingTop:20}}>
+        <SettingsScrollbar testID={'HubOverview_scrollview'} contentContainerStyle={{paddingTop:20}}>
           { this.getStateEntries(hub, stone) }
           <ListEditableItems items={this._getItems(hub, stone)} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

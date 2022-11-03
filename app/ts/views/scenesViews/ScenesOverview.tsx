@@ -13,7 +13,7 @@ import {
   tabBarHeight,
   topBarHeight,
   statusBarHeight,
-  availableScreenHeight
+  availableScreenHeight, viewPaddingTop
 } from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../Core";
@@ -94,7 +94,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
         change.changeScenes
       ) {
         let state = core.store.getState();
-        let activeSphere = state.app.activeSphere;
+        let activeSphereId = state.app.activeSphere;
+        let activeSphere = Get.activeSphere();
 
         getTopBarProps(this.props, this.state);
         TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
@@ -102,7 +103,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
         if (activeSphere) {
           let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
           if (this.sortedList) {
-            this.initializeSortedList(activeSphere, state);
+            this.initializeSortedList(activeSphereId, state);
             this.sortedList.mustContain(sceneIds);
             this.setState({ data: this.sortedList.getDraggableList() })
           }
@@ -185,7 +186,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
           <React.Fragment>
             <NestableScrollContainer
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight + 15, paddingBottom: 2*tabBarHeight}}
+              contentInsetAdjustmentBehavior={'never'}
+              contentContainerStyle={{paddingTop: viewPaddingTop, paddingBottom: 2*tabBarHeight}}
             >
               <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
                 <AddHint />

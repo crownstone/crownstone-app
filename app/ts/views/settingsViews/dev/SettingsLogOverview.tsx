@@ -12,6 +12,7 @@ import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
 import {FileUtil} from "../../../util/FileUtil";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 
 export class SettingsLogOverview extends LiveComponent<any, { logInformation: any[], logsLoaded: boolean, selectedUrls: string[] }> {
@@ -126,9 +127,9 @@ export class SettingsLogOverview extends LiveComponent<any, { logInformation: an
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <SettingsScrollbar keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

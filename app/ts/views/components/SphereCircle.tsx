@@ -52,6 +52,13 @@ class SphereCircleClass extends Component<any, any> {
   unsubscribeControlEvents = [];
   renderState: any;
 
+  touching = false;
+  touchAnimation = null;
+  disableTouch = false;
+  moveDetected = false;
+  tapRegistered = false;
+  tapStart : number = 0;
+
   scaledUp = true;
 
   constructor(props) {
@@ -99,12 +106,21 @@ class SphereCircleClass extends Component<any, any> {
     });
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+      this.moveDetected = false;
+    }));
+
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
       this.handleTouchReleased();
+    }));
+
+    this.unsubscribeControlEvents.push(core.eventBus.on('userDragEvent' + this.props.viewId, (data) => {
+      this.moveDetected = true;
     }));
   }
 
   componentWillUnmount() {
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
+    cancelAnimationFrame(this.touchAnimation);
     this.unsubscribeStoreEvents();
   }
 
@@ -187,7 +203,7 @@ class SphereCircleClass extends Component<any, any> {
     return (
       <TouchableOpacity
         onPressIn={(e)  => { this.props.touch(); this.handleTouch(); }}
-        onPressOut={(e) => { this.handleTouchReleased(); }}
+        // onPressOut={(e) => { this.handleTouchReleased(); }}
         onPress={() => { this.handleTap() }}
         activeOpacity={1.0}
       >
@@ -208,14 +224,19 @@ class SphereCircleClass extends Component<any, any> {
     this.state.opacity.stopAnimation();
 
     this.scaledUp = true;
+    this.tapStart = Date.now();
 
     let tapAnimations = [];
     tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, useNativeDriver: false, friction: 4, tension: 70 }));
     tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, useNativeDriver: false, duration: 100}));
     Animated.parallel(tapAnimations).start();
+
+    this.touching = true;
   }
 
   handleTouchReleased() {
+    this.checkIfTapped()
+
     if (this.scaledUp) {
       // top any animation this node was doing.
       this.state.scale.stopAnimation();
@@ -231,6 +252,16 @@ class SphereCircleClass extends Component<any, any> {
   }
 
 
+  checkIfTapped() {
+    setTimeout(() => {
+      if (Date.now() - this.tapStart < 500) {
+        if (this.moveDetected === false && this.tapRegistered === false) {
+          this.handleTap();
+        }
+      }
+    }, 25);
+  }
+
   handleTap() {
     // top any animation this node was doing.
     this.state.scale.stopAnimation();
@@ -242,6 +273,8 @@ class SphereCircleClass extends Component<any, any> {
     revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, useNativeDriver: false, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 100}));
     Animated.parallel(revertAnimations).start();
+    this.tapRegistered = true;
+    setTimeout(() => { this.tapRegistered = false; }, 50);
 
     this.props.selectSphere();
   }

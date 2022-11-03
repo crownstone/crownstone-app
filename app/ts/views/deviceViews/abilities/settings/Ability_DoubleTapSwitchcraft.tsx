@@ -23,6 +23,7 @@ import {Util} from "../../../../util/Util";
 import {core} from "../../../../Core";
 import {SliderBar} from "../../../components/editComponents/SliderBar";
 import {xUtil} from "../../../../util/StandAloneUtil";
+import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
 
 
 export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
@@ -125,7 +126,7 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
 
         return (
           <SettingsBackground>
-            <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
+            <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
               <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
               <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
               <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
@@ -134,20 +135,20 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
                 <ListEditableItems items={items} />
               </View>
               <View style={{height:100}} />
-            </ScrollView>
+            </SettingsScrollbar>
           </SettingsBackground>
         );
       }
 
       return (
         <SettingsBackground>
-          <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
+          <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
             <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
             <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
             <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
             <View style={{height:10}} />
             <Text style={styles.boldExplanation}>{ lang("Dimming_has_to_be_enabled") }</Text>
-          </ScrollView>
+          </SettingsScrollbar>
         </SettingsBackground>
       );
     }
@@ -155,9 +156,9 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
 
     return (
       <SettingsBackground>
-        <ScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
+        <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
           <Text style={styles.boldExplanation}>{ lang("Update_this_Crownstone_to") }</Text>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
 

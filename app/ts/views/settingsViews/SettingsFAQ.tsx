@@ -22,6 +22,7 @@ import {NavigationBar} from "../components/editComponents/NavigationBar";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 export class SettingsFAQ extends Component<any, any> {
   static options(props) {
@@ -258,9 +259,9 @@ export class SettingsFAQ extends Component<any, any> {
   render() {
     return (
       <SettingsNavbarBackground testID={"SettingsFAQ"}>
-        <ScrollView testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
+        <SettingsScrollbar testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

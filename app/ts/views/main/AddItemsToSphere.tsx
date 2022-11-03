@@ -24,6 +24,7 @@ import { LiveComponent } from "../LiveComponent";
 import { SettingsBackground } from "../components/SettingsBackground";
 import {IconBlurButton} from "../components/IconBlurButton";
 import { Get } from "../../util/GetUtil";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 
 let iconSize = 100;
@@ -63,7 +64,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"SphereAdd"}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <SettingsScrollbar contentContainerStyle={{flexGrow:1}}>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             {/*<IconButton*/}
             {/*  name="c1-sphere"*/}
@@ -93,7 +94,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
             </View>
             <View style={{height: 30}} />
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
   }

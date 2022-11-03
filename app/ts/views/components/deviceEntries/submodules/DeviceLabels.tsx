@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceLabels", key)(a,b,c,d,e);
 }
 import {SlideFadeInView} from "../../animated/SlideFadeInView";
-import {Text, TextStyle} from "react-native";
+import { Platform, Text, TextStyle } from "react-native";
 import * as React from "react";
 import {StoneAvailabilityTracker} from "../../../../native/advertisements/StoneAvailabilityTracker";
 
@@ -27,7 +27,7 @@ export function DeviceEntryLabel({stone, dimMode, editMode}) {
   label = editMode ? 'Hold to drag!' : label
 
   return (
-    <SlideFadeInView height={15} visible={visible}>
+    <SlideFadeInView height={Platform.OS === 'ios' ? 15 : 20} visible={visible}>
       <Text style={style}>{label}</Text>
     </SlideFadeInView>
   );

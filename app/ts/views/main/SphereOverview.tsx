@@ -195,7 +195,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         <SphereLevel
           selectSphere={(sphereId) => {
             ActiveSphereManager.setActiveSphere(sphereId);
-
             // request latest location data.
             CLOUD.syncUsers();
             this._zoomIn();

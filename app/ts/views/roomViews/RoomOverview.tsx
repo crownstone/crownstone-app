@@ -12,7 +12,7 @@ import {
   statusBarHeight,
   styles,
   tabBarHeight,
-  topBarHeight
+  topBarHeight, viewPaddingTop
 } from "../styles";
 import { DfuStateHandler }             from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry_RoomOverview } from "../components/deviceEntries/DfuDeviceEntry";
@@ -366,7 +366,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         <NestableScrollContainer
           testID={'RoomOverview_NestableScrollContainer'}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingTop: topBarHeight - statusBarHeight, paddingBottom: 2*tabBarHeight}}
+          contentInsetAdjustmentBehavior={'never'}
+          contentContainerStyle={{paddingTop: viewPaddingTop + 15, paddingBottom: 2*tabBarHeight}}
         >
           <NotificationFiller visible={this.state.editMode ? false : undefined} />
           <RoomExplanation

@@ -24,6 +24,7 @@ import { ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/
 import {SettingsBackground} from "../../../components/SettingsBackground";
 import {ListEditableItems} from "../../../components/ListEditableItems";
 import {Icon} from "../../../components/Icon";
+import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
 
 
 export class Ability_SwitchcraftSettings extends Component<any, any> {
@@ -59,7 +60,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
 
     return (
       <SettingsBackground>
-        <ScrollView >
+        <SettingsScrollbar >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../../assets/images/overlayCircles/switchcraft.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
@@ -73,7 +74,7 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
             </View>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

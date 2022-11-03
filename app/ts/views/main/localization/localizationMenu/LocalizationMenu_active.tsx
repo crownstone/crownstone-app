@@ -19,6 +19,7 @@ import { SettingsBackground } from "../../../components/SettingsBackground";
 import { Get } from "../../../../util/GetUtil";
 import { FingerprintUtil } from "../../../../util/FingerprintUtil";
 import { LocalizationUtil } from "../../../../util/LocalizationUtil";
+import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
 
 
 
@@ -64,12 +65,12 @@ export function LocalizationMenu_active(props) {
 
   return (
     <SettingsBackground testID={"LocalizationMenu_active"}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
+      <SettingsScrollbar contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
         <ListEditableItems items={items} />
         <LocalizationLocationList sphereId={props.sphereId} locations={locationsAttention} backgroundColor={colors.csOrange.rgba(0.5)}  />
         <ListEditableItems items={secondItems} />
         <LocalizationLocationList sphereId={props.sphereId} locations={goodLocations} />
-      </ScrollView>
+      </SettingsScrollbar>
     </SettingsBackground>
   );
 }

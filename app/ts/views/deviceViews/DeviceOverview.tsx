@@ -30,6 +30,7 @@ import {xUtil} from "../../util/StandAloneUtil";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {StoneUtil} from "../../util/StoneUtil";
 import { OverlayUtil } from "../../util/OverlayUtil";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 
 export class  DeviceOverview extends LiveComponent<any, any> {
@@ -257,9 +258,9 @@ export class  DeviceOverview extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"DeviceOverview"}>
-        <ScrollView testID={'DeviceOverview_scrollview'}>
+        <SettingsScrollbar testID={'DeviceOverview_scrollview'}>
           <ListEditableItems items={this._getItems(stone)} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     )
   }

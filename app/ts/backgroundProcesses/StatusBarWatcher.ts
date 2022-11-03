@@ -1,3 +1,8 @@
+import { Platform, AppState,  StatusBar } from "react-native";
+const LIGHT = 'light-content';
+
+const DARK  = 'dark-content';
+
 /**
  * iOS will not always set the color of the statusbar correctly after restoring from a background state.
  * This class will try to ensure the color of the tab bar.
@@ -40,28 +45,34 @@ class StatusBarWatcherClass {
   }
 
   setLightStatusBar() {
-    if (this.lastSet === null || this.dirty) {
-      StatusBar.setBarStyle(DARK);
+    if (Platform.OS === 'ios') {
+      if (this.lastSet === null || this.dirty) {
+        StatusBar.setBarStyle(DARK);
+      }
+      StatusBar.setBarStyle(LIGHT);
+      this.lastSet = LIGHT;
+      this.dirty = false;
     }
-    StatusBar.setBarStyle(LIGHT);
-    this.lastSet = LIGHT;
-    this.dirty = false;
+    else {
+      StatusBar.setBarStyle(LIGHT);
+    }
   }
 
 
   setDarkStatusBar() {
-    if (this.lastSet === null || this.dirty) {
-      StatusBar.setBarStyle(LIGHT);
+    if (Platform.OS === 'ios') {
+      if (this.lastSet === null || this.dirty) {
+        StatusBar.setBarStyle(LIGHT);
+      }
+      StatusBar.setBarStyle(DARK);
+      this.lastSet = DARK;
+      this.dirty = false;
     }
-    StatusBar.setBarStyle(DARK);
-    this.lastSet = DARK;
-    this.dirty = false;
+    else {
+      StatusBar.setBarStyle(DARK);
+    }
   }
 }
 
-import {AppState, StatusBar} from "react-native";
-const LIGHT = 'light-content';
-
-const DARK  = 'dark-content';
 
 export const StatusBarWatcher = new StatusBarWatcherClass();

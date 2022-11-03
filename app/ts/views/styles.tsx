@@ -18,11 +18,10 @@ export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isModernIosMode
 export let screenWidth  = Dimensions.get('window').width;
 export let screenHeight = Dimensions.get('window').height; // initial guess
 
-//TODO: Utilize these constants
-// export const UIconstants = Navigation.constantsSync();
-
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight;
+
+export let viewPaddingTop = Platform.OS === 'android' ? topBarHeight : topBarHeight;
 
 export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
   topBarMargin    = 0
@@ -53,19 +52,20 @@ export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
   }
 }
 export const stylesUpdateConstants = () =>  {
-  return Navigation.constants()
-    .then((constants) => {
-      let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
-      statusBarHeight = tmpStatusBarHeight;
+  let constants =  Navigation.constantsSync()
+  let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
+  statusBarHeight = tmpStatusBarHeight;
 
-      topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
-      tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
+  topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
+  tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
 
-      availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-      availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+  topBarHeight += statusBarHeight;
+  viewPaddingTop = Platform.OS === 'android' ? topBarHeight : topBarHeight - statusBarHeight;
 
-      LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'),'constants', constants)
-    })
+  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+  availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+  LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'),'constants', constants)
 }
 
 

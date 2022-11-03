@@ -4,6 +4,9 @@ LogBox.ignoreLogs([
   /.*/,
 ])
 Error.stackTraceLimit = 30;
+
+console.log("...-------------------- APP INITIALIZING --------------------...");
+
 import { USE_ERROR_REPORTING } from "./app/js/ExternalConfig";
 import { loadRoutes } from "./app/js/views/Routes";
 import { BackgroundProcessHandler } from "./app/js/backgroundProcesses/BackgroundProcessHandler";

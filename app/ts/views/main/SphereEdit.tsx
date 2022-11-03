@@ -25,6 +25,7 @@ import {Get} from "../../util/GetUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {Bluenet} from "../../native/libInterface/Bluenet";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {
@@ -335,7 +336,7 @@ export class SphereEdit extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsBackground testID={'SphereEdit'}>
-        <ScrollView testID={"SphereEditScrollView"}>
+        <SettingsScrollbar testID={"SphereEditScrollView"}>
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(core.store, true) }}
@@ -346,7 +347,7 @@ export class SphereEdit extends LiveComponent<any, any> {
             progressViewOffset={-70}
           />
           <ListEditableItems items={this._getItems()} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsBackground>
     );
   }

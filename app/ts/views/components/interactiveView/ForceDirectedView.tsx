@@ -217,16 +217,17 @@ export class ForceDirectedView extends Component<{
         return false
       },
       onPanResponderMove: (evt, gestureState) => {
-        // console.log("onPanResponderMove", this._multiTouch, this._totalMovedX, this._totalMovedY, this._pressedNodeData)
         // The most recent move distance is gestureState.move{X,Y}
         let threshold = 0;
         if (Platform.OS === 'android') {
-          threshold = 1;
+          threshold = 5;
         }
+        console.log("onPanResponderMove", gestureState.dx, gestureState.dy, Math.abs(gestureState.dx) > threshold, Math.abs(gestureState.dy) > threshold, this._pressedNodeData)
         if (
-          (this._totalMovedX < 50 && this._totalMovedY < 50) &&               // We do not want to send too many events, only in the beginning of the move
-          (this._totalMovedX > threshold || this._totalMovedY > threshold) && // threshold is needed for android, onPanResponderMove is more sensitive on Android
+          (Math.abs(gestureState.dx) < 50        && Math.abs(gestureState.dy) < 50) &&               // We do not want to send too many events, only in the beginning of the move
+          (Math.abs(gestureState.dx) > threshold || Math.abs(gestureState.dy) > threshold) && // threshold is needed for android, onPanResponderMove is more sensitive on Android
           this._multiTouchUsed === false) {
+          console.log("EMITTING EVENT")
           core.eventBus.emit('userDragEvent' + this.props.viewId);
         }
 
@@ -284,7 +285,7 @@ export class ForceDirectedView extends Component<{
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        // console.log("onPanResponderRelease")
+        console.log("onPanResponderRelease")
         let recenterAnimation = () => {
           if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
             this._clearRecenterAction();
@@ -379,7 +380,7 @@ export class ForceDirectedView extends Component<{
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
-        // console.log("onPanResponderTerminate")
+        console.log("onPanResponderTerminate")
         // Another component has become the responder, so this gesture
         // should be cancelled
       },
@@ -843,7 +844,7 @@ export class ForceDirectedView extends Component<{
         style={{
           flex:1, alignItems:'center',
           justifyContent:'center',
-          // backgroundColor:colors.red.rgba(0.2)
+          // backgroundColor:colors.red.rgba(0.7)
         }}
         testID={this.props.testID}
       >
@@ -851,7 +852,7 @@ export class ForceDirectedView extends Component<{
           style={
           [animatedStyle,
             {
-              // backgroundColor: colors.green.rgba(0.3),
+              // backgroundColor: colors.green.rgba(10),
               width:    this.viewWidth,
               height:   this.viewHeight,
               opacity:  this.state.opacity,

@@ -9,6 +9,7 @@ import {LOG_LEVEL} from "../../../logging/LogLevels";
 import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 
 export class SettingsLogLevelConfig extends LiveComponent<any, any> {
@@ -106,9 +107,9 @@ export class SettingsLogLevelConfig extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView keyboardShouldPersistTaps="always">
+        <SettingsScrollbar keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

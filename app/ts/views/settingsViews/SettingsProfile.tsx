@@ -26,6 +26,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
 import { DataUtil } from "../../util/DataUtil";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -240,7 +241,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
 
     return (
       <SettingsNavbarBackground testID={"SettingsProfile"}>
-        <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
+        <SettingsScrollbar keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <PictureCircle
               isSquare={true}
@@ -277,7 +278,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
               <View style={{flex:1, width: screenWidth, backgroundColor: 'transparent'}} />
             </TouchableWithoutFeedback>
           }
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }

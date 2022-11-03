@@ -14,6 +14,7 @@ import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastSta
 import { BackButton, RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
 import { availableScreenHeight, background, colors, screenWidth } from "../../styles";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
+import { SettingsScrollbar } from "../../components/SettingsScrollbar";
 
 export class DEV_PresenceMocking extends LiveComponent<any, any> {
   static options(props) {
@@ -98,7 +99,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
+        <SettingsScrollbar keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
             <Text style={{fontSize:30, fontWeight:"bold"}}>{ this.state.sphereId ? "Mock which room?" : "Select Sphere to mock." }</Text>
@@ -106,7 +107,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
             <View style={{height:1, width:screenWidth, backgroundColor: colors.black.rgba(0.2)}} />
             { this.state.sphereId === null ? this.getSpheres() : this.getRooms() }
           </View>
-        </ScrollView>
+        </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }
