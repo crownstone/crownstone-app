@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("HistoricalEnergyUsageOverview", key)(a,b,c,d,e);
+}
 import {ActivityIndicator, Alert, Linking, Text, TouchableOpacity, View} from "react-native";
 import {colors, screenWidth, styles} from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
@@ -15,7 +21,7 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
         <View style={{flex:1}}/>
         <ActivityIndicator size={'large'} color={colors.black.rgba(0.5)} />
         <View style={{flex:0.5}}/>
-        <Text style={{fontSize: 20, color: colors.black.hex, fontWeight:'bold'}}>{ 'Checking permission...' }</Text>
+        <Text style={{fontSize: 20, color: colors.black.hex, fontWeight:'bold'}}>{ lang("Checking_permission___") }</Text>
         <View style={{flex:3}}/>
       </View>
     )
@@ -28,15 +34,15 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
     return (
       <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <View style={{flex:1}}/>
-        <Text style={styles.header}>{ 'User permission required.' }</Text>
-        <Text style={styles.boldExplanation}>{ "If you'd like us to store your energy usage in the cloud, a sphere admin has to give permission." }</Text>
+        <Text style={styles.header}>{ lang("User_permission_required_") }</Text>
+        <Text style={styles.boldExplanation}>{ lang("If_youd_like_us_to_store_") }</Text>
         <TouchableOpacity onPress={async () => {
           Linking.openURL('https://crownstone.rocks/data-privacy-users/');
         }}>
-          <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ "You can read about the way we store the data here." }</Text>
+          <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ lang("You_can_read_about_the_wa") }</Text>
         </TouchableOpacity>
-        <Text style={styles.explanation}>{ "Once enabled, it becomes possible for hubs like Home Assistant to gather Crownstone power measurements and send them to our cloud to show to you here." }</Text>
-        <Text style={styles.explanation}>{ "The permission can be revoked in the app settings." }</Text>
+        <Text style={styles.explanation}>{ lang("Once_enabled__it_becomes_") }</Text>
+        <Text style={styles.explanation}>{ lang("The_permission_can_be_rev") }</Text>
         <View style={{flex:2}}/>
       </View>
     );
@@ -49,15 +55,15 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
     return (
       <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
         <View style={{flex:1}}/>
-        <Text style={styles.header}>{ 'User permission required.' }</Text>
-        <Text style={styles.boldExplanation}>{ "If you'd like us to store your energy usage in the cloud, please provide permission by tapping the button below." }</Text>
+        <Text style={styles.header}>{ lang("User_permission_required_") }</Text>
+        <Text style={styles.boldExplanation}>{ lang("If_youd_like_us_to_store_y") }</Text>
         <TouchableOpacity onPress={async () => {
           Linking.openURL('https://crownstone.rocks/data-privacy-users/');
         }}>
-          <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ "You can read about the way we store the data here." }</Text>
+          <Text style={{...styles.boldExplanation, textDecorationLine:'underline'}}>{ lang("You_can_read_about_the_way") }</Text>
         </TouchableOpacity>
-        <Text style={styles.explanation}>{ "Once enabled, it becomes possible for hubs like Home Assistant to gather Crownstone power measurements and send them to our cloud to show to you here." }</Text>
-        <Text style={styles.explanation}>{ "You can revoke permission in the app settings." }</Text>
+        <Text style={styles.explanation}>{ lang("Once_enabled__it_becomes_p") }</Text>
+        <Text style={styles.explanation}>{ lang("You_can_revoke_permission") }</Text>
         <View style={{flex:1}}/>
         <Button backgroundColor={colors.green.rgba(0.8)} width={0.8*screenWidth} fontColor={colors.black.hex} hideIcon label={ "Give permission" } callback={async () => {
           try {
@@ -74,7 +80,10 @@ export function HistoricalEnergyUsageOverview(props : {sphereId: sphereId, mode:
           }
           catch (err) {
             core.eventBus.emit("hideLoading");
-            Alert.alert("Could not set permission...", "Something went wrong while trying to give permission. Please try again later.", [{text:'OK'}]);
+            Alert.alert(
+lang("_Could_not_set_permission_header"),
+lang("_Could_not_set_permission_body"),
+[{text:lang("_Could_not_set_permission_left")}]);
           }
         }}/>
         <View style={{flex:1}}/>

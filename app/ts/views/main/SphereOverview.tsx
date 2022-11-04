@@ -33,7 +33,6 @@ import { SideBarView }              from "../components/animated/SideBarView";
 import { SphereOverviewSideBar }    from "../sidebars/SphereOverviewSideBar";
 import { useRef }                   from "react";
 import { NavBarBlur, TopBarBlur }   from "../components/NavBarBlur";
-import { Debug }  from "../../DebugCalls";
 import { EditIcon, MenuButtonPlaceholder } from "../components/EditIcon";
 import { HeaderTitle }              from "../components/HeaderTitle";
 import { Get }                      from "../../util/GetUtil";
@@ -70,8 +69,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    Debug();
-
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];

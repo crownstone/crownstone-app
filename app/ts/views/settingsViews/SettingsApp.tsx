@@ -210,13 +210,13 @@ export class SettingsApp extends LiveComponent<any, any> {
     });
 
     items.push({
-      label: "CUSTOM CLOUDS",
+      label: lang("CUSTOM_CLOUDS"),
       type: 'explanation',
       alreadyPadded: true
     });
 
     items.push({
-      label: "Customize cloud address",
+      label: lang("Customize_cloud_address"),
       type: 'button',
       icon: <Icon name="fa5-cloud" size={22} color={colors.csBlue.hex}/>,
       style:{color:colors.csBlue.hex},
@@ -226,7 +226,7 @@ export class SettingsApp extends LiveComponent<any, any> {
     });
 
     items.push({
-      label: "You can run your cloud locally if you want to.",
+      label: lang("You_can_run_your_cloud_lo"),
       type: 'explanation',
       below: true
     });
@@ -239,14 +239,17 @@ export class SettingsApp extends LiveComponent<any, any> {
       if (Get.energyCollectionPermission(sphereId)) {
         revokeItems.push({
           type:'button',
-          label: 'Revoke for ' + spheres[sphereId].config.name,
+          label: lang("Revoke_for_",spheres[sphereId].config.name),
           callback: async () => {
             try {
               await CLOUD.forSphere(sphereId).setEnergyUploadPermission(false)
               core.store.dispatch({type: 'REMOVE_SPHERE_FEATURE', sphereId: sphereId, featureId: 'ENERGY_COLLECTION_PERMISSION'});
             }
             catch (err) {
-              Alert.alert("Could not revoke permission...", "Something went wrong while trying to revoke permission. Please try again later.", [{text:'OK'}]);
+              Alert.alert(
+lang("_Could_not_revoke_permiss_header"),
+lang("_Could_not_revoke_permiss_body"),
+[{text:lang("_Could_not_revoke_permiss_left")}]);
             }
           }
         })
@@ -254,7 +257,7 @@ export class SettingsApp extends LiveComponent<any, any> {
     }
 
     if (revokeItems.length > 0) {
-      items.push({type: 'explanation', label: "ENERGY COLLECTION PERMISSION", alreadyPadded:false});
+      items.push({type: 'explanation', label: lang("ENERGY_COLLECTION_PERMISS"), alreadyPadded:false});
       items = items.concat(revokeItems);
       items.push({type: 'spacer'});
       items.push({type: 'spacer'});

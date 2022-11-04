@@ -42,7 +42,7 @@ export class CloudChoice extends LiveComponent<any, {
   sseAddress: string,
 }> {
   static options(props) {
-    let options = TopBarUtil.getOptions({title: 'Cloud choice', closeModal: true});
+    let options = TopBarUtil.getOptions({title: lang("Cloud_choice"), closeModal: true});
     return options;
   }
 
@@ -68,7 +68,10 @@ export class CloudChoice extends LiveComponent<any, {
   componentWillUnmount() {
     // if the address are not changed, notify the user.
     if (this.state.cloudV1Address !== CloudAddresses.cloud_v1 || this.state.cloudV2Address !== CloudAddresses.cloud_v2 || this.state.sseAddress !== CloudAddresses.sse) {
-      Alert.alert("The changes are not stored.","Make sure you hit the validate and save button to store the changes.", [{text: 'Right...'}]);
+      Alert.alert(
+lang("_The_changes_are_not_stor_header"),
+lang("_The_changes_are_not_stor_body"),
+[{text: lang("_The_changes_are_not_stor_left")}]);
     }
   }
 
@@ -79,7 +82,10 @@ export class CloudChoice extends LiveComponent<any, {
     this.sseAddress     = this.state.sseAddress;     // 'https://events.crownstone.rocks/sse/';
 
     if (!urlChecker(this.cloudV1Address)) {
-      Alert.alert("Invalid URL for Cloud V1", "Please enter a valid url for the cloud V1", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+      Alert.alert(
+lang("_Invalid_URL_for_Cloud_V__header"),
+lang("_Invalid_URL_for_Cloud_V__body"),
+[{text: lang("_Invalid_URL_for_Cloud_V__left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
       return false;
     }
     else {
@@ -89,7 +95,10 @@ export class CloudChoice extends LiveComponent<any, {
       let baseURL = this.cloudV1Address.split("/api/")[0];
       let result = await CLOUD.hi(baseURL);
       if (!(result?.hi === 'v1')) {
-        Alert.alert("Could not verify Cloud V1", "Please double check the URL.", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+        Alert.alert(
+lang("_Could_not_verify_Cloud_V_header"),
+lang("_Could_not_verify_Cloud_V_body"),
+[{text: lang("_Could_not_verify_Cloud_V_left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
         return false;
       }
     }
@@ -97,7 +106,10 @@ export class CloudChoice extends LiveComponent<any, {
 
 
     if (!urlChecker(this.cloudV2Address)) {
-      Alert.alert("Invalid URL for Cloud V2", "Please enter a valid url for the cloud V2.", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+      Alert.alert(
+lang("_Invalid_URL_for_Cloud_V___header"),
+lang("_Invalid_URL_for_Cloud_V___body"),
+[{text: lang("_Invalid_URL_for_Cloud_V___left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
       return false;
     }
     else {
@@ -107,14 +119,20 @@ export class CloudChoice extends LiveComponent<any, {
       let baseURL = this.cloudV2Address.split("/api/")[0];
       let result = await CLOUD.hi(baseURL);
       if (!(result?.hi === 'v2')) {
-        Alert.alert("Could not verify Cloud V2", "Please double check the URL.", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+        Alert.alert(
+lang("_Could_not_verify_Cloud_V__header"),
+lang("_Could_not_verify_Cloud_V__body"),
+[{text: lang("_Could_not_verify_Cloud_V__left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
         return false;
       }
     }
 
 
     if (!urlChecker(this.sseAddress)) {
-      Alert.alert("Invalid URL for SSE server", "Please enter a valid url for the SSE server.", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+      Alert.alert(
+lang("_Invalid_URL_for_SSE_serv_header"),
+lang("_Invalid_URL_for_SSE_serv_body"),
+[{text: lang("_Invalid_URL_for_SSE_serv_left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
       return false;
     }
     else {
@@ -124,7 +142,10 @@ export class CloudChoice extends LiveComponent<any, {
       let baseURL = this.sseAddress.split("/sse/")[0];
       let result = await CLOUD.hi(baseURL);
       if (!(result?.hi === 'sse')) {
-        Alert.alert("Could not verify SSE server", "Please double check the URL.", [{text: "OK", onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
+        Alert.alert(
+lang("_Could_not_verify_SSE_ser_header"),
+lang("_Could_not_verify_SSE_ser_body"),
+[{text: lang("_Could_not_verify_SSE_ser_left"), onPress: ()=>{core.eventBus.emit("hideLoading")}}], {cancelable: false});
         return false;
       }
     }
@@ -133,7 +154,10 @@ export class CloudChoice extends LiveComponent<any, {
   }
 
   storeAndClose() {
-    Alert.alert("Stored new cloud endpoints!", "These are persisted until the app is removed and reinstalled.", [{text: "OK", onPress:() => {
+    Alert.alert(
+lang("_Stored_new_cloud_endpoin_header"),
+lang("_Stored_new_cloud_endpoin_body"),
+[{text: lang("_Stored_new_cloud_endpoin_left"), onPress:() => {
       CloudAddresses.cloud_v1 = this.cloudV1Address;
       CloudAddresses.cloud_v2 = this.cloudV2Address;
       CloudAddresses.sse      = this.sseAddress;
@@ -144,7 +168,7 @@ export class CloudChoice extends LiveComponent<any, {
 
   _getItems() {
     let items = [];
-    items.push({type:'explanation', label: "Address of custom cloud, v1"});
+    items.push({type:'explanation', label: lang("Address_of_custom_cloud__")});
     items.push({
       label: null,
       type: 'textEdit',
@@ -154,7 +178,7 @@ export class CloudChoice extends LiveComponent<any, {
         this.setState({cloudV1Address: newText});
       },
     });
-    items.push({type:'explanation', label: "Address of custom cloud, v2"});
+    items.push({type:'explanation', label: lang("Address_of_custom_cloud__v")});
     items.push({
       label: null,
       type: 'textEdit',
@@ -164,7 +188,7 @@ export class CloudChoice extends LiveComponent<any, {
         this.setState({cloudV2Address: newText});
       },
     });
-    items.push({type:'explanation', label: "Address of custom sse server"});
+    items.push({type:'explanation', label: lang("Address_of_custom_sse_ser")});
     items.push({
       label: null,
       type: 'textEdit',
@@ -176,7 +200,7 @@ export class CloudChoice extends LiveComponent<any, {
     });
     items.push({type:'spacer'});
     items.push({
-      label: "Revert to defaults",
+      label: lang("Revert_to_defaults"),
       type: 'button',
       callback: (newText) => {
         this.setState({
@@ -188,7 +212,7 @@ export class CloudChoice extends LiveComponent<any, {
     });
     items.push({type:'spacer'});
     items.push({
-      label: "Validate and save!",
+      label: lang("Validate_and_save_"),
       type: 'button',
       style: {color: colors.blue.hex},
       callback: async (newText) => {
@@ -200,7 +224,10 @@ export class CloudChoice extends LiveComponent<any, {
           }
         }
         catch (err) {
-          Alert.alert("Could not validate", "Please double check the URLs.", [{text: "OK", onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable: false});
+          Alert.alert(
+lang("_Could_not_validate__Plea_header"),
+lang("_Could_not_validate__Plea_body"),
+[{text: lang("_Could_not_validate__Plea_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable: false});
           return;
         }
       },

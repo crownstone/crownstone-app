@@ -42,7 +42,7 @@ export function LoginSplash(props) {
           <View style={{flex:0.2}} />
           <TouchableOpacity style={{flexDirection:'row', ...styles.centered}} onPress={() => { NavigationUtil.launchModal('CloudChoice'); }}>
             <Icon name={'fa5-cloud'} size={20} color={colors.black.rgba(0.2)} />
-            <Text style={{color: colors.black.rgba(0.2), padding:5, fontWeight: 'bold'}}>{"Configure custom cloud"}</Text>
+            <Text style={{color: colors.black.rgba(0.2), padding:5, fontWeight: 'bold'}}>{ lang("Configure_custom_cloud") }</Text>
           </TouchableOpacity>
           <View style={{flex:2}} />
           <View style={loginStyles.loginButtonContainer}>

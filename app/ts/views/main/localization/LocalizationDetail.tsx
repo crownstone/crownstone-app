@@ -122,7 +122,7 @@ text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () 
 LocalizationDetail.options = (props) => {
   let location = Get.location(props.sphereId, props.locationId);
 
-  return TopBarUtil.getOptions({ title: location?.config?.name || "Unknown room" });
+  return TopBarUtil.getOptions({ title: lang("Unknown_room",location.config.name)});
 }
 
 function Improvements(props: {sphereId: string, locationId: string, score: number, penalties: PenaltyList}) {
