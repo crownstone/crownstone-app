@@ -41,7 +41,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
     let score = FingerprintUtil.calculateFingerprintScore(props.sphereId, props.locationId, fingerprintId);
     items.push({
       type:  'button',
-      label: `${xUtil.getDateTimeFormat(fp.updatedAt)} - ${fp.type}\n${fp.data.length} samples - ${score}%`,
+      label: `${xUtil.getDateTimeFormat(fp.updatedAt)} - ${fp.type}\n${fp.data.length} samples - score: ${score}%`,
       numberOfLines:2,
       callback: () => {
         Alert.alert(

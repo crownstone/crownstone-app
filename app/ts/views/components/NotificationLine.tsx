@@ -55,9 +55,7 @@ export class NotificationLine extends LiveComponent<{showNotifications?: boolean
           style={{...styles.centered, width: screenWidth}}
           onPress={() => { notification.callback(); }}
         >
-          <BlurMessageBar
-            backgroundColor={notification.backgroundColor || defaultColor.rgba(0.5)}
-          >
+          <BlurMessageBar backgroundColor={notification.backgroundColor || defaultColor.rgba(0.5)}>
             { notification.icon ? <Icon name={notification.icon} size={notification.iconSize || 34} color={ colors.white.hex } /> : undefined }
             { notification.icon ? <View style={{width:10}}/> : undefined }
             <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold'}}>{notification.label}</Text>
