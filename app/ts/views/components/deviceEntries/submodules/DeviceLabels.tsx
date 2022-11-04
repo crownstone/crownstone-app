@@ -16,15 +16,15 @@ export function DeviceEntryLabel({stone, dimMode, editMode}) {
 
   let style : TextStyle = { fontSize:13, fontStyle:'italic', fontWeight:'normal', paddingLeft:15 };
 
-  let label = reachable ? stone.state.currentUsage + ' W' : 'Searching...';
+  let label = reachable ? stone.state.currentUsage + ' W' : lang("Searching___");
 
   if (reachable && stone.errors.hasError) {
-    label = 'Problem detected, tap here.';
+    label = lang("Problem_detected__tap_her");
     style.fontStyle = "normal";
     style.fontWeight = "bold";
   }
 
-  label = editMode ? 'Hold to drag!' : label
+  label = editMode ? lang("Hold_to_drag_") : label
 
   return (
     <SlideFadeInView height={Platform.OS === 'ios' ? 15 : 20} visible={visible}>
@@ -37,8 +37,8 @@ export function DeviceEntryLabel({stone, dimMode, editMode}) {
 export function HubEntryLabel({hub, stone, editMode}) {
   let reachable = !StoneAvailabilityTracker.isDisabled(stone.id);
 
-  let activeLabel = reachable ? '' : 'Searching...';
-  let label = editMode ? 'Hold to drag!' : activeLabel
+  let activeLabel = reachable ? '' : lang("Searching___");
+  let label = editMode ? lang("Hold_to_drag_") : activeLabel
 
   return (
     <Text style={{ fontSize:13, fontStyle:'italic', paddingLeft:15 }}>{label}</Text>
@@ -49,7 +49,7 @@ export function HubEntryLabel({hub, stone, editMode}) {
 
 
 export function DfuDeviceEntryLabel(props: {restoring: boolean}) {
-  let activeLabel = props.restoring ? 'Working...' : "Tap here to configure me!";
+  let activeLabel = props.restoring ? lang("Working___") : lang("Tap_here_to_configure_me_");
 
   return (
     <Text style={{ fontSize:13, fontStyle:'italic', paddingLeft:15 }}>{activeLabel}</Text>

@@ -474,6 +474,11 @@ export default {
   DeviceLabels:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/components/deviceEntries/submodules/DeviceLabels.tsx",
     I_need_to_be_setup_again_:              function() { return "I need to be setup again... Tap me!" },
+    Searching___:                           function() { return "Searching..." },
+    Problem_detected__tap_her:              function() { return "Problem detected, tap here." },
+    Hold_to_drag_:                          function() { return "Hold to drag!" },
+    Working___:                             function() { return "Working..." },
+    Tap_here_to_configure_me_:              function() { return "Tap here to configure me!" },
   },
   DeviceOverview:{
     __filename: "../js/views/deviceViews/DeviceOverview.tsx",
