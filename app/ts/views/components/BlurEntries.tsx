@@ -181,8 +181,8 @@ export function BlurMessageBar(props) {
         flexDirection:'row',
         height: props.height ?? 60,
         borderRadius: appStyleConstants.roundness,
-        borderWidth: 1,
-        borderColor: props.borderColor ?? colors.white.hex,
+        borderWidth: 2,
+        borderColor: props.borderColor ?? colors.white.rgba(0.9),
         backgroundColor: props.backgroundColor ?? colors.white.rgba(0.5)
       }}>
       {props.children}

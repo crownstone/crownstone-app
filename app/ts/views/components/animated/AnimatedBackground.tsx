@@ -99,8 +99,8 @@ export function getHeight(props) : [number, boolean, boolean] {
   let hasTopBar = false;
   let hasTabBar = false;
   let height = screenHeight;
-  if (props.hasTopBar !== false && props.fullScreen !== true) { hasTopBar = true; }
-  if (props.hasNavBar !== false && props.fullScreen !== true) { hasTabBar = true; }
+  if ((props.hasTopBar ?? false) !== false && props.fullScreen !== true) { hasTopBar = true; }
+  if ((props.hasNavBar ?? false) !== false && props.fullScreen !== true) { hasTabBar = true; }
   if (hasTabBar && hasTopBar) { height = availableScreenHeight; }
   else if (hasTopBar)         { height = availableModalHeight; }
   return [height, hasTopBar, hasTabBar];

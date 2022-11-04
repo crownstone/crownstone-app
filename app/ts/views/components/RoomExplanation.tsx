@@ -53,18 +53,18 @@ export class RoomExplanation extends Component<any, any> {
       return <React.Fragment />
     }
 
-    let label = <Text style={{fontSize: 15, fontWeight: 'bold', textAlign:'center'}}>{explanation}</Text>;
+    let label = <Text style={{fontSize: 17, color: colors.white.hex, fontWeight: 'bold', textAlign:'center'}}>{explanation}</Text>;
 
     if (buttonCallback !== undefined) {
       return (
-        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
+        <TouchableBlurMessageBar onPress={buttonCallback} marginTop={10} backgroundColor={colors.blue.rgba(0.6)}>
           {label}
         </TouchableBlurMessageBar>
       );
     }
     else {
       return (
-        <BlurMessageBar marginTop={10} backgroundColor={colors.blue.rgba(0.2)}>
+        <BlurMessageBar marginTop={10} backgroundColor={colors.blue.rgba(0.6)}>
           {label}
         </BlurMessageBar>
       );

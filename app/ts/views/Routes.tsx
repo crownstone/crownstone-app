@@ -50,7 +50,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     statusBar: {
       visible:    true,
       drawBehind: true,
-      backgroundColor: 'transparent'
+      backgroundColor: 'rgba(255,255,255,0.1)',
     },
     topBar: {
       drawBehind: true,
@@ -62,7 +62,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     },
     navigationBar:{
       visible: true,
-      // backgroundColor: 'rgba(255,255,255,0.11)',
+      backgroundColor: 'rgba(255,255,255,0.11)',
     },
     bottomTabs: {
       titleDisplayMode: "alwaysShow",
@@ -88,7 +88,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     defaultOptions.topBar["leftButtonColor"]  = "#000";
     defaultOptions.topBar["rightButtonColor"] = "#000";
     defaultOptions.topBar["backButton"]       = { color: "#000", testID: "BackButton" };
-    defaultOptions.bottomTabs["drawBehind"] = true;
+    defaultOptions.bottomTabs["drawBehind"]   = true;
   }
 
   Navigation.setDefaultOptions(defaultOptions);

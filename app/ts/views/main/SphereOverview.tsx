@@ -219,7 +219,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
             viewWrapper
             image={background.dark}
             lightStatusbar={true}
-            hasTopBar={false}
             testID={"SphereOverview"}
           >
             { this._getContent(activeSphereId) }
@@ -270,7 +269,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
           viewWrapper
           image={backgroundOverride}
           lightStatusbar={this.state.zoomLevel === ZOOM_LEVELS.sphere || this.state.arrangingRooms}
-          hasTopBar={false}
           testID={this.state.arrangingRooms ? 'SphereRoomArranger' : 'SphereOverview'}
         >
           { this._getContent(activeSphereId) }

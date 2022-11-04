@@ -222,12 +222,12 @@ export class ForceDirectedView extends Component<{
         if (Platform.OS === 'android') {
           threshold = 5;
         }
-        console.log("onPanResponderMove", gestureState.dx, gestureState.dy, Math.abs(gestureState.dx) > threshold, Math.abs(gestureState.dy) > threshold, this._pressedNodeData)
+        // console.log("onPanResponderMove", gestureState.dx, gestureState.dy, Math.abs(gestureState.dx) > threshold, Math.abs(gestureState.dy) > threshold, this._pressedNodeData)
         if (
           (Math.abs(gestureState.dx) < 50        && Math.abs(gestureState.dy) < 50) &&               // We do not want to send too many events, only in the beginning of the move
           (Math.abs(gestureState.dx) > threshold || Math.abs(gestureState.dy) > threshold) && // threshold is needed for android, onPanResponderMove is more sensitive on Android
           this._multiTouchUsed === false) {
-          console.log("EMITTING EVENT")
+          // console.log("EMITTING EVENT")
           core.eventBus.emit('userDragEvent' + this.props.viewId);
         }
 
@@ -285,7 +285,7 @@ export class ForceDirectedView extends Component<{
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        console.log("onPanResponderRelease")
+        // console.log("onPanResponderRelease")
         let recenterAnimation = () => {
           if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
             this._clearRecenterAction();
@@ -380,7 +380,7 @@ export class ForceDirectedView extends Component<{
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
-        console.log("onPanResponderTerminate")
+        // console.log("onPanResponderTerminate")
         // Another component has become the responder, so this gesture
         // should be cancelled
       },

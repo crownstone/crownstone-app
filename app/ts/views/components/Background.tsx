@@ -69,7 +69,7 @@ export function BackgroundCustomTopBar(props: BackgroundProps) {
       {...{ fullScreen:true, image: background.main, ...props}}
     >
       {props.children}
-      { props.hasNavBar && <NavBarBlur xlight /> }
+      {props.hasNavBar && <NavBarBlur xlight /> }
     </BaseBackground>
   );
 }

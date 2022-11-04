@@ -44,19 +44,26 @@ export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
 
     let totalHeight = height + heightOffset;
     if (totalHeight > 0 && totalHeight !== screenHeight && totalHeight > 0.5 * Dimensions.get('screen').height) {
+      let prevScreenHeight = screenHeight;
+      let prevAvailableScreenHeight = availableScreenHeight;
+      let prevAvailableModalHeight = availableModalHeight;
+
       screenHeight = totalHeight;
 
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+      // console.log("Screen height changed from " + prevScreenHeight + " to " + screenHeight + " (available: " + availableScreenHeight + ") (modal: " + availableModalHeight + ")");
     }
   }
 }
+
 export const stylesUpdateConstants = () =>  {
-  let constants =  Navigation.constantsSync()
+  let constants = Navigation.constantsSync()
   let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
   statusBarHeight = tmpStatusBarHeight;
 
-  topBarHeight = constants.topBarHeight     > 0 ? constants.topBarHeight     : topBarHeight;
+  topBarHeight = constants.topBarHeight > 0 ? constants.topBarHeight : topBarHeight;
   tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
 
   topBarHeight += statusBarHeight;
@@ -65,7 +72,8 @@ export const stylesUpdateConstants = () =>  {
   availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
   availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
-  LOG.info('screenHeightData',screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'),'constants', constants)
+  LOG.info('screenHeightData', screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), 'constants', constants)
+  // console.log('screenHeightData', screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), 'constants', constants)
 }
 
 

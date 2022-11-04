@@ -367,7 +367,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           testID={'RoomOverview_NestableScrollContainer'}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior={'never'}
-          contentContainerStyle={{paddingTop: viewPaddingTop + 15, paddingBottom: 2*tabBarHeight}}
+          contentContainerStyle={{paddingTop: viewPaddingTop, paddingBottom: 2*tabBarHeight}}
         >
           <NotificationFiller visible={this.state.editMode ? false : undefined} />
           <RoomExplanation

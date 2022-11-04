@@ -58,9 +58,9 @@ export class NotificationLine extends LiveComponent<{showNotifications?: boolean
           <BlurMessageBar
             backgroundColor={notification.backgroundColor || defaultColor.rgba(0.5)}
           >
-            { notification.icon ? <Icon name={notification.icon} size={notification.iconSize || 34} color={ colors.black.hex } /> : undefined }
+            { notification.icon ? <Icon name={notification.icon} size={notification.iconSize || 34} color={ colors.white.hex } /> : undefined }
             { notification.icon ? <View style={{width:10}}/> : undefined }
-            <Text style={{color: colors.black.hex, fontSize: 17, fontWeight:'bold'}}>{notification.label}</Text>
+            <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold'}}>{notification.label}</Text>
           </BlurMessageBar>
         </TouchableOpacity>
       )
