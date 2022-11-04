@@ -324,11 +324,6 @@ export default {
   },
   CloudChoice:{
     __filename: "../js/views/startupViews/CloudChoice.tsx",
-    PLEASE_SELECT:                          function() { return "PLEASE SELECT" },
-    Use_the_Cloud_to_store_da:              function() { return "Use the Cloud to store data" },
-    The_cloud_is_used_to_allo:              function() { return "The cloud is used to allow multiple users to use your Crownstones. Crownstones, spheres, rooms are stored in the cloud and synces across devices." },
-    Only_store_data_on_your_p:              function() { return "Only store data on your phone" },
-    If_you_are_the_only_user_:              function() { return "If you are the only user, you can run everything locally. If you uninstall your app, you'll need to physically reset all your Crownstones." },
   },
   CreateSphere:{
     Could_not_create_sphere:                function() { return "Could not create sphere" },
@@ -733,12 +728,6 @@ export default {
     Week:                                   function() { return "Week" },
     Months:                                 function() { return "Months" },
     Years:                                  function() { return "Years" },
-    DEMO_MODE:                              function() { return "DEMO MODE" },
-    No_sphere_selected___:                  function() { return "No sphere selected..." },
-    Go_to_the_overview_and_se:              function() { return "Go to the overview and select a sphere." },
-    _Coming_soon___Were_worki_header:       function() { return "Coming soon!" },
-    _Coming_soon___Were_worki_body:         function() { return "We're working on integrating with existing hubs to gather historical data for you to see here!\n\nThese views are a taste of what's to come!" },
-    _Coming_soon___Were_worki_left:         function() { return "OK" },
   },
   EnergyUsageUtil:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/energyUsage/EnergyUsageUtil.tsx",
