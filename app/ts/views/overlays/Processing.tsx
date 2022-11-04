@@ -14,7 +14,7 @@ import {
 import { AnimatedLogo }       from '../components/animated/AnimatedLogo'
 import { AnimatedLoadingBar } from '../components/animated/AnimatedLoadingBar'
 import { HiddenFadeInView }         from '../components/animated/FadeInView'
-import { styles, colors , screenHeight} from '../styles'
+import { styles, colors, screenHeight, screenWidth } from "../styles";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import {OverlayManager} from "../../backgroundProcesses/OverlayManager";
@@ -132,7 +132,7 @@ export class Processing extends Component<any, any> {
         <Blur
           blurType={'dark'}
           blurAmount={2}
-          style={[styles.fullscreen,{justifyContent:'center', alignItems:'center'}]}
+          style={{...styles.fullscreen, justifyContent:'center', alignItems:'center'}}
         >
           <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >
             <AnimatedLogo />

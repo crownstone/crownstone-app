@@ -10,7 +10,7 @@ import {
   screenWidth,
   statusBarHeight, styles,
   tabBarHeight,
-  topBarHeight
+  topBarHeight, viewPaddingTop
 } from "../styles";
 import { View, Text, ScrollView} from "react-native";
 import { BackgroundCustomTopBarNavbar } from "../components/Background";
@@ -23,10 +23,13 @@ import { LiveRoomList} from "./components/LiveLists";
 import { CLOUD} from "../../cloud/cloudAPI";
 import { ContentNoSphere} from "./components/ContentNoSphere";
 import { HistoricalEnergyUsageOverview} from "./components/HistoricalEnergyUsageOverview";
+import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { core } from "../../Core";
 
 
 export function EnergyUsage(props) {
   useDatabaseChange(['updateActiveSphere']);
+
   return (
     <BackgroundCustomTopBarNavbar testID={'energyUsageTab'}>
       <EnergyUsageContent sphereId={Get.activeSphereId()}/>
@@ -88,12 +91,7 @@ function EnergyUsageContent(props) {
 
   return (
     <React.Fragment>
-      <ScrollView contentContainerStyle={{
-        flexGrow:1,
-        paddingTop: topBarHeight-statusBarHeight,
-        alignItems:'center', justifyContent:"center",
-        paddingBottom:2*tabBarHeight
-      }}>
+      <SettingsScrollbar contentContainerStyle={{ alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
         <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
           <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
           <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
@@ -113,7 +111,7 @@ function EnergyUsageContent(props) {
              :
             <LiveRoomList />
         }
-      </ScrollView>
+      </SettingsScrollbar>
       <TopBarBlur xlight>
         <EnergyUsageHeader mode={mode} />
       </TopBarBlur>
