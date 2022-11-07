@@ -32,7 +32,7 @@
     "moment": "^2.29.1",
     "node-hue-api": "^4.0.9",
     "react": "^17.0.2",
-    "react-native": "^0.66.4",
+    "react-native": "^0.66.5",
     "react-native-console-time-polyfill": "^1.2.3",
     "react-native-device-info": "^8.4.5",
     "react-native-draggable-flatlist": "^3.1.1",
