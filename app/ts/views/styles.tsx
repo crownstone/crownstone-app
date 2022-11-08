@@ -23,15 +23,21 @@ export let availableModalHeight  = screenHeight - topBarHeight;
 
 export let viewPaddingTop = Platform.OS === 'android' ? topBarHeight : topBarHeight;
 
-export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
-  topBarMargin    = 0
-  tabBarMargin    = insets.bottom;
-  tabBarHeight    = insets.top > 0 ? 49 + 34: 49;
-  statusBarHeight = Platform.OS === 'android' ? 24  :  (insets.top > 0 ? insets.top : 20); // Status bar in iOS is 20 high
-  topBarHeight    = Platform.OS === 'android' ? 54  :  (insets.top > 0 ? insets.top : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
-  availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-  availableModalHeight  = screenHeight - topBarHeight;
+
+export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
+  if (Platform.OS === 'ios') {
+    topBarMargin    = 0;
+    tabBarMargin    = insets.bottom;
+    tabBarHeight    = insets.top > 0 ? 49 + 34: 49;
+    statusBarHeight = (insets.top > 0 ? insets.top : 20); // Status bar in iOS is 20 high
+    topBarHeight    = (insets.top > 0 ? insets.top : 44) + statusBarHeight; // Status bar in iOS is 20 high
+
+    availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+    availableModalHeight  = screenHeight - topBarHeight;
+
+    console.log("SET INSETS", insets, topBarHeight, tabBarHeight, availableScreenHeight, availableModalHeight);
+  }
 }
 
 
@@ -53,7 +59,7 @@ export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
       availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
       availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
-      // console.log("Screen height changed from " + prevScreenHeight + " to " + screenHeight + " (available: " + availableScreenHeight + ") (modal: " + availableModalHeight + ")");
+      console.log("updateScreenHeight Screen height changed from " + prevScreenHeight + " to " + screenHeight + " (available: " + availableScreenHeight + ") (modal: " + availableModalHeight + ")");
     }
   }
 }
@@ -73,7 +79,7 @@ export const stylesUpdateConstants = () =>  {
   availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
   LOG.info('screenHeightData', screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), 'constants', constants)
-  // console.log('screenHeightData', screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), 'constants', constants)
+  console.log('stylesUpdateConstants screenHeightData', screenHeight, "window", Dimensions.get('window'), "screen", Dimensions.get('screen'), 'constants', constants)
 }
 
 
