@@ -167,7 +167,6 @@ export class SettingsProfile extends LiveComponent<any, any> {
       )
     });
 
-    items.push({type:'spacer'});
 
     if (this.state.showDevMenu) {
       if (!DataUtil.isDeveloper()) {
@@ -187,6 +186,8 @@ export class SettingsProfile extends LiveComponent<any, any> {
           }
         });
         items.push({ label: lang("This_will_enable_certain_"), type: 'explanation', below: true });
+        items.push({ type: 'spacer' });
+        items.push({ type: 'spacer' });
       }
       else {
         items.push({
@@ -198,6 +199,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
             NavigationUtil.navigate("SettingsDeveloper");
           }
         });
+        items.push({ type: 'spacer' });
         items.push({ type: 'spacer' });
       }
     }
@@ -239,10 +241,12 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let sphereIds = Object.keys(state.spheres);
     let user = state.user;
 
+    let size = 120;
     return (
       <SettingsNavbarBackground testID={"SettingsProfile"}>
-        <SettingsScrollbar keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
-          <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
+        <SettingsScrollbar keyboardShouldPersistTaps="always">
+          <View style={{alignItems:'center', justifyContent:'center', flexDirection:'row', width: screenWidth, paddingTop:40}}>
+            <DevTapper count={() => { this._countSecret();}} style={{height:size, width: screenWidth-2*size}} />
             <PictureCircle
               isSquare={true}
               value={this.state.picture}
@@ -270,16 +274,21 @@ export class SettingsProfile extends LiveComponent<any, any> {
                 });
                 this.setState({picture:null});
               }}
-              size={120} />
+              size={size} />
+            <DevTapper count={() => { this._countSecret();}} style={{height:size, width: screenWidth-2*size}} />
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
-          { !this.state.showDevMenu &&
-            <TouchableWithoutFeedback onPress={() => { this._countSecret() }} >
-              <View style={{flex:1, width: screenWidth, backgroundColor: 'transparent'}} />
-            </TouchableWithoutFeedback>
-          }
+          <DevTapper count={() => { this._countSecret();}} style={{flex:1, width: screenWidth}} />
         </SettingsScrollbar>
       </SettingsNavbarBackground>
     );
   }
+}
+
+function DevTapper(props) {
+  return (
+    <TouchableWithoutFeedback onPress={() => { props.count() }} >
+      <View style={{backgroundColor: 'transparent', ...props.style}} />
+    </TouchableWithoutFeedback>
+  );
 }

@@ -259,11 +259,10 @@ lang("_Could_not_revoke_permiss_body"),
     if (revokeItems.length > 0) {
       items.push({type: 'explanation', label: lang("ENERGY_COLLECTION_PERMISS"), alreadyPadded:false});
       items = items.concat(revokeItems);
-      items.push({type: 'spacer'});
-      items.push({type: 'spacer'});
     }
 
-
+    items.push({type: 'spacer'});
+    items.push({type: 'spacer'});
 
 
 

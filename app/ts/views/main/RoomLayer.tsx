@@ -74,7 +74,7 @@ export function RoomLayer(props) {
 
   let insets = useSafeAreaInsets()
 
-  let height = availableScreenHeight; // 1 is for the bottom light line above the navbar
+  let height = availableScreenHeight;
   let offset = 0;
 
   if (OnScreenNotifications.hasNotifications(props.sphereId)) {
