@@ -24,8 +24,12 @@ export let availableModalHeight  = screenHeight - topBarHeight;
 export let viewPaddingTop = Platform.OS === 'android' ? topBarHeight : topBarHeight;
 
 
-
+/**
+ * This method will set the safe areas for the iPhones X and above.
+ * @param insets
+ */
 export function setInsets(insets: {bottom: number, left:number,right:number, top:number}) {
+  console.log("READ INSETS", insets);
   if (Platform.OS === 'ios') {
     topBarMargin    = 0;
     tabBarMargin    = insets.bottom;
@@ -43,6 +47,7 @@ export function setInsets(insets: {bottom: number, left:number,right:number, top
 
 
 export function updateScreenHeight(height, topBarAvailable, tabBarAvailable) {
+  console.log("UPDATE SCREEN HEIGHT", height, topBarAvailable, tabBarAvailable);
   if (Platform.OS === 'android') {
     let heightOffset = 0;
     if (topBarAvailable) { heightOffset += topBarHeight; }
@@ -186,8 +191,7 @@ export const styles = StyleSheet.create({
   fullscreen:{
     position:'absolute',
     top:0,left:0,
-    width:screenWidth,
-    height:screenHeight,
+    right:0, bottom:0,
   },
   row: {flexDirection: 'row'},
   centered: {

@@ -9,10 +9,10 @@ import {
   styles,
   colors,
   updateScreenHeight,
-  background
+  background, screenHeight
 } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
-import { CustomKeyboardAvoidingView } from "./CustomKeyboardAvoidingView";
+import { CustomKeyboardAvoidingView, KEYBOARD_STATE } from "./CustomKeyboardAvoidingView";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {getHeight} from "./animated/AnimatedBackground";
 import {StatusBarWatcher} from "../../backgroundProcesses/StatusBarWatcher";
@@ -23,6 +23,7 @@ export class BaseBackground extends Component<BackgroundProps, any> {
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
+    console.log("Drawing base background", hasTopBar, hasTabBar, backgroundHeight);
     let overrideStyle = this.props.style || {};
 
     if (this.props.lightStatusbar) {
@@ -34,10 +35,13 @@ export class BaseBackground extends Component<BackgroundProps, any> {
 
     return (
       <SafeAreaProvider style={{flex:1, backgroundColor: colors.white.hex}} onLayout={(event) => {
+        // do not update when the keyboard is up.
+        if (KEYBOARD_STATE.visible === true) { return; }
+
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"transparent", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"green", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           <BackgroundImage height={backgroundHeight} image={this.props.image} />
           <View style={[styles.fullscreen, {height:backgroundHeight}]}>
             <View style={{flex:1}}>

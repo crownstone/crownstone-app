@@ -25,6 +25,10 @@ import { core } from "../../Core";
 
 const KEYBOARD_HEIGHT = 450;
 
+export const KEYBOARD_STATE = {
+  visible: false,
+}
+
 export class CustomKeyboardAvoidingView extends Component< any, { offset: any} > {
 
   subscriptions = [];
@@ -43,7 +47,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
       this.subscriptions.push(core.eventBus.on('focus', (data) => {
         let offset = 0;
         let correctedData = data - this.state.offset._value;
-
+        KEYBOARD_STATE.visible = true;
         if (screenHeight - correctedData < KEYBOARD_HEIGHT) {
           offset = KEYBOARD_HEIGHT - (screenHeight - correctedData);
         }
@@ -55,6 +59,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
       }));
       this.subscriptions.push(core.eventBus.on('blur', (data) => {
         // if (this.props.enabled) {
+          KEYBOARD_STATE.visible = false;
           this.state.offset.stopAnimation();
           Animated.timing(this.state.offset, { toValue: 0, useNativeDriver: false, duration: 150 }).start()
         // }
@@ -69,6 +74,7 @@ export class CustomKeyboardAvoidingView extends Component< any, { offset: any} >
   }
 
   componentWillUnmount() {
+    KEYBOARD_STATE.visible = false;
     this.state.offset.stopAnimation();
     for (let unsubscriber of this.subscriptions) { unsubscriber(); }
     for (let subscription of this.keyboardSubscriptions) { subscription.remove(); }

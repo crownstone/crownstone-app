@@ -18,7 +18,7 @@ import {
   updateScreenHeight, availableScreenHeight, availableModalHeight
 } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
-import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
+import { CustomKeyboardAvoidingView, KEYBOARD_STATE } from "../CustomKeyboardAvoidingView";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {StatusBarWatcher} from "../../../backgroundProcesses/StatusBarWatcher";
 
@@ -64,6 +64,7 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
+    console.log("Drawing animated background", hasTopBar, hasTabBar, backgroundHeight);
     let Wrapper = this.props.viewWrapper ? View : SafeAreaProvider;
 
     if (this.props.lightStatusbar) {
@@ -75,13 +76,16 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 
     return (
       <Wrapper style={{flex:1, backgroundColor: colors.white.hex}} onLayout={(event) => {
+        // do not update when the keyboard is up.
+        if (KEYBOARD_STATE.visible === true) { return; }
+
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <View style={[styles.fullscreen, {height:backgroundHeight}]}>
+        <View style={{...styles.fullscreen, height:backgroundHeight}}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>
-        <Animated.View style={[styles.fullscreen, {height:backgroundHeight, opacity:this.state.fade}]}>
+        <Animated.View style={{...styles.fullscreen, height:backgroundHeight, opacity:this.state.fade}}>
           <BackgroundImage height={backgroundHeight} image={this.animatedImage} />
         </Animated.View>
         <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight}}>

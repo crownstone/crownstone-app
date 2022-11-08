@@ -187,6 +187,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
   }
 
   render() {
+    console.log("Drawing SettingsOverview");
     return (
       <SettingsNavbarBackground testID={'SettingsOverview'}>
         <SettingsScrollbar testID={'SettingsOverview_scrollview'}>

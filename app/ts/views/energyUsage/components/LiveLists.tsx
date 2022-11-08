@@ -66,7 +66,7 @@ export function LiveRoomList(props: {}) {
     )
   }
 
-  return <View style={{width: screenWidth, paddingTop:15}}>{items}</View>;
+  return <View style={{flex:1, width: screenWidth, paddingTop:15}}>{items}</View>;
 }
 
 

@@ -202,6 +202,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
   }
 
   render() {
+    console.log("Drawing SphereOverviewContent");
+
     const state = core.store.getState();
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
@@ -322,6 +324,8 @@ function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
 }
 
 export function SphereOverview(props) {
+  console.log("Drawing sphereOverview")
+
   let sideBarRef = useRef(null);
 
   return (
