@@ -109,6 +109,7 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
       this.cleanupRequired = false;
       this.moveDetected    = false;
+      this.disableTouch    = false;
     }));
 
 
@@ -119,10 +120,7 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
 
     this.unsubscribeControlEvents.push(core.eventBus.on('viewReleased' + this.props.viewId, (data) => {
       this.checkIfTapped()
-      // if (this.cleanupRequired) {
       this.handleTouchReleased()
-      // }
-      this.disableTouch = false;
     }));
 
     this.unsubscribeControlEvents.push(core.eventBus.on('userDragEvent' + this.props.viewId, (data) => {
@@ -217,7 +215,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     return (
       <TouchableOpacity
         onPressIn={(e)   => {
-          console.log("ON PRESS IN")
           this.props.touch();
           this.handleTouch();
         }}
@@ -230,7 +227,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
         //
         // }}
         onPress={() => {
-          console.log("ON PRESS");
           this.handleTap();
         }}
         activeOpacity={1.0}
@@ -250,7 +246,7 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
   checkIfTapped() {
     setTimeout(() => {
       if (Date.now() - this.tapStart < 500) {
-        if (this.moveDetected === false && this.tapRegistered === false) {
+        if (this.moveDetected === false && this.tapRegistered === false && this.disableTouch === false) {
           this.handleTap();
         }
       }
@@ -356,6 +352,7 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
 
+    console.log("FIRE THE BUGZIE")
     NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     this.tapRegistered = true;
     setTimeout(() => { this.tapRegistered = false; }, 50);

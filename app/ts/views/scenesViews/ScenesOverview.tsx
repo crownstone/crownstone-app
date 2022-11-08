@@ -232,7 +232,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
         <TopBarBlur xlight>
           <SceneHeader editMode={this.state.editMode} setEditMode={this.setEditMode} endEditMode={this.endEditMode} />
         </TopBarBlur>
-        <NavBarBlur xlight/>
       </BackgroundCustomTopBarNavbar>
     );
   }
