@@ -43,10 +43,6 @@ const className = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
 export class ScenesOverview extends LiveComponent<any, any> {
-  static options(props) {
-    getTopBarProps(props, {});
-    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
-  }
   _panResponder : any
   localEventBus : EventBusClass;
   unsubscribeStoreEvents = null;
@@ -96,9 +92,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
         let state = core.store.getState();
         let activeSphereId = state.app.activeSphere;
         let activeSphere = Get.activeSphere();
-
-        getTopBarProps(this.props, this.state);
-        TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
 
         if (activeSphere) {
           let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
@@ -268,44 +261,3 @@ function AddHint(props) {
 
 
 
-
-function getTopBarProps(props, viewState) {
-  let state = core.store.getState();
-  let activeSphereId = state.app.activeSphere;
-  let activeSphere = state.spheres[activeSphereId];
-  let scenesAvailable = false;
-  if (activeSphereId) {
-    scenesAvailable = Object.keys(state.spheres[activeSphereId].scenes).length > 0;
-  }
-  let title = "Scenes";
-
-  if (!activeSphereId) {
-    NAVBAR_PARAMS_CACHE = { title: title };
-    return NAVBAR_PARAMS_CACHE;
-  }
-  else if (activeSphere) {
-    title += " in " + activeSphere.config.name;
-  }
-
-
-  if (scenesAvailable) {
-    if (viewState.editMode !== true) {
-      NAVBAR_PARAMS_CACHE = { title: title, edit: true };
-    }
-    else {
-      NAVBAR_PARAMS_CACHE = { title: title, done: true };
-    }
-  }
-  else {
-    if (viewState.editMode === true) {
-      NAVBAR_PARAMS_CACHE = { title: title, done: true };
-    }
-    else {
-      NAVBAR_PARAMS_CACHE = { title: title };
-    }
-  }
-
-  return NAVBAR_PARAMS_CACHE;
-}
-
-let NAVBAR_PARAMS_CACHE : topbarOptions = null;

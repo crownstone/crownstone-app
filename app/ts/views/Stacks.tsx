@@ -114,9 +114,7 @@ export const Stacks = {
                 { component: {id: 'SettingsOverview',name: "SettingsOverview"} },
               ],
               options: {
-                topBar: {
-
-                },
+                topBar: { visible: false, drawBehind: true },
                 bottomTabs:{
                   backgroundColor: 'transparent',
                   drawBehind: true

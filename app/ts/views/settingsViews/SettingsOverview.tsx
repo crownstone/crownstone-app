@@ -17,15 +17,15 @@ import {Icon} from "../components/Icon";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
 import { DataUtil } from "../../util/DataUtil";
 import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { EditDone, EditIcon } from "../components/EditIcon";
+import { TopBarBlur } from "../components/NavBarBlur";
+import { BackgroundCustomTopBarNavbar } from "../components/Background";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
 }
 
 export class SettingsOverview extends LiveComponent<any, any> {
-  static options(props) {
-    return TopBarUtil.getOptions({title: lang("Settings")});
-  }
 
   unsubscribe : any;
 
@@ -187,13 +187,28 @@ export class SettingsOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    console.log("Drawing SettingsOverview");
     return (
-      <SettingsNavbarBackground testID={'SettingsOverview'}>
+      <BackgroundCustomTopBarNavbar testID={'SettingsOverview'}>
         <SettingsScrollbar testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
         </SettingsScrollbar>
-      </SettingsNavbarBackground>
+        <TopBarBlur xlight>
+          <SettingsHeader />
+        </TopBarBlur>
+      </BackgroundCustomTopBarNavbar>
     );
   }
 }
+
+
+function SettingsHeader(props) {
+  return (
+    <View style={{flexDirection:'row', paddingLeft: 15, alignItems:'center'}}>
+      <Text style={styles.viewHeader}>{ lang("Settings") }</Text>
+      <View style={{flex:1}} />
+    </View>
+  );
+}
+
+
+
