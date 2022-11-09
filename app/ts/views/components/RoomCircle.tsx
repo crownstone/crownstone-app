@@ -352,7 +352,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
 
-    console.log("FIRE THE BUGZIE")
     NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     this.tapRegistered = true;
     setTimeout(() => { this.tapRegistered = false; }, 50);

@@ -89,9 +89,9 @@ export class DeviceAbilities extends LiveComponent<any, any> {
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("These_are_the_things_I_ca",permissionGranted) }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            { canDim         && <Ability type={ lang("dimming")}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-            { hasSwitchcraft && <Ability type={ lang("switchcraft")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-            { canSwitch      && <Ability type={ lang("tapToToggle")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { canDim         && <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+            { canSwitch      && <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
           </View>
         </SettingsScrollbar>
       </SettingsBackground>
@@ -110,6 +110,7 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let active = getActiveState(props.stone, props.type);
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
+  console.log("DATA", data);
   let helpColor = colors.black.rgba(0.5);
   // synced = false
   return (
@@ -178,7 +179,9 @@ function getSyncedState(stone, type) {
 }
 
 function getData(props, stone, active) {
-  let propsToPass = {stoneId: props.stoneId, sphereId: props.sphereId, information: null}
+  let propsToPass = {stoneId: props.stoneId, sphereId: props.sphereId, information: null};
+
+  console.log("GET DATA", props.type, active);
   switch (props.type) {
     case 'dimming':
       propsToPass.information = () => { Linking.openURL(Languages.activeLocale === "nl_nl" ? 'https://crownstone.rocks/nl/compatibility/dimming/' : 'https://crownstone.rocks/compatibility/dimming/').catch(() => {}) };
