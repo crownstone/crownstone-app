@@ -344,13 +344,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         NavigationUtil.navigate( "SettingsBleDebug");
       }});
     items.push({
-      label: "Localization Debug",
-      type: 'navigation',
-      icon: <IconButton name="md-locate" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
-      callback:() => {
-        NavigationUtil.navigate( "SettingsLocalizationDebug");
-      }})
-    items.push({
       label: "Database Explorer",
       type: 'navigation',
       icon: <IconButton name="md-folder" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlueDark.hex}} />,

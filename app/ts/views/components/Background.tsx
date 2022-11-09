@@ -23,7 +23,7 @@ export class BaseBackground extends Component<BackgroundProps, any> {
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
-    console.log("Drawing base background", hasTopBar, hasTabBar, backgroundHeight);
+    // console.log("Drawing base background", hasTopBar, hasTabBar, backgroundHeight);
     let overrideStyle = this.props.style || {};
 
     if (this.props.lightStatusbar) {
@@ -41,9 +41,9 @@ export class BaseBackground extends Component<BackgroundProps, any> {
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight, overflow:"hidden", backgroundColor:"green", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+        <CustomKeyboardAvoidingView style={{...styles.fullscreen, overflow:"hidden", backgroundColor:"transparent", ...overrideStyle}} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
           <BackgroundImage height={backgroundHeight} image={this.props.image} />
-          <View style={[styles.fullscreen, {height:backgroundHeight}]}>
+          <View style={styles.fullscreen}>
             <View style={{flex:1}}>
               { this.props.children }
             </View>

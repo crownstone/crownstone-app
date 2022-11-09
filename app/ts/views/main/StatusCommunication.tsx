@@ -74,16 +74,19 @@ function StatusCommunicationRender(props: { sphereId: sphereId, amountOfVisibleC
   let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(currentSphereId);
   let requiresFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(currentSphereId);
 
-  let insets = useSafeAreaInsets()
+  let insets = useSafeAreaInsets();
+
+  let bottomOffset = tabBarHeight; // TODO: perhaps this should be updated for Android.
 
   let generalStyle : TextStyle = {
     position:'absolute',
-    bottom: tabBarHeight - insets.bottom,
+    bottom: bottomOffset,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: props.opacity || 1,
-    left: 0,   // 0.11*screenwidth is the width of the add icon
-    width: screenWidth-20,
+    left: 0,
+    width: screenWidth,
+    paddingHorizontal: 10,
     height: 50,
     overflow: 'hidden',
     flexDirection:'column',
@@ -92,7 +95,7 @@ function StatusCommunicationRender(props: { sphereId: sphereId, amountOfVisibleC
   if (props.viewingRemotely === true) {
     return (
       <View style={generalStyle} pointerEvents={'none'}>
-        <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
+        <Text style={[overviewStyles.bottomText, {color:colors.csBlue.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
       </View>
     );
   }

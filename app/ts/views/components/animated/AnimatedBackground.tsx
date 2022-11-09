@@ -82,13 +82,13 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
         let {x, y, width, height} = event.nativeEvent.layout;
         updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <View style={{...styles.fullscreen, height:backgroundHeight}}>
+        <View style={{...styles.fullscreen}}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>
-        <Animated.View style={{...styles.fullscreen, height:backgroundHeight, opacity:this.state.fade}}>
+        <Animated.View style={{...styles.fullscreen, opacity:this.state.fade}}>
           <BackgroundImage height={backgroundHeight} image={this.animatedImage} />
         </Animated.View>
-        <CustomKeyboardAvoidingView style={{...styles.fullscreen, height:backgroundHeight}}>
+        <CustomKeyboardAvoidingView style={{...styles.fullscreen}}>
           <View style={{flex:1}}>
             { this.props.children }
           </View>

@@ -22,18 +22,31 @@ import {
   } from 'react-native-svg';
 
 
-import { colors, screenWidth, availableScreenHeight} from "../../styles";
+import { colors, screenWidth, availableScreenHeight, topBarHeight, statusBarHeight } from "../../styles";
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {eventBus} from "../../../util/EventBus";
 import { core } from "../../../Core";
 import { xUtil } from "../../../util/StandAloneUtil";
 
+interface BoundingBox {
+  minX: number,
+  maxX: number,
+  minY: number,
+  maxY: number,
+  width: number,
+  height: number,
+  requiredScale: number,
+  effectiveWidth: number,
+  effectiveHeight: number,
+  boxCenter: { x: number, y: number },
+  initialized: boolean,
+}
+
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
   viewId: string,
   height: number,
-  heightOffset?: number,
   edges?: any,
   positionGetter?: any
   nodeRadius: number,
@@ -88,7 +101,10 @@ export class ForceDirectedView extends Component<{
   viewHeight : number = availableScreenHeight;
   frameHeight : number = availableScreenHeight;
 
-  boundingBoxData : any = {};
+
+  viewCenter        : { x: number, y: number } = {x: screenWidth/2, y: availableScreenHeight/2};
+  boundingBox       : BoundingBox = {minX:0, maxX:0, minY:0,maxY:0, width:0, height:0, requiredScale:1, effectiveWidth:0, effectiveHeight:0, boxCenter:{x:0,y:0}, initialized: false};
+  paddedBoundingBox : BoundingBox = {minX:0, maxX:0, minY:0,maxY:0, width:0, height:0, requiredScale:1, effectiveWidth:0, effectiveHeight:0, boxCenter:{x:0,y:0}, initialized: false};
   _clearRecenterAction = () => {};
 
   _dragInitialX = 0;
@@ -153,6 +169,12 @@ export class ForceDirectedView extends Component<{
     }
     else if (nextProps.initialPositions && nextProps.initialPositions && xUtil.deepCompare(nextProps.initialPositions, this.props.initialPositions) === false) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    }
+    else if (nextProps.topOffset !== this.props.topOffset || nextProps.bottomOffset !== this.props.bottomOffset) {
+      Scheduler.setTimeout(() => {
+        this._getBoundingBox();
+        this._recenter();
+      }, 10);
     }
     else {
       // check for changes in edges.
@@ -287,7 +309,7 @@ export class ForceDirectedView extends Component<{
       onPanResponderRelease: (evt, gestureState) => {
         // console.log("onPanResponderRelease")
         let recenterAnimation = () => {
-          if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
+          if (Math.abs(this._panOffset.x) > 0.9*this.paddedBoundingBox.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.paddedBoundingBox.effectiveHeight) {
             this._clearRecenterAction();
             this._clearRecenterAction = Scheduler.scheduleCallback(() => {
               this._recenter();
@@ -358,7 +380,7 @@ export class ForceDirectedView extends Component<{
               this.props.zoomInCallback();
             }
           }
-          else if (this.boundingBoxData.width * this._currentScale < 0.4 * screenWidth) {
+          else if (this.paddedBoundingBox.width * this._currentScale < 0.4 * screenWidth) {
             if (this.props.zoomOutCallback) {
               this.props.zoomOutCallback();
             }
@@ -429,55 +451,81 @@ export class ForceDirectedView extends Component<{
     // correct bounding box
     maxX += 2*this.props.nodeRadius;
     maxY += 2*this.props.nodeRadius;
+    //
+    // // add padding
+    // minX -= 0.3*this.props.nodeRadius;
+    //
+    // // draw it as nice as possible
+    // minY -= 0.3*this.props.nodeRadius;
+    // if (this.props.topOffset) {
+    //   minY -= this.props.topOffset;
+    // }
+    //
+    // maxX += 0.3*this.props.nodeRadius;
+    // maxY += 0.7*this.props.nodeRadius;
+    //
+    // if (this.props.bottomOffset) {
+    //   maxY += this.props.bottomOffset;
+    // }
 
-    // add padding
-    minX -= 0.3*this.props.nodeRadius;
+    this.boundingBox.minX = minX;
+    this.boundingBox.maxX = maxX;
+    this.boundingBox.minY = minY;
+    this.boundingBox.maxY = maxY;
+    this.boundingBox.width  = this.boundingBox.maxX - this.boundingBox.minX;
+    this.boundingBox.height = this.boundingBox.maxY - this.boundingBox.minY;
 
-    // draw it as nice as possible depending on whether or not the multiple sphere button is drawn.
-    minY -= 0.3*this.props.nodeRadius;
-    if (this.props.topOffset) {
-      minY -= this.props.topOffset;
+    let padding = 0.5*this.props.nodeRadius;
+
+    this.paddedBoundingBox.minX = minX - padding;
+    this.paddedBoundingBox.maxX = maxX + padding;
+    this.paddedBoundingBox.minY = minY - padding;
+    this.paddedBoundingBox.maxY = maxY + padding;
+    this.paddedBoundingBox.width  = this.paddedBoundingBox.maxX - this.paddedBoundingBox.minX;
+    this.paddedBoundingBox.height = this.paddedBoundingBox.maxY - this.paddedBoundingBox.minY;
+
+    
+    // get drawable area.
+    // the drawable area is the frameHeight & screenWidth minus the top and bottom offset.
+    // this is used to calculate the maximum scale.
+    let drawableArea = {
+      width: screenWidth,
+      height: this.frameHeight-(this.props.topOffset||0)-(this.props.bottomOffset||0)
     }
-
-    maxX += 0.3*this.props.nodeRadius;
-    maxY += 0.7*this.props.nodeRadius;
-
-    if (this.props.bottomOffset) {
-      maxY += this.props.bottomOffset;
-    }
-
-    this.boundingBoxData['minX'] = minX;
-    this.boundingBoxData['maxX'] = maxX;
-    this.boundingBoxData['minY'] = minY;
-    this.boundingBoxData['maxY'] = maxY;
-    this.boundingBoxData['width'] = this.boundingBoxData.maxX - this.boundingBoxData.minX;
-    this.boundingBoxData['height'] = this.boundingBoxData.maxY - this.boundingBoxData.minY;
 
     // set scale
-    this.boundingBoxData['requiredScale'] = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth / this.boundingBoxData.width, this.frameHeight / this.boundingBoxData.height)));
-
-    this.boundingBoxData['effectiveWidth']  = this.boundingBoxData.width  * this.boundingBoxData.requiredScale;
-    this.boundingBoxData['effectiveHeight'] = this.boundingBoxData.height * this.boundingBoxData.requiredScale;
+    this.paddedBoundingBox.requiredScale = Math.min(this._maxScale, Math.max(this._minScale,
+      Math.min(drawableArea.width / this.paddedBoundingBox.width, drawableArea.height / this.paddedBoundingBox.height)
+    ));
+    this.paddedBoundingBox.requiredScale
+    this.paddedBoundingBox.effectiveWidth  = this.paddedBoundingBox.width * this.paddedBoundingBox.requiredScale;
+    this.paddedBoundingBox.effectiveHeight = this.paddedBoundingBox.height * this.paddedBoundingBox.requiredScale;
 
     // center of bounding box projected on world coordinates
-    this.boundingBoxData['massCenter'] = {x: this.boundingBoxData.minX + 0.5*this.boundingBoxData.width, y: this.boundingBoxData.minY + 0.5*this.boundingBoxData.height};
+    this.paddedBoundingBox.boxCenter   = {x: this.paddedBoundingBox.minX + 0.5*this.paddedBoundingBox.width, y: this.paddedBoundingBox.minY + 0.5*this.paddedBoundingBox.height};
 
-    // actual center of the view.
-    this.boundingBoxData['viewCenter'] = {x: 0.5*this.viewWidth, y: 0.5*this.viewHeight+10};
+    this.paddedBoundingBox.initialized = true;
+
+    // get the center of the screen to move the mass center towards. The center is the mid, of the view, corrected with the top and bottom offset.
+    this.viewCenter = {
+      x: 0.5*this.viewWidth,
+      y: (this.props.topOffset || 0) + 0.5*(this.viewHeight - (this.props.topOffset || 0) - (this.props.bottomOffset||0)),
+    }
 
   }
 
   _recenter(fadeIn = false) {
-    if (!this.boundingBoxData || this.boundingBoxData.minX === undefined) { return }
+    if (this.paddedBoundingBox.initialized === false) { return }
 
     if (this._recenteringInProgress === true) { return; }
 
     this._recenteringInProgress = true;
 
     // determine offset to center everything.
+
     let offsetRequired = {
-      x: this.boundingBoxData['requiredScale']*(this.boundingBoxData['viewCenter'].x - this.boundingBoxData['massCenter'].x) - this._panOffset.x,
-      y: this.boundingBoxData['requiredScale']*(this.boundingBoxData['viewCenter'].y - this.boundingBoxData['massCenter'].y) - this._panOffset.y
+      x: (this.viewCenter.x - this.paddedBoundingBox.boxCenter.x) - this._panOffset.x,
+      y: (this.viewCenter.y - this.paddedBoundingBox.boxCenter.y) - this._panOffset.y
     };
 
     // batch animations together.
@@ -490,15 +538,15 @@ export class ForceDirectedView extends Component<{
       animations.push(Animated.timing(this.state.opacity, {toValue: 1, useNativeDriver: false, duration: 0}));
     }
 
-    animations.push(Animated.timing(this.state.scale, { toValue: this.boundingBoxData.requiredScale, useNativeDriver: false, duration:600}));
-    animations.push(Animated.timing(this.state.pan, { toValue: {x: offsetRequired.x, y: offsetRequired.y}, useNativeDriver: false, duration:600}));
+    animations.push(Animated.timing(this.state.scale, { toValue: this.paddedBoundingBox.requiredScale, useNativeDriver: false, duration:600}));
+    animations.push(Animated.timing(this.state.pan,   { toValue: {x: offsetRequired.x, y: offsetRequired.y}, useNativeDriver: false, duration:600}));
     Animated.parallel(animations).start(() => {
       this._panOffset.x += offsetRequired.x;
       this._panOffset.y += offsetRequired.y;
       this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
       this.state.pan.setValue({ x: 0, y: 0 });
       this._currentPan = {x:0, y:0};
-      this._currentScale = this.boundingBoxData.requiredScale;
+      this._currentScale = this.paddedBoundingBox.requiredScale;
       this._recenteringInProgress = false;
     });
   }
@@ -582,7 +630,7 @@ export class ForceDirectedView extends Component<{
     }
 
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
-    this.physicsEngine.initEngine(center, screenWidth, this.frameHeight - 50, radius, onChange, onStable, usePhysics);
+    this.physicsEngine.initEngine(center, screenWidth, this.frameHeight, radius, onChange, onStable, usePhysics);
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
     if (usePhysics) {
@@ -837,36 +885,75 @@ export class ForceDirectedView extends Component<{
         nodes:this.nodes,
       });
     });
+
+    // this._getBoundingBox();
+
     return (
       <View
         ref={(v) => { this._viewRef = v; }}
         {...this._panResponder.panHandlers}
         style={{
-          flex:1, alignItems:'center',
-          justifyContent:'center',
-          // backgroundColor:colors.red.rgba(0.7)
+          marginTop: topBarHeight-statusBarHeight,
+          flex:1,
+          // backgroundColor:colors.green.rgba(1)
         }}
         testID={this.props.testID}
       >
-        <Animated.View
-          style={
-          [animatedStyle,
-            {
-              // backgroundColor: colors.green.rgba(10),
-              width:    this.viewWidth,
-              height:   this.viewHeight,
-              opacity:  this.state.opacity,
-            }
-          ]}>
+        <Animated.View style={[animatedStyle,{width: this.viewWidth, height: this.viewHeight}]}>
           { this.getEdges() }
           { this.getNodes() }
           { children }
+
+          {/*<DebugView subdivide width={this.paddedBoundingBox.width} height={this.paddedBoundingBox.height}top={this.paddedBoundingBox.minY} left={this.paddedBoundingBox.minX} color={colors.purple}>*/}
+          {/*  <DebugView size={6} top={this.paddedBoundingBox.boxCenter.y - this.paddedBoundingBox.minY} left={this.paddedBoundingBox.boxCenter.x - this.paddedBoundingBox.minX} color={colors.red} />*/}
+          {/*</DebugView>*/}
+
+          {/*<DebugView width={this.boundingBox.width} height={this.boundingBox.height} top={this.boundingBox.minY} left={this.boundingBox.minX} color={colors.purple} />*/}
+
         </Animated.View>
+
+        {/*<DebugView subdivide width={this.viewWidth} height={this.viewHeight - (this.props.topOffset ?? 0) - (this.props.bottomOffset ?? 0) } color={colors.csOrange} top={this.props.topOffset ?? 0} left={0} />*/}
+        {/*<DebugView size={12} top={this.viewCenter.y} left={this.viewCenter.x} color={colors.csBlueLighter} />*/}
+        {/*<DebugView width={screenWidth} height={this.props.topOffset}    top={0}    left={0} color={colors.csBlueLighter} />*/}
+        {/*<DebugView width={screenWidth} height={this.props.bottomOffset} bottom={0} left={0} color={colors.csBlueLighter} />*/}
+
+        {/*</Animated.View>*/}
       </View>
     );
   }
 }
 
+
+function DebugView(props: {color: color, bottom?:number, top?: number, left: number, width?:number, height?: number, size?:number, subdivide?:boolean, children?:any}) {
+  return (
+    <View
+      pointerEvents={'none'}
+      style={{
+        backgroundColor: props.color.rgba(props.size ? 1 : 0.3),
+        position:'absolute',
+        bottom: props.bottom !== undefined ? props.bottom - 0.5*(props.size??0) : props.bottom,
+        top: props.top !== undefined ? props.top - 0.5*(props.size??0) : props.top,
+        left: props.left - 0.5*(props.size??0),
+        width: props.size ?? props.width,
+        height: props.size ?? props.height
+    }}
+    >
+      {props.subdivide &&
+        <React.Fragment>
+          <View style={{flex:1, flexDirection:'row'}}>
+            <View style={{flex:1}} />
+            <View style={{flex:1, backgroundColor: props.color.rgba(0.25)}} />
+          </View>
+          <View style={{flex:1, flexDirection:'row'}}>
+            <View style={{flex:1, backgroundColor: props.color.rgba(0.25)}} />
+            <View style={{flex:1}} />
+          </View>
+          {props.children}
+        </React.Fragment>
+      }
+    </View>
+  );
+}
 
 function getDistance(touches) {
   let firstTouch = touches[0];

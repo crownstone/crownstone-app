@@ -68,6 +68,7 @@ Navigation.events().registerAppLaunchedListener(() => {
       titleDisplayMode: "alwaysShow",
       backgroundColor: "transparent",
       tabsAttachMode: "together",
+      drawBehind:true,
     },
     bottomTab: {
       textColor: colors.black.hex,
@@ -88,7 +89,6 @@ Navigation.events().registerAppLaunchedListener(() => {
     defaultOptions.topBar["leftButtonColor"]  = "#000";
     defaultOptions.topBar["rightButtonColor"] = "#000";
     defaultOptions.topBar["backButton"]       = { color: "#000", testID: "BackButton" };
-    defaultOptions.bottomTabs["drawBehind"]   = true;
   }
 
   Navigation.setDefaultOptions(defaultOptions);

@@ -10,7 +10,14 @@ import {
 
 
 import { RoomCircle }            from '../components/RoomCircle'
-import { availableScreenHeight, screenWidth, tabBarHeight } from "../styles";
+import {
+  availableScreenHeight,
+  screenWidth,
+  statusBarHeight,
+  tabBarHeight,
+  topBarHeight,
+  viewPaddingTop
+} from "../styles";
 import { UserLayer }             from './UserLayer';
 import { ForceDirectedView }     from "../components/interactiveView/ForceDirectedView";
 import { Util }                  from "../../util/Util";
@@ -76,11 +83,11 @@ export function RoomLayer(props) {
 
   let height = availableScreenHeight;
   let offset = 0;
-
   if (OnScreenNotifications.hasNotifications(props.sphereId)) {
     offset += 64;
   }
-  height -= offset;
+  let topOffset = offset;
+  let bottomOffset = 50 - 0.5*baseRadius; // from the statusCommunication
 
   if (props.sphereId === null) {
     return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
@@ -94,8 +101,8 @@ export function RoomLayer(props) {
       <ForceDirectedView
         ref={forceViewRef}
         viewId={props.viewId}
-        topOffset={0}
-        bottomOffset={tabBarHeight - insets.bottom}
+        topOffset={topOffset}
+        bottomOffset={bottomOffset}
         drawToken={props.sphereId}
         nodeIds={roomData.roomIdArray}
         initialPositions={roomData.initialPositions}
@@ -105,12 +112,8 @@ export function RoomLayer(props) {
         zoomOutCallback={props.zoomOutCallback}
         zoomInCallback={props.zoomInCallback}
         height={height}
-        heightOffset={offset}
         renderNode={(id, nodePosition) => { return renderRoomCircle(id, nodePosition); }}>
-        {
-          props.arrangingRooms === false ?
-            <UserLayer sphereId={props.sphereId} nodeRadius={baseRadius} /> : undefined
-        }
+        { props.arrangingRooms === false && <UserLayer sphereId={props.sphereId} nodeRadius={baseRadius} /> }
       </ForceDirectedView>
     );
   }

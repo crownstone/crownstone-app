@@ -39,7 +39,6 @@ import { SettingsDiagnostics }                from '../views/settingsViews/Setti
 import { SettingsFactoryResetStep1 }          from '../views/settingsViews/SettingsFactoryResetStep1'
 import { SettingsFactoryResetStep2 }          from '../views/settingsViews/SettingsFactoryResetStep2'
 import { SettingsFAQ }                        from "../views/settingsViews/SettingsFAQ";
-import { SettingsLocalizationDebug }          from '../views/settingsViews/dev/SettingsLocalizationDebug'
 import { SettingsLogging }                    from "../views/settingsViews/dev/SettingsLogging";
 import { SettingsOverview }                   from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }                    from '../views/settingsViews/SettingsProfile'
@@ -201,7 +200,6 @@ export const Views = {
   SettingsFAQ:                       SettingsFAQ,
   SettingsFactoryResetStep1:         SettingsFactoryResetStep1,
   SettingsFactoryResetStep2:         SettingsFactoryResetStep2,
-  SettingsLocalizationDebug:         SettingsLocalizationDebug,
   SettingsLogging:                   SettingsLogging,
   SettingsLogLevelConfig:            SettingsLogLevelConfig,
   SettingsLogOverview:               SettingsLogOverview,
