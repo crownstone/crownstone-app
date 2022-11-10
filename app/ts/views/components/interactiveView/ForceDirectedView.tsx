@@ -522,10 +522,9 @@ export class ForceDirectedView extends Component<{
     this._recenteringInProgress = true;
 
     // determine offset to center everything.
-
     let offsetRequired = {
-      x: (this.viewCenter.x - this.paddedBoundingBox.boxCenter.x) - this._panOffset.x,
-      y: (this.viewCenter.y - this.paddedBoundingBox.boxCenter.y) - this._panOffset.y
+      x: this.viewCenter.x - this.paddedBoundingBox.boxCenter.x - this._panOffset.x,
+      y: this.viewCenter.y - this.paddedBoundingBox.boxCenter.y - this._panOffset.y
     };
 
     // batch animations together.

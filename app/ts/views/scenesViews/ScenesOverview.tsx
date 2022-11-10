@@ -39,7 +39,7 @@ import { EditDone, EditIcon } from "../components/EditIcon";
 import {ContentNoSphere} from "../energyUsage/components/ContentNoSphere";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
-const className = "ScenesOverview";
+const CLASS_NAME = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
 export class ScenesOverview extends LiveComponent<any, any> {
@@ -73,7 +73,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     if (activeSphereId) {
       let activeSphere = Get.activeSphere();
       let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
-      this.sortedList = SortingManager.getList(activeSphereId, className, "Overview", sceneIds);
+      this.sortedList = SortingManager.getList(activeSphereId, CLASS_NAME, "Overview", sceneIds);
       data = this.sortedList.getDraggableList();
     }
     return data;
@@ -93,14 +93,21 @@ export class ScenesOverview extends LiveComponent<any, any> {
         let activeSphereId = state.app.activeSphere;
         let activeSphere = Get.activeSphere();
 
+        let redrawTriggered = false;
         if (activeSphere) {
           let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
           if (this.sortedList) {
             this.initializeSortedList(activeSphereId, state);
             this.sortedList.mustContain(sceneIds);
-            this.setState({ data: this.sortedList.getDraggableList() })
           }
+          else {
+            this.initializeSortedList(activeSphereId, state);
+          }
+          redrawTriggered = true;
+          this.setState({ data: this.sortedList.getDraggableList() });
+          return;
         }
+
         this.forceUpdate();
       }
     });
@@ -122,8 +129,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     this.localEventBus.emit("ChangeInEditMode", true);
     this.setState({ editMode: true  });
-    BackButtonHandler.override(className, () => {
-      BackButtonHandler.clearOverride(className);
+    BackButtonHandler.override(CLASS_NAME, () => {
+      BackButtonHandler.clearOverride(CLASS_NAME);
       this.localEventBus.emit("ChangeInEditMode", false);
       this.setState({ editMode: false  });
     })
@@ -131,7 +138,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
   endEditMode = () => {
     this.localEventBus.emit("ChangeInEditMode", false);
-    BackButtonHandler.clearOverride(className);
+    BackButtonHandler.clearOverride(CLASS_NAME);
     this.setState({ editMode: false });
   }
 
