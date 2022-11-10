@@ -221,25 +221,42 @@ function updateFingerprint(action : DatabaseAction, newState) {
 }
 
 
-function deleteFingerprint(action : { sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId } | DatabaseAction, oldState) {
+function deleteFingerprint(action : { type: "REMOVE_ALL_FINGERPRINTS_V2" | "REMOVE_FINGERPRINT_V2", sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId } | DatabaseAction, oldState) {
   let existingSphere = oldState.spheres[action.sphereId];
   if (!existingSphere) { return; }
-  let existingLocaiton = existingSphere.locations[action.sphereId];
-  if (!existingLocaiton) { return; }
-  let deletedFingerprint = existingLocaiton.fingerprints.raw[action.fingerprintId];
+  let existingLocation = existingSphere.locations[action.sphereId];
+  if (!existingLocation) { return; }
 
-  if (deletedFingerprint && deletedFingerprint.cloudId) {
+  const emit = (localFingerprintId, cloudFingerprintId) => {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_FINGERPRINTS',
-      eventId: 'remove'+ action.fingerprintId,
+      eventId: 'remove'+ localFingerprintId,
       data: {
-        localId: action.fingerprintId,
+        localId: localFingerprintId,
         locationId: action.locationId,
         sphereId: action.sphereId,
-        cloudId: deletedFingerprint.cloudId,
+        cloudId: cloudFingerprintId,
       }
     });
   }
+
+  if (action.type === "REMOVE_ALL_FINGERPRINTS_V2") {
+    let fingerprints = existingLocation.fingerprints;
+    let fingerprintCloudIds = [];
+    fingerprints.forEach((fingerprint) => {
+      if (fingerprint.cloudId) {
+        emit(fingerprint.id, fingerprint.cloudId);
+      }
+    });
+  }
+  else {
+    let deletedFingerprint = existingLocation.fingerprints.raw[action.fingerprintId];
+
+    if (deletedFingerprint && deletedFingerprint.cloudId) {
+      emit(action.fingerprintId, deletedFingerprint.cloudId);
+    }
+  }
+
 }
 
 
