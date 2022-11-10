@@ -221,13 +221,16 @@ function updateFingerprint(action : DatabaseAction, newState) {
 }
 
 
-function deleteFingerprint(action : { type: "REMOVE_ALL_FINGERPRINTS_V2" | "REMOVE_FINGERPRINT_V2", sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId } | DatabaseAction, oldState) {
+function deleteFingerprint(action : { type: "REMOVE_ALL_FINGERPRINTS_V2" | "REMOVE_FINGERPRINT_V2", sphereId: sphereId, locationId: locationId, fingerprintId?: fingerprintId } | DatabaseAction, oldState) {
   let existingSphere = oldState.spheres[action.sphereId];
-  if (!existingSphere) { return; }
-  let existingLocation = existingSphere.locations[action.sphereId];
-  if (!existingLocation) { return; }
+  if (!existingSphere) {
+    return; }
+  let existingLocation = existingSphere.locations[action.locationId];
+  if (!existingLocation) {
+    return;
+  }
 
-  const emit = (localFingerprintId, cloudFingerprintId) => {
+  const fireRemovalEvent = (localFingerprintId, cloudFingerprintId) => {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_FINGERPRINTS',
       eventId: 'remove'+ localFingerprintId,
@@ -241,19 +244,19 @@ function deleteFingerprint(action : { type: "REMOVE_ALL_FINGERPRINTS_V2" | "REMO
   }
 
   if (action.type === "REMOVE_ALL_FINGERPRINTS_V2") {
-    let fingerprints = existingLocation.fingerprints;
+    let fingerprints = existingLocation.fingerprints.raw;
     let fingerprintCloudIds = [];
-    fingerprints.forEach((fingerprint) => {
-      if (fingerprint.cloudId) {
-        emit(fingerprint.id, fingerprint.cloudId);
+    for (let fingerprintId in fingerprints) {
+      if (fingerprints[fingerprintId].cloudId) {
+        fireRemovalEvent(fingerprints[fingerprintId].id, fingerprints[fingerprintId].cloudId);
       }
-    });
+    }
   }
   else {
     let deletedFingerprint = existingLocation.fingerprints.raw[action.fingerprintId];
 
     if (deletedFingerprint && deletedFingerprint.cloudId) {
-      emit(action.fingerprintId, deletedFingerprint.cloudId);
+      fireRemovalEvent(action.fingerprintId, deletedFingerprint.cloudId);
     }
   }
 
