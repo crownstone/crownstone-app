@@ -101,7 +101,8 @@ type EVENT_ACTION_TYPES = 'CLOUD_EVENT_REMOVE_LOCATIONS'    |
                       'CLOUD_EVENT_SPECIAL_INSTALLATIONS'   |                                      
                       'CLOUD_EVENT_SPECIAL_DEVICES'         |                                
                       'CLOUD_EVENT_SPECIAL_MESSAGES'        |                                  
-                      'FINISHED_CREATE_LOCATIONS'           |                              
+                      'CLOUD_EVENT_REMOVE_FINGERPRINTS'     |
+                      'FINISHED_CREATE_LOCATIONS'           |
                       'FINISHED_CREATE_STONES'              |                            
                       'FINISHED_CREATE_INSTALLATIONS'       |                                  
                       'FINISHED_CREATE_DEVICES'             |                            

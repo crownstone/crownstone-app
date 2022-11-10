@@ -201,7 +201,7 @@ export class LocalizationCoreClass {
 
 
   /**
-   * A call to this funciton will trigger a changeFingerprint database event upon removal of data from a fingerprint,
+   * A call to this function will trigger a changeFingerprint database event upon removal of data from a fingerprint,
    *  which will trigger a changeProcessedFingerprint database event in the FingerprintManager.
    * This event will then reinitialize the classifier.
    * @param sphereId

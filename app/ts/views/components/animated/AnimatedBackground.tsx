@@ -64,7 +64,6 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 
   render() {
     let [backgroundHeight, hasTopBar, hasTabBar] = getHeight(this.props);
-    console.log("Drawing animated background", hasTopBar, hasTabBar, backgroundHeight);
     let Wrapper = this.props.viewWrapper ? View : SafeAreaProvider;
 
     if (this.props.lightStatusbar) {
@@ -76,13 +75,13 @@ export class AnimatedBackground extends Component<AnimatedBackgroundProps, any> 
 
     return (
       <Wrapper style={{flex:1, backgroundColor: colors.white.hex}} onLayout={(event) => {
-        // do not update when the keyboard is up.
-        if (KEYBOARD_STATE.visible === true) { return; }
-
-        let {x, y, width, height} = event.nativeEvent.layout;
-        updateScreenHeight(height, hasTopBar, hasTabBar);
+        // // do not update when the keyboard is up.
+        // if (KEYBOARD_STATE.visible === true) { return; }
+        //
+        // let {x, y, width, height} = event.nativeEvent.layout;
+        // updateScreenHeight(height, hasTopBar, hasTabBar);
       }} testID={this.props.testID}>
-        <View style={{...styles.fullscreen}}>
+        <View style={styles.fullscreen}>
           <BackgroundImage height={backgroundHeight} image={this.staticImage} />
         </View>
         <Animated.View style={{...styles.fullscreen, opacity:this.state.fade}}>

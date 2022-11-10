@@ -32,7 +32,11 @@ export class SideBarView extends Component<any, any> {
       Animated.timing(this.state.margins,      {toValue: 15, useNativeDriver: false, duration: DURATION}),
     ]
     this.setState({open: true});
-    Animated.parallel(animations).start();
+    Animated.parallel(animations).start(() => {
+      this.state.leftOffset.setValue(0.75*screenWidth);
+      this.state.borderRadius.setValue(30);
+      this.state.margins.setValue(15);
+    });
     SIDEBAR_STATE.open = true;
     core.eventBus.emit("sidebarOpen");
   }
@@ -46,7 +50,11 @@ export class SideBarView extends Component<any, any> {
       ]
       this.setState({open: false});
       SIDEBAR_STATE.open = false;
-      Animated.parallel(animations).start();
+      Animated.parallel(animations).start(() => {
+        this.state.leftOffset.setValue(0);
+        this.state.borderRadius.setValue(0);
+        this.state.margins.setValue(0);
+      });
       core.eventBus.emit("sidebarClose");
     }
   }

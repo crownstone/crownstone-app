@@ -26,7 +26,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 export class SettingsOverview extends LiveComponent<any, any> {
-
+  static options(props) {
+    return { visible: false };
+  }
   unsubscribe : any;
 
   constructor(props) {

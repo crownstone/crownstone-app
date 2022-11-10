@@ -71,7 +71,10 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
             backgroundColor={colors.blue.hex}
             icon={'ios-play'}
             label={ "Train in-pocket set"}
-            callback={() => { NavigationUtil.navigate('RoomTraining_inPocket_intro', {sphereId: props.sphereId, locationId: props.locationId}); }}
+            callback={() => {
+              NavigationUtil.dismissModal();
+              setTimeout(() => {NavigationUtil.launchModal('RoomTraining_inPocket_intro', {sphereId: props.sphereId, locationId: props.locationId});}, 50)
+            }}
           /> }
           { finalizationButton }
         </View>

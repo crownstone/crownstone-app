@@ -119,7 +119,7 @@ export class ForceDirectedView extends Component<{
     this.state = {
       iconOpacity: new Animated.Value(0),
       scale: new Animated.Value(initialScale),
-      opacity: new Animated.Value(1),
+      opacity: new Animated.Value(0),
       pan: new Animated.ValueXY(),
       locations: {}
     };
@@ -614,7 +614,6 @@ export class ForceDirectedView extends Component<{
 
   getNodes() {
     let nodes = [];
-
     // gather the nodes to render.
     let rendered = {};
     for (let i = 0; i < this.props.nodeIds.length; i++) {

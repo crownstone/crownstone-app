@@ -1,5 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
-import {screenWidth} from "../styles";
+import { screenWidth, styles } from "../styles";
 import { Image } from 'react-native'
 
 export class BackgroundImage extends Component<{height?: number, image: any}, any> {
