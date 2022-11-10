@@ -99,7 +99,6 @@ export class ForceDirectedView extends Component<{
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
-  frameHeight : number = availableScreenHeight;
 
 
   viewCenter        : { x: number, y: number } = {x: screenWidth/2, y: availableScreenHeight/2};
@@ -128,12 +127,6 @@ export class ForceDirectedView extends Component<{
     this.physicsEngine = new PhysicsEngine();
     this._drawToken = props.drawToken;
 
-    this.frameHeight = this.props.height || availableScreenHeight;
-    if (Platform.OS === 'android') {
-      this.viewWidth =  8 * screenWidth;
-      this.viewHeight = 8 * this.frameHeight;
-    }
-
     this.init();
   }
 
@@ -142,11 +135,6 @@ export class ForceDirectedView extends Component<{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // update the offset if it was changed
-    if(nextProps.height !== this.frameHeight) {
-      this.frameHeight = nextProps.height || availableScreenHeight;
-    }
-
     if (nextProps.drawToken !== this._drawToken) {
       this._drawToken = nextProps.drawToken;
       this._panOffset.x = 0;
@@ -235,8 +223,8 @@ export class ForceDirectedView extends Component<{
         this._totalMovedY = 0;
 
         this._validTap = true;
-        this._clearRecenterAction()
-        return false
+        this._clearRecenterAction();
+        return false;
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -451,22 +439,6 @@ export class ForceDirectedView extends Component<{
     // correct bounding box
     maxX += 2*this.props.nodeRadius;
     maxY += 2*this.props.nodeRadius;
-    //
-    // // add padding
-    // minX -= 0.3*this.props.nodeRadius;
-    //
-    // // draw it as nice as possible
-    // minY -= 0.3*this.props.nodeRadius;
-    // if (this.props.topOffset) {
-    //   minY -= this.props.topOffset;
-    // }
-    //
-    // maxX += 0.3*this.props.nodeRadius;
-    // maxY += 0.7*this.props.nodeRadius;
-    //
-    // if (this.props.bottomOffset) {
-    //   maxY += this.props.bottomOffset;
-    // }
 
     this.boundingBox.minX = minX;
     this.boundingBox.maxX = maxX;
@@ -486,11 +458,11 @@ export class ForceDirectedView extends Component<{
 
     
     // get drawable area.
-    // the drawable area is the frameHeight & screenWidth minus the top and bottom offset.
+    // the drawable area is the viewHeight & screenWidth minus the top and bottom offset.
     // this is used to calculate the maximum scale.
     let drawableArea = {
       width: screenWidth,
-      height: this.frameHeight-(this.props.topOffset||0)-(this.props.bottomOffset||0)
+      height: this.viewHeight-(this.props.topOffset||0)-(this.props.bottomOffset||0)
     }
 
     // set scale
@@ -511,7 +483,6 @@ export class ForceDirectedView extends Component<{
       x: 0.5*this.viewWidth,
       y: (this.props.topOffset || 0) + 0.5*(this.viewHeight - (this.props.topOffset || 0) - (this.props.bottomOffset||0)),
     }
-
   }
 
   _recenter(fadeIn = false) {
@@ -629,7 +600,7 @@ export class ForceDirectedView extends Component<{
     }
 
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
-    this.physicsEngine.initEngine(center, screenWidth, this.frameHeight, radius, onChange, onStable, usePhysics);
+    this.physicsEngine.initEngine(center, screenWidth, this.viewHeight, radius, onChange, onStable, usePhysics);
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
     if (usePhysics) {
@@ -916,7 +887,6 @@ export class ForceDirectedView extends Component<{
         {/*<DebugView width={screenWidth} height={this.props.topOffset}    top={0}    left={0} color={colors.csBlueLighter} />*/}
         {/*<DebugView width={screenWidth} height={this.props.bottomOffset} bottom={0} left={0} color={colors.csBlueLighter} />*/}
 
-        {/*</Animated.View>*/}
       </View>
     );
   }
