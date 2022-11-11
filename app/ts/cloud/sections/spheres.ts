@@ -247,10 +247,10 @@ export const spheres = {
     );
   },
 
-  getEnergyUsage: function (start: timeISOString, end: timeISOString, range: EnergyUsageRange, background = true) : Promise<EnergyReturnData[]> {
+  getEnergyUsage: function (date: timeISOString, range: EnergyUsageRange, background = true) : Promise<EnergyReturnData[]> {
     return cloudApiBase._setupRequest(
       'GET',
-      CloudAddresses.cloud_v2 + `spheres/{id}/energyUsage?start=${start}&end=${end}&range=${range}`,
+      CloudAddresses.cloud_v2 + `spheres/{id}/energyUsage?date=${date}&range=${range}`,
       {background: background},
       'body'
     );

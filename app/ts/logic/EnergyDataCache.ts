@@ -33,8 +33,8 @@ export class EnergyDataCache {
   }
 
   async getData(date: Date | timestamp | timeISOString, mode: GRAPH_TYPE) : Promise<any> {
-    date = new Date(date);
-    let range = getEnergyRange(date, mode);
+    let compelledDate = new Date(date);
+    let range = getEnergyRange(compelledDate, mode);
 
     let container = this.dayData;
     switch (mode) {
@@ -51,7 +51,7 @@ export class EnergyDataCache {
 
     let getData = async () => {
       try {
-        let result = await CLOUD.forSphere(this.sphereId).getEnergyUsage(range.start.toISOString(), range.end.toISOString(), mode.toLowerCase());
+        let result = await CLOUD.forSphere(this.sphereId).getEnergyUsage(compelledDate.toISOString(), mode.toLowerCase());
         container[startDate] = {updateTime: Date.now(), data: result};
       }
       catch (err) {
