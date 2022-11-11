@@ -1,6 +1,6 @@
 import {Languages} from "../../Languages"
 import * as React from 'react';
-import { ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Platform, ScrollView, Text, TouchableOpacity, View} from "react-native";
 
 import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
 
@@ -386,6 +386,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
             renderItem={({ item, index, drag, isActive }) => { return this.renderDraggableItem( item, index, drag, isActive ); }}
             keyExtractor={(item : any, index) => `${item.id}_item`}
             onDragEnd={({ data } : { data: RoomItem[] }) => {
+              if (!this.state.dragging) { return; }
+
               let dataToUse = [];
 
               let ids = this.getIdsInRoom();
@@ -401,6 +403,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
                   dataToUse.push(cloudId);
                 }
               }
+
 
               this.sortedList.update(dataToUse as string[]);
               this.setState({ dragging:false });
@@ -439,7 +442,9 @@ function DimmerSwitch({dimMode, setDimMode}) {
       <Blur
         blurType={'light'}
         blurAmount={4}
-        style={{...styles.centered, width: size, height: size, borderRadius: 15, backgroundColor: dimMode ? colors.green.rgba(0.4) : colors.blue.rgba(0.2)}}
+        style={{...styles.centered, width: size, height: size, borderRadius: 15, backgroundColor: dimMode ?
+            colors.green.rgba(Platform.OS === 'android' ? 0.8 : 0.5) :
+            colors.blue.rgba( Platform.OS === 'android' ? 0.6 : 0.3)}}
       >
         <SlideFadeInView style={styles.centered} visible={dimMode} height={size}>
           <Icon name={'md-switch'} size={50} color={colors.white.hex} />

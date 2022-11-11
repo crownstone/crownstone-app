@@ -206,6 +206,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
                 renderItem={({ item, index, drag, isActive }) => { return this.renderDraggableItem( item, index, drag, isActive ); }}
                 keyExtractor={(item : any, index) => `draggable-item-${item}`}
                 onDragEnd={({ data }) => {
+                  if (!this.state.dragging) { return; }
+
                   let dataToUse = [];
                   for (let i = 0; i < data.length; i++) {
                     if (scenes[data[i]] !== undefined) {
