@@ -83,7 +83,6 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
       timeout2 = setTimeout(() => { showElement1(); }, 2 * step);
     }
 
-
     const interval = setInterval(() => { executeAnimation(); }, props.quick ? 4*step : 2000);
 
     executeAnimation();

@@ -9,7 +9,7 @@ import * as React from 'react'; import {Component, useState} from 'react';
 import {
   TouchableOpacity,
   Text,
-  View, Animated
+  View, Animated, Platform
 } from "react-native";
 
 import {colors, screenHeight, screenWidth, styles} from "../styles";
@@ -43,7 +43,7 @@ export class DimLevelOverlay extends LiveComponent<{data: any, componentId: any}
     return (
       <OverlaySaveButton
         label={ lang("Save")}
-        backgroundColor={colors.green.rgba(0.6)}
+        backgroundColor={colors.green.rgba(Platform.OS === 'android' ? 1 : 0.6)}
         callback={() => {
           this.callback(this.dimmingValue);
           this.close();

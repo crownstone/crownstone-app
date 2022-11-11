@@ -25,7 +25,6 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { SmartBehaviour } from "./supportComponents/SmartBehaviour";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
-import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
@@ -213,8 +212,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     return (
       <SettingsBackground>
         {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
-        <SettingsScrollbar contentContainerStyle={{flexGrow:1, alignItems:'center', paddingTop:30}}>
-          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
+        <SettingsScrollbar style={{alignItems:'center'}}>
+          <Text style={{...deviceStyles.header, width: 0.7*screenWidth, paddingTop:30, alignSelf:'center'}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
           <View style={{height: 0.2*iconSize}} />
           <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
             <WeekDayList
@@ -245,17 +244,18 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           {behaviourComponents}
           <View style={{flex:2}} />
 
-          <SlideFadeInView visible={this.state.editMode} height={80}>
+          <SlideFadeInView visible={this.state.editMode} style={{alignItems:'center'}} height={80}>
             <Button
+              style={{backgroundColor:"green"}}
               backgroundColor={colors.blue.rgba(0.5)}
               label={ lang("Add_more___")}
               callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
             />
           </SlideFadeInView>
-          <SlideFadeInView visible={this.state.editMode} height={80}>
+          <SlideFadeInView visible={this.state.editMode} style={{alignItems:'center'}} height={80}>
             <BehaviourCopyFromButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} behavioursAvailable={behaviourIds.length > 0}/>
           </SlideFadeInView>
-          <SlideFadeInView visible={this.state.editMode} height={80}>
+          <SlideFadeInView visible={this.state.editMode} style={{alignItems:'center'}} height={80}>
             <Button
               backgroundColor={ colors.blue.rgba(0.5) }
               label={ lang("Copy_to___") }
@@ -279,7 +279,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             />
           </SlideFadeInView>
 
-          <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
+          <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} style={{alignItems:'center'}} height={80}>
             <BehaviourSyncButton sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
           </SlideFadeInView>
 
