@@ -10,7 +10,7 @@ export function HighlightableElement(props: {elements: JSX.Element[], width: num
   const scale         = useRef(new Animated.Value(1));
   const rotation      = useRef(new Animated.Value(0));
 
-  let useNativeDriver = false;
+  let useNativeDriver = true;
 
   useEffect(() => {
     // set everything back to default

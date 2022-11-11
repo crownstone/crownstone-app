@@ -18,7 +18,7 @@ export const topBarStyle = StyleSheet.create({
   },
   topBarCenterView: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: Platform.OS === 'android' ? 'flex-start' : "center",
     justifyContent: 'center',
   },
   topBarLeft: {

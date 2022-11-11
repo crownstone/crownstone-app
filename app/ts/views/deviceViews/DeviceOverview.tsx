@@ -233,6 +233,7 @@ export class  DeviceOverview extends LiveComponent<any, any> {
           [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
             text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: async () => {
               await StoneUtil.remove.crownstone.now(this.props.sphereId, this.props.stoneId).catch((err) => {});
+              NavigationUtil.back();
             }}]
         )
       }

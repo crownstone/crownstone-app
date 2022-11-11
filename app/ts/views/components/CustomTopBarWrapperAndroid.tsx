@@ -7,7 +7,7 @@ import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 
 export function TopBarLeftAndroid(props) {
   let barHeight = topBarHeight - statusBarHeight;
-  if (props.notBack === true && props.left) {
+  if (props.notBack !== true && props.left) {
     // draw custom element
     let left = props.left;
     if (typeof props.left === 'function') {

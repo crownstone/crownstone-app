@@ -236,7 +236,8 @@ export class ForceDirectedView extends Component<{
         if (
           (Math.abs(gestureState.dx) < 50        && Math.abs(gestureState.dy) < 50) &&               // We do not want to send too many events, only in the beginning of the move
           (Math.abs(gestureState.dx) > threshold || Math.abs(gestureState.dy) > threshold) && // threshold is needed for android, onPanResponderMove is more sensitive on Android
-          this._multiTouchUsed === false) {
+          this._multiTouchUsed === false
+        ) {
           // console.log("EMITTING EVENT")
           core.eventBus.emit('userDragEvent' + this.props.viewId);
         }

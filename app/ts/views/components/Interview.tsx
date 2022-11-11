@@ -322,11 +322,10 @@ function InterviewCard(props : {
 
   return (
     <View testID={card.testID} style={{flex:1}}>
-      {/*<View testID={props.card.scrollViewtestID} style={{flex:1, backgroundColor:'red', paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom}}>*/}
       <ScrollView
         contentInsetAdjustmentBehavior={"never"}
         testID={props.card.scrollViewtestID}
-        contentContainerStyle={{flexGrow:1, paddingTop: insets.top + topBarOffsets.height, paddingBottom: insets.bottom }}
+        contentContainerStyle={{flexGrow:1, paddingTop: insets.top + topBarOffsets.height + props.paddingTop, paddingBottom: insets.bottom }}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         disableScrollViewPanResponder={true}

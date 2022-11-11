@@ -7,13 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  Platform,
   TouchableOpacity,
   View
 } from "react-native";
 import { core } from "../../Core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
-import { colors, screenHeight, screenWidth, styles } from "../styles";
+import {colors, screenHeight, screenWidth, statusBarHeight, styles, topBarHeight, viewPaddingTop} from "../styles";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
@@ -27,7 +28,7 @@ import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 import { Scheduler } from "../../logic/Scheduler";
 import { connectTo } from "../../logic/constellation/Tellers";
 import { CommandAPI } from "../../logic/constellation/Commander";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {CustomTopBarWrapper} from "../components/CustomTopBarWrapper";
 
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
@@ -37,10 +38,11 @@ export class SetupCrownstone extends LiveComponent<{
   componentId: any,
   unownedVerified: boolean
 }, any> {
+
   static options(props) {
-    let title = props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
-    return TopBarUtil.getOptions({title: title});
+    return {topBar:{visible: false}}
   }
+
 
   _interview: any;
   randomIcon: string;
@@ -60,6 +62,8 @@ export class SetupCrownstone extends LiveComponent<{
       setupFinished:  false,
       newStoneId:     null,
     };
+
+    this.state = {allowBack: true};
   }
 
   componentDidMount() {
@@ -84,8 +88,7 @@ export class SetupCrownstone extends LiveComponent<{
 
 
   _disableBackButton() {
-    let title = this.props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
-    TopBarUtil.updateOptions(this.props.componentId, {title: title, disableBack: true})
+    this.setState({allowBack: false});
   }
 
 
@@ -560,16 +563,23 @@ export class SetupCrownstone extends LiveComponent<{
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
     }
-
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} testID={'SetupCrownstone'}>
         <KeepAwake />
-        <Interview
-          backButtonOverrideViewNameOrId={this.props.componentId}
-          ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
-          update={   () => { this.forceUpdate() }}
-        />
+        <CustomTopBarWrapper
+          left={Platform.OS === 'android' ? null : lang("Back")}
+          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.back();} }}
+          notBack={this.state.allowBack}
+          title={this.props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")}
+          style={{backgroundColor:'transparent', paddingTop:0}}
+        >
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }
