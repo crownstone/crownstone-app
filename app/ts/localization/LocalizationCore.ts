@@ -4,6 +4,7 @@ import {Scheduler} from "../logic/Scheduler";
 import {KNN} from "./classifiers/knn";
 import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
 import { FingerprintManager } from "./fingerprints/FingerprintManager";
+import { Get } from "../util/GetUtil";
 
 
 export class LocalizationCoreClass {
@@ -159,10 +160,12 @@ export class LocalizationCoreClass {
 
 
   handleIBeaconAdvertisement(data: ibeaconPackage[]) {
-    // TODO: decide whether this is better than unsubscribing and resubscribing the nativeBus.
     if (this.classifierInitialized === false) { return; }
     if (this.localizationEnabled   === false) { return; }
     if (this.localizationPaused    === true)  { return; }
+
+    if (data.length === 0) { return;}
+    if (!canUseIndoorLocalizationInSphere(data[0].referenceId)) { return; }
 
     let classificationResults = this.classifier.classify(data);
 
@@ -189,9 +192,10 @@ export class LocalizationCoreClass {
 
 
   enableLocalization() {
-    if (this.classifierInitialized === false) {
-      this.initClassifier();
-    }
+    let state = core.store.getState();
+    if (state.app.indoorLocalizationEnabled === false) { return; }
+
+    if (this.classifierInitialized === false) { this.initClassifier(); }
     this.localizationEnabled = true;
   }
 
