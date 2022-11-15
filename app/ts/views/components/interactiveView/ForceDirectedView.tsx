@@ -470,7 +470,6 @@ export class ForceDirectedView extends Component<{
     this.paddedBoundingBox.requiredScale = Math.min(this._maxScale, Math.max(this._minScale,
       Math.min(drawableArea.width / this.paddedBoundingBox.width, drawableArea.height / this.paddedBoundingBox.height)
     ));
-    this.paddedBoundingBox.requiredScale
     this.paddedBoundingBox.effectiveWidth  = this.paddedBoundingBox.width * this.paddedBoundingBox.requiredScale;
     this.paddedBoundingBox.effectiveHeight = this.paddedBoundingBox.height * this.paddedBoundingBox.requiredScale;
 
@@ -495,8 +494,8 @@ export class ForceDirectedView extends Component<{
 
     // determine offset to center everything.
     let offsetRequired = {
-      x: this.viewCenter.x - this.paddedBoundingBox.boxCenter.x - this._panOffset.x,
-      y: this.viewCenter.y - this.paddedBoundingBox.boxCenter.y - this._panOffset.y
+      x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth ) + this._currentPan.x),
+      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight) + this._currentPan.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0))
     };
 
     // batch animations together.
@@ -849,6 +848,7 @@ export class ForceDirectedView extends Component<{
 
     // We inject the width, height and this.nodes in to the children
     let children = React.Children.map(this.props.children, (child : any) => {
+      if (!child) { return null; }
       return React.cloneElement(child, {
         width:this.viewWidth,
         height:this.viewHeight,
@@ -856,7 +856,13 @@ export class ForceDirectedView extends Component<{
       });
     });
 
+
+    // uncomment this for debug views
+    // the two pan-based debug views require redraws added to the move handler.
     // this._getBoundingBox();
+    //
+    // let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._currentPan.x;
+    // let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._currentPan.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
 
     return (
       <View
@@ -869,21 +875,40 @@ export class ForceDirectedView extends Component<{
         }}
         testID={this.props.testID}
       >
-        <Animated.View style={[animatedStyle,{width: this.viewWidth, height: this.viewHeight}]}>
+        <Animated.View style={[
+          animatedStyle,{
+            width: this.viewWidth,
+            height: this.viewHeight,
+            // backgroundColor:colors.red.rgba(0.5)
+        }]}>
           { this.getEdges() }
           { this.getNodes() }
           { children }
 
-          {/*<DebugView subdivide width={this.paddedBoundingBox.width} height={this.paddedBoundingBox.height}top={this.paddedBoundingBox.minY} left={this.paddedBoundingBox.minX} color={colors.purple}>*/}
-          {/*  <DebugView size={6} top={this.paddedBoundingBox.boxCenter.y - this.paddedBoundingBox.minY} left={this.paddedBoundingBox.boxCenter.x - this.paddedBoundingBox.minX} color={colors.red} />*/}
+          {/*<DebugView width={this.paddedBoundingBox.width} height={this.paddedBoundingBox.height}top={this.paddedBoundingBox.minY} left={this.paddedBoundingBox.minX} color={colors.purple}>*/}
+          {/*  <DebugView size={20} top={this.paddedBoundingBox.boxCenter.y - this.paddedBoundingBox.minY} left={this.paddedBoundingBox.boxCenter.x - this.paddedBoundingBox.minX} color={colors.white} />*/}
           {/*</DebugView>*/}
-
           {/*<DebugView width={this.boundingBox.width} height={this.boundingBox.height} top={this.boundingBox.minY} left={this.boundingBox.minX} color={colors.purple} />*/}
 
         </Animated.View>
 
         {/*<DebugView subdivide width={this.viewWidth} height={this.viewHeight - (this.props.topOffset ?? 0) - (this.props.bottomOffset ?? 0) } color={colors.csOrange} top={this.props.topOffset ?? 0} left={0} />*/}
-        {/*<DebugView size={12} top={this.viewCenter.y} left={this.viewCenter.x} color={colors.csBlueLighter} />*/}
+        {/*<DebugView size={8} top={this.viewCenter.y} left={this.viewCenter.x} color={colors.csBlueLighter} />*/}
+        {/*<DebugView*/}
+        {/*  width={Math.abs(this._currentPan.x)}*/}
+        {/*  height={Math.abs(this._currentPan.y)}*/}
+        {/*  top={this._currentPan.y < 0 ? this.viewCenter.y + this._currentPan.y : this.viewCenter.y}*/}
+        {/*  left={this._currentPan.x < 0 ? this.viewCenter.x + this._currentPan.x : this.viewCenter.x}*/}
+        {/*  color={colors.csBlue}*/}
+        {/*/>*/}
+        {/**/}
+        {/*<DebugView*/}
+        {/*  height={Math.abs(dyBoundingBoxCenter)}*/}
+        {/*  width={Math.abs(dxBoundingBoxCenter)}*/}
+        {/*  top={dyBoundingBoxCenter < 0 ? this.viewCenter.y + dyBoundingBoxCenter : this.viewCenter.y}*/}
+        {/*  left={dxBoundingBoxCenter < 0 ? this.viewCenter.x + dxBoundingBoxCenter : this.viewCenter.x}*/}
+        {/*  color={colors.white}*/}
+        {/*/>*/}
         {/*<DebugView width={screenWidth} height={this.props.topOffset}    top={0}    left={0} color={colors.csBlueLighter} />*/}
         {/*<DebugView width={screenWidth} height={this.props.bottomOffset} bottom={0} left={0} color={colors.csBlueLighter} />*/}
 
@@ -907,7 +932,7 @@ function DebugView(props: {color: color, bottom?:number, top?: number, left: num
         height: props.size ?? props.height
     }}
     >
-      {props.subdivide &&
+      {props.subdivide ?
         <React.Fragment>
           <View style={{flex:1, flexDirection:'row'}}>
             <View style={{flex:1}} />
@@ -918,7 +943,7 @@ function DebugView(props: {color: color, bottom?:number, top?: number, left: num
             <View style={{flex:1}} />
           </View>
           {props.children}
-        </React.Fragment>
+        </React.Fragment> : props.children
       }
     </View>
   );
