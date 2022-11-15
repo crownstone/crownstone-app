@@ -37,12 +37,10 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
           setLoading(true);
         }
         let data = await container.getData(startDate[props.mode], props.mode)
-        console.log("Set PreProcessedData")
         if (!data) { console.log("No data!"); }
         else       {
           setPreProcessedData(processStoneBuckets(props.sphereId, getEnergyRange(startDate[props.mode], props.mode), data, props.mode));
         }
-        console.log("Set Loading")
         setLoading(false);
       }
       catch (err : any) {
@@ -52,9 +50,7 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
 
     let interval = setInterval(() => { getData(); }, 5*60e3 + 5000);
 
-    console.log("clear setPreProcessedData")
     setPreProcessedData(null);
-    console.log("clear setProcessedData")
     setProcessedData(null);
 
     getData();

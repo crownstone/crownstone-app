@@ -38,8 +38,8 @@ export function processStoneBuckets(sphereId: sphereId, range: {start: Date, end
       stoneBuckets = fillBuckets(stones, startTime, bucketCount, EnergyIntervalCalculation.days.getNthSamplePoint);
       break;
     case 'MONTH':
-      // amount of days between start and end of the range
-      let days     = Math.ceil((range.end.valueOf() - range.start.valueOf()) / (1000*60*60*24));
+      // amount of days between start and end of the range. We round it since there may be daylight saving times in between.
+      let days     = Math.round((range.end.valueOf() - range.start.valueOf()) / (1000*60*60*24));
       bucketCount  = days;
       stoneBuckets = fillBuckets(stones, startTime, bucketCount, EnergyIntervalCalculation.days.getNthSamplePoint);
       break;
@@ -48,7 +48,6 @@ export function processStoneBuckets(sphereId: sphereId, range: {start: Date, end
       stoneBuckets = fillBuckets(stones, startTime, bucketCount, EnergyIntervalCalculation.months.getNthSamplePoint);
       break;
   }
-
   return {buckets: stoneBuckets, bucketCount: bucketCount};
 }
 
@@ -110,42 +109,72 @@ export function filterBucketsForLocation(sphereId: sphereId, locationId: locatio
   }
 }
 
+/**
+ *
+ * @param sortedStoneData // this is the data sorted by stoneId and timestamp. It is a map with stoneIds as key, and an array of {energy: number, timestamp: number} as value.
+ * @param start           // initial bucket start time
+ * @param bucketCount
+ * @param nthCallback
+ */
 function fillBuckets(sortedStoneData, start: timestamp, bucketCount: number, nthCallback: (timestamp: timestamp, index: number) => timestamp) : Record<stoneId, number[]> {
   let stoneBuckets = {};
+
   for (let stoneId in sortedStoneData) {
     stoneBuckets[stoneId] = [];
-    let startIndex = 0;
     let bucketStart = start;
 
-
-    for (let i = 0; i < bucketCount; i++) {
+    // loop over all buckets to store a datapoint per stoneId per bucket
+    for (let bucketIndex = 0; bucketIndex < bucketCount; bucketIndex++) {
       stoneBuckets[stoneId].push(0)
-      let bucketEnd = nthCallback(start, i+1);
+      let bucketEnd = nthCallback(start, bucketIndex+1);
       let firstValue = null;
       let lastValue  = 0;
-      for (let j = startIndex; j < sortedStoneData[stoneId].length; j++) {
-        let datapointT = sortedStoneData[stoneId][j].timestamp;
-        if (datapointT >= bucketStart && datapointT <= bucketEnd) {
+      let lastValueBucket = null;
 
-          if (firstValue === null) {
-            firstValue = sortedStoneData[stoneId][j].energy;
-          }
-          lastValue = sortedStoneData[stoneId][j].energy;
+      let lastValueStored = false;
+
+      function storeValue(storeBucketIndex) {
+        let energyUsed = (lastValue - (firstValue ?? 0)) / WattHour;
+        if (energyUsed < 0) {
+          energyUsed = lastValue / WattHour;
         }
-        if (datapointT > bucketEnd) {
-          // startIndex = j;
-          let energyUsed = (lastValue - (firstValue ?? 0)) / WattHour;
-          if (energyUsed < 0) {
-            energyUsed = lastValue / WattHour;
+        if (energyUsed < 0.5) { energyUsed = 0; }
+
+        stoneBuckets[stoneId][storeBucketIndex] = energyUsed;
+      }
+
+      // loop over the available data.
+      for (let j = 0; j < sortedStoneData[stoneId].length; j++) {
+        let datapointT = sortedStoneData[stoneId][j].timestamp;
+
+        // the datapoint falls within the bucket
+        if (datapointT >= bucketStart && datapointT <= bucketEnd) {
+          if (firstValue === null) {
+            firstValue = sortedStoneData[stoneId][j].energy ?? 0;
           }
-          if (energyUsed < 0.5) { energyUsed = 0; }
-          stoneBuckets[stoneId][i] = energyUsed;
+          lastValue = sortedStoneData[stoneId][j].energy ?? 0;
+          lastValueBucket = bucketIndex;
+        }
+        // the datapoint is after the bucket
+        else if (datapointT > bucketEnd) {
+          storeValue(bucketIndex);
+          lastValueStored = true;
           break;
         }
+        // we do not care if the datapoint is before the bucket.
       }
+
+      // if we have not stored the lastValue but a part of this bucket was filled by the available data, store the data.
+      if (!lastValueStored && lastValueBucket !== null) {
+        storeValue(lastValueBucket);
+      }
+
+
 
       bucketStart = bucketEnd;
     }
+
+
   }
 
   return stoneBuckets;
@@ -183,4 +212,3 @@ export function getEnergyRange(date: Date | timestamp | timeISOString, mode: GRA
     return {start, end};
   }
 }
-

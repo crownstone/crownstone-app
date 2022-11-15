@@ -14352,3 +14352,626 @@ export const ENERGY_DATA_03 = [
     "stoneId": "626b90f57917720004307c41"
   }
 ]
+
+export const YEAR_DATA = [
+  {
+    "energyUsage": 4398080,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "626b90f57917720004307c41"
+  },
+  {
+    "energyUsage": 4398016,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "626b003c4e3ff4000414e5b4"
+  },
+  {
+    "energyUsage": 5370816,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "61b616560f62520004256d20"
+  },
+  {
+    "energyUsage": 8796736,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "6269898cad85160004ea470a"
+  },
+  {
+    "energyUsage": 274816,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "616afc01cdbeb200044cb89a"
+  },
+  {
+    "energyUsage": 4400384,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "600bf16174a85e0004370977"
+  },
+  {
+    "energyUsage": 3895872,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "60044d776647bb0004fb2bb5"
+  },
+  {
+    "energyUsage": 17592320,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5fa90639bf065a00040beda6"
+  },
+  {
+    "energyUsage": 832,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f291198836d290004ff46fd"
+  },
+  {
+    "energyUsage": 171862656,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0f300f2d49160004d97024"
+  },
+  {
+    "energyUsage": 2419904,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0f2acb2d49160004d96f95"
+  },
+  {
+    "energyUsage": 140737472,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0f1f992d49160004d96ea5"
+  },
+  {
+    "energyUsage": 281474944,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0f0c342d49160004d96cdb"
+  },
+  {
+    "energyUsage": 29013760,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0ef8382d49160004d96ade"
+  },
+  {
+    "energyUsage": 101798400,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0ef8242d49160004d96ada"
+  },
+  {
+    "energyUsage": 18764416,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0ef8122d49160004d96ad7"
+  },
+  {
+    "energyUsage": 362176,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5f0ee4c82d49160004d968ad"
+  },
+  {
+    "energyUsage": 909184,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5eff5fd6ab64ca0004a6929c"
+  },
+  {
+    "energyUsage": 318848,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5eff5ff0ab64ca0004a692a2"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5eff4b04ab64ca0004a68f46"
+  },
+  {
+    "energyUsage": 92032,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5eff1259e2104d00042044b8"
+  },
+  {
+    "energyUsage": 101440,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5eff1267e2104d00042044bc"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5edcfcc8306d440004a0c6d4"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e9c23eaed112e00049faea5"
+  },
+  {
+    "energyUsage": 35184448,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5edcfc8f306d440004a0c6c6"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e6bc9b1325a290004160cb0"
+  },
+  {
+    "energyUsage": 123328,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e5a9b7e8e6ffc00043bbd2a"
+  },
+  {
+    "energyUsage": 1972928,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e6bc987325a290004160cac"
+  },
+  {
+    "energyUsage": 3983872,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e63a47a7c70b40004077751"
+  },
+  {
+    "energyUsage": 8474560,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e529f8e9ee5dd0004625357"
+  },
+  {
+    "energyUsage": 686400,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e542b51ea967c00040b73f4"
+  },
+  {
+    "energyUsage": 8704,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e403a7158dcd90004ec0332"
+  },
+  {
+    "energyUsage": 222080,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e402fabd474c600046e3f28"
+  },
+  {
+    "energyUsage": 2077760,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5e371bc2524000000467c321"
+  },
+  {
+    "energyUsage": 1182144,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5db2138d4174980004e4567c"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5d6ac60133f6cb0004e2f644"
+  },
+  {
+    "energyUsage": 5249408,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5da749a7b01f270004de0ac0"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5d51ab936d6a610004db175c"
+  },
+  {
+    "energyUsage": 2541376,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5d51c07e6d6a610004db1ac6"
+  },
+  {
+    "energyUsage": 9369152,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5d4e7f3857dbd40004cbca43"
+  },
+  {
+    "energyUsage": 219264,
+    "timestamp": "2022-10-04T22:00:00.000Z",
+    "stoneId": "5a5665e033502f002b5ba649"
+  },
+  {
+    "energyUsage": 476664,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5a5665e033502f002b5ba649"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5d51ab936d6a610004db175c"
+  },
+  {
+    "energyUsage": 11628992,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5d4e7f3857dbd40004cbca43"
+  },
+  {
+    "energyUsage": 4398016,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5d51c07e6d6a610004db1ac6"
+  },
+  {
+    "energyUsage": 376090,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5d6ac60133f6cb0004e2f644"
+  },
+  {
+    "energyUsage": 5495104,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5da749a7b01f270004de0ac0"
+  },
+  {
+    "energyUsage": 2107776,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5db2138d4174980004e4567c"
+  },
+  {
+    "energyUsage": 2742336,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e371bc2524000000467c321"
+  },
+  {
+    "energyUsage": 440256,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e402fabd474c600046e3f28"
+  },
+  {
+    "energyUsage": 8704,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e403a7158dcd90004ec0332"
+  },
+  {
+    "energyUsage": 8474560,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e529f8e9ee5dd0004625357"
+  },
+  {
+    "energyUsage": 173120,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e5a9b7e8e6ffc00043bbd2a"
+  },
+  {
+    "energyUsage": 208256,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e542b51ea967c00040b73f4"
+  },
+  {
+    "energyUsage": 4398144,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e63a47a7c70b40004077751"
+  },
+  {
+    "energyUsage": 543488,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e6bc987325a290004160cac"
+  },
+  {
+    "energyUsage": 219008,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e6bc9b1325a290004160cb0"
+  },
+  {
+    "energyUsage": 35198848,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5edcfc8f306d440004a0c6c6"
+  },
+  {
+    "energyUsage": 1099456,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5e9c23eaed112e00049faea5"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5edcfcc8306d440004a0c6d4"
+  },
+  {
+    "energyUsage": 177472,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5eff1259e2104d00042044b8"
+  },
+  {
+    "energyUsage": 210624,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5eff1267e2104d00042044bc"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5eff4b04ab64ca0004a68f46"
+  },
+  {
+    "energyUsage": 410933,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5eff5ff0ab64ca0004a692a2"
+  },
+  {
+    "energyUsage": 16997,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5eff5fd6ab64ca0004a6929c"
+  },
+  {
+    "energyUsage": 514304,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0ee4c82d49160004d968ad"
+  },
+  {
+    "energyUsage": 26602240,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0ef8122d49160004d96ad7"
+  },
+  {
+    "energyUsage": 136638144,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0ef8242d49160004d96ada"
+  },
+  {
+    "energyUsage": 29107712,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0ef8382d49160004d96ade"
+  },
+  {
+    "energyUsage": 281474944,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0f0c342d49160004d96cdb"
+  },
+  {
+    "energyUsage": 140737472,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0f1f992d49160004d96ea5"
+  },
+  {
+    "energyUsage": 3457984,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0f2acb2d49160004d96f95"
+  },
+  {
+    "energyUsage": 282205760,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f0f300f2d49160004d97024"
+  },
+  {
+    "energyUsage": 2816,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5f291198836d290004ff46fd"
+  },
+  {
+    "energyUsage": 17592320,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "5fa90639bf065a00040beda6"
+  },
+  {
+    "energyUsage": 8796032,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "60044d776647bb0004fb2bb5"
+  },
+  {
+    "energyUsage": 4400640,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "600bf16174a85e0004370977"
+  },
+  {
+    "energyUsage": 452224,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "616afc01cdbeb200044cb89a"
+  },
+  {
+    "energyUsage": 5370816,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "61b616560f62520004256d20"
+  },
+  {
+    "energyUsage": 8796736,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "6269898cad85160004ea470a"
+  },
+  {
+    "energyUsage": 4398016,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "626b003c4e3ff4000414e5b4"
+  },
+  {
+    "energyUsage": 4398144,
+    "timestamp": "2022-10-31T23:00:00.000Z",
+    "stoneId": "626b90f57917720004307c41"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-11-12T23:00:00.000Z",
+    "stoneId": "5eff4b04ab64ca0004a68f46"
+  },
+  {
+    "energyUsage": 0,
+    "timestamp": "2022-11-12T23:00:00.000Z",
+    "stoneId": "5edcfcc8306d440004a0c6d4"
+  },
+  {
+    "stoneId": "5fa90639bf065a00040beda6",
+    "energyUsage": 17592384,
+    "timestamp": "2022-11-13T22:15:06.000Z"
+  },
+  {
+    "stoneId": "5d6ac60133f6cb0004e2f644",
+    "energyUsage": 1089856,
+    "timestamp": "2022-11-13T22:15:55.000Z"
+  },
+  {
+    "stoneId": "5d51c07e6d6a610004db1ac6",
+    "energyUsage": 4398016,
+    "timestamp": "2022-11-13T22:20:00.000Z"
+  },
+  {
+    "stoneId": "5e402fabd474c600046e3f28",
+    "energyUsage": 684864,
+    "timestamp": "2022-11-13T22:20:00.000Z"
+  },
+  {
+    "stoneId": "5e5a9b7e8e6ffc00043bbd2a",
+    "energyUsage": 173312,
+    "timestamp": "2022-11-13T22:20:01.000Z"
+  },
+  {
+    "stoneId": "6269898cad85160004ea470a",
+    "energyUsage": 8796736,
+    "timestamp": "2022-11-13T22:20:02.000Z"
+  },
+  {
+    "stoneId": "5eff5fd6ab64ca0004a6929c",
+    "energyUsage": 230912,
+    "timestamp": "2022-11-13T22:20:04.000Z"
+  },
+  {
+    "stoneId": "5f0ef8122d49160004d96ad7",
+    "energyUsage": 26602240,
+    "timestamp": "2022-11-13T22:20:04.000Z"
+  },
+  {
+    "stoneId": "626b90f57917720004307c41",
+    "energyUsage": 4398144,
+    "timestamp": "2022-11-13T22:20:05.000Z"
+  },
+  {
+    "stoneId": "5f0f2acb2d49160004d96f95",
+    "energyUsage": 4398016,
+    "timestamp": "2022-11-13T22:20:07.000Z"
+  },
+  {
+    "stoneId": "5f0f1f992d49160004d96ea5",
+    "energyUsage": 140737472,
+    "timestamp": "2022-11-13T22:20:09.000Z"
+  },
+  {
+    "stoneId": "626b003c4e3ff4000414e5b4",
+    "energyUsage": 4398016,
+    "timestamp": "2022-11-13T22:20:11.000Z"
+  },
+  {
+    "stoneId": "5f0ef8242d49160004d96ada",
+    "energyUsage": 136638144,
+    "timestamp": "2022-11-13T22:20:18.000Z"
+  },
+  {
+    "stoneId": "5e371bc2524000000467c321",
+    "energyUsage": 3157120,
+    "timestamp": "2022-11-13T22:20:19.000Z"
+  },
+  {
+    "stoneId": "5f291198836d290004ff46fd",
+    "energyUsage": 2816,
+    "timestamp": "2022-11-13T22:20:20.000Z"
+  },
+  {
+    "stoneId": "61b616560f62520004256d20",
+    "energyUsage": 5370816,
+    "timestamp": "2022-11-13T22:20:27.000Z"
+  },
+  {
+    "stoneId": "5eff5ff0ab64ca0004a692a2",
+    "energyUsage": 123904,
+    "timestamp": "2022-11-13T22:20:30.000Z"
+  },
+  {
+    "stoneId": "5e529f8e9ee5dd0004625357",
+    "energyUsage": 9844480,
+    "timestamp": "2022-11-13T22:20:31.000Z"
+  },
+  {
+    "stoneId": "5a5665e033502f002b5ba649",
+    "energyUsage": 565888,
+    "timestamp": "2022-11-13T22:20:35.000Z"
+  },
+  {
+    "stoneId": "616afc01cdbeb200044cb89a",
+    "energyUsage": 274816,
+    "timestamp": "2022-11-13T22:20:35.000Z"
+  },
+  {
+    "stoneId": "5db2138d4174980004e4567c",
+    "energyUsage": 2529088,
+    "timestamp": "2022-11-13T22:20:35.000Z"
+  },
+  {
+    "stoneId": "600bf16174a85e0004370977",
+    "energyUsage": 4400704,
+    "timestamp": "2022-11-13T22:20:37.000Z"
+  },
+  {
+    "stoneId": "5eff1267e2104d00042044bc",
+    "energyUsage": 225024,
+    "timestamp": "2022-11-13T22:20:38.000Z"
+  },
+  {
+    "stoneId": "5e9c23eaed112e00049faea5",
+    "energyUsage": 1099456,
+    "timestamp": "2022-11-13T22:20:38.000Z"
+  },
+  {
+    "stoneId": "5e63a47a7c70b40004077751",
+    "energyUsage": 4398144,
+    "timestamp": "2022-11-13T22:20:40.000Z"
+  },
+  {
+    "stoneId": "5da749a7b01f270004de0ac0",
+    "energyUsage": 5661888,
+    "timestamp": "2022-11-13T22:20:41.000Z"
+  },
+  {
+    "stoneId": "60044d776647bb0004fb2bb5",
+    "energyUsage": 8796032,
+    "timestamp": "2022-11-13T22:20:43.000Z"
+  },
+  {
+    "stoneId": "5e542b51ea967c00040b73f4",
+    "energyUsage": 387520,
+    "timestamp": "2022-11-13T22:20:44.000Z"
+  },
+  {
+    "stoneId": "5e6bc9b1325a290004160cb0",
+    "energyUsage": 309376,
+    "timestamp": "2022-11-13T22:20:46.000Z"
+  },
+  {
+    "stoneId": "5e6bc987325a290004160cac",
+    "energyUsage": 823232,
+    "timestamp": "2022-11-13T22:20:47.000Z"
+  },
+  {
+    "stoneId": "5e403a7158dcd90004ec0332",
+    "energyUsage": 8704,
+    "timestamp": "2022-11-13T22:20:48.000Z"
+  },
+  {
+    "stoneId": "5f0ee4c82d49160004d968ad",
+    "energyUsage": 547648,
+    "timestamp": "2022-11-13T22:20:50.000Z"
+  },
+  {
+    "stoneId": "6318a117c894220004643d1b",
+    "energyUsage": 1088,
+    "timestamp": "2022-11-13T22:20:51.000Z"
+  },
+  {
+    "stoneId": "5f0ef8382d49160004d96ade",
+    "energyUsage": 29107712,
+    "timestamp": "2022-11-13T22:20:53.000Z"
+  },
+  {
+    "stoneId": "5d51ab936d6a610004db175c",
+    "energyUsage": 1099456,
+    "timestamp": "2022-11-13T22:20:54.000Z"
+  },
+  {
+    "stoneId": "5edcfc8f306d440004a0c6c6",
+    "energyUsage": 1723840,
+    "timestamp": "2022-11-13T22:20:56.000Z"
+  },
+  {
+    "stoneId": "5d4e7f3857dbd40004cbca43",
+    "energyUsage": 12244288,
+    "timestamp": "2022-11-13T22:20:57.000Z"
+  },
+  {
+    "stoneId": "5f0f300f2d49160004d97024",
+    "energyUsage": 327117376,
+    "timestamp": "2022-11-13T22:21:05.000Z"
+  },
+  {
+    "stoneId": "5f0f0c342d49160004d96cdb",
+    "energyUsage": 281474944,
+    "timestamp": "2022-11-13T22:21:06.000Z"
+  },
+  {
+    "stoneId": "5eff1259e2104d00042044b8",
+    "energyUsage": 190144,
+    "timestamp": "2022-11-13T22:21:52.000Z"
+  }
+]

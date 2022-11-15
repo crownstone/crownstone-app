@@ -28,8 +28,6 @@ import { core } from "../../Core";
 
 
 export function EnergyUsage(props) {
-  console.log("Drawing EnergyUsage");
-
   useDatabaseChange(['updateActiveSphere']);
 
   return (
