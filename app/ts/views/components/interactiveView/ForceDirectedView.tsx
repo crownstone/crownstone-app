@@ -64,6 +64,7 @@ export class ForceDirectedView extends Component<{
   testID? : string,
 }, any> {
 
+  debug = false;
   state:any; // used to avoid warnings for setting state values
 
   _panResponder: any = {};
@@ -268,11 +269,13 @@ export class ForceDirectedView extends Component<{
               }
             }
             else {
+              if (this.debug) { setTimeout(() => { this.forceUpdate(); }, 0); }
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
             }
           }
           else {
             this._clearTap();
+            if (this.debug) { setTimeout(() => { this.forceUpdate(); }, 0); }
             return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
           }
         }
@@ -290,6 +293,8 @@ export class ForceDirectedView extends Component<{
             this._initialDistance = distance;
 
             this.state.scale.setValue(this._currentScale);
+
+            if (this.debug) { setTimeout(() => { this.forceUpdate(); }, 0); }
             return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {useNativeDriver: false})(evt, gestureState);
           }
         }
@@ -494,8 +499,8 @@ export class ForceDirectedView extends Component<{
 
     // determine offset to center everything.
     let offsetRequired = {
-      x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth ) + this._currentPan.x),
-      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight) + this._currentPan.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0))
+      x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth ) + this._panOffset.x),
+      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0))
     };
 
     // batch animations together.
@@ -518,6 +523,7 @@ export class ForceDirectedView extends Component<{
       this._currentPan = {x:0, y:0};
       this._currentScale = this.paddedBoundingBox.requiredScale;
       this._recenteringInProgress = false;
+      if (this.debug) { setTimeout(() => { this.forceUpdate(); }, 0); }
     });
   }
 
@@ -643,7 +649,6 @@ export class ForceDirectedView extends Component<{
     if (!this.edges) {
       return;
     }
-
 
     let edges = [];
     // gather the edges to render.
@@ -860,9 +865,9 @@ export class ForceDirectedView extends Component<{
     // uncomment this for debug views
     // the two pan-based debug views require redraws added to the move handler.
     // this._getBoundingBox();
-    //
-    // let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._currentPan.x;
-    // let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._currentPan.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
+    // this.debug = true;
+    // let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._panOffset.x;
+    // let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
 
     return (
       <View
