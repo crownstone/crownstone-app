@@ -66,7 +66,24 @@ export function DeviceControl({stone, setPercentage}) {
   }
 }
 
-async function _switchCrownstone(stone, setPercentage) {
+
+export function canDeviceSwitchNow(stone) {
+  if (StoneAvailabilityTracker.isDisabled(stone.id) === false) {
+    if (stone.errors.hasError) {
+      return false;
+    }
+    else if (stone.config.locked) {
+      return false
+    }
+    else {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+export async function _switchCrownstone(stone, setPercentage) {
   try {
     if (stone.state.state > 0) {
       // turn off
