@@ -159,6 +159,7 @@ interface StoneData {
 }
 
 interface StoneErrors  {
+  errorCode:         number,
   overCurrent:       boolean,
   overCurrentDimmer: boolean,
   temperatureChip:   boolean,

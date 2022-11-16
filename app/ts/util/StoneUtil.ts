@@ -110,7 +110,7 @@ export const StoneUtil = {
       }});
       await Scheduler.delay(500);
       core.eventBus.emit("hideLoading");
-      Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
+      Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK', onPress:() => { NavigationUtil.dismissModal()}}], {cancelable:false});
     }
     catch (err : any) {
       LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err?.message);

@@ -11,24 +11,18 @@ import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import {colors, styles} from "../styles";
-import {
-  Alert, ScrollView, Text,
-  TouchableOpacity,
-  View,
-  ViewStyle
-} from "react-native";
-import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { colors, styles} from "../styles";
+import { Alert } from "react-native";
 import { Icon } from "../components/Icon";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Navigation } from "react-native-navigation";
-import {SettingsBackground} from "../components/SettingsBackground";
-import {ListEditableItems} from "../components/ListEditableItems";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { ListEditableItems } from "../components/ListEditableItems";
 import { Get } from "../../util/GetUtil";
-import {STONE_TYPES} from "../../Enums";
-import {xUtil} from "../../util/StandAloneUtil";
-import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
-import {StoneUtil} from "../../util/StoneUtil";
+import { STONE_TYPES } from "../../Enums";
+import { xUtil } from "../../util/StandAloneUtil";
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
+import { StoneUtil } from "../../util/StoneUtil";
 import { OverlayUtil } from "../../util/OverlayUtil";
 import { SettingsScrollbar } from "../components/SettingsScrollbar";
 
@@ -110,31 +104,6 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     getTopBarProps(this.props);
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
-
-  _getLockIcon(stone) {
-    let wrapperStyle : ViewStyle = {
-      width: 35,
-      height: 35,
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      alignItems: 'center',
-      justifyContent: "center"
-    };
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
-      return (
-        <TouchableOpacity
-          onPress={() => { core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })} }
-          style={wrapperStyle}>
-          <Icon name={"md-unlock"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
-        </TouchableOpacity>
-      );
-    }
-    else {
-      return <View style={wrapperStyle} />;
-    }
-  }
-
 
 
   _getItems(stone: StoneData) {

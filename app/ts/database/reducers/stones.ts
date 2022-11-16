@@ -48,6 +48,7 @@ const defaultState: StoneState = {
 }
 
 const defaultErrors : StoneErrors = {
+    errorCode: 0,
     overCurrent: false,
     overCurrentDimmer: false,
     temperatureChip: false,
@@ -191,6 +192,7 @@ let stoneErrorsReducer = (state = defaultErrors, action: any = {}) => {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
+        newState.errorCode          = update(action.data.errorCode,       newState.errorCode);
         newState.overCurrent        = update(action.data.overCurrent,       newState.overCurrent);
         newState.overCurrentDimmer  = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip    = update(action.data.temperatureChip,   newState.temperatureChip);
@@ -210,6 +212,7 @@ let stoneErrorsReducer = (state = defaultErrors, action: any = {}) => {
     case 'RESET_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
+        newState.errorCode         = 0;
         newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
         newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
@@ -228,6 +231,7 @@ let stoneErrorsReducer = (state = defaultErrors, action: any = {}) => {
       return state;
     case 'CLEAR_STONE_ERRORS':
       let newState = {...state};
+      newState.errorCode         = 0;
       newState.overCurrent       = false;
       newState.overCurrentDimmer = false;
       newState.temperatureChip   = false;

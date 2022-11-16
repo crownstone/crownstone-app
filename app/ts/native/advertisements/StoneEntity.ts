@@ -426,6 +426,7 @@ export class StoneEntity {
       return true;
     }
     if (
+      stoneErrors.errorCode         !== advertisementErrors.bitMask           ||
       stoneErrors.overCurrent       !== advertisementErrors.overCurrent       ||
       stoneErrors.overCurrentDimmer !== advertisementErrors.overCurrentDimmer ||
       stoneErrors.temperatureChip   !== advertisementErrors.temperatureChip   ||
@@ -461,6 +462,7 @@ export class StoneEntity {
               sphereId: this.sphereId,
               stoneId: this.stoneId,
               data: {
+                errorCode:         advertisement.serviceData.errors.bitMask,
                 overCurrent:       advertisement.serviceData.errors.overCurrent,
                 overCurrentDimmer: advertisement.serviceData.errors.overCurrentDimmer,
                 temperatureChip:   advertisement.serviceData.errors.temperatureChip,
