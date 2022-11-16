@@ -9,7 +9,7 @@ import { EditableItem } from './EditableItem'
 import { SeparatedItemList } from './SeparatedItemList'
 
 export class ListEditableItems extends Component<any, any> {
-  _renderer(item, index,) {
+  _renderer(item, index) {
     return (
       <EditableItem
         key={ index }

@@ -1,28 +1,45 @@
 # iOS & Android App for the Crownstone.
 
+
+# Getting Started
+
+When first checking out the repo, run yarn (if you don't have it, google and install)
+
+```
+yarn
+```
+
+This will check out, download and install all required modules for node.
+
+If you want to work on the ios version of the app:
+
+```
+cd ios
+pod install
+```
+
+To install the modules for ios to compile. Android does not require this.
+
+To start the typescript compiler, run:
+```
+npm start
+```
+
+This will dynamically recompile the app on changes made to /app/ts/**/*.
+
+To run the react server for development (using debug builds via either android studio or xcode):
+
+```
+npm run react
+```
+
+If you're building the Android app, checkout the android bluenet library, copy or symlink the bluenet folder from the lib to the android folder.
+
+From here on, you can build the app as you would any other app for android and ios.
+
+
+
 ## State
-
-The Crownstone iOS and Android apps have the following functionality:
-
-| Functionality                                   | State Firmware           | State Smartphone Apps     | 
-| ---                                             | ---                      | ---                       |
-| Switching                                       | Done                     | Done                      |
-| Instantaneous power consumption                 | Done                     | Done                      |
-| Reacting on close proximity (tap-to-toggle)     | Done                     | Done                      |
-| Reacting on moderate proximity (presence)       | Done                     | Done                      |
-| Reacting on room-level indoor positioning       | Done                     | Done                      |
-| User-controlled upload of data to the cloud     | Done                     | Done                      |
-| Sending commands through the internet           | Done                     | Done                      |
-| Visualizing other users in the app              | Done                     | Done                      |
-| Scheduling                                      | Done                     | Done                      |
-| Wake-up light                                   | To be done               | To be done                |
-| Dimming (synced PWM at 100Hz)                   | To be done               | To be done                |
-| Power consumption history                       | To be done               | To be done                |
-| Integration with Toon                           | To be done               | To be done                |
-| Device identification                           | To be done               | To be done                |
-| Control by non-registered guest users           | To be done               | To be done                |
-| Integration with thermostat radiator valves     | To be done               | To be done                |
-| Multi-user setup (don't leave user in the dark) | To be done               | To be done                |
 
 The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
 
