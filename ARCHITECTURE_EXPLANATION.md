@@ -9,6 +9,24 @@ If any terms are unclear, google them.
 
 Any reference to the "user" implies the developer.
 
+# Overview
+
+Here is an index of all sections in the document
+
+- [React Native](#react-native)
+- [Project folder structure](#project-folder-structure)
+- [Getting started](#getting-started)
+- [App folder structure](#app-folder-structure)
+- [Config](#config)
+- [Entrypoint](#entrypoint)
+- [Navigation](#navigation)
+- [Dataflow & Core](#dataflow-&-core)
+- [Background processing](#background-processing)
+- [Syncing data with the cloud](#syncing-data-with-the-cloud)
+- [Constellation](#constellation)
+- [Localization](#localization)
+- [Behaviour](#behaviour)
+
 # React Native
 
 The app is written in React native and typescript. The handling of the bluetooth interactions with the Crownstones is done 
@@ -19,7 +37,7 @@ The bridge file is also written in Kotlin and Swift.
 The promise based functions are going through the `BluenetPromise` function (BluenetPromise.ts) and the fire-and-forget methods
 are going through the `Bluenet` object (Bluenet.ts).
 
-# Project Folder structure
+# Project folder structure
 
 The structure of the project is as follows:
 - **android**   
@@ -75,7 +93,10 @@ To run the react server for development (using debug builds via either android s
 npm run react
 ```
 
+If you're building the Android app, checkout the android bluenet library, copy or symlink the bluenet folder from the lib to the android folder.
+
 From here on, you can build the app as you would any other app for android and ios.
+
 
 # App folder structure
 
@@ -159,6 +180,17 @@ This enhancer will translate the mutation of the database to events on the event
 This will persist the database to disk intelligently via the Persistor. The database is too big to comfortably stringify and destringify to and from disk. It chunks the tree and stores segments.
 We ran into datacorruption before the persistor existed due to many sequential updates losing data. 
 
+## Core
+
+The core can be imported from anywhere. It provides the following modules:
+
+```
+core.store      // a reference to the store. This is the redux database. The most frequently used API is getState(), dispatch(action), batchDispatch([action, ...])
+core.eventBus   // a reference to the main EventBus. Most of the app communicates over this eventBus. Most notable topic is databaseChange from the EventEnhancer.
+core.nativeBus  // a reference to the NativeBus
+core.bleState   // a quick reference to the state of the BLE driver
+```
+
 # Background processing
 
 Many modules in the app exist as singletons, initialized by the BackgroundProcessHandler. These modules can be imported by any part of the app and used directly.
@@ -237,11 +269,12 @@ Most notably:
 - **StoneAvailabilityTracker**
   - This keeps a list of Crownstones that have been seen recently and provides and API to check this list.
   
-# Syncing data with the cloud.
+# Syncing data with the cloud
 
 The syncer is combined with the transferrers, which provide an API to create/update devices and map cloud data to local data and local data to cloud data.
 
-This is described in [docs/SyncingV2.md](./docs/SyncingV2.md)
+We keep localIds (UUIDv4) and cloudIds (MongoDB ids). All references in the app are done via localIds. The cloudId is used for syncing.
+This is described in [docs/SyncingV2.md](./docs/SyncingV2.md) which will forward you to the cloudv2 repo for more information.
 
 # Constellation
 
