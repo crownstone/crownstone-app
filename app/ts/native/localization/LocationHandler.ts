@@ -187,7 +187,6 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data : locationDataContainer) {
-    console.log("_enterRoom", data);
     LOG.info('LocationHandler: USER_ENTER_LOCATION.', data.sphereId, data.locationId);
     let sphereId = data.sphereId;
     let locationId = data.locationId;
@@ -211,7 +210,6 @@ class LocationHandlerClass {
   }
 
   _exitRoom(data : locationDataContainer) {
-    console.log("_exitRoom", data);
     LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
 
     let sphereId = data.sphereId;

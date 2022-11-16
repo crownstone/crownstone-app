@@ -184,7 +184,7 @@ If you moved a Crownstone and want to retrain all rooms, it is annoying to go th
 d += 2 * (x*x + y*y - 1.95*x*y)
 - [x] Use KNN in js instead of native.
 - [x] Store existing crownstone IDs along with the training data to avoid penalties for crownstones existing in the test vector and not in the training data.
-- [x] Use the https://reactnative.dev/docs/interactionmanager 
+- [ ] Use the https://reactnative.dev/docs/interactionmanager 
 
 # Syncing fingerprints with the cloud
 

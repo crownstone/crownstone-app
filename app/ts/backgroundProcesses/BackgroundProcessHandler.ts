@@ -483,7 +483,6 @@ class BackgroundProcessHandlerClass {
     SseHandler.init();
     StoneAvailabilityTracker.init();
     SpherePresenceManager.init();
-    StoneDataSyncer.init();
     StoneManager.init();
     StoneDataSyncer.init();
     SetupStateHandler.init();

@@ -1,12 +1,7 @@
 import {LOG, LOGe, LOGi} from "../logging/Log";
-import {CLOUD} from "../cloud/cloudAPI";
 import {LocalNotifications} from "../notifications/LocalNotifications";
-import {Util} from "../util/Util";
-import {MapProvider} from "./MapProvider";
-import {xUtil} from "../util/StandAloneUtil";
 import {core} from "../Core";
 import {Get} from "../util/GetUtil";
-import { Navigation } from "react-native-navigation";
 import {
   MessageDeletedId,
   MessageDeletedTransferNext

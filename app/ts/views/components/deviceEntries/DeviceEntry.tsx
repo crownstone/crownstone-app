@@ -20,7 +20,7 @@ import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../Bl
 import {colors} from "../../styles";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../ExternalConfig";
-import { ActivityIndicator } from "react-native";
+import {ActivityIndicator, Alert} from "react-native";
 
 
 interface DeviceEntryProps extends DraggableProps {
@@ -64,7 +64,14 @@ export function DeviceEntry(props: DeviceEntryProps) {
   }
 
 
-  let goToSettingsCallback = () => { NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId}); };
+  let goToSettingsCallback = () => {
+    if (stone.config.firmwareVersion < MINIMUM_REQUIRED_FIRMWARE_VERSION) {
+      Alert.alert("Update Required", "Please update your Crownstone to the latest firmware version.",[{text: "OK"}]);
+      return
+    }
+    NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId});
+
+  };
   let tapCallback = undefined;
   let backgroundColor = undefined;
 
