@@ -597,6 +597,7 @@ exports[`Check if fingerprints are syncing 2`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,
@@ -712,6 +713,7 @@ exports[`Check if fingerprints are syncing 2`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,
@@ -827,6 +829,7 @@ exports[`Check if fingerprints are syncing 2`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,

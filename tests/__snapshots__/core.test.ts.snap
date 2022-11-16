@@ -185,6 +185,7 @@ exports[`Using core in tests 1`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,
@@ -300,6 +301,7 @@ exports[`Using core in tests 1`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,
@@ -415,6 +417,7 @@ exports[`Using core in tests 1`] = `
           "errors": {
             "dimmerOffFailure": false,
             "dimmerOnFailure": false,
+            "errorCode": 0,
             "hasError": false,
             "overCurrent": false,
             "overCurrentDimmer": false,
