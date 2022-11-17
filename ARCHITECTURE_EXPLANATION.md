@@ -106,7 +106,7 @@ created based on the /app/tsLocalConfig.template.ts file.
 The app starts in the index.js file, located in the root of the project. This will initialize the routes for React Native Navigation
 and start all the background processes.
 
-Read the docs for React Native Navigation (!NOTE not React Navigation, there is a difference).
+Read the docs for React Native Navigation (not React Navigation, there is a difference).
 
 
 # Navigation
@@ -161,7 +161,7 @@ You can do color.red.hex for #ff0000, or color.red.rgba(0.3) for rgba(255,0,0,0.
 
 # App folder structure
 
-This is the main body of the app. Located in /app/ts (!NOTE do not look at /app/js, this is all generated code by the typescript compiler).
+This is the main body of the app. Located in /app/ts (do not look at /app/js, this is all generated code by the typescript compiler).
 
 - **backgroundProcesses**
     - Most of the background singletons, managed by the BackgroundProcessHandler.
