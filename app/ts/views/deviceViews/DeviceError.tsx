@@ -26,6 +26,22 @@ export class DeviceError extends LiveComponent<any, any> {
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
+  unsubscribeStoreEvents;
+
+
+  componentDidMount() {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (change.updateStoneErrors) {
+        this.forceUpdate();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+  }
 
   _getButton(stone) {
     if (Permissions.inSphere(this.props.sphereId).canClearErrors) {
