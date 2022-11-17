@@ -394,7 +394,7 @@ export class SessionManagerClass {
       }
     }
     else {
-      LOGi.constellation("SessionManager: Does not do anything...")
+      LOGi.constellation("SessionManager: disconnectSession does not need to do anything...")
     }
   }
 

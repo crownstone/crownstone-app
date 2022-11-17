@@ -50,6 +50,7 @@ let explanationStyle : TextStyle = {
 export interface InterviewProps {
   getCards() : interviewCards,
   backButtonOverrideViewNameOrId?: string,
+  backButtonFallbackFunction?: () => void,
   paddingBottom? : number,
   paddingTop? : number,
   scrollEnabled? : boolean,
@@ -91,7 +92,14 @@ export class Interview extends Component<InterviewProps, any> {
   componentDidMount() {
     if (this.props.backButtonOverrideViewNameOrId) {
       BackButtonHandler.override(this.props.backButtonOverrideViewNameOrId, () => {
-        return this.back();
+        if (!this.back()) {
+          if (this.props.backButtonFallbackFunction) {
+            this.props.backButtonFallbackFunction();
+          }
+          else {
+            return false;
+          }
+        }
       });
     }
   }

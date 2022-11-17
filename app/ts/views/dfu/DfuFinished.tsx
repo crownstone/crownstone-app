@@ -150,6 +150,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         >
         <Interview
           backButtonOverrideViewNameOrId={this.props.componentId}
+          backButtonFallbackFunction={() => { NavigationUtil.backTo("DfuScanning") }}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return getCardsCallback() }}
           update={   () => { this.forceUpdate() }}

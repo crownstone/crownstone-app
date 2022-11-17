@@ -584,7 +584,7 @@ export class DfuExecutor {
 
   _handleFirmware(firmwareCandidate) {
     if (this.stopDFU) { return Promise.reject(new Error(DFU_CANCELLED)); }
-    if (xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) {
+    if (this.currentFirmwareVersion !== null && xUtil.versions.isValidSemver(this.currentFirmwareVersion) === false) {
       LOGi.dfu("DfuExecutor: firmware is a dev-version. Treating as up-to-date!");
       this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
       return Promise.resolve();
