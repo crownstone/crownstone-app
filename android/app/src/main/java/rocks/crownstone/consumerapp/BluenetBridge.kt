@@ -997,9 +997,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun batterySaving(enable: Boolean) {
 		Log.i(TAG, "batterySaving $enable")
 		batterySaving = enable
-		// Called when app goes to foreground with enable=true
-		// Called when app goes to background with enable=false
-		// When enabled, beacon ranging should still continue.
+
+		// Called when app goes to foreground with enable=false
+		// Called when app goes to background with enable=true
+		// Also called with enable=false when not all handles of crownstones are known.
+
+		// When enabled, only beacon ranging should continue, no service data.
 		initBluenetPromise.success {
 			handler.post {
 				updateScanner()
@@ -1064,9 +1067,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		Log.i(TAG, "Scan with scanMode=$scanMode")
 		bluenet.setScanInterval(scanMode)
+
 		// Always filter for iBeacons, we need them to decrypt service data.
-//		bluenet.filterForIbeacons(isTracking)
 		bluenet.filterForIbeacons(true)
+
+		// When the screen is off, we can only scan for ibeacons. For some reason, adding the crownstone filters results in the scan being blocked.
+		// See: https://stackoverflow.com/questions/48077690/ble-scan-is-not-working-when-screen-is-off-on-android-8-1-0/48079800#48079800
+		// This now seems to be fixed by adding service data to the crownstone filter.
 		bluenet.filterForCrownstones(!batterySaving)
 		bluenet.startScanning()
 	}
@@ -1477,6 +1484,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						is Errors.NotInMode -> {
 							Log.i(TAG, "Not in DFU mode: resolve with empty string")
 							resolveCallback(callback, "")
+						}
+						is Errors.Result -> {
+							if (it.result == ResultType.NOT_FOUND) {
+								Log.i(TAG, "Result is NOT FOUND: assuming normal mode, and bootloader version not in IPC, resolve with empty string")
+								resolveCallback(callback, "")
+							}
+							else {
+								rejectCallback(callback, it)
+							}
 						}
 						else -> rejectCallback(callback, it)
 					}
@@ -3220,7 +3236,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		errorMap.putBoolean("temperatureDimmer", serviceData.errorDimmerTemperature)
 		errorMap.putBoolean("dimmerOnFailure", serviceData.errorDimmerFailureOn)
 		errorMap.putBoolean("dimmerOffFailure", serviceData.errorDimmerFailureOff)
-		errorMap.putNull("bitMask") // Only used for debug
+		errorMap.putDouble("bitMask", serviceData.errorBitmask.toDouble())
 		serviceDataMap.putMap("errors", errorMap)
 		serviceDataMap.putInt("uniqueElement", serviceData.changingData)
 
