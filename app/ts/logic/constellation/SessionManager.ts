@@ -346,6 +346,9 @@ export class SessionManagerClass {
       LOGi.constellation("SessionManager: closing private session after revoke.", handle, session.identifier, session.privateId);
       await this.closeSession(handle);
     }
+    else {
+      LOGi.constellation("SessionManager: Not closing session after revoke.", handle, session.identifier, session.privateId, commanderId);
+    }
   }
 
 
@@ -373,18 +376,25 @@ export class SessionManagerClass {
    */
   async disconnectSession(handle: string, commanderId: string) {
     let session = this._sessions[handle];
-    // LOGi.constellation("DisconnectSession Data", session === undefined);
-    // if (session) {
-    //   LOGi.constellation("session exists", session.isPrivate(), session.privateId === commanderId, session.state)
-    // }
-    if (session && session.isPrivate() && session.privateId === commanderId&& session.state !== "DISCONNECTED") {
+    LOGi.constellation("SessionManager: DisconnectSession Data", session === undefined);
+    if (session) {
+      LOGi.constellation("SessionManager: Session exists", session.isPrivate(), session.privateId === commanderId, session.state)
+    }
+    else {
+      LOGi.constellation("SessionManager: Session does not exist");
+    }
+    if (session && session.isPrivate() && session.privateId === commanderId && session.state !== "DISCONNECTED") {
       if (session.state === "DISCONNECTING") {
+        LOGi.constellation("SessionManager: Waiting for disconnect")
         await session.waitForDisconnect();
       }
       else {
-        // LOGi.constellation("attempting disconnect")
+        LOGi.constellation("SessionManager: Attempting disconnect")
         await session.disconnect();
       }
+    }
+    else {
+      LOGi.constellation("SessionManager: Does not do anything...")
     }
   }
 
