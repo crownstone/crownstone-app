@@ -371,6 +371,17 @@ export const DataUtil = {
     return false;
   },
 
+  areThereStonesWithErrorsInLocation: function(sphereId: sphereId, locationId: locationId) : boolean {
+    let stones = DataUtil.getStonesInLocation(sphereId, locationId);
+
+    for (let stoneId in stones) {
+      if (stones[stoneId].errors.hasError) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   getLocationsInSphere: function(sphereId: string) : Record<locationId, LocationData> {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];

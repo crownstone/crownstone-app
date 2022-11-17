@@ -74,7 +74,7 @@ export class StoneAvailabilityTrackerClass {
       let stoneId = logStoneIds[i];
       let logData = this.log[stoneId];
 
-      // rssi has expired and we have not marked it yet. do it now.
+      // rssi has expired, and we have not marked it yet. do it now.
       if (now - logData.t > RSSI_TIMEOUT_MS && logData.rssi !== INVALID_RSSI) {
         availabilityStoneIds[stoneId] = true;
         availabilitySphereIds[logData.sphereId] = true;

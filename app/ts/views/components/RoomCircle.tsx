@@ -64,9 +64,8 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
       tapAndHoldProgress: 0,
-      showErrorState: DataUtil.areThereActiveStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId),
+      showErrorState: DataUtil.areThereStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId),
     };
-
 
     this.usage = 0;
     // calculate the size of the circle based on the screen size
@@ -77,8 +76,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
     this.textSize = props.radius * 0.25;
 
     this.previousCircle = undefined;
-
-
   }
 
 
@@ -98,8 +95,8 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
       let change = data.change;
 
       if (
-        change.updateStoneErrors     ||
-        change.removeSphere          ||
+        change.updateStoneErrors ||
+        change.removeSphere      ||
         change.changeSpheres
       ) {
         this.forceUpdate();
@@ -209,6 +206,8 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
         { scale: this.state.scale },
       ]
     };
+
+    console.log("RENDER HERE", this.props.locationId, this.state.showErrorState)
 
     let showLocalizationIcon = LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);
