@@ -65,10 +65,10 @@ export function DeviceEntry(props: DeviceEntryProps) {
 
 
   let goToSettingsCallback = () => {
-    if (stone.config.firmwareVersion < MINIMUM_REQUIRED_FIRMWARE_VERSION) {
-      Alert.alert("Update Required", "Please update your Crownstone to the latest firmware version.",[{text: "OK"}]);
-      return
-    }
+    // if (stone.config.firmwareVersion < MINIMUM_REQUIRED_FIRMWARE_VERSION) {
+    //   Alert.alert("Update Required", "Please update your Crownstone to the latest firmware version.",[{text: "OK"}]);
+    //   return
+    // }
     NavigationUtil.launchModal( "DeviceOverview",{sphereId: props.sphereId, stoneId: props.stoneId});
 
   };
