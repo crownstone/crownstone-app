@@ -9,7 +9,7 @@ import {
   Alert,
   TouchableOpacity,
   Text,
-  View, ActivityIndicator
+  View, ActivityIndicator, Platform
 } from "react-native";
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
@@ -205,7 +205,7 @@ export function DfuDeviceEntry_RoomOverview(props: DfuDeviceEntryProps) {
       {...props}
       title={props.name ?? stone?.config?.name}
       heightOffset={10}
-      backgroundColor={colors.purple.rgba(0.7)}
+      backgroundColor={colors.purple.rgba(Platform.OS === 'android' ? 0.9 : 0.7)}
       labelItem={<DfuDeviceEntryLabel restoring={restoring} />}
       iconItem={<SetupDeviceEntryIcon icon={stone?.config?.icon || 'unknown'} />}
       tapCallback={ async () => {

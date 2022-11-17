@@ -205,7 +205,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return (
       <SettingsBackground>
-        <SettingsScrollbar testID={'HubOverview_scrollview'} contentContainerStyle={{paddingTop:20}}>
+        <SettingsScrollbar testID={'HubOverview_scrollview'}>
           { this.getStateEntries(hub, stone) }
           <ListEditableItems items={this._getItems(hub, stone)} />
         </SettingsScrollbar>

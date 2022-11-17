@@ -83,7 +83,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={'DeviceAbilities'}>
-        <SettingsScrollbar style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
+        <SettingsScrollbar style={{width: screenWidth}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />

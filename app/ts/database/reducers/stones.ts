@@ -131,7 +131,6 @@ let stoneConfigReducer = (state = defaultConfig, action : DatabaseAction = {}) =
       return state;
 
     case 'REFRESH_DEFAULTS':
-
       return refreshDefaults(state, defaultConfig);
     default:
       return state;
