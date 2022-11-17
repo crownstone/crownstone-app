@@ -1,5 +1,5 @@
 interface ReduxAppState {
-  app:           any,
+  app:           appData,
   devices:       any,
   development:   any,
   events:        any,
@@ -7,6 +7,25 @@ interface ReduxAppState {
   spheres:       Record<sphereId, SphereData>,
   user:          UserData,
   devApp:        any,
+}
+
+interface appData {
+  activeSphere: null | string,
+  notificationToken: null | string,
+
+  tapToToggleEnabled: boolean,
+  indoorLocalizationEnabled: boolean,
+
+  hasSeenDeviceSettings: boolean,
+  hasZoomedOutForSphereOverview: boolean,
+  hasSeenSwitchView: boolean,
+
+  hasSeenEditLocationIcon: boolean,
+  hasSeenDimmingButton: boolean,
+
+
+  migratedDataToVersion: null | string,
+  updatedAt: timestamp
 }
 
 interface SphereData {

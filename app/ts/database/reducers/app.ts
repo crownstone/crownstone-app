@@ -1,6 +1,6 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
-let defaultState = {
+let defaultState : appData = {
   activeSphere: null,
   notificationToken: null,
 
@@ -11,7 +11,8 @@ let defaultState = {
   hasZoomedOutForSphereOverview: false,
   hasSeenSwitchView: false,
 
-  // langauge: null,
+  hasSeenEditLocationIcon: false,
+  hasSeenDimmingButton: false,
 
   migratedDataToVersion: null,
   updatedAt: 1
@@ -60,6 +61,8 @@ export default (state = defaultState, action : DatabaseAction = {}) => {
         newState.tapToToggleEnabled           = update(action.data.tapToToggleEnabled,           newState.tapToToggleEnabled);
         newState.hasSeenSwitchView            = update(action.data.hasSeenSwitchView,            newState.hasSeenSwitchView);
         newState.migratedDataToVersion        = update(action.data.migratedDataToVersion,        newState.migratedDataToVersion);
+        newState.hasSeenEditLocationIcon      = update(action.data.hasSeenEditLocationIcon,      newState.hasSeenEditLocationIcon);
+        newState.hasSeenDimmingButton         = update(action.data.hasSeenDimmingButton,         newState.hasSeenDimmingButton);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);

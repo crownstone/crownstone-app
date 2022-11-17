@@ -78,7 +78,7 @@ export function TopBarBlur(props: {dark?: boolean, xlight?: boolean, xxlight?: b
   );
 }
 
-function Blinker(props) {
+export function Blinker(props) {
   return (
     <View style={{position:'absolute', overflow:'visible', backgroundColor: 'red', ...props.style}} pointerEvents={"none"}>
       <Blinky color={colors.csOrange}/>

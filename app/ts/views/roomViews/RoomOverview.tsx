@@ -30,7 +30,7 @@ import { SetupDeviceEntry_RoomOverview }        from "../components/deviceEntrie
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import { STONE_TYPES }                 from "../../Enums";
 import { HubEntry }                    from "../components/deviceEntries/HubEntry";
-import { NavBarBlur, TopBarBlur }      from "../components/NavBarBlur";
+import { Blinker, NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
 import { BackIcon, EditDone, EditIcon, SettingsIconLeft } from "../components/EditIcon";
 import { Icon }                        from "../components/Icon";
 import { NotificationFiller }          from "../components/NotificationLine";
@@ -41,6 +41,7 @@ import { HeaderTitle }                 from "../components/HeaderTitle";
 import { Get }                         from "../../util/GetUtil";
 import { MapProvider }                 from "../../backgroundProcesses/MapProvider";
 import { Blur } from "../components/Blur";
+import { HighlightableIcon } from "../components/animated/HighlightableIcon";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
@@ -421,7 +422,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           />
         </TopBarBlur>
         <NavBarBlur xxlight line/>
-        { this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
+        { !this.state.editMode && this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => {
             this.setState({dimMode:state});
             PERSISTED_DIMMING_OVERLAY_STATE.value = state;
@@ -431,14 +432,23 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
   }
 }
 
-
 function DimmerSwitch({dimMode, setDimMode}) {
   let size = 65;
+
+  let state = core.store.getState();
+  let shouldHighlight = state.app.hasSeenDimmingButton === false;
+
   return (
     <TouchableOpacity style={{
       position:'absolute',
       bottom: tabBarHeight + 5, right: 5
-    }} onPress={() => { setDimMode(!dimMode); }}>
+    }} onPress={() => {
+      let state = core.store.getState();
+      if (state.app.hasSeenDimmingButton === false) {
+        core.store.dispatch({type:"UPDATE_APP_SETTINGS", data: {hasSeenDimmingButton: true}});
+      }
+      setDimMode(!dimMode);
+    }}>
       <Blur
         blurType={'light'}
         blurAmount={4}
@@ -450,8 +460,9 @@ function DimmerSwitch({dimMode, setDimMode}) {
           <Icon name={'md-switch'} size={50} color={colors.white.hex} />
         </SlideFadeInView>
         <SlideFadeInView style={styles.centered} visible={!dimMode} height={size}>
-          <Icon name={'ion5-ios-bulb-outline'} size={42} color={colors.white.hex} />
+          <HighlightableIcon name={'ion5-ios-bulb-outline'} size={42} color={colors.white.hex} enabled={shouldHighlight} />
         </SlideFadeInView>
+        { shouldHighlight && <Blinker style={{top:0.5*size, left:0.5*size}}  /> }
       </Blur>
     </TouchableOpacity>
   );
@@ -459,9 +470,18 @@ function DimmerSwitch({dimMode, setDimMode}) {
 
 
 function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
-  let launchEditModal = () => { NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id})};
+  let launchEditModal = () => {
+    let state = core.store.getState();
+    if (state.app.hasSeenEditLocationIcon === false) {
+      core.store.dispatch({type:"UPDATE_APP_SETTINGS", data: {hasSeenEditLocationIcon: true}});
+    }
+    NavigationUtil.launchModal("RoomEdit", {sphereId, locationId: location.id});
+  };
 
   let amountOfCrownstonesInLocation = DataUtil.getAmountOfCrownstonesInLocation(sphereId, location.id);
+  let state = core.store.getState();
+  let shouldHighlight = state.app.hasSeenEditLocationIcon === false || amountOfCrownstonesInLocation === 0;
+
 
   return (
     <View style={{flexDirection:'row', alignItems:'center', width: screenWidth}}>
@@ -475,7 +495,7 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
         <HeaderTitle title={location.config.name} maxWidth={screenWidth-70-50-50}/>
       </TouchableOpacity>
       <SlideSideFadeInView visible={editMode} width={50}>
-        <SettingsIconLeft onPress={launchEditModal} highlight={amountOfCrownstonesInLocation === 0} testID={'editRoom'}/>
+        <SettingsIconLeft onPress={launchEditModal} highlight={shouldHighlight} testID={'editRoom'}/>
       </SlideSideFadeInView>
       <View style={{flex:1, height:30}} />
       <SlideSideFadeInView visible={editMode} width={70}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
