@@ -207,7 +207,6 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
       ]
     };
 
-    console.log("RENDER HERE", this.props.locationId, this.state.showErrorState)
 
     let showLocalizationIcon = LocalizationUtil.shouldTrainLocationNow(this.props.sphereId, this.props.locationId);
     let room = Get.location(this.props.sphereId, this.props.locationId);

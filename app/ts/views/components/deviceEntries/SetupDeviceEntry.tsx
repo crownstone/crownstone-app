@@ -9,7 +9,7 @@ import {
   Alert,
   TouchableOpacity,
   Text,
-  View, ActivityIndicator, ViewStyle
+  View, ActivityIndicator, ViewStyle, Platform
 } from "react-native";
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
@@ -224,7 +224,7 @@ export function SetupDeviceEntry_RoomOverview(props: SetupDeviceEntryProps) {
       {...props}
       title={props.item.name}
       heightOffset={10}
-      backgroundColor={colors.blue.rgba(0.7)}
+      backgroundColor={colors.blue.rgba(Platform.OS === 'android' ? 0.9 : 0.7)}
       labelItem={<SetupDeviceEntryLabel />}
       iconItem={<SetupDeviceEntryIcon icon={props.item.icon} />}
       tapCallback={props.callback}

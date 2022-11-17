@@ -20,7 +20,7 @@ import {BlurEntryDevIcon, BlurEntrySettingsIcon, DraggableBlurEntry} from "../Bl
 import {colors} from "../../styles";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../../ExternalConfig";
-import {ActivityIndicator, Alert} from "react-native";
+import { ActivityIndicator, Alert, Platform } from "react-native";
 
 
 interface DeviceEntryProps extends DraggableProps {
@@ -92,12 +92,12 @@ export function DeviceEntry(props: DeviceEntryProps) {
 
 
   if (StoneUtil.shouldUpdateBeforeBeingUsed(stone)) {
-    backgroundColor = colors.purple.rgba(0.5);
+    backgroundColor = colors.purple.rgba(Platform.OS === 'android' ? 0.9 : 0.5);
     tapCallback = () => { NavigationUtil.launchModal("DfuIntroduction", { sphereId: props.sphereId}) }
   }
 
   if (stone.errors.hasError) {
-    backgroundColor = colors.csOrange.rgba(0.5);
+    backgroundColor = colors.csOrange.rgba(Platform.OS === 'android' ? 0.9 : 0.5);
     tapCallback = () => { NavigationUtil.launchModal("DeviceError", { sphereId: props.sphereId, stoneId: props.stoneId}) }
   }
 
