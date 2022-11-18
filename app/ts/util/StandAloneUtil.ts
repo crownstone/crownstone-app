@@ -1,4 +1,5 @@
 import { base_core } from "../Base_core";
+import { DAY_INDICES_SUNDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP, MONTH_INDICES, MONTH_LABEL_MAP } from "../Constants";
 
 export const xUtil = {
 
@@ -78,6 +79,43 @@ export const xUtil = {
 
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
   },
+
+
+  // indicator should be Sunday, 5th of July 2022 or Zondag, 5 juli 2022
+  getLocaleDateFormat: function(timestamp : timestamp, locale : string = 'en_us') {
+    let monthString = MONTH_LABEL_MAP(MONTH_INDICES[new Date(timestamp).getMonth()]);
+    let dayString = DAY_LABEL_MAP(DAY_INDICES_SUNDAY_START[new Date(timestamp).getDay()]);
+    if (locale == 'en_us') {
+      return `${dayString}, ${xUtil.getDateCountLocaleFormat(timestamp)} of ${monthString} ${new Date(timestamp).getFullYear()}`;
+    }
+    else {
+      return `${dayString}, ${xUtil.getDateCountLocaleFormat(timestamp)} ${monthString.toLowerCase()} ${new Date(timestamp).getFullYear()}`;
+    }
+  },
+
+
+  getDateCountLocaleFormat: function (timestamp: timestamp, locale: string = 'en_us')  {
+    let date = new Date(timestamp).getDate();
+    if (locale == 'en_us') {
+      if (date == 1 || date == 21 || date == 31) {
+        return date + 'st';
+      }
+      else if (date == 2 || date == 22) {
+        return date + 'nd';
+      }
+      else if (date == 3 || date == 23) {
+        return date + 'rd';
+      }
+      else {
+        return date + 'th';
+      }
+    }
+    else {
+      return date;
+    }
+  },
+
+
 
   getTimeFormat: function(timestamp, showSeconds = true)  {
     if (timestamp === 0) {

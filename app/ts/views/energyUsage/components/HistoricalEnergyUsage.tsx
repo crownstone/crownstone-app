@@ -19,6 +19,13 @@ import {
 
 import { ButtonBar } from "../../components/editComponents/ButtonBar";
 import {Blur} from "../../components/Blur";
+import { core } from "../../../Core";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("HistoricalEnergyUsage", key)(a,b,c,d,e);
+}
 
 export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_TYPE}) {
   let [ preProcessedData, setPreProcessedData ] = useState<StoneBucketEnergyData>(null);
@@ -74,11 +81,33 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
 
   let indicator;
   let calculator;
+
+  let locale = core.store.getState().user.language || "en_us";
   switch(props.mode) {
     case "LIVE":
       break;
     case "DAY":
-      indicator = xUtil.getDateFormat(startDateValue)
+      // get day of the week
+      let day = new Date(startDateValue).getDay();
+
+      // check if the startDate is today
+      let today = new Date().getDay();
+      let isToday = (day === today);
+
+      // check if startDate is yesterday
+      let yesterday = new Date(Date.now() - 24*60*60*1000).getDay();
+      let isYesterday = (day === yesterday);
+
+      indicator = xUtil.getDateFormat(startDateValue);
+      if (isToday) {
+        indicator = lang("Today");
+      }
+      else if (isYesterday) {
+        indicator = lang("Yesterday");
+      }
+      else {
+        indicator = xUtil.getLocaleDateFormat(startDateValue, locale);
+      }
       calculator = EnergyIntervalCalculation.days.getNthSamplePoint;
       break;
     case "WEEK":

@@ -18,6 +18,7 @@ import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -139,6 +140,20 @@ export class LocationPermissionOverlay extends Component<any, any> {
       <SimpleOverlayBox
         visible={this.state.visible}
         overrideBackButton={false}
+        canClose={true}
+        closeCallback={() => {
+          NavigationUtil.closeOverlay(this.props.componentId);
+          OnScreenNotifications.setNotification({
+            source: "LocationPermissionOverlay",
+            id: "LocationPermissionState",
+            label: lang("Location_disabled"),
+            icon: "c1-locationPin1",
+            backgroundColor: colors.csOrange.rgba(0.5),
+            callback: () => {
+              NavigationUtil.showOverlay('LocationPermissionOverlay', {status: this.state.notificationType});
+            }
+          })
+        }}
       >
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
