@@ -1125,6 +1125,7 @@ export default {
     _Request_not_allowed______left:         function() { return "OK" },
     Only_while_in_app_permiss:              function() { return "Only while-in-app permissions granted." },
     ManualPermission_title:                 function() { return "Location permission missing." },
+    Location_disabled:                      function() { return "Permission missing." },
     Location_Services_are_on_:              function() { return "Location Services are on!" },
     Location_Services_are_dis:              function() { return "Location Services are disabled." },
     Location_permission_missi:              function() { return "Location permission missing." },

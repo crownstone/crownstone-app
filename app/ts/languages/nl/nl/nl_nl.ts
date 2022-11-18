@@ -2091,6 +2091,7 @@ export default {
     _Request_not_allowed______header:      function() { return "Verzoek niet toegestaan..."; },
     _Request_not_allowed______body:        function() { return "Zorg ervoor dat de toestemming is ingesteld op altijd. Als dat al het geval is, zet hem dan op terwijl hij in gebruik is, en terug op altijd."; },
     _Request_not_allowed______left:        function() { return "Oké"; },
+    Location_disabled:                     function() { return "Toestemming nodig..." },
     Only_while_in_app_permiss:             function() { return "Alleen bij gebruik van app toegestaan."; },
     Location_Services_are_on_:             function() { return "Locatiediensten staat aan!"; },
     Location_Services_are_dis:             function() { return "Locatiediensten staat uit..."; },
