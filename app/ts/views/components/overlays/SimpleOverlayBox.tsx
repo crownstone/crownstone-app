@@ -15,6 +15,7 @@ import { HiddenFadeInBlur} from "../animated/FadeInView";
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight, topBarHeight} from "../../styles";
 import {Blur} from "../Blur";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface simpleOverlayBoxProps {
   overrideBackButton?: any,
@@ -84,41 +85,62 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
   }
 
   render() {
-    let closeIconSize = 40;
 
     return (
-      <HiddenFadeInBlur
-        style={[
-          {
-            flex:1,
-            backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2),
-            overflow:"hidden",
-          },
-          this.props.wrapperStyle
-        ]}
-        height={screenHeight}
-        maxOpacity={this.props.maxOpacity}
-        visible={this.props.visible}
-      >
-        <SafeAreaView style={{flex:1}}>
-          <View style={{flex:1, padding:30}}>
-            <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
-              {this.props.scrollable && <ScrollView contentContainerStyle={{flex:1, paddingTop: 60}}>{this.props.children}</ScrollView> }
-              {!this.props.scrollable && <View style={{flex:1, paddingTop: 60}}>{this.props.children}</View> }
-              <Blur blurType={'light'} blurAmount={3} style={{
-                position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,
-                borderRadius: 10, backgroundColor: colors.white.rgba(0.5),
-                justifyContent:'center',
-                paddingLeft:30
-              }}>
-                { this._getTitle() }
-              </Blur>
-              { this._getCloseIcon(closeIconSize) }
-              { this._getFooterComponent()}
-            </View>
-          </View>
-        </SafeAreaView>
-      </HiddenFadeInBlur>
+      <SafeAreaProvider style={{flex:1, backgroundColor: colors.white.hex}}>
+        <HiddenFadeInBlur
+          style={[
+            {
+              flex:1,
+              backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2),
+              overflow:"hidden",
+            },
+            this.props.wrapperStyle
+          ]}
+          height={screenHeight}
+          maxOpacity={this.props.maxOpacity}
+          visible={this.props.visible}
+        >
+          <SimpleOverlayContent
+            scrollable={this.props.scrollable}
+            getTitle={() => { return this._getTitle() }}
+            getFooterComponent={() => { return this._getFooterComponent() }}
+            getCloseIcon={(size) => { return this._getCloseIcon(size) }}
+            >{this.props.children}</SimpleOverlayContent>
+
+        </HiddenFadeInBlur>
+      </SafeAreaProvider>
     );
   }
+}
+
+
+function SimpleOverlayContent(props: {
+  scrollable: boolean,
+  children?: any,
+  getTitle: () => JSX.Element,
+  getFooterComponent: () => JSX.Element,
+  getCloseIcon: (size: number) => JSX.Element,
+  }) {
+  let insets = useSafeAreaInsets();
+  let closeIconSize = 40;
+
+  return (
+    <View style={{flex:1, padding:30, paddingTop: insets.top + 30, paddingBottom: insets.bottom + 30}}>
+      <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
+        {props.scrollable && <ScrollView contentContainerStyle={{flex:1, paddingTop: 60}}>{props.children}</ScrollView> }
+        {!props.scrollable && <View style={{flex:1, paddingTop: 60}}>{props.children}</View> }
+        <Blur blurType={'light'} blurAmount={3} style={{
+          position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,
+          borderRadius: 10, backgroundColor: colors.white.rgba(0.5),
+          justifyContent:'center',
+          paddingLeft:30
+        }}>
+          { props.getTitle() }
+        </Blur>
+        { props.getCloseIcon(closeIconSize) }
+        { props.getFooterComponent()}
+      </View>
+    </View>
+  )
 }
