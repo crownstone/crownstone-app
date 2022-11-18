@@ -16,37 +16,30 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 class LocationHandlerClass {
-  _initialized : boolean;
-  _readyForLocalization = false;
+  _initialized : boolean = false;
+  _readyForLocalization = true;
 
   _unsubscribeLocationEvents = [];
 
-
-
-  constructor() {
-    this._initialized = false;
-
-    // subscribe to iBeacons when the spheres in the cloud change.
-    core.eventBus.on('databaseChange', ({change}) => {
-      if (change.changeSpheres) {
-        this.initializeTracking();
-      }
-    });
-
-    // when a sphere is created, we track all spheres anew.
-    core.eventBus.on('userLoggedInFinished', () => { this._readyForLocalization = true; });
-    core.eventBus.on('sphereCreated', () => {
-      if (this._readyForLocalization) {
-        this.initializeTracking();
-      }
-    });
-
-  }
 
   init() {
     LOG.info('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;
+
+      // subscribe to iBeacons when the spheres in the cloud change.
+      core.eventBus.on('databaseChange', ({change}) => {
+        if (change.changeSpheres) {
+          this.initializeTracking();
+        }
+      });
+
+      // when a sphere is created, we track all spheres anew.
+      core.eventBus.on('sphereCreated', () => {
+        if (this._readyForLocalization) {
+          this.initializeTracking();
+        }
+      });
 
       // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); }));
