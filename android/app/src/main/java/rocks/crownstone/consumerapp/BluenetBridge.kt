@@ -29,7 +29,6 @@ import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.then
 import nl.komponents.kovenant.unwrap
-import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.BluenetConfig
 import rocks.crownstone.bluenet.behaviour.BehaviourHashGen
@@ -296,8 +295,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		initBluenetPromise.success {
 			handler.post {
 				Log.i(TAG, "subscribeBluenetEvents")
-				bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
-				bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
+				bluenet.subscribe(BluenetEvent.PERMISSIONS_MISSING, { data: Any? -> onLocationStatus(BluenetEvent.PERMISSIONS_MISSING) })
+				bluenet.subscribe(BluenetEvent.PERMISSIONS_GRANTED, { data: Any? -> onLocationStatus(BluenetEvent.PERMISSIONS_GRANTED) })
 				bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
 				bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF, { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
 				bluenet.subscribe(BluenetEvent.BLE_TURNED_ON, { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
@@ -551,12 +550,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun sendLocationStatus() {
 		Log.i(TAG, "sendLocationStatus")
 		// "locationStatus" can be: "unknown", "off", "foreground", "on", "noPermission"
-		if (!bluenet.isLocationPermissionGranted()) {
+		if (!bluenet.isPermissionsGranted()) {
 			val activity = reactContext.currentActivity
-			if (activity == null || !bluenet.isLocationPermissionRequestable(activity)) {
+			if (activity == null || !bluenet.isPermissionRequestable(activity)) {
+				Log.i(TAG, "manualPermissionRequired: activity=$activity")
 				sendEvent("locationStatus", "manualPermissionRequired")
 			}
 			else {
+				Log.i(TAG, "noPermission")
 				sendEvent("locationStatus", "noPermission")
 			}
 		}
@@ -2893,12 +2894,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onLocationStatus(event: BluenetEvent) {
 		Log.i(TAG, "onLocationStatus $event")
 		when (event) {
-			BluenetEvent.NO_LOCATION_SERVICE_PERMISSION -> {
+			BluenetEvent.PERMISSIONS_MISSING -> {
 //				if (backgroundScanning && !appForeGround) {
 //					sendNotification(LOCATION_STATUS_NOTIFICATION_ID, "Location permission missing.", "App needs location permission for localization to work.")
 //				}
 			}
-			BluenetEvent.LOCATION_PERMISSION_GRANTED -> {
+			BluenetEvent.PERMISSIONS_GRANTED -> {
 			}
 			BluenetEvent.LOCATION_SERVICE_TURNED_ON -> {
 			}
@@ -3246,7 +3247,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-		bluenet.handlePermissionResult(requestCode, permissions, grantResults)
+		bluenet.handlePermissionResult(requestCode, permissions, grantResults, currentActivity)
 	}
 //endregion
 
@@ -3447,7 +3448,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			title = "Localization not working"
 			text = "Bluetooth must be enabled for localization to work."
 		}
-		else if (!bluenet.isLocationPermissionGranted()) {
+		else if (!bluenet.isPermissionsGranted()) {
 			title = "Localization not working"
 			text = "App needs location permission for localization to work."
 		}
@@ -3516,7 +3517,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
 //		notificationIntent.setAction("ACTION_MAIN");
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-		val pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+		val pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
 
 		val notification = NotificationCompat.Builder(reactContext, channelId)

@@ -43,7 +43,8 @@
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
 			android:launchMode="singleTask"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustNothing">
+			android:windowSoftInputMode="adjustNothing"
+			android:exported="true" >
 			<!--android:windowSoftInputMode="adjustResize"-->
 			<!--android:configChanges="keyboard|keyboardHidden"-->
 			<!--android:configChanges="keyboard|keyboardHidden|orientation|screenSize"-->
@@ -63,7 +64,9 @@
 			android:label="@string/app_name" >
 		</service>
 
-		<receiver android:name="rocks.crownstone.consumerapp.CrownstoneBootReceiver">
+		<receiver
+			android:name="rocks.crownstone.consumerapp.CrownstoneBootReceiver"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
 				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -78,7 +81,10 @@
 			android:exported="false"
 			android:label="Crownstone update" >
 		</service>
-		<activity android:name=".NotificationActivity"/>
+
+		<activity
+			android:name=".NotificationActivity"
+			android:exported="false"/>
 
 		<!-- =========================================== -->
 		<!-- required for react-native-push-notification -->
@@ -93,7 +99,10 @@
 
 		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
 		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+
+		<receiver
+			android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver"
+			android:exported="false" >
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
 				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
