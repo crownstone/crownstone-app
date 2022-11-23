@@ -105,7 +105,7 @@ export const FingerprintUtil = {
 
 
   getDeviceTypeDescription(): string {
-    return `${DeviceInfo.getDeviceId()}_${DeviceInfo.getDeviceType()}`
+    return `${DeviceInfo.getDeviceId()}_${DeviceInfo.getManufacturerSync()}_${DeviceInfo.getModel()}`;
   },
 
 

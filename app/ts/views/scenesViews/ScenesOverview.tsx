@@ -93,7 +93,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
         let activeSphereId = state.app.activeSphere;
         let activeSphere = Get.activeSphere();
 
-        let redrawTriggered = false;
         if (activeSphere) {
           let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
           if (this.sortedList) {
@@ -103,7 +102,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
           else {
             this.initializeSortedList(activeSphereId, state);
           }
-          redrawTriggered = true;
           this.setState({ data: this.sortedList.getDraggableList() });
           return;
         }
@@ -169,10 +167,9 @@ export class ScenesOverview extends LiveComponent<any, any> {
     let sphere = Get.sphere(activeSphereId);
 
     let content;
-    let hintShown = false
 
-    if (activeSphereId && state.spheres[activeSphereId]) {
-      let scenes = state.spheres[activeSphereId].scenes;
+    if (activeSphereId && sphere) {
+      let scenes = sphere.scenes;
       let sceneIds = Object.keys(scenes);
       if (sceneIds.length === 0 && this.state.editMode === false) {
         content = <SceneIntroduction sphereId={activeSphereId} />
@@ -209,8 +206,12 @@ export class ScenesOverview extends LiveComponent<any, any> {
                   if (!this.state.dragging) { return; }
 
                   let dataToUse = [];
+
+                  let sceneIds = {};
+                  Object.keys(sphere.scenes).map((id) => { sceneIds[sphere.scenes[id].cloudId] = true; });
+
                   for (let i = 0; i < data.length; i++) {
-                    if (scenes[data[i]] !== undefined) {
+                    if (sceneIds[data[i]] !== undefined) {
                       dataToUse.push(data[i]);
                     }
                   }
