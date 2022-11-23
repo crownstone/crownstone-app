@@ -4,37 +4,30 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ScenesOverview", key)(a,b,c,d,e);
 }
 import * as React                 from 'react';
-import {Text, View, Alert, ScrollView, TouchableOpacity} from "react-native";
+import {Text, View, Alert } from "react-native";
 import {
   screenWidth,
   colors,
-  background,
   styles,
   tabBarHeight,
-  topBarHeight,
-  statusBarHeight,
   availableScreenHeight, viewPaddingTop
 } from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../Core";
-import { TopBarUtil }             from "../../util/TopBarUtil";
 import { BackButtonHandler }      from "../../backgroundProcesses/BackButtonHandler";
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
 import { SlideFadeInView }        from "../components/animated/SlideFadeInView";
 import { EventBusClass }          from "../../util/EventBus";
-import { SceneConstants }         from "./constants/SceneConstants";
 import { SceneCreateNewItem }     from "./supportComponents/SceneCreateNewItem";
-import { SceneIntroduction,
-         ScenesWithoutSpheres }   from "./supportComponents/SceneIntroduction";
+import { SceneIntroduction }   from "./supportComponents/SceneIntroduction";
 import { SceneItem }              from "./supportComponents/SceneItem";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { ScaledImage } from "../components/ScaledImage";
-import { Background, BackgroundCustomTopBarNavbar } from "../components/Background";
-import { Icon } from "../components/Icon";
+import { BackgroundCustomTopBarNavbar } from "../components/Background";
 import { Get } from "../../util/GetUtil";
-import { NavBarBlur, TopBarBlur } from "../components/NavBarBlur";
-import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
+import { TopBarBlur } from "../components/NavBarBlur";
+import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import { EditDone, EditIcon } from "../components/EditIcon";
 import {ContentNoSphere} from "../energyUsage/components/ContentNoSphere";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
@@ -43,7 +36,6 @@ const CLASS_NAME = "ScenesOverview";
 const HINT_THRESHOLD = 3;
 
 export class ScenesOverview extends LiveComponent<any, any> {
-  _panResponder : any
   localEventBus : EventBusClass;
   unsubscribeStoreEvents = null;
   sortedList : SortedList = null;
@@ -56,7 +48,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
-    let data = this.initializeSortedList(activeSphere, state);
+    let data = this.initializeSortedList(activeSphere);
 
     this.state = {
       editMode: false,
@@ -68,7 +60,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     this.localEventBus = new EventBusClass('localScenesOverview');
   }
 
-  initializeSortedList(activeSphereId, state) {
+  initializeSortedList(activeSphereId) {
     let data = [];
     if (activeSphereId) {
       let activeSphere = Get.activeSphere();
@@ -95,12 +87,9 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
         if (activeSphere) {
           let sceneIds = Object.keys(activeSphere.scenes).map((id) => { return activeSphere.scenes[id].cloudId });
+          this.initializeSortedList(activeSphereId);
           if (this.sortedList) {
-            this.initializeSortedList(activeSphereId, state);
             this.sortedList.mustContain(sceneIds);
-          }
-          else {
-            this.initializeSortedList(activeSphereId, state);
           }
           this.setState({ data: this.sortedList.getDraggableList() });
           return;

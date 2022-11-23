@@ -156,6 +156,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
       eventStatus.changeStones = affectedIds;
     case 'UPDATE_STONE_LOCAL_CONFIG':
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_STONE_CLOUD_ID':
       let oldStoneConfig = oldState?.spheres?.[action.sphereId]?.stones?.[action.stoneId]?.config ?? null;
       let newStoneConfig = newState?.spheres?.[action.sphereId]?.stones?.[action.stoneId]?.config ?? null;
       if (
@@ -165,6 +166,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
         eventStatus.updateStoneIdentificationConfig = affectedIds;
       }
       eventStatus.updateStoneCoreConfig = affectedIds;
+      eventStatus.updateStoneConfig = affectedIds;
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':
     case 'CLEAR_STONE_ERRORS':

@@ -142,7 +142,7 @@ export class SortedList {
     }
 
     // remove other items that should not be in there.
-    for (let i = this.sortedList.length; i >= 0; i--) {
+    for (let i = this.sortedList.length - 1; i >= 0; i--) {
       if (!requiredItemsMap[this.sortedList[i]]) {
         this.sortedList.splice(i,1);
         changeRequired = true;

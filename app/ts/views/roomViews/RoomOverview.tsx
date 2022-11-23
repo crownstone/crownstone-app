@@ -160,16 +160,21 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           return this.forceUpdate()
       }
       if (
-        (change.updateStoneConfig)      ||
         (change.updateActiveSphere)     ||
         (change.changeFingerprint)      ||
-        (change.updateLocationConfig    && change.updateLocationConfig.locationIds[this.props.locationId]) ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
         (change.changeStoneRSSI         && change.changeStoneRSSI.sphereIds[this.props.sphereId])          ||
         (change.stoneUsageUpdated       && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
-        (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
-        (change.changeHubs)      ||
+        (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])
+      ) {
+        this.forceUpdate();
+        return;
+      }
+      if (
+        (change.updateStoneConfig) ||
+        (change.stoneLocationUpdated && change.stoneLocationUpdated.sphereIds[this.props.sphereId]) ||
+        (change.changeHubs)        ||
         (change.changeStones)
       ) {
         this.sortedList.mustContain(this.getIdsInRoom());
