@@ -24,6 +24,7 @@ import {core} from "../../../../Core";
 import {SliderBar} from "../../../components/editComponents/SliderBar";
 import {xUtil} from "../../../../util/StandAloneUtil";
 import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import {ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID} from "../../../../database/reducers/stoneSubReducers/abilities";
 
 
 export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
@@ -57,8 +58,8 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
       type:      "UPDATE_ABILITY_PROPERTY",
       sphereId:   this.props.sphereId,
       stoneId:    this.props.stoneId,
-      abilityId: 'switchcraft',
-      propertyId:'defaultDimValue',
+      abilityId:  ABILITY_TYPE_ID.switchcraft,
+      propertyId: ABILITY_PROPERTY_TYPE_ID.defaultDimValue,
       data: {
         valueTarget: value,
         syncedToCrownstone: false,
@@ -84,16 +85,17 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
         items.push({
           type:"switch",
           icon: <Icon name="md-information-circle" size={30} radius={10} color={colors.green.hex} />,
-          value: this.state.doubleTapValue,
+          value: this.state.doubleTapSwitchcraft,
           label: lang("Double_Tap_Switchcraft"),
           callback:(value) => {
+            console.log("VALUE!", value);
             this.setState({doubleTapSwitchcraft: value})
             core.store.dispatch({
               type:      "UPDATE_ABILITY_PROPERTY",
               sphereId:   this.props.sphereId,
               stoneId:    this.props.stoneId,
-              abilityId: 'switchcraft',
-              propertyId:'doubleTapSwitchcraft',
+              abilityId:  ABILITY_TYPE_ID.switchcraft,
+              propertyId: ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft,
               data: {
                 valueTarget: value,
                 syncedToCrownstone: false,

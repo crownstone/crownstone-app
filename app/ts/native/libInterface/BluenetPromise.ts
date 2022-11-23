@@ -75,7 +75,13 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
     bluenetArguments.push(promiseResolver);
 
     // @ts-ignore
-    Bluenet[functionName].apply(this, bluenetArguments);
+    try {
+      Bluenet[functionName].apply(this, bluenetArguments);
+    }
+    catch (err: any) {
+      console.log("FAILED TO CALL BLUENET FUNCTION", functionName, "with arguments", bluenetArguments);
+      reject(err);
+    }
   })
 };
 

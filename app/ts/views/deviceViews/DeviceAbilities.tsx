@@ -110,7 +110,6 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let active = getActiveState(props.stone, props.type);
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
-  console.log("DATA", data);
   let helpColor = colors.black.rgba(0.5);
   // synced = false
   return (
@@ -168,6 +167,8 @@ function getActiveState(stone, type) {
 }
 
 function getSyncedState(stone, type) {
+  let propSyncedState = checkSyncedStateOfProperties(stone, type);
+  if (propSyncedState === false) { return false; }
   switch (type) {
     case 'dimming':
       return stone.abilities.dimming.syncedToCrownstone;
@@ -178,10 +179,25 @@ function getSyncedState(stone, type) {
   }
 }
 
+function checkSyncedStateOfProperties(stone : StoneData, type) : boolean {
+  let ability = stone.abilities[type];
+  if (!ability) { return true; }
+  let properties = ability.properties;
+  if (!properties) { return true; }
+  for (let prop in properties) {
+    if (properties[prop] && properties[prop].syncedToCrownstone === false) {
+      return false;
+    }
+  }
+
+
+  return true;
+}
+
+
 function getData(props, stone, active) {
   let propsToPass = {stoneId: props.stoneId, sphereId: props.sphereId, information: null};
 
-  console.log("GET DATA", props.type, active);
   switch (props.type) {
     case 'dimming':
       propsToPass.information = () => { Linking.openURL(Languages.activeLocale === "nl_nl" ? 'https://crownstone.rocks/nl/compatibility/dimming/' : 'https://crownstone.rocks/compatibility/dimming/').catch(() => {}) };

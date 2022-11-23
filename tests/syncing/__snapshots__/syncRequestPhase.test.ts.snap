@@ -19,7 +19,7 @@ exports[`Check if fingerprints are syncing 1`] = `
         "data": {
           "createdAt": "2022-01-01T12:00:00.000Z",
           "createdByUser": "user_uuid2002-2003",
-          "createdOnDeviceType": "undefined_undefined",
+          "createdOnDeviceType": "undefined_undefined_undefined",
           "crownstonesAtCreation": [
             "56541_57055",
             "58597_59111",
@@ -449,7 +449,7 @@ exports[`Check if fingerprints are syncing 2`] = `
                 "cloudId": null,
                 "createdAt": 1641038400000,
                 "createdByUser": "user_uuid2002-2003",
-                "createdOnDeviceType": "undefined_undefined",
+                "createdOnDeviceType": "undefined_undefined_undefined",
                 "crownstonesAtCreation": {
                   "56541_57055": true,
                   "58597_59111": true,

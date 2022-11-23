@@ -3,6 +3,7 @@ import {resetMocks} from "./__testUtil/mocks/suite.mock";
 import {addSphere, addStone} from "./__testUtil/helpers/data.helper";
 import {core} from "../app/ts/Core";
 import {xUtil} from "../app/ts/util/StandAloneUtil";
+import {ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID} from "../app/ts/database/reducers/stoneSubReducers/abilities";
 
 beforeEach(async () => {
   resetMocks()
@@ -36,63 +37,28 @@ test("versionUtil", async () => {
   // expect(xUtil.versions.isLower('3fca3fva3dfv4rdf2qf3','4.6.3.1')).toBeFalsy()
 })
 
-test("abilities", async () => {
+test("Check if double tap switchcraft database flow works", async () => {
   addSphere();
   addStone({handle:'handle1'});
-  addStone({handle:'handle2'});
-  addStone({handle:'handle3'});
-  let actions = [];
   let state = core.store.getState();
 
-  // console.log(JSON.stringify(state, null, 2))
-  for (let [sphereId, sphere] of Object.entries(state.spheres)) {
-    // @ts-ignore
-    for (let [stoneId, stone] of Object.entries(sphere.stones)) {
-      actions.push({type:"REMOVE_ALL_ABILITIES", sphereId, stoneId});
-      // actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'dimming',
-      //   data: {type:'dimming', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      // });
-      // actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'dimming', propertyId: 'softOnSpeed',
-      //   data: {type:'softOnSpeed', value: 5, valueTarget: 8, syncedToCrownstone: true, updatedAt:100}
-      // });
-      //
-      // actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'switchcraft',
-      //   data: {type:'switchcraft', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      // });
-      //
-      // actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'tapToToggle',
-      //   data: {type:'tapToToggle', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      // });
-      // actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'tapToToggle', propertyId: 'rssiOffset',
-      //   data: {type:'rssiOffset', value: 0, valueTarget: 0, syncedToCrownstone: true, updatedAt:100}
-      // });
-    }
-  }
+  let sphereId = Object.keys(state.spheres)[0];
+  let stoneId = Object.keys(state.spheres[sphereId].stones)[0];
+  expect(state.spheres[sphereId].stones[stoneId].abilities[ABILITY_TYPE_ID.switchcraft].properties[ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft].valueTarget).toBeFalsy()
+  expect(state.spheres[sphereId].stones[stoneId].abilities[ABILITY_TYPE_ID.switchcraft].properties[ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft].syncedToCrownstone).toBeTruthy()
 
-  for (let [sphereId, sphere] of Object.entries(state.spheres)) {
-    // @ts-ignore
-    for (let [stoneId, stone] of Object.entries(sphere.stones)) {
-      actions.push({type:"REMOVE_ALL_ABILITIES", sphereId, stoneId});
-      actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'dimming',
-        data: {type:'dimming', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      });
-      actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'dimming', propertyId: 'softOnSpeed',
-        data: {type:'softOnSpeed', value: 5, valueTarget: 8, syncedToCrownstone: true, updatedAt:100}
-      });
+  core.store.dispatch({
+    type:      "UPDATE_ABILITY_PROPERTY",
+    sphereId:   sphereId,
+    stoneId:    stoneId,
+    abilityId:  ABILITY_TYPE_ID.switchcraft,
+    propertyId: ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft,
+    data: {
+      valueTarget: true,
+      syncedToCrownstone: false,
+    }});
 
-      actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'switchcraft',
-        data: {type:'switchcraft', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      });
-
-      actions.push({type:"ADD_ABILITY", sphereId, stoneId, abilityId:'tapToToggle',
-        data: {type:'tapToToggle', enabled: false, enabledTarget: false, syncedToCrownstone:true, updatedAt:100}
-      });
-      actions.push({type:"ADD_ABILITY_PROPERTY", sphereId, stoneId, abilityId:'tapToToggle', propertyId: 'rssiOffset',
-        data: {type:'rssiOffset', value: 0, valueTarget: 0, syncedToCrownstone: true, updatedAt:100}
-      });
-    }
-  }
-
-  core.store.batchDispatch(actions);
   state = core.store.getState();
+  expect(state.spheres[sphereId].stones[stoneId].abilities[ABILITY_TYPE_ID.switchcraft].properties[ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft].valueTarget).toBeTruthy()
+  expect(state.spheres[sphereId].stones[stoneId].abilities[ABILITY_TYPE_ID.switchcraft].properties[ABILITY_PROPERTY_TYPE_ID.doubleTapSwitchcraft].syncedToCrownstone).toBeFalsy()
 })
