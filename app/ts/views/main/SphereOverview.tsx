@@ -324,8 +324,6 @@ function RoomsRequired(props: {sphereId: sphereId, openSideMenu: () => void}) {
 }
 
 export function SphereOverview(props) {
-  console.log("Drawing sphereOverview")
-
   let sideBarRef = useRef(null);
 
   return (

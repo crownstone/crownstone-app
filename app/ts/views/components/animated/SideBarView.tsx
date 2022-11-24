@@ -5,6 +5,7 @@ import { screenWidth, styles } from "../../styles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {InvisiblePressable} from "../InvisiblePressable";
 import {core} from "../../../Core";
+import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 
 const DURATION = 300;
 
@@ -23,6 +24,20 @@ export class SideBarView extends Component<any, any> {
       margins:      new Animated.Value(0),
       open:         false
     };
+  }
+
+  componentDidMount() {
+    BackButtonHandler.override("SideBarView", () => {
+      if (this.state.open) {
+        this.close();
+        return true;
+      }
+      return false;
+    });
+  }
+
+  componentWillUnmount() {
+    BackButtonHandler.clearOverride("SideBarView");
   }
 
   open() {
