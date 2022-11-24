@@ -94,8 +94,14 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
 
       let change = data.change;
 
+      if (change.updateStoneErrors) {
+        let showErrorState = DataUtil.areThereStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId);
+        if (showErrorState !== this.state.showErrorState) {
+          this.setState({showErrorState: showErrorState});
+        }
+      }
+
       if (
-        change.updateStoneErrors ||
         change.removeSphere      ||
         change.changeSpheres
       ) {
