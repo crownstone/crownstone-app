@@ -2,13 +2,18 @@ import { MapProvider } from "./MapProvider";
 import { core } from "../Core";
 import { CLOUD } from "../cloud/cloudAPI";
 import {ActiveSphereManager} from "./ActiveSphereManager";
+import { LOGd } from "../logging/Log";
 
 class SpherePresenceManagerClass {
 
   unsubscribe;
   wentToBackground = true;
 
+  userId : string;
+
   init() {
+    this.userId = core.store.getState().user.userId;
+
     this.unsubscribe = core.eventBus.on("AppStateChange", (state) => {
       if (state === "active") {
         if (this.wentToBackground) {
@@ -36,7 +41,12 @@ class SpherePresenceManagerClass {
    * @param event
    */
   handlePresenceEvent(event : PresenceSphereEvent | PresenceLocationEvent) {
+    // do not update the user position based on SSE events if this is about you.
+    // The position of the logged-in user is updated by the app itself, not from external sources.
+    if (event?.user?.id === this.userId) { return; }
+
     let localSphereId = MapProvider.cloud2localMap.spheres[event.sphere.id];
+
     switch (event.subType) {
       case "enterSphere":
         break;

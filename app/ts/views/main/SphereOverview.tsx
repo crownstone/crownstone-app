@@ -51,7 +51,7 @@ export const SPHERE_ID_STORE = {
 
 export class SphereOverviewContent extends LiveComponent<any, any> {
   static options(props) {
-    return {topBar:{visible:false}}
+    return { topBar:{ visible: false }}
   }
 
   unsubscribeEvents : any;

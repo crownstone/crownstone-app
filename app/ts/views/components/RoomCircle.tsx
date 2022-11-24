@@ -61,7 +61,7 @@ class RoomCircleClass extends LiveComponent<any, {scale: any, opacity: any, tapA
 
     this.initializedPosition = true;
     this.state = {
-      scale: new Animated.Value(1),
+      scale:   new Animated.Value(1),
       opacity: new Animated.Value(1),
       tapAndHoldProgress: 0,
       showErrorState: DataUtil.areThereStonesWithErrorsInLocation(this.props.sphereId, this.props.locationId),
