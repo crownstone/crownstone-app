@@ -196,7 +196,7 @@ export class SettingsDiagnostics extends Component<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollView contentContainerStyle={{minHeight:availableScreenHeight}}>
+        <SettingsScrollView>
           { this.getContent() }
         </SettingsScrollView>
       </SettingsNavbarBackground>

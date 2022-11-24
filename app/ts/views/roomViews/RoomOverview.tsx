@@ -151,6 +151,9 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",    (handle) => {
       this.forceUpdate();
     }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => {
+      this.forceUpdate();
+    }));
 
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -163,8 +166,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.updateActiveSphere)     ||
         (change.changeFingerprint)      ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
-        (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
-        (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])
+        (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])
       ) {
         return this.forceUpdate();
       }
@@ -175,7 +177,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.changeStones)
       ) {
         this.sortedList.mustContain(this.getIdsInRoom());
-        return this.forceUpdate();
+        return this.setState({data: this.sortedList.getDraggableList()});
       }
     });
   }
@@ -317,11 +319,11 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     }
 
     let idList = this.sortedList.getDraggableList();
+
     let shownStones = {};
     for (let cloudId of idList) {
       let localId = MapProvider.cloud2localMap.stones[cloudId] ?? MapProvider.cloud2localMap.hubs[cloudId] ?? cloudId;
       let item = stones[localId] ?? hubs[localId];
-
       // stone
       if ('handle' in item.config && shownHandles[item.config.handle] === undefined) {
         shownStones[localId] = true;
@@ -345,11 +347,12 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     if (!sphere) { return <SphereDeleted/> }
     let location = sphere.locations[this.props.locationId];
     if (!location) {
-      return <RoomDeleted/>
+      return <RoomDeleted/>;
     }
 
     this.amountOfDimmableCrownstonesInLocation = DataUtil.getAmountOfDimmableStonesInLocation(this.props.sphereId, this.props.locationId);
     this.amountOfActiveCrownstonesInLocation   = DataUtil.getAmountOfActiveStonesInLocation(this.props.sphereId, this.props.locationId);
+
     let stones = DataUtil.getStonesInLocation(this.props.sphereId, this.props.locationId);
     let hubs   = DataUtil.getHubsInLocation(  this.props.sphereId, this.props.locationId);
     let backgroundImage = null;
@@ -374,8 +377,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           <NotificationFiller visible={this.state.editMode ? false : undefined} />
           <RoomExplanation
             explanation={ this.props.explanation }
-            sphereId={    this.props.sphereId }
-            locationId={  this.props.locationId }
+            sphereId={    this.props.sphereId    }
+            locationId={  this.props.locationId  }
           />
           <NestableDraggableFlatList
             containerStyle={{minHeight: availableScreenHeight, paddingTop: 10}}
@@ -405,7 +408,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
                   dataToUse.push(cloudId);
                 }
               }
-
 
               this.sortedList.update(dataToUse as string[]);
               this.setState({ dragging:false });

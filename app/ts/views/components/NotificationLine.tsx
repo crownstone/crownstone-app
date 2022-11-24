@@ -7,7 +7,7 @@ import { OnScreenNotifications } from "../../notifications/OnScreenNotifications
 import { core } from "../../Core";
 import {Icon} from "./Icon";
 import {ActiveSphereManager} from "../../backgroundProcesses/ActiveSphereManager";
-import {useEvent} from "./hooks/eventHooks";
+import { useEvent, useEventUpdate } from "./hooks/eventHooks";
 import {useState} from "react";
 import {BlurMessageBar} from "./BlurEntries";
 
@@ -88,8 +88,7 @@ export class NotificationLine extends LiveComponent<{showNotifications?: boolean
 }
 
 export function NotificationFiller(props) {
-  let [token, render] = useState(0);
-  useEvent('onScreenNotificationsUpdated', () => {render(token++)});
+  useEventUpdate('onScreenNotificationsUpdated');
 
   let availableNotifications = OnScreenNotifications.getNotifications(ActiveSphereManager.getActiveSphereId());
   let hasNotifications = Object.keys(availableNotifications).length > 0

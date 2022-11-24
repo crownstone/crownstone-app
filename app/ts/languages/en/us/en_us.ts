@@ -2355,7 +2355,7 @@ export default {
     Sphere_Creation:                        function() { return "SPHERE CREATION" },
     Something_went_wrong_with:              function() { return "Something went wrong with the creation of your Sphere." },
     Whoops:                                 function() { return "Whoops!" },
-    Careful_a_sphere_is_not:                function() { return "Careful! A Sphere is not a room, but a completly separated collection of Crownstones. A holiday home or office would be a second Sphere. Using multiple Spheres in the same location is not recommended." },
+    Careful_a_sphere_is_not:                function() { return "Careful! A Sphere is not a room, but a completely separated collection of Crownstones. A holiday home or office would be a second Sphere. Using multiple Spheres in the same location is not recommended." },
     More_items_are_available_:              function() { return "More items are available if you first select a Sphere before going into this menu!" },
     Welcome_:                               function() { return "Welcome!" },
     Changing_sphere_name___:                function() { return "Changing sphere name..." },

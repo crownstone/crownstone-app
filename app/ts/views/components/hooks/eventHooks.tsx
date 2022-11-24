@@ -2,13 +2,18 @@ import * as React from 'react';
 import {core} from "../../../Core";
 import {useForceUpdate} from "./databaseHooks";
 
-export function useEvent(topic, callback, depencencies: any[] = []) {
-  useLocalEvent(core.eventBus, topic, callback, depencencies);
+export function useEvent(topic, callback, dependencies: any[] = []) {
+  useLocalEvent(core.eventBus, topic, callback, dependencies);
 }
-export function useEvents(topics : string[], callback, depencencies: any[] = []) {
+export function useEvents(topics : string[], callback, dependencies: any[] = []) {
   for (let topic of topics) {
-    useLocalEvent(core.eventBus, topic, callback, depencencies);
+    useLocalEvent(core.eventBus, topic, callback, dependencies);
   }
+}
+
+export function useEventUpdate(topic, dependencies: any[] = []) {
+  const forceUpdate = useForceUpdate();
+  useLocalEvent(core.eventBus, topic, forceUpdate, dependencies);
 }
 
 export function useNativeEvent(topic: NativeBusTopic, callback, depencencies: any[] = []) {
