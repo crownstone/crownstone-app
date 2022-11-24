@@ -189,7 +189,7 @@ export class SphereSyncer extends SyncingBase {
     let sphereIds = Object.keys(spheresInState);
     sphereIds.forEach((sphereId) => {
       let sphere = spheresInState[sphereId];
-      if (sphere.config.cloudId) {
+      if (sphere && sphere.config.cloudId) {
         cloudIdMap[sphere.config.cloudId] = sphereId;
       }
     });
@@ -201,7 +201,7 @@ export class SphereSyncer extends SyncingBase {
     let sphereIds = Object.keys(spheresInState);
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = spheresInState[sphereIds[i]];
-      if (sphere.config.iBeaconUUID === sphereInCloud.uuid) {
+      if (sphere && sphere.config.iBeaconUUID === sphereInCloud.uuid) {
         return sphereIds[i];
       }
     }

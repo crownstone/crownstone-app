@@ -79,6 +79,8 @@ export const BluenetPromise : any = function(functionName) : Promise<void>  {
       Bluenet[functionName].apply(this, bluenetArguments);
     }
     catch (err: any) {
+      delete OPEN_PROMISES[id];
+      LOGi.constellation("BluenetPromise: FAILED TO CALL BLUENET FUNCTION", functionName, "with arguments", bluenetArguments);
       console.log("FAILED TO CALL BLUENET FUNCTION", functionName, "with arguments", bluenetArguments);
       reject(err);
     }
