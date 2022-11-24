@@ -107,7 +107,6 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
             getFooterComponent={() => { return this._getFooterComponent() }}
             getCloseIcon={(size) => { return this._getCloseIcon(size) }}
             >{this.props.children}</SimpleOverlayContent>
-
         </HiddenFadeInBlur>
       </SafeAreaProvider>
     );
@@ -128,7 +127,7 @@ function SimpleOverlayContent(props: {
   return (
     <View style={{flex:1, padding:30, paddingTop: insets.top + 30, paddingBottom: insets.bottom + 30}}>
       <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
-        {props.scrollable && <ScrollView contentContainerStyle={{flex:1, paddingTop: 60}}>{props.children}</ScrollView> }
+        {props.scrollable && <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: 60}}>{props.children}</ScrollView> }
         {!props.scrollable && <View style={{flex:1, paddingTop: 60}}>{props.children}</View> }
         <Blur blurType={'light'} blurAmount={3} style={{
           position:'absolute', top:0, width: screenWidth-70, height: 60, paddingTop:20,

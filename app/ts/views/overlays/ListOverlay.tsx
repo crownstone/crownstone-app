@@ -151,7 +151,7 @@ export class ListOverlay extends LiveComponent<any, any> {
         footerComponent={this._getSaveButton()}
       >
           { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback: () => { this.setState({showCustomContent: false}); }}) : this.getElements() }
-          <View style={{height:50}} />
+          <View style={{height:20}} />
       </SimpleOverlayBox>
     );
   }
