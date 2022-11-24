@@ -16,15 +16,15 @@ import {
 } from "../../util/TestUtil";
 import {Assistant, CONFIG} from "../../testSuite.e2e";
 
-export const Stone_edit_appearence = () => {
+export const Stone_edit_appearance = () => {
 
   test('should be on the DeviceOverview view', async () => {
     await waitToStart('DeviceOverview');
   });
 
   test('should be able to go to the Appearance view', async () => {
-    await tap("DeviceAppearence");
-    await waitToNavigate('DeviceEditAppearence');
+    await tap("DeviceAppearance");
+    await waitToNavigate('DeviceEditAppearance');
     await screenshot();
   });
 
@@ -34,8 +34,8 @@ export const Stone_edit_appearence = () => {
     await tap("cancelBack");
     await waitToNavigate('DeviceOverview');
     await screenshot();
-    await tap(`DeviceAppearence`);
-    await waitToNavigate('DeviceEditAppearence');
+    await tap(`DeviceAppearance`);
+    await waitToNavigate('DeviceEditAppearance');
     await expect($("deviceEdit_name")).not.toHaveText('testStoneName');
   });
 
@@ -49,14 +49,14 @@ export const Stone_edit_appearence = () => {
     await tap('ceilingLights');
     await delay(300);
     await tap('fiCS1-bar');
-    await waitToNavigate('DeviceEditAppearence');
+    await waitToNavigate('DeviceEditAppearance');
     await tap('save');
     await waitToNavigate('DeviceOverview');
     await screenshot();
 
     // check if it was stored
-    await tap(`DeviceAppearence`);
-    await waitToNavigate('DeviceEditAppearence');
+    await tap(`DeviceAppearance`);
+    await waitToNavigate('DeviceEditAppearance');
     await expect($("deviceEdit_name")).toHaveText('testStoneName');
 
     // go back

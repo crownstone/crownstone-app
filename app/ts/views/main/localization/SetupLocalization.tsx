@@ -31,7 +31,7 @@ import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { Icon } from '../../components/Icon';
 import {openLocalizationHelpWebsite} from "./localizationMenu/LocalizationMenu_shared";
 import { ScaledImage } from "../../components/ScaledImage";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
@@ -47,7 +47,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
 
   return (
     <SettingsBackground testID={"SetupLocalization"}>
-      <SettingsScrollbar contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
+      <SettingsScrollView contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
         <View style={{height:30}}/>
         <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
@@ -61,7 +61,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
         { finishedRooms.length > 0 && <Text style={styles.explanation}>{ lang("These_rooms_are_already_d",finishedRooms.length,1) }</Text> }
         { finishedRooms.length > 0 && <ListEditableItems items={finishedRooms} style={{width: screenWidth}}/> }
         { toDoRooms.length > 1 && finishedRooms.length === 0 && <Text style={styles.header}>{ lang("Pick_a_room_to_get_starte") }</Text> }
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }
@@ -74,7 +74,7 @@ SetupLocalization.options = (props) => {
 function SetupFinished(props) {
   return (
     <SettingsBackground testID={"SetupLocalization"}>
-      <SettingsScrollbar contentContainerStyle={{alignItems:'center', minHeight: availableModalHeight }}>
+      <SettingsScrollView contentContainerStyle={{alignItems:'center', minHeight: availableModalHeight }}>
         <View style={{height:30}}/>
         <Text style={styles.title}>{ lang("All_done_") }</Text>
         <View style={{height:30}}/>
@@ -96,7 +96,7 @@ function SetupFinished(props) {
             callback={() => { NavigationUtil.dismissAllModals(); }}
           />
         </View>
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

@@ -9,7 +9,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import { background, colors, screenWidth } from "../../styles";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
 import {Localization_LOG_PREFIX, LocalizationMonitor} from "../../../localization/LocalizationMonitor";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 const RNFS = require('react-native-fs');
 
@@ -156,7 +156,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollbar keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
+        <SettingsScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}
             onRefresh={() => { this.setState({updating: true}); this.extractLocalizationMonitor()}}
@@ -168,7 +168,7 @@ export class SettingsLocalizationMonitor extends LiveComponent<any, {content: st
           <View style={{flex:1, padding:30}}>
             { this._getContent() }
           </View>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

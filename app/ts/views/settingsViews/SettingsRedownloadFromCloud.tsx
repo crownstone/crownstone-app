@@ -11,7 +11,6 @@ import {
   TouchableOpacity, ScrollView
 } from "react-native";
 
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import {
   availableModalHeight,
   background,

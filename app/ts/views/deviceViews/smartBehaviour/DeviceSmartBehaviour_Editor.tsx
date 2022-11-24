@@ -18,7 +18,7 @@ import {
 import { BehaviourEditor } from "./supportComponents/BehaviourEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { SettingsBackground } from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: boolean, data: any, sphereId: string, stoneId: string, behaviourId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
@@ -35,12 +35,12 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: b
     let height = availableModalHeight;
     return (
       <SettingsBackground>
-        <SettingsScrollbar contentContainerStyle={{ minHeight: availableModalHeight, alignItems:'center', paddingBottom:30}}>
+        <SettingsScrollView contentContainerStyle={{ minHeight: availableModalHeight, alignItems:'center', paddingBottom:30}}>
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth, paddingTop:30}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
           <View style={{height: 0.02*height}} />
           <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
           <BehaviourEditor {...this.props} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

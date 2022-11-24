@@ -13,7 +13,6 @@ import {
   View
 } from 'react-native';
 
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import {availableScreenHeight, background, colors, deviceStyles, screenWidth, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
@@ -31,7 +30,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {NavBarBlur} from "../components/NavBarBlur";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
 import {SafeAreaView} from "react-native-safe-area-context";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -197,9 +196,9 @@ export class SettingsDiagnostics extends Component<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollbar contentContainerStyle={{minHeight:availableScreenHeight}}>
+        <SettingsScrollView contentContainerStyle={{minHeight:availableScreenHeight}}>
           { this.getContent() }
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

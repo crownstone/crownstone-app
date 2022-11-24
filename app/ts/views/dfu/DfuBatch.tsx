@@ -26,6 +26,7 @@ import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { LiveComponent } from "../LiveComponent";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import {TopBarBlur} from "../components/NavBarBlur";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 const CLASSNAME = "DFU_BATCH";
 export class DfuBatch extends LiveComponent<any, any> {
@@ -195,7 +196,7 @@ export class DfuBatch extends LiveComponent<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1, borderTopWidth: 1 };
     return (
-      <Background fullScreen={true} image={background.main}>
+      <SettingsBackground>
         <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
@@ -230,7 +231,7 @@ export class DfuBatch extends LiveComponent<any, any> {
           </View>
         }
         <TopBarBlur />
-      </Background>
+      </SettingsBackground>
     );
   }
 }

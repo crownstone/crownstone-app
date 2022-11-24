@@ -14,6 +14,8 @@ import {Background} from "../../components/Background";
 import { background, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class AlexaOverview extends Component<any, any> {
@@ -24,8 +26,8 @@ export class AlexaOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"AlexaOverview"}>
-        <ScrollView >
+      <SettingsBackground testID={"AlexaOverview"}>
+        <SettingsScrollView>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Working_with_Alexa") }</Text>
@@ -40,8 +42,8 @@ export class AlexaOverview extends Component<any, any> {
             <Text style={styles.explanation}>{ lang("Expect_more_to_come_and_e") }</Text>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

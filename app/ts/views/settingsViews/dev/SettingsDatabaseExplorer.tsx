@@ -4,14 +4,13 @@ import {
   ScrollView, Text, TouchableOpacity, TextStyle, ViewStyle, Alert
 } from "react-native";
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { core } from "../../../Core";
 import { background, colors, screenWidth } from "../../styles";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
 import { StoreManager } from "../../../database/storeManager";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 const viewStyle : ViewStyle = {
   width: screenWidth,
@@ -183,9 +182,9 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollbar keyboardShouldPersistTaps="always">
+        <SettingsScrollView keyboardShouldPersistTaps="always">
           {this._getItems(this.dbState, this.expanded, '', 'BASE', 0) }
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

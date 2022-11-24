@@ -13,7 +13,6 @@ import {
   View
 } from 'react-native';
 
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {background, colors, menuStyles, tabBarHeight} from "../styles";
 import {IconButton} from "../components/IconButton";
@@ -22,7 +21,7 @@ import {NavigationBar} from "../components/editComponents/NavigationBar";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 export class SettingsFAQ extends Component<any, any> {
   static options(props) {
@@ -259,9 +258,9 @@ export class SettingsFAQ extends Component<any, any> {
   render() {
     return (
       <SettingsNavbarBackground testID={"SettingsFAQ"}>
-        <SettingsScrollbar testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
+        <SettingsScrollView testID={'SettingsFAQ_scrollview'} contentContainerStyle={{paddingBottom: 2*tabBarHeight}}>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

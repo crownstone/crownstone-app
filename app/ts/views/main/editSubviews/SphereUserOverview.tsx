@@ -19,7 +19,7 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import {SettingsBackground} from "../../components/SettingsBackground";
-import {SettingsScrollbar} from "../../components/SettingsScrollbar";
+import {SettingsScrollView} from "../../components/SettingsScrollView";
 
 
 export class SphereUserOverview extends LiveComponent<any, any> {
@@ -143,9 +143,9 @@ export class SphereUserOverview extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsBackground testID={'SphereUserOverview'}>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
   }

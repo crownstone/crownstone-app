@@ -20,6 +20,8 @@ import { NativeBus } from "../../native/libInterface/NativeBus";
 import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { PowerUsageCacher } from "../../backgroundProcesses/PowerUsageCacher";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 export class DevicePowerUsage extends LiveComponent<any, any> {
@@ -106,8 +108,8 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={background.main} hasNavBar={false}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={deviceStyles.header}>{header}</Text>
             <View style={{height:30}} />
@@ -116,8 +118,8 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
             <Text style={[deviceStyles.explanation, {fontWeight:'bold'}]}>{ lang("Real_time_power_usage") }</Text>
             <Text style={deviceStyles.explanation}>{ lang("Stand_near_the_Crownstone") }</Text>
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     )
   }
 }

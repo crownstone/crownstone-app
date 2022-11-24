@@ -38,7 +38,7 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {HubHelper} from "../../native/setup/HubHelper";
 import {StoneAvailabilityTracker} from "../../native/advertisements/StoneAvailabilityTracker";
 import { OverlayUtil } from "../../util/OverlayUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 //
@@ -149,12 +149,12 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     items.push({
       id: 'My Account',
-      label: lang("Appearence"),
-      testID: 'Appearence',
+      label: lang("Appearance"),
+      testID: 'Appearance',
       icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
       callback: () => {
-        NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        NavigationUtil.navigate( "DeviceEditAppearance", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
     items.push({type: 'explanation', label: lang("Change_name__icon__etc_"), below: true});
@@ -205,10 +205,10 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
 
     return (
       <SettingsBackground>
-        <SettingsScrollbar testID={'HubOverview_scrollview'}>
+        <SettingsScrollView testID={'HubOverview_scrollview'}>
           { this.getStateEntries(hub, stone) }
           <ListEditableItems items={this._getItems(hub, stone)} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

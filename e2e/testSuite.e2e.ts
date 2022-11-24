@@ -36,7 +36,7 @@ import { SideBar_usage }                    from "./tests/sidebar/sideBar_usage"
 import { SphereAdd_setup_more_crownstones } from "./tests/sphereAdd/sphereAdd_setup_more_crownstone";
 import { Stone_edit_start } from "./tests/stoneSettings/stone_edit_start";
 import { Stone_edit_close } from "./tests/stoneSettings/stone_edit_close";
-import { Stone_edit_appearence } from "./tests/stoneSettings/stone_edit_appearence";
+import { Stone_edit_appearance } from "./tests/stoneSettings/stone_edit_appearance";
 import {Stone_edit_abilities_start} from "./tests/stoneSettings/stone_edit_abilities_start";
 import {Stone_edit_abilities_dimming} from "./tests/stoneSettings/stone_edit_abilities_dimming";
 import { Stone_edit_abilities_end } from "./tests/stoneSettings/stone_edit_abilities_end";
@@ -95,7 +95,7 @@ describe('SphereAdd, add more crownstones',              SphereAdd_setup_more_cr
 describe('SphereAdd, close',                             SphereAdd_close);
 
 describe('StoneEdit, start',                             Stone_edit_start);
-describe('StoneEdit, test appearance',                   Stone_edit_appearence);
+describe('StoneEdit, test appearance',                   Stone_edit_appearance);
 describe('StoneEdit, test abilities, start',             Stone_edit_abilities_start);
 describe('StoneEdit, test abilities, dimming',           Stone_edit_abilities_dimming);
 describe('StoneEdit, test abilities, end',               Stone_edit_abilities_end);

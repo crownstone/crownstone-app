@@ -26,7 +26,7 @@ import { xUtil }                    from "../../util/StandAloneUtil";
 import { AutoArrangeButton }        from "./buttons/AutoArrangeButton";
 import { CLOUD }                    from "../../cloud/cloudAPI";
 import { DataUtil }                 from "../../util/DataUtil";
-import { BackgroundCustomTopBar } from "../components/Background";
+import { BackgroundCustomTopBar }   from "../components/Background";
 import { ActiveSphereManager }      from "../../backgroundProcesses/ActiveSphereManager";
 import { BackButtonHandler }        from "../../backgroundProcesses/BackButtonHandler";
 import { SideBarView }              from "../components/animated/SideBarView";

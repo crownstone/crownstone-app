@@ -25,7 +25,7 @@ import {SettingsBackground} from "../components/SettingsBackground";
 import {Get} from "../../util/GetUtil";
 import {Icon} from "../components/Icon";
 import {SortingManager} from "../../logic/SortingManager";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 
@@ -297,9 +297,9 @@ export class RoomEdit extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"RoomEdit"}>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
   }

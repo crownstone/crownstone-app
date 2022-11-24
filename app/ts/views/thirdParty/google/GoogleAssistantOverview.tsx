@@ -14,6 +14,8 @@ import {Background} from "../../components/Background";
 import { background, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class GoogleAssistantOverview extends Component<any, any> {
@@ -24,8 +26,8 @@ export class GoogleAssistantOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false} testID={"GoogleAssistantOverview"}>
-        <ScrollView >
+      <SettingsBackground testID={"GoogleAssistantOverview"}>
+        <SettingsScrollView>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Ok_Google__turn_me_on_") }</Text>
@@ -39,8 +41,8 @@ export class GoogleAssistantOverview extends Component<any, any> {
             <Text style={styles.explanation}>{ lang("Enjoy_using_your_Google_A") }</Text>
             <View style={{height:100}} />
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

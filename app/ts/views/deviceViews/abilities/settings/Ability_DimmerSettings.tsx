@@ -27,7 +27,7 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID } from "../../../../database/reducers/stoneSubReducers/abilities";
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import {Get} from "../../../../util/GetUtil";
-import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../../components/SettingsScrollView";
 
 
 export class Ability_DimmerSettings extends Component<any, any> {
@@ -139,7 +139,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
   render() {
     return (
       <SettingsBackground testID={"Ability_DimmerSettings"}>
-        <SettingsScrollbar testID={"AbilityDimming_scrollview"}>
+        <SettingsScrollView testID={"AbilityDimming_scrollview"}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../../assets/images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
@@ -171,7 +171,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
             </View>
             <View style={{height:100}} />
           </View>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

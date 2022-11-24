@@ -18,7 +18,7 @@ import { SettingsBackground } from "../../../components/SettingsBackground";
 import { colors, screenHeight, screenWidth, styles } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
-import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../../components/SettingsScrollView";
 
 
 export function LocalizationMenu_notEnoughCrownstones(props) {
@@ -38,7 +38,7 @@ export function LocalizationMenu_notEnoughCrownstones(props) {
 
   return (
     <SettingsBackground testID={"LocalizationMenu_notEnoughCrownstones"}>
-      <SettingsScrollbar>
+      <SettingsScrollView>
         <View style={{height:20}}/>
         <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
@@ -47,7 +47,7 @@ export function LocalizationMenu_notEnoughCrownstones(props) {
         </View>
         <View style={{height:30}}/>
         <ListEditableItems items={items} />
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

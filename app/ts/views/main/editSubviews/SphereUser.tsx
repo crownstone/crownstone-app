@@ -14,7 +14,7 @@ import {core} from "../../../Core";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import {SettingsBackground} from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereUser", key)(a,b,c,d,e);
@@ -128,7 +128,7 @@ export class SphereUser extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"SphereUser"}>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
               picture={user.picture}
@@ -136,7 +136,7 @@ export class SphereUser extends LiveComponent<any, any> {
             />
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
   }

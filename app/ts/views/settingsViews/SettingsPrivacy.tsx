@@ -12,7 +12,6 @@ import {
   Linking} from 'react-native';
 
 import { IconButton } from '../components/IconButton'
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { background, colors } from "../styles";
 import { Util } from "../../util/Util";
@@ -22,7 +21,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import {Icon} from "../components/Icon";
 import {NavBarBlur} from "../components/NavBarBlur";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -163,9 +162,9 @@ lang("_Whoops___We_could_not_re_body"),
   render() {
     return (
       <SettingsNavbarBackground testID={"SettingsPrivacy"}>
-        <SettingsScrollbar keyboardShouldPersistTaps="always" testID={'SettingsPrivacy_scrollView'}>
+        <SettingsScrollView keyboardShouldPersistTaps="always" testID={'SettingsPrivacy_scrollView'}>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
         <NavBarBlur xlight />
       </SettingsNavbarBackground>
     );

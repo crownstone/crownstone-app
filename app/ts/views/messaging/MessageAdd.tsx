@@ -24,8 +24,9 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { core } from "../../Core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { MessageTransferNext } from "../../cloud/sections/newSync/transferrers/MessageTransferNext";
+import { SettingsScrollView } from "../components/SettingsScrollView";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -305,11 +306,11 @@ export class MessageAdd extends LiveComponent<any, any> {
 
   render() {
     return (
-      <BackgroundNoNotification hasNavBar={false} image={background.main} >
-        <ScrollView>
+      <SettingsBackground>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
-        </ScrollView>
-      </BackgroundNoNotification>
+        </SettingsScrollView>
+      </SettingsBackground>
       );
   }
 }

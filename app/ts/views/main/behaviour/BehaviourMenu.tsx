@@ -34,7 +34,7 @@ import {Icon} from "../../components/Icon";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 
@@ -81,9 +81,9 @@ export function BehaviourMenu(props: { sphereId: sphereId}) {
 
   return (
     <SettingsBackground testID={"LocalizationMenu"}>
-      <SettingsScrollbar contentContainerStyle={{ flexGrow: 1 }}>
+      <SettingsScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <ListEditableItems items={items} />
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

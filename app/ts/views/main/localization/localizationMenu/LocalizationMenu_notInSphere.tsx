@@ -18,7 +18,7 @@ import { Background } from "../../../components/Background";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import { ScaledImage } from "../../../components/ScaledImage";
-import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../../components/SettingsScrollView";
 
 
 
@@ -36,7 +36,7 @@ export function LocalizationMenu_notInSphere(props) {
 
   return (
     <SettingsBackground testID={"LocalizationMenu_notInSphere"}>
-      <SettingsScrollbar>
+      <SettingsScrollView>
         <View style={{height:20}}/>
         <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
@@ -45,7 +45,7 @@ export function LocalizationMenu_notInSphere(props) {
         </View>
         <View style={{height:30}}/>
         <ListEditableItems items={items} />
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

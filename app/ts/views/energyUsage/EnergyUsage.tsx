@@ -23,7 +23,7 @@ import { LiveRoomList} from "./components/LiveLists";
 import { CLOUD} from "../../cloud/cloudAPI";
 import { ContentNoSphere} from "./components/ContentNoSphere";
 import { HistoricalEnergyUsageOverview} from "./components/HistoricalEnergyUsageOverview";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 import { core } from "../../Core";
 
 
@@ -91,7 +91,7 @@ function EnergyUsageContent(props) {
 
   return (
     <React.Fragment>
-      <SettingsScrollbar contentContainerStyle={{ alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
+      <SettingsScrollView contentContainerStyle={{ alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
         <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
           <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
           <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
@@ -111,7 +111,7 @@ function EnergyUsageContent(props) {
              :
             <LiveRoomList />
         }
-      </SettingsScrollbar>
+      </SettingsScrollView>
       <TopBarBlur xlight>
         <EnergyUsageHeader mode={mode} />
       </TopBarBlur>

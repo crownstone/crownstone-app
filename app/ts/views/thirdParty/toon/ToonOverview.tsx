@@ -21,6 +21,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class ToonOverview extends LiveComponent<any, any> {
@@ -108,8 +109,8 @@ text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
     let sphere = state.spheres[this.props.sphereId];
 
     return (
-      <Background image={background.menu} hasNavBar={false}>
-                <View style={{flex:1, alignItems:'center'}}>
+      <SettingsBackground>
+        <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../../assets/images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
@@ -118,7 +119,7 @@ text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
           <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
           <View style={{flex:1}} />
         </View>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

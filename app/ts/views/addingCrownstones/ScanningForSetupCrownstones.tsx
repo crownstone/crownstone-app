@@ -28,6 +28,7 @@ import { LiveComponent } from "../LiveComponent";
 import { STONE_TYPES } from "../../Enums";
 import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 import { SetupDeviceEntry_addMenu } from "../components/deviceEntries/SetupDeviceEntry";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 export class ScanningForSetupCrownstones extends LiveComponent<{
   sphereId: string,
@@ -217,7 +218,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     let informationStyle = {...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle};
     return (
-      <Background hasNavBar={false} image={background.main} testID={"ScanningForSetupCrownstones"}>
+      <SettingsBackground testID={"ScanningForSetupCrownstones"}>
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}
@@ -278,7 +279,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<{
             </TouchableOpacity>
           </SlideFadeInView>
         </ScrollView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

@@ -23,7 +23,7 @@ import { SettingsNavbarBackground} from "../components/SettingsBackground";
 import {LocalizationCore} from "../../localization/LocalizationCore";
 import {Get} from "../../util/GetUtil";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -274,9 +274,9 @@ lang("_Could_not_revoke_permiss_body"),
   render() {
     return (
       <SettingsNavbarBackground testID={"SettingsApp"}>
-        <SettingsScrollbar keyboardShouldPersistTaps="always">
+        <SettingsScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

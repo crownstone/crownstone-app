@@ -37,6 +37,8 @@ import {
   MessageDeletedId,
 } from "../../cloud/sections/newSync/transferrers/MessageDeletedTransferNext";
 import {MessageReadID} from "../../cloud/sections/newSync/transferrers/MessageReadTransferNext";
+import { SettingsScrollView } from "../components/SettingsScrollView";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -148,11 +150,11 @@ export class MessageInbox extends LiveComponent<any, any> {
     let stonesAvailable = Object.keys(sphere.stones).length > 0;
     if (!stonesAvailable) {
       return (
-        <Background fullScreen={true} image={background.main}>
+        <SettingsBackground>
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
           <View style={{flex:1}} />
-        </Background>
+        </SettingsBackground>
       );
     }
 
@@ -180,12 +182,12 @@ export class MessageInbox extends LiveComponent<any, any> {
     let scrollView;
     if (items.length > 1) { // min size is 1 since the items always have an explanation entry
       scrollView = (
-        <ScrollView
+        <SettingsScrollView
           onScroll={(event) => {
             this.messageReadStateWatcher.scrollView(event.nativeEvent.contentOffset.y+statusBarHeight);
           }}
           scrollEventThrottle={64}
-          contentContainerStyle={{flexGrow:1, minHeight: availableModalHeight,  width: screenWidth, alignItems:'center'}}
+          contentContainerStyle={{alignItems:'center'}}
         >
           <View style={{height: 10}} />
           { headerText }
@@ -197,12 +199,12 @@ export class MessageInbox extends LiveComponent<any, any> {
             this.forceUpdate();
           }}/>
           <View style={{height: 0.4*iconSize}} />
-        </ScrollView>
+        </SettingsScrollView>
       );
     }
     else {
       scrollView = (
-        <ScrollView style={{height: availableModalHeight, width: screenWidth}}>
+        <SettingsScrollView>
           <View style={{flex:1, minHeight: availableModalHeight, width: screenWidth, alignItems:'center'}}>
             <View style={{height: 0.3*iconSize}} />
             { headerText }
@@ -212,16 +214,16 @@ export class MessageInbox extends LiveComponent<any, any> {
             <Text style={messageExplanationStyle}>{ lang("Tap_the_envelope_icon_to_") }</Text>
             <View style={{flex:2}} />
           </View>
-        </ScrollView>
+        </SettingsScrollView>
       );
     }
 
 
 
     return (
-      <Background fullScreen={true} image={background.main}>
+      <SettingsBackground>
         { scrollView }
-      </Background>
+      </SettingsBackground>
     );
   }
 }

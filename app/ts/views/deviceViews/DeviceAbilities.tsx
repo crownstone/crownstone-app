@@ -31,7 +31,7 @@ import { ABILITY_TYPE_ID } from "../../database/reducers/stoneSubReducers/abilit
 import {SettingsBackground} from "../components/SettingsBackground";
 import {Get} from "../../util/GetUtil";
 import {StoneUtil} from "../../util/StoneUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
@@ -83,7 +83,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={'DeviceAbilities'}>
-        <SettingsScrollbar style={{width: screenWidth}}>
+        <SettingsScrollView style={{width: screenWidth}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
@@ -93,7 +93,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
             { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
             { canSwitch      && <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
           </View>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

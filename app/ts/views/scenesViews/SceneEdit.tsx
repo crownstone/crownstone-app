@@ -249,7 +249,6 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
 
 
   render() {
-    let backgroundImage = background.menu;
     return (
       <SettingsBackground>
         <SettingsScrollView>

@@ -13,7 +13,6 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {core} from "../../Core";
 import {NavigationUtil} from "../../util/navigation/NavigationUtil";
 import {TopBarUtil} from "../../util/TopBarUtil";
-import {BackgroundNoNotification} from "../components/BackgroundNoNotification";
 import {tell} from "../../logic/constellation/Tellers";
 import {SettingsBackground} from "../components/SettingsBackground";
 import {SafeAreaView} from "react-native-safe-area-context";

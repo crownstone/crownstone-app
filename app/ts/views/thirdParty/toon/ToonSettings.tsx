@@ -23,6 +23,8 @@ import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class ToonSettings extends LiveComponent<any, any> {
@@ -171,8 +173,8 @@ export class ToonSettings extends LiveComponent<any, any> {
     };
 
     return (
-      <Background image={background.menu} hasNavBar={false}>
-                <ScrollView style={{flex:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>
               <View style={{flex:1}} />
@@ -196,8 +198,8 @@ export class ToonSettings extends LiveComponent<any, any> {
             }}>{ lang("This_application_uses_the") }</Text>
             <View style={{flex:1, minHeight:40}} />
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

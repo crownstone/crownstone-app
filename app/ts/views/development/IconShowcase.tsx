@@ -19,6 +19,8 @@ import {
   glyphMap_flaticon_household
 } from "../../fonts/customIcons_flaticon";
 import {DebugIconShowcase} from "./DebugIconShowcase";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 const ioniconsIosList = [
   "ios-add-circle",
@@ -202,9 +204,9 @@ export class IconShowcase extends LiveComponent<{callback(icon: string) : void, 
 
   render() {
     return (
-      <Background fullScreen={true} image={background.dark}>
+      <SettingsBackground>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
-        <ScrollView>
+        <SettingsScrollView>
           <DebugIconShowcase
             categories={this.categories}
             icons={this.icons}
@@ -216,8 +218,8 @@ export class IconShowcase extends LiveComponent<{callback(icon: string) : void, 
               NavigationUtil.back();
             }}
           />
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

@@ -34,7 +34,7 @@ import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { SettingsBackground } from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 const behaviourStyle : TextStyle = {
   fontSize: 15,
@@ -557,7 +557,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
     return (
       <SettingsBackground>
-        <SettingsScrollbar style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
+        <SettingsScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: tabBarHeight }}>
             <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
@@ -631,7 +631,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             </View>
             <View style={{height: 30}} />
           </View>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

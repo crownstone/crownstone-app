@@ -24,6 +24,8 @@ import {SeparatedItemList} from "../components/SeparatedItemList";
 import {EditableItem} from "../components/EditableItem";
 import {ProfilePicture} from "../components/ProfilePicture";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
+import { SettingsScrollView } from "../components/SettingsScrollView";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 
 
@@ -99,8 +101,8 @@ export class SelectFromList extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={background.main}>
-        <ScrollView style={{flex:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <SeparatedItemList
             items={ this.props.items }
             separatorIndent={ false }
@@ -108,8 +110,8 @@ export class SelectFromList extends Component<any, any> {
             focusOnLoad={ false }
             style={ {} }
           />
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

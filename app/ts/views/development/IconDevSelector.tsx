@@ -17,6 +17,8 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
 import { DevIconSelection } from "./DevIconSelection";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 /*
 Lights
@@ -143,18 +145,10 @@ export class IconDevSelector extends LiveComponent<{callback(icon: string) : voi
       hidden:     [],
     }
 
-
-
-
-
-
-
-
-
     return (
-      <Background fullScreen={true} image={background.dark}>
+      <SettingsBackground>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
-        <ScrollView>
+        <SettingsScrollView>
           <DevIconSelection
             icons={icons}
             selectedIcon={this.props.icon}
@@ -165,8 +159,8 @@ export class IconDevSelector extends LiveComponent<{callback(icon: string) : voi
               NavigationUtil.back();
             }}
           />
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

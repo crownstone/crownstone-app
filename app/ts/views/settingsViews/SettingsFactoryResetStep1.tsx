@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 
-import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { setupStyle, NextButton } from './SetupShared'
 import {background, screenHeight, topBarHeight} from "./../styles";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";

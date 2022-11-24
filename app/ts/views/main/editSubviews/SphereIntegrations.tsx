@@ -18,7 +18,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { background } from "../../styles";
 import {SettingsBackground} from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 export class SphereIntegrations extends LiveComponent<any, any> {
   static options(props) {
@@ -98,9 +98,9 @@ export class SphereIntegrations extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsBackground testID={"SphereIntegrations"}>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItemsAlternative()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
   }

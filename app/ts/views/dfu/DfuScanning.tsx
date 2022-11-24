@@ -269,7 +269,7 @@ export class DfuScanning extends LiveComponent<any, any> {
 
 
     return (
-      <Background fullScreen={true} image={background.main}>
+      <SettingsBackground>
         <View style={{height: topBarHeight}} />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => {  this.startScanning(); setTimeout(() => { KeepAwake.activate();  },300); }} onBlur={ () => { this.stopScanning();  KeepAwake.deactivate(); }} />
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
@@ -292,7 +292,7 @@ export class DfuScanning extends LiveComponent<any, any> {
           </View>
           <View style={{height:10}} />
         </SlideFadeInView>
-      </Background>
+      </SettingsBackground>
     );
   }
 }

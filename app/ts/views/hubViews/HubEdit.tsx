@@ -21,11 +21,12 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../Core";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { SortingManager } from "../../logic/SortingManager";
 import { Get } from "../../util/GetUtil";
 import { HubHelper } from "../../native/setup/HubHelper";
 import { OverlayUtil } from "../../util/OverlayUtil";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 export class HubEdit extends LiveComponent<any, any> {
@@ -161,14 +162,13 @@ export class HubEdit extends LiveComponent<any, any> {
     const state = core.store.getState();
     const hub = Get.hub(this.props.sphereId, this.props.hubId);
     let options = this.constructHubOptions(hub, state);
-    let backgroundImage = background.menu;
 
     return (
-      <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
-        <ScrollView>
+      <SettingsBackground>
+        <SettingsScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
-        </ScrollView>
-      </BackgroundNoNotification>
+        </SettingsScrollView>
+      </SettingsBackground>
     )
   }
 }

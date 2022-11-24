@@ -5,7 +5,6 @@ import {
 } from "react-native";
 
 import { IconButton } from '../../components/IconButton'
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import {background, colors, screenWidth, statusBarHeight, topBarHeight} from "../../styles";
 import { LiveComponent } from "../../LiveComponent";

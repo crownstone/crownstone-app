@@ -29,7 +29,7 @@ import {SelectPicture} from "../components/PictureCircle";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { Component } from "react";
 import { core } from "../../Core";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 export class RoomPictureSelection extends LiveComponent<{
@@ -87,9 +87,9 @@ export class RoomPictureSelection extends LiveComponent<{
   render() {
     return (
       <SettingsBackground testID={"RoomPictureSelection"}>
-        <SettingsScrollbar testID={'RoomPictureSelection_scrollview'}>
+        <SettingsScrollView testID={'RoomPictureSelection_scrollview'}>
           <ListEditableItems items={this._getItems()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
         { this.state.selecting &&
           <View style={{...styles.fullscreen, ...styles.centered, backgroundColor: colors.black.rgba(0.5) }}>
             <ActivityIndicator size={"large"} />

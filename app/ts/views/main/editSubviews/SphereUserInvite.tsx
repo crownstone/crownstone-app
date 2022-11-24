@@ -20,7 +20,7 @@ import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {SettingsBackground} from "../../components/SettingsBackground";
-import {SettingsScrollbar} from "../../components/SettingsScrollbar";
+import {SettingsScrollView} from "../../components/SettingsScrollView";
 
 export class SphereUserInvite extends LiveComponent<any, any> {
   static options(props) {
@@ -166,9 +166,9 @@ export class SphereUserInvite extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsBackground testID={'SphereUserInvite'}>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
   }

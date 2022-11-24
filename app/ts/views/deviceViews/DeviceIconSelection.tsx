@@ -13,7 +13,9 @@ import { IconSelection }  from '../components/IconSelection'
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
-import { background, colors } from "../styles";
+import { colors } from "../styles";
+import { SettingsScrollView } from "../components/SettingsScrollView";
+import { SettingsBackground } from "../components/SettingsBackground";
 
 
 
@@ -536,8 +538,8 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
     ];
 
     return (
-      <Background hasNavBar={false} image={background.main} testID={'DeviceIconSelection'}>
-        <ScrollView>
+      <SettingsBackground testID={'DeviceIconSelection'}>
+        <SettingsScrollView>
           <IconSelection
             categories={categories}
             icons={listOfIcons}
@@ -553,8 +555,8 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
               NavigationUtil.back();
             }}
           />
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

@@ -23,7 +23,7 @@ import { Button } from "../../components/Button";
 import { BehaviourCopyFromButton } from "./buttons/Behaviour_CopyFromButton";
 import { BehaviourSyncButton } from "./buttons/Behaviour_SyncButton";
 import {SettingsBackground} from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 let className = "DeviceSmartBehaviour";
@@ -39,7 +39,7 @@ export function NoBehavioursYet(props) {
 
   return (
     <SettingsBackground>
-      <SettingsScrollbar contentContainerStyle={{flexGrow:1}}>
+      <SettingsScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
           <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>
           <View style={{height: 40}} />
@@ -91,7 +91,7 @@ export function NoBehavioursYet(props) {
           { state.development.show_sync_button_in_behaviour && <BehaviourSyncButton sphereId={props.sphereId} stoneId={props.stoneId} /> }
           <View style={{height:topBarHeight+30}} />
         </View>
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   )
 }

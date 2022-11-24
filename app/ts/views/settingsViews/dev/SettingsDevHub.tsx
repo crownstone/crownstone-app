@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { LiveComponent } from "../../LiveComponent";
 import { background, colors, deviceStyles } from "../../styles";
-import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 import { IconButton } from "../../components/IconButton";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { ListEditableItems } from "../../components/ListEditableItems";
@@ -51,22 +50,22 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
     let hub = DataUtil.getHubByStoneId(this.props.sphereId, this.props.stoneId);
     if (!hub) {
       return (
-        <BackgroundNoNotification image={background.menu} >
+        <SettingsBackground>
           <View style={{flex:0.25}} />
           <Text style={deviceStyles.header}>No hub instance available...</Text>
           <View style={{flex:0.25}} />
           <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-        </BackgroundNoNotification>
+        </SettingsBackground>
       );
     }
 
     if (!this.state.obtainedSettings) {
       return (
-        <BackgroundNoNotification image={background.menu} >
+        <SettingsBackground>
           <View style={{flex:0.25}} />
           <ActivityIndicator size={"large"} />
           <View style={{flex:0.25}} />
-        </BackgroundNoNotification>
+        </SettingsBackground>
       )
     }
 

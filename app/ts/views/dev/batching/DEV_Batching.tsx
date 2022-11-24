@@ -22,6 +22,8 @@ import {TopBarUtil} from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {tell} from "../../../logic/constellation/Tellers";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 const RNFS = require('react-native-fs');
 
@@ -284,8 +286,8 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
   render() {
     if (this.state.dfuMode && this.state.dfuStarted === false) {
       return (
-        <Background image={background.main} hasNavBar={false}>
-          <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <SettingsBackground>
+          <SettingsScrollView>
             <View style={{flexGrow: 1, paddingVertical: 30, width: screenWidth}}>
               <ListEditableItems items={this._getDfuItems()} separatorIndent={true} />
               <View style={{minHeight:20, flex:1}} />
@@ -298,14 +300,14 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
-        </Background>
+          </SettingsScrollView>
+        </SettingsBackground>
       );
     }
 
     return (
-      <Background image={background.main} hasNavBar={false}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <View style={{flex:1, maxHeight:15}}/>
             <Text style={{fontSize:20, fontWeight: 'bold', padding:15}}>{ "Crownstones:" }</Text>
@@ -342,8 +344,8 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
               <View style={{flex:1}}/>
             </View>
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

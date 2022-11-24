@@ -26,7 +26,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SettingsNavbarBackground} from "../components/SettingsBackground";
 import { DataUtil } from "../../util/DataUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -244,7 +244,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let size = 120;
     return (
       <SettingsNavbarBackground testID={"SettingsProfile"}>
-        <SettingsScrollbar keyboardShouldPersistTaps="always">
+        <SettingsScrollView keyboardShouldPersistTaps="always">
           <View style={{alignItems:'center', justifyContent:'center', flexDirection:'row', width: screenWidth, paddingTop:40}}>
             <DevTapper count={() => { this._countSecret();}} style={{height:size, width: screenWidth-2*size}} />
             <PictureCircle
@@ -279,7 +279,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
           <DevTapper count={() => { this._countSecret();}} style={{flex:1, width: screenWidth}} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

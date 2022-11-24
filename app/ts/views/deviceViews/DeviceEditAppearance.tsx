@@ -18,14 +18,14 @@ import {TopBarUtil} from "../../util/TopBarUtil";
 import {DataUtil} from "../../util/DataUtil";
 import { from, tell } from "../../logic/constellation/Tellers";
 import {SettingsBackground} from "../components/SettingsBackground";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceEditAppearence", key)(a,b,c,d,e);
+  return Languages.get("DeviceEditAppearance", key)(a,b,c,d,e);
 }
 
 
-export class DeviceEditAppearence extends LiveComponent<any, any> {
+export class DeviceEditAppearance extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Settings"), cancelBack: true, save: true});
   }
@@ -256,11 +256,11 @@ export class DeviceEditAppearence extends LiveComponent<any, any> {
     let options = this.constructStoneOptions(stone, state);
 
     return (
-      <SettingsBackground testID={"DeviceEditAppearence"}>
-        <SettingsScrollbar>
+      <SettingsBackground testID={"DeviceEditAppearance"}>
+        <SettingsScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

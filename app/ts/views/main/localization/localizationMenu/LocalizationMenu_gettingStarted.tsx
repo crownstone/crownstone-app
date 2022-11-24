@@ -19,7 +19,7 @@ import { getLearnAboutLocalizationItems } from "./LocalizationMenu_shared";
 import { Background } from "../../../components/Background";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../../components/SettingsScrollView";
 
 
 
@@ -51,9 +51,9 @@ export function LocalizationMenu_gettingStarted(props) {
 
   return (
     <SettingsBackground testID={"LocalizationMenu_gettingStarted"}>
-      <SettingsScrollbar contentContainerStyle={{ flexGrow: 1 }}>
+      <SettingsScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <ListEditableItems items={items} />
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

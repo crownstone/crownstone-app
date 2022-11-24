@@ -2,14 +2,13 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors } from "../../styles";
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import { core } from "../../../Core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 export class SettingsLogLevelConfig extends LiveComponent<any, any> {
@@ -107,9 +106,9 @@ export class SettingsLogLevelConfig extends LiveComponent<any, any> {
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollbar keyboardShouldPersistTaps="always">
+        <SettingsScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

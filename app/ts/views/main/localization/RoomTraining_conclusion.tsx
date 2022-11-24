@@ -15,7 +15,7 @@ import {Spacer} from "../../components/Spacer";
 import {Get} from "../../../util/GetUtil";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";
 import { ScaledImage } from "../../components/ScaledImage";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 
@@ -58,7 +58,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
 
   return (
     <SettingsBackground testID={"SetupLocalization"}>
-      <SettingsScrollbar>
+      <SettingsScrollView>
       <View style={{height:20}}/>
         <View style={{...styles.centered}}>
           <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.9} />
@@ -78,7 +78,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
           /> }
           { finalizationButton }
         </View>
-      </SettingsScrollbar>
+      </SettingsScrollView>
     </SettingsBackground>
   );
 }

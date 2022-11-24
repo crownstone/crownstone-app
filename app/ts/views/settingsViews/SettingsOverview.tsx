@@ -16,7 +16,7 @@ import {getDevAppItems} from "./dev/SettingsDeveloper";
 import {Icon} from "../components/Icon";
 import {SettingsNavbarBackground} from "../components/SettingsBackground";
 import { DataUtil } from "../../util/DataUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 import { EditDone, EditIcon } from "../components/EditIcon";
 import { TopBarBlur } from "../components/NavBarBlur";
 import { BackgroundCustomTopBarNavbar } from "../components/Background";
@@ -191,9 +191,9 @@ export class SettingsOverview extends LiveComponent<any, any> {
   render() {
     return (
       <BackgroundCustomTopBarNavbar testID={'SettingsOverview'}>
-        <SettingsScrollbar testID={'SettingsOverview_scrollview'}>
+        <SettingsScrollView testID={'SettingsOverview_scrollview'}>
           <ListEditableItems items={this._getItems()} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
         <TopBarBlur xlight>
           <SettingsHeader />
         </TopBarBlur>

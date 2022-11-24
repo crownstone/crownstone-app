@@ -32,7 +32,7 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { urlChecker } from "../../util/Util";
 import { core } from "../../Core";
 import { StoreManager } from "../../database/storeManager";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 
@@ -239,9 +239,9 @@ lang("_Could_not_validate__Plea_body"),
   render() {
     return (
       <SettingsBackground>
-        <SettingsScrollbar>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

@@ -23,7 +23,7 @@ import {Util} from "../../../../util/Util";
 import {core} from "../../../../Core";
 import {SliderBar} from "../../../components/editComponents/SliderBar";
 import {xUtil} from "../../../../util/StandAloneUtil";
-import { SettingsScrollbar } from "../../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../../components/SettingsScrollView";
 import {ABILITY_PROPERTY_TYPE_ID, ABILITY_TYPE_ID} from "../../../../database/reducers/stoneSubReducers/abilities";
 
 
@@ -128,7 +128,7 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
 
         return (
           <SettingsBackground>
-            <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
+            <SettingsScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
               <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
               <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
               <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
@@ -137,20 +137,20 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
                 <ListEditableItems items={items} />
               </View>
               <View style={{height:100}} />
-            </SettingsScrollbar>
+            </SettingsScrollView>
           </SettingsBackground>
         );
       }
 
       return (
         <SettingsBackground>
-          <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
+          <SettingsScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
             <Text style={styles.boldExplanation}>{ lang("Double_Tap_Switchcraft_al") }</Text>
             <Text style={styles.explanation}>{ lang("Tap_the_wall_switch_twice") }</Text>
             <Text style={styles.explanation}>{ lang("The_dim_value_is_dependen") }</Text>
             <View style={{height:10}} />
             <Text style={styles.boldExplanation}>{ lang("Dimming_has_to_be_enabled") }</Text>
-          </SettingsScrollbar>
+          </SettingsScrollView>
         </SettingsBackground>
       );
     }
@@ -158,9 +158,9 @@ export class Ability_DoubleTapSwitchcraft extends Component<any, any> {
 
     return (
       <SettingsBackground>
-        <SettingsScrollbar contentContainerStyle={{flex:1, alignItems:'center',}}>
+        <SettingsScrollView contentContainerStyle={{flex:1, alignItems:'center',}}>
           <Text style={styles.boldExplanation}>{ lang("Update_this_Crownstone_to") }</Text>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     );
 

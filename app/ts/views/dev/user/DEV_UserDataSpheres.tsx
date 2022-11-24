@@ -20,7 +20,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { AppUtil } from "../../../util/AppUtil";
 import { SettingsNavbarBackground } from '../../components/SettingsBackground';
-import { SettingsScrollbar } from '../../components/SettingsScrollbar';
+import { SettingsScrollView } from '../../components/SettingsScrollView';
 
 
 
@@ -73,7 +73,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
     let state = core.store.getState();
     return (
       <SettingsNavbarBackground keyboardAvoid={true}>
-        <SettingsScrollbar keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
+        <SettingsScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
             <Text style={{fontSize:30, fontWeight:"bold"}}>{ "Logged in as:" }</Text>
@@ -149,7 +149,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
             </View>
             <View style={{height:30}} />
           </View>
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

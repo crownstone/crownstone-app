@@ -2,7 +2,6 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {Alert, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
 
-import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { background, colors } from "../../styles";
 import { getAllLogData} from "../../../logging/LogUtil";
@@ -12,7 +11,7 @@ import Share from "react-native-share";
 import {LOGw} from "../../../logging/Log";
 import {FileUtil} from "../../../util/FileUtil";
 import { SettingsNavbarBackground } from "../../components/SettingsBackground";
-import { SettingsScrollbar } from "../../components/SettingsScrollbar";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 
 export class SettingsLogOverview extends LiveComponent<any, { logInformation: any[], logsLoaded: boolean, selectedUrls: string[] }> {
@@ -127,9 +126,9 @@ export class SettingsLogOverview extends LiveComponent<any, { logInformation: an
   render() {
     return (
       <SettingsNavbarBackground>
-        <SettingsScrollbar keyboardShouldPersistTaps="always">
+        <SettingsScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsNavbarBackground>
     );
   }

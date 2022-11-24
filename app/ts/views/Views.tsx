@@ -11,7 +11,7 @@ import { AlexaOverview }                      from "../views/thirdParty/alexa/Al
 
 import { AddItemsToSphere }                   from '../views/main/AddItemsToSphere'
 import { DeviceOverview }                     from '../views/deviceViews/DeviceOverview'
-import { DeviceEditAppearence }               from '../views/deviceViews/DeviceEditAppearence'
+import { DeviceEditAppearance }               from './deviceViews/DeviceEditAppearance'
 import { DeviceIconSelection }                from '../views/deviceViews/DeviceIconSelection'
 import { LoginSplash }                        from '../views/startupViews/LoginSplash'
 import { Login }                              from '../views/startupViews/Login'
@@ -160,7 +160,7 @@ export const Views = {
   HubOverview:                       HubOverview,
   HubEdit:                           HubEdit,
   DeviceError:                       DeviceError,
-  DeviceEditAppearence:              DeviceEditAppearence,
+  DeviceEditAppearance:              DeviceEditAppearance,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,
   DeviceOverview:                    DeviceOverview,

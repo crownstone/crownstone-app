@@ -16,6 +16,8 @@ import {ScaledImage} from "../../components/ScaledImage";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Button } from "../../components/Button";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class HueOverview extends Component<any, any> {
@@ -26,8 +28,8 @@ export class HueOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:20, paddingBottom:20}}>
             <Text style={styles.title}>{ lang("Lights_everywhere_") }</Text>
             <View style={{height:20}} />
@@ -49,8 +51,8 @@ export class HueOverview extends Component<any, any> {
               iconColor={colors.green.rgba(0.5)}
             />
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }

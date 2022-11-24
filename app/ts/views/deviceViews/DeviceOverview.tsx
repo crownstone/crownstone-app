@@ -24,7 +24,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { StoneUtil } from "../../util/StoneUtil";
 import { OverlayUtil } from "../../util/OverlayUtil";
-import { SettingsScrollbar } from "../components/SettingsScrollbar";
+import { SettingsScrollView } from "../components/SettingsScrollView";
 
 
 export class  DeviceOverview extends LiveComponent<any, any> {
@@ -115,12 +115,12 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     items.push({type: 'explanation', label: lang("CROWNSTONE_SETTINGS")});
     items.push({
       id: 'My Account',
-      label: lang("Appearence"),
-      testID: 'DeviceAppearence',
+      label: lang("Appearance"),
+      testID: 'DeviceAppearance',
       icon: <Icon name={'ion5-information-circle'} size={30} color={colors.purple.hex} />,
       type: 'navigation',
       callback: () => {
-        NavigationUtil.navigate( "DeviceEditAppearence", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        NavigationUtil.navigate( "DeviceEditAppearance", {sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
     });
     items.push({type: 'explanation', label: lang("Change_name__icon__etc_"), below: true});
@@ -228,9 +228,9 @@ export class  DeviceOverview extends LiveComponent<any, any> {
 
     return (
       <SettingsBackground testID={"DeviceOverview"}>
-        <SettingsScrollbar testID={'DeviceOverview_scrollview'}>
+        <SettingsScrollView testID={'DeviceOverview_scrollview'}>
           <ListEditableItems items={this._getItems(stone)} />
-        </SettingsScrollbar>
+        </SettingsScrollView>
       </SettingsBackground>
     )
   }

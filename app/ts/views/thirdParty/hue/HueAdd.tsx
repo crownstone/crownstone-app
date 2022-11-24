@@ -15,6 +15,8 @@ import { background, colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { Button } from "../../components/Button";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 export class HueAdd extends Component<any, any> {
@@ -25,8 +27,8 @@ export class HueAdd extends Component<any, any> {
 
   render() {
     return (
-      <Background image={background.menu} hasNavBar={false}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+      <SettingsBackground>
+        <SettingsScrollView>
           <View style={{flexGrow: 1, alignItems:'center', paddingTop:20, paddingBottom:20}}>
             <Text style={styles.title}>{ lang("Pairing_with_Hue") }</Text>
             <View style={{height:10}} />
@@ -49,8 +51,8 @@ export class HueAdd extends Component<any, any> {
               iconColor={colors.green.rgba(0.5)}
             />
           </View>
-        </ScrollView>
-      </Background>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }
