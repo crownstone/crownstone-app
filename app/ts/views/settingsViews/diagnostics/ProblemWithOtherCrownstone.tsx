@@ -26,6 +26,7 @@ import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { core } from "../../../Core";
 import { tell } from "../../../logic/constellation/Tellers";
+import { tabBarHeight } from "../../styles";
 
 
 export class ProblemWithOtherCrownstone extends Component<any, any> {
@@ -264,7 +265,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: tabBarHeight}}>
         {this._getHeader()}
         {this._getTests()}
         {this._getOtherCrownstone()}

@@ -17,6 +17,7 @@ import {
 } from "./DiagnosticUtil";
 import {TestRunner} from "./TestRunner";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { tabBarHeight } from "../../styles";
 
 
 export class NoStones extends Component<any, any> {
@@ -193,7 +194,7 @@ export class NoStones extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight}}>
         <Text style={diagnosticStyles.headerStyle}>{ lang("You_dont_have_any_Crownst") }</Text>
         <View>
           <TestResult label={ lang("Database_is_healthy")} state={ this.props.databaseHealth } />

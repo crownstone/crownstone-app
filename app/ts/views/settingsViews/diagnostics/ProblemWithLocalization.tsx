@@ -29,6 +29,7 @@ import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../Core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import {FingerprintUtil} from "../../../util/FingerprintUtil";
+import { tabBarHeight } from "../../styles";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -490,7 +491,7 @@ export class ProblemWithLocalization extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight}}>
         { this._getHeader()  }
         { this._getTests()   }
         { this._getResults() }

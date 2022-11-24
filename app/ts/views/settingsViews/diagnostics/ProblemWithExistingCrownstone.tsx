@@ -31,6 +31,7 @@ import {StoneUtil} from "../../../util/StoneUtil";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { core } from "../../../Core";
 import { tell } from "../../../logic/constellation/Tellers";
+import { tabBarHeight } from "../../styles";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {
@@ -872,7 +873,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight}}>
         { this._getHeader()  }
         { this._getTests()   }
         { this._getResults() }

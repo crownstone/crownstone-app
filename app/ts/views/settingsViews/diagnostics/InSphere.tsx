@@ -23,6 +23,7 @@ import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { core } from "../../../Core";
+import { tabBarHeight } from "../../styles";
 
 
 export class InSphere extends Component<any, any> {
@@ -163,7 +164,7 @@ export class InSphere extends Component<any, any> {
     }
     else {
       return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight}}>
           { this._getHeader()  }
           { this._getTests()   }
           { this._getResults() }

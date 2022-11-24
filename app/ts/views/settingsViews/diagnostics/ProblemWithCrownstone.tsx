@@ -17,6 +17,7 @@ import {ProblemWithExistingCrownstone} from "./ProblemWithExistingCrownstone";
 import {ProblemWithNewCrownstone} from "./ProblemWithNewCrownstone";
 import {ProblemWithOtherCrownstone} from "./ProblemWithOtherCrownstone";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { tabBarHeight } from "../../styles";
 
 
 export class ProblemWithCrownstone extends Component<any, any> {
@@ -71,7 +72,7 @@ export class ProblemWithCrownstone extends Component<any, any> {
     }
     else {
       return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: tabBarHeight}}>
           {this._getHeader()}
           {this._getTests()}
           <DiagOptions

@@ -9,7 +9,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {screenWidth} from "../../styles";
+import { screenWidth, tabBarHeight } from "../../styles";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {
   DiagSingleButton,
@@ -236,7 +236,7 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight}}>
         { this._getHeader()  }
         { this._getTests()   }
         { this._getResults() }
