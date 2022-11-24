@@ -130,16 +130,16 @@ export class ScenesOverview extends LiveComponent<any, any> {
   }
 
 
-  renderDraggableItem = (id: string, index: number, drag: () => void, isActive: boolean) => {
+  renderDraggableItem = (cloudId: string, index: number, drag: () => void, isActive: boolean) => {
     let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
-    let scene = Get.scene(activeSphereId, MapProvider.cloud2localMap.scenes[id]);
+    let scene = Get.scene(activeSphereId, MapProvider.cloud2localMap.scenes[cloudId]);
     if (!scene) { return <View/> }
     return (
       <SceneItem
-        key={id}
+        key={cloudId}
         scene={scene}
-        sceneId={id}
+        sceneCloudId={cloudId}
         sphereId={activeSphereId}
         stateEditMode={this.state.editMode}
         dragAction={drag}

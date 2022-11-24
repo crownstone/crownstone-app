@@ -21,7 +21,7 @@ import { Util } from "../../../util/Util";
 import { tell } from "../../../logic/constellation/Tellers";
 import { useDraggable } from "../../components/hooks/draggableHooks";
 
-export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dragAction, isBeingDragged }) {
+export function SceneItem({sphereId, sceneCloudId, scene, stateEditMode, eventBus, dragAction, isBeingDragged }) {
   const [editMode, setEditMode] = useState(stateEditMode);
   const [activated, setActivated] = useState(false);
   const [available, setAvailable] = useState(core.bleState.bleAvailable && core.bleState.bleBroadcastAvailable);
@@ -58,13 +58,13 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dr
           if (!available) { return }
           if (editMode === false) {
             let switchData = scene.data;
-            executeScene(switchData, sphereId, sceneId);
+            executeScene(switchData, sphereId, scene.id);
 
             setActivated(true);
             setTimeout(() => { setActivated(false); }, 2000);
           }
           else {
-            NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId});
+            NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: scene.id});
           }
         }}
         onLongPress={() => {
@@ -91,17 +91,17 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, eventBus, dr
           <EditIcons
             color={color}
             editMode={editMode}
-            editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId}) }}
+            editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: scene.id}) }}
             deleteCallback={() => { Alert.alert(
               lang("_Are_you_sure___Do_you_wa_header"),
               lang("_Are_you_sure___Do_you_wa_body"),
               [{text:lang("_Are_you_sure___Do_you_wa_left")},{
               text:lang("_Are_you_sure___Do_you_wa_right"), onPress: (() => {
-              SortingManager.removeFromLists(sceneId);
+              SortingManager.removeFromLists(sceneCloudId);
               core.store.dispatch({
                 type:"REMOVE_SCENE",
                 sphereId: sphereId,
-                sceneId: sceneId,
+                sceneId: scene.id,
               })
             })}])}}
           />

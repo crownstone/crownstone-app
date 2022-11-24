@@ -19,8 +19,10 @@ import { DataUtil } from "../../util/DataUtil";
 import { StoneSwitchStateRow } from "./SceneAdd";
 import { IconButton } from "../components/IconButton";
 import { background, colors } from "../styles";
-import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 import { PICTURE_GALLERY_TYPES } from "./constants/SceneConstants";
+import { SettingsBackground } from "../components/SettingsBackground";
+import { SettingsScrollView } from "../components/SettingsScrollView";
+import { Get } from "../../util/GetUtil";
 
 export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}, any> {
   static options(props) {
@@ -46,7 +48,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       pictureURI: null
     };
 
-    let scene = core.store.getState()?.spheres[props.sphereId]?.scenes[props.sceneId] || null;
+    let scene = Get.scene(props.sphereId, props.sceneId);
     if (scene) {
       // verify that the crownstones used in this scene have not been deleted.
       let data = verifySceneIntegrity(scene.data, props.sphereId, props.sceneId);
@@ -249,11 +251,11 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
   render() {
     let backgroundImage = background.menu;
     return (
-      <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
-        <ScrollView>
+      <SettingsBackground>
+        <SettingsScrollView>
           <ListEditableItems items={this._getItems()} />
-        </ScrollView>
-      </BackgroundNoNotification>
+        </SettingsScrollView>
+      </SettingsBackground>
     );
   }
 }
