@@ -23,6 +23,11 @@ export function DeviceEntryLabel({stone, dimMode, editMode}) {
     style.fontStyle = "normal";
     style.fontWeight = "bold";
   }
+  else if (stone.errors.hasError) {
+    label = lang("Problem_detected__tap_near");
+    style.fontStyle = "normal";
+    style.fontWeight = "bold";
+  }
 
   label = editMode ? lang("Hold_to_drag_") : label
 

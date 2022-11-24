@@ -891,6 +891,7 @@ export default {
     I_need_to_be_setup_again_:             function() { return "Ik moet opnieuw ingesteld worden..."; },
     Searching___:                          function() { return "Zoeken..."; },
     Problem_detected__tap_her:             function() { return "Probleem gevonden, tik hier"; },
+    Problem_detected__tap_near:            function() { return "Probleempje. Tik hier als je er weer bent."; },
     Hold_to_drag_:                         function() { return "Sleep up en neer!"; },
     Working___:                            function() { return "Bezig..."; },
     Tap_here_to_configure_me_:             function() { return "Tik hier om me te configureren!"; },
