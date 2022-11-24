@@ -18,15 +18,14 @@ export function Blur(props) {
         nestedProps.style = mergedStyle;
       }
     }
-    if (props?.style?.backgroundColor === undefined) {
+    if (props?.style?.backgroundColor === undefined || props?.style?.backgroundColor === 'transparent') {
       if (props?.blurType === "light") {
-        nestedProps.style = {...(nestedProps.style ?? {}), backgroundColor: 'rgba(255,255,255,0.6)'}
+        nestedProps.style = {...(nestedProps.style ?? {}), backgroundColor: 'rgba(255,255,255,0.7)'}
       }
       else if (props.blurType === 'dark') {
         nestedProps.style = {...(nestedProps.style ?? {}), backgroundColor: 'rgba(0,0,0,0.6)'}
       }
     }
-
     return <View {...nestedProps} />
   }
 
