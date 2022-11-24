@@ -41,7 +41,6 @@ class LocationHandlerClass {
         }
       });
 
-      // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); }));
       this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); }));
       this._unsubscribeLocationEvents.push(core.eventBus.on('enterRoom',   (data)     => { this._enterRoom(data); })); // data = {sphereId: sphereId, locationId: locationId}

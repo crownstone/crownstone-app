@@ -556,6 +556,8 @@ export const xUtil = {
 
 
   preparePictureURI: function(picture, cacheBuster = true) {
+    if (picture === null) { throw new Error("Invalid Picture."); }
+
     if (typeof picture === 'object') {
       if (picture.uri) {
         return picture.uri;
@@ -564,8 +566,9 @@ export const xUtil = {
         picture = picture.path;
       }
     }
+
     if (typeof picture === 'number') {
-      return picture
+      return picture;
     }
 
     let pictureUri = picture;

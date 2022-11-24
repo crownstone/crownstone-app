@@ -380,13 +380,6 @@ export class Login extends Component<any, any> {
         })
     );
 
-    // Sentry.addBreadcrumb({
-    //   category: 'login',
-    //   data: {
-    //     state: 'downloading settings'
-    //   }
-    // });
-
     // check if we need to upload a picture that has been set aside during the _requests process.
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
@@ -442,7 +435,8 @@ export class Login extends Component<any, any> {
         Alert.alert(
           lang("_Whoops___An_error_has_oc_header"),
           lang("_Whoops___An_error_has_oc_body"),
-          [{text:lang("_Whoops___An_error_has_oc_left"), onPress: defaultAction}], { onDismiss: defaultAction});
+          [{text:lang("_Whoops___An_error_has_oc_left"), onPress: defaultAction}], { onDismiss: defaultAction }
+        );
 
 
         if (DEBUG_MODE_ENABLED) {

@@ -140,7 +140,10 @@ function LocationFlavourImage(props : {location: any, height?: number}) {
   let usedHeight = props.height || 120;
 
   if (location.config.pictureSource === "CUSTOM") {
-    return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
+    if (location.config.picture) {
+      return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
+    }
+    return <View style={{width:screenWidth, height:usedHeight, backgroundColor: colors.csBlue.hex}} />;
   }
   else {
     return <Image source={getRoomStockImage(location.config.picture)} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
