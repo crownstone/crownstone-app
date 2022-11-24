@@ -47,7 +47,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
   // update the switchstate based on the changes in the store
   useDatabaseChange({updateStoneState: props.stoneId, changeStoneAvailability: props.stoneId}, () => {
     let stone = Get.stone(props.sphereId, props.stoneId);
-    if (!stone || !stone.state) { return; }
+    if (!stone || stone.state === undefined) { return; }
     if (stone.state.state !== percentage) {
       setPercentage(stone.state.state)
     }
