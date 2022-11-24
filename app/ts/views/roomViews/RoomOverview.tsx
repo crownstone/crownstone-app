@@ -163,13 +163,10 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.updateActiveSphere)     ||
         (change.changeFingerprint)      ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
-        (change.changeStoneRSSI         && change.changeStoneRSSI.sphereIds[this.props.sphereId])          ||
-        (change.stoneUsageUpdated       && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
         (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])
       ) {
-        this.forceUpdate();
-        return;
+        return this.forceUpdate();
       }
       if (
         (change.updateStoneConfig) ||
@@ -178,8 +175,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.changeStones)
       ) {
         this.sortedList.mustContain(this.getIdsInRoom());
-        this.forceUpdate();
-        return;
+        return this.forceUpdate();
       }
     });
   }

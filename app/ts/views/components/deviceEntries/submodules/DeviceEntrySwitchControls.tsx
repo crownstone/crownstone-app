@@ -57,7 +57,7 @@ export function DeviceControl({stone, setPercentage}) {
   if (action) {
     return (
       <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
-      {content}
+        {content}
       </TouchableOpacity>
   );
   }
@@ -104,7 +104,6 @@ export async function _switchCrownstone(stone, setPercentage) {
 export function DeviceDimSlider({stone, editMode, dimMode, value, onChange}) {
   let canDim  = stone.abilities.dimming.enabledTarget;
   let visible = canDim && !editMode && dimMode && StoneAvailabilityTracker.isDisabled(stone.id) === false;
-
   return (
     <SlideFadeInView height={40} visible={visible} style={{paddingHorizontal:15}}>
       <Slider

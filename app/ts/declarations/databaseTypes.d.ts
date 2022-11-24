@@ -361,6 +361,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'updateStoneState'                |
   'powerUsageUpdated'               |
   'stoneUsageUpdated'               |
+  'changeStoneRSSI'                 |
   'removeStone'                     |
   'userLogin'                       |
   'changeUserData'                  |

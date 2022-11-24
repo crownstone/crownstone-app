@@ -38,6 +38,7 @@ export function DeviceEntry(props: DeviceEntryProps) {
   let timeoutRef                    = useRef(null);
   let storedSwitchState             = useRef(stone.state.state);
 
+
   // clear the timeout on unmount and store a possibly unstored value.
   useCleanup(() => {
     clearInterval(timeoutRef.current);
@@ -45,13 +46,14 @@ export function DeviceEntry(props: DeviceEntryProps) {
   });
 
   // update the switchstate based on the changes in the store
-  useDatabaseChange({updateStoneState: props.stoneId, changeStoneAvailability: props.stoneId}, () => {
+  useDatabaseChange({updateStoneState: props.stoneId, changeStoneAvailability: props.stoneId}, (event) => {
     let stone = Get.stone(props.sphereId, props.stoneId);
     if (!stone || stone.state === undefined) { return; }
-    if (stone.state.state !== percentage) {
-      setPercentage(stone.state.state)
-    }
+    setPercentage(stone.state.state)
   });
+
+  // Update the device entry if the usage is changing.
+  useDatabaseChange({stoneUsageUpdated: props.stoneId});
 
   // switch method for when the button or dimmer is touched. Has a timed-out store included, which is cleaned up in useCleanup
   let dimCrownstone = async (stone, switchState) => {
@@ -96,7 +98,6 @@ export function DeviceEntry(props: DeviceEntryProps) {
     backgroundColor = colors.csOrange.rgba(Platform.OS === 'android' ? 0.9 : 0.5);
     tapCallback = () => { NavigationUtil.launchModal("DeviceError", { sphereId: props.sphereId, stoneId: props.stoneId}) }
   }
-
 
   return (
     <DraggableBlurEntry

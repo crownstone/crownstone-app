@@ -18,14 +18,14 @@ type filter = DatabaseEventType | PartialRecord<DatabaseEventType, databaseId>
 // filter = {changeStones: "id"}
 // filter = "changeStones"
 
-export function useDatabaseChange(filters: filter | filter[], callback: () => void = null, dependencies = []) {
+export function useDatabaseChange(filters: filter | filter[], callback: (change?: any) => void = null, dependencies = []) {
   const forceUpdate = useForceUpdate();
 
   useEvent('databaseChange', (data) => {
     let change = data.change;
 
     if (checkFilter(change, filters)) {
-      if (callback !== null) { callback();    }
+      if (callback !== null) { callback(change);    }
       else                   { forceUpdate(); }
     }
   }, dependencies);

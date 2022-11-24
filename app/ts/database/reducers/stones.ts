@@ -161,7 +161,7 @@ let stoneStateReducer = (state = defaultState, action : DatabaseAction = {}) => 
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.
       if (action.data) {
-        let newState           = {...state};
+        let newState = {...state};
 
         if (newState.state !== action.data.state && action.data.state !== null && action.data.state !== undefined) {
           newState.previousState = newState.state;
@@ -191,7 +191,7 @@ let stoneErrorsReducer = (state = defaultErrors, action: any = {}) => {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
-        newState.errorCode          = update(action.data.errorCode,       newState.errorCode);
+        newState.errorCode          = update(action.data.errorCode,         newState.errorCode);
         newState.overCurrent        = update(action.data.overCurrent,       newState.overCurrent);
         newState.overCurrentDimmer  = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip    = update(action.data.temperatureChip,   newState.temperatureChip);

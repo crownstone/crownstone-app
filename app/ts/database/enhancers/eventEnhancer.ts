@@ -176,7 +176,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case 'UPDATE_STONE_LOCATION':
       eventStatus.stoneLocationUpdated = affectedIds; break;
     case 'UPDATE_STONE_SWITCH_STATE':
-      eventStatus.updateStoneSwitchState = affectedIds;
+      eventStatus.updateStoneSwitchState = affectedIds; break;
     case 'UPDATE_STONE_STATE':
     case 'CLEAR_STONE_USAGE':
       eventStatus.updateStoneState = affectedIds;
