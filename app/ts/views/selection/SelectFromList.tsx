@@ -102,7 +102,7 @@ export class SelectFromList extends Component<any, any> {
   render() {
     return (
       <SettingsBackground>
-        <SettingsScrollView>
+        <SettingsScrollView contentContainerStyle={{paddingBottom:50}}>
           <SeparatedItemList
             items={ this.props.items }
             separatorIndent={ false }
