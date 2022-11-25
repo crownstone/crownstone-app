@@ -2887,7 +2887,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onDisconnect(address: DeviceAddress) {
 		Log.i(TAG, "onDisconnect $address")
-		sendEvent("disconnectedFromPeripheral", address)
+		// This event is often triggered before the disconnect promise is (about 10 to 30 ms).
+		// The js side won't attempt a new connection to this address until it gets this event.
+		// So we should be able to simply delay sending the event, so it arrives after the promise is resolved.
+		handler.postDelayed({
+			sendEvent("disconnectedFromPeripheral", address)
+		}, 100)
 	}
 
 	@Synchronized
