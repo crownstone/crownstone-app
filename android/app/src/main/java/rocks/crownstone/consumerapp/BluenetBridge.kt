@@ -2260,8 +2260,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setDoubleTapSwitchCraft(address: String, enable: Boolean, callback: Callback) {
-		Log.i(TAG, "setDoubleTapSwitchCraft $address $enable")
+	fun setDoubleTapSwitchcraft(address: String, enable: Boolean, callback: Callback) {
+		Log.i(TAG, "setDoubleTapSwitchcraft $address $enable")
 		bluenet.config(address).setSwitchCraftDoubleTapEnabled(enable)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it) }
