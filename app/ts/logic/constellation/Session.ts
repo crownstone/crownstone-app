@@ -353,6 +353,27 @@ export class Session {
 
 
   async disconnect() {
+    // Session is waiting to connect by looking for advertisements.
+    if (this.state === "INITIALIZING") {
+      LOGi.constellation("Session: disconnecting before connect started.", this.state, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      this.state = 'DISCONNECTED';
+      // remove the bootstrapper since the user does not need a new connection
+      this._clearBootstrapper();
+      return;
+    }
+
+
+    // Session is connecting. We need to cancel the connection request.
+    if (this.state === "CONNECTING") {
+      LOGi.constellation("Session: disconnecting before connect finished.", this.state, this.handle, this.identifier, this._sessionIsKilled, this._sessionHasEnded);
+      await BluenetPromiseWrapper.cancelConnectionRequest(this.handle).catch((err) => {
+        LOGe.constellation("Session: Error when cancellingConnectionRequest", err?.message);
+      });
+      this.state = "DISCONNECTED";
+      return;
+    }
+
+
     LOGi.constellation("Session: performing closing commands...", this.handle, this.identifier);
     this.state = "DISCONNECTING";
     try {
@@ -377,6 +398,9 @@ export class Session {
   }
 
 
+  /**
+   * Used for unittesting...
+   */
   deactivate() {
     if (this.isPrivate() || this.isClosing()) { return; }
     if (this._sessionIsActivated === false)   { return; }
@@ -391,7 +415,10 @@ export class Session {
 
 
   async sessionHasEnded() {
-    if (this._sessionHasEnded) { return; }
+    if (this._sessionHasEnded) {
+      LOGi.constellation("Session: Session has already ended.. Aborting.", this.handle, this.identifier);
+      return;
+    }
 
     this._sessionHasEnded = true;
     LOGi.constellation("Session: Session has ended..", this.handle, this.identifier);

@@ -347,7 +347,7 @@ export class SessionManagerClass {
       await this.closeSession(handle);
     }
     else {
-      LOGi.constellation("SessionManager: Not closing session after revoke.", handle, session.identifier, session.privateId, commanderId);
+      LOGi.constellation("SessionManager: Not closing session after revoke.", handle, session?.identifier, session.privateId, commanderId);
     }
   }
 
@@ -365,6 +365,7 @@ export class SessionManagerClass {
     }
     else {
       LOGi.constellation("SessionManager: closeSession, but session does not exist anymore", handle);
+      return false;
     }
   }
 
@@ -383,7 +384,12 @@ export class SessionManagerClass {
     else {
       LOGi.constellation("SessionManager: Session does not exist");
     }
+
     if (session && session.isPrivate() && session.privateId === commanderId && session.state !== "DISCONNECTED") {
+      // The bookkeeping goes wrong when:
+      // The session is not connecting but initializing or connecting. The disconnect call will set it to the disconnecting state.
+      // There won't be a disconnectedFromPeripheral event because it was never connected.
+      // This keeps the session floating around in the session manager when it is killed since it is waiting for the disconnectedFromPeripheral event.
       if (session.state === "DISCONNECTING") {
         LOGi.constellation("SessionManager: Waiting for disconnect")
         await session.waitForDisconnect();
