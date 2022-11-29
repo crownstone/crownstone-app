@@ -864,10 +864,10 @@ export class ForceDirectedView extends Component<{
 
     // uncomment this for debug views
     // the two pan-based debug views require redraws added to the move handler.
-    // this._getBoundingBox();
-    // this.debug = true;
-    // let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._panOffset.x;
-    // let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
+    this._getBoundingBox();
+    this.debug = true;
+    let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._panOffset.x;
+    let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
 
     return (
       <View
@@ -876,7 +876,7 @@ export class ForceDirectedView extends Component<{
         style={{
           marginTop: topBarHeight-statusBarHeight,
           flex:1,
-          // backgroundColor:colors.green.rgba(1)
+          backgroundColor:"transparent"
         }}
         testID={this.props.testID}
       >
@@ -884,7 +884,7 @@ export class ForceDirectedView extends Component<{
           animatedStyle,{
             width: this.viewWidth,
             height: this.viewHeight,
-            // backgroundColor:colors.red.rgba(0.5)
+            backgroundColor: 'transparent'
         }]}>
           { this.getEdges() }
           { this.getNodes() }
@@ -906,7 +906,7 @@ export class ForceDirectedView extends Component<{
         {/*  left={this._currentPan.x < 0 ? this.viewCenter.x + this._currentPan.x : this.viewCenter.x}*/}
         {/*  color={colors.csBlue}*/}
         {/*/>*/}
-        {/**/}
+
         {/*<DebugView*/}
         {/*  height={Math.abs(dyBoundingBoxCenter)}*/}
         {/*  width={Math.abs(dxBoundingBoxCenter)}*/}
