@@ -553,18 +553,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (!bluenet.isPermissionsGranted()) {
 			val activity = reactContext.currentActivity
 			if (activity == null || !bluenet.isPermissionRequestable(activity)) {
-				Log.i(TAG, "manualPermissionRequired: activity=$activity")
+				Log.i(TAG, "sendLocationStatus manualPermissionRequired: activity=$activity")
 				sendEvent("locationStatus", "manualPermissionRequired")
 			}
 			else {
-				Log.i(TAG, "noPermission")
+				Log.i(TAG, "sendLocationStatus noPermission")
 				sendEvent("locationStatus", "noPermission")
 			}
 		}
 		else if (!bluenet.isLocationServiceEnabled()) {
+			Log.i(TAG, "sendLocationStatus off")
 			sendEvent("locationStatus", "off")
 		}
 		else {
+			Log.i(TAG, "sendLocationStatus on")
 //			cancelNotification(LOCATION_STATUS_NOTIFICATION_ID)
 			sendEvent("locationStatus", "on")
 		}
