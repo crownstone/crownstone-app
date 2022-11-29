@@ -57,6 +57,7 @@ import { Platform } from "react-native";
    */
   export let ENCRYPTION_ENABLED = true;   // Enable encryption for the app and the libs
   export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
+  export const AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION = 3;
 
 
   /**

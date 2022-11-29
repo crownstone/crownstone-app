@@ -5,6 +5,10 @@ import {KNN} from "./classifiers/knn";
 import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
 import { FingerprintManager } from "./fingerprints/FingerprintManager";
 import { Get } from "../util/GetUtil";
+import {
+  AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION,
+  AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION
+} from "../ExternalConfig";
 
 
 export class LocalizationCoreClass {
@@ -166,6 +170,10 @@ export class LocalizationCoreClass {
 
     if (data.length === 0) { return;}
     if (!canUseIndoorLocalizationInSphere(data[0].referenceId)) { return; }
+
+    if (data.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) {
+      return;
+    }
 
     let classificationResults = this.classifier.classify(data);
 

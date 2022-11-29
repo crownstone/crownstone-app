@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {FingerprintUtil} from "../../util/FingerprintUtil";
 import { Get } from "../../util/GetUtil";
 import { useDatabaseChange } from "../components/hooks/databaseHooks";
+import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../ExternalConfig";
 
 
 
@@ -99,7 +100,7 @@ function StatusCommunicationRender(props: { sphereId: sphereId, amountOfVisibleC
       </View>
     );
   }
-  else if (props.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+  else if (props.amountOfVisibleCrownstones >= AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
     return (
       <View style={generalStyle} pointerEvents={'none'}>
         <View style={inRangeStyle}>
