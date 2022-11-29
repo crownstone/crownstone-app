@@ -320,6 +320,23 @@ open class BluenetJS: RCTEventEmitter {
         }
     }
     
+    
+    @objc func gotoOsLocationSettings() {
+        LOGGER.info("BluenetBridge: Called gotoOsAppSettings")
+        if (Thread.isMainThread == true) {
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings)
+            }
+        }
+        else {
+            DispatchQueue.main.sync{
+                if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(appSettings)
+                }
+            }
+        }
+    }
+    
     @objc func resetBle() {
         LOGGER.info("BluenetBridge: called resetBle, do nothing, this is only used in Android")
     }

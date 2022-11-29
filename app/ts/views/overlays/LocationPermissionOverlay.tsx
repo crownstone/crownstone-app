@@ -112,7 +112,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getToAppSettingsButton() {
     return (
       <PopupButton
-        callback={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsAppSettings() }}
+        callback={() => { this.setState({waitingOnPermission: true}); Bluenet.gotoOsLocationSettings() }}
         label={lang("toAppSettings")}
       />
     );

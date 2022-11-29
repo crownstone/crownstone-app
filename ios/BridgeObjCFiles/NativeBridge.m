@@ -106,6 +106,8 @@ RCT_EXTERN_METHOD(subscribeToUnverified)
 RCT_EXTERN_METHOD(unsubscribeUnverified)
 RCT_EXTERN_METHOD(initBroadcasting)
 RCT_EXTERN_METHOD(gotoOsAppSettings)
+RCT_EXTERN_METHOD(gotoOsLocationSettings)
+
 RCT_EXTERN_METHOD(vibrate:(NSString *)type)
 
 RCT_EXTERN_METHOD(checkBroadcastAuthorization:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
