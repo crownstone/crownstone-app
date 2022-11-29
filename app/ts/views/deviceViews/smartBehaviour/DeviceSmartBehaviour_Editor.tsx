@@ -23,7 +23,7 @@ import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightBehaviour: boolean, data: any, sphereId: string, stoneId: string, behaviourId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Edit_Behaviour",props.typeLabel)});
+    return TopBarUtil.getOptions({title: lang("Edit_Behaviour",props.typeLabel), cancelModal: props.isModal || undefined});
   }
 
   render() {
