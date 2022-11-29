@@ -186,7 +186,7 @@ export class SessionBroker {
       LOGi.constellation("SessionBroker: Revoke session for kill", sessionHandle, "for", this.options.commanderId);
       await SessionManager.revokeRequest(sessionHandle, this.options.commanderId).catch((err) => {
         if (err?.message !== "REMOVED_FROM_QUEUE") {
-          LOGw.constellation("SessionBroker: Failed to request session", sessionHandle, "for", this.options.commanderId, err?.message);
+          LOGw.constellation("SessionBroker: Failed to kill session", sessionHandle, "for", this.options.commanderId, err?.message);
         }
       })
       delete this.connectedSessions[sessionHandle];

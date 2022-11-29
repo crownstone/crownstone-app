@@ -316,6 +316,7 @@ interface BridgeInterface extends BluenetPromiseWrapperProtocol {
   enableExtendedLogging:                  (enableLogging: boolean) =>  void,
   getConstants:                           () =>  void,
   gotoOsAppSettings:                      () =>  void,
+  gotoOsLocationSettings:                 () =>  void,
   initBroadcasting:                       () =>  void,
   quitApp:                                () =>  void,
   pauseTracking:                          () =>  void,

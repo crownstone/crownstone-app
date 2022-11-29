@@ -82,6 +82,7 @@ class OverlayManagerClass {
             NavigationUtil.showOverlay('LocationPermissionOverlay',{status: status});
             break;
           case "on":
+            OnScreenNotifications.removeAllNotificationsFrom("LocationPermissionOverlay");
             break;
           default:
             LOGe.info("OverlayManager: UNKNOWN PERMISSION FOR LOCATION", status);
