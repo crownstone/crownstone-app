@@ -33,6 +33,8 @@ interface simpleOverlayBoxProps {
   footerComponent?:  JSX.Element
 }
 
+let PADDING = 30;
+
 // Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
 //    true: disable the back button
 //    function: execute that function when the back button is pressed
@@ -49,9 +51,9 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
       return (
         <View style={{
           position: 'absolute',
-          bottom: -30,
+          bottom: -PADDING,
           left: 0,
-          width: screenWidth-30,
+          width: screenWidth-2*PADDING,
           height: 60,
         }}>
           {this.props.footerComponent}
@@ -85,9 +87,8 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
   }
 
   render() {
-
     return (
-      <SafeAreaProvider style={{flex:1, backgroundColor: colors.white.hex}}>
+      <SafeAreaProvider style={{flex:1}}>
         <HiddenFadeInBlur
           style={[
             {
@@ -106,7 +107,10 @@ export class SimpleOverlayBox extends Component<simpleOverlayBoxProps, any> {
             getTitle={() => { return this._getTitle() }}
             getFooterComponent={() => { return this._getFooterComponent() }}
             getCloseIcon={(size) => { return this._getCloseIcon(size) }}
-            >{this.props.children}</SimpleOverlayContent>
+          >{
+            this.props.children
+           }
+          </SimpleOverlayContent>
         </HiddenFadeInBlur>
       </SafeAreaProvider>
     );
@@ -125,7 +129,7 @@ function SimpleOverlayContent(props: {
   let closeIconSize = 40;
 
   return (
-    <View style={{flex:1, padding:30, paddingTop: insets.top + 30, paddingBottom: insets.bottom + 30}}>
+    <View style={{flex:1, padding: PADDING, paddingTop: insets.top + PADDING, paddingBottom: insets.bottom + PADDING}}>
       <View style={{flex:1, backgroundColor:colors.white.hex, borderRadius:10}}>
         {props.scrollable && <ScrollView contentContainerStyle={{flexGrow:1, paddingTop: 60}}>{props.children}</ScrollView> }
         {!props.scrollable && <View style={{flex:1, paddingTop: 60}}>{props.children}</View> }

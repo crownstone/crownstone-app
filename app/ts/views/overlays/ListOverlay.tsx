@@ -161,7 +161,7 @@ export class ListOverlay extends LiveComponent<any, any> {
 export function OverlaySaveButton(props : { label: string, backgroundColor: string, callback: () => void}) {
   return (
     <View style={{flex:1, flexDirection:'row'}}>
-      <View style={{flex:1}} />
+      <View style={{flex:0.2}} />
       <Blur blurType={'light'} blurAmount={3} style={{
         height:50,
         flex:3,
