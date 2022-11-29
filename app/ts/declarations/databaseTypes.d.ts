@@ -247,6 +247,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'UPDATE_ABILITY_PROPERTY_CLOUD_ID'             |
   'UPDATE_APP_SETTINGS'                          |
   'UPDATE_APP_STATE'                             |
+  'UPDATE_APP_LOCALIZATION_SETTINGS'             |
   'UPDATE_BEHAVIOUR_CLOUD_ID'                    |
   'UPDATE_DELETE_MESSAGE'                        |
   'UPDATE_DELETE_MESSAGE_CLOUD_ID'               |

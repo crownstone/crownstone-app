@@ -15,6 +15,10 @@ let defaultState : appData = {
   hasSeenDimmingButton: false,
 
   migratedDataToVersion: null,
+
+  localization_temporalSmoothingMethod: 'NONE',
+  localization_onlyOwnFingerprints: false,
+
   updatedAt: 1
 };
 
@@ -51,6 +55,15 @@ export default (state = defaultState, action : DatabaseAction = {}) => {
         newState = {...state};
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
         newState.updatedAt           = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_APP_LOCALIZATION_SETTINGS':
+      if (action.data) {
+        newState = {...state};
+        newState.localization_temporalSmoothingMethod = update(action.data.localization_temporalSmoothingMethod, newState.localization_temporalSmoothingMethod);
+        newState.localization_onlyOwnFingerprints     = update(action.data.localization_onlyOwnFingerprints,     newState.localization_onlyOwnFingerprints);
+        newState.updatedAt                            = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

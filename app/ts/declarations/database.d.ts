@@ -23,8 +23,11 @@ interface appData {
   hasSeenEditLocationIcon: boolean,
   hasSeenDimmingButton: boolean,
 
-
   migratedDataToVersion: null | string,
+
+  localization_temporalSmoothingMethod: 'NONE' | 'SEQUENTIAL_2' | 'BEST_OUT_OF_5' | '60_PERCENT_IN_10',
+  localization_onlyOwnFingerprints:     boolean,
+
   updatedAt: timestamp
 }
 

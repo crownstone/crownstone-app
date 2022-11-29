@@ -10,6 +10,10 @@ import {SyncingBase} from "./SyncingBase";
 import {core} from "../../../../Core";
 import {MapProvider} from "../../../../backgroundProcesses/MapProvider";
 
+
+/**
+ * Preferences are per device.
+ */
 export class PreferenceSyncer extends SyncingBase {
   deviceId: string;
 
@@ -159,6 +163,9 @@ const PreferenceProcessor = {
       preferenceMap[prepareProperty(sphere, `sorted_lists`)] = {value: sortedLists};
     });
 
+    preferenceMap['localization_temporalSmoothingMethod'] = state.app.localization_temporalSmoothingMethod;
+    preferenceMap['localization_onlyOwnFingerprints']     = state.app.localization_onlyOwnFingerprints;
+
     return preferenceMap;
   },
 
@@ -192,6 +199,12 @@ const PreferenceProcessor = {
               data: {sortedList}
             })
           }
+          break;
+        case 'temporalSmoothingMethod':
+          actions.push({type:"UPDATE_APP_LOCALIZATION_SETTINGS", data: {localization_temporalSmoothingMethod: preference.value}});
+          break;
+        case 'onlyOwnFingerprints':
+          actions.push({type:"UPDATE_APP_LOCALIZATION_SETTINGS", data: {localization_onlyOwnFingerprints: preference.value}});
           break;
       }
     }
