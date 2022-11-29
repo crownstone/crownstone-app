@@ -191,7 +191,11 @@ function BehaviourDescription(props, ai : AicoreBehaviour | AicoreTwilight, edit
     )
   }
   else {
-    return content;
+    return (
+      <TouchableOpacity activeOpacity={1} style={{flex:1}} onLongPress={editCallback}>
+        {content}
+      </TouchableOpacity>
+    )
   }
 
 }
