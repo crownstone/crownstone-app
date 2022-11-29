@@ -624,6 +624,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun gotoOsLocationSettings() {
+		val activity = reactContext.currentActivity
+		if (activity == null) {
+			Log.w(TAG, "No activity.")
+			return
+		}
+		bluenet.tryMakeScannerReady(activity)
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun requestLocationPermission() {
 		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
