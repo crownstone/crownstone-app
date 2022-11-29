@@ -349,6 +349,8 @@ exports[`Check if fingerprints are syncing 2`] = `
     "hasSeenSwitchView": false,
     "hasZoomedOutForSphereOverview": false,
     "indoorLocalizationEnabled": true,
+    "localization_onlyOwnFingerprints": false,
+    "localization_temporalSmoothingMethod": "NONE",
     "migratedDataToVersion": null,
     "notificationToken": null,
     "tapToToggleEnabled": false,
