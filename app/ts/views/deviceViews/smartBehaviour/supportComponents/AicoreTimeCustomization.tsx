@@ -55,7 +55,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
 
   render() {
     return (
-      <View style={{flex:1, paddingLeft:15, paddingTop:10, paddingRight:15}}>
+      <View style={{flex:1, paddingLeft:15, paddingTop:10, paddingRight:15, paddingBottom:30}}>
         <TimePart
           initialLabel={ lang("When_should_I_start_")}
           finalLabel={lang("Ill_start_at_")}
@@ -101,11 +101,11 @@ function TimePart(props : {
   instantEdit: boolean,
 }) {
   const [showTime, setShowTime] = useState(false);
-  const [type, setType] = useState(props.timeObj.getType());
-  const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
+  const [type, setType]         = useState(props.timeObj.getType());
+  const [ignoreInstantEdit, setIgnoreInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
   const [finished, setFinished] = useState(props.initiallyFinished);
-  const [time, setTime] = useState(props.timeObj.getTime());
+  const [time, setTime]         = useState(props.timeObj.getTime());
 
   if (props.visible === false) {
     return <View />;
@@ -158,29 +158,25 @@ function TimePart(props : {
                   props.setFinished(true);
                 }}/>
               </FadeIn>
-              { props.instantEdit && !ignoreInstantEdit ?
-                <FadeIn index={index++}>
-                  <TextButton label={ lang("I_want_something_else_")} basic={true} callback={() => {
-                    setType(null);
-                    setIgnorInstantEdit(true);
-                  }}/>
-                </FadeIn>
-                : undefined }
+              <SomethingElse
+                index={index++}
+                instantEdit={props.instantEdit}
+                ignoreInstantEdit={ignoreInstantEdit}
+                setIgnoreInstantEdit={setIgnoreInstantEdit}
+                setType={setType}
+              />
             </View>
           );
           break;
         case "CLOCK":
           let sharedOther = (
-            props.instantEdit && !ignoreInstantEdit ?
-            <FadeIn index={index++}>
-              <View style={{ marginLeft: 25 }}>
-                <TextButton label={ lang("I_want_something_else_")} basic={true} callback={() => {
-                  setType(null);
-                  setIgnorInstantEdit(true);
-                }}/>
-              </View>
-            </FadeIn>
-            : undefined
+            <SomethingElse
+              index={index++}
+              instantEdit={props.instantEdit}
+              ignoreInstantEdit={ignoreInstantEdit}
+              setIgnoreInstantEdit={setIgnoreInstantEdit}
+              setType={setType}
+            />
           );
           if (Platform.OS === 'android') {
             let date = new Date();
@@ -254,7 +250,7 @@ function TimePart(props : {
           }
           else {
             elements.push(
-              <View key={"clockUI"} style={{flex:1}}>
+              <View key={"clockUI"}>
                 <FadeIn index={index++}>
                   <UncontrolledDatePickerIOS
                     ref={(x) => {
@@ -264,7 +260,7 @@ function TimePart(props : {
                     mode="time"
                   />
                 </FadeIn>
-                <View style={{flex:1}} />
+                <View style={{flex:1, backgroundColor:"#ff0"}} />
                 <TextButton
                   key={"resultButton" + index}
                   index={index}
@@ -313,6 +309,19 @@ function TimePart(props : {
   )
 }
 
+function SomethingElse(props: {instantEdit: boolean, ignoreInstantEdit: boolean, index: number, setType: (type: any) => void, setIgnoreInstantEdit: (ignore: boolean) => void}) {
+  if (props.ignoreInstantEdit || props.instantEdit) {
+    return (
+      <FadeIn index={props.index}>
+        <TextButton label={lang("I_want_something_else_")} basic={true} callback={() => {
+          props.setType(null);
+          props.setIgnoreInstantEdit(true);
+        }}/>
+      </FadeIn>
+    );
+  }
+  return <React.Fragment />;
+}
 
 function TimeSummary(props : any) {
   switch (props.type) {

@@ -63,7 +63,7 @@ export async function request(
     let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
       requestDidTimeout = true;
       if (finishedRequest !== true)
-        reject(new Error('Network request to ' + url + ' failed by timeout'))
+        reject(new Error('Network ' + method + ' request to ' + url + ' failed by timeout'))
     }, NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
 
