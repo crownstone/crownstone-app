@@ -352,7 +352,8 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "REMOVE_ALL_HUBS":
     case "REMOVE_HUB":
       eventStatus.changeHubs = affectedIds; break;
-
+    case "UPDATE_APP_LOCALIZATION_SETTINGS":
+      eventStatus.changeLocalizationAppSettings = affectedIds; break;
     case "UPDATE_ABILITY_PROPERTY_AS_SYNCED_FROM_CLOUD":
     case "UPDATE_READ_MESSAGE_CLOUD_ID":
     case "REMOVE_USER_FROM_ALL_LOCATIONS":

@@ -3,6 +3,7 @@ import { KNN } from "../classifiers/knn";
 import { Get } from "../../util/GetUtil";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { NATIVE_BUS_TOPICS } from "../../Topics";
+import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../ExternalConfig";
 
 
 export class FingerprintAppender {
@@ -42,6 +43,8 @@ export class FingerprintAppender {
 
   loadCollectedData(data: ibeaconPackage[][]) {
     for (let measurement of data) {
+      if (measurement.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) { continue; }
+
       let classificationResults = this.classifier.classify(measurement);
       this.lastMeasurement = measurement;
       this.handleResult(classificationResults);

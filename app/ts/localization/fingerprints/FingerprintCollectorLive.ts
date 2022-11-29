@@ -4,6 +4,7 @@ import { Get } from "../../util/GetUtil";
 import { NativeBus } from "../../native/libInterface/NativeBus";
 import { NATIVE_BUS_TOPICS } from "../../Topics";
 import {core} from "../../Core";
+import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../ExternalConfig";
 
 
 export class FingerprintCollectorLive {
@@ -60,6 +61,8 @@ export class FingerprintCollectorLive {
 
 
   handleIbeacon(data: ibeaconPackage[]) {
+    if (data.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) { return; }
+
     let result = this.classifier.classifyWithVerboseData(this.sphereId, data);
     this.lastMeasurement = data;
     this.lastClosestSampleData = result.closest;

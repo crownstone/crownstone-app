@@ -130,6 +130,7 @@ import { LocalizationFindAndFix }             from "./main/localization/Localiza
 import { LocalizationFingerprintManager }     from "./main/localization/LocalizationFingerprintManager";
 import { Ability_DoubleTapSwitchcraft }       from "./deviceViews/abilities/settings/Ability_DoubleTapSwitchcraft";
 import { CloudChoice }                        from "./startupViews/CloudChoice";
+import { LocalizationAdvancedSettings } from "./main/localization/LocalizationAdvancedSettings";
 
 
 export const Views = {
@@ -244,6 +245,7 @@ export const Views = {
   LocalizationCrownstoneMoved:       LocalizationCrownstoneMoved,
   LocalizationFindAndFix:            LocalizationFindAndFix,
   LocalizationFingerprintManager:    LocalizationFingerprintManager,
+  LocalizationAdvancedSettings:      LocalizationAdvancedSettings,
 
 
   // Overlays:

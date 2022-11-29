@@ -50,6 +50,18 @@ export function LocalizationMenu_active(props) {
   });
   items.push({label: lang("If_the_localization_was_w"),  type:'explanation', below: true});
 
+  items.push({
+    label: lang("Advanced_Settings"),
+    type: 'navigation',
+    numberOfLines: 1,
+    testID: 'LocalizationAdvancedSettings',
+    icon: <Icon name='ios-cog' size={28} color={colors.black.hex}/>,
+    callback: () => {
+      NavigationUtil.navigate('LocalizationAdvancedSettings', {sphereId: props.sphereId});
+    }
+  });
+
+
 
   let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
   let goodLocations      = LocalizationUtil.getLocationsWithGoodFingerprints(props.sphereId);

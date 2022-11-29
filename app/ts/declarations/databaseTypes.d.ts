@@ -388,6 +388,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'deviceTrackingTokenTried'        |
   'hubLocationUpdated'              |
   'updateHubConfig'                 |
+  'changeLocalizationAppSettings'   |
   'changeHubs'                      |
   'changeStoneAvailability'         |
   'totalAffectedIds'

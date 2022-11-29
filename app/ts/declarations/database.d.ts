@@ -25,11 +25,13 @@ interface appData {
 
   migratedDataToVersion: null | string,
 
-  localization_temporalSmoothingMethod: 'NONE' | 'SEQUENTIAL_2' | 'BEST_OUT_OF_5' | '60_PERCENT_IN_10',
+  localization_temporalSmoothingMethod: LocalizationSmoothingMethod,
   localization_onlyOwnFingerprints:     boolean,
 
   updatedAt: timestamp
 }
+
+type LocalizationSmoothingMethod = 'NONE' | 'SEQUENTIAL_2' | 'BEST_OUT_OF_5' | '60_PERCENT_IN_10';
 
 interface SphereData {
   id:     string,

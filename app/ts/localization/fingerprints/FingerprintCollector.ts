@@ -11,6 +11,7 @@ import { NATIVE_BUS_TOPICS } from "../../Topics";
 import { KNNsigmoid } from "../classifiers/knn";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../Core";
+import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../ExternalConfig";
 
 
 export class FingerprintCollector {
@@ -57,6 +58,8 @@ export class FingerprintCollector {
 
 
   collect(data: ibeaconPackage[]) {
+    if (data.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) { return; }
+
     let datapoint          = {dt: Date.now() - this.startTime, data: {}};
     let datapointProcessed = {dt: Date.now() - this.startTime, data: {}};
     for (let point of data) {
