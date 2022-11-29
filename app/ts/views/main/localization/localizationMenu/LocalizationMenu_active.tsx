@@ -26,13 +26,37 @@ import { SettingsScrollView } from "../../../components/SettingsScrollView";
 export function LocalizationMenu_active(props) {
   let items = [];
   let secondItems = [];
-  items.push({label: lang("CHANGES_AND_QUICKFIX"),  type:'explanation'});
+
+  let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
+  let warning = false;
+  if (locationsAttention.length > 0) {
+    warning = true;
+    items.push({label: lang("THESE_ROOMS_NEED_ATTENTIO"),  type:'explanation'});
+  }
+  else {
+    items.push({label: lang("LOCALIZATION_TRAINING_QUA"),  type:'explanation'});
+  }
+
+  items.push({
+    label: "Room training quality",
+    type: 'navigation',
+    numberOfLines: 1,
+    warning: warning,
+    testID: 'RoomTrainingQuality',
+    icon: <Icon name='ma-stars' size={28} color={warning ? colors.red.hex : colors.csBlue.hex}/>,
+    callback: () => {
+      NavigationUtil.navigate('LocalizationRoomQuality', {sphereId: props.sphereId});
+    }
+  });
+  items.push({label: "See how well the rooms are trained and what you can do to improve the localization.",  type:'explanation', below: true});
+
+  items.push({label: lang("CHANGES_AND_QUICKFIX"),  type:'explanation', alreadyPadded: true});
   items.push({
     label: lang("I_have_moved_a_Crownstone"),
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
-    icon: <Icon name='c2-crownstone' size={31} color={colors.black.hex}/>,
+    icon: <Icon name='ion5-move' size={28} color={colors.csBlueLight.hex}/>,
     callback: () => {
       NavigationUtil.navigate('LocalizationCrownstoneMoved', {sphereId: props.sphereId});
     }
@@ -43,7 +67,7 @@ export function LocalizationMenu_active(props) {
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
-    icon: <Icon name='fa5-flushed' size={28} color={colors.black.hex}/>,
+    icon: <Icon name='ion5-bandage' size={28} color={colors.csBlueLighter.hex}/>,
     callback: () => {
       NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
     }
@@ -51,117 +75,35 @@ export function LocalizationMenu_active(props) {
   items.push({label: lang("If_the_localization_was_w"),  type:'explanation', below: true});
 
   items.push({
+    label: 'Find and fix difficult spots...',
+    type: 'navigation',
+    numberOfLines: 2,
+    testID: 'FindAndFix',
+    icon: <Icon name='ma-saved-search' size={28} color={colors.csBlueLight.hex}/>,
+    callback: () => {
+      NavigationUtil.navigate('LocalizationFindAndFix_noLocation', {sphereId: props.sphereId});
+    }
+  });
+  items.push({label: 'You can walk around the room to find weakspots in the localization and fix them immediately!',  type:'explanation', below: true});
+
+  items.push({
     label: lang("Advanced_Settings"),
     type: 'navigation',
     numberOfLines: 1,
     testID: 'LocalizationAdvancedSettings',
-    icon: <Icon name='ios-cog' size={28} color={colors.black.hex}/>,
+    icon: <Icon name='ios-cog' size={28} color={colors.csBlue.hex}/>,
     callback: () => {
       NavigationUtil.navigate('LocalizationAdvancedSettings', {sphereId: props.sphereId});
     }
   });
+  items.push({label: "Look here to turn on smoothing and phone exclusivity.",  type:'explanation', below: true});
 
-
-
-  let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
-  let goodLocations      = LocalizationUtil.getLocationsWithGoodFingerprints(props.sphereId);
-  let alreadyPadded      = true;
-  if (locationsAttention.length > 0) {
-    items.push({label: lang("THESE_ROOMS_NEED_ATTENTIO"),  type:'explanation', alreadyPadded: alreadyPadded});
-    alreadyPadded = !alreadyPadded;
-  }
-
-  if (goodLocations.length > 0) {
-    secondItems.push({label: lang("LOCALIZATION_TRAINING_QUA"),  type:'explanation', alreadyPadded: alreadyPadded});
-  }
 
   return (
     <SettingsBackground testID={"LocalizationMenu_active"}>
       <SettingsScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom:30 }}>
         <ListEditableItems items={items} />
-        <LocalizationLocationList sphereId={props.sphereId} locations={locationsAttention} backgroundColor={colors.csOrange.rgba(0.5)}  />
-        <ListEditableItems items={secondItems} />
-        <LocalizationLocationList sphereId={props.sphereId} locations={goodLocations} />
       </SettingsScrollView>
     </SettingsBackground>
   );
-}
-
-
-/**
- * Component that displays the list of rooms that are in the sphere.
- * @param props
- * @constructor
- */
-function LocalizationLocationList(props : {sphereId: sphereId, locations: LocationData[], backgroundColor?: string }) {
-  let sphere = Get.sphere(props.sphereId);
-  if (!sphere) { return null; }
-
-  if (props.locations.length === 0) { return null; }
-
-  let items = [];
-  items.push(<View style={{height:1, width:screenWidth, backgroundColor: menuStyles.separator.backgroundColor}}/>);
-
-  let locationIds = props.locations.map(location => location.id);
-  locationIds.sort((a,b) => { return sphere.locations[a].config.name.localeCompare(sphere.locations[b].config.name); });
-
-  for (let locationId of locationIds) {
-    items.push(<RoomItem key={locationId} {...props} locationId={locationId} />);
-  }
-
-  return <React.Fragment>{items}</React.Fragment>;
-}
-
-function RoomItem(props : { sphereId: sphereId, locationId: locationId, backgroundColor?: string }) {
-  let fontSize = 16;
-
-  let location = Get.location(props.sphereId, props.locationId);
-  if (!location) { return <React.Fragment />; }
-
-  let score = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
-
-  return (
-    <TouchableOpacity style={{
-      flexDirection:'row',
-      alignItems:'center',
-      paddingVertical: 12,
-      paddingHorizontal:10,
-      borderBottomWidth:1,
-      borderColor: menuStyles.separator.backgroundColor,
-      backgroundColor: props.backgroundColor ?? menuStyles.listView.backgroundColor
-    }}
-      onPress={() => { NavigationUtil.navigate("LocalizationDetail",{sphereId: props.sphereId, locationId: props.locationId}); }}>
-      <Icon name={location.config.icon} size={35} color={colors.black.hex} />
-      <View style={{flexDirection:'column', flex:1, paddingLeft:10}}>
-        <Text style={{fontSize:fontSize}}>{location.config.name}</Text>
-      </View>
-      { getStars(score) }
-      <Icon name="ios-arrow-forward" size={18} color={'#888'} style={{paddingRight:0, paddingLeft:15}} />
-    </TouchableOpacity>
-  )
-}
-
-/**
- * Get the stars for a given score.
- * @param score
- * @param size    Icon size
- * @param color   Icon color
- */
-export function getStars(score: number, size: number = 19, color = colors.black, showEmptyStars = true) {
-  let stars = [];
-  for (let i = 0; i < 5; i++) {
-    score -= 20;
-    if (score >= -5) {
-      stars.push(<Icon key={`star_${i}`} name="fa-star" size={size} color={color.hex} />);
-    }
-    else if (score >= -15) {
-      stars.push(<Icon key={`star_half_o_${i}`} name="fa-star-half-o" size={size} color={color.hex}/>);
-    }
-    else {
-      if (showEmptyStars) {
-        stars.push(<Icon key={`star_o_${i}`} name="fa-star-o" size={size} color={color.rgba(0.5)}/>);
-      }
-    }
-  }
-  return stars;
 }

@@ -21,10 +21,10 @@ import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { Get } from "../../../util/GetUtil";
 import {FingerprintUtil, PenaltyList} from "../../../util/FingerprintUtil";
-import {getStars} from "./localizationMenu/LocalizationMenu_active";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {LocalizationUtil} from "../../../util/LocalizationUtil";
 import {DataUtil} from "../../../util/DataUtil";
+import { getStars } from "./LocalizationRoomQuality";
 
 
 export function LocalizationDetail(props: {sphereId: string, locationId: string}) {

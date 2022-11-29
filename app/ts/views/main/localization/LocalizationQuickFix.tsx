@@ -24,6 +24,7 @@ import { Spacer } from "../../components/Spacer";
 import { Get } from "../../../util/GetUtil";
 import { LocalizationMonitor } from "../../../localization/LocalizationMonitor";
 import { FingerprintAppender } from "../../../localization/fingerprints/FingerprintAppender";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 
@@ -34,7 +35,7 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
 
   let location = Get.location(props.sphereId, locationId);
   return (
-    <Background>
+    <SettingsBackground>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
       <Text style={styles.header}>{ lang("Localization_made_a_mista") }</Text>
@@ -64,18 +65,18 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
               label={ " Fix mistake! "}
               callback={() => {
                 Alert.alert(
-lang("_You_were_in_the_____argu_header",location.config.name),
-lang("_You_were_in_the_____argu_body"),
-[{text:lang("_You_were_in_the_____argu_left"), style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
+                  lang("_You_were_in_the_____argu_header",location.config.name),
+                  lang("_You_were_in_the_____argu_body"),
+                  [{text:lang("_You_were_in_the_____argu_left"), style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
                          {
-text:lang("_You_were_in_the_____argu_right"), style:'cancel', onPress: handleCancel} ],
+                        text:lang("_You_were_in_the_____argu_right"), style:'cancel', onPress: handleCancel} ],
                 {cancelable:false}
                 );
               }}
             />
         }
       </View>
-    </Background>
+    </SettingsBackground>
   );
 }
 

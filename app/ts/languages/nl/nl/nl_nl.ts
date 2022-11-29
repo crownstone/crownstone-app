@@ -2058,6 +2058,25 @@ export default {
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
     Advanced_Settings:                      function() { return "Geavanceerde instellingen" },
   },
+  LocalizationRoomQuality:{
+    __stringSameAsBaseLanguage: {
+      CHANGES_AND_QUICKFIX:                  false,
+      I_have_moved_a_Crownstone:             false,
+      Improve_from_localization:             false,
+      If_the_localization_was_w:             false,
+      THESE_ROOMS_NEED_ATTENTIO:             false,
+      LOCALIZATION_TRAINING_QUA:             false,
+      Advanced_Settings:                     false,
+    },
+    CHANGES_AND_QUICKFIX:                   function() { return "AANPASSINGEN EN SNELLE OPLOSSINGEN"; },
+    I_have_moved_a_Crownstone:              function() { return "Ik heb een Crownstone verplaatst.."; },
+    Improve_from_localization:              function() { return "Verbeteren van fouten van de positiebepaling..."; },
+    If_the_localization_was_w:              function() { return "Als de positiebepaling een fout heeft gemaakt en je bent minimaal 3 minuten in dezelfde kamer, tik hier om de fouten op te lossen!"; },
+    THESE_ROOMS_NEED_ATTENTIO:              function() { return "DEZE KAMERS HEBBEN AANDACHT NODIG"; },
+    LOCALIZATION_TRAINING_QUA:              function() { return "KWALITEIT VAN DE VERZAMELDE DATA"; },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
+    Advanced_Settings:                      function() { return "Geavanceerde instellingen" },
+  },
   LocalizationMenu_gettingStarted:{
     __stringSameAsBaseLanguage: {
       LETS_GET_STARTED:                      false,

@@ -45,7 +45,7 @@ export function LocalizationAdvancedSettings(props) {
   let state = core.store.getState();
 
   let items = [];
-  items.push({label: "SMOOTHING",  type:'explanation'});
+  items.push({label: "SMOOTHING (REACTION SPEED VS STABILITY)",  type:'explanation'});
   let values : {label:string, value: LocalizationSmoothingMethod}[] = [
     {label: "None",               value: 'NONE'},
     {label: "Same result twice",  value: 'SEQUENTIAL_2'},
@@ -63,8 +63,7 @@ export function LocalizationAdvancedSettings(props) {
     valueLabel: getLabel(state.app.localization_temporalSmoothingMethod, values),
     items: values,
     callback: (newValue) => {
-      console.log("Selected Value", newValue);
-      // core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_temporalSmoothingMethod: newValue }})
+      core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_temporalSmoothingMethod: newValue }})
     }
   })
   items.push({label: "If the localization is irratic, first try to improve the training data via the 'Localization has made a mistake' or 'Find and fix difficult spots'. That last one is found by tapping a room in the previous view.\n\nIf that is not enough, you can use smoothing.",  type:'explanation', below: true});

@@ -12,7 +12,12 @@ interface trainingDataProcessed {
   data: Record<string, sigmoid>
 }
 
-type iBeaconHistory = [timestamp, ibeaconPackage[]];
+interface LocalizationData {
+  sphereId: sphereId, locationId: locationId
+}
+
+type iBeaconHistory      = [timestamp, ibeaconPackage[]];
+type LocalizationHistory = [timestamp, LocalizationData];
 
 interface ChosenClassificationSampleData {
   locationId: locationId,
@@ -24,4 +29,5 @@ interface ChosenClassificationSampleData {
 interface ClassificationData {
   closest: ChosenClassificationSampleData;
   distanceMap: Record<locationId, number>;
+  vector: ibeaconPackage[]
 }

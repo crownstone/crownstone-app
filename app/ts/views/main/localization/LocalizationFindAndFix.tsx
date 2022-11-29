@@ -19,6 +19,7 @@ import {SlideInViewLayoutAnimation} from "../../components/animated/SlideInViewL
 import {core} from "../../../Core";
 import { FingerprintCollectorLive } from "../../../localization/fingerprints/FingerprintCollectorLive";
 import { Blur } from "../../components/Blur";
+import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../../ExternalConfig";
 
 
 
@@ -39,9 +40,13 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
     this.state = {
       collectedPoints: 0,
       fixing: false,
+      vectorSize: null,
     };
 
     this.collector = new FingerprintCollectorLive(this.props.sphereId, this.props.locationId, 'FIND_AND_FIX');
+    this.collector.handleNotEnoughData = (datapoints) => {
+      this.setState({vectorSize: datapoints.length});
+    }
     this.collector.handleResult = (result) => {
       this.distanceMap = result.distanceMap;
       this.sortedDistanceArray = Object.keys(this.distanceMap);
@@ -58,7 +63,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
         // the deleteLocation function will check if we will allow this.
         this.collector.deleteLastBestDatapoint();
 
-        this.setState({collectedPoints: this.state.collectedPoints + 1, fixing: true});
+        this.setState({collectedPoints: this.state.collectedPoints + 1, fixing: true, vectorSize: result.vector.length });
         if (Platform.OS === 'android') {
           Vibration.vibrate([0,400]);
         }
@@ -131,7 +136,12 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
           <ActivityIndicator size="large" style={{paddingTop:20}}/>
         </SlideInViewLayoutAnimation>
 
+        <SlideInViewLayoutAnimation visible={this.state.vectorSize !== null && this.state.vectorSize < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION}>
+          <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Not enough Crownstones in the last measurement (${this.state.vectorSize}/${AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION})...`}</Text>
+          <Text style={{...styles.explanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Localization cannot work here, ensure that I am close enough to at least ${AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION} Crownstones..`}</Text>
+        </SlideInViewLayoutAnimation>
         <View style={{flex:1}}/>
+
         <SlideInViewLayoutAnimation visible={this.state.collectedPoints > 0}>
           <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
             {this.state.fixing && (

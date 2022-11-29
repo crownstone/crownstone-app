@@ -159,7 +159,8 @@ export class KNN {
         distance: Infinity,
         index: null,
       },
-      distanceMap: {}
+      distanceMap: {},
+      vector: packages
     };
 
     // find the closest fingerprint in the sphere.

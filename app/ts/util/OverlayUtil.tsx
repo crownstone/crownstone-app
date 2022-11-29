@@ -18,7 +18,7 @@ import { LocationLists } from "../views/selection/SelectCrownstone";
 
 export const OverlayUtil = {
 
-  callRoomSelectionOverlay: function(sphereId, callback) {
+  callRoomSelectionOverlay: function(sphereId, callback, locationIdArray? : locationId[]) {
     core.eventBus.emit('showListOverlay', {
       title: lang("Select_Room"),
       getItems: () => {
@@ -28,6 +28,10 @@ export const OverlayUtil = {
         locationIds.sort((a,b) => {
           return sphere.locations[a].config.name > sphere.locations[b].config.name ? 1 : -1;
         })
+
+        if (locationIdArray) {
+          locationIds = locationIdArray;
+        }
         let items = [];
         locationIds.forEach((locationId) => {
           let location = sphere.locations[locationId];

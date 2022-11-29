@@ -76,7 +76,7 @@ export class NavigationBar extends Component<any, any> {
           :
           <View style={{flex:1}} />
         }
-
+        {this.props.warning === true && <Icon name="fa-warning" size={25} color={colors.red.hex} style={{paddingRight:15}} />}
         {this.props.disabled !== true &&
           <View style={{ paddingTop: 3 }}>
             {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'}/> :

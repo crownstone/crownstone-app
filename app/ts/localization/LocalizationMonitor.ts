@@ -24,14 +24,20 @@ class LocalizationMonitorClass {
       core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,(data: ibeaconPackage[]) => { this.storeMeasurement(data); })
       core.nativeBus.on(core.nativeBus.topics.enterSphere,  (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Enter Sphere.'}); })
       core.nativeBus.on(core.nativeBus.topics.exitSphere,   (sphereId) => { this.storeLocalization({region: sphereId, location: 'str:Exit Sphere.'}); })
-      core.eventBus.on('enterRoom' ,(data) => { this.storeLocalization(data); }); // data = {sphereId: sphereId, locationId: locationId}
+      core.eventBus.on('enterRoom' ,(data) => {
+        this.storeLocalization(data);
+      }); // data = {sphereId: sphereId, locationId: locationId}
     }
     this._initialized = true;
   }
 
+
   storeLocalization(data) {
-    cleanLogs();
-    writeLocalization(data);
+    let state = core.store.getState();
+    if (state.user.developer) {
+      cleanLogs();
+      writeLocalization(data);
+    }
   }
 
 
@@ -50,6 +56,7 @@ class LocalizationMonitorClass {
       .filter((entry) => { return entry[0] >= since; })
       .map((entry) => { return entry[1]; });
   }
+
 
   clear() {
     return clearLogs()

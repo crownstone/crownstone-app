@@ -10,6 +10,7 @@ import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../E
 export class FingerprintCollectorLive {
   subscriptions = [];
   handleResult  = (result: ClassificationData) => {};
+  handleNotEnoughData  = (data: ibeaconPackage[]) => {};
 
   startTime       : timestamp;
   sphereId        : string;
@@ -61,7 +62,10 @@ export class FingerprintCollectorLive {
 
 
   handleIbeacon(data: ibeaconPackage[]) {
-    if (data.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) { return; }
+    if (data.length < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) {
+      this.handleNotEnoughData(data);
+      return;
+    }
 
     let result = this.classifier.classifyWithVerboseData(this.sphereId, data);
     this.lastMeasurement = data;

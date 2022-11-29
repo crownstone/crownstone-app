@@ -70,6 +70,8 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
   componentDidMount() {
     // watch for setup stones
+    NavigationUtil.launchModal("LocalizationMenu", {sphereId: Get.activeSphereId()})
+
     this.unsubscribeSetupEvents = [];
     this.unsubscribeEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
