@@ -4,9 +4,7 @@ import {Scheduler} from "../logic/Scheduler";
 import {KNN} from "./classifiers/knn";
 import { canUseIndoorLocalizationInSphere } from "../util/DataUtil";
 import { FingerprintManager } from "./fingerprints/FingerprintManager";
-import { Get } from "../util/GetUtil";
 import {
-  AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION,
   AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION
 } from "../ExternalConfig";
 

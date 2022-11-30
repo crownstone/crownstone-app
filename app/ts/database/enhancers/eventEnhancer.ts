@@ -359,6 +359,7 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
     case "REMOVE_USER_FROM_ALL_LOCATIONS":
     case "REMOVE_SORTED_LIST":
     case "REMOVE_SORTED_LISTS":
+    case "UPDATE_FINGERPRINT_V2_CLOUD_ID":
       break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);

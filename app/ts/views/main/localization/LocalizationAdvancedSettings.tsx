@@ -8,24 +8,12 @@ import * as React from 'react';
 import { Text, View, Alert, Linking } from "react-native";
 
 
-import { colors, deviceStyles, background, topBarHeight, styles, screenHeight, screenWidth } from "../../styles";
-import {Background} from "../../components/Background";
-import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
+import { colors, topBarHeight } from "../../styles";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import { Button } from "../../components/Button";
-import { NavigationBar } from "../../components/editComponents/NavigationBar";
-import { OverlayUtil } from "../../../util/OverlayUtil";
-import { Spacer } from "../../components/Spacer";
-import { Get } from "../../../util/GetUtil";
-import { LocalizationMonitor } from "../../../localization/LocalizationMonitor";
-import { FingerprintAppender } from "../../../localization/fingerprints/FingerprintAppender";
 import { SettingsBackground } from "../../components/SettingsBackground";
-import { Icon } from "../../components/Icon";
-import { LocalizationUtil } from "../../../util/LocalizationUtil";
 import { ListEditableItems } from "../../components/ListEditableItems";
-import { LOG_LEVEL } from "../../../logging/LogLevels";
 import { core } from "../../../Core";
 
 
@@ -67,6 +55,17 @@ export function LocalizationAdvancedSettings(props) {
     }
   })
   items.push({label: "If the localization is irratic, first try to improve the training data via the 'Localization has made a mistake' or 'Find and fix difficult spots'. That last one is found by tapping a room in the previous view.\n\nIf that is not enough, you can use smoothing.",  type:'explanation', below: true});
+
+  items.push({label: "LAST RESORT",  type:'explanation'});
+  items.push({
+    type: 'switch',
+    label: "Phone exclusivity",
+    value: state.app.localization_onlyOwnFingerprints,
+    callback: (newValue) => {
+      core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_onlyOwnFingerprints: newValue }})
+    }
+  })
+  items.push({label: "If your localization suffers regardless of all other methods, you can enable phone exclusivity to ensure your phone only uses datasets collected by your phone (model).\n\nThis can mean that you have to re-train your rooms after going back to the localization overview.",  type:'explanation', below: true});
 
 
   return (

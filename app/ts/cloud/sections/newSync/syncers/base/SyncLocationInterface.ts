@@ -24,7 +24,7 @@ export class SyncLocationInterface<LocalDataFormat, LocalDataSettableFormat, Clo
     this.sphereIdMap     = options.sphereIdMap;
     this.cloudLocationId = cloudLocationId;
     this.cloudSphereId   = options.cloudSphereId;
-    this.localLocationId = this.globalCloudIdMap.locations[this.cloudLocationId] || MapProvider.cloud2localMap.locations[this.cloudLocationId];
+    this.localLocationId = this.globalCloudIdMap.locations[this.cloudLocationId] || MapProvider.cloud2localMap.locations[this.cloudLocationId] || this.cloudLocationId;
     this.localSphereId   = this.globalCloudIdMap.spheres[this.cloudSphereId]     || MapProvider.cloud2localMap.spheres[this.cloudSphereId];
   }
 

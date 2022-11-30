@@ -20,9 +20,12 @@ import { Get } from "../../../util/GetUtil";
 import { FingerprintUtil } from "../../../util/FingerprintUtil";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Icon } from "../../components/Icon";
+import {useDatabaseChange} from "../../components/hooks/databaseHooks";
 
 
 export function LocalizationRoomQuality(props) {
+  useDatabaseChange(['changeFingerprint', 'changeProcessedFingerprint', 'changeLocations']);
+
   let items = [];
   let secondItems = [];
 

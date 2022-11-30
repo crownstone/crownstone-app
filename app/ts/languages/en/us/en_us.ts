@@ -1051,11 +1051,18 @@ export default {
     _Are_you_sure___This_cann_left:         function() { return "Cancel" },
     _Are_you_sure___This_cann_right:        function() { return "Delete data!" },
     TAP_TO_DELETE:                          function() { return "TAP TO DELETE" },
+    IN_HAND:                                function() { return "In-Hand set" },
+    IN_POCKET:                              function() { return "In-Pocket set" },
+    AUTO_COLLECTED:                         function() { return "Quickfix" },
+    FIND_AND_FIX:                           function() { return "Find and fix" },
     No_fingerprints_:                       function() { return "No fingerprints." },
     Unknown_room:                           function() { return arguments[0] || "Unknown room" },
   },
   LocalizationMenu:{
     Localization:                           function() { return "Localization" },
+  },
+  LocalizationAdvancedSettings: {
+    Advanced_Settings:                      function() { return "Advanced Settings" },
   },
   LocalizationMenu_active:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",

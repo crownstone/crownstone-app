@@ -3,6 +3,7 @@ import { Get } from "./GetUtil";
 import DeviceInfo from "react-native-device-info";
 import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
+import {Platform} from "react-native";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
@@ -26,7 +27,7 @@ export const FingerprintUtil = {
 
     for (let locationId in sphere.locations) {
       let location = sphere.locations[locationId];
-      if (Object.keys(location.fingerprints.raw).length === 0) {
+      if (Object.keys(location.fingerprints.processed).length === 0) {
         return true;
       }
     }
@@ -260,6 +261,8 @@ export const FingerprintUtil = {
     }
 
     let processedFingerprint = FingerprintUtil._processFingerprint(sphereId, locationId, fingerprintRawId);
+    if (!processedFingerprint) { return; }
+
     if (!alreadyHasProcessed) {
       processedId = xUtil.getUUID();
     }
@@ -271,6 +274,21 @@ export const FingerprintUtil = {
   _processFingerprint(sphereId: string, locationId: string, fingerprintRawId: string) : Partial<FingerprintProcessedData> | null {
     let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintRawId);
     if (!fingerprint) { return null; }
+
+    let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
+    if (phoneExclusivity) {
+      if (!fingerprint.createdOnDeviceType) { return null; }
+      let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
+
+      // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
+      let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
+      let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
+
+      if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
+        return null;
+      }
+    }
+
 
     let processedFingerprint: Partial<FingerprintProcessedData> = {
       fingerprintId:           fingerprintRawId,

@@ -32,9 +32,9 @@ export function setInsets(insets: {bottom: number, left:number,right:number, top
   if (Platform.OS === 'ios') {
     topBarMargin    = 0;
     tabBarMargin    = insets.bottom;
-    tabBarHeight    = insets.top > 0 ? 49 + 34: 49;
+    tabBarHeight    = insets.bottom > 0 ? 49 + 34: 49; // use the insets to determine if we are on an iPhone X or above
     statusBarHeight = (insets.top > 0 ? insets.top : 20); // Status bar in iOS is 20 high
-    topBarHeight    = (insets.top > 0 ? insets.top : 44) + statusBarHeight; // Status bar in iOS is 20 high
+    topBarHeight    = 44 + statusBarHeight; // Status bar in iOS is 20 high
 
     availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
     availableModalHeight  = screenHeight - topBarHeight;

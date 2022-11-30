@@ -24,7 +24,6 @@ import {STREAM_FULL_LOGS} from "../../ExternalConfig";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-
     let highestLogLevel = 0;
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       for (let i = 0; i < action.payload.length; i++) {
@@ -190,10 +189,10 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       break;
     case 'REMOVE_ALL_FINGERPRINTS_V2':
       // delete events for all fingerprints
-      deleteFingerprint(action, oldState);
+      deleteAllFingerprints(action, oldState);
       break;
     case 'REMOVE_FINGERPRINT_V2':
-      deleteAllFingerprints(action, oldState);
+      deleteFingerprint(action, oldState);
       break;
 
   }
@@ -204,9 +203,9 @@ function createFingerprint(action : DatabaseAction, newState) {
   let fingerprint = Get.fingerprint(action.sphereId, action.locationId, action.fingerprintId);
   if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return; }
 
-  CLOUD.forSphere(action.sphereId)
-    .createFingerprintV2(FingerprintTransferNext.mapLocalToCloud(fingerprint))
-    .catch(() => {});
+  FingerprintTransferNext.createOnCloud(action.sphereId, action.locationId, fingerprint).catch();
+
+
 }
 
 
@@ -215,9 +214,7 @@ function updateFingerprint(action : DatabaseAction, newState) {
   if (!fingerprint?.cloudId) { return; }
   if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return; }
 
-  CLOUD.forSphere(action.sphereId)
-    .updateFingerprintV2(action.fingerprintId, FingerprintTransferNext.mapLocalToCloud(fingerprint))
-    .catch(() => {});
+  FingerprintTransferNext.updateOnCloud(action.sphereId, fingerprint).catch();
 }
 
 
@@ -245,7 +242,6 @@ function deleteFingerprint(action : { type: "REMOVE_ALL_FINGERPRINTS_V2" | "REMO
 
   if (action.type === "REMOVE_ALL_FINGERPRINTS_V2") {
     let fingerprints = existingLocation.fingerprints.raw;
-    let fingerprintCloudIds = [];
     for (let fingerprintId in fingerprints) {
       if (fingerprints[fingerprintId].cloudId) {
         fireRemovalEvent(fingerprints[fingerprintId].id, fingerprints[fingerprintId].cloudId);
@@ -367,8 +363,10 @@ function handleStoneLocationUpdateInCloud(action: DatabaseAction, state, oldStat
     return;
   }
 
-  let data = { locationId: MapProvider.local2cloudMap.locations[locationId] || locationId };
-  CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+  let stone = Get.stone(sphereId, stoneId);
+  if (!stone) { return; }
+
+  StoneTransferNext.updateOnCloud(action.sphereId, stone)
 }
 
 

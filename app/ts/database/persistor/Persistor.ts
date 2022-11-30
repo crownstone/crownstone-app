@@ -73,7 +73,7 @@ export class Persistor {
 
   /**
    * The PathObject can use _id_ as wildcard
-   *  { spheres : { _id_: stones : { _id_ : activityLogs}}}
+   *  { spheres : { _id_: {stones : { _id_ : activityLogs}}}}
    *
    *  This method will write a file with validationKeys. These can be checked beforehand to see if we have to actually do anything.
    *

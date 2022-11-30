@@ -68,11 +68,13 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
 
 
   async createOnCloud(localSphereId: string, localLocationId: string, data: FingerprintData) : Promise<cloud_Fingerprint> {
-    return await CLOUD.forSphere(localSphereId).createFingerprintV2(FingerprintTransferNext.mapLocalToCloud(data));
+    let cloudItem = await CLOUD.forSphere(localSphereId).createFingerprintV2(FingerprintTransferNext.mapLocalToCloud(data));
+    core.store.dispatch(FingerprintTransferNext.getUpdateLocalCloudIdAction(localSphereId, localLocationId, data.id, cloudItem.id));
+    return cloudItem;
   },
 
   async updateOnCloud(localSphereId: string, data: FingerprintData) : Promise<void> {
-    await CLOUD.forSphere(localSphereId).deleteFingerprintV2(data.cloudId, FingerprintTransferNext.mapLocalToCloud(data));
+    await CLOUD.forSphere(localSphereId).updateFingerprintV2(data.cloudId, FingerprintTransferNext.mapLocalToCloud(data));
   },
 
   async removeFromCloud(localSphereId: string, localId: string) : Promise<void> {

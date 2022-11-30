@@ -69,7 +69,12 @@ export function LocalizationMenu_active(props) {
     testID: 'LocalizationMistake',
     icon: <Icon name='ion5-bandage' size={28} color={colors.csBlueLighter.hex}/>,
     callback: () => {
-      NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
+      if (warning) {
+        Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
+      }
+      else {
+        NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
+      }
     }
   });
   items.push({label: lang("If_the_localization_was_w"),  type:'explanation', below: true});
@@ -81,7 +86,12 @@ export function LocalizationMenu_active(props) {
     testID: 'FindAndFix',
     icon: <Icon name='ma-saved-search' size={28} color={colors.csBlueLight.hex}/>,
     callback: () => {
-      NavigationUtil.navigate('LocalizationFindAndFix_noLocation', {sphereId: props.sphereId});
+      if (warning) {
+        Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
+      }
+      else {
+        NavigationUtil.navigate('LocalizationFindAndFix_noLocation', {sphereId: props.sphereId});
+      }
     }
   });
   items.push({label: 'You can walk around the room to find weakspots in the localization and fix them immediately!',  type:'explanation', below: true});
@@ -96,7 +106,7 @@ export function LocalizationMenu_active(props) {
       NavigationUtil.navigate('LocalizationAdvancedSettings', {sphereId: props.sphereId});
     }
   });
-  items.push({label: "Look here to turn on smoothing and phone exclusivity.",  type:'explanation', below: true});
+  items.push({label: lang('Look_here_to_configure_sm'),  type:'explanation', below: true});
 
 
   return (

@@ -5,18 +5,11 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocalizationMenu_gettingStarted", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  View, Alert, Linking
-} from "react-native";
 import { DataUtil } from "../../../../util/DataUtil";
 import { Icon } from "../../../components/Icon";
 import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { colors } from "../../../styles";
 import { getLearnAboutLocalizationItems } from "./LocalizationMenu_shared";
-import { Background } from "../../../components/Background";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
 import { SettingsScrollView } from "../../../components/SettingsScrollView";

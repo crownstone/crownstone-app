@@ -47,7 +47,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
 
   return (
     <SettingsBackground testID={"SetupLocalization"}>
-      <SettingsScrollView contentContainerStyle={{ flexGrow: 1, alignItems:'center' }}>
+      <SettingsScrollView contentContainerStyle={{ alignItems:'center', paddingBottom: 60 }}>
         <View style={{height:30}}/>
         <Text style={styles.header}>{ lang("To_use_indoor_localizatio") }</Text>
         <View style={{height:30}}/>
@@ -74,7 +74,7 @@ SetupLocalization.options = (props) => {
 function SetupFinished(props) {
   return (
     <SettingsBackground testID={"SetupLocalization"}>
-      <SettingsScrollView contentContainerStyle={{alignItems:'center', minHeight: availableModalHeight }}>
+      <SettingsScrollView contentContainerStyle={{alignItems:'center', paddingBottom:30 }}>
         <View style={{height:30}}/>
         <Text style={styles.title}>{ lang("All_done_") }</Text>
         <View style={{height:30}}/>

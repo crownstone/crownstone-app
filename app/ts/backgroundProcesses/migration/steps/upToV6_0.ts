@@ -6,6 +6,7 @@ import { StoreManager } from "../../../database/storeManager";
 import {ABILITY_PROPERTY_TYPE_ID} from "../../../database/reducers/stoneSubReducers/abilities";
 
 export const clean_upTo6_0 = async function() {
+  return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : {"thirdParty": "hue"}}}], "MIGRATED_6.0")
   return StoreManager.persistor.destroyDataFields([{spheres: { _id_ : "messages"}}], "MIGRATED_6.0")
 }
 

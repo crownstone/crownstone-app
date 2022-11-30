@@ -60,7 +60,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
         this.collector.collectDatapoint();
 
         // we will remove the datapoint that caused the error as long as that can be done safely.
-        // the deleteLocation function will check if we will allow this.
+        // the deleteLastBestDatapoint function will check if we will allow this.
         this.collector.deleteLastBestDatapoint();
 
         this.setState({collectedPoints: this.state.collectedPoints + 1, fixing: true, vectorSize: result.vector.length });

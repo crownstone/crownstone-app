@@ -13,6 +13,9 @@ export class FingerprintManager {
   subscriptions : unsubscriber[] = [];
   stoneIdMap:  Record<stoneId, CrownstoneIdentifier> = {};
 
+  allLocationsHaveProcessedFingerprints : boolean = false;
+  phoneExclusivity : boolean = false;
+
   constructor(sphereId: sphereId) {
     this.sphereId = sphereId;
 
@@ -40,6 +43,7 @@ export class FingerprintManager {
     if (this.initialized === false) {
       this.initialized = true;
 
+      this.phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints ?? false;
       /**
        * This should watch for all changes in a sphere that can lead to changes in localization.
        */
@@ -53,12 +57,36 @@ export class FingerprintManager {
           this.removeStoneIdsFromFingerprints(Object.keys(change.removeStone.stoneIds));
         }
 
+
+        if (change.changeLocalizationAppSettings) {
+          if (core.store.getState().app.localization_onlyOwnFingerprints !== this.phoneExclusivity) {
+            this.phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
+
+            // reprocess all fingerprints to tak the phone ecclusivity into account.
+            let sphere = Get.sphere(this.sphereId);
+            let actions = [];
+            for (let locationId in sphere.locations) {
+              actions.push({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+            }
+            if (actions.length > 0) {
+              core.store.batchDispatch(actions);
+            }
+          }
+        }
+
+
         if (change.changeFingerprint && change.changeFingerprint.sphereIds[this.sphereId]) {
           // changes in fingerprints will lead to reprocessing.
           this.checkProcessedFingerprints();
           if (canUseIndoorLocalizationInSphere(this.sphereId)) {
             LocalizationCore.enableLocalization();
           }
+        }
+
+        if (change.changeLocations && change.changeLocations.sphereIds[this.sphereId] ||
+            change.changeFingerprint && change.changeFingerprint.sphereIds[this.sphereId] ||
+            change.changeProcessedFingerprint && change.changeProcessedFingerprint.sphereIds[this.sphereId]) {
+           this.allLocationsHaveProcessedFingerprints = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(this.sphereId);
         }
       }))
 

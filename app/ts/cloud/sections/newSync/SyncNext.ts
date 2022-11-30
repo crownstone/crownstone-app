@@ -24,6 +24,7 @@ import {MessageSyncerNext} from "./syncers/MessageSyncerNext";
 import {MessageReadSyncerNext} from "./syncers/MessageReadSyncerNext";
 import {MessageReadTransferNext} from "./transferrers/MessageReadTransferNext";
 import {MessageDeletedSyncerNext} from "./syncers/MessageDeletedSyncerNext";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 
 export const SyncNext = {
@@ -100,11 +101,11 @@ export const SyncNext = {
       syncRequest.user = { updatedAt: new Date(state?.user?.updatedAt).toISOString() };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
-    // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
+    console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
-    // console.log("SYNC response", JSON.stringify(response))
+    console.log("SYNC response", JSON.stringify(response))
     let sphereIdMap = await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
-    // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
+    console.log("SYNC ACTIONS", JSON.stringify(nextActions))
     for (let syncAction of nextActions) {
       actions.push(syncAction);
     }
@@ -151,8 +152,8 @@ export const SyncNext = {
     }
 
 
-    // console.log("REPLYREQUIRED", replyRequired);
-    // console.log("REPLY", JSON.stringify(reply));
+    console.log("REPLYREQUIRED", replyRequired);
+    console.log("REPLY", JSON.stringify(reply));
     // provide the requested data.
     if (replyRequired) {
       await CLOUD.syncNext(reply);
@@ -234,7 +235,12 @@ export const SyncNext = {
         let moduleReply = {};
         for (let fingerprintId in sphereCloudResponse.fingerprints) {
           let data = sphereCloudResponse.fingerprints[fingerprintId].data;
-          new FingerprintSyncerNext({cloudId: fingerprintId, ...sphereSyncBase}, data.data?.locationId)
+          let locationId = data.data?.locationId;
+
+          if (!locationId) {
+            locationId = getFingerprintLocationId(cloudSphereId, fingerprintId);
+          }
+          new FingerprintSyncerNext({cloudId: fingerprintId, ...sphereSyncBase}, locationId)
             .process(data, moduleReply);
         }
         SyncNext.mergeSphereReply(cloudSphereId, reply, moduleReply)
@@ -384,7 +390,6 @@ export const SyncNext = {
 }
 
 
-
 function getRequestBase(scopes: SyncCategory[], sphereId?: string) : SyncRequest {
   let payload : SyncRequest = {
     sync: {
@@ -402,9 +407,6 @@ function getRequestBase(scopes: SyncCategory[], sphereId?: string) : SyncRequest
 }
 
 
-
-
-
 function getCloudId(item: any) : string {
   if (item.config === undefined) {
     return item.cloudId;
@@ -420,3 +422,20 @@ function getUpdatedAt(item: any) : string {
   return item.config.updatedAt;
 }
 
+
+
+function getFingerprintLocationId(cloudSphereId, cloudFingerprintId) {
+  let sphere = Get.sphere(MapProvider.cloud2localMap.spheres[cloudSphereId]);
+  if (sphere) {
+    for (let localLocationId in sphere.locations) {
+      let location = sphere.locations[localLocationId];
+      for (let fingerprintLocalId in location.fingerprints.raw) {
+        let fingerprint = location.fingerprints.raw[fingerprintLocalId];
+        if (fingerprint.cloudId === cloudFingerprintId) {
+          return location.config.cloudId ?? localLocationId;
+        }
+      }
+    }
+  }
+  return null;
+}

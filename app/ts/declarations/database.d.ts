@@ -254,7 +254,7 @@ type CrownstoneIdentifier = string; // maj_min as identifier representing the Cr
 interface FingerprintDataSettable {
   cloudId: string | null,
   type: FingerprintType,
-  createdOnDeviceType: string, // ${device type string}]
+  createdOnDeviceType: string, // ${device type string}]  `${DeviceInfo.getDeviceId()}_${DeviceInfo.getManufacturerSync()}_${DeviceInfo.getModel()}`;
   createdByUser: userId,       // ${user id}
   crownstonesAtCreation: Record<CrownstoneIdentifier, true>, // maj_min as id representing the Crownstone.
   data: FingerprintMeasurementData[],
