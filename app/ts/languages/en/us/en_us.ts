@@ -1088,6 +1088,7 @@ export default {
   },
   LocalizationMenu_gettingStarted:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_gettingStarted.tsx",
+    indoor_localization:                    function() { return "Indoor Localization" },
     LETS_GET_STARTED:                       function() { return "LET'S GET STARTED" },
     Setup_localization_:                    function() { return "Setup localization!" },
   },

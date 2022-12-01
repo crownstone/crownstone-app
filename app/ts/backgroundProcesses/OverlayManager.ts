@@ -26,8 +26,7 @@ class OverlayManagerClass {
       });
 
       // hardware errors
-      core.eventBus.on('showListOverlay', (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); });
-
+      core.eventBus.on('showListOverlay',      (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); });
       core.eventBus.on('showDimLevelOverlay',  (data) => { NavigationUtil.showOverlay('DimLevelOverlay',   {data: data}); })
       core.eventBus.on('showPopup',            (data) => { NavigationUtil.showOverlay('OptionPopup',   {data: data}); })
       core.eventBus.on('showLoading',          (data) => { this.loadingState = true; NavigationUtil.showOverlay('Processing',    {data: data}); })
@@ -45,6 +44,7 @@ class OverlayManagerClass {
     if (this._initializedStateOverlays === false) {
       // ble status popup
       core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
+        core.permissionState.bluetooth = status;
         LOGi.info("OverlayManager: Received bleStatus status", status)
         switch (status) {
           case "poweredOff":
@@ -73,6 +73,7 @@ class OverlayManagerClass {
 
       // location permission updates.
       core.nativeBus.on(core.nativeBus.topics.locationStatus, (status) => {
+        core.permissionState.location = status;
         LOGi.info("OverlayManager: Received locations status", status)
         switch (status) {
           case "off":

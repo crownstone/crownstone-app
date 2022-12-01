@@ -174,6 +174,11 @@ interface coreStore {
   batchDispatch: (actions: DatabaseAction[]) => void
 }
 interface core {
+  permissionState: {
+    location: string,
+    bluetooth: string,
+    bluetoothType: 'SCANNER' | 'BROADCASTER',
+  },
   bleState: {
     bleAvailable: boolean,
     bleBroadcastAvailable: boolean,

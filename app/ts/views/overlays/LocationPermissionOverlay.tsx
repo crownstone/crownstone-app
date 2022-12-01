@@ -199,7 +199,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
             icon: "c1-locationPin1",
             backgroundColor: colors.csOrange.rgba(0.5),
             callback: () => {
-              NavigationUtil.showOverlay('LocationPermissionOverlay', {status: this.state.notificationType});
+              NavigationUtil.showOverlay('LocationPermissionOverlay', {status: core.permissionState.location});
             }
           })
         }}

@@ -175,7 +175,7 @@ export class BleStateOverlay extends Component<any, any> {
             icon: "ios-bluetooth",
             backgroundColor: colors.csOrange.rgba(0.5),
             callback: () => {
-              NavigationUtil.showOverlay('BleStateOverlay', { notificationType: this.state.notificationType, type: this.state.type });
+              NavigationUtil.showOverlay('BleStateOverlay', { notificationType: core.permissionState.bluetooth, type: core.permissionState.bluetoothType });
             }
           })
         }}
