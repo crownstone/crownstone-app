@@ -35,10 +35,10 @@ export function LocalizationAdvancedSettings(props) {
   let items = [];
   items.push({label: "SMOOTHING (REACTION SPEED VS STABILITY)",  type:'explanation'});
   let values : {label:string, value: LocalizationSmoothingMethod}[] = [
-    {label: "None",               value: 'NONE'},
-    {label: "Same result twice",  value: 'SEQUENTIAL_2'},
-    {label: "Best out of 5",      value: 'BEST_OUT_OF_5'},
-    {label: "Majority in 10",     value: '60_PERCENT_IN_10'},
+    {label: "None",            value: 'NONE'},
+    {label: "Last 2 seconds",  value: 'SEQUENTIAL_2'},
+    {label: "Last 5 seconds",  value: 'BEST_OUT_OF_5'},
+    {label: "Last 10 seconds", value: 'BEST_OUT_OF_10'},
   ];
 
   items.push({
@@ -54,7 +54,7 @@ export function LocalizationAdvancedSettings(props) {
       core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_temporalSmoothingMethod: newValue }})
     }
   })
-  items.push({label: "If the localization is irratic, first try to improve the training data via the 'Localization has made a mistake' or 'Find and fix difficult spots'. That last one is found by tapping a room in the previous view.\n\nIf that is not enough, you can use smoothing.",  type:'explanation', below: true});
+  items.push({label: "If the localization is erratic, first try to improve the training data via the 'Localization has made a mistake' or 'Find and fix difficult spots'.\n\nIf that is not enough, you can use smoothing. Increased smoothing will take longer to respond to changes in your position.",  type:'explanation', below: true});
 
   items.push({label: "LAST RESORT",  type:'explanation'});
   items.push({
@@ -65,7 +65,7 @@ export function LocalizationAdvancedSettings(props) {
       core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_onlyOwnFingerprints: newValue }})
     }
   })
-  items.push({label: "If your localization suffers regardless of all other methods, you can enable phone exclusivity to ensure your phone only uses datasets collected by your phone (model).\n\nThis can mean that you have to re-train your rooms after going back to the localization overview.",  type:'explanation', below: true});
+  items.push({label: "If your localization suffers regardless of all other methods, you can enable phone exclusivity to ensure your phone only uses datasets collected by you, on your phone.\n\nYou may have to re-train your rooms.",  type:'explanation', below: true});
 
 
   return (

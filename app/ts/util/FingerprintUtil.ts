@@ -291,7 +291,12 @@ export const FingerprintUtil = {
 
     let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
     if (phoneExclusivity) {
+      if (!fingerprint.createdByUser)       { return null; }
       if (!fingerprint.createdOnDeviceType) { return null; }
+
+      let currentUserId = core.store.getState().user.userId;
+      if (currentUserId !== fingerprint.createdByUser) { return null; }
+
       let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
 
       // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
