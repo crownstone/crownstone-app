@@ -70,6 +70,7 @@ export class FingerprintManager {
             }
             if (actions.length > 0) {
               core.store.batchDispatch(actions);
+              this.checkProcessedFingerprints();
             }
           }
         }

@@ -36,7 +36,7 @@ import { SettingsScrollView } from "../../components/SettingsScrollView";
 
 export function SetupLocalization(props: {sphereId: sphereId}) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeSphereState','changeFingerprint']);
+  useDatabaseChange(['changeSphereState','changeFingerprint','changeLocalizationAppSettings']);
 
   let toDoRooms     = getToDoRooms(props.sphereId);
   let finishedRooms = getFinishedRooms(props.sphereId);
@@ -123,7 +123,7 @@ function getFinishedRooms(sphereId: sphereId) {
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
     let location = sphere.locations[locationId];
-    if (Object.keys(location.fingerprints.raw).length !== 0) {
+    if (Object.keys(location.fingerprints.processed).length !== 0) {
       items.push({
         label: location.config.name,
         type: 'info',
@@ -141,7 +141,7 @@ function getToDoRooms(sphereId: sphereId) {
   if (!sphere) { return []; }
   for (let locationId in sphere.locations) {
     let location = sphere.locations[locationId];
-    if (Object.keys(location.fingerprints.raw).length === 0) {
+    if (Object.keys(location.fingerprints.processed).length === 0) {
       items.push({
         label: location.config.name,
         type: 'navigation',

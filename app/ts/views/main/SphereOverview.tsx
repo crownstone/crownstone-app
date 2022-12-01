@@ -106,6 +106,7 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         change.updateActiveSphere            ||
         change.updateLocationConfig          ||
         change.changeFingerprint             ||
+        change.changeProcessedFingerprint    ||
         change.changeSpheres                 ||
         change.changeLocations
       ) {
