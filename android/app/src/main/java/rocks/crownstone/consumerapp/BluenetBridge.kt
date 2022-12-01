@@ -549,7 +549,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun sendLocationStatus() {
 		Log.i(TAG, "sendLocationStatus")
-		// "locationStatus" can be: "unknown", "off", "foreground", "on", "noPermission"
+		// "locationStatus" can be: "unknown", "off", "foreground", "on", "noPermission", "manualPermissionRequired"
 		if (!bluenet.isPermissionsGranted()) {
 			val activity = reactContext.currentActivity
 			if (activity == null || !bluenet.isPermissionRequestable(activity)) {
@@ -574,15 +574,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun sendBleStatus() {
-		// "bleStatus" can be: "unauthorized", "poweredOff", "poweredOn", "unknown"
-		if (!bluenet.isBleEnabled()) {
+		// "bleStatus" can be: "unauthorized", "poweredOff", "poweredOn", "unknown", "manualPermissionRequired"
+		if (bluenet.isBleEnabled()) {
+			Log.i(TAG, "sendBleStatus poweredOn")
+			sendEvent("bleStatus", "poweredOn")
+		}
+		else if (!bluenet.isPermissionsGranted()) {
+			val activity = reactContext.currentActivity
+			if (activity == null || !bluenet.isPermissionRequestable(activity)) {
+				Log.i(TAG, "sendBleStatus manualPermissionRequired: activity=$activity")
+				sendEvent("bleStatus", "manualPermissionRequired")
+			}
+			else {
+				Log.i(TAG, "sendBleStatus unauthorized")
+				sendEvent("bleStatus", "unauthorized")
+			}
+		}
+		else if (!bluenet.isBleEnabled()) {
 			Log.i(TAG, "sendBleStatus poweredOff")
 			sendEvent("bleStatus", "poweredOff")
 		}
 		else {
-			Log.i(TAG, "sendBleStatus poweredOn")
-//			cancelNotification(BLE_STATUS_NOTIFICATION_ID)
-			sendEvent("bleStatus", "poweredOn")
+			Log.i(TAG, "sendBleStatus unknown")
+			sendEvent("bleStatus", "unknown")
 		}
 	}
 
@@ -614,6 +628,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun gotoOsAppSettings() {
 		val activity = reactContext.currentActivity
+		Log.i(TAG, "gotoOsAppSettings activity=$activity")
 		if (activity == null) {
 			Log.w(TAG, "No activity.")
 			return
@@ -625,7 +640,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun gotoOsLocationSettings() {
+		// Request location service enable
 		val activity = reactContext.currentActivity
+		Log.i(TAG, "gotoOsLocationSettings activity=$activity")
+		if (activity == null) {
+			Log.w(TAG, "No activity.")
+			return
+		}
+		bluenet.tryMakeScannerReady(activity)
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun requestEnableBle() {
+		// Request location service enable
+		val activity = reactContext.currentActivity
+		Log.i(TAG, "requestEnableBle activity=$activity")
 		if (activity == null) {
 			Log.w(TAG, "No activity.")
 			return
@@ -654,6 +684,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				sendBleStatus()
 			}
 		}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun requestBlePermission() {
+		Log.i(TAG, "requestBlePermission")
+		requestLocationPermission()
 	}
 
 	private class CsLocationListener(val callback: Callback, val lastLocation: Location?): LocationListener {
