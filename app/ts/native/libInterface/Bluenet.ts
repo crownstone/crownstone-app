@@ -160,13 +160,14 @@ const BluenetAPI = {
   setSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: setSoftOnSpeed"); },
   getSoftOnSpeed:                      () => { console.log("BluenetBridgeCall: getSoftOnSpeed"); },
 
-  getConstants:                        () => { console.log("BluenetBridgeCall: getConstants"); },
-  addListener:                         () => { console.log("BluenetBridgeCall: addListener"); },
-  removeListeners:                     () => { console.log("BluenetBridgeCall: removeListener"); },
+  getConstants:                         () => { console.log("BluenetBridgeCall: getConstants"); },
+  addListener:                          () => { console.log("BluenetBridgeCall: addListener"); },
+  removeListeners:                      () => { console.log("BluenetBridgeCall: removeListener"); },
 
   useHighFrequencyScanningInBackground: () => {console.log("BluenetBridgeCall: useHighFrequencyScanningInBackground"); },
   getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
   gotoOsAppSettings:                    () => {console.log("BluenetBridgeCall: gotoSystemSettings"); },
+  gotoOsLocationSettings:               () => {console.log("BluenetBridgeCall: gotoOsLocationSettings"); },
   vibrate:                              (type: vibrationType) => {console.log("BluenetBridgeCall: vibrate"); },
   setDefaultDimValue:                   () => {console.log("BluenetBridgeCall: setDefaultDimValue"); },
   setDoubleTapSwitchcraft:              () => {console.log("BluenetBridgeCall: setDoubleTapSwitchcraft"); },

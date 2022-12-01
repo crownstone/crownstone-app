@@ -55,7 +55,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
           this.setState({notificationType: status});
           break;
         case "on":
-          this.setState({visible: false, notificationType: status ,waitingOnPermission: false, showRequestFailed: false},
+          this.setState({visible: false, notificationType: status, waitingOnPermission: false, showRequestFailed: false},
             () => {  NavigationUtil.closeOverlay(this.props.componentId); });
           break;
         case "unknown":
@@ -64,7 +64,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
         case "noPermission":
           this.setState({notificationType: status});
           break;
-        default: // "unknown":
+        default:
           this.setState({notificationType: status});
           break;
       }
@@ -98,7 +98,12 @@ export class LocationPermissionOverlay extends Component<any, any> {
       case "foreground":
         return lang("Crownstone_cannot_react_t");
       case "manualPermissionRequired":
-        return lang("ManualPermission_body");
+        if (Platform.OS === 'ios') {
+          return lang("ManualPermission_body");
+        }
+        else {
+          return lang("ManualPermission_body_android");
+        }
       case "on":
         return lang("Everything_is_great_");
       case "off":
@@ -119,6 +124,35 @@ export class LocationPermissionOverlay extends Component<any, any> {
   }
 
   _getButton() {
+    if (Platform.OS === 'android') {
+      switch (this.state.notificationType) {
+        case "on": return <React.Fragment />;
+        case "off":
+          return (
+            <PopupButton
+              callback={() => { Bluenet.gotoOsLocationSettings() }}
+              label={lang("Turn_on")}
+            />
+          );
+        case "noPermission":
+          return (
+            <PopupButton
+              callback={() => { Bluenet.requestLocationPermission() }}
+              label={lang("Request_Permission")}
+            />
+          );
+        case "manualPermissionRequired":
+        default:
+          return (
+            <PopupButton
+              callback={() => { Bluenet.gotoOsAppSettings() }}
+              label={lang("Request_Permission")}
+            />
+          );
+      }
+    }
+
+
     switch (this.state.notificationType) {
       case "manualPermissionRequired":
       case "foreground":
@@ -170,12 +204,15 @@ export class LocationPermissionOverlay extends Component<any, any> {
             {this._getText()}
           </Text>
           <View style={{flex:1}} />
-          {this.state.showRequestFailed  || true?
-            <React.Fragment>
-              <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue.hex, padding: 25, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
-              {this._getToAppSettingsButton()}
-            </React.Fragment>
-            : this._getButton()
+          { Platform.OS === 'android' &&  this._getButton() }
+          { Platform.OS === 'ios'     &&  (
+            this.state.showRequestFailed ?
+              <React.Fragment>
+                <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue.hex, padding: 25, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
+                {this._getToAppSettingsButton()}
+              </React.Fragment>
+              : this._getButton()
+            )
           }
           <View style={{flex:1}} />
         </View>
