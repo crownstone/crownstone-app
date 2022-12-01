@@ -85,6 +85,19 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   _getTitle() {
+    if (Platform.OS === 'android') {
+      switch (this.state.notificationType) {
+        case "poweredOff":
+          return "Bluetooth is turned off.";
+        case "poweredOn":
+          return "Bluetooth is turned on!";
+        case "unauthorized":
+        case "manualPermissionRequired":
+        default:
+          return "Permissions are missing";
+      }
+    }
+
     if (this.state.type === 'SCANNER') {
       switch (this.state.notificationType) {
         case "poweredOff":
@@ -112,6 +125,21 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   _getText() {
+    if (Platform.OS === 'android') {
+      switch (this.state.notificationType) {
+        case "poweredOn":
+          return "Bluetooth is turned on, resuming Crownstone services.";
+        case "poweredOff":
+          return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
+        case "unauthorized":
+          return "Without permission, the app cannot communicate with the Crownstones correctly.";
+        case "manualPermissionRequired":
+          return "Without permission, the app cannot communicate with the Crownstones correctly.\n\nYou will have to manually allow the permissions. Go to your phone's settings -> apps -> Crownstone -> Permissions. Set location to \"Allow all the time\", and Nearby devices to \"Allow\".";
+        default: // "unknown":
+          return "We are turning on Bluetooth. This should not take long :).";
+      }
+    }
+
     if (this.state.type === 'SCANNER') {
       switch (this.state.notificationType) {
         case "poweredOff":
@@ -140,19 +168,38 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   _getButton() {
+    // Android only
     switch (this.state.notificationType) {
       case "poweredOn":
         return <React.Fragment />;
       case "poweredOff":
-      case "manualPermissionRequired":
-      case "unauthorized":
-      default:  // unknown
         return (
           <React.Fragment>
             <View style={{flex:1}} />
             <PopupButton
               callback={() => { Bluenet.requestEnableBle() }}
               label={ "Turn on Bluetooth" }
+            />
+          </React.Fragment>
+        );
+      case "unauthorized":
+        return (
+          <React.Fragment>
+            <View style={{flex:1}} />
+            <PopupButton
+              callback={() => { Bluenet.requestBlePermission() }}
+              label={ "Request permission" }
+            />
+          </React.Fragment>
+        );
+      case "manualPermissionRequired":
+      default:  // unknown
+        return (
+          <React.Fragment>
+            <View style={{flex:1}} />
+            <PopupButton
+              callback={() => { Bluenet.gotoOsAppSettings() }}
+              label={ "Request permission" }
             />
           </React.Fragment>
         );
