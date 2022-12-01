@@ -17,6 +17,8 @@ export class LocalizationCoreClass {
   localizationEnabled:    boolean = false;
   localizationPaused:     boolean = false;
 
+  classificationHistory: { [sphereId: string]: locationId[] } = {};
+
   initClassifierTimeout = () => {}
 
   classifier : KNN;
@@ -175,21 +177,53 @@ export class LocalizationCoreClass {
 
     let classificationResults = this.classifier.classify(data);
 
+    let postProcessingStrategy = core.store.getState().app.localization_temporalSmoothingMethod;
+
+
     for (let sphereId in classificationResults) {
-      // TODO: insert postprocessor here.
-      if (this.presence[sphereId] === undefined) {
-        this.presence[sphereId] = null;
+      if (this.classificationHistory[sphereId] === undefined) {
+        this.classificationHistory[sphereId] = [];
       }
 
-      if (this.presence[sphereId] !== classificationResults[sphereId]) {
+      this.classificationHistory[sphereId].push(classificationResults[sphereId]);
+      if (this.classificationHistory[sphereId].length > 10) {
+        this.classificationHistory[sphereId].shift();
+      }
+      let result = classificationResults[sphereId];
+
+      switch (postProcessingStrategy) {
+        case "NONE": break;
+        case "SEQUENTIAL_2":
+          result = getSequentialTwoResult(this.classificationHistory[sphereId]);
+          break;
+        case "BEST_OUT_OF_5":
+          result = getBestOutOfN(this.classificationHistory[sphereId], 5);
+          break;
+        case "BEST_OUT_OF_10":
+          result = getBestOutOfN(this.classificationHistory[sphereId], 10);
+          break;
+      }
+
+
+      // Atleast give an initial estimate of the location before doing any smoothing.
+      if (this.presence[sphereId] === undefined) {
+        this.presence[sphereId] = null;
+        result = result ?? classificationResults[sphereId];
+      }
+
+      if (result == null) {
+        continue;
+      }
+
+      if (this.presence[sphereId] !== result) {
         // leave the previous room
 
         if (this.presence[sphereId] !== null) {
           core.eventBus.emit('exitRoom', {sphereId: sphereId, locationId: this.presence[sphereId]});
         }
-        core.eventBus.emit('enterRoom',  {sphereId: sphereId, locationId: classificationResults[sphereId]});
+        core.eventBus.emit('enterRoom',  {sphereId: sphereId, locationId: result});
 
-        this.presence[sphereId] = classificationResults[sphereId];
+        this.presence[sphereId] = result;
       }
     }
 
@@ -222,6 +256,39 @@ export class LocalizationCoreClass {
       this.fingerprintManagers[sphereId].removeStoneIdsFromFingerprints([stoneId]);
     }
   }
+}
+
+
+function getSequentialTwoResult(locationArray: locationId[]) : locationId | null {
+  if (locationArray.length < 2) { return locationArray[0]; }
+  // check if the last two entries are the same.
+  if (locationArray[locationArray.length-1] === locationArray[locationArray.length-2]) {
+    return locationArray[locationArray.length-1];
+  }
+  return null;
+}
+
+
+function getBestOutOfN(locationArray: locationId[], N: number) : locationId | null {
+  // get the last N from the array
+  let lastN = locationArray.slice(-N);
+  // count the number of occurences of each location.
+  let counts = {};
+  for (let location of lastN) {
+    if (counts[location] === undefined) { counts[location] = 0; }
+    counts[location]++;
+  }
+
+  // find the location with the highest count.
+  let bestLocation = null;
+  let bestCount = 0;
+  for (let location in counts) {
+    if (counts[location] > bestCount) {
+      bestLocation = location;
+      bestCount = counts[location];
+    }
+  }
+  return bestLocation;
 }
 
 
