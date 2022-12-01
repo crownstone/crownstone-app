@@ -168,6 +168,7 @@ const BluenetAPI = {
   getLaunchArguments:                   () => {console.log("BluenetBridgeCall: getLaunchArguments"); },
   gotoOsAppSettings:                    () => {console.log("BluenetBridgeCall: gotoSystemSettings"); },
   gotoOsLocationSettings:               () => {console.log("BluenetBridgeCall: gotoOsLocationSettings"); },
+  requestBlePermission:                 () => {console.log("BluenetBridgeCall: requestBlePermission"); },
   vibrate:                              (type: vibrationType) => {console.log("BluenetBridgeCall: vibrate"); },
   setDefaultDimValue:                   () => {console.log("BluenetBridgeCall: setDefaultDimValue"); },
   setDoubleTapSwitchcraft:              () => {console.log("BluenetBridgeCall: setDoubleTapSwitchcraft"); },

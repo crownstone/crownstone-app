@@ -320,6 +320,12 @@ open class BluenetJS: RCTEventEmitter {
         }
     }
     
+    @objc func requestBlePermission() {
+        LOGGER.info("BluenetBridge: Called requestBlePermission")
+        // only required for android.
+    }
+    
+    
     @objc func requestEnableBle() {
         LOGGER.info("BluenetBridge: Called requestEnableBle")
         // only required for android.
