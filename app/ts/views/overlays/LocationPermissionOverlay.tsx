@@ -93,6 +93,21 @@ export class LocationPermissionOverlay extends Component<any, any> {
     }
   }
 
+  _getOnScreenNotificationTitle() {
+    switch (this.state.notificationType) {
+      case "on":
+        return 'Ready';
+      case "off":
+        return lang("Location_disabled");
+      case "foreground":
+      case "manualPermissionRequired":
+      case "noPermission":
+        return lang("Permission_required");
+      default: // "unknown":
+        return lang("Location_disabled");
+    }
+  }
+
   _getText() {
     switch (this.state.notificationType) {
       case "foreground":
@@ -180,7 +195,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
           OnScreenNotifications.setNotification({
             source: "LocationPermissionOverlay",
             id: "LocationPermissionState",
-            label: lang("Location_disabled"),
+            label: this._getOnScreenNotificationTitle(),
             icon: "c1-locationPin1",
             backgroundColor: colors.csOrange.rgba(0.5),
             callback: () => {
