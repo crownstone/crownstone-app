@@ -22,6 +22,7 @@ const BluenetAPI = {
   startScanningForCrownstonesUniqueOnly: () => { console.log("BluenetBridgeCall: startScanningForCrownstonesUniqueOnly: "); },
   stopScanning:             () => { console.log("BluenetBridgeCall: stopDFU:    "); },
   requestBleState:          () => { console.log("BluenetBridgeCall: requestBleState: "); },// Send events "bleStatus" and "locationStatus" with the current state.
+  requestEnableBle:         () => { console.log("BluenetBridgeCall: requestEnableBle: "); },// Send events "bleStatus" and "locationStatus" with the current state.
 
   requestLocation:          () => { console.log("BluenetBridgeCall: requestLocation:          "); },// Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
   requestLocationPermission:() => { console.log("BluenetBridgeCall: requestLocationPermission:"); },// Request for location permission during tutorial.

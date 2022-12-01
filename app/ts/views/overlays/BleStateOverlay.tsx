@@ -6,9 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Platform,
   Text,
-  View,
-} from 'react-native';
+  View
+} from "react-native";
 
 import { IconButton }         from '../components/IconButton'
 import { colors , screenHeight} from '../styles'
@@ -17,6 +18,8 @@ import { NavigationUtil } from "../../util/navigation/NavigationUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 import {Icon} from "../components/Icon";
 import { SimpleOverlayBox } from "../components/overlays/SimpleOverlayBox";
+import { Bluenet } from "../../native/libInterface/Bluenet";
+import { PopupButton } from "./LocationPermissionOverlay";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -88,7 +91,7 @@ export class BleStateOverlay extends Component<any, any> {
         case "poweredOn":
           return "Bluetooth is turned on!";
         case "unauthorized":
-          return "We can't use Bluetooth...";
+          return "I can't use Bluetooth...";
         default: // "unknown":
           return "Starting Bluetooth...";
       }
@@ -133,6 +136,26 @@ export class BleStateOverlay extends Component<any, any> {
     }
   }
 
+  _getButton() {
+    switch (this.state.notificationType) {
+      case "poweredOn":
+        return <React.Fragment />;
+      case "poweredOff":
+      case "unauthorized":
+      default:  // unknown
+        return (
+          <React.Fragment>
+            <View style={{flex:1}} />
+            <PopupButton
+              callback={() => { Bluenet.requestEnableBle() }}
+              label={ "Turn on Bluetooth" }
+            />
+          </React.Fragment>
+        );
+    }
+  }
+
+
   render() {
     return (
       <SimpleOverlayBox
@@ -165,6 +188,7 @@ export class BleStateOverlay extends Component<any, any> {
           <Text style={{fontSize: 12, color: colors.black.hex, padding:15, textAlign:'center'}}>
             {this._getText()}
           </Text>
+          { Platform.OS === 'android' && this._getButton() }
           <View style={{flex:1}} />
         </View>
       </SimpleOverlayBox>

@@ -321,6 +321,7 @@ interface BridgeInterface extends BluenetPromiseWrapperProtocol {
   quitApp:                                () =>  void,
   pauseTracking:                          () =>  void,
   removeListeners:                        () =>  void,
+  requestEnableBle:                       () =>  void,
   requestBleState:                        () =>  void,
   requestLocationPermission:              () =>  void,
   rerouteEvents:                          () =>  void,
