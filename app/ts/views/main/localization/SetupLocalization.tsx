@@ -45,6 +45,20 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
     return <SetupFinished />;
   }
 
+  let items = [];
+  items.push({type:'explanation', label:"ADVANCED SETTINGS"});
+  items.push({
+    label: lang("Advanced_Settings"),
+    type: 'navigation',
+    numberOfLines: 1,
+    testID: 'LocalizationAdvancedSettings',
+    icon: <Icon name='ios-cog' size={28} color={colors.csBlue.hex}/>,
+    callback: () => {
+      NavigationUtil.navigate('LocalizationAdvancedSettings', {sphereId: props.sphereId});
+    }
+  });
+  items.push({label: lang('Look_here_to_configure_sm'),  type:'explanation', below: true});
+
   return (
     <SettingsBackground testID={"SetupLocalization"}>
       <SettingsScrollView contentContainerStyle={{ alignItems:'center', paddingBottom: 60 }}>
@@ -61,6 +75,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
         { finishedRooms.length > 0 && <Text style={styles.explanation}>{ lang("These_rooms_are_already_d",finishedRooms.length,1) }</Text> }
         { finishedRooms.length > 0 && <ListEditableItems items={finishedRooms} style={{width: screenWidth}}/> }
         { toDoRooms.length > 1 && finishedRooms.length === 0 && <Text style={styles.header}>{ lang("Pick_a_room_to_get_starte") }</Text> }
+        <ListEditableItems items={items} style={{width: screenWidth}}/>
       </SettingsScrollView>
     </SettingsBackground>
   );

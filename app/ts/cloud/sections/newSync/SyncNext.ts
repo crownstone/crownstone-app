@@ -101,11 +101,11 @@ export const SyncNext = {
       syncRequest.user = { updatedAt: new Date(state?.user?.updatedAt).toISOString() };
     }
     syncRequest.spheres = SyncNext.composeState(state, scopeMap);
-    console.log("SYNC REQUEST", JSON.stringify(syncRequest))
+    // console.log("SYNC REQUEST", JSON.stringify(syncRequest))
     let response = await CLOUD.syncNext(syncRequest);
-    console.log("SYNC response", JSON.stringify(response))
+    // console.log("SYNC response", JSON.stringify(response))
     let sphereIdMap = await SyncNext.processSyncResponse(response as SyncRequestResponse, nextActions, globalCloudIdMap);
-    console.log("SYNC ACTIONS", JSON.stringify(nextActions))
+    // console.log("SYNC ACTIONS", JSON.stringify(nextActions))
     for (let syncAction of nextActions) {
       actions.push(syncAction);
     }
@@ -151,9 +151,8 @@ export const SyncNext = {
       new KeySyncerNext(syncerOptions).process(syncResponse.keys);
     }
 
-
-    console.log("REPLYREQUIRED", replyRequired);
-    console.log("REPLY", JSON.stringify(reply));
+    // console.log("REPLYREQUIRED", replyRequired);
+    // console.log("REPLY", JSON.stringify(reply));
     // provide the requested data.
     if (replyRequired) {
       await CLOUD.syncNext(reply);

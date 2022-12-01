@@ -115,7 +115,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
                 // if we train the in-hand type of fingerprint, we can delete the other types.
                 // the in-hand fingerprints are a sort of baseline, whereas the in-pocket type is additional.
                 if (this.props.type === 'IN_HAND') {
-                  checkToRemoveBadFingerprints(this.props.sphereId, this.props.locationId);
+                  FingerprintUtil.checkToRemoveBadFingerprints(this.props.sphereId, this.props.locationId);
                 }
 
                 if (this.state.dataCount >= this.minRequiredSamples) {
@@ -128,20 +128,6 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
         </SlideInView>
       </Background>
     );
-  }
-}
-
-function checkToRemoveBadFingerprints(sphereId, locationId) {
-  let location = Get.location(sphereId, locationId);
-  let actions = [];
-  for (let fingerprintId in location.fingerprints.raw) {
-    if (!FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
-      actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId, locationId, fingerprintId});
-    }
-  }
-
-  if (actions.length > 0) {
-    core.store.batchDispatch(actions);
   }
 }
 

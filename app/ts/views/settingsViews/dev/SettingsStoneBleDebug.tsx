@@ -17,7 +17,7 @@ import { LOGe } from "../../../logging/Log";
 import { Graph } from "../../components/graph/Graph";
 import { FileUtil } from "../../../util/FileUtil";
 import { from } from "../../../logic/constellation/Tellers";
-import {SettingsBackground} from "../../components/SettingsBackground";
+import { SettingsBackground, SettingsNavbarBackground } from "../../components/SettingsBackground";
 import {TopBarUtil} from "../../../util/TopBarUtil";
 import { SettingsScrollView } from "../../components/SettingsScrollView";
 const RNFS = require('react-native-fs');
@@ -784,11 +784,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <SettingsBackground>
+      <SettingsNavbarBackground>
         <SettingsScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </SettingsScrollView>
-      </SettingsBackground>
+      </SettingsNavbarBackground>
     );
   }
 }

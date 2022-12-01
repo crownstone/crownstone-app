@@ -28,11 +28,12 @@ export function LocalizationMenu(props) {
   }
 
   let enoughCrownstones = enoughCrownstonesForIndoorLocalization(props.sphereId);
+  let trainingRequired  = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
+
   if (!enoughCrownstones) {
     return <LocalizationMenu_notEnoughCrownstones {...props} />;
   }
 
-  let trainingRequired  = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId);
   if (!trainingRequired) {
     return <LocalizationMenu_active {...props} />;
   }

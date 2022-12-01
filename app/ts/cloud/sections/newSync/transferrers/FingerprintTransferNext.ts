@@ -4,6 +4,7 @@ import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
 import {Get} from "../../../../util/GetUtil";
 import {DataUtil} from "../../../../util/DataUtil";
+import { FingerprintUtil } from "../../../../util/FingerprintUtil";
 
 
 
@@ -84,8 +85,15 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
   createLocal(localSphereId: string, localLocationId: string, data: Partial<FingerprintData>) {
     let newItemData = FingerprintTransferNext.getCreateLocalAction(localSphereId, localLocationId, data);
     core.store.dispatch(newItemData.action);
+
+    // If this fingerprint came from the cloud AND it is an in-hand set, remove any migrated datasets for this location.
+    if (data.cloudId && data.type === 'IN_HAND') {
+      FingerprintUtil.checkToRemoveBadFingerprints(localSphereId, localLocationId);
+    }
     return newItemData.id;
   }
 }
+
+
 
 

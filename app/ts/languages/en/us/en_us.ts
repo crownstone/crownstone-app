@@ -1069,10 +1069,10 @@ export default {
     CHANGES_AND_QUICKFIX:                   function() { return "CHANGES AND QUICKFIX" },
     I_have_moved_a_Crownstone:              function() { return "I have moved a Crownstone.." },
     Improve_from_localization:              function() { return "Improve from localization mistake..." },
-    Advanced_Settings:                      function() { return "Advanced settings" },
     If_the_localization_was_w:              function() { return "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!" },
     THESE_ROOMS_NEED_ATTENTIO:              function() { return "ROOMS NEED ATTENTION" },
     LOCALIZATION_TRAINING_QUA:              function() { return "LOCALIZATION TRAINING QUALITY" },
+    Advanced_Settings:                      function() { return "Advanced settings" },
     Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   LocalizationRoomQuality:{
@@ -2321,6 +2321,8 @@ export default {
     Improve_Localization:                   function() { return "Improve Localization" },
     _option_is_now_available_:              function() { return " option is now available from the localization menu." },
     Setup_Localization:                     function() { return "Setup Localization" },
+    Advanced_Settings:                      function() { return "Advanced settings" },
+    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   SetupShared:{
     __filename: "../js/views/settingsViews/SetupShared.tsx",

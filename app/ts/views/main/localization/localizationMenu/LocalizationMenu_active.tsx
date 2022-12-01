@@ -67,7 +67,7 @@ export function LocalizationMenu_active(props) {
     type: 'navigation',
     numberOfLines: 2,
     testID: 'LocalizationMistake',
-    icon: <Icon name='ion5-bandage' size={28} color={colors.csBlueLighter.hex}/>,
+    icon: <Icon name='ion5-bandage-outline' size={28} color={colors.csBlueLighter.hex}/>,
     callback: () => {
       if (warning) {
         Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);

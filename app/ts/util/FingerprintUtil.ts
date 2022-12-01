@@ -73,6 +73,20 @@ export const FingerprintUtil = {
     return `${ibeacon.major}_${ibeacon.minor}`;
   },
 
+  checkToRemoveBadFingerprints: function(sphereId, locationId) {
+    let location = Get.location(sphereId, locationId);
+    let actions = [];
+    for (let fingerprintId in location.fingerprints.raw) {
+      if (!FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {
+        actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId, locationId, fingerprintId});
+      }
+    }
+
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
+  },
+
   isFingerprintGoodEnough: function(sphereId, locationId, fingerprintId) : boolean {
     let score = FingerprintUtil.calculateFingerprintScore(sphereId, locationId, fingerprintId);
     return FingerprintUtil.isScoreGoodEnough(score);

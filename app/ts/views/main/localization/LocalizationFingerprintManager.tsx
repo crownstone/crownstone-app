@@ -48,7 +48,7 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
     items.push({
       type:  'button',
       barHeight: 120,
-      label: `${mapFingerprintTypeToHumanReadable(fp.type)} - ${fp.data.length} point${fp.data.length > 1 ? "s" : ''}`+
+      label: `${mapFingerprintTypeToHumanReadable(fp.type)}: ${fp.data.length} point${fp.data.length > 1 ? "s" : ''}`+
         `\nCollected at: ${xUtil.getDateTimeFormat(fp.updatedAt)}` +
         (fp.createdByUser       ? `\nCollected by: ${sphere.users[fp.createdByUser]?.firstName + ' ' + sphere.users[fp.createdByUser]?.lastName}` : `\nCollected by: migration`) +
         (fp.createdOnDeviceType ? `\nCollected on: ${fingerprintDeviceIdentifier}` : `\nCollected on: unknown device`) +
