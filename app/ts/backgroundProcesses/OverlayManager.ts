@@ -49,6 +49,7 @@ class OverlayManagerClass {
         switch (status) {
           case "poweredOff":
           case "unauthorized":
+          case "manualPermissionRequired":
             core.bleState.bleAvailable = false;
             NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "SCANNER" });
             break;

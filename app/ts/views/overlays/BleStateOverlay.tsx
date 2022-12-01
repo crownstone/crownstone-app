@@ -49,6 +49,7 @@ export class BleStateOverlay extends Component<any, any> {
           });
           break;
         case "unauthorized":
+        case "manualPermissionRequired":
           this.setState({visible: true, notificationType: status, type: "SCANNER"});
           break;
         default: // "unknown":
@@ -91,6 +92,7 @@ export class BleStateOverlay extends Component<any, any> {
         case "poweredOn":
           return "Bluetooth is turned on!";
         case "unauthorized":
+        case "manualPermissionRequired":
           return "I can't use Bluetooth...";
         default: // "unknown":
           return "Starting Bluetooth...";
@@ -117,6 +119,7 @@ export class BleStateOverlay extends Component<any, any> {
         case "poweredOn":
           return "Bluetooth is turned on, resuming Crownstone services.";
         case "unauthorized":
+        case "manualPermissionRequired":
           return "Crownstone is not authorized to use Bluetooth. Please open the settings app on your phone, go to Crownstone in the list of apps and enable the Bluetooth permission.";
         default: // "unknown":
           return "We are turning on Bluetooth. This should not take long :).";
@@ -141,6 +144,7 @@ export class BleStateOverlay extends Component<any, any> {
       case "poweredOn":
         return <React.Fragment />;
       case "poweredOff":
+      case "manualPermissionRequired":
       case "unauthorized":
       default:  // unknown
         return (
