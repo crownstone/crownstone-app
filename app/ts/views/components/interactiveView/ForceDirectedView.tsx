@@ -100,7 +100,7 @@ export class ForceDirectedView extends Component<{
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
-
+  frameHeight: number = availableScreenHeight;
 
   viewCenter        : { x: number, y: number } = {x: screenWidth/2, y: availableScreenHeight/2};
   boundingBox       : BoundingBox = {minX:0, maxX:0, minY:0,maxY:0, width:0, height:0, requiredScale:1, effectiveWidth:0, effectiveHeight:0, boxCenter:{x:0,y:0}, initialized: false};
@@ -127,6 +127,13 @@ export class ForceDirectedView extends Component<{
 
     this.physicsEngine = new PhysicsEngine();
     this._drawToken = props.drawToken;
+
+    this.frameHeight = this.viewHeight;
+    if (Platform.OS === 'android') {
+      this.viewWidth =  4 * screenWidth;
+      this.viewHeight = 4 * this.frameHeight;
+    }
+
 
     this.init();
   }
@@ -468,7 +475,7 @@ export class ForceDirectedView extends Component<{
     // this is used to calculate the maximum scale.
     let drawableArea = {
       width: screenWidth,
-      height: this.viewHeight-(this.props.topOffset||0)-(this.props.bottomOffset||0)
+      height: this.frameHeight  -(this.props.topOffset||0)-(this.props.bottomOffset||0)
     }
 
     // set scale
@@ -485,8 +492,8 @@ export class ForceDirectedView extends Component<{
 
     // get the center of the screen to move the mass center towards. The center is the mid, of the view, corrected with the top and bottom offset.
     this.viewCenter = {
-      x: 0.5*this.viewWidth,
-      y: (this.props.topOffset || 0) + 0.5*(this.viewHeight - (this.props.topOffset || 0) - (this.props.bottomOffset||0)),
+      x: 0.5*screenWidth,
+      y: (this.props.topOffset || 0) + 0.5*(this.frameHeight - (this.props.topOffset || 0) - (this.props.bottomOffset||0)),
     }
   }
 
@@ -498,9 +505,12 @@ export class ForceDirectedView extends Component<{
     this._recenteringInProgress = true;
 
     // determine offset to center everything.
+    let xOffset = 0.5*(this.viewWidth - screenWidth)
+    let yOffset = 0.5*(this.viewHeight - this.frameHeight)
+
     let offsetRequired = {
-      x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth ) + this._panOffset.x),
-      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0))
+      x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth )) -(xOffset + this._panOffset.x),
+      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight)) -(yOffset + this._panOffset.y) + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0)
     };
 
     // batch animations together.
@@ -606,7 +616,7 @@ export class ForceDirectedView extends Component<{
     }
 
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
-    this.physicsEngine.initEngine(center, screenWidth, this.viewHeight, radius, onChange, onStable, usePhysics);
+    this.physicsEngine.initEngine(center, screenWidth, this.frameHeight, radius, onChange, onStable, usePhysics);
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
     if (usePhysics) {
@@ -865,9 +875,12 @@ export class ForceDirectedView extends Component<{
     // uncomment this for debug views
     // the two pan-based debug views require redraws added to the move handler.
     this._getBoundingBox();
-    this.debug = true;
-    let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._panOffset.x;
-    let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
+    // this.debug = true;
+    // let dxBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minX - 0.5*this.viewWidth  + 0.5*this.paddedBoundingBox.width) + this._panOffset.x;
+    // let dyBoundingBoxCenter = this._currentScale * (this.paddedBoundingBox.minY - 0.5*this.viewHeight + 0.5*this.paddedBoundingBox.height) + this._panOffset.y + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0);
+    //
+    // let topOffset  = -0.5*(this.viewHeight - this.frameHeight);
+    // let leftOffset = -0.5*(this.viewWidth - screenWidth);
 
     return (
       <View
@@ -876,7 +889,8 @@ export class ForceDirectedView extends Component<{
         style={{
           marginTop: topBarHeight-statusBarHeight,
           flex:1,
-          backgroundColor:"transparent"
+          // backgroundColor:colors.red.rgba(0.1),
+          backgroundColor:"transparent",
         }}
         testID={this.props.testID}
       >
@@ -884,11 +898,14 @@ export class ForceDirectedView extends Component<{
           animatedStyle,{
             width: this.viewWidth,
             height: this.viewHeight,
-            backgroundColor: 'transparent'
+            // backgroundColor: colors.green.rgba(0.5),
+            backgroundColor: 'transparent',
         }]}>
           { this.getEdges() }
           { this.getNodes() }
           { children }
+          {/*<DebugView subdivide width={this.viewWidth} height={this.viewHeight} top={0} left={0} color={colors.blue}>*/}
+          {/*</DebugView>*/}
 
           {/*<DebugView width={this.paddedBoundingBox.width} height={this.paddedBoundingBox.height}top={this.paddedBoundingBox.minY} left={this.paddedBoundingBox.minX} color={colors.purple}>*/}
           {/*  <DebugView size={20} top={this.paddedBoundingBox.boxCenter.y - this.paddedBoundingBox.minY} left={this.paddedBoundingBox.boxCenter.x - this.paddedBoundingBox.minX} color={colors.white} />*/}
@@ -897,13 +914,18 @@ export class ForceDirectedView extends Component<{
 
         </Animated.View>
 
-        {/*<DebugView subdivide width={this.viewWidth} height={this.viewHeight - (this.props.topOffset ?? 0) - (this.props.bottomOffset ?? 0) } color={colors.csOrange} top={this.props.topOffset ?? 0} left={0} />*/}
-        {/*<DebugView size={8} top={this.viewCenter.y} left={this.viewCenter.x} color={colors.csBlueLighter} />*/}
+        {/*<DebugView*/}
+        {/*  subdivide*/}
+        {/*  width={this.viewWidth} height={this.viewHeight - (this.props.topOffset ?? 0) - (this.props.bottomOffset ?? 0) }*/}
+        {/*  color={colors.csOrange}*/}
+        {/*  top={topOffset + (this.props.topOffset ?? 0)} left={leftOffset - screenWidth}*/}
+        {/*/>*/}
+        {/*<DebugView size={8} top={this.viewCenter.y + topOffset} left={this.viewCenter.x + leftOffset} color={colors.csBlueLighter} />*/}
         {/*<DebugView*/}
         {/*  width={Math.abs(this._currentPan.x)}*/}
         {/*  height={Math.abs(this._currentPan.y)}*/}
-        {/*  top={this._currentPan.y < 0 ? this.viewCenter.y + this._currentPan.y : this.viewCenter.y}*/}
-        {/*  left={this._currentPan.x < 0 ? this.viewCenter.x + this._currentPan.x : this.viewCenter.x}*/}
+        {/*  top={this._currentPan.y < 0 ? this.viewCenter.y + topOffset + this._currentPan.y : this.viewCenter.y + topOffset}*/}
+        {/*  left={this._currentPan.x < 0 ? this.viewCenter.x + leftOffset + this._currentPan.x : this.viewCenter.x + leftOffset}*/}
         {/*  color={colors.csBlue}*/}
         {/*/>*/}
 
