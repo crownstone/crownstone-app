@@ -7,7 +7,7 @@ import {Platform} from "react-native";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
-export const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
+export const FINGERPRINT_SIZE_THRESHOLD = 2; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export interface FingerprintPenaltyList {
   unknownDeviceType:  number,
@@ -36,7 +36,7 @@ export const FingerprintUtil = {
 
 
   hasInPocketSet: function(location: LocationData) : boolean {
-    for (let fingerprint of Object.values(location.fingerprints.raw)) {
+    for (let fingerprint of Object.values(location.fingerprints.processed)) {
       if (fingerprint.type === "IN_POCKET") {
         return true;
       }
@@ -98,16 +98,43 @@ export const FingerprintUtil = {
     }
   },
 
+  canThisFingerprintBeUsed(fingerprint: FingerprintData) : boolean {
+    let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
+    if (phoneExclusivity) {
+      if (!fingerprint.createdByUser)       { return false; }
+      if (!fingerprint.createdOnDeviceType) { return false; }
+
+      let currentUserId = core.store.getState().user.userId;
+      if (currentUserId !== fingerprint.createdByUser) { return false }
+
+      let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
+
+      // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
+      let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
+      let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
+
+      if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
+        return false;
+      }
+    }
+    return true;
+  },
+
 
   requiresTransformation: function(fingerprint : FingerprintData) : boolean {
     if (!fingerprint.createdOnDeviceType) { return false; }
 
-    let deviceType = DeviceInfo.getDeviceId();
+    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
     let fingerprintDeviceType = fingerprint.createdOnDeviceType.split('_')[0];
 
-    if (deviceType !== fingerprintDeviceType) {
+    // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
+    let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
+    let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
+
+    if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
       return true;
     }
+
 
     return false;
   },
@@ -182,11 +209,11 @@ export const FingerprintUtil = {
     }
 
     if (FingerprintUtil.requiresTransformation(fingerprint)) {
-      if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
+      if (FingerprintUtil.canTransform(sphereId, fingerprint)) {
         // expect that if it can, it has been transformed since this is an automatic process
       }
       else {
-        penalties.missingTransform = -10;
+        penalties.missingTransform = -20;
       }
     }
 
@@ -204,12 +231,13 @@ export const FingerprintUtil = {
       missingTransform:0,
     };
 
+    let state = core.store.getState();
     let sphere = Get.sphere(sphereId);
     let location = Get.location(sphereId, locationId);
     if (!sphere || !location) { return penalties; }
 
     let totalSamples : Record<FingerprintType, number> = {IN_HAND:0, IN_POCKET:0, AUTO_COLLECTED: 0, FIND_AND_FIX: 0};
-    let amountOfFingerprints = Object.keys(location.fingerprints.raw).length;
+    let amountOfFingerprints = Object.keys(location.fingerprints.processed).length;
 
     if (!FingerprintUtil.hasInPocketSet(location)) {
       penalties.missingInPocket = -20;
@@ -218,13 +246,14 @@ export const FingerprintUtil = {
     // create this here so we have a list of indices to loop over afterwards.
     let fingerprintPenalties;
     for (let fingerprintId in location.fingerprints.raw) {
+      let fingerprint = location.fingerprints.raw[fingerprintId];
+      if (FingerprintUtil.canThisFingerprintBeUsed(fingerprint) === false) { continue; }
+
       fingerprintPenalties = FingerprintUtil.calculateFingerprintScorePenalties(sphereId, locationId, fingerprintId);
       for (let penalty in fingerprintPenalties) {
         penalties[penalty] += fingerprintPenalties[penalty];
       }
 
-
-      let fingerprint = location.fingerprints.raw[fingerprintId];
       if (totalSamples[fingerprint.type] !== undefined) {
         totalSamples[fingerprint.type] += fingerprint.data.length;
       }
@@ -289,25 +318,9 @@ export const FingerprintUtil = {
     let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintRawId);
     if (!fingerprint) { return null; }
 
-    let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
-    if (phoneExclusivity) {
-      if (!fingerprint.createdByUser)       { return null; }
-      if (!fingerprint.createdOnDeviceType) { return null; }
-
-      let currentUserId = core.store.getState().user.userId;
-      if (currentUserId !== fingerprint.createdByUser) { return null; }
-
-      let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
-
-      // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
-      let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
-      let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
-
-      if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
-        return null;
-      }
+    if (FingerprintUtil.canThisFingerprintBeUsed(fingerprint) === false) {
+      return null;
     }
-
 
     let processedFingerprint: Partial<FingerprintProcessedData> = {
       fingerprintId:           fingerprintRawId,

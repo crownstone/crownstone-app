@@ -57,11 +57,11 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
       numberOfLines:3,
       callback: () => {
         Alert.alert(
-lang("_Are_you_sure___You_will__header"),
-lang("_Are_you_sure___You_will__body"),
-[{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+          lang("_Are_you_sure___You_will__header"),
+          lang("_Are_you_sure___You_will__body"),
+          [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
             {
-text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
+              text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
               LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
               NavigationUtil.back();
             }},
