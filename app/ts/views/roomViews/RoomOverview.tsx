@@ -501,8 +501,10 @@ function RoomHeader({editMode, setEditMode, endEditMode, location, sphereId}) {
         <SettingsIconLeft onPress={launchEditModal} highlight={shouldHighlight} testID={'editRoom'}/>
       </SlideSideFadeInView>
       <View style={{flex:1, height:30}} />
-      <SlideSideFadeInView visible={editMode} width={120}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
-      <SlideSideFadeInView visible={!editMode} width={50}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>
+      <View style={{position:'absolute', right:0, top:0, flexDirection:"row", height:30}}>
+        <SlideSideFadeInView visible={editMode} width={90}><EditDone onPress={endEditMode} /></SlideSideFadeInView>
+        <SlideSideFadeInView visible={!editMode} width={50}><EditIcon onPress={setEditMode} /></SlideSideFadeInView>
+      </View>
     </View>
   )
 }

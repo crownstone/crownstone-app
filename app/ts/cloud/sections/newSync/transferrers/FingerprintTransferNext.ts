@@ -49,6 +49,12 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
   getCreateLocalAction(localSphereId: string, localLocationId: string, data: Partial<FingerprintData>) : {id: string, action: DatabaseAction } {
     let newId = xUtil.generateLocalId();
     let action : DatabaseAction = {type:"ADD_FINGERPRINT_V2", sphereId: localSphereId, locationId: localLocationId, fingerprintId: newId, data: data };
+
+    // If this fingerprint came from the cloud AND it is an in-hand set, remove any migrated datasets for this location.
+    if (data.cloudId && data.type === 'IN_HAND') {
+      FingerprintUtil.checkToRemoveBadFingerprints(localSphereId, localLocationId);
+    }
+
     return {id: newId, action};
   },
 
@@ -85,11 +91,6 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
   createLocal(localSphereId: string, localLocationId: string, data: Partial<FingerprintData>) {
     let newItemData = FingerprintTransferNext.getCreateLocalAction(localSphereId, localLocationId, data);
     core.store.dispatch(newItemData.action);
-
-    // If this fingerprint came from the cloud AND it is an in-hand set, remove any migrated datasets for this location.
-    if (data.cloudId && data.type === 'IN_HAND') {
-      FingerprintUtil.checkToRemoveBadFingerprints(localSphereId, localLocationId);
-    }
     return newItemData.id;
   }
 }
