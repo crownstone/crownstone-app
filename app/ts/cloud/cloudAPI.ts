@@ -18,6 +18,7 @@ import { spheres }           from './sections/spheres'
 import { sync }              from './sections/sync/sync'
 import { syncEvents }        from './sections/sync/syncEvents'
 import { syncUsersInSphere } from './sections/sync/syncUsersInSphere'
+import { transforms }        from './sections/transforms'
 import { user }              from './sections/user'
 
 import { toon }              from './sections/thirdParty/toon'
@@ -52,6 +53,7 @@ function combineSections() {
   xUtil.mixin(result, syncNext,          result);
   xUtil.mixin(result, syncEvents,        result);
   xUtil.mixin(result, syncUsersInSphere, result);
+  xUtil.mixin(result, transforms,        result);
   xUtil.mixin(result, user,              result);
 
   result["thirdParty"] = {toon:{}};

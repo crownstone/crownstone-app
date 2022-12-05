@@ -172,7 +172,23 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
       label: lang("Optimizing_for_your_phone"),
       icon: <StarImprovement penalty={penalties.missingTransform} />,
       numberOfLines:2,
-      callback: () => {}
+      callback: () => {
+        let options = FingerprintUtil.getOptimizationOptions(props.sphereId, props.locationId);
+        if (options.length === 0) {
+          Alert.alert(
+            "Nothing to optimize from...",
+            "No datasets have been collected by others yet. Please train the room first.",
+            [{text: lang("OK") }]);
+          return;
+        }
+        if (options.length > 1) {
+          NavigationUtil.launchModal("LocalizationTransform_userSelect", {sphereId: props.sphereId, options: options});
+        }
+        else {
+          NavigationUtil.launchModal("LocalizationTransform", { sphereId: props.sphereId, ...options[0], isModal: true });
+        }
+
+      }
     }]);
   }
 

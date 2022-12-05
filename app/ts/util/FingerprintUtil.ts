@@ -7,7 +7,7 @@ import {Platform} from "react-native";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
-export const FINGERPRINT_SIZE_THRESHOLD = 2; // if the quality is below 60%, it will be removed when there is a manual re-train.
+export const FINGERPRINT_SIZE_THRESHOLD = 150; // if the quality is below 60%, it will be removed when there is a manual re-train.
 
 export interface FingerprintPenaltyList {
   unknownDeviceType:  number,
@@ -20,6 +20,28 @@ export interface PenaltyList extends FingerprintPenaltyList{
 }
 
 export const FingerprintUtil = {
+
+  getOptimizationOptions(sphereId: sphereId, locationId: locationId) : {userId: string, deviceId: string, deviceString: string}[] {
+    let location = Get.location(sphereId, locationId);
+    if (!location) { return null; }
+
+    let myDeviceId = DeviceInfo.getDeviceId();
+    let myUserId   = core.store.getState().user.userId;
+
+    let options = [];
+    for (let fingerprintId in location.fingerprints.raw) {
+      let fingerprint = location.fingerprints.raw[fingerprintId];
+      if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { continue; }
+      let deviceType = fingerprint.createdOnDeviceType ?? "x_x_x";
+      let deviceId = deviceType.split("_")[0];
+      if (fingerprint.createdByUser !== myUserId || deviceId !== myDeviceId) {
+        options.push({userId: fingerprint.createdByUser, deviceId: deviceId, deviceString: fingerprint.createdOnDeviceType});
+      }
+    }
+
+    return options;
+  },
+
 
   requireMoreFingerprintsBeforeLocalizationCanStart: function (sphereId : string) : boolean {
     let sphere = Get.sphere(sphereId);

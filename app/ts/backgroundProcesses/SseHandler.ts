@@ -68,6 +68,8 @@ export class SseHandlerClass {
       case "presence":
         SpherePresenceManager.handlePresenceEvent(event);
         break;
+      case "transform":
+        core.eventBus.emit("transformSseEvent", event);
     }
   }
 

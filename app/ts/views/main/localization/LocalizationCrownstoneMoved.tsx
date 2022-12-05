@@ -6,32 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  ScrollView,
-  TouchableOpacity,
   Text,
-  View, Alert, Linking
+  View,
 } from "react-native";
 
 
-import { colors, deviceStyles, background, topBarHeight, styles, screenHeight, screenWidth } from "../../styles";
+import { colors, topBarHeight, styles, screenHeight, screenWidth } from "../../styles";
 import {Background} from "../../components/Background";
-import {IconButton} from "../../components/IconButton";
-import { core } from "../../../Core";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { ListEditableItems } from "../../components/ListEditableItems";
-import {
-  DataUtil,
-  enoughCrownstonesForIndoorLocalization
-} from "../../../util/DataUtil";
-import {Icon} from "../../components/Icon";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
 import { useDatabaseChange } from "../../components/hooks/databaseHooks";
-import {FingerprintUtil} from "../../../util/FingerprintUtil";
 import { Button } from "../../components/Button";
-import { Dropdown } from "../../components/editComponents/Dropdown";
-import { OptionalSwitchBar } from "../../components/editComponents/OptionalSwitchBar";
-import { PopupBar } from "../../components/editComponents/PopupBar";
 import { NavigationBar } from "../../components/editComponents/NavigationBar";
 import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
