@@ -32,7 +32,8 @@ type SseDataEvent = SwitchStateUpdateEvent     |
   PresenceLocationEvent      |
   DataChangeEvent            |
   AbilityChangeEvent         |
-  InvitationChangeEvent
+  InvitationChangeEvent      |
+  TransformEvents
 
 interface PingEvent {
   type:    "ping",
@@ -51,8 +52,54 @@ interface MultiSwitchCrownstoneEvent {
   type:        "command",
   subType:     "multiSwitch"
   sphere:      sseSphereData,
-  switchData:  sseCrownstoneSwitchCommand[],
+  switchData:  CrownstoneSwitchCommand[],
 }
+
+type TransformEvents = TransformEvent | TransformCollectionEvent | TransformCollectionPartialEvent | TransformResultEvent | TransformStoppedEvent;
+
+interface TransformEvent {
+  type:      "transform",
+  subType:   "sessionRequested" | "sessionReady",
+  sphere:     sseSphereData
+  sessionId:  string,
+  userA:      sseUserData,
+  userB:      sseUserData,
+  phoneTypeA: string,
+  phoneTypeB: string,
+}
+
+interface TransformCollectionEvent {
+  type:        "transform",
+  subType:     "collectionSessionReady" | "collectionCompleted",
+  sphere:       sseSphereData
+  sessionId:    string,
+  collectionId: string,
+}
+
+interface TransformCollectionPartialEvent {
+  type:        "transform",
+  subType:      "collectionPartiallyCompleted",
+  sphere:       sseSphereData
+  sessionId:    string,
+  collectionId: string,
+  user:         sseUserData,
+  phoneType:    string,
+}
+
+interface TransformResultEvent {
+  type:     "transform",
+  subType:  "sessionCompleted",
+  sphere:    sseSphereData
+  sessionId: string,
+  result:    TransformResult,
+}
+interface TransformStoppedEvent {
+  type:     "transform",
+  subType:  "sessionStopped",
+  sphere:    sseSphereData
+  sessionId: string,
+}
+
 
 interface PresenceSphereEvent {
   type:     "presence",

@@ -510,7 +510,7 @@ export class ForceDirectedView extends Component<{
 
     let offsetRequired = {
       x: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.x - 0.5*this.viewWidth )) -(xOffset + this._panOffset.x),
-      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight)) -(yOffset + this._panOffset.y) + 0.5*(this.props.bottomOffset||0) - 0.5*(this.props.topOffset || 0)
+      y: -1 * (this.paddedBoundingBox.requiredScale * (this.paddedBoundingBox.boxCenter.y - 0.5*this.viewHeight)) -(yOffset + this._panOffset.y) - 0.5*(this.props.bottomOffset||0) + 0.5*(this.props.topOffset || 0)
     };
 
     // batch animations together.
