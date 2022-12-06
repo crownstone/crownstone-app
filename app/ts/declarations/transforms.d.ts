@@ -41,3 +41,11 @@ type CollectionState = "UNINITIALIZED" |
   "FURTHER_AWAY"                       |
   "DIFFERENT"                          |
   "FINISHED"
+
+
+interface TransformStats {
+  close: number,
+  mid:   number,
+  far:   number,
+  total: number
+}

@@ -7,10 +7,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import {TransformManager} from "../../../localization/TransformManager";
+import {TRANSFORM_MIN_SAMPLE_THRESHOLD, TransformManager} from "../../../localization/TransformManager";
 import DeviceInfo from "react-native-device-info";
 import { core } from "../../../Core";
-import { ActivityIndicator, Settings, Text, View } from "react-native";
+import {ActivityIndicator, Alert, Settings, Text, View} from "react-native";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { colors, screenWidth, styles } from "../../styles";
 import { Get } from "../../../util/GetUtil";
@@ -18,6 +18,7 @@ import { SphereDeleted } from "../../static/SphereDeleted";
 import { ScaledImage } from "../../components/ScaledImage";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
 import { Button } from "../../components/Button";
+import {OnScreenNotifications} from "../../../notifications/OnScreenNotifications";
 
 
 
@@ -35,6 +36,7 @@ export class LocalizationTransform extends React.Component<
     errorMessage: string,
     collectionRecommendation: CollectionState,
     collectionsDone: number,
+    collectionStats: { A: TransformStats, B: TransformStats },
     currentCollection: Record<string, rssi[]>,
     currentCollectionDataCount: number,
   }> {
@@ -51,6 +53,7 @@ export class LocalizationTransform extends React.Component<
       sessionState: "UNINITIALIZED",
       errorMessage: '',
       collectionRecommendation: "UNINITIALIZED",
+      collectionStats: {A:{close:0, mid:0, far:0, total:0}, B:{close:0, mid:0, far:0, total:0}},
       collectionsDone: 0,
       currentCollection: {},
       currentCollectionDataCount: 0
@@ -79,8 +82,8 @@ export class LocalizationTransform extends React.Component<
     this.transformManager.collectionUpdate = (collectionCount : number, collectedData: Record<string, rssi[]>) => {
       this.setState({currentCollection: collectedData, currentCollectionDataCount: collectionCount});
     }
-    this.transformManager.collectionFinished = (recommendation, collectionsFinished) => {
-      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished});
+    this.transformManager.collectionFinished = (recommendation, collectionsFinished, stats) => {
+      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished, collectionStats: stats});
     }
   }
 
@@ -90,6 +93,9 @@ export class LocalizationTransform extends React.Component<
   }
 
   componentWillUnmount() {
+    if (this.props.host === false) {
+      OnScreenNotifications.removeNotification(this.props.sessionId);
+    }
     this.transformManager.destroy();
   }
 
@@ -164,7 +170,7 @@ export class LocalizationTransform extends React.Component<
           <React.Fragment>
             <Text style={styles.header}>{ "Measuring..." }</Text>
             <Text style={styles.boldExplanation}>{ "Please wait for the measurement to finish." }</Text>
-            <Text style={styles.boldExplanation}>{ "This should take around 20 seconds..." }</Text>
+            <Text style={styles.explanation}>{ "This should take around 20 seconds..." }</Text>
             <View style={{height:30}} />
             <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={1110} sourceHeight={662} targetWidth={0.8*screenWidth} />
             <View style={{flex:1}} />
@@ -173,14 +179,12 @@ export class LocalizationTransform extends React.Component<
           </React.Fragment>
         );
       case "COLLECTION_COMPLETED":
-        if (this.state.collectionsDone > 5) {
-
-        }
         switch (this.state.collectionRecommendation) {
           case "CLOSER":
             <React.Fragment>
               <Text style={styles.header}>{ "Next measurement" }</Text>
               <Text style={styles.boldExplanation}>{ "Great! Now repeat this in a different spot, a bit close to where your Crownstones are!" }</Text>
+              <CollectionStats stats={this.state.collectionStats} />
               { this.props.host ? <Text style={styles.boldExplanation}>{ "Press Next when you're both ready!" }</Text> : <Text style={styles.boldExplanation}>{ "Waiting for other device..." }</Text> }
               <View style={{height:30}} />
               <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={1110} sourceHeight={662} targetWidth={0.8*screenWidth} />
@@ -200,6 +204,7 @@ export class LocalizationTransform extends React.Component<
             <React.Fragment>
               <Text style={styles.header}>{ "Next measurement" }</Text>
               <Text style={styles.boldExplanation}>{ "Great! Now repeat this in a different spot!" }</Text>
+              <CollectionStats stats={this.state.collectionStats} />
               { this.props.host ? <Text style={styles.boldExplanation}>{ "Press Next when you're both ready!" }</Text> : <Text style={styles.boldExplanation}>{ "Waiting for other device..." }</Text> }
               <View style={{height:30}} />
               <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={1110} sourceHeight={662} targetWidth={0.8*screenWidth} />
@@ -219,6 +224,7 @@ export class LocalizationTransform extends React.Component<
             <React.Fragment>
               <Text style={styles.header}>{ "Next measurement" }</Text>
               <Text style={styles.boldExplanation}>{ "Great! Now repeat this in a different spot, a bit further away from where your Crownstones are!" }</Text>
+              <CollectionStats stats={this.state.collectionStats} />
               { this.props.host ? <Text style={styles.boldExplanation}>{ "Press Next when you're both ready!" }</Text> : <Text style={styles.boldExplanation}>{ "Waiting for other device..." }</Text> }
               <View style={{height:30}} />
               <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={1110} sourceHeight={662} targetWidth={0.8*screenWidth} />
@@ -240,6 +246,7 @@ export class LocalizationTransform extends React.Component<
           <React.Fragment>
             <Text style={styles.header}>{ "All done!" }</Text>
             <Text style={styles.boldExplanation}>{ "All datasets collected by the other device will now be optimized for your phone!" }</Text>
+            <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.8} />
             <View style={{flex:1}} />
             <Button
               backgroundColor={colors.blue.rgba(0.75)}
@@ -253,14 +260,33 @@ export class LocalizationTransform extends React.Component<
       case "FAILED":
         return (
           <React.Fragment>
-            <Text style={styles.header}>{ "All done!" }</Text>
-            <Text style={styles.boldExplanation}>{ "All datasets collected by the other device will now be optimized for your phone!" }</Text>
+            <Text style={styles.header}>{ "Something went wrong..." }</Text>
+            <Text style={styles.boldExplanation}>{ "Press the button below to try again, or try again later." }</Text>
+            <Text style={styles.explanation}>{ "Error was: " + this.state.errorMessage }</Text>
             <View style={{flex:1}} />
             <Button
               backgroundColor={colors.blue.rgba(0.75)}
               icon={'ios-play'}
-              label={ "Finish!"}
-              callback={() => { NavigationUtil.dismissModal(); }}
+              label={ "Retry.."}
+              callback={() => {
+                if (this.props.host) {
+                  this.transformManager.destroy();
+                  this.setState({
+                    sessionState: "UNINITIALIZED",
+                    errorMessage: '',
+                    collectionRecommendation: "UNINITIALIZED",
+                    collectionsDone: 0,
+                    currentCollection: {},
+                    currentCollectionDataCount: 0
+                  })
+                  this.transformManager.init();
+                  this.transformManager.start();
+                }
+                else {
+                  Alert.alert("Wait for the host to retry!", "The host needs to press the button to retry.", [{text: "OK"}]);
+                  NavigationUtil.dismissModal();
+                }
+              }}
             />
             <View style={{height:30}} />
           </React.Fragment>
@@ -281,3 +307,11 @@ export class LocalizationTransform extends React.Component<
 
 }
 
+function CollectionStats(props: {stats: {A: TransformStats, B: TransformStats}}) {
+  return (
+    <React.Fragment>
+      <Text style={styles.explanation}>{ `Host  collected: close:${props.stats.A.close}/${TRANSFORM_MIN_SAMPLE_THRESHOLD} mid: ${props.stats.A.mid}/${TRANSFORM_MIN_SAMPLE_THRESHOLD} far:${props.stats.A.far}/${TRANSFORM_MIN_SAMPLE_THRESHOLD}` }</Text>
+      <Text style={styles.explanation}>{ `Other collected: close:${props.stats.B.close}/${TRANSFORM_MIN_SAMPLE_THRESHOLD} mid: ${props.stats.B.mid}/${TRANSFORM_MIN_SAMPLE_THRESHOLD} far:${props.stats.B.far}/${TRANSFORM_MIN_SAMPLE_THRESHOLD}` }</Text>
+    </React.Fragment>
+  )
+}

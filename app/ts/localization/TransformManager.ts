@@ -5,6 +5,7 @@ import {LOGw} from "../logging/Log";
 import { NATIVE_BUS_TOPICS } from "../Topics";
 
 
+export const TRANSFORM_MIN_SAMPLE_THRESHOLD = 5;
 
 export class TransformManager {
 
@@ -21,11 +22,11 @@ export class TransformManager {
 
   sessionState : TransformSessionState = "UNINITIALIZED";
 
-  transformId: uuid;
+  transformId: uuid = null;
 
-  stateUpdate = (sessionState: TransformSessionState, errorMessage?: string) => {}
-  collectionUpdate = (collection: Record<string, number[]>, dataCount: number) => {}
-  collectionFinished = (recommendation: CollectionState, collectionsFinished: number) => {}
+  stateUpdate        = (sessionState: TransformSessionState, errorMessage?: string) => {}
+  collectionUpdate   = (collection: Record<string, number[]>, dataCount: number) => {}
+  collectionFinished = (recommendation: CollectionState, collectionsFinished: number, stats: {A:TransformStats,B:TransformStats}) => {}
 
   collections = {};
 
@@ -45,6 +46,10 @@ export class TransformManager {
 
     this.isHost = (this.myUserId === this.user_host_id && DeviceInfo.getDeviceId() === this.user_host_deviceId);
 
+    this.init();
+  }
+
+  init() {
     this.eventUnsubscriber = core.eventBus.on("transformSseEvent", (data: TransformEvents) => {
       this._handleSseEvent(data);
     });
@@ -165,25 +170,32 @@ export class TransformManager {
     // if most of the data is the medium buckets, recommend DIFFERENT
     // if most of the data is the far buckets, recommend CLOSER
 
-    let THRESHOLD = 10;
     // if all buckets have at least 10 datapoints, recommend FINISH
-    if (averageCloseCount > THRESHOLD && averageMediumCount > THRESHOLD && averageFarCount > THRESHOLD) {
+    if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
       this.finalizeSession();
       return;
     }
 
-    if (averageCloseCount > THRESHOLD) {
-      this.collectionFinished("FURTHER_AWAY", Object.keys(this.collections).length)
+    let stats = {
+      A: {close: closeCountA, mid: mediumCountA, far: farCountA, total: totalCountA},
+      B: {close: closeCountB, mid: mediumCountB, far: farCountB, total: totalCountB},
     }
-    else if (averageFarCount > THRESHOLD) {
-      this.collectionFinished("CLOSER", Object.keys(this.collections).length)
+
+    if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
+      this.collectionFinished("FURTHER_AWAY", Object.keys(this.collections).length, stats)
+    }
+    else if (averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
+      this.collectionFinished("CLOSER", Object.keys(this.collections).length, stats)
     }
     else {
-      this.collectionFinished("DIFFERENT", Object.keys(this.collections).length)
+      this.collectionFinished("DIFFERENT", Object.keys(this.collections).length, stats)
     }
   }
 
   destroy() {
+    this.sessionState = "UNINITIALIZED";
+    this.collections = {};
+    this.transformId = null;
     CLOUD.endTransformSession(this.sphereId, this.transformId);
     for (let collectionUUID in this.collections) {
       this.collections[collectionUUID].destroy();
@@ -278,6 +290,8 @@ export class TransformCollection {
     this.sphereId    = sphereId;
     this.transformId = transformId;
     this.collectionId = collectionId;
+
+    this.startDataCollection();
   }
 
   startDataCollection() {
@@ -288,7 +302,8 @@ export class TransformCollection {
 
   async submitDataCollection() {
     try {
-      CLOUD.postTransformCollectionSessionData(this.sphereId, this.transformId, this.collectionId, this.collection);
+      let averagedData = this.processData();
+      await CLOUD.postTransformCollectionSessionData(this.sphereId, this.transformId, this.collectionId, averagedData);
     }
     catch (err: any) {
       LOGw.info("TransformManager: Failed to submit data collection", err);
@@ -300,12 +315,12 @@ export class TransformCollection {
     let hasData = false;
     for (let datapoint of data) {
       if (this.sphereId !== datapoint.referenceId) { continue; }
-      hasData = true;
       if (this.collection[datapoint.id] === undefined) {
         this.collection[datapoint.id] = [];
       }
       if (datapoint.rssi < 0 && datapoint.rssi > -100) {
         this.collection[datapoint.id].push(datapoint.rssi);
+        hasData = true;
       }
     }
 
@@ -319,6 +334,20 @@ export class TransformCollection {
       this.submitDataCollection();
       this.destroy();
     }
+  }
+
+  processData() : MeasurementMap {
+    let averageCollection : MeasurementMap = {};
+    // average all the collected values per beacon
+    for (let beaconId in this.collection) {
+      let sum = 0;
+      for (let i = 0; i < this.collection[beaconId].length; i++) {
+        sum += this.collection[beaconId][i];
+      }
+      let average = sum / this.collection[beaconId].length;
+      average[beaconId] = average;
+    }
+    return averageCollection;
   }
 
   destroy() {
