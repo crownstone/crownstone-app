@@ -55,7 +55,7 @@ interface MultiSwitchCrownstoneEvent {
   switchData:  CrownstoneSwitchCommand[],
 }
 
-type TransformEvents = TransformEvent | TransformCollectionEvent | TransformCollectionPartialEvent | TransformResultEvent | TransformStoppedEvent;
+type TransformEvents = TransformEvent | TransformCollectionEvent | TransformCollectionPartialEvent | TransformCollectionFinishedEvent | TransformResultEvent | TransformStoppedEvent;
 
 interface TransformEvent {
   type:      "transform",
@@ -64,16 +64,25 @@ interface TransformEvent {
   sessionId:  string,
   userA:      sseUserData,
   userB:      sseUserData,
-  phoneTypeA: string,
-  phoneTypeB: string,
+  deviceIdA:  string,
+  deviceIdB:  string,
 }
 
 interface TransformCollectionEvent {
   type:        "transform",
-  subType:     "collectionSessionReady" | "collectionCompleted",
+  subType:     "collectionSessionReady",
   sphere:       sseSphereData
   sessionId:    string,
   collectionId: string,
+}
+
+interface TransformCollectionFinishedEvent {
+  type:        "transform",
+  subType:     "collectionCompleted",
+  sphere:       sseSphereData
+  sessionId:    string,
+  collectionId: string,
+  quality:      {userA: Record<string,number>, userB: Record<string,number>}
 }
 
 interface TransformCollectionPartialEvent {
@@ -83,7 +92,7 @@ interface TransformCollectionPartialEvent {
   sessionId:    string,
   collectionId: string,
   user:         sseUserData,
-  phoneType:    string,
+  deviceId:     string,
 }
 
 interface TransformResultEvent {

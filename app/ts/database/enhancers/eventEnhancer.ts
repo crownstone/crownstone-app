@@ -102,6 +102,11 @@ function checkAction(action : DatabaseAction, affectedIds, oldState, newState) {
       eventStatus.changeFingerprint = affectedIds;
       eventStatus.changeProcessedFingerprint = affectedIds;
       break;
+    case "ADD_TRANSFORM":
+    case "UPDATE_TRANSFORM":
+    case "REMOVE_TRANSFORM":
+    case "REMOVE_ALL_TRANSFORMS":
+      eventStatus.changeTransforms = affectedIds; break;
     case 'ADD_LOCATION':
       eventStatus.addLocation = affectedIds;
       eventStatus.changeLocations = affectedIds;

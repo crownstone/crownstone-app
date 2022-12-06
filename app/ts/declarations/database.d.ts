@@ -3,6 +3,7 @@ interface ReduxAppState {
   devices:       any,
   development:   any,
   events:        any,
+  transforms:    Record<transformId, TransformData>
   installations: any,
   spheres:       Record<sphereId, SphereData>,
   user:          UserData,
@@ -32,6 +33,16 @@ interface appData {
 }
 
 type LocalizationSmoothingMethod = 'NONE' | 'SEQUENTIAL_2' | 'BEST_OUT_OF_5' | 'BEST_OUT_OF_10';
+
+interface TransformData {
+  id:         string,
+  fromDevice: deviceId,
+  fromUser:   userId,
+  toDevice:   deviceId,
+  toUser:     userId,
+  transform:  TransformSet,
+  updatedAt:  timestamp
+}
 
 interface SphereData {
   id:     string,
@@ -254,6 +265,7 @@ type CrownstoneIdentifier = string; // maj_min as identifier representing the Cr
 interface FingerprintDataSettable {
   cloudId: string | null,
   type: FingerprintType,
+  exclusive: boolean
   createdOnDeviceType: string, // ${device type string}]  `${DeviceInfo.getDeviceId()}_${DeviceInfo.getManufacturerSync()}_${DeviceInfo.getModel()}`;
   createdByUser: userId,       // ${user id}
   crownstonesAtCreation: Record<CrownstoneIdentifier, true>, // maj_min as id representing the Crownstone.

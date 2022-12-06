@@ -7,6 +7,7 @@ let defaultFingerprintData: FingerprintData = {
   cloudId:               null,
   type:                  null,
   createdOnDeviceType:   null, // ${device type string}
+  exclusive:             false, // ${device type string}
   createdByUser:         null, // ${userId who collected it}
   crownstonesAtCreation: {}, // maj_min as id representing the Crownstone.
   data:                  [],
@@ -33,6 +34,7 @@ const fingerprintDataReducer = (state = defaultFingerprintData, action : Databas
 
         newState.cloudId               = update(action.data.cloudId, newState.cloudId);
         newState.type                  = update(action.data.type, newState.type);
+        newState.exclusive             = update(action.data.exclusive, newState.exclusive);
         newState.createdOnDeviceType   = update(action.data.createdOnDeviceType, newState.createdOnDeviceType);
         newState.createdByUser         = update(action.data.createdByUser, newState.createdByUser);
         newState.crownstonesAtCreation = update(action.data.crownstonesAtCreation, newState.crownstonesAtCreation);

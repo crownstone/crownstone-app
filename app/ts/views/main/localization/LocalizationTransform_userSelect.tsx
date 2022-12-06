@@ -48,7 +48,7 @@ export function LocalizationTransform_userSelect(props: {sphereId, options: {use
       type: 'navigation',
       label: `${userName} (${device})`,
       callback: () => {
-        NavigationUtil.navigate("LocalizationTransform", { sphereId: props.sphereId, ...option });
+        NavigationUtil.navigate("LocalizationTransform_intro", { sphereId: props.sphereId, ...option});
       }
     })
   }

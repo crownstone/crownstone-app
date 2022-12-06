@@ -37,6 +37,7 @@ import { EditIcon, MenuButtonPlaceholder } from "../components/EditIcon";
 import { HeaderTitle }              from "../components/HeaderTitle";
 import { Get }                      from "../../util/GetUtil";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 
 const ZOOM_LEVELS = {

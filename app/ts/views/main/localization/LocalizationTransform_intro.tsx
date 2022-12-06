@@ -55,7 +55,7 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
         backgroundColor={colors.blue.rgba(0.75)}
         icon={'ios-play'}
         label={ "Next"}
-        callback={() => { NavigationUtil.navigate('LocalizationTransform', {sphereId: props.sphereId, userId: props.userId, deviceId: props.deviceId, deviceString: props.deviceString}); }}
+        callback={() => { NavigationUtil.navigate('LocalizationTransform', {sphereId: props.sphereId, userId: props.userId, deviceId: props.deviceId, deviceString: props.deviceString, host:true}); }}
       />
     </SettingsBackground>
   );

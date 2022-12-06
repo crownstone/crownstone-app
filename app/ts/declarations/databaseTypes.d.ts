@@ -1,3 +1,4 @@
+type transformId            = string; // this is the localId
 type sphereId               = string; // this is the localId
 type locationId             = string; // this is the localId
 type stoneId                = string; // this is the localId
@@ -61,6 +62,7 @@ interface DatabaseAction {
   messageStateId?         : 'read' | 'deleted',
   hueBridgeId?            : string,
   deviceId?               : string,
+  transformId?            : string,
   sortedListId?           : string,
   installationId?         : string,
   stoneId?                : string,
@@ -301,6 +303,10 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'UPDATE_STONE_TIME_STATE'                      |
   'UPDATE_TOON'                                  |
   'UPDATE_TOON_CLOUD_ID'                         |
+  'REMOVE_ALL_TRANSFORMS'                        |
+  'REMOVE_TRANSFORM'                             |
+  'ADD_TRANSFORM'                                |
+  'UPDATE_TRANSFORM'                             |
   'USER_APPEND'                                  |
   'USER_ENTER_LOCATION'                          |
   'USER_ENTER_SPHERE'                            |
@@ -331,6 +337,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'updateAppState'                  |
   'userPositionUpdate'              |
   'changeUsers'                     |
+  'changeTransforms'                |
   'changeProcessedFingerprint'      |
   'changeFingerprint'               |
   'addLocation'                     |

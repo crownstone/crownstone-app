@@ -5,8 +5,21 @@ import { AppState } from "react-native";
 import { MapProvider } from "./MapProvider";
 import { SpherePresenceManager } from "./SpherePresenceManager";
 import DeviceInfo from "react-native-device-info";
+import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
+import { colors } from "../views/styles";
+import { Get } from "../util/GetUtil";
+import { SphereDeleted } from "../views/static/SphereDeleted";
+import * as React from "react";
 
 type SSE_STATE = "STARTING" | "STARTED" | "STOPPED" | "UNINITIALIZED";
+
+
+import { Languages } from "../Languages"
+import { NavigationUtil } from "../util/navigation/NavigationUtil";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SseHandler", key)(a,b,c,d,e);
+}
 
 export class SseHandlerClass {
 
@@ -69,6 +82,38 @@ export class SseHandlerClass {
         SpherePresenceManager.handlePresenceEvent(event);
         break;
       case "transform":
+        if(event.subType === "sessionRequested") {
+          let localSphereId = MapProvider.cloud2localMap.spheres[event.sphere.id];
+          let sphere = Get.sphere(localSphereId);
+          let userToHelp;
+          let state = core.store.getState();
+          let myUserId = state.user.userId;
+          if (event.userA.id === myUserId) {
+            // this is you but with a different device.
+            userToHelp = state.user;
+          }
+          else {
+            userToHelp = sphere.users[event.userA.id];
+          }
+
+          if (event.userB.id === myUserId) {
+            if (event.deviceIdB === DeviceInfo.getDeviceId()) {
+              OnScreenNotifications.setNotification({
+                source: 'LocalizationTransform',
+                id: event.sessionId,
+                label: lang("_asks_for_your_help_", userToHelp.firstName),
+                sphereId: event.sphere.id,
+                icon: 'fa5-home',
+                iconSize: 30,
+                iconColor: colors.black.hex,
+                backgroundColor: colors.blue.rgba(0.5),
+                callback: () => {
+                  NavigationUtil.launchModal("LocalizationTransform", {sphereId: event.sphere.id, sessionId: event.sessionId, host:false});
+                }
+              });
+            }
+          }
+        }
         core.eventBus.emit("transformSseEvent", event);
     }
   }

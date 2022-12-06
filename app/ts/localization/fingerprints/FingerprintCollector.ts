@@ -107,6 +107,7 @@ export class FingerprintCollector {
         createdByUser:         state.user.userId,
         crownstonesAtCreation: this.crownstonesAtCreation, // maj_min as id representing the Crownstone.
         data:                  this.trainingData,
+        exclusive:             state.app.localization_onlyOwnFingerprints,
       }
     });
   }

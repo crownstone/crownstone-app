@@ -4,6 +4,7 @@ import DeviceInfo from "react-native-device-info";
 import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
 import {Platform} from "react-native";
+import { TransformUtil } from "./TransformUtil";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
@@ -150,20 +151,30 @@ export const FingerprintUtil = {
     let fingerprintDeviceType = fingerprint.createdOnDeviceType.split('_')[0];
 
     // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
-    let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
-    let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
+    let currentDeviceIdentifier     = DeviceInfo.getDeviceId();
+    let fingerprintDeviceIdentifier = typeArray[0]
 
-    if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
-      return true;
-    }
-
-
-    return false;
+    return currentDeviceIdentifier !== fingerprintDeviceIdentifier;
   },
 
 
   canTransform: function(sphereId: sphereId, fingerprint : FingerprintData) : boolean {
-    // TODO: implement transforms.
+    let state = core.store.getState();
+    let myDeviceId = DeviceInfo.getDeviceId();
+    let myUserId   = state.user.userId;
+
+    if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return false; }
+    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
+    let fingerprintDeviceId = fingerprint.createdOnDeviceType.split('_')[0];
+
+    let transformIds = Object.keys(state.transforms);
+    for (let transformId of transformIds) {
+      let transform = state.transforms[transformId];
+      if (transform.fromDevice === myDeviceId && transform.toDevice === fingerprintDeviceId) {
+        return true;
+      }
+    }
+
     return false;
   },
 
@@ -366,12 +377,9 @@ export const FingerprintUtil = {
         processedFingerprint.transformState = "NOT_TRANSFORMED_YET";
       }
       else {
-        // TODO: transform the fingerprint
-        // processedFingerprint.transformState = "TRANSFORMED_APPROXIMATE";
-        // processedFingerprint.transformState = "TRANSFORMED_EXACT";
+        processedFingerprint.transformState = FingerprintUtil.transformFingerprint(sphereId, locationId, processedFingerprint);
       }
     }
-
 
     // apply sigmoid function.
     for (let measurement of processedFingerprint.data) {
@@ -381,6 +389,42 @@ export const FingerprintUtil = {
     }
 
     return processedFingerprint;
+  },
+
+  transformFingerprint(sphereId: string, locationId: string, processedFingerprint: Partial<FingerprintProcessedData>) : TransformState {
+    let fingerprint = Get.fingerprint(sphereId, locationId, processedFingerprint.fingerprintId);
+
+    let state = core.store.getState();
+    let myDeviceId = DeviceInfo.getDeviceId();
+    let myUserId   = state.user.userId;
+
+    if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return "NOT_TRANSFORMED_YET"; }
+    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
+    let fingerprintDeviceId = fingerprint.createdOnDeviceType.split('_')[0];
+
+    let transformIds = Object.keys(state.transforms);
+    let transformed = false;
+    for (let transformId of transformIds) {
+      let transform = state.transforms[transformId];
+      if (transform.fromDevice === fingerprintDeviceId && transform.fromUser === myUserId && transform.toDevice === myDeviceId) {
+        let data = processedFingerprint.data as FingerprintMeasurementData[];
+        processedFingerprint.data = TransformUtil.transformDataset(processedFingerprint.data, transform.transform);
+        return "TRANSFORMED_EXACT";
+      }
+    }
+
+    if (!transformed) {
+      for (let transformId of transformIds) {
+        let transform = state.transforms[transformId];
+        if (transform.fromDevice === fingerprintDeviceId && transform.toDevice === myDeviceId) {
+          let data = processedFingerprint.data as FingerprintMeasurementData[];
+          processedFingerprint.data = TransformUtil.transformDataset(processedFingerprint.data, transform.transform);
+          return "TRANSFORMED_APPROXIMATE";
+        }
+      }
+    }
+
+    return "NOT_TRANSFORMED_YET";
   },
 
 

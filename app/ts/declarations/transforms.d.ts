@@ -2,28 +2,36 @@ interface MeasurementMap {
   [crownstoneId: string]: rssi
 }
 type transformFactor = number; // around 1
-type TransformData = [rssi, transformFactor];
-type TransformArray = TransformData[];
+type TransformDataVector = [rssi, transformFactor];
+type TransformArray = TransformDataVector[];
 interface BucketedData {
   x: number,
   data: TransformArray
 };
 interface AveragedBucketedData {
   x: number,
-  data: TransformData
+  data: TransformDataVector
 }
 type TransformSet = AveragedBucketedData[];
 
-type TransformResult = {sessionId: uuid, fromDevice: string, toDevice: string, transform: TransformSet}[]
+type TransformResult = {
+  sessionId: uuid,
+  fromDevice: string,
+  fromUser: userId,
+  toDevice: string,
+  toUser: userId,
+  transform: TransformSet
+}[]
 
-type TransformSessionState = "UNINITIALIZED"     |
-  "AWAITING_SESSION_REGISTRATION"                |
-  "AWAITING_INVITATION_ACCEPTANCE"               |
-  "SESSION_WAITING_FOR_COLLETION_INITIALIZATION" |
-  "FINISHED"                                     |
-  "READY_FOR_COLLECTION"                         |
-  "WAITING_ON_OTHER_USER"                        |
-  "WAITING_TO_FINISH_COLLECTION"                 |
-  "WAITING_FOR_QUALITY_CHECK"                    |
+type TransformSessionState = "UNINITIALIZED"      |
+  "AWAITING_SESSION_REGISTRATION"                 |
+  "AWAITING_SESSION_START"                        |
+  "AWAITING_INVITATION_ACCEPTANCE"                |
+  "SESSION_WAITING_FOR_COLLECTION_INITIALIZATION" |
+  "FINISHED"                                      |
+  "COLLECTION_STARTED"                            |
+  "WAITING_ON_OTHER_USER"                         |
+  "WAITING_TO_FINISH_COLLECTION"                  |
+  "COLLECTION_COMPLETED"                          |
   "FAILED"
 

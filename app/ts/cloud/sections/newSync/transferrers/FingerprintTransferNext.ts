@@ -21,6 +21,7 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
       createdByUser:         localData.createdByUser,
       crownstonesAtCreation: Object.keys(localData.crownstonesAtCreation),
       locationId:            cloudLocationId || location.id,
+      exclusive:             localData.exclusive,
       data:                  localData.data,
       updatedAt:             new Date(localData.updatedAt).toISOString(),
       createdAt:             new Date(localData.createdAt).toISOString(),
@@ -35,6 +36,7 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
       cloudId:               cloudFingerprint.id,
       type:                  cloudFingerprint.type,
       createdOnDeviceType:   cloudFingerprint.createdOnDeviceType, // ${device type string}]
+      exclusive:             cloudFingerprint.exclusive ?? false, // ${device type string}]
       createdByUser:         cloudFingerprint.createdByUser,       // ${user id}
       crownstonesAtCreation: xUtil.arrayToMap(cloudFingerprint.crownstonesAtCreation), // maj_min as id representing the Crownstone.
       data:                  cloudFingerprint.data,

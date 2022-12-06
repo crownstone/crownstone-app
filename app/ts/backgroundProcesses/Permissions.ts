@@ -7,6 +7,7 @@ export class PermissionBase {
 
   canProvideEnergyPermission = false; // a
 
+  canDeleteFingerprints      = false; // a
   useKeepAliveState          = false; // m
   setStoneTime               = false; // a or m
   setToonInCloud             = false; // a
@@ -134,6 +135,7 @@ export class PermissionClass extends PermissionBase {
     LOG.info("Permissions: Set all", this._sphereId, " for level:", level);
     switch (level) {
       case 'admin':
+        this.canDeleteFingerprints   = true; // admin
         this.setBehaviourInCloud     = true; // admin
         this.setToonInCloud          = true; // admin
         this.seeUpdateCrownstone     = true; // admin

@@ -1,4 +1,5 @@
 import userReducer         from './reducers/user'
+import transformReducer    from './reducers/transform'
 import eventReducer        from './reducers/events'
 import devicesReducer      from './reducers/devices'
 import spheresReducer      from './reducers/spheres'
@@ -28,6 +29,7 @@ export default (state : any = {}, action : DatabaseAction = {}) => {
     installations: installationReducer(state.installations, action),
     spheres:       spheresReducer(state.spheres, action),
     user:          userReducer(state.user, action),
+    transforms:    transformReducer(state.transforms, action),
     devApp:        devAppReducer(state.devApp, action),
   }
 };

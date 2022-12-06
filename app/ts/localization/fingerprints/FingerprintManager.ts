@@ -63,18 +63,13 @@ export class FingerprintManager {
             this.phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
 
             // reprocess all fingerprints to tak the phone ecclusivity into account.
-            let sphere = Get.sphere(this.sphereId);
-            let actions = [];
-            for (let locationId in sphere.locations) {
-              actions.push({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
-            }
-            if (actions.length > 0) {
-              core.store.batchDispatch(actions);
-              this.checkProcessedFingerprints();
-            }
+            this.reprocessFingerprints();
           }
         }
 
+        if (change.changeTransforms) {
+          this.reprocessFingerprints();
+        }
 
         if (change.changeFingerprint && change.changeFingerprint.sphereIds[this.sphereId]) {
           // changes in fingerprints will lead to reprocessing.
@@ -211,6 +206,18 @@ export class FingerprintManager {
     }
 
     return result;
+  }
+
+  reprocessFingerprints() {
+    let sphere = Get.sphere(this.sphereId);
+    let actions = [];
+    for (let locationId in sphere.locations) {
+      actions.push({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
+    }
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+      this.checkProcessedFingerprints();
+    }
   }
 
 }

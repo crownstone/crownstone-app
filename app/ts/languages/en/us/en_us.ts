@@ -1007,6 +1007,9 @@ export default {
     New_Message_Found:                      function() { return "New Message Found" },
     New_Message_Found_n:                    function() { return "New Message Found\n" },
   },
+  LocalizationAdvancedSettings:{
+    Advanced_Settings:                      function() { return "Advanced Settings" },
+  },
   LocalizationCrownstoneMoved:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationCrownstoneMoved.tsx",
     A_Crownstone_has_been_mov:              function() { return "A Crownstone has been moved.." },
@@ -1061,21 +1064,7 @@ export default {
   LocalizationMenu:{
     Localization:                           function() { return "Localization" },
   },
-  LocalizationAdvancedSettings: {
-    Advanced_Settings:                      function() { return "Advanced Settings" },
-  },
   LocalizationMenu_active:{
-    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
-    CHANGES_AND_QUICKFIX:                   function() { return "CHANGES AND QUICKFIX" },
-    I_have_moved_a_Crownstone:              function() { return "I have moved a Crownstone.." },
-    Improve_from_localization:              function() { return "Improve from localization mistake..." },
-    If_the_localization_was_w:              function() { return "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!" },
-    THESE_ROOMS_NEED_ATTENTIO:              function() { return "ROOMS NEED ATTENTION" },
-    LOCALIZATION_TRAINING_QUA:              function() { return "LOCALIZATION TRAINING QUALITY" },
-    Advanced_Settings:                      function() { return "Advanced settings" },
-    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
-  },
-  LocalizationRoomQuality:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
     CHANGES_AND_QUICKFIX:                   function() { return "CHANGES AND QUICKFIX" },
     I_have_moved_a_Crownstone:              function() { return "I have moved a Crownstone.." },
@@ -1130,6 +1119,17 @@ export default {
     _Better_safe_than_sorry___body:         function() { return "Stay in the room a little longer and try again after 3 minutes" },
     _Better_safe_than_sorry___left:         function() { return "OK" },
     Quickfix:                               function() { return "Quickfix" },
+  },
+  LocalizationRoomQuality:{
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
+    CHANGES_AND_QUICKFIX:                   function() { return "CHANGES AND QUICKFIX" },
+    I_have_moved_a_Crownstone:              function() { return "I have moved a Crownstone.." },
+    Improve_from_localization:              function() { return "Improve from localization mistake..." },
+    If_the_localization_was_w:              function() { return "If the localization was wrong and you've been in the same room for at least 3 minutes, tap this to quickly improve localization!" },
+    THESE_ROOMS_NEED_ATTENTIO:              function() { return "ROOMS NEED ATTENTION" },
+    LOCALIZATION_TRAINING_QUA:              function() { return "LOCALIZATION TRAINING QUALITY" },
+    Advanced_Settings:                      function() { return "Advanced settings" },
+    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   LocationHandler:{
     __filename: "../js/native/localization/LocationHandler.ts",
@@ -2549,6 +2549,9 @@ export default {
     __filename: "../js/views/startupViews/Splash.tsx",
     version__:                              function() { return "version: " + arguments[0] },
   },
+  SseHandler:{
+    _asks_for_your_help_:                   function() { return arguments[0] + " asks for your help!" },
+  },
   StatusCommunication:{
     __filename: "../js/views/main/StatusCommunication.tsx",
     No_Crownstones_in_range_:               function() { return "Not in sphere." },
@@ -2789,4 +2792,5 @@ export default {
     MONTH_November:                         function() { return "November"; },
     MONTH_December:                         function() { return "December"; },
   },
-}
+};
+

@@ -105,6 +105,7 @@ interface cloud_Fingerprint {
   type: FingerprintType,
   createdOnDeviceType: string,
   createdByUser: string,
+  exclusive: boolean
   crownstonesAtCreation: string[],
   data: FingerprintMeasurementData[],
   locationId: string,
@@ -117,6 +118,7 @@ interface cloud_Fingerprint_settable {
   type?: FingerprintType,
   createdOnDeviceType?: string,
   createdByUser?: string,
+  exclusive?: boolean,
   locationId?: string,
   crownstonesAtCreation: string[],
   data?: FingerprintMeasurementData[],

@@ -25,6 +25,10 @@ import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {LocalizationUtil} from "../../../util/LocalizationUtil";
 import {DataUtil} from "../../../util/DataUtil";
 import { getStars } from "./LocalizationRoomQuality";
+import { SettingsBackground } from "../../components/SettingsBackground";
+import { SettingsScrollView } from "../../components/SettingsScrollView";
+import { Permissions } from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../Core";
 
 
 export function LocalizationDetail(props: {sphereId: string, locationId: string}) {
@@ -56,18 +60,54 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
       label: lang("DELETE_ALL_COLLECTED_DATA"),
       numberOfLines:3,
       callback: () => {
-        Alert.alert(
-          lang("_Are_you_sure___You_will__header"),
-          lang("_Are_you_sure___You_will__body"),
-          [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
-            {
-              text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
-              LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
-              NavigationUtil.back();
-            }},
-          ],
-          {cancelable: false}
-        )
+        // are there fingerprints created by this user?
+        // let location = Get.location(props.sphereId, props.locationId);
+        // if (!location) { return; }
+        //
+        // let state = core.store.getState();
+        //
+        // let myUserId = Get.userId();
+        // let fingerprints = location.fingerprints.raw;
+        // let ownFingerprintsAvailable = false;
+        // let ownFingerprints = [];
+        // for (let fingerprintId in fingerprints) {
+        //   let fingerprint = fingerprints[fingerprintId];
+        //   if (fingerprint.createdByUser === myUserId) {
+        //     ownFingerprints.push(fingerprintId);
+        //   }
+        // }
+
+        if (Permissions.inSphere(props.sphereId).canDeleteFingerprints) {
+          Alert.alert(
+            lang("_Are_you_sure___You_will__header"),
+            lang("_Are_you_sure___You_will__body"),
+            [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+              {
+                text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
+                LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
+                NavigationUtil.back();
+              }},
+            ],
+            {cancelable: false}
+          )
+        }
+        else {
+        //   if (ownFingerprints.length > 0) {
+        //     Alert.alert(
+        //       "Delete your own datasets?",
+        //       "You do not have permission to delete ALL localization data, but you can delete your own.", [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+        //         {
+        //           text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
+        //             LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
+        //             NavigationUtil.back();
+        //           }},
+        //       ],
+        //       {cancelable: false}
+        //   }
+
+
+          Alert.alert("Permission Denied", "You do not have permission to delete localization data.", [{text:"OK"}]);
+        }
       }
     },
     {
@@ -90,9 +130,8 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
 
 
   return (
-    <Background>
-      <View style={{height:topBarHeight}}/>
-      <ScrollView>
+    <SettingsBackground>
+      <SettingsScrollView>
         <Text style={styles.header}>{ lang("Training_quality") }</Text>
         <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
           { getStars(score, 30, FingerprintUtil.isScoreGoodEnough(score) ? colors.csBlue : colors.csOrange) }
@@ -112,9 +151,9 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
         <Text style={styles.boldLeftExplanation}>{ lang("Permanently_delete_all_lo") }</Text>
         <ListEditableItems items={deleteButton} />
         { <ListEditableItems items={advancedButton} /> }
-      </ScrollView>
+      </SettingsScrollView>
 
-    </Background>
+    </SettingsBackground>
   );
 }
 
