@@ -23,8 +23,9 @@ export class TransformManager {
 
   transformId: uuid;
 
-  stateUpdate = (sessionState: TransformSessionState) => {}
-  collectionUpdate = (collectionCount : number, collectedData: Record<string, rssi>) => {}
+  stateUpdate = (sessionState: TransformSessionState, errorMessage?: string) => {}
+  collectionUpdate = (collection: Record<string, number[]>, dataCount: number) => {}
+  collectionFinished = (recommendation: CollectionState, collectionsFinished: number) => {}
 
   collections = {};
 
@@ -109,8 +110,77 @@ export class TransformManager {
     // if the quality is good enough, ensure we have at least 2 collections.
     // if we have had 5 collections already, allow the user to wrap up the transform.
 
+    let userA = quality.userA;
+    let userB = quality.userB;
 
+    let buckets = [ -50, -55, -60, -65, -70, -75, -80, -85, -90 ];
 
+    let closeBuckets = [-50, -55, -60, -65];
+    let mediumBuckets = [-70, -75, -80];
+    let farBuckets = [-85, -90];
+
+    // check how many datapoints are in the close buckets
+    let closeCountA = 0;
+    let closeCountB = 0;
+    for (let i = 0; i < closeBuckets.length; i++) {
+      let bucket = closeBuckets[i];
+      if (userA[bucket] !== undefined) { closeCountA += userA[bucket]; }
+      if (userB[bucket] !== undefined) { closeCountB += userB[bucket]; }
+    }
+
+    // check how many datapoints are in the medium buckets
+    let mediumCountA = 0;
+    let mediumCountB = 0;
+    for (let i = 0; i < mediumBuckets.length; i++) {
+      let bucket = mediumBuckets[i];
+      if (userA[bucket] !== undefined) { mediumCountA += userA[bucket]; }
+      if (userB[bucket] !== undefined) { mediumCountB += userB[bucket]; }
+    }
+
+    // check how many datapoints are in the far buckets
+    let farCountA = 0;
+    let farCountB = 0;
+    for (let i = 0; i < farBuckets.length; i++) {
+      let bucket = farBuckets[i];
+      if (userA[bucket] !== undefined) { farCountA += userA[bucket]; }
+      if (userB[bucket] !== undefined) { farCountB += userB[bucket]; }
+    }
+
+    // check how many datapoints are in all the buckets
+    let totalCountA = 0;
+    let totalCountB = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      let bucket = buckets[i];
+      if (userA[bucket] !== undefined) { totalCountA += userA[bucket]; }
+      if (userB[bucket] !== undefined) { totalCountB += userB[bucket]; }
+    }
+
+    // average the count between user A and user B
+    let averageCount = (totalCountA + totalCountB) / 2;
+    let averageCloseCount = (closeCountA + closeCountB) / 2;
+    let averageMediumCount = (mediumCountA + mediumCountB) / 2;
+    let averageFarCount = (farCountA + farCountB) / 2;
+
+    // if most of the data is the close buckets, recommend FURTHER AWAY
+    // if most of the data is the medium buckets, recommend DIFFERENT
+    // if most of the data is the far buckets, recommend CLOSER
+
+    let THRESHOLD = 10;
+    // if all buckets have at least 10 datapoints, recommend FINISH
+    if (averageCloseCount > THRESHOLD && averageMediumCount > THRESHOLD && averageFarCount > THRESHOLD) {
+      this.finalizeSession();
+      return;
+    }
+
+    if (averageCloseCount > THRESHOLD) {
+      this.collectionFinished("FURTHER_AWAY", Object.keys(this.collections).length)
+    }
+    else if (averageFarCount > THRESHOLD) {
+      this.collectionFinished("CLOSER", Object.keys(this.collections).length)
+    }
+    else {
+      this.collectionFinished("DIFFERENT", Object.keys(this.collections).length)
+    }
   }
 
   destroy() {
@@ -132,22 +202,23 @@ export class TransformManager {
 
   async requestTransformSession() : Promise<void> {
     try {
-      this.transformId = await CLOUD.requestTransformSession(this.sphereId, this.user_host_id, this.user_host_deviceId, this.user_B_id, this.user_B_deviceId);
       this.setSessionState("AWAITING_SESSION_REGISTRATION");
+      this.transformId = await CLOUD.requestTransformSession(this.sphereId, this.user_host_id, this.user_host_deviceId, this.user_B_id, this.user_B_deviceId);
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to initialize transform session", err);
-      this.setSessionState("FAILED");
+      this.setSessionState("FAILED", err.message);
     }
   }
 
   async requestCollectionSession() : Promise<void> {
     try {
+      this.setSessionState("SESSION_WAITING_FOR_COLLECTION_START");
       await CLOUD.startTransformCollectionSession(this.sphereId, this.transformId);
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to initialize transform session", err);
-      this.setSessionState("FAILED");
+      this.setSessionState("FAILED", err.message);
     }
   }
 
@@ -159,18 +230,30 @@ export class TransformManager {
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to join transform session", err);
-      this.setSessionState("FAILED");
+      this.setSessionState("FAILED", err.message);
     }
   }
 
-  setSessionState(state: TransformSessionState) {
+  async finalizeSession() : Promise<void> {
+    try {
+      await CLOUD.finalizeTransformSession(this.sphereId, this.transformId);
+      this.setSessionState("FINISHED");
+    }
+    catch (err : any) {
+      LOGw.info("TransformManager: Failed to finalize transform session", err);
+      this.setSessionState("FAILED", err.message);
+    }
+  }
+
+  setSessionState(state: TransformSessionState, errorMessage: string = "") {
     this.sessionState = state;
-    this.stateUpdate(state);
+    this.stateUpdate(state, errorMessage);
   }
 
   startCollectionSession(collectionId: uuid) {
     let collection = new TransformCollection(this.sphereId, this.transformId, collectionId);
-    collection.errorHandler = (err) => { this.setSessionState("FAILED"); };
+    collection.errorHandler = (err, errorMessage) => { this.setSessionState("FAILED", errorMessage); };
+    collection.dataListener = (data, dataCount) => { this.collectionUpdate(data, dataCount); };
     this.collections[collectionId] = collection;
   }
 
@@ -188,7 +271,8 @@ export class TransformCollection {
 
   eventUnsubscriber = () => {};
 
-  errorHandler = (err) => {};
+  errorHandler = (err, errorMessage) => {};
+  dataListener = (collection: Record<string, number[]>, dataCount: number) => {};
 
   constructor(sphereId: sphereId, transformId: uuid, collectionId: uuid) {
     this.sphereId    = sphereId;
@@ -208,7 +292,7 @@ export class TransformCollection {
     }
     catch (err: any) {
       LOGw.info("TransformManager: Failed to submit data collection", err);
-      this.errorHandler(err);
+      this.errorHandler(err, err.message);
     }
   }
 
@@ -229,6 +313,8 @@ export class TransformCollection {
       this.dataCount++;
     }
 
+    this.dataListener(this.collection, this.dataCount)
+
     if (this.dataCount == 15) {
       this.submitDataCollection();
       this.destroy();
@@ -237,6 +323,8 @@ export class TransformCollection {
 
   destroy() {
     this.eventUnsubscriber();
+    this.dataListener = () => {};
+    this.errorHandler = () => {};
   }
 
 
