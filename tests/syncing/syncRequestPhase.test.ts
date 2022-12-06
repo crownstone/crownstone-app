@@ -97,6 +97,7 @@ test("Check if fingerprints are syncing", async () => {
             id: 'newCloudFingerprint',
             type: 'IN_POCKET' as FingerprintType,
             createdOnDeviceType: 'test_test',
+            exclusive: false,
             createdByUser: 'otherUser',
             crownstonesAtCreation: ['10_10'],
             data: [{ dt: 123, data: {'10_10':-52} }],
@@ -124,6 +125,7 @@ test("Check if fingerprints are syncing", async () => {
     data: {
       cloudId: 'newCloudFingerprint',
       type: 'IN_POCKET',
+      exclusive: false,
       createdOnDeviceType: 'test_test',
       createdByUser: 'otherUser',
       crownstonesAtCreation: {'10_10':true},

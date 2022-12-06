@@ -454,6 +454,7 @@ exports[`Using core in tests 1`] = `
       "users": {},
     },
   },
+  "transforms": {},
   "user": {
     "accessToken": null,
     "appIdentifier": null,
