@@ -8,7 +8,6 @@ import { core } from "../../Core";
 import {Icon} from "./Icon";
 import {ActiveSphereManager} from "../../backgroundProcesses/ActiveSphereManager";
 import { useEvent, useEventUpdate } from "./hooks/eventHooks";
-import {useState} from "react";
 import {BlurMessageBar} from "./BlurEntries";
 
 

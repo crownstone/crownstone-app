@@ -107,6 +107,9 @@ export const TransformUtil = {
 
   getAveragedBucketMap(bucketedData: BucketedData[]) : AveragedBucketedData[] {
     // average the data in the buckets
+
+    // Calculate average as iBeacon spec calibrates the rssi at one meter:
+    // Remove the top 10%, remove the bottom 20%, and average the remaining values
     let bucketedAverages : Record<string,TransformDataVector> = {};
     for (let key in bucketedData) {
       let bucketStart = bucketedData[key].x;
@@ -115,13 +118,40 @@ export const TransformUtil = {
         bucketedAverages[bucketStart] = [null,null];
         continue;
       }
-      let keySum = 0
-      let sum = 0;
-      for (let i = 0; i < data.length; i++) {
-        keySum += data[i][0];
-        sum += data[i][1];
+      let distances = data.map((d, i) => [d[0],d[1],Math.abs(d[0] - d[1]),i]);
+      if (distances.length >= 3) {
+        // sort by distance
+        distances.sort((a,b) => a[2] - b[2]);
+        let startIndex = Math.ceil(distances.length / 5)
+        let endIndex = Math.floor(distances.length - (distances.length / 10));
+        let sliced = distances.slice(startIndex, endIndex);
+        if (sliced.length > 0) {
+          // calculate average
+          let keySum = 0
+          let sum = 0;
+          for (let i = 0; i < sliced.length; i++) {
+            keySum += sliced[i][0];
+            sum += sliced[i][1];
+          }
+          bucketedAverages[bucketStart] = [keySum/sliced.length, sum / sliced.length];
+        }
+        else {
+          // get the median from the unsliced array
+          let medianIndex = Math.floor(distances.length / 2);
+          let median = distances[medianIndex];
+          bucketedAverages[bucketStart] = [median[0], median[1]];
+        }
       }
-      bucketedAverages[bucketStart] = [keySum/data.length, sum / data.length];
+      else {
+        let keySum = 0
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) {
+          keySum += data[i][0];
+          sum += data[i][1];
+        }
+        bucketedAverages[bucketStart] = [keySum/data.length, sum / data.length];
+      }
+
     }
 
     let result : AveragedBucketedData[] = [];
@@ -131,6 +161,7 @@ export const TransformUtil = {
 
     return result;
   },
+
 
 
   /**

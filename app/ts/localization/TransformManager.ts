@@ -3,9 +3,17 @@ import {core} from "../Core";
 import DeviceInfo from "react-native-device-info";
 import {LOGw} from "../logging/Log";
 import { NATIVE_BUS_TOPICS } from "../Topics";
+import {Scheduler} from "../logic/Scheduler";
+import {Languages} from "../Languages";
 
 
-export const TRANSFORM_MIN_SAMPLE_THRESHOLD = 5;
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TransformManager", key)(a,b,c,d,e);
+}
+
+
+export const TRANSFORM_MIN_SAMPLE_THRESHOLD = 8;
+export const TRANSFORM_MIN_SESSION_COUNT = 3;
 
 export class TransformManager {
 
@@ -27,6 +35,8 @@ export class TransformManager {
   stateUpdate        = (sessionState: TransformSessionState, errorMessage?: string) => {}
   collectionUpdate   = (collection: Record<string, number[]>, dataCount: number) => {}
   collectionFinished = (recommendation: CollectionState, collectionsFinished: number, stats: {A:TransformStats,B:TransformStats}) => {}
+
+  waitForInvitationTimeout = () => {};
 
   collections = {};
 
@@ -63,6 +73,8 @@ export class TransformManager {
         this.setSessionState("AWAITING_INVITATION_ACCEPTANCE");
         break
       case "sessionReady": ;
+        console.log("DESTROY THE INVITATION TIMEOUT")
+        this.waitForInvitationTimeout();
         this.setSessionState("SESSION_WAITING_FOR_COLLECTION_INITIALIZATION");
         break
       case "sessionStopped":
@@ -73,6 +85,7 @@ export class TransformManager {
         this._storeData(event.result);
         break
       case "collectionSessionReady":
+        this.waitForInvitationTimeout();
         this.setSessionState("COLLECTION_STARTED");
         this.startCollectionSession(event.collectionId)
         break;
@@ -114,7 +127,6 @@ export class TransformManager {
     // if the quality if not enough for either user, suggest a new collection.
     // if the quality is good enough, ensure we have at least 2 collections.
     // if we have had 5 collections already, allow the user to wrap up the transform.
-
     let userA = quality.userA;
     let userB = quality.userB;
 
@@ -171,9 +183,13 @@ export class TransformManager {
     // if most of the data is the far buckets, recommend CLOSER
 
     // if all buckets have at least 10 datapoints, recommend FINISH
-    if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
-      this.finalizeSession();
-      return;
+    let amountOfCompletedSessions = Object.keys(this.collections).length;
+
+    if (amountOfCompletedSessions >= TRANSFORM_MIN_SESSION_COUNT) {
+      if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
+        this.finalizeSession();
+        return;
+      }
     }
 
     let stats = {
@@ -195,12 +211,12 @@ export class TransformManager {
   destroy() {
     this.sessionState = "UNINITIALIZED";
     this.collections = {};
-    this.transformId = null;
+    this.eventUnsubscriber();
     CLOUD.endTransformSession(this.sphereId, this.transformId);
     for (let collectionUUID in this.collections) {
       this.collections[collectionUUID].destroy();
     }
-    this.eventUnsubscriber();
+    this.transformId = null;
   }
 
   async start() : Promise<void> {
@@ -215,7 +231,10 @@ export class TransformManager {
   async requestTransformSession() : Promise<void> {
     try {
       this.setSessionState("AWAITING_SESSION_REGISTRATION");
-      this.transformId = await CLOUD.requestTransformSession(this.sphereId, this.user_host_id, this.user_host_deviceId, this.user_B_id, this.user_B_deviceId);
+      this.transformId = await CLOUD.requestTransformSession(this.sphereId, this.user_host_deviceId, this.user_B_id, this.user_B_deviceId);
+      this.waitForInvitationTimeout = Scheduler.setTimeout(() => {
+        this.setSessionState("FAILED", lang("Timeout_while_waiting_for"));
+      }, 60000);
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to initialize transform session", err);
@@ -227,6 +246,7 @@ export class TransformManager {
     try {
       this.setSessionState("SESSION_WAITING_FOR_COLLECTION_START");
       await CLOUD.startTransformCollectionSession(this.sphereId, this.transformId);
+
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to initialize transform session", err);
@@ -236,20 +256,19 @@ export class TransformManager {
 
   async joinSession(transformId: uuid) : Promise<void> {
     try {
+      this.setSessionState("AWAITING_SESSION_START");
       await CLOUD.joinTransformSession(this.sphereId, transformId);
       this.transformId = transformId;
-      this.setSessionState("AWAITING_SESSION_START");
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to join transform session", err);
-      this.setSessionState("FAILED", err.message);
+      this.setSessionState("FAILED", lang("Request_not_available_any"));
     }
   }
 
   async finalizeSession() : Promise<void> {
     try {
       await CLOUD.finalizeTransformSession(this.sphereId, this.transformId);
-      this.setSessionState("FINISHED");
     }
     catch (err : any) {
       LOGw.info("TransformManager: Failed to finalize transform session", err);
@@ -313,6 +332,7 @@ export class TransformCollection {
 
   collectData(data: ibeaconPackage[]) {
     let hasData = false;
+    let conut = 0
     for (let datapoint of data) {
       if (this.sphereId !== datapoint.referenceId) { continue; }
       if (this.collection[datapoint.id] === undefined) {
@@ -320,6 +340,7 @@ export class TransformCollection {
       }
       if (datapoint.rssi < 0 && datapoint.rssi > -100) {
         this.collection[datapoint.id].push(datapoint.rssi);
+        conut++;
         hasData = true;
       }
     }
@@ -330,7 +351,7 @@ export class TransformCollection {
 
     this.dataListener(this.collection, this.dataCount)
 
-    if (this.dataCount == 15) {
+    if (this.dataCount == 20) {
       this.submitDataCollection();
       this.destroy();
     }
@@ -338,14 +359,26 @@ export class TransformCollection {
 
   processData() : MeasurementMap {
     let averageCollection : MeasurementMap = {};
-    // average all the collected values per beacon
+    // Calculate average as iBeacon spec calibrates the rssi at one meter:
+    // Remove the top 10%, remove the bottom 20%, and average the remaining values
+
     for (let beaconId in this.collection) {
+      let beaconSet = [...this.collection[beaconId]];
+      // ignore beacon if we have not enough data
+      if (beaconSet.length < 3) { continue; }
+      beaconSet.sort((a,b) => { return b-a; });
+
+      // the first indices are the closest Crownstones.
+      let startIndex = Math.ceil(beaconSet.length / 5) // remove the top 20%
+      let endIndex   = Math.floor(beaconSet.length - (beaconSet.length / 10));
+      let sliced     = beaconSet.slice(startIndex, endIndex);
+
       let sum = 0;
-      for (let i = 0; i < this.collection[beaconId].length; i++) {
-        sum += this.collection[beaconId][i];
+      for (let sample of sliced) {
+        sum += sample;
       }
-      let average = sum / this.collection[beaconId].length;
-      average[beaconId] = average;
+      let average = sum / sliced.length;
+      averageCollection[beaconId] = average;
     }
     return averageCollection;
   }
@@ -354,6 +387,8 @@ export class TransformCollection {
     this.eventUnsubscriber();
     this.dataListener = () => {};
     this.errorHandler = () => {};
+    this.dataCount = 0;
+    this.collection = {}
   }
 
 

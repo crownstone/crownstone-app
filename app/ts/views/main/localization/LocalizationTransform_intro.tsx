@@ -17,6 +17,7 @@ import {Get} from "../../../util/GetUtil";
 import {SphereDeleted} from "../../static/SphereDeleted";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
 import {Button} from "../../components/Button";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: string, deviceId: string, deviceString: string, isModal?: boolean }) {
@@ -44,19 +45,20 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
 
   return (
     <SettingsBackground>
-      <View style={{height:topBarHeight}}/>
-      <View style={{height:30}}/>
-      <Text style={styles.header}>{ "Let's optimize for your phone!" }</Text>
-      {props.userId === state.user.userId ?
-        <LocalizationTransformSelf  device={device}/> :
-        <LocalizationTransformOther userName={userName} device={device}/>
-      }
-      <Button
-        backgroundColor={colors.blue.rgba(0.75)}
-        icon={'ios-play'}
-        label={ "Next"}
-        callback={() => { NavigationUtil.navigate('LocalizationTransform', {sphereId: props.sphereId, userId: props.userId, deviceId: props.deviceId, deviceString: props.deviceString, host:true}); }}
-      />
+      <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingVertical:30}}>
+        <Text style={styles.header}>{ "Let's optimize for your phone!" }</Text>
+        {props.userId === state.user.userId ?
+          <LocalizationTransformSelf  device={device}/> :
+          <LocalizationTransformOther userName={userName} device={device}/>
+        }
+        <View style={{flex:1}} />
+        <Button
+          backgroundColor={colors.blue.rgba(0.75)}
+          icon={'ios-play'}
+          label={ "Next"}
+          callback={() => { NavigationUtil.navigate('LocalizationTransform', {sphereId: props.sphereId, otherUserId: props.userId, otherDeviceId: props.deviceId, deviceString: props.deviceString, isHost:true}); }}
+        />
+      </SafeAreaView>
     </SettingsBackground>
   );
 }
@@ -66,6 +68,7 @@ function LocalizationTransformSelf(props: {device:string }) {
   return (
     <React.Fragment>
       <Text style={styles.boldExplanation}>{ "Go get the other device you used to train the localization (" + props.device + ")." }</Text>
+      <Text style={styles.explanation}>{ "The more Crownstones you have, the faster this process wil go." }</Text>
       <Text style={styles.explanation}>{ "This is going to take a few minutes, press Next when you have your other device with the Crownstone app onscreen." }</Text>
     </React.Fragment>
   )
@@ -74,7 +77,8 @@ function LocalizationTransformOther(props: {userName:string, device: string}) {
   return (
     <React.Fragment>
       <Text style={styles.boldExplanation}>{ "Go get " + props.userName + " so we can get started."}</Text>
-      <Text style={styles.explanation}>{ "Tell him/her to bring the phone used to train the localization (" + props.device + ")." }</Text>
+      <Text style={styles.explanation}>{ "Tell him/her to bring the phone used to train their localization (" + props.device + ")." }</Text>
+      <Text style={styles.explanation}>{ "The more Crownstones you have, the faster this process wil go." }</Text>
       <Text style={styles.explanation}>{ "This is going to take a few minutes, press Next when the other person is next to you and has opened the Crownstone app." }</Text>
     </React.Fragment>
   )

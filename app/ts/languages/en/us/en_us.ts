@@ -1031,7 +1031,8 @@ export default {
     _Are_you_sure___You_will__right:        function() { return "Delete data!" },
     Add_more_training_data___:              function() { return "Add more training data..." },
     Find_and_fix_difficult_sp:              function() { return "Find and fix difficult spots..." },
-    DELETE_ALL_COLLECTED_DATA:              function() { return "DELETE ALL COLLECTED DATA" },
+    DELETE_ALL_COLLECTED_DATA:              function() { return "Delete ALL collected data" },
+    DELETE_ALL_TRANSFORMS:                  function() { return "Delete your phone optimizations" },
     Careful__you_will_need_to:              function() { return "Careful, you will need to retrain this room again if you delete all the data." },
     Manage_fingerprints:                    function() { return "Manage fingerprints" },
     DEV__Delete_individual_fi:              function() { return "Advanced: Delete individual fingerprints" },
@@ -2730,6 +2731,10 @@ export default {
     This_application_uses_the:              function() { return "This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon." },
     Toon:                                   function() { return "Toon" },
   },
+  TransformManager:{
+    Request_not_available_any:              function() { return "Request not available anymore." },
+    Timeout_while_waiting_for:              function() { return "Timeout while waiting for invitation" },
+  },
   UpdateCenter:{
     __filename: "../../js/backgroundProcesses/UpdateCenter.tsx",
     Update_available_:                      function() { return "Update available!" },
@@ -2792,5 +2797,4 @@ export default {
     MONTH_November:                         function() { return "November"; },
     MONTH_December:                         function() { return "December"; },
   },
-};
-
+}

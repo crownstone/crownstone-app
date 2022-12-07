@@ -16,6 +16,7 @@ type SSE_STATE = "STARTING" | "STARTED" | "STOPPED" | "UNINITIALIZED";
 
 import { Languages } from "../Languages"
 import { NavigationUtil } from "../util/navigation/NavigationUtil";
+import {Scheduler} from "../logic/Scheduler";
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SseHandler", key)(a,b,c,d,e);
@@ -87,6 +88,9 @@ export class SseHandlerClass {
           let sphere = Get.sphere(localSphereId);
           let userToHelp;
           let state = core.store.getState();
+
+          const notificationSourceId = 'LocalizationTransform';
+
           let myUserId = state.user.userId;
           if (event.userA.id === myUserId) {
             // this is you but with a different device.
@@ -95,20 +99,36 @@ export class SseHandlerClass {
           else {
             userToHelp = sphere.users[event.userA.id];
           }
-
           if (event.userB.id === myUserId) {
             if (event.deviceIdB === DeviceInfo.getDeviceId()) {
+
+              if (OnScreenNotifications.hasOtherNotificationsFromSource(notificationSourceId, event.sessionId)) {
+                OnScreenNotifications.removeAllNotificationsFrom(notificationSourceId)
+              }
+
+              let clearValidityTimeout = Scheduler.setTimeout(() => {
+                OnScreenNotifications.removeNotification(event.sessionId);
+              }, 60000);
+
               OnScreenNotifications.setNotification({
-                source: 'LocalizationTransform',
+                source: notificationSourceId,
                 id: event.sessionId,
                 label: lang("_asks_for_your_help_", userToHelp.firstName),
-                sphereId: event.sphere.id,
+                sphereId: localSphereId,
                 icon: 'fa5-home',
                 iconSize: 30,
                 iconColor: colors.black.hex,
                 backgroundColor: colors.blue.rgba(0.5),
                 callback: () => {
-                  NavigationUtil.launchModal("LocalizationTransform", {sphereId: event.sphere.id, sessionId: event.sessionId, host:false});
+                  clearValidityTimeout();
+                  NavigationUtil.launchModal("LocalizationTransform", {
+                    sphereId: localSphereId,
+                    sessionId: event.sessionId,
+                    isHost:false,
+                    otherUserId: event.userA.id,
+                    otherDeviceId: event.deviceIdA,
+                    isModal: true,
+                  });
                 }
               });
             }

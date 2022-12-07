@@ -70,7 +70,7 @@ export const transforms = {
     return cloudApiBase._setupRequest(
       'POST',
       CloudAddresses.cloud_v2 + `spheres/${cloudSphereId}/transform/${transformId}/collection/${collectionId}/data`,
-      {data: {data}, background: background},
+      {data: data, background: background},
       'body'
     );
   }

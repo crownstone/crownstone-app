@@ -31,6 +31,15 @@ class OnScreenNotificationsClass {
     }
   }
 
+  hasOtherNotificationsFromSource(source, notificationId) {
+    for (let id in this.notifications) {
+      if (this.notifications[id].source === source && id !== notificationId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   removeNotification(notificationId) {
     if ( this.notifications[notificationId] !== undefined ) {
       delete this.notifications[notificationId];

@@ -133,6 +133,9 @@ import { CloudChoice }                        from "./startupViews/CloudChoice";
 import { LocalizationAdvancedSettings } from "./main/localization/LocalizationAdvancedSettings";
 import { LocalizationRoomQuality } from "./main/localization/LocalizationRoomQuality";
 import { LocalizationFindAndFix_noLocation } from "./main/localization/LocalizationFindAndFix_noLocation";
+import {LocalizationTransform} from "./main/localization/LocalizationTransform";
+import {LocalizationTransform_intro} from "./main/localization/LocalizationTransform_intro";
+import {LocalizationTransform_userSelect} from "./main/localization/LocalizationTransform_userSelect";
 
 
 export const Views = {
@@ -141,6 +144,9 @@ export const Views = {
   AddCrownstone:                     AddCrownstone,
 
   LocalizationMenu:                  LocalizationMenu,
+  LocalizationTransform:             LocalizationTransform,
+  LocalizationTransform_intro:       LocalizationTransform_intro,
+  LocalizationTransform_userSelect:  LocalizationTransform_userSelect,
   SetupLocalization:                 SetupLocalization,
   BehaviourMenu:                     BehaviourMenu,
 

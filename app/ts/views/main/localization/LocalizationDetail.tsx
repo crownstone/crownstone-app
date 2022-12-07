@@ -33,8 +33,8 @@ import { core } from "../../../Core";
 
 export function LocalizationDetail(props: {sphereId: string, locationId: string}) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeFingerprint','changeSphereState']);
-
+  useDatabaseChange(['changeFingerprint','changeProcessedFingerprint','changeTransforms','changeSphereState']);
+  let state = core.store.getState();
   let penalties = FingerprintUtil.calculateLocationPenalties(props.sphereId, props.locationId);
   let score     = FingerprintUtil.calculateLocationScore(props.sphereId, props.locationId);
 
@@ -113,6 +113,22 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
     {
       type: 'explanation', label: lang("Careful__you_will_need_to"), below: true
     }];
+
+  if (Object.keys(state.transforms).length > 0) {
+    deleteButton.push({
+      type:  'button',
+      label: lang("DELETE_ALL_TRANSFORMS"),
+      numberOfLines:2,
+      callback: () => {
+        Alert.alert(
+          "Are you sure?",
+          "You'll have to perform the optimizations again.",
+          [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
+              core.store.dispatch({type: "REMOVE_ALL_TRANSFORMS"});
+            }}], {cancelable: false});
+      }
+    });
+  }
 
 
   let advancedButton = [
@@ -224,7 +240,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
           NavigationUtil.launchModal("LocalizationTransform_userSelect", {sphereId: props.sphereId, options: options});
         }
         else {
-          NavigationUtil.launchModal("LocalizationTransform", { sphereId: props.sphereId, ...options[0], isModal: true });
+          NavigationUtil.launchModal("LocalizationTransform_intro", { sphereId: props.sphereId, ...options[0], isModal: true });
         }
 
       }
