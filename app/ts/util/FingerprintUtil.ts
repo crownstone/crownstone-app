@@ -98,6 +98,8 @@ export const FingerprintUtil = {
 
   checkToRemoveBadFingerprints: function(sphereId, locationId) {
     let location = Get.location(sphereId, locationId);
+    if (!location) { return; }
+
     let actions = [];
     for (let fingerprintId in location.fingerprints.raw) {
       if (!FingerprintUtil.isFingerprintGoodEnough(sphereId, locationId, fingerprintId)) {

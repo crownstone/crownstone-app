@@ -20,11 +20,10 @@ import { ToonSyncerNext } from "./syncers/ToonSyncerNext";
 import { SphereTransferNext } from "./transferrers/SphereTransferNext";
 import { Get } from "../../../util/GetUtil";
 import { FingerprintSyncerNext } from "./syncers/FingerprintSyncerNext";
-import {MessageSyncerNext} from "./syncers/MessageSyncerNext";
-import {MessageReadSyncerNext} from "./syncers/MessageReadSyncerNext";
-import {MessageReadTransferNext} from "./transferrers/MessageReadTransferNext";
-import {MessageDeletedSyncerNext} from "./syncers/MessageDeletedSyncerNext";
-import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { MessageSyncerNext } from "./syncers/MessageSyncerNext";
+import { MessageReadSyncerNext } from "./syncers/MessageReadSyncerNext";
+import { MessageDeletedSyncerNext } from "./syncers/MessageDeletedSyncerNext";
+import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 
 
 export const SyncNext = {
