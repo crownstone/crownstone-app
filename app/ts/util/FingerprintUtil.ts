@@ -124,6 +124,12 @@ export const FingerprintUtil = {
   },
 
   canThisFingerprintBeUsed(fingerprint: FingerprintData) : boolean {
+    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
+
+    // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
+    let currentDeviceIdentifier     = DeviceInfo.getDeviceId();
+    let fingerprintDeviceIdentifier = typeArray[0];
+
     let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
     if (phoneExclusivity) {
       if (!fingerprint.createdByUser)       { return false; }
@@ -132,16 +138,17 @@ export const FingerprintUtil = {
       let currentUserId = core.store.getState().user.userId;
       if (currentUserId !== fingerprint.createdByUser) { return false }
 
-      let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
-
-      // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
-      let currentDeviceIdentifier     = Platform.OS === 'ios' ? DeviceInfo.getDeviceId() : DeviceInfo.getModel();
-      let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0]             : typeArray[2];
-
       if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
         return false;
       }
     }
+    else {
+      // if there is a fingerprint that is exclusive, but not to your phone, do not use it.
+      if (fingerprint.exclusive === true && fingerprint.createdOnDeviceType && currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
+        return false;
+      }
+    }
+
     return true;
   },
 
@@ -150,7 +157,6 @@ export const FingerprintUtil = {
     if (!fingerprint.createdOnDeviceType) { return false; }
 
     let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
-    let fingerprintDeviceType = fingerprint.createdOnDeviceType.split('_')[0];
 
     // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
     let currentDeviceIdentifier     = DeviceInfo.getDeviceId();
@@ -163,10 +169,8 @@ export const FingerprintUtil = {
   canTransform: function(sphereId: sphereId, fingerprint : FingerprintData) : boolean {
     let state = core.store.getState();
     let myDeviceId = DeviceInfo.getDeviceId();
-    let myUserId   = state.user.userId;
 
     if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return false; }
-    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
     let fingerprintDeviceId = fingerprint.createdOnDeviceType.split('_')[0];
 
     let transformIds = Object.keys(state.transforms);
@@ -401,7 +405,6 @@ export const FingerprintUtil = {
     let myUserId   = state.user.userId;
 
     if (!fingerprint.createdByUser || !fingerprint.createdOnDeviceType) { return "NOT_TRANSFORMED_YET"; }
-    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
     let fingerprintDeviceId = fingerprint.createdOnDeviceType.split('_')[0];
 
     let transformIds = Object.keys(state.transforms);
@@ -409,7 +412,6 @@ export const FingerprintUtil = {
     for (let transformId of transformIds) {
       let transform = state.transforms[transformId];
       if (transform.fromDevice === fingerprintDeviceId && transform.fromUser === myUserId && transform.toDevice === myDeviceId) {
-        let data = processedFingerprint.data as FingerprintMeasurementData[];
         processedFingerprint.data = TransformUtil.transformDataset(processedFingerprint.data, transform.transform);
         return "TRANSFORMED_EXACT";
       }
@@ -419,7 +421,6 @@ export const FingerprintUtil = {
       for (let transformId of transformIds) {
         let transform = state.transforms[transformId];
         if (transform.fromDevice === fingerprintDeviceId && transform.toDevice === myDeviceId) {
-          let data = processedFingerprint.data as FingerprintMeasurementData[];
           processedFingerprint.data = TransformUtil.transformDataset(processedFingerprint.data, transform.transform);
           return "TRANSFORMED_APPROXIMATE";
         }
