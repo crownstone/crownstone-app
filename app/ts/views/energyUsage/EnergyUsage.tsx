@@ -58,7 +58,7 @@ async function checkUploadPermission(sphereId) {
 // }
 
 function EnergyUsageContent(props) {
-  useDatabaseChange(['changeSphereFeatures']);
+  useDatabaseChange(['changeSphereFeatures','changeAppSettings']);
 
   let [checkedUploadPermission, setCheckedUploadPermission] = useState<boolean>(false);
   let [hasUploadPermission,     setHasUploadPermission]     = useState<boolean>(false);
@@ -89,16 +89,17 @@ function EnergyUsageContent(props) {
     setHasUploadPermission(permission);
   }
 
+  let state = core.store.getState();
   return (
     <React.Fragment>
       <SettingsScrollView contentContainerStyle={{ alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
-        <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
+        { state.app.showEnergyData && <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
           <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
           <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
           <TimeButton selected={mode == "WEEK"}  label={ lang("Week")}   callback={() => { setMode("WEEK");  }} />
           <TimeButton selected={mode == "MONTH"} label={ lang("Months")} callback={() => { setMode("MONTH"); }} />
           <TimeButton selected={mode == "YEAR"}  label={ lang("Years")}  callback={() => { setMode("YEAR");  }} />
-        </View>
+        </View> }
         {
           mode !== "LIVE" ?
             <HistoricalEnergyUsageOverview

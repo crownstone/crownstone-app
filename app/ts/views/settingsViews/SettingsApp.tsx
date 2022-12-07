@@ -210,9 +210,30 @@ export class SettingsApp extends LiveComponent<any, any> {
     });
 
     items.push({
+      label: "ENERGY HISTORY (EXPERIMENTAL)",
+      type: 'explanation', alreadyPadded:true
+    });
+    items.push({
+      label: "Show energy history",
+      value: state.app.showEnergyData,
+      type: 'switch',
+      testID: 'energyHistory',
+      icon: <Icon name="fa-bar-chart" size={25} color={colors.darkPurple.hex} />,
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'UPDATE_APP_SETTINGS',
+          data: { showEnergyData: newValue }
+        });
+    }});
+    items.push({
+      label: "Enabling energy history requires an external device uploading energy data from the Crownstone mesh to the cloud. This can be done with a Crownstone USB dongle combined with the Crownstone hub or Home Assistant."
+      + " If you do not have these devices, no data will show up here.",
+      type: 'explanation', alreadyPadded:true
+    });
+
+    items.push({
       label: lang("CUSTOM_CLOUDS"),
       type: 'explanation',
-      alreadyPadded: true
     });
 
     items.push({

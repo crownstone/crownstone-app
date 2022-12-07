@@ -2670,6 +2670,7 @@ export default {
     Messages:                               function() { return "Messages" },
     Settings:                               function() { return "Settings" },
     Energy:                                 function() { return "Energy usage" },
+    Power:                                  function() { return "Power usage" },
     Scenes:                                 function() { return "Scenes" },
   },
   TextInputOverlay:{
@@ -2742,6 +2743,7 @@ export default {
   __UNIVERSAL:{
     Developer_Menu:                         function() { return "Developer Menu" },
     Create:                                 function() { return "Create" },
+    Delete:                                 function() { return "Delete" },
     Cancel:                                 function() { return "Cancel" },
     Clear:                                  function() { return "Clear" },
     Done:                                   function() { return "Done" },

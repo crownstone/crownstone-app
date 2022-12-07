@@ -14,6 +14,8 @@ interface appData {
   activeSphere: null | string,
   notificationToken: null | string,
 
+  showEnergyData: boolean
+
   tapToToggleEnabled: boolean,
   indoorLocalizationEnabled: boolean,
 

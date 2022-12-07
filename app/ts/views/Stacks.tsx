@@ -1,5 +1,6 @@
 import { Languages } from "../Languages";
 import { colors } from "./styles";
+import {core} from "../Core";
 
 export const Stacks = {
 
@@ -43,6 +44,8 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
+    let state = core.store.getState();
+
     return {
       bottomTabs: {
         id: 'bottomTabs',
@@ -102,7 +105,7 @@ export const Stacks = {
                 bottomTab: {
                   id: 'bottomTab_energyUsage',
                   testID: 'bottomTab_energyUsage',
-                  text: Languages.get("Tabs","Energy")(),
+                  text: state.app.showEnergyData ? Languages.get("Tabs","Energy")() : Languages.get("Tabs","Power")(),
                   icon: require('../../assets/images/icons/graph.png'),
                 }
               }

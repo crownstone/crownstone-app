@@ -4,6 +4,8 @@ let defaultState : appData = {
   activeSphere: null,
   notificationToken: null,
 
+  showEnergyData: false,
+
   tapToToggleEnabled: false,
   indoorLocalizationEnabled: true,
 
@@ -79,6 +81,8 @@ export default (state = defaultState, action : DatabaseAction = {}) => {
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);
+
+        newState.showEnergyData              = update(action.data.showEnergyData,                 newState.showEnergyData);
 
         newState.updatedAt                   = getTime(action.data.updatedAt);
         return newState;
