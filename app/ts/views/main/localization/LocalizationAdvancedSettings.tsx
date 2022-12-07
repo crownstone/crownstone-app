@@ -16,6 +16,7 @@ import { SettingsBackground } from "../../components/SettingsBackground";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { core } from "../../../Core";
 import {SettingsScrollView} from "../../components/SettingsScrollView";
+import {FingerprintUtil} from "../../../util/FingerprintUtil";
 
 
 function getLabel(value: LocalizationSmoothingMethod, allValues: {label:string, value: LocalizationSmoothingMethod}[]) : string {
@@ -74,6 +75,22 @@ export function LocalizationAdvancedSettings(props) {
   items.push({label: "You can delete your phone optimizations if you'd like to try them again. This requires other users in your Sphere to help you.",  type:'explanation', below: true});
 
   items.push({label: "LAST RESORT",  type:'explanation'});
+  items.push( {
+    type:  'button',
+    label: "Delete all localization datasets",
+    numberOfLines:2,
+    callback: () => {
+      Alert.alert(
+        "Are you sure?",
+        "Everyone will have to perform the training again. This will not affect people who have phone exclusivity enabled.",
+        [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
+            FingerprintUtil.deleteAllFingerprints();
+          }}], {cancelable: false});
+    }
+  });
+  items.push({label: "You can delete your phone optimizations if you'd like to try them again. This requires other users in your Sphere to help you.",  type:'explanation', below: true});
+
+
   items.push({
     type: 'switch',
     label: "Phone exclusivity",
@@ -83,6 +100,7 @@ export function LocalizationAdvancedSettings(props) {
     }
   })
   items.push({label: "If your localization suffers regardless of all other methods, you can enable phone exclusivity to ensure your phone only uses datasets collected by you, on your phone.\n\nYou may have to re-train your rooms.",  type:'explanation', below: true});
+
 
 
 

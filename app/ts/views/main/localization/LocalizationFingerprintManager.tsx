@@ -45,29 +45,50 @@ export function LocalizationFingerprintManager(props: {sphereId: string, locatio
     let typeArray = (fp.createdOnDeviceType ?? "x_x_x").split("_");
     let fingerprintDeviceIdentifier = Platform.OS === 'ios' ? typeArray[0] : typeArray[2];
 
-    items.push({
-      type:  'button',
-      barHeight: 120,
-      label: `${mapFingerprintTypeToHumanReadable(fp.type)}: ${fp.data.length} point${fp.data.length > 1 ? "s" : ''}`+
-        `\nCollected at: ${xUtil.getDateTimeFormat(fp.updatedAt)}` +
-        (fp.createdByUser       ? `\nCollected by: ${sphere.users[fp.createdByUser]?.firstName + ' ' + sphere.users[fp.createdByUser]?.lastName}` : `\nCollected by: migration`) +
-        (fp.createdOnDeviceType ? `\nCollected on: ${fingerprintDeviceIdentifier}` : `\nCollected on: unknown device`) +
-        `\nScore: ${score}`,
-      numberOfLines:5,
-      callback: () => {
-        Alert.alert(
-          lang("_Are_you_sure___This_cann_header"),
-          lang("_Are_you_sure___This_cann_body"),
-          [{text: lang("_Are_you_sure___This_cann_left"), style: 'cancel'},
-            {
-              text: lang("_Are_you_sure___This_cann_right"), style:'destructive', onPress: () => {
-                core.store.dispatch({type: 'REMOVE_FINGERPRINT_V2', sphereId: props.sphereId, locationId: props.locationId, fingerprintId: fingerprintId});
-              }},
-          ],
-          {cancelable: false}
-        );
-      }
-    });
+    let exclusiveString = '';
+    if (fp.exclusive) {
+      exclusiveString = " (exclusive)";
+    }
+
+    if (FingerprintUtil.canIDeleteThisFingerprint(props.sphereId, props.locationId, fingerprintId)) {
+      items.push({
+        type:  'button',
+        barHeight: 120,
+        label: `${mapFingerprintTypeToHumanReadable(fp.type)}: ${fp.data.length} point${fp.data.length > 1 ? "s" : ''}`+
+          `\nCollected at: ${xUtil.getDateTimeFormat(fp.updatedAt)}` +
+          (fp.createdByUser       ? `\nCollected by: ${sphere.users[fp.createdByUser]?.firstName + ' ' + sphere.users[fp.createdByUser]?.lastName}` : `\nCollected by: migration`) +
+          (fp.createdOnDeviceType ? `\nCollected on: ${fingerprintDeviceIdentifier}` : `\nCollected on: unknown device`) +
+          `\nScore: ${score}` + exclusiveString,
+        numberOfLines:5,
+        callback: () => {
+          Alert.alert(
+            lang("_Are_you_sure___This_cann_header"),
+            lang("_Are_you_sure___This_cann_body"),
+            [{text: lang("_Are_you_sure___This_cann_left"), style: 'cancel'},
+              {
+                text: lang("_Are_you_sure___This_cann_right"), style:'destructive', onPress: () => {
+                  core.store.dispatch({type: 'REMOVE_FINGERPRINT_V2', sphereId: props.sphereId, locationId: props.locationId, fingerprintId: fingerprintId});
+                }},
+            ],
+            {cancelable: false}
+          );
+        }
+      });
+    }
+    else {
+      items.push({
+        type:  'info',
+        barHeight: 120,
+        label: `${mapFingerprintTypeToHumanReadable(fp.type)}: ${fp.data.length} point${fp.data.length > 1 ? "s" : ''}`+
+          `\nCollected at: ${xUtil.getDateTimeFormat(fp.updatedAt)}` +
+          (fp.createdByUser       ? `\nCollected by: ${sphere.users[fp.createdByUser]?.firstName + ' ' + sphere.users[fp.createdByUser]?.lastName}` : `\nCollected by: migration`) +
+          (fp.createdOnDeviceType ? `\nCollected on: ${fingerprintDeviceIdentifier}` : `\nCollected on: unknown device`) +
+          `\nScore: ${score}` + exclusiveString,
+        numberOfLines:5,
+      });
+    }
+
+
   }
 
   if (fingerprintIds.length === 0) {

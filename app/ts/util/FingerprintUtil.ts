@@ -3,8 +3,11 @@ import { Get } from "./GetUtil";
 import DeviceInfo from "react-native-device-info";
 import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
-import {Platform} from "react-native";
+import {Alert, Platform} from "react-native";
 import { TransformUtil } from "./TransformUtil";
+import {Permissions} from "../backgroundProcesses/PermissionManager";
+import {LocalizationUtil} from "./LocalizationUtil";
+import {NavigationUtil} from "./navigation/NavigationUtil";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
@@ -443,5 +446,64 @@ export const FingerprintUtil = {
     return copy;
   },
 
+
+  deleteAllFingerprints() {
+
+  },
+
+  deleteFingerprintsForLocation(sphereId, locationId) {
+    // are there fingerprints created by this user?
+    // let location = Get.location(props.sphereId, props.locationId);
+    // if (!location) { return; }
+    //
+    // let state = core.store.getState();
+    //
+    // let myUserId = Get.userId();
+    // let fingerprints = location.fingerprints.raw;
+    // let ownFingerprintsAvailable = false;
+    // let ownFingerprints = [];
+    // for (let fingerprintId in fingerprints) {
+    //   let fingerprint = fingerprints[fingerprintId];
+    //   if (fingerprint.createdByUser === myUserId) {
+    //     ownFingerprints.push(fingerprintId);
+    //   }
+    // }
+
+    // if (Permissions.inSphere(props.sphereId).canDeleteFingerprints) {
+    //   Alert.alert(
+    //     lang("_Are_you_sure___You_will__header"),
+    //     lang("_Are_you_sure___You_will__body"),
+    //     [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+    //       {
+    //         text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
+    //           LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
+    //           NavigationUtil.back();
+    //         }},
+    //     ],
+    //     {cancelable: false}
+    //   )
+    // }
+    // else {
+      //   if (ownFingerprints.length > 0) {
+      //     Alert.alert(
+      //       "Delete your own datasets?",
+      //       "You do not have permission to delete ALL localization data, but you can delete your own.", [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
+      //         {
+      //           text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
+      //             LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
+      //             NavigationUtil.back();
+      //           }},
+      //       ],
+      //       {cancelable: false}
+      //   }
+
+
+      // Alert.alert("Permission Denied", "You do not have permission to delete localization data.", [{text:"OK"}]);
+    // }
+  },
+
+  canIDeleteThisFingerprint(sphereId, locationId, fingerprintId) : boolean {
+    return true;
+  },
 
 }
