@@ -38,9 +38,9 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   items.push({label: lang("SMOOTHING__REACTION_SPEED"),  type:'explanation'});
   let values : {label:string, value: LocalizationSmoothingMethod}[] = [
     {label: lang("None"),            value: 'NONE'},
-    {label: lang("Last___seconds"),  value: 'SEQUENTIAL_2'},
-    {label: lang("Last___seconds"),  value: 'BEST_OUT_OF_5'},
-    {label: lang("Last____seconds"), value: 'BEST_OUT_OF_10'},
+    {label: lang("Last_2__seconds"),  value: 'SEQUENTIAL_2'},
+    {label: lang("Last_5__seconds"),  value: 'BEST_OUT_OF_5'},
+    {label: lang("Last_10___seconds"), value: 'BEST_OUT_OF_10'},
   ];
 
   items.push({
