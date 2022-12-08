@@ -31,25 +31,25 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
   let finalizationButton;
   let label;
   if (FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(props.sphereId)) {
-    label = "This room can be used for indoor localization once all other rooms are trained!";
+    label = lang("This_room_can_be_used_for");
     finalizationButton = (
       <Button
         backgroundColor={colors.csBlue.hex}
         icon={'c1-locationPin1'}
         iconSize={11}
-        label={ "Train other rooms!"}
+        label={ lang("Train_other_rooms_")}
         callback={() => { NavigationUtil.dismissModal() }}
       />
     );
   }
   else {
-    label = "This room can now be used for indoor localization!";
+    label = lang("This_room_can_now_be_used");
     finalizationButton = (
       <Button
         backgroundColor={colors.csBlue.hex}
         icon={'c1-locationPin1'}
         iconSize={11}
-        label={ "Finalize localization!"}
+        label={ lang("Finalize_localization_")}
         callback={() => { NavigationUtil.dismissModal(); }}
       />
     );
@@ -70,7 +70,7 @@ export function RoomTraining_conclusion(props: { sphereId: string, locationId: s
           {showImprovementSuggestion && <Button
             backgroundColor={colors.blue.hex}
             icon={'ios-play'}
-            label={ "Train in-pocket set"}
+            label={ lang("Train_in_pocket_set")}
             callback={() => {
               NavigationUtil.dismissModal();
               setTimeout(() => {NavigationUtil.launchModal('RoomTraining_inPocket_intro', {sphereId: props.sphereId, locationId: props.locationId});}, 50)

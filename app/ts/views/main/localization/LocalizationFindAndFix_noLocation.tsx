@@ -9,24 +9,14 @@ import { Platform, Vibration, Text, View, TextStyle, ActivityIndicator, Alert } 
 import { LiveComponent } from "../../LiveComponent";
 import { Get } from "../../../util/GetUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { Background } from "../../components/Background";
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
-import KeepAwake from 'react-native-keep-awake';
-import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {Button} from "../../components/Button";
-import {SlideInViewLayoutAnimation} from "../../components/animated/SlideInViewLayoutAnimation";
-import {core} from "../../../Core";
-import { FingerprintCollectorLive } from "../../../localization/fingerprints/FingerprintCollectorLive";
-import { Blur } from "../../components/Blur";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
-import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { NavigationBar } from "../../components/editComponents/NavigationBar";
 import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
-import { LocalizationMonitor } from "../../../localization/LocalizationMonitor";
-import { FingerprintAppender } from "../../../localization/fingerprints/FingerprintAppender";
 
 
 
@@ -45,7 +35,7 @@ export function LocalizationFindAndFix_noLocation(props: { sphereId: sphereId })
       <Text style={styles.explanation}>{ lang("Where_are_you_now_") }</Text>
 
       <NavigationBar
-        label={ locationId === null ? "Pick location" : location.config.name }
+        label={ locationId === null ? lang("Pick_location") : location.config.name }
         callback={() => {
           OverlayUtil.callRoomSelectionOverlay(
             props.sphereId,
@@ -64,7 +54,7 @@ export function LocalizationFindAndFix_noLocation(props: { sphereId: sphereId })
             backgroundColor={colors.csBlue.hex}
             icon={'c1-locationPin1'}
             iconSize={11}
-            label={ " Let's go! "}
+            label={ lang("_Lets_go__")}
             callback={() => {
               Alert.alert(
 lang("_Youre_in_____arguments___header",location.config.name),

@@ -28,7 +28,7 @@ import { ScaledImage } from "../../components/ScaledImage";
 export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, locationId: locationId, type: FingerprintType, componentId: string, minRequiredSamples?: number}, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Locating the ${location.config.name}`, cancel: true});
+    return TopBarUtil.getOptions({title: lang("Locating_the_",location.config.name), cancel: true});
   }
 
   trainingData : FingerprintCollector;
@@ -108,7 +108,7 @@ export class RoomTraining_training extends LiveComponent<{ sphereId: sphereId, l
           <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
             <Button
               backgroundColor={colors.green.hex}
-              label={ "Finish!"}
+              label={ lang("Finish_")}
               callback={() => {
                 this.trainingData.stop();
 
@@ -147,15 +147,15 @@ class TrainingAnimation extends Component<{count: number, requiredAmount: number
       90,
     ]
 
-    let text = "Let's get more!";
+    let text = lang("Lets_get_more_");
     let stars = 0;
     let count = this.props.count - this.props.requiredAmount;
     if (finished) {
-           if (count >= steps[4]) { text = "SO.. MANY..\n DATAPOINTS!"; }
-      else if (count >= steps[3]) { text = "Let's do more!"; }
-      else if (count >= steps[2]) { text = "You're doing\nGREAT!"; }
-      else if (count >= steps[1]) { text = "Make sure you\nget it all!"; }
-      else if (count >= steps[0]) { text = "You're doing\nGREAT!"; }
+           if (count >= steps[4]) { text = lang("SO___MANY___n_DATAPOINTS_"); }
+      else if (count >= steps[3]) { text = lang("Lets_do_more_"); }
+      else if (count >= steps[2]) { text = lang("Youre_doing_nGREAT_"); }
+      else if (count >= steps[1]) { text = lang("Make_sure_you_nget_it_all"); }
+      else if (count >= steps[0]) { text = lang("Youre_doing_nGREAT_"); }
 
       for (let step of steps) {
         if (this.props.count >= this.props.requiredAmount + step) { stars++; }

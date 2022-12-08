@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationAdvancedSettings", key)(a,b,c,d,e);
+  return Languages.get("LocalizationTransform_userSelect", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import { Text, View, Alert, Linking } from "react-native";

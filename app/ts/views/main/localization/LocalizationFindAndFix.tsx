@@ -155,7 +155,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
             {!this.state.fixing && this.state.collectedPoints > 1   &&  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Fixed__mistakes_so_far_",this.state.collectedPoints) }</Text>}
             <Button
               backgroundColor={colors.csBlue.hex}
-              label={ 'Finalize and save' }
+              label={ lang("Finalize_and_save") }
               callback={() => {
                 this.collector.stop();
                 this.collector.store();

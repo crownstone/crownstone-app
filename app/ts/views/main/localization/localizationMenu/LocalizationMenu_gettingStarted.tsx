@@ -22,10 +22,10 @@ import { Text, View } from "react-native";
 export function LocalizationMenu_gettingStarted(props) {
   let items = [];
   let disabled = false;
-  let label = "By teaching the localization where all your rooms are, you can use your location for behaviour!"
+  let label = lang("By_teaching_the_localizat")
   if (!DataUtil.inSphere(props.sphereId)) {
     disabled = true;
-    label = "You have to be in the sphere to setup indoor localization...";
+    label = lang("You_have_to_be_in_the_sph");
   }
 
   items.push({label: lang("LETS_GET_STARTED"),  type:'explanation'});

@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationAdvancedSettings", key)(a,b,c,d,e);
+  return Languages.get("LocalizationTransform_intro", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import { Text, View, Alert, Linking } from "react-native";
@@ -52,7 +52,7 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
         <Button
           backgroundColor={colors.blue.rgba(0.75)}
           icon={'ios-play'}
-          label={ "Next"}
+          label={ lang("Next")}
           callback={() => { NavigationUtil.navigate('LocalizationTransform', {sphereId: props.sphereId, otherUserId: props.userId, otherDeviceId: props.deviceId, deviceString: props.deviceString, isHost:true}); }}
         />
       </SafeAreaView>

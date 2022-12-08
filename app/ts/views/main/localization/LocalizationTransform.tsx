@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LocalizationAdvancedSettings", key)(a,b,c,d,e);
+  return Languages.get("LocalizationTransform", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 
@@ -168,7 +168,7 @@ export class LocalizationTransform extends LiveComponent<
           <WaitingForMeasurement
             title={ lang("Preparing_measurement")}
             explanation={ lang("Place_both_devices_side_by")}
-            phase={"Waiting to start..." }
+            phase={lang("Waiting_to_start___") }
           />
         );
       case "COLLECTION_STARTED":
@@ -178,7 +178,7 @@ export class LocalizationTransform extends LiveComponent<
           <Measurement
             title={ lang("Measuring___")}
             explanation={ "Please wait for the measurement to finish."}
-            phase={"This should take around 20 seconds..." }
+            phase={lang("This_should_take_around__") }
             data={this.state.currentCollection}
           />
         );
@@ -192,7 +192,7 @@ export class LocalizationTransform extends LiveComponent<
             <Button
               backgroundColor={colors.blue.rgba(0.75)}
               icon={'ios-play'}
-              label={ "Finish!"}
+              label={ lang("Finish_")}
               callback={() => { NavigationUtil.dismissModal(); }}
             />
             <View style={{height:30}} />
@@ -209,7 +209,7 @@ export class LocalizationTransform extends LiveComponent<
             <Button
               backgroundColor={colors.blue.rgba(0.75)}
               icon={'ios-play'}
-              label={ "Retry.."}
+              label={ lang("Retry__")}
               callback={() => {
                 if (this.props.isHost) {
                   this.transformManager.destroy();
@@ -328,7 +328,6 @@ function DataVisualization(props : {data: Record<string, rssi[]>}) {
 
   let processedData = TransformUtil.processData(props.data);
 
-  let totalCount = Math.max(1, Object.keys(processedData).length);
   let buckets = [-50,-55,-60,-65,-70,-75,-80,-85,-90,-95];
 
   let bucketedData = fillBuckets(buckets, processedData);
@@ -344,18 +343,17 @@ function DataVisualization(props : {data: Record<string, rssi[]>}) {
 function Bars(props: {data: Record<string, number[]>, buckets: number[]}) {
   let collection = [];
   let totalCount = Math.max(1, Object.keys(props.data).length);
-  console.log("TOTAL COUNT", totalCount, props.data)
   for (let bucket of props.buckets) {
     collection.push(<Bar key={'bucket_'+bucket} count={props.data[bucket].length} totalCount={totalCount} />);
   }
 
 
   let indicators = [
-    "very close",
-    "close",
-    "mid",
-    "far",
-    "very far"
+    lang("very_close"),
+    lang("close"),
+    lang("mid"),
+    lang("far"),
+    lang("very_far")
   ];
 
   let indicatorCollection = [];
@@ -406,8 +404,8 @@ function CollectionStats(props: {stats: {A: TransformStats, B: TransformStats}, 
 
   return (
     <React.Fragment>
-      <Text style={styles.explanation}>{ lang("YOUVE_COLLETED", getPercentageString(youPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
-      <Text style={styles.explanation}>{ lang("OTHER_COLLETED", getPercentageString(otherPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
+      <Text style={styles.explanation}>{ lang("YOUVE_COLLECTED", getPercentageString(youPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
+      <Text style={styles.explanation}>{ lang("OTHER_COLLECTED", getPercentageString(otherPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
     </React.Fragment>
   );
 }

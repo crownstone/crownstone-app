@@ -88,38 +88,38 @@ export class BleStateOverlay extends Component<any, any> {
     if (Platform.OS === 'android') {
       switch (this.state.notificationType) {
         case "poweredOff":
-          return "Bluetooth is turned off.";
+          return lang("Bluetooth_is_turned_off_");
         case "poweredOn":
-          return "Bluetooth is turned on!";
+          return lang("Bluetooth_is_turned_on_");
         case "unauthorized":
         case "manualPermissionRequired":
         default:
-          return "Permissions are missing";
+          return lang("Permissions_are_missing");
       }
     }
 
     if (this.state.type === 'SCANNER') {
       switch (this.state.notificationType) {
         case "poweredOff":
-          return "Bluetooth is turned off.";
+          return lang("Bluetooth_is_turned_off_");
         case "poweredOn":
-          return "Bluetooth is turned on!";
+          return lang("Bluetooth_is_turned_on_");
         case "unauthorized":
         case "manualPermissionRequired":
-          return "I can't use Bluetooth...";
+          return lang("I_cant_use_Bluetooth___");
         default: // "unknown":
-          return "Starting Bluetooth...";
+          return lang("Starting_Bluetooth___");
       }
     }
     else {
       switch (this.state.notificationType) {
         case "notDetermined":
-          return "I don't know yet.."
+          return lang("I_dont_know_yet__")
         case "restricted":
         case "denied":
-          return "I'm not allowed to talk to Crownstones..."
+          return lang("Im_not_allowed_to_talk_to")
         case "authorized":
-          return "All set!"
+          return lang("All_set_")
       }
     }
   }
@@ -128,41 +128,41 @@ export class BleStateOverlay extends Component<any, any> {
     if (Platform.OS === 'android') {
       switch (this.state.notificationType) {
         case "poweredOn":
-          return "Bluetooth is turned on, resuming Crownstone services.";
+          return lang("Bluetooth_is_turned_on__r");
         case "poweredOff":
-          return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
+          return lang("Crownstones_use_Bluetooth");
         case "unauthorized":
-          return "Without permission, the app cannot communicate with the Crownstones correctly.";
+          return lang("Without_permission__the_a");
         case "manualPermissionRequired":
-          return "Without permission, the app cannot communicate with the Crownstones correctly.\n\nYou will have to manually allow the permissions. Go to your phone's settings -> apps -> Crownstone -> Permissions. Set location to \"Allow all the time\", and Nearby devices to \"Allow\".";
+          return lang("Without_permission__the_ap");
         default: // "unknown":
-          return "We are turning on Bluetooth. This should not take long :).";
+          return lang("We_are_turning_on_Bluetoo");
       }
     }
 
     if (this.state.type === 'SCANNER') {
       switch (this.state.notificationType) {
         case "poweredOff":
-          return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
+          return lang("Crownstones_use_Bluetooth_");
         case "poweredOn":
-          return "Bluetooth is turned on, resuming Crownstone services.";
+          return lang("Bluetooth_is_turned_on__re");
         case "unauthorized":
         case "manualPermissionRequired":
-          return "Crownstone is not authorized to use Bluetooth. Please open the settings app on your phone, go to Crownstone in the list of apps and enable the Bluetooth permission.";
+          return lang("Crownstone_is_not_authori");
         default: // "unknown":
-          return "We are turning on Bluetooth. This should not take long :).";
+          return lang("We_are_turning_on_Bluetooth");
       }
     }
     else {
       switch (this.state.notificationType) {
         case "notDetermined":
-          return "Permission dialog will appear soon!";
+          return lang("Permission_dialog_will_ap");
         case "restricted":
-          return "Due to parental restrictions, I can't talk to Crownstones. Please ensure permissions for Bluetooth are granted.";
+          return lang("Due_to_parental_restricti");
         case "denied":
-          return "Permission to broadcast commands to Crownstones has been denied. Please ensure permissions for Bluetooth are granted.";
+          return lang("Permission_to_broadcast_c");
         case "authorized":
-          return "Everything is working great now!";
+          return lang("Everything_is_working_gre");
       }
     }
   }
@@ -178,7 +178,7 @@ export class BleStateOverlay extends Component<any, any> {
             <View style={{flex:1}} />
             <PopupButton
               callback={() => { Bluenet.requestEnableBle() }}
-              label={ "Turn on Bluetooth" }
+              label={ lang("Turn_on_Bluetooth")}
             />
           </React.Fragment>
         );
@@ -188,7 +188,7 @@ export class BleStateOverlay extends Component<any, any> {
             <View style={{flex:1}} />
             <PopupButton
               callback={() => { Bluenet.requestBlePermission() }}
-              label={ "Request permission" }
+              label={ lang("Request_permission") }
             />
           </React.Fragment>
         );
@@ -199,7 +199,7 @@ export class BleStateOverlay extends Component<any, any> {
             <View style={{flex:1}} />
             <PopupButton
               callback={() => { Bluenet.gotoOsAppSettings() }}
-              label={ "Request permission" }
+              label={ lang("Request_permission") }
             />
           </React.Fragment>
         );

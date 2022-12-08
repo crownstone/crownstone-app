@@ -25,7 +25,7 @@ function getLabel(value: LocalizationSmoothingMethod, allValues: {label:string, 
       return val.label;
     }
   }
-  return "unknown";
+  return lang("unknown");
 }
 
 export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
@@ -62,12 +62,12 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   if (Object.keys(state.transforms).length > 0) {
     items.push({
       type: 'button',
-      label: "Delete all phone optimizations",
+      label: lang("Delete_all_phone_optimiza"),
       numberOfLines: 2,
       callback: () => {
         Alert.alert(
-          "Are you sure?",
-          "You'll have to perform the optimizations again.",
+          lang("Are_you_sure_"),
+          lang("Youll_have_to_perform_the"),
           [{ text: lang("Cancel"), style: 'cancel' }, {
             text: lang("Delete"), style: 'destructive', onPress: () => {
               core.store.dispatch({ type: "REMOVE_ALL_TRANSFORMS" });
@@ -90,12 +90,12 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   if (Permissions.inSphere(props.sphereId).canDeleteExternalFingerprints) {
     items.push({
       type: 'button',
-      label: "Delete all localization datasets",
+      label: lang("Delete_all_localization_d"),
       numberOfLines: 2,
       callback: () => {
         Alert.alert(
-          "Are you sure?",
-          "Everyone will have to perform the training again. This will not affect other users who have phone exclusivity enabled.",
+          lang("Are_you_sure_"),
+          lang("Everyone_will_have_to_per"),
           [{ text: lang("Cancel"), style: 'cancel' }, {
             text: lang("Delete"), style: 'destructive', onPress: () => {
               FingerprintUtil.deleteAllFingerprints(props.sphereId);
@@ -112,12 +112,12 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
     if (state.app.localization_onlyOwnFingerprints) {
       items.push( {
         type:  'button',
-        label: "Only delete my datasets",
+        label: lang("Only_delete_my_datasets"),
         numberOfLines:2,
         callback: () => {
           Alert.alert(
-            "Are you sure?",
-            "You will have to train all the rooms again...",
+            lang("Are_you_sure_"),
+            lang("You_will_have_to_train_al"),
             [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
                 FingerprintUtil.deleteAllUsedFingerprints(props.sphereId);
               }}], {cancelable: false});
@@ -129,12 +129,12 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   else if (state.app.localization_onlyOwnFingerprints) {
     items.push( {
       type:  'button',
-      label: "Delete localization datasets",
+      label: lang("Delete_localization_datas"),
       numberOfLines:2,
       callback: () => {
         Alert.alert(
-          "Are you sure?",
-          "You will have to train all the rooms again...",
+          lang("Are_you_sure_"),
+          lang("You_will_have_to_train_all"),
           [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
               FingerprintUtil.deleteAllUsedFingerprints(props.sphereId);
             }}], {cancelable: false});
@@ -148,13 +148,13 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   items.push({label: lang("LAST_RESORT"),  type:'explanation', alreadyPadded: true});
   items.push({
     type: 'switch',
-    label: "Phone exclusivity",
+    label: lang("Phone_exclusivity"),
     value: state.app.localization_onlyOwnFingerprints,
     callback: (newValue) => {
       if (newValue === true) {
         Alert.alert(
-          "Are you sure?",
-          "This will mark all datasets you have trained exclusive to your device.",
+          lang("Are_you_sure_"),
+          lang("This_will_mark_all_datase"),
           [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
               FingerprintUtil.enableExclusivity();
             }}], {cancelable: false});
