@@ -53,17 +53,12 @@ export class LocalizationCoreClass {
 
         if (change.addLocation) {
           // we have a location without fingerprints, disable localization
-          // TODO: check how this handes downloading a location including fingerprints.
-          // this.disableLocalization()
-          // TODO: when do we re-enable it?
+          // we do not have to disable localization since the classifiy will check for missing fingerprints.
           return;
         }
 
         if (change.removeLocation) {
           this.initClassifier();
-          //TODO: check if localization needs to be paused since a location might have been added. In that case, not all locations are trained
-          // and localication needs to be paused.
-          // Another option is that locations have been deleted and we dont have fingerprints anymore.
           return;
         }
 

@@ -187,7 +187,16 @@ export class FingerprintManager {
           FingerprintUtil.processFingerprint(this.sphereId, locationId, fingerprint.id);
         }
       }
+
+      // check all processed fingerprints if the raw fingerprint is missing, if so, remove the processed fingerprint as well.
+      for (let processedFingerprint of Object.values(location.fingerprints.processed)) {
+        if (!location.fingerprints.raw[processedFingerprint.fingerprintId]) {
+          core.store.dispatch({type:"REMOVE_PROCESSED_FINGERPRINT", sphereId: this.sphereId, locationId: locationId, fingerprintProcessedId: processedFingerprint.id});
+        }
+      }
     }
+
+
   }
 
 

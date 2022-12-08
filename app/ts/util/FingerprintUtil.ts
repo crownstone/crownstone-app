@@ -127,29 +127,14 @@ export const FingerprintUtil = {
   },
 
   canThisFingerprintBeUsed(fingerprint: FingerprintData) : boolean {
-    let typeArray = (fingerprint.createdOnDeviceType ?? "x_x_x").split("_");
-
-    // the identifier differs per OS, on iOS the deviceID is more relevant, on Android the getModel is more relevant.
-    let currentDeviceIdentifier     = DeviceInfo.getDeviceId();
-    let fingerprintDeviceIdentifier = typeArray[0];
-
     let phoneExclusivity = core.store.getState().app.localization_onlyOwnFingerprints;
-    if (phoneExclusivity) {
+    if (phoneExclusivity || fingerprint.exclusive) {
       if (!fingerprint.createdByUser)       { return false; }
       if (!fingerprint.createdOnDeviceType) { return false; }
 
-      let currentUserId = core.store.getState().user.userId;
-      if (currentUserId !== fingerprint.createdByUser) { return false }
-
-      if (currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
-        return false;
-      }
-    }
-    else {
       // if there is a fingerprint that is exclusive, but not to your phone, do not use it.
-      if (fingerprint.exclusive === true && fingerprint.createdOnDeviceType && currentDeviceIdentifier !== fingerprintDeviceIdentifier) {
-        return false;
-      }
+      if (fingerprint.createdByUser       !== Get.userId())                               { return false; }
+      if (fingerprint.createdOnDeviceType !== FingerprintUtil.getDeviceTypeDescription()) { return false; }
     }
 
     return true;
@@ -217,7 +202,6 @@ export const FingerprintUtil = {
    *   - If mulitple trainingsets are used, the average of the quality scores will be used weighed by the number of datapoints. This will give a better average.
    *
    * If the score (partially) falls below 60%, discard the trainingset upon the next training of the room. If the total quality is above 60%, add the new set to the previous ones.
-   * TODO: DECIDE: If there are multiple sets for a location, automatically remove the worst one.
    *
    * @param sphereId
    * @param locationId
@@ -346,7 +330,19 @@ export const FingerprintUtil = {
     }
 
     let processedFingerprint = FingerprintUtil._processFingerprint(sphereId, locationId, fingerprintRawId);
-    if (!processedFingerprint) { return; }
+    if (!processedFingerprint) {
+      // check if there was a processed fingerprint for this raw fingerprint before, if so, delete it.
+      let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprintRawId);
+      if (processedFingerprint) {
+        core.store.dispatch({
+          type: "REMOVE_PROCESSED_FINGERPRINT",
+          sphereId: sphereId,
+          locationId: locationId,
+          fingerprintProcessedId: processedFingerprint.id
+        });
+      }
+      return;
+    }
 
     if (!alreadyHasProcessed) {
       processedId = xUtil.getUUID();
@@ -447,63 +443,106 @@ export const FingerprintUtil = {
   },
 
 
-  deleteAllFingerprints() {
+  deleteAllFingerprints(sphereId: sphereId) {
+    let sphere = Get.sphere(this.sphereId);
+    let actions = [];
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprintId in location.fingerprints.raw) {
+        if (FingerprintUtil.canIDeleteThisFingerprint(sphereId, locationId, fingerprintId)) {
+          actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId });
+        }
+      }
+    }
 
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
   },
 
-  deleteFingerprintsForLocation(sphereId, locationId) {
-    // are there fingerprints created by this user?
-    // let location = Get.location(props.sphereId, props.locationId);
-    // if (!location) { return; }
-    //
-    // let state = core.store.getState();
-    //
-    // let myUserId = Get.userId();
-    // let fingerprints = location.fingerprints.raw;
-    // let ownFingerprintsAvailable = false;
-    // let ownFingerprints = [];
-    // for (let fingerprintId in fingerprints) {
-    //   let fingerprint = fingerprints[fingerprintId];
-    //   if (fingerprint.createdByUser === myUserId) {
-    //     ownFingerprints.push(fingerprintId);
-    //   }
-    // }
+  deleteAllUsedFingerprints(sphereId: sphereId) {
+    let sphere = Get.sphere(this.sphereId);
+    let actions = [];
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprintId in location.fingerprints.raw) {
+        if (FingerprintUtil.canThisFingerprintBeUsed(location.fingerprints.raw[fingerprintId])) {
+          actions.push({type:"REMOVE_FINGERPRINT_V2", sphereId: sphereId, locationId: locationId, fingerprintId: fingerprintId });
+        }
+      }
+    }
 
-    // if (Permissions.inSphere(props.sphereId).canDeleteFingerprints) {
-    //   Alert.alert(
-    //     lang("_Are_you_sure___You_will__header"),
-    //     lang("_Are_you_sure___You_will__body"),
-    //     [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
-    //       {
-    //         text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
-    //           LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
-    //           NavigationUtil.back();
-    //         }},
-    //     ],
-    //     {cancelable: false}
-    //   )
-    // }
-    // else {
-      //   if (ownFingerprints.length > 0) {
-      //     Alert.alert(
-      //       "Delete your own datasets?",
-      //       "You do not have permission to delete ALL localization data, but you can delete your own.", [{text: lang("_Are_you_sure___You_will__left"), style: 'cancel'},
-      //         {
-      //           text: lang("_Are_you_sure___You_will__right"), style:'destructive', onPress: () => {
-      //             LocalizationUtil.deleteAllLocalizationData(props.sphereId, props.locationId);
-      //             NavigationUtil.back();
-      //           }},
-      //       ],
-      //       {cancelable: false}
-      //   }
-
-
-      // Alert.alert("Permission Denied", "You do not have permission to delete localization data.", [{text:"OK"}]);
-    // }
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
   },
+
 
   canIDeleteThisFingerprint(sphereId, locationId, fingerprintId) : boolean {
+    let state = core.store.getState();
+    let fingerprint = Get.fingerprint(sphereId, locationId, fingerprintId);
+
+    // check if the user has permission to delete fingerprints they did not create
+    let hasPermission          = Permissions.inSphere(sphereId).canDeleteExternalFingerprints;
+    let exclusivityEnabled     = state.app.localization_onlyOwnFingerprints;
+    let fingerprintIsExclusive = fingerprint.exclusive;
+    let userIsKnown            = fingerprint.createdByUser !== null;
+    let deviceIsKnown          = fingerprint.createdOnDeviceType !== null;
+    let createdByMe            = fingerprint.createdByUser === Get.userId();
+    let createdOnThisPhone     = fingerprint.createdOnDeviceType === FingerprintUtil.getDeviceTypeDescription();
+
+    // anyone can delete a migrated fingerprint (which is defined by user and device being null).
+    // these are not shared via the cloud.
+    if (!userIsKnown || !deviceIsKnown) {
+      return true;
+    }
+
+    // if the user has permission to delete other people's fingerprints, they can delete this one as long as it is not exclusive to another user
+    if (hasPermission) {
+      if (fingerprintIsExclusive && (!createdByMe || !createdOnThisPhone)) {
+        return false;
+      }
+      return true;
+    }
+
+    // if you have exclusivity enabled (and don't have permission), you can only delete fingerprints you created on this phone.
+    if (exclusivityEnabled) {
+      if (!createdByMe || !createdOnThisPhone) {
+        return false;
+      }
+      return true;
+    }
+
+    // if you do not have exclusivity enabled, and don't have the permission, you can only delete fingerprints you created.
+    if (!createdByMe) {
+      return false;
+    }
+
     return true;
   },
+
+  enableExclusivity() {
+    let actions : DatabaseAction[] = [];
+    // find all raw fingerprints that have been created by me and mark them as exclusive.
+    let state = core.store.getState();
+    for (let sphereId in state.spheres) {
+      let sphere = state.spheres[sphereId];
+      for (let locationId in sphere.locations) {
+        let location = sphere.locations[locationId];
+        for (let fingerprintId in location.fingerprints.raw) {
+          let fingerprint = location.fingerprints.raw[fingerprintId];
+          if (fingerprint.createdByUser === Get.userId() && fingerprint.createdOnDeviceType === FingerprintUtil.getDeviceTypeDescription()) {
+            actions.push({type: "UPDATE_FINGERPRINT_V2", sphereId, locationId, fingerprintId, data: {exclusive: true}});
+          }
+        }
+      }
+    }
+
+    core.store.batchDispatch(actions);
+
+    // this is done after the batch dispatch to make sure the processed fingerprints are re-iterated.
+    // the order is important here.
+    core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_onlyOwnFingerprints: true }});
+  }
 
 }

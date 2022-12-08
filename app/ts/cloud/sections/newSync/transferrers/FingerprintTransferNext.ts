@@ -2,8 +2,8 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { CLOUD } from "../../../cloudAPI";
 import { core } from "../../../../Core";
-import {Get} from "../../../../util/GetUtil";
-import {DataUtil} from "../../../../util/DataUtil";
+import { Get } from "../../../../util/GetUtil";
+import { DataUtil } from "../../../../util/DataUtil";
 import { FingerprintUtil } from "../../../../util/FingerprintUtil";
 
 

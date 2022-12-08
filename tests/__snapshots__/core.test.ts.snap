@@ -14,6 +14,7 @@ exports[`Using core in tests 1`] = `
     "localization_temporalSmoothingMethod": "NONE",
     "migratedDataToVersion": null,
     "notificationToken": null,
+    "showEnergyData": false,
     "tapToToggleEnabled": false,
     "updatedAt": 1,
   },

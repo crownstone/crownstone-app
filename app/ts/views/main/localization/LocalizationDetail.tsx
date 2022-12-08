@@ -54,37 +54,8 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
     },
   })
 
-  let deleteButton = [
-    {
-      type:  'button',
-      label: lang("DELETE_ALL_COLLECTED_DATA"),
-      numberOfLines:3,
-      callback: () => {
-        FingerprintUtil.deleteFingerprintsForLocation(props.sphereId, props.locationId);
-      }
-    },
-    {
-      type: 'explanation', label: lang("Careful__you_will_need_to"), below: true
-    }];
-
-  if (Object.keys(state.transforms).length > 0) {
-    deleteButton.push({
-      type:  'button',
-      label: lang("DELETE_ALL_TRANSFORMS"),
-      numberOfLines:2,
-      callback: () => {
-        Alert.alert(
-          "Are you sure?",
-          "You'll have to perform the optimizations again.",
-          [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
-              core.store.dispatch({type: "REMOVE_ALL_TRANSFORMS"});
-            }}], {cancelable: false});
-      }
-    });
-  }
-
-
   let advancedButton = [
+    { type: 'explanation', label: lang("ADVANCED") },
     {
       type:  'button',
       label: lang("Manage_fingerprints"),
@@ -93,9 +64,7 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
         NavigationUtil.launchModal("LocalizationFingerprintManager", {sphereId: props.sphereId, locationId: props.locationId});
       }
     },
-    {
-      type: 'explanation', label: lang("DEV__Delete_individual_fi"), below: true
-    }];
+    { type: 'explanation', label: lang("DEV__Delete_individual_fi"), below: true}];
 
 
   return (
@@ -116,10 +85,7 @@ export function LocalizationDetail(props: {sphereId: string, locationId: string}
         { FingerprintUtil.isScoreGoodEnough(score) &&  <Text style={styles.boldLeftExplanation}>{ lang("Further_improve_localizat") }</Text> }
         { FingerprintUtil.isScoreGoodEnough(score) &&  <ListEditableItems items={items} /> }
 
-        <View style={{height:25}} />
-        <Text style={styles.boldLeftExplanation}>{ lang("Permanently_delete_all_lo") }</Text>
-        <ListEditableItems items={deleteButton} />
-        { <ListEditableItems items={advancedButton} /> }
+        <ListEditableItems items={advancedButton} />
       </SettingsScrollView>
 
     </SettingsBackground>

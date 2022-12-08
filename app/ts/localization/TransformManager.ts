@@ -322,7 +322,7 @@ export class TransformCollection {
   async submitDataCollection() {
     try {
       let averagedData = this.processData();
-      await CLOUD.postTransformCollectionSessionData(this.sphereId, this.transformId, this.collectionId, averagedData);
+      await CLOUD.postTransformCollectionSessionData(this.sphereId, this.transformId, this.collectionId, DeviceInfo.getDeviceId(), averagedData);
     }
     catch (err: any) {
       LOGw.info("TransformManager: Failed to submit data collection", err);

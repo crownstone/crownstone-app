@@ -354,6 +354,7 @@ exports[`Check if fingerprints are syncing 2`] = `
     "localization_temporalSmoothingMethod": "NONE",
     "migratedDataToVersion": null,
     "notificationToken": null,
+    "showEnergyData": false,
     "tapToToggleEnabled": false,
     "updatedAt": 1,
   },
@@ -944,28 +945,4 @@ exports[`Check if messages are preparing their sync request payload 1`] = `
     },
   },
 }
-`;
-
-exports[`Check if messages can handle the cloud's sync reply: creationActions 1`] = `
-[
-  {
-    "data": {
-      "cloudId": "dbId:MessageV2Repository:1",
-      "content": "hello",
-      "everyoneInSphere": false,
-      "includeSenderInEveryone": false,
-      "recipients": {
-        "dbId:UserRepository:3": true,
-      },
-      "senderId": undefined,
-      "sentAt": 0,
-      "triggerEvent": "enter",
-      "triggerLocationId": undefined,
-      "updatedAt": 0,
-    },
-    "messageId": "uuid2008-2009",
-    "sphereId": "sphere_uuid2004-2005",
-    "type": "ADD_MESSAGE",
-  },
-]
 `;

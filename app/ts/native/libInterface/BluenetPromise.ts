@@ -7,8 +7,6 @@ import { BugReportUtil } from "../../util/BugReportUtil";
 import {BridgeMock} from "../../backgroundProcesses/testing/BridgeMock";
 import {BridgeConfig} from "./BridgeConfig";
 
-
-
 let OPEN_PROMISES = {};
 
 export const BluenetPromise : any = function(functionName) : Promise<void>  {

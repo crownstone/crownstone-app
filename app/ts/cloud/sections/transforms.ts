@@ -65,11 +65,11 @@ export const transforms = {
     );
   },
 
-  postTransformCollectionSessionData: function (localSphereId: string, transformId: uuid, collectionId: uuid, data: MeasurementMap, background = true) : Promise<uuid>{
+  postTransformCollectionSessionData: function (localSphereId: string, transformId: uuid, collectionId: uuid, deviceId: string, data: MeasurementMap, background = true) : Promise<uuid>{
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'POST',
-      CloudAddresses.cloud_v2 + `spheres/${cloudSphereId}/transform/${transformId}/collection/${collectionId}/data`,
+      CloudAddresses.cloud_v2 + `spheres/${cloudSphereId}/transform/${transformId}/collection/${collectionId}/data?deviceId=${deviceId}`,
       {data: data, background: background},
       'body'
     );

@@ -17,5 +17,5 @@ test("Using core in tests", async () => {
   collection.collection = {
     "test": [1,23,4,5,6]
   }
-  expect(collection.processData()).toStrictEqual({'test':7.8})
+  expect(collection.processData()).toStrictEqual({'test':5})
 })

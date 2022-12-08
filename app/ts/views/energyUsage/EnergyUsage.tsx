@@ -28,11 +28,11 @@ import { core } from "../../Core";
 
 
 export function EnergyUsage(props) {
-  useDatabaseChange(['updateActiveSphere']);
-
+  useDatabaseChange(['updateActiveSphere','changeAppSettings']);
+  let state = core.store.getState();
   return (
     <BackgroundCustomTopBarNavbar testID={'energyUsageTab'}>
-      <EnergyUsageContent sphereId={Get.activeSphereId()}/>
+      <EnergyUsageContent sphereId={Get.activeSphereId()} showEnergyData={state.app.showEnergyData} />
     </BackgroundCustomTopBarNavbar>
   );
 }
@@ -57,12 +57,18 @@ async function checkUploadPermission(sphereId) {
 //   "timestamp": "2022-02-04T23:00:00.000Z",
 // }
 
-function EnergyUsageContent(props) {
-  useDatabaseChange(['changeSphereFeatures','changeAppSettings']);
-
+function EnergyUsageContent(props : {sphereId: string, showEnergyData: boolean}) {
+  useDatabaseChange(['changeSphereFeatures']);
   let [checkedUploadPermission, setCheckedUploadPermission] = useState<boolean>(false);
   let [hasUploadPermission,     setHasUploadPermission]     = useState<boolean>(false);
   let [mode, setMode]                                       = useState<GRAPH_TYPE>("LIVE");
+
+  useEffect(() => {
+    if (props.showEnergyData === false && mode !== "LIVE") {
+      setMode("LIVE");
+    }
+  },[props.showEnergyData])
+
 
   useEffect(() => {
     setCheckedUploadPermission(false);
@@ -89,11 +95,11 @@ function EnergyUsageContent(props) {
     setHasUploadPermission(permission);
   }
 
-  let state = core.store.getState();
+
   return (
     <React.Fragment>
       <SettingsScrollView contentContainerStyle={{ alignItems:'center', justifyContent:"center", paddingBottom:2*tabBarHeight}}>
-        { state.app.showEnergyData && <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
+        { props.showEnergyData && <View style={{flexDirection:'row', justifyContent:'space-evenly', width: screenWidth}}>
           <TimeButton selected={mode == "LIVE"}  label={ lang("LIVE")}   callback={() => { setMode("LIVE");  }} />
           <TimeButton selected={mode == "DAY"}   label={ lang("Day")}    callback={() => { setMode("DAY");   }} />
           <TimeButton selected={mode == "WEEK"}  label={ lang("Week")}   callback={() => { setMode("WEEK");  }} />

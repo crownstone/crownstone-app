@@ -321,7 +321,7 @@ function Measurement({title, explanation, phase, data}) {
 
 
 function DataVisualization(props : {data: Record<string, rssi[]>}) {
-  let amountOfCrownstones = Object.keys(props.data).length;
+  let numberOfCronwstones = Object.keys(props.data).length;
 
   let vector = [];
   for (let ibeaconId in props.data) {
@@ -358,7 +358,7 @@ function DataVisualization(props : {data: Record<string, rssi[]>}) {
 
   return (
     <View style={{flex:1, width:screenWidth, justifyContent:'center', alignItems:'center', padding:15}}>
-      <Text>{"Amount of Crownstones: " + amountOfCrownstones}</Text>
+      <Text>{"Number of Crownstones: " + numberOfCronwstones}</Text>
       <View style={{flexDirection:'row', flex:1}}>
         <Bar count={bucketedData[0].data.length} totalCount={totalCount} label={"very close"}/>
         <Bar count={bucketedData[1].data.length} totalCount={totalCount} label={"close"}/>
