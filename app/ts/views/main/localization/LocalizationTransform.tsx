@@ -84,7 +84,7 @@ export class LocalizationTransform extends LiveComponent<
       this.setState({currentCollection: collection, currentCollectionDataCount: dataCount});
     }
     this.transformManager.collectionFinished = (recommendation, collectionsFinished, stats) => {
-      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished, collectionStats: stats});
+      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished, collectionStats: stats, currentCollection: {}});
     }
   }
 
@@ -119,7 +119,7 @@ export class LocalizationTransform extends LiveComponent<
               <PreparingMeasurement
                 isHost={this.props.isHost}
                 title={"Next measurement"}
-                explanation={"Great! Now repeat this in a different spot, a bit close to where your Crownstones are!"}
+                explanation={"Great! Now repeat this in a different spot, more data from being close to Crownstones is required!"}
                 stats={this.state.collectionStats}
                 callback={() => {
                   this.transformManager.requestCollectionSession();
@@ -143,7 +143,7 @@ export class LocalizationTransform extends LiveComponent<
               <PreparingMeasurement
                 isHost={this.props.isHost}
                 title={"Next measurement"}
-                explanation={"Great! Now repeat this in a different spot, a bit further away from where your Crownstones are!"}
+                explanation={"Great! Now repeat this in a different spot, more data from being far away from Crownstones is required!"}
                 stats={this.state.collectionStats}
                 callback={() => {
                   this.transformManager.requestCollectionSession();
@@ -154,7 +154,7 @@ export class LocalizationTransform extends LiveComponent<
             return (
               <PreparingMeasurement
                 title={"Preparing measurement"}
-                explanation={"Place both devices side by side on a flat surface, 10 cm apart from eachother."}
+                explanation={"Place both devices side by side on a flat surface, 10 cm apart from eachother. Step back after pressing the button."}
                 isHost={this.props.isHost}
                 stats={null}
                 callback={() => {
@@ -272,8 +272,8 @@ function PreparingMeasurement({isHost, title, explanation, callback, stats}) {
         }
       <View style={{height: 30}}/>
       <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={778} sourceHeight={524} targetWidth={0.8*screenWidth}/>
-      {/*{ stats !== null  && <View style={{height: 30}}/> }*/}
-      {/*{ stats !== null  && <CollectionStats stats={stats} isHost={isHost} /> }*/}
+      { stats !== null  && <View style={{height: 30}}/> }
+      { stats !== null  && <CollectionStats stats={stats} isHost={isHost} /> }
       <View style={{flex: 1}}/>
       {isHost ?
         <Button
@@ -323,60 +323,72 @@ function Measurement({title, explanation, phase, data}) {
 function DataVisualization(props : {data: Record<string, rssi[]>}) {
   let numberOfCronwstones = Object.keys(props.data).length;
 
-  let vector = [];
-  for (let ibeaconId in props.data) {
-    for (let rssi of props.data[ibeaconId]) {
-      vector.push([rssi, ibeaconId]);
-    }
-  }
-  let buckets = [-10,-20,-30,-40,-50,-60,-70,-80,-90,-100];
-  let bucketedData = TransformUtil.fillBuckets(buckets, vector);
-  // all buckets smaller than -60 will be combined in the -50 bucket
-  let collection = [];
-  for (let bucketEntry of bucketedData) {
-    if (bucketEntry.x > -60) {
-      collection = collection.concat(bucketEntry.data);
-    }
-  }
+  let processedData = TransformUtil.processData(props.data);
 
-  // insert the collection data in the -50 bucket
-  bucketedData[buckets.indexOf(-50)].data = collection;
-  bucketedData = bucketedData.slice(buckets.indexOf(-50));
+  let totalCount = Math.max(1, Object.keys(processedData).length);
+  let buckets = [-50,-55,-60,-65,-70,-75,-80,-85,-90,-95];
 
-  // similarly, all buckets larger than -80 will be combined in the -90 bucket
-  collection = [];
-  for (let bucketEntry of bucketedData) {
-    if (bucketEntry.x < -80) {
-      collection = collection.concat(bucketEntry.data);
-    }
-  }
-
-  bucketedData[4].data = collection;
-  bucketedData.pop();
-
-  let totalCount = Math.max(40,vector.length);
+  let bucketedData = fillBuckets(buckets, processedData);
 
   return (
     <View style={{flex:1, width:screenWidth, justifyContent:'center', alignItems:'center', padding:15}}>
       <Text>{"Number of Crownstones: " + numberOfCronwstones}</Text>
-      <View style={{flexDirection:'row', flex:1}}>
-        <Bar count={bucketedData[0].data.length} totalCount={totalCount} label={"very close"}/>
-        <Bar count={bucketedData[1].data.length} totalCount={totalCount} label={"close"}/>
-        <Bar count={bucketedData[2].data.length} totalCount={totalCount} label={"mid"}/>
-        <Bar count={bucketedData[3].data.length} totalCount={totalCount} label={"far"}/>
-        <Bar count={bucketedData[4].data.length} totalCount={totalCount} label={"very far"}/>
-      </View>
+      <Bars data={bucketedData} buckets={buckets}/>
     </View>
   )
 }
 
-function Bar({count, totalCount, label}) {
+function Bars(props: {data: Record<string, number[]>, buckets: number[]}) {
+  let collection = [];
+  let totalCount = Math.max(1, Object.keys(props.data).length);
+  console.log("TOTAL COUNT", totalCount, props.data)
+  for (let bucket of props.buckets) {
+    collection.push(<Bar key={'bucket_'+bucket} count={props.data[bucket].length} totalCount={totalCount} />);
+  }
+
+
+  let indicators = [
+    "very close",
+    "close",
+    "mid",
+    "far",
+    "very far"
+  ];
+
+  let indicatorCollection = [];
+  for (let indicator of indicators) {
+    indicatorCollection.push(<Indicator key={'indicator' + indicator} label={indicator} />);
+  }
+  return (
+    <View style={{flex:1,width:screenWidth, paddingHorizontal:5}}>
+      <View style={{flexDirection:'row', flex:1}}>{collection}</View>
+      <View style={{flexDirection:'row', flex:1, maxHeight:20}}>{indicatorCollection}</View>
+    </View>
+  );
+}
+
+function Indicator({label}) {
+  return (
+    <View style={{flex:1, height: 20, paddingHorizontal:3, paddingTop:1}}>
+      <Text style={{fontSize:10, color: colors.black.rgba(0.2), alignSelf:'center'}}>{label}</Text>
+    </View>
+  );
+}
+
+
+function Bar({count, totalCount}) {
   let ratio = count / totalCount;
+  if (count === 0) {
+    ratio = 0.02;
+  }
   return (
     <View style={{flex:1, paddingHorizontal:3}}>
       { 1-ratio > 0 && <View style={{flex:1-ratio, backgroundColor:'transparent'}} /> }
-      { ratio   > 0 && <View style={{flex:ratio,   backgroundColor:colors.csBlue.rgba(0.5), alignItems:'center', justifyContent:'flex-start', overflow:'hidden', borderRadius: 3}} /> }
-      <Text style={{fontSize:10, color: colors.black.rgba(0.2), alignSelf:'center'}}>{label}</Text>
+      { ratio   > 0 && (
+        <View style={{flex:ratio,   backgroundColor:colors.csBlue.rgba(0.5), alignItems:'center', justifyContent:'flex-start', overflow:'hidden', borderRadius: 3}}>
+          { count > 0 && <Text style={{color:'white', fontSize:10, fontWeight:'bold', paddingTop:2}}>{count}</Text> }
+        </View>
+      )}
     </View>
   );
 }
@@ -400,4 +412,21 @@ function CollectionStats(props: {stats: {A: TransformStats, B: TransformStats}, 
 function getPercentageString(value, total) {
   let percentage = Math.min(value/total, 1);
   return Math.round(percentage*100) + "%";
+}
+
+function fillBuckets(buckets: number[], data: MeasurementMap) : Record<string, number[]> {
+  let bucketedData : Record<string, number[]> = {};
+  let bucketSize = buckets[0] - buckets[1]; // (-50) - (-55) = 5
+  for (let i = 0; i < buckets.length; i++) {
+    let bucket = buckets[i];
+    bucketedData[bucket] = [];
+    for (let id in data) {
+      let rssi = data[id];
+      if (rssi <= bucket && rssi > bucket - bucketSize) {
+        bucketedData[bucket].push(rssi);
+      }
+    }
+  }
+
+  return bucketedData;
 }

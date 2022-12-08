@@ -238,4 +238,31 @@ export const TransformUtil = {
     }
     return null;
   },
+
+
+  processData(collection: Record<string, rssi[]>) : MeasurementMap {
+    let averageCollection : MeasurementMap = {};
+    // Calculate average as iBeacon spec calibrates the rssi at one meter:
+    // Remove the top 10%, remove the bottom 20%, and average the remaining values
+
+    for (let beaconId in collection) {
+      let beaconSet = [...collection[beaconId]];
+      // ignore beacon if we have not enough data
+      if (beaconSet.length < 3) { continue; }
+      beaconSet.sort((a,b) => { return b-a; });
+
+      // the first indices are the closest Crownstones.
+      let startIndex = Math.ceil(beaconSet.length / 5) // remove the top 20%
+      let endIndex   = Math.floor(beaconSet.length - (beaconSet.length / 10));
+      let sliced     = beaconSet.slice(startIndex, endIndex);
+
+      let sum = 0;
+      for (let sample of sliced) {
+        sum += sample;
+      }
+      let average = sum / sliced.length;
+      averageCollection[beaconId] = average;
+    }
+    return averageCollection;
+  }
 }

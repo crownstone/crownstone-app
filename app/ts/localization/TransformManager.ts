@@ -5,6 +5,7 @@ import {LOGw} from "../logging/Log";
 import { NATIVE_BUS_TOPICS } from "../Topics";
 import {Scheduler} from "../logic/Scheduler";
 import {Languages} from "../Languages";
+import { TransformUtil } from "../util/TransformUtil";
 
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -73,7 +74,6 @@ export class TransformManager {
         this.setSessionState("AWAITING_INVITATION_ACCEPTANCE");
         break
       case "sessionReady": ;
-        console.log("DESTROY THE INVITATION TIMEOUT")
         this.waitForInvitationTimeout();
         this.setSessionState("SESSION_WAITING_FOR_COLLECTION_INITIALIZATION");
         break
@@ -85,7 +85,6 @@ export class TransformManager {
         this._storeData(event.result);
         break
       case "collectionSessionReady":
-        this.waitForInvitationTimeout();
         this.setSessionState("COLLECTION_STARTED");
         this.startCollectionSession(event.collectionId)
         break;
@@ -130,11 +129,12 @@ export class TransformManager {
     let userA = quality.userA;
     let userB = quality.userB;
 
+
     let buckets = [ -50, -55, -60, -65, -70, -75, -80, -85, -90 ];
 
     let closeBuckets = [-50, -55, -60, -65];
-    let mediumBuckets = [-70, -75, -80];
-    let farBuckets = [-85, -90];
+    let mediumBuckets = [-70, -75];
+    let farBuckets = [-80, -85, -90];
 
     // check how many datapoints are in the close buckets
     let closeCountA = 0;
@@ -296,7 +296,7 @@ export class TransformCollection {
   transformId:  uuid;
   collectionId: uuid;
 
-  collection : Record<string, number[]> = {};
+  collection : Record<string, rssi[]> = {};
 
   dataCount = 0;
 
@@ -321,18 +321,18 @@ export class TransformCollection {
 
   async submitDataCollection() {
     try {
-      let averagedData = this.processData();
+      let averagedData = TransformUtil.processData(this.collection);
       await CLOUD.postTransformCollectionSessionData(this.sphereId, this.transformId, this.collectionId, DeviceInfo.getDeviceId(), averagedData);
     }
     catch (err: any) {
       LOGw.info("TransformManager: Failed to submit data collection", err);
       this.errorHandler(err, err.message);
+      this.destroy();
     }
   }
 
   collectData(data: ibeaconPackage[]) {
     let hasData = false;
-    let conut = 0
     for (let datapoint of data) {
       if (this.sphereId !== datapoint.referenceId) { continue; }
       if (this.collection[datapoint.id] === undefined) {
@@ -340,7 +340,6 @@ export class TransformCollection {
       }
       if (datapoint.rssi < 0 && datapoint.rssi > -100) {
         this.collection[datapoint.id].push(datapoint.rssi);
-        conut++;
         hasData = true;
       }
     }
@@ -349,38 +348,20 @@ export class TransformCollection {
       this.dataCount++;
     }
 
+
     this.dataListener(this.collection, this.dataCount)
 
-    if (this.dataCount == 20) {
+    let enoughData = true;
+    for (let id in this.collection) {
+      if (this.collection[id].length < 10) {
+        enoughData = false;
+      }
+    }
+
+    if (this.dataCount == 20 || this.dataCount >= 10 && enoughData) {
       this.submitDataCollection();
       this.destroy();
     }
-  }
-
-  processData() : MeasurementMap {
-    let averageCollection : MeasurementMap = {};
-    // Calculate average as iBeacon spec calibrates the rssi at one meter:
-    // Remove the top 10%, remove the bottom 20%, and average the remaining values
-
-    for (let beaconId in this.collection) {
-      let beaconSet = [...this.collection[beaconId]];
-      // ignore beacon if we have not enough data
-      if (beaconSet.length < 3) { continue; }
-      beaconSet.sort((a,b) => { return b-a; });
-
-      // the first indices are the closest Crownstones.
-      let startIndex = Math.ceil(beaconSet.length / 5) // remove the top 20%
-      let endIndex   = Math.floor(beaconSet.length - (beaconSet.length / 10));
-      let sliced     = beaconSet.slice(startIndex, endIndex);
-
-      let sum = 0;
-      for (let sample of sliced) {
-        sum += sample;
-      }
-      let average = sum / sliced.length;
-      averageCollection[beaconId] = average;
-    }
-    return averageCollection;
   }
 
   destroy() {
