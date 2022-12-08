@@ -1,6 +1,8 @@
 import {expect, test} from '@jest/globals';
 import {resetMocks} from "./__testUtil/mocks/suite.mock";
 import {TransformCollection} from "../app/ts/localization/TransformManager";
+import { FingerprintUtil } from "../app/ts/util/FingerprintUtil";
+import { TransformUtil } from "../app/ts/util/TransformUtil";
 
 
 
@@ -17,5 +19,5 @@ test("Using core in tests", async () => {
   collection.collection = {
     "test": [1,23,4,5,6]
   }
-  expect(collection.processData()).toStrictEqual({'test':5})
+  expect(TransformUtil.processData(collection.collection)).toStrictEqual({'test':5})
 })

@@ -21,7 +21,7 @@ import { LocalizationMenu_gettingStarted }       from "./localizationMenu/Locali
 
 export function LocalizationMenu(props) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeFingerprint','changeSphereState', 'changeLocations', 'changeLocalizationAppSettings', 'changeProcessedFingerprint','changeTransforms']);
+  useDatabaseChange(['changeFingerprint','changeSphereState', 'changeLocations', 'changeLocalizationAppSettings', 'changeProcessedFingerprint', 'changeTransforms']);
 
   if (!DataUtil.inSphere(props.sphereId)) {
     return <LocalizationMenu_notInSphere {...props} />;
