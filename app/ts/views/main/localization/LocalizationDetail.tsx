@@ -147,7 +147,7 @@ function Improvements(props: {sphereId: string, locationId: string, score: numbe
       icon: <StarImprovement penalty={penalties.missingTransform} />,
       numberOfLines:2,
       callback: () => {
-        let options = FingerprintUtil.getOptimizationOptions(props.sphereId, props.locationId);
+        let options = FingerprintUtil.getOptimizationOptionsInLocation(props.sphereId, props.locationId);
         if (options.length === 0) {
           Alert.alert(
             "Nothing to optimize from...",

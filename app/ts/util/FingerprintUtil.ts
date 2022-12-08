@@ -25,9 +25,9 @@ export interface PenaltyList extends FingerprintPenaltyList{
 
 export const FingerprintUtil = {
 
-  getOptimizationOptions(sphereId: sphereId, locationId: locationId) : {userId: string, deviceId: string, deviceString: string}[] {
+  getOptimizationOptionsInLocation(sphereId: sphereId, locationId: locationId) : {userId: string, deviceId: string, deviceString: string}[] {
     let location = Get.location(sphereId, locationId);
-    if (!location) { return null; }
+    if (!location) { return []; }
 
     let myDeviceId = DeviceInfo.getDeviceId();
     let myUserId   = core.store.getState().user.userId;
@@ -43,7 +43,43 @@ export const FingerprintUtil = {
       }
     }
 
-    return options;
+    // remove duplicate userIds from the options array
+    let uniqueOptions = [];
+    let userDeviceMap : Record<string, true> = {};
+    for (let option of options) {
+      if (userDeviceMap[`${option.userId}_${option.deviceId}`] === undefined) {
+        userDeviceMap[`${option.userId}_${option.deviceId}`] = true;
+        uniqueOptions.push(option);
+      }
+    }
+
+    return uniqueOptions;
+  },
+
+  getOptimizationOptions(sphereId: sphereId) : {userId: string, deviceId: string, deviceString: string}[] {
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return []; }
+
+    let myDeviceId = DeviceInfo.getDeviceId();
+    let myUserId   = core.store.getState().user.userId;
+
+    let options = [];
+    for (let locationId in sphere.locations) {
+      let locationOptions = FingerprintUtil.getOptimizationOptionsInLocation(sphereId, locationId);
+      options = options.concat(locationOptions);
+    }
+
+    // remove duplicate userIds from the options array
+    let uniqueOptions = [];
+    let userDeviceMap : Record<string, true> = {};
+    for (let option of options) {
+      if (userDeviceMap[`${option.userId}_${option.deviceId}`] === undefined) {
+        userDeviceMap[`${option.userId}_${option.deviceId}`] = true;
+        uniqueOptions.push(option);
+      }
+    }
+
+    return uniqueOptions;
   },
 
 
@@ -543,6 +579,24 @@ export const FingerprintUtil = {
     // this is done after the batch dispatch to make sure the processed fingerprints are re-iterated.
     // the order is important here.
     core.store.dispatch({type: "UPDATE_APP_LOCALIZATION_SETTINGS", data: { localization_onlyOwnFingerprints: true }});
+  },
+
+
+  transformsRequired(sphereId: sphereId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    for (let locationId in sphere.locations) {
+      let location = sphere.locations[locationId];
+      for (let fingerprintId in location.fingerprints.raw) {
+        let fingerprint = location.fingerprints.raw[fingerprintId];
+        if (FingerprintUtil.requiresTransformation(fingerprint)) {
+          if (FingerprintUtil.canTransform(sphereId, fingerprint) === false) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
 }

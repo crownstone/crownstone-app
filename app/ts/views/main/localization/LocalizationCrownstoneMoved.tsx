@@ -23,6 +23,7 @@ import { OverlayUtil } from "../../../util/OverlayUtil";
 import { Spacer } from "../../components/Spacer";
 import { Get } from "../../../util/GetUtil";
 import { LocalizationCore } from "../../../localization/LocalizationCore";
+import { SettingsBackground } from "../../components/SettingsBackground";
 
 
 
@@ -43,7 +44,7 @@ export function LocalizationCrownstoneMoved(props) {
   }
 
   return (
-    <Background>
+    <SettingsBackground>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
       <Text style={styles.header}>{ lang("A_Crownstone_has_been_mov") }</Text>
@@ -80,7 +81,7 @@ export function LocalizationCrownstoneMoved(props) {
             />
         }
       </View>
-    </Background>
+    </SettingsBackground>
   );
 }
 

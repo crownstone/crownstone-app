@@ -28,9 +28,38 @@ export function LocalizationMenu_active(props) {
   let secondItems = [];
 
   let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
-  let warning = false;
+  let roomWarning = false;
   if (locationsAttention.length > 0) {
-    warning = true;
+    roomWarning = true;
+  }
+
+  let transformsRequired = FingerprintUtil.transformsRequired(props.sphereId);
+  if (transformsRequired && !roomWarning) {
+    items.push({label: "PHONE OPTIMIZATION",  type:'explanation'});
+    items.push({
+      label: "Phone optimization required",
+      type: 'navigation',
+      warning: true,
+      numberOfLines: 1,
+      testID: 'optimization',
+      icon: <Icon name='fa-mobile-phone' size={28} color={colors.red.hex}/>,
+      callback: () => {
+        let options = FingerprintUtil.getOptimizationOptions(props.sphereId);
+        options.push(options[0])
+        if (options.length === 1) {
+          NavigationUtil.navigate('LocalizationTransform_intro', { sphereId: props.sphereId, ...options[0] });
+        }
+        else {
+          NavigationUtil.navigate('LocalizationTransform_userSelect', { sphereId: props.sphereId, options: options });
+        }
+      }
+    });
+    items.push({label: "Other phone(s) have collected datasets for localization. Compare your phone to theirs using optimization to make sure their datasets work for you too!",  type:'explanation', below: true});
+  }
+
+
+  if (locationsAttention.length > 0) {
+    roomWarning = true;
     items.push({label: lang("THESE_ROOMS_NEED_ATTENTIO"),  type:'explanation'});
   }
   else {
@@ -41,9 +70,9 @@ export function LocalizationMenu_active(props) {
     label: "Room training quality",
     type: 'navigation',
     numberOfLines: 1,
-    warning: warning,
+    warning: roomWarning,
     testID: 'RoomTrainingQuality',
-    icon: <Icon name='ma-stars' size={28} color={warning ? colors.red.hex : colors.csBlue.hex}/>,
+    icon: <Icon name='ma-stars' size={28} color={roomWarning ? colors.red.hex : colors.csBlue.hex}/>,
     callback: () => {
       NavigationUtil.navigate('LocalizationRoomQuality', {sphereId: props.sphereId});
     }
@@ -69,7 +98,7 @@ export function LocalizationMenu_active(props) {
     testID: 'LocalizationMistake',
     icon: <Icon name='ion5-bandage-outline' size={28} color={colors.csBlueLighter.hex}/>,
     callback: () => {
-      if (warning) {
+      if (roomWarning) {
         Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
       }
       else {
@@ -86,7 +115,7 @@ export function LocalizationMenu_active(props) {
     testID: 'FindAndFix',
     icon: <Icon name='ma-saved-search' size={28} color={colors.csBlueLight.hex}/>,
     callback: () => {
-      if (warning) {
+      if (roomWarning) {
         Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
       }
       else {
