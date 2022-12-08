@@ -353,12 +353,12 @@ export class TransformCollection {
 
     let enoughData = true;
     for (let id in this.collection) {
-      if (this.collection[id].length < 10) {
+      if (this.collection[id].length < 12) {
         enoughData = false;
       }
     }
 
-    if (this.dataCount == 20 || this.dataCount >= 10 && enoughData) {
+    if (this.dataCount == 20 || this.dataCount >= 12 && enoughData) {
       this.submitDataCollection();
       this.destroy();
     }
