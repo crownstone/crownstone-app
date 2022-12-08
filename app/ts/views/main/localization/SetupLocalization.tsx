@@ -46,7 +46,7 @@ export function SetupLocalization(props: {sphereId: sphereId}) {
   }
 
   let items = [];
-  items.push({type:'explanation', label:"ADVANCED SETTINGS"});
+  items.push({type:'explanation', label: lang("ADVANCED_SETTINGS")});
   items.push({
     label: lang("Advanced_Settings"),
     type: 'navigation',

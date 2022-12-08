@@ -78,7 +78,7 @@ export class DeviceError extends LiveComponent<any, any> {
         <View style={{flex:1}} />
         <Text style={{color: colors.white.hex, fontSize: 15, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getSubheader(stone.errors, stone?.abilities?.dimming?.enabledTarget)}</Text>
         <View style={{flex:1}} />
-        <Text style={{color: colors.white.hex, fontSize: 13, textAlign:'center'}}>{"Error code E"+stone.errors.errorCode}</Text>
+        <Text style={{color: colors.white.hex, fontSize: 13, textAlign:'center'}}>{ lang("Error_code_E",stone.errors.errorCode) }</Text>
         <View style={{flex:1}} />
       </View>
     )

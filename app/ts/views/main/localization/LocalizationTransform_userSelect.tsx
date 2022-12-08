@@ -30,7 +30,7 @@ export function LocalizationTransform_userSelect(props: {sphereId, options: {use
   if (!sphere) { return <SphereDeleted /> }
 
   let items = [];
-  items.push({label: "PEOPLE THAT CAN HELP YOU",  type:'explanation'});
+  items.push({label: lang("PEOPLE_THAT_CAN_HELP_YOU"),  type:'explanation'});
 
   for (let option of props.options) {
     let user;
@@ -57,14 +57,14 @@ export function LocalizationTransform_userSelect(props: {sphereId, options: {use
     <SettingsBackground>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
-      <Text style={styles.header}>{ "You have options!" }</Text>
-      <Text style={styles.boldExplanation}>{ "You can transform the datasets trained by other people to be perfect for your phone too!" }</Text>
-      <Text style={styles.explanation}>{ "Select someone from the list who is currently available to help you for about 5 minutes." }</Text>
+      <Text style={styles.header}>{ lang("You_have_options_") }</Text>
+      <Text style={styles.boldExplanation}>{ lang("You_can_transform_the_dat") }</Text>
+      <Text style={styles.explanation}>{ lang("Select_someone_from_the_l") }</Text>
       <View style={{height:30}}/>
       <ListEditableItems items={items} />
     </SettingsBackground>
   );
 }
 
-LocalizationTransform_userSelect.options = TopBarUtil.getOptions({ title: "Select someone", closeModal: true});
+LocalizationTransform_userSelect.options = TopBarUtil.getOptions({ title: lang("Select_someone"), closeModal: true});
 

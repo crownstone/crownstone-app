@@ -35,9 +35,9 @@ export function LocalizationMenu_active(props) {
 
   let transformsRequired = FingerprintUtil.transformsRequired(props.sphereId);
   if (transformsRequired && !roomWarning) {
-    items.push({label: "PHONE OPTIMIZATION",  type:'explanation'});
+    items.push({label: lang("PHONE_OPTIMIZATION"),  type:'explanation'});
     items.push({
-      label: "Phone optimization required",
+      label: lang("Phone_optimization_requir"),
       type: 'navigation',
       warning: true,
       numberOfLines: 1,
@@ -54,7 +54,7 @@ export function LocalizationMenu_active(props) {
         }
       }
     });
-    items.push({label: "Other phone(s) have collected datasets for localization. Compare your phone to theirs using optimization to make sure their datasets work for you too!",  type:'explanation', below: true});
+    items.push({label: lang("Other_phone_s__have_colle"),  type:'explanation', below: true});
   }
 
 
@@ -67,7 +67,7 @@ export function LocalizationMenu_active(props) {
   }
 
   items.push({
-    label: "Room training quality",
+    label: lang("Room_training_quality"),
     type: 'navigation',
     numberOfLines: 1,
     warning: roomWarning,
@@ -77,7 +77,7 @@ export function LocalizationMenu_active(props) {
       NavigationUtil.navigate('LocalizationRoomQuality', {sphereId: props.sphereId});
     }
   });
-  items.push({label: "See how well the rooms are trained and what you can do to improve the localization.",  type:'explanation', below: true});
+  items.push({label: lang("See_how_well_the_rooms_ar"),  type:'explanation', below: true});
 
   items.push({label: lang("CHANGES_AND_QUICKFIX"),  type:'explanation', alreadyPadded: true});
   items.push({
@@ -99,7 +99,10 @@ export function LocalizationMenu_active(props) {
     icon: <Icon name='ion5-bandage-outline' size={28} color={colors.csBlueLighter.hex}/>,
     callback: () => {
       if (roomWarning) {
-        Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
+        Alert.alert(
+          lang("_Please_fix_the_localizat_header"),
+          lang("_Please_fix_the_localizat_body"),
+          [{text:lang("_Please_fix_the_localizat_left")}]);
       }
       else {
         NavigationUtil.navigate('LocalizationQuickFix', {sphereId: props.sphereId});
@@ -109,21 +112,24 @@ export function LocalizationMenu_active(props) {
   items.push({label: lang("If_the_localization_was_w"),  type:'explanation', below: true});
 
   items.push({
-    label: 'Find and fix difficult spots...',
+    label: lang("Find_and_fix_difficult_sp"),
     type: 'navigation',
     numberOfLines: 2,
     testID: 'FindAndFix',
     icon: <Icon name='ma-saved-search' size={28} color={colors.csBlueLight.hex}/>,
     callback: () => {
       if (roomWarning) {
-        Alert.alert("Please fix the localization issues first.", "Tap the room training quality item above..",[{text:"OK"}]);
+        Alert.alert(
+          lang("_Please_fix_the_localizati_header"),
+          lang("_Please_fix_the_localizati_body"),
+          [{text:lang("_Please_fix_the_localizati_left")}]);
       }
       else {
         NavigationUtil.navigate('LocalizationFindAndFix_noLocation', {sphereId: props.sphereId});
       }
     }
   });
-  items.push({label: 'You can walk around the room to find weakspots in the localization and fix them immediately!',  type:'explanation', below: true});
+  items.push({label: lang("You_can_walk_around_the_r"),  type:'explanation', below: true});
 
   items.push({
     label: lang("Advanced_Settings"),

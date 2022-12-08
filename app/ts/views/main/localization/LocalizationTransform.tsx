@@ -43,7 +43,7 @@ export class LocalizationTransform extends LiveComponent<
     currentCollectionDataCount: number,
   }> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Optimize!", closeModal: props.isModal ?? undefined})
+    return TopBarUtil.getOptions({title: lang("Optimize_"), closeModal: props.isModal ?? undefined})
   }
 
   transformManager : TransformManager;
@@ -106,11 +106,11 @@ export class LocalizationTransform extends LiveComponent<
     switch (this.state.sessionState) {
       case "UNINITIALIZED":
       case "AWAITING_SESSION_REGISTRATION":
-        return <Initializing title={"Starting..."} />;
+        return <Initializing title={ lang("Starting___")} />;
       case "AWAITING_SESSION_START":
-        return <Initializing title={"Connecting..."} />;
+        return <Initializing title={ lang("Connecting___")} />;
       case "AWAITING_INVITATION_ACCEPTANCE":
-        return <Initializing title={"Waiting for the other device to accept the request..."} />;
+        return <Initializing title={ lang("Waiting_for_the_other_dev")} />;
       case "SESSION_WAITING_FOR_COLLECTION_INITIALIZATION":
       case "COLLECTION_COMPLETED":
         switch (this.state.collectionRecommendation) {
@@ -118,8 +118,8 @@ export class LocalizationTransform extends LiveComponent<
             return (
               <PreparingMeasurement
                 isHost={this.props.isHost}
-                title={"Next measurement"}
-                explanation={"Great! Now repeat this in a different spot, more data from being close to Crownstones is required!"}
+                title={ lang("Next_measurement")}
+                explanation={ lang("Great__Now_repeat_this_in")}
                 stats={this.state.collectionStats}
                 callback={() => {
                   this.transformManager.requestCollectionSession();
@@ -130,8 +130,8 @@ export class LocalizationTransform extends LiveComponent<
             return (
               <PreparingMeasurement
                 isHost={this.props.isHost}
-                title={"Next measurement"}
-                explanation={"Great! Now repeat this in a different spot!"}
+                title={ lang("Next_measurement")}
+                explanation={ lang("Great__Now_repeat_this_in_")}
                 stats={this.state.collectionStats}
                 callback={() => {
                   this.transformManager.requestCollectionSession();
@@ -142,8 +142,8 @@ export class LocalizationTransform extends LiveComponent<
             return (
               <PreparingMeasurement
                 isHost={this.props.isHost}
-                title={"Next measurement"}
-                explanation={"Great! Now repeat this in a different spot, more data from being far away from Crownstones is required!"}
+                title={ lang("Next_measurement")}
+                explanation={ lang("Great__Now_repeat_this_in_a")}
                 stats={this.state.collectionStats}
                 callback={() => {
                   this.transformManager.requestCollectionSession();
@@ -153,8 +153,8 @@ export class LocalizationTransform extends LiveComponent<
           case "UNINITIALIZED":
             return (
               <PreparingMeasurement
-                title={"Preparing measurement"}
-                explanation={"Place both devices side by side on a flat surface, 10 cm apart from eachother. Step back after pressing the button."}
+                title={ lang("Preparing_measurement")}
+                explanation={ lang("Place_both_devices_side_b")}
                 isHost={this.props.isHost}
                 stats={null}
                 callback={() => {
@@ -166,8 +166,8 @@ export class LocalizationTransform extends LiveComponent<
       case "SESSION_WAITING_FOR_COLLECTION_START":
         return (
           <WaitingForMeasurement
-            title={"Preparing measurement"}
-            explanation={"Place both devices side by side on a flat surface, 10 cm apart from eachother."}
+            title={ lang("Preparing_measurement")}
+            explanation={ lang("Place_both_devices_side_by")}
             phase={"Waiting to start..." }
           />
         );
@@ -176,7 +176,7 @@ export class LocalizationTransform extends LiveComponent<
       case "WAITING_TO_FINISH_COLLECTION":
         return (
           <Measurement
-            title={"Measuring..."}
+            title={ lang("Measuring___")}
             explanation={ "Please wait for the measurement to finish."}
             phase={"This should take around 20 seconds..." }
             data={this.state.currentCollection}
@@ -185,8 +185,8 @@ export class LocalizationTransform extends LiveComponent<
       case "FINISHED":
         return (
           <React.Fragment>
-            <Text style={styles.header}>{ "All done!" }</Text>
-            <Text style={styles.boldExplanation}>{ "All datasets collected by the other device will now be optimized for your phone!" }</Text>
+            <Text style={styles.header}>{ lang("All_done_") }</Text>
+            <Text style={styles.boldExplanation}>{ lang("All_datasets_collected_by") }</Text>
             <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.8} />
             <View style={{flex:1}} />
             <Button
@@ -202,9 +202,9 @@ export class LocalizationTransform extends LiveComponent<
       // case "FAILED":
         return (
           <React.Fragment>
-            <Text style={styles.header}>{ "Something went wrong..." }</Text>
-            <Text style={styles.boldExplanation}>{ "Press the button below to try again, or try again later." }</Text>
-            <Text style={styles.explanation}>{ "Error was: " + this.state.errorMessage }</Text>
+            <Text style={styles.header}>{ lang("Something_went_wrong___") }</Text>
+            <Text style={styles.boldExplanation}>{ lang("Press_the_button_below_to") }</Text>
+            <Text style={styles.explanation}>{ lang("Error_was__",this.state.errorMessage) }</Text>
             <View style={{flex:1}} />
             <Button
               backgroundColor={colors.blue.rgba(0.75)}
@@ -225,7 +225,10 @@ export class LocalizationTransform extends LiveComponent<
                   this.transformManager.start();
                 }
                 else {
-                  Alert.alert("Wait for the host to retry!", "The host needs to press the button to retry.", [{text: "OK"}]);
+                  Alert.alert(
+lang("_Wait_for_the_host_to_ret_header"),
+lang("_Wait_for_the_host_to_ret_body"),
+[{text: lang("_Wait_for_the_host_to_ret_left")}]);
                   NavigationUtil.dismissModal();
                 }
               }}
@@ -267,8 +270,8 @@ function PreparingMeasurement({isHost, title, explanation, callback, stats}) {
       <Text style={styles.header}>{title}</Text>
       <Text style={styles.boldExplanation}>{explanation}</Text>
         {isHost ?
-          <Text style={styles.boldExplanation}>{"Press Next when you're both ready!"}</Text> :
-          <Text style={styles.boldExplanation}>{"Waiting for other device..."}</Text>
+          <Text style={styles.boldExplanation}>{ lang("Press_Next_when_youre_bot") }</Text> :
+          <Text style={styles.boldExplanation}>{ lang("Waiting_for_other_device_") }</Text>
         }
       <View style={{height: 30}}/>
       <ScaledImage source={require("../../../../assets/images/phone_transform.png")} sourceWidth={778} sourceHeight={524} targetWidth={0.8*screenWidth}/>
@@ -279,7 +282,7 @@ function PreparingMeasurement({isHost, title, explanation, callback, stats}) {
         <Button
           backgroundColor={colors.blue.rgba(0.75)}
           icon={'ios-play'}
-          label={"Next"}
+          label={ lang("Next")}
           callback={callback}
         /> :
         <ActivityIndicator size="large" color={colors.csBlue.hex}/>
@@ -332,7 +335,7 @@ function DataVisualization(props : {data: Record<string, rssi[]>}) {
 
   return (
     <View style={{flex:1, width:screenWidth, justifyContent:'center', alignItems:'center', padding:15}}>
-      <Text>{"Number of Crownstones: " + numberOfCronwstones}</Text>
+      <Text>{ lang("Number_of_Crownstones__",numberOfCronwstones) }</Text>
       <Bars data={bucketedData} buckets={buckets}/>
     </View>
   )
@@ -403,8 +406,8 @@ function CollectionStats(props: {stats: {A: TransformStats, B: TransformStats}, 
 
   return (
     <React.Fragment>
-      <Text style={styles.explanation}>{ `You've collected: close:${getPercentageString(youPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD)} mid: ${getPercentageString(youPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD)} far:${getPercentageString(youPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD)}` }</Text>
-      <Text style={styles.explanation}>{ `Other  collected: close:${getPercentageString(otherPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD)} mid: ${getPercentageString(otherPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD)} far:${getPercentageString(otherPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD)}` }</Text>
+      <Text style={styles.explanation}>{ lang("YOUVE_COLLETED", getPercentageString(youPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(youPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
+      <Text style={styles.explanation}>{ lang("OTHER_COLLETED", getPercentageString(otherPointer.close,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.mid,TRANSFORM_MIN_SAMPLE_THRESHOLD), getPercentageString(otherPointer.far,TRANSFORM_MIN_SAMPLE_THRESHOLD))}</Text>
     </React.Fragment>
   );
 }

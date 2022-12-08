@@ -25,9 +25,6 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
 
   let state = core.store.getState();
 
-  let items = [];
-  items.push({label: "PEOPLE THAT CAN HELP YOU",  type:'explanation'});
-
   let sphere = Get.sphere(props.sphereId);
   if (!sphere) { return <SphereDeleted /> }
 
@@ -46,7 +43,7 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
   return (
     <SettingsBackground>
       <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingVertical:30}}>
-        <Text style={styles.header}>{ "Let's optimize for your phone!" }</Text>
+        <Text style={styles.header}>{ lang("Lets_optimize_for_your_ph") }</Text>
         {props.userId === state.user.userId ?
           <LocalizationTransformSelf  device={device}/> :
           <LocalizationTransformOther userName={userName} device={device}/>
@@ -67,22 +64,22 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
 function LocalizationTransformSelf(props: {device:string }) {
   return (
     <React.Fragment>
-      <Text style={styles.boldExplanation}>{ "Go get the other device you used to train the localization (" + props.device + ")." }</Text>
-      <Text style={styles.explanation}>{ "The more Crownstones you have, the faster this process wil go." }</Text>
-      <Text style={styles.explanation}>{ "This is going to take a few minutes, press Next when you have your other device with the Crownstone app onscreen." }</Text>
+      <Text style={styles.boldExplanation}>{ lang("Go_get_the_other_device_y",props.device) }</Text>
+      <Text style={styles.explanation}>{ lang("The_more_Crownstones_you_") }</Text>
+      <Text style={styles.explanation}>{ lang("This_is_going_to_take_a_f") }</Text>
     </React.Fragment>
   )
 }
 function LocalizationTransformOther(props: {userName:string, device: string}) {
   return (
     <React.Fragment>
-      <Text style={styles.boldExplanation}>{ "Go get " + props.userName + " so we can get started."}</Text>
-      <Text style={styles.explanation}>{ "Tell him/her to bring the phone used to train their localization (" + props.device + ")." }</Text>
-      <Text style={styles.explanation}>{ "The more Crownstones you have, the faster this process wil go." }</Text>
-      <Text style={styles.explanation}>{ "This is going to take a few minutes, press Next when the other person is next to you and has opened the Crownstone app." }</Text>
+      <Text style={styles.boldExplanation}>{ lang("Go_get__so_we_can_get_sta",props.userName) }</Text>
+      <Text style={styles.explanation}>{ lang("Tell_him_her_to_bring_the",props.device) }</Text>
+      <Text style={styles.explanation}>{ lang("The_more_Crownstones_you_h") }</Text>
+      <Text style={styles.explanation}>{ lang("This_is_going_to_take_a_fe") }</Text>
     </React.Fragment>
   )
 }
 
-LocalizationTransform_intro.options = (props) => { return TopBarUtil.getOptions({ title: "Optimize!", closeModal: props.isModal ?? undefined}); }
+LocalizationTransform_intro.options = (props) => { return TopBarUtil.getOptions({ title: lang("Optimize_"), closeModal: props.isModal ?? undefined}); }
 

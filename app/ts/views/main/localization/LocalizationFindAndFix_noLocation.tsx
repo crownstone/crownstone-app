@@ -40,9 +40,9 @@ export function LocalizationFindAndFix_noLocation(props: { sphereId: sphereId })
     <SettingsBackground>
       <View style={{height:topBarHeight}}/>
       <View style={{height:30}}/>
-      <Text style={styles.header}>{ "Let's go searching!" }</Text>
-      <Text style={styles.boldExplanation}>{ "We need to know which room you're in first."}</Text>
-      <Text style={styles.explanation}>{ "Where are you now?" }</Text>
+      <Text style={styles.header}>{ lang("Lets_go_searching_") }</Text>
+      <Text style={styles.boldExplanation}>{ lang("We_need_to_know_which_roo") }</Text>
+      <Text style={styles.explanation}>{ lang("Where_are_you_now_") }</Text>
 
       <NavigationBar
         label={ locationId === null ? "Pick location" : location.config.name }
@@ -54,11 +54,11 @@ export function LocalizationFindAndFix_noLocation(props: { sphereId: sphereId })
         }}
       />
 
-      <Text style={styles.explanation}>{ "It is important that you really are in this room!" }</Text>
+      <Text style={styles.explanation}>{ lang("It_is_important_that_you_") }</Text>
       <Spacer />
       <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center',}}>
         { locationId === null ?
-          <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{ "Please pick a location first..." }</Text>
+          <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.3), fontStyle:'italic'}}>{ lang("Please_pick_a_location_fi") }</Text>
           :
           <Button
             backgroundColor={colors.csBlue.hex}
@@ -67,11 +67,12 @@ export function LocalizationFindAndFix_noLocation(props: { sphereId: sphereId })
             label={ " Let's go! "}
             callback={() => {
               Alert.alert(
-                "You're in " + location.config.name + "?",
-                "It is important that you really are in this room!",
-                [{text:"Yes", style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
+lang("_Youre_in_____arguments___header",location.config.name),
+lang("_Youre_in_____arguments___body"),
+[{text:lang("_Youre_in_____arguments___left"), style: "destructive", onPress: () => { handleConfirm(props.sphereId, locationId); }},
                   {
-                    text:"No", style: "destructive", onPress: () => {}} ],
+                    
+text:lang("_Youre_in_____arguments___right"), style: "destructive", onPress: () => {}} ],
                 {cancelable:false}
               );
             }}
@@ -87,4 +88,4 @@ function handleConfirm(sphereId, locationId) {
 }
 
 
-LocalizationFindAndFix_noLocation.options = TopBarUtil.getOptions({ title: "Seach for weaknesses"});
+LocalizationFindAndFix_noLocation.options = TopBarUtil.getOptions({ title: lang("Seach_for_weaknesses")});

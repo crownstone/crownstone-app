@@ -1943,6 +1943,12 @@ export default {
     New_Message_Found:                      function() { return "Een inkomend berichtje!"; },
     New_Message_Found_n:                    function() { return "Een inkomend berichtje!"; },
   },
+  LocalizationAdvancedSettings:{
+    __stringSameAsBaseLanguage: {
+      Advanced_Settings:                     false,
+    },
+    Advanced_Settings:                      function() { return "Advanced Settings" },
+  },
   LocalizationCrownstoneMoved:{
     __stringSameAsBaseLanguage: {
       A_Crownstone_has_been_mov:             false,
@@ -1964,15 +1970,8 @@ export default {
       Add_more_stars_by_:                    false,
       Address_the_issue_by_:                 false,
       Further_improve_localizat:             false,
-      Permanently_delete_all_lo:             false,
-      _Are_you_sure___You_will__header:      false,
-      _Are_you_sure___You_will__body:        false,
-      _Are_you_sure___You_will__left:        false,
-      _Are_you_sure___You_will__right:       false,
       Add_more_training_data___:             false,
       Find_and_fix_difficult_sp:             false,
-      DELETE_ALL_COLLECTED_DATA:             false,
-      Careful__you_will_need_to:             false,
       Manage_fingerprints:                   false,
       DEV__Delete_individual_fi:             false,
       Adding_an_in_pocket_train:             false,
@@ -1980,20 +1979,14 @@ export default {
       Retraining_to_include_new:             false,
       Optimizing_for_your_phone:             false,
       Unknown_room:                          true,
+      ADVANCED:                              false,
     },
     Training_quality:                       function() { return "Trainingskwaliteit"; },
     Add_more_stars_by_:                     function() { return "Krijg meer sterren door:"; },
     Address_the_issue_by_:                  function() { return "Los de problemen op door:"; },
     Further_improve_localizat:              function() { return "Verbeter de positiebepaling door:"; },
-    Permanently_delete_all_lo:              function() { return "Gooi alle verzamelde data van deze kamer weg voor een schone start. Dit heeft effect op iedereen in de sfeer..."; },
-    _Are_you_sure___You_will__header:       function() { return "Weet je het zeker?"; },
-    _Are_you_sure___You_will__body:         function() { return "Je zal de kamer opnieuw moeten trainen voordat de positiebepaling weer werkt."; },
-    _Are_you_sure___You_will__left:         function() { return "Annuleren"; },
-    _Are_you_sure___You_will__right:        function() { return "Verwijder data!"; },
     Add_more_training_data___:              function() { return "Voeg meer data toe..."; },
     Find_and_fix_difficult_sp:              function() { return "Zoek en verbeter lastige plekken..."; },
-    DELETE_ALL_COLLECTED_DATA:              function() { return "VERWIJDER ALLE VERZAMELDE DATA"; },
-    Careful__you_will_need_to:              function() { return "Pas op, je zal deze kamer opnieuw moeten trainen als je dit doet."; },
     Manage_fingerprints:                    function() { return "Beheer de fingerprints"; },
     DEV__Delete_individual_fi:              function() { return "Geavanceerd: Verwijder individuele fingerprints"; },
     Adding_an_in_pocket_train:              function() { return "Voeg een broekzak-set toe..."; },
@@ -2002,6 +1995,7 @@ export default {
     Optimizing_for_your_phone:              function() { return "Optimaliseer voor jou telefoon..."; },
     Unknown_room:                           function() { return "" + arguments[0] + ""; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationDetail.tsx",
+    ADVANCED:                               function() { return "ADVANCED" },
   },
   LocalizationFindAndFix:{
     __stringSameAsBaseLanguage: {
@@ -2022,6 +2016,10 @@ export default {
       TAP_TO_DELETE:                         false,
       No_fingerprints_:                      false,
       Unknown_room:                          true,
+      IN_HAND:                               false,
+      IN_POCKET:                             false,
+      AUTO_COLLECTED:                        false,
+      FIND_AND_FIX:                          false,
     },
     Active_fingerprints:                    function() { return "Actieve datasets"; },
     _Are_you_sure___This_cann_header:       function() { return "Weet je het zeker?"; },
@@ -2032,6 +2030,10 @@ export default {
     No_fingerprints_:                       function() { return "Geen datasets."; },
     Unknown_room:                           function() { return "" + arguments[0] + ""; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationFingerprintManager.tsx",
+    IN_HAND:                                function() { return "In-Hand set" },
+    IN_POCKET:                              function() { return "In-Pocket set" },
+    AUTO_COLLECTED:                         function() { return "Quickfix" },
+    FIND_AND_FIX:                           function() { return "Find and fix" },
   },
   LocalizationMenu:{
     __stringSameAsBaseLanguage: {
@@ -2048,6 +2050,7 @@ export default {
       THESE_ROOMS_NEED_ATTENTIO:             false,
       LOCALIZATION_TRAINING_QUA:             false,
       Advanced_Settings:                     false,
+      Look_here_to_configure_sm:             false,
     },
     CHANGES_AND_QUICKFIX:                   function() { return "AANPASSINGEN EN SNELLE OPLOSSINGEN"; },
     I_have_moved_a_Crownstone:              function() { return "Ik heb een Crownstone verplaatst.."; },
@@ -2057,34 +2060,22 @@ export default {
     LOCALIZATION_TRAINING_QUA:              function() { return "KWALITEIT VAN DE VERZAMELDE DATA"; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
     Advanced_Settings:                      function() { return "Geavanceerde instellingen" },
-  },
-  LocalizationRoomQuality:{
-    __stringSameAsBaseLanguage: {
-      CHANGES_AND_QUICKFIX:                  false,
-      I_have_moved_a_Crownstone:             false,
-      Improve_from_localization:             false,
-      If_the_localization_was_w:             false,
-      THESE_ROOMS_NEED_ATTENTIO:             false,
-      LOCALIZATION_TRAINING_QUA:             false,
-      Advanced_Settings:                     false,
-    },
-    CHANGES_AND_QUICKFIX:                   function() { return "AANPASSINGEN EN SNELLE OPLOSSINGEN"; },
-    I_have_moved_a_Crownstone:              function() { return "Ik heb een Crownstone verplaatst.."; },
-    Improve_from_localization:              function() { return "Verbeteren van fouten van de positiebepaling..."; },
-    If_the_localization_was_w:              function() { return "Als de positiebepaling een fout heeft gemaakt en je bent minimaal 3 minuten in dezelfde kamer, tik hier om de fouten op te lossen!"; },
-    THESE_ROOMS_NEED_ATTENTIO:              function() { return "DEZE KAMERS HEBBEN AANDACHT NODIG"; },
-    LOCALIZATION_TRAINING_QUA:              function() { return "KWALITEIT VAN DE VERZAMELDE DATA"; },
-    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
-    Advanced_Settings:                      function() { return "Geavanceerde instellingen" },
+    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   LocalizationMenu_gettingStarted:{
     __stringSameAsBaseLanguage: {
       LETS_GET_STARTED:                      false,
       Setup_localization_:                   false,
+      indoor_localization:                   false,
+      Advanced_Settings:                     false,
+      Look_here_to_configure_sm:             false,
     },
     LETS_GET_STARTED:                       function() { return "AAN DE SLAG"; },
     Setup_localization_:                    function() { return "Positiebepaling opzetten!"; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_gettingStarted.tsx",
+    indoor_localization:                    function() { return "Indoor Localization" },
+    Advanced_Settings:                      function() { return "Advanced settings" },
+    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   LocalizationMenu_notEnoughCrownstones:{
     __stringSameAsBaseLanguage: {
@@ -2156,6 +2147,15 @@ export default {
     Quickfix:                               function() { return "Snelle verbetering"; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationQuickFix.tsx",
   },
+  LocalizationRoomQuality:{
+    __stringSameAsBaseLanguage: {
+      THESE_ROOMS_NEED_ATTENTIO:             false,
+      LOCALIZATION_TRAINING_QUA:             false,
+    },
+    THESE_ROOMS_NEED_ATTENTIO:              function() { return "DEZE KAMERS HEBBEN AANDACHT NODIG"; },
+    LOCALIZATION_TRAINING_QUA:              function() { return "KWALITEIT VAN DE VERZAMELDE DATA"; },
+    __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",
+  },
   LocationHandler:{
     __stringSameAsBaseLanguage: {
       Could_not_set_Keys_:                   false,
@@ -2191,6 +2191,9 @@ export default {
       ManualPermission_body:                 false,
       toAppSettings:                         false,
       Location_disabled:                     false,
+      Turn_on:                               false,
+      Permission_required:                   false,
+      ManualPermission_body_android:         false,
     },
     Request_Permission:                     function() { return "Toestemming vragen"; },
     toAppSettings:                          function() { return "Naar de app settings!"; },
@@ -2211,6 +2214,9 @@ export default {
     ManualPermission_title:                 function() { return "Locatietoestemming ontbreekt."; },
     ManualPermission_body:                  function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)."; },
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
+    Turn_on:                                function() { return "Turn on" },
+    Permission_required:                    function() { return "Permission required" },
+    ManualPermission_body_android:          function() { return "Without location and nearby devices permission, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly.\n\nYou will have to manually allow the permissions. Go to your phone's settings -> apps -> Crownstone -> Permissions. Set location to \"Allow all the time\", and Nearby devices to \"Allow\"." },
   },
   LockedStateUI:{
     __stringSameAsBaseLanguage: {
@@ -4444,6 +4450,8 @@ export default {
       Improve_Localization:                  false,
       _option_is_now_available_:             false,
       Setup_Localization:                    false,
+      Advanced_Settings:                     false,
+      Look_here_to_configure_sm:             false,
     },
     To_use_indoor_localizatio:              function() { return "Om de positiebepaling te gebruiken moeten we in elke kamer rondlopen om te herkennen hoe de berichtjes van de Crownstones daar ontvangen worden."; },
     We_need_to_gather_data_in:              function() { return "We moeten in deze kamers data verzamelen:"; },
@@ -4455,6 +4463,8 @@ export default {
     _option_is_now_available_:              function() { return " opties beschikbaar in het positiebepaling menu."; },
     Setup_Localization:                     function() { return "Positiebepaling instellen"; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/SetupLocalization.tsx",
+    Advanced_Settings:                      function() { return "Advanced settings" },
+    Look_here_to_configure_sm:              function() { return "Look here to configure smoothing and phone exclusivity." },
   },
   SetupShared:{
     __stringSameAsBaseLanguage: {
@@ -4886,6 +4896,12 @@ export default {
     version__:                              function() { return "versie: " + arguments[0] + ""; },
     __filename: "../js/views/startupViews/Splash.tsx",
   },
+  SseHandler:{
+    __stringSameAsBaseLanguage: {
+      _asks_for_your_help_:                  false,
+    },
+    _asks_for_your_help_:                   function() { return arguments[0] + " asks for your help!" },
+  },
   StatusCommunication:{
     __stringSameAsBaseLanguage: {
       No_Crownstones_in_range_:              false,
@@ -5112,8 +5128,8 @@ export default {
       Messages:                              false,
       Settings:                              false,
       Scenes:                                true,
-      power:                                 false,
       Energy:                                false,
+      Power:                                 false,
     },
     Overview:                               function() { return "Overzicht"; },
     Messages:                               function() { return "Berichten"; },
@@ -5236,6 +5252,14 @@ export default {
     Toon:                                   function() { return "Toon"; },
     __filename: "../js/views/thirdParty/toon/ToonSettings.tsx",
   },
+  TransformManager:{
+    __stringSameAsBaseLanguage: {
+      Request_not_available_any:             false,
+      Timeout_while_waiting_for:             false,
+    },
+    Request_not_available_any:              function() { return "Request not available anymore." },
+    Timeout_while_waiting_for:              function() { return "Timeout while waiting for invitation" },
+  },
   UpdateCenter:{
     __stringSameAsBaseLanguage: {
       Update_available_:                     false,
@@ -5301,6 +5325,7 @@ export default {
       MONTH_October:                         false,
       MONTH_November:                        true,
       MONTH_December:                        true,
+      Delete:                                false,
     },
     Back:                                   function() { return "Terug"; },
     DAY_Mon:                                function() { return "Ma"; },

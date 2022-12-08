@@ -26,7 +26,7 @@ import { AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION } from "../../.
 export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, locationId: locationId, componentId: string }, any> {
   static options(props) {
     let location = Get.location(props.sphereId, props.locationId);
-    return TopBarUtil.getOptions({title: `Exploring the ${location.config.name}`, cancel: true});
+    return TopBarUtil.getOptions({title: lang("Exploring_the_",location.config.name), cancel: true});
   }
 
   collector           : FingerprintCollectorLive;
@@ -127,7 +127,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
         <KeepAwake />
         <Text style={styles.header}>{ lang("Move_around_to_find_mista") }</Text>
         <Text style={styles.boldExplanation}>{ lang("Any_mistake_will_be_fixed") }</Text>
-        <Text style={{...styles.boldExplanation, fontStyle:"italic"}}>{`Stay in the ${location.config.name} during this process!`}</Text>
+        <Text style={{...styles.boldExplanation, fontStyle:"italic"}}>{ lang("Stay_in_the__during_this_",location.config.name) }</Text>
 
         <SlideInViewLayoutAnimation visible={this.sortedDistanceArray.length > 0}>
           <ResultList distanceMap={this.distanceMap} sortedDistanceArray={this.sortedDistanceArray} sphereId={this.props.sphereId} />
@@ -137,8 +137,8 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
         </SlideInViewLayoutAnimation>
 
         <SlideInViewLayoutAnimation visible={this.state.vectorSize !== null && this.state.vectorSize < AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION}>
-          <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Not enough Crownstones in the last measurement (${this.state.vectorSize}/${AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION})...`}</Text>
-          <Text style={{...styles.explanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Localization cannot work here, ensure that I am close enough to at least ${AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION} Crownstones..`}</Text>
+          <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Not_enough_Crownstones_in",this.state.vectorSize,AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) }</Text>
+          <Text style={{...styles.explanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Localization_cannot_work_",AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION) }</Text>
         </SlideInViewLayoutAnimation>
         <View style={{flex:1}}/>
 
@@ -147,12 +147,12 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
             {this.state.fixing && (
                 <View>
                   <ActivityIndicator size={'small'} />
-                  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Fixing...`}</Text>
+                  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Fixing___") }</Text>
                 </View>
               )
             }
-            {!this.state.fixing && this.state.collectedPoints === 1 &&  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Fixed ${this.state.collectedPoints} mistake so far!`}</Text>}
-            {!this.state.fixing && this.state.collectedPoints > 1   &&  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Fixed ${this.state.collectedPoints} mistakes so far!`}</Text>}
+            {!this.state.fixing && this.state.collectedPoints === 1 &&  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Fixed__mistake_so_far_",this.state.collectedPoints) }</Text>}
+            {!this.state.fixing && this.state.collectedPoints > 1   &&  <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Fixed__mistakes_so_far_",this.state.collectedPoints) }</Text>}
             <Button
               backgroundColor={colors.csBlue.hex}
               label={ 'Finalize and save' }
@@ -166,7 +166,7 @@ export class LocalizationFindAndFix extends LiveComponent<{ sphereId: sphereId, 
         </SlideInViewLayoutAnimation>
         <SlideInViewLayoutAnimation visible={this.state.collectedPoints === 0}>
           <View style={{paddingVertical:30, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{`Find a mistake first!`}</Text>
+            <Text style={{...styles.boldExplanation, color: colors.black.rgba(0.6), fontStyle:'italic'}}>{ lang("Find_a_mistake_first_") }</Text>
           </View>
         </SlideInViewLayoutAnimation>
       </Background>
@@ -218,7 +218,7 @@ function LocationItem(props: {location: LocationData, distance: number, index: n
         backgroundColor: colors.green.blend(colors.blue, 1-factor).hex,
         opacity: 0.8*factor+0.2
       }}>
-        <Text style={fontStyle}>{`#${props.index+1} ${props.location.config.name}`}</Text>
+        <Text style={fontStyle}>{ lang("__",props.index+1,props.location.config.name) }</Text>
       </Blur>
     </View>
   )
