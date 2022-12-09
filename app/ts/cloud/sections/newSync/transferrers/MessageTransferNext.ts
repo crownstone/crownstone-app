@@ -33,6 +33,7 @@ export const MessageTransferNext : TransferSphereTool<MessageData, MessageData, 
       includeSenderInEveryone: cloudMessage.includeSenderInEveryone,
       content:                 cloudMessage.content,
       senderId:                cloudMessage.ownerId,
+      sent:                    true,
       sentAt:                  new Date(cloudMessage.createdAt).valueOf(),
       updatedAt:               new Date(cloudMessage.updatedAt).valueOf(),
     };

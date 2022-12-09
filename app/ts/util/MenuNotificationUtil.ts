@@ -10,7 +10,6 @@ export const MenuNotificationUtil = {
   isThereALocalizationAlert: function(sphereId: string) : boolean {
     let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(sphereId);
     let requiresFingerprints             = FingerprintUtil.requireMoreFingerprintsBeforeLocalizationCanStart(sphereId);
-    let transformsRequired               = FingerprintUtil.transformsRequired(sphereId);
 
     let state  = core.store.getState();
     let sphere = Get.sphere(sphereId);
@@ -18,7 +17,7 @@ export const MenuNotificationUtil = {
 
     return sphere.state.present                         &&
            enoughForLocalizationInLocations             &&
-          (requiresFingerprints || transformsRequired ) &&
+           requiresFingerprints                         &&
            state.app.indoorLocalizationEnabled;
   },
 
