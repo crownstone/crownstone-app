@@ -959,6 +959,7 @@ exports[`Check if messages can handle the cloud's sync reply: creationActions 1`
         "dbId:UserRepository:3": true,
       },
       "senderId": undefined,
+      "sent": true,
       "sentAt": 0,
       "triggerEvent": "enter",
       "triggerLocationId": undefined,

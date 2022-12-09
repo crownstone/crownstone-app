@@ -44,27 +44,32 @@ export class SphereIntegrations extends LiveComponent<any, any> {
     //   }
     // });
 
-    items.push({label: lang("Thermostats_"),  type:'largeExplanation'});
-    items.push({
-      label: lang("Toon"),
-      type: 'navigation',
-      testID: 'Integration_Toon',
-      largeIcon: <ScaledImage source={require('../../../../assets/images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
-      callback: () => {
-        let state = core.store.getState();
-        let sphere = state.spheres[this.props.sphereId];
-        let toonIds = Object.keys(sphere.thirdParty.toons);
-        if (toonIds.length === 1) {
-          NavigationUtil.navigate( "ToonSettings",{sphereId: this.props.sphereId, toonId: toonIds[0]});
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let toonIds = Object.keys(sphere.thirdParty.toons);
+    if (toonIds.length === 1) {
+      items.push({label: lang("Thermostats_"),  type:'largeExplanation'});
+      items.push({
+        label: lang("Toon"),
+        type: 'navigation',
+        testID: 'Integration_Toon',
+        largeIcon: <ScaledImage source={require('../../../../assets/images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
+        callback: () => {
+          let state = core.store.getState();
+          let sphere = state.spheres[this.props.sphereId];
+          let toonIds = Object.keys(sphere.thirdParty.toons);
+          if (toonIds.length === 1) {
+            NavigationUtil.navigate( "ToonSettings",{sphereId: this.props.sphereId, toonId: toonIds[0]});
+          }
+          else if (toonIds.length > 1) {
+            NavigationUtil.navigate( "ToonOverview",{sphereId: this.props.sphereId});
+          }
+          else {
+            NavigationUtil.launchModal( "ToonAdd",{sphereId: this.props.sphereId});
+          }
         }
-        else if (toonIds.length > 1) {
-          NavigationUtil.navigate( "ToonOverview",{sphereId: this.props.sphereId});
-        }
-        else {
-          NavigationUtil.launchModal( "ToonAdd",{sphereId: this.props.sphereId});
-        }
-      }
-    });
+      });
+    }
 
     items.push({label: lang("Smart_assistants"),  type:'largeExplanation'});
     items.push({
