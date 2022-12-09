@@ -91,10 +91,9 @@ class NotificationParserClass {
 
           if (!localSphereId) { return; }
 
-          if (MapProvider.cloud2localMap.spheres[notificationData.sphereId] !== undefined) {
-            // add this message to the local database. The eventEnhancer will handle the rest via the MessageCenter.
-            MessageTransferNext.createLocal(localSphereId, notificationData.message)
-          }
+          // add this message to the local database. The eventEnhancer will handle the rest via the MessageCenter.
+          MessageTransferNext.createLocal(localSphereId, notificationData.message);
+
           break;
         case "sphereUsersUpdated":
           this._updateSphereUsers(notificationData);

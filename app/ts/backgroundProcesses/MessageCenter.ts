@@ -117,17 +117,13 @@ class MessageCenterClass {
 
   showMessage(sphereId, message: MessageData) {
     let appState = AppState.currentState;
-    if (appState === "active") {
-      this.showForegroundMessage()
-    }
-    else {
+    // if (appState === "active") {
+    //   this.showForegroundMessage()
+    // }
+    // else {
       LocalNotifications.showMessageNotification(sphereId, message);
       core.store.dispatch({type:"APPEND_MESSAGE", sphereId: sphereId, messageId: message.id, data:{notified:true}});
-    }
-  }
-
-  showForegroundMessage() {
-    Alert.alert("Temporary POPOUP", "Message received");
+    // }
   }
 
 
