@@ -10,6 +10,7 @@ import { MessageReadID, MessageReadTransferNext } from "../cloud/sections/newSyn
 import { DataUtil } from "../util/DataUtil";
 import { LocalizationCore } from "../localization/LocalizationCore";
 import { Alert, AppState } from "react-native";
+import DeviceInfo from "react-native-device-info";
 
 const PushNotification = require('react-native-push-notification');
 
@@ -31,12 +32,12 @@ class MessageCenterClass {
         if (change.changeMessage) {
           // check if we need to deliver a new message or if we need to change the badge.
           let totalUnreadMessages = 0;
-          for (let sphereId in data.sphereIds) {
+          for (let sphereId in change.totalAffectedIds.sphereIds) {
             let currentLocation = LocalizationCore.getCurrentLocation(sphereId);
-
             if (currentLocation !== undefined) {
               // check if there is a message that is not notified
               let sphere = Get.sphere(sphereId);
+
               if (!sphere) { continue; }
 
               if (sphere.state.present) {
@@ -100,12 +101,13 @@ class MessageCenterClass {
 
       switch (eventType) {
         case "enter":
-          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "enter") {
+          if ((!message.triggerLocationId || !locationId || message.triggerLocationId === locationId) && message.triggerEvent === "enter") {
+
             this.showMessage(sphereId, message);
           }
           break;
         case "exit":
-          if ((locationId && message.triggerLocationId === locationId || !locationId) && message.triggerEvent === "exit") {
+          if ((!message.triggerLocationId || !locationId || message.triggerLocationId === locationId) && message.triggerEvent === "exit") {
             this.showMessage(sphereId, message);
           }
           break;
@@ -117,13 +119,8 @@ class MessageCenterClass {
 
   showMessage(sphereId, message: MessageData) {
     let appState = AppState.currentState;
-    // if (appState === "active") {
-    //   this.showForegroundMessage()
-    // }
-    // else {
-      LocalNotifications.showMessageNotification(sphereId, message);
-      core.store.dispatch({type:"APPEND_MESSAGE", sphereId: sphereId, messageId: message.id, data:{notified:true}});
-    // }
+    LocalNotifications.showMessageNotification(sphereId, message);
+    core.store.dispatch({type:"APPEND_MESSAGE", sphereId: sphereId, messageId: message.id, data:{notified:true, visible:true}});
   }
 
 

@@ -59,7 +59,7 @@ const handleRemove = function(state, events, actions : DatabaseAction[]) {
       .then(() => { success(); })
       .catch((err) => {
         // already deleted
-        if (err?.status === 404) { success(); }
+        if (err?.status === 404 || err?.status === 403) { success(); }
       }));
   });
 

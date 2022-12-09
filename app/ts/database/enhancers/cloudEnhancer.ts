@@ -690,8 +690,10 @@ async function handleMessageMarkedAsDeleted(action: DatabaseAction, state) {
 
 async function handleMessageAdd(action: DatabaseAction, state) {
   try {
-    let message = Get.message(action.sphereId, action.messageId);
-    await MessageTransferNext.createOnCloud(action.sphereId, message);
+    if (action.data.cloudId === undefined) {
+      let message = Get.message(action.sphereId, action.messageId);
+      await MessageTransferNext.createOnCloud(action.sphereId, message);
+    }
   }
   catch (err : any) {
     LOGe.cloud("CloudEnhancer: Error creating message", err);
