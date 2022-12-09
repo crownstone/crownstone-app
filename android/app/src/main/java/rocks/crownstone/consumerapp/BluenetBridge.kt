@@ -647,7 +647,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			Log.w(TAG, "No activity.")
 			return
 		}
-		bluenet.tryMakeScannerReady(activity)
+		bluenet.tryMakeScannerReady(activity, false)
 	}
 
 	@ReactMethod
@@ -3052,9 +3052,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onIbeaconScan(scanList: ScannedIbeaconList) {
 		if (appLogLevel == AppLogLevel.BASIC || appLogLevel == AppLogLevel.EXTENDED) {
 			Log.i("IbeaconScan", "onTimeout numBeacons=${scanList.size}")
-			for (scan in scanList) {
-				Log.d("IbeaconScan", "    ${scan.address} uuid=${scan.ibeaconData.uuid} major=${scan.ibeaconData.major} minor=${scan.ibeaconData.minor} rssi=${scan.rssi}")
-			}
+//			for (scan in scanList) {
+//				Log.d("IbeaconScan", "    ${scan.address} uuid=${scan.ibeaconData.uuid} major=${scan.ibeaconData.major} minor=${scan.ibeaconData.minor} rssi=${scan.rssi}")
+//			}
 
 			logMemoryUsage()
 		}
