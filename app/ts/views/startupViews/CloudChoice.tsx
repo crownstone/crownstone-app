@@ -11,7 +11,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  View, Alert, ScrollView
+  View, Alert, ScrollView, Linking
 } from "react-native";
 
 import { setupStyle, CancelButton } from '../settingsViews/SetupShared'
@@ -240,6 +240,11 @@ lang("_Could_not_validate__Plea_body"),
     return (
       <SettingsBackground>
         <SettingsScrollView>
+          <TouchableOpacity onPress={() => {
+            Linking.openURL("https://github.com/crownstone-community/cloud-installer").catch(err => {})
+          }}>
+            <Text style={{padding:10, color: colors.blue.hex, fontWeight:'bold'}}>{lang("Instructions_for_hosting_y")}</Text>
+          </TouchableOpacity>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </SettingsScrollView>
       </SettingsBackground>

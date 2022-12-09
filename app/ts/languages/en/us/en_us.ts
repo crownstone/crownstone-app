@@ -380,6 +380,7 @@ export default {
     Revert_to_defaults:                     function() { return "Revert to defaults" },
     Validate_and_save_:                     function() { return "Validate and save!" },
     Cloud_choice:                           function() { return "Cloud choice" },
+    Instructions_for_hosting_y:             function() { return "How to host your own cloud:\nhttps://github.com/crownstone-community/cloud-installer" },
   },
   ContentNoSphere:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/energyUsage/components/ContentNoSphere.tsx",

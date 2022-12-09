@@ -267,9 +267,9 @@ export class SettingsApp extends LiveComponent<any, any> {
             }
             catch (err) {
               Alert.alert(
-lang("_Could_not_revoke_permiss_header"),
-lang("_Could_not_revoke_permiss_body"),
-[{text:lang("_Could_not_revoke_permiss_left")}]);
+                lang("_Could_not_revoke_permiss_header"),
+                lang("_Could_not_revoke_permiss_body"),
+                [{text:lang("_Could_not_revoke_permiss_left")}]);
             }
           }
         })

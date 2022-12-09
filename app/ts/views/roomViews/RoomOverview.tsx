@@ -165,6 +165,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       if (
         (change.updateActiveSphere)     ||
         (change.changeFingerprint)      ||
+        (change.changeLocations         && change.changeLocations.locationId[this.props.locationId])  ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])
       ) {

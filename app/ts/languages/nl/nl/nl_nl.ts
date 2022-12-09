@@ -704,6 +704,7 @@ export default {
       Revert_to_defaults:                    false,
       Validate_and_save_:                    false,
       Cloud_choice:                          false,
+      Instructions_for_hosting_y:            false,
     },
     _The_changes_are_not_stor_header:       function() { return "Nog niet opgeslagen."; },
     _The_changes_are_not_stor_body:         function() { return "Zorg dat je de controleer en opslaan knop indrukt."; },
@@ -739,6 +740,7 @@ export default {
     Validate_and_save_:                     function() { return "Controleer en opslaan!"; },
     Cloud_choice:                           function() { return "Cloud keuze"; },
     __filename: "../js/views/startupViews/CloudChoice.tsx",
+    Instructions_for_hosting_y:             function() { return "Eigen cloud hosten: \nhttps://github.com/crownstone-community/cloud-installer" },
   },
   ContentNoSphere:{
     __stringSameAsBaseLanguage: {
