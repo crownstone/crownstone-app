@@ -644,7 +644,7 @@ export default {
     Bluetooth_is_turned_on__r:              function() { return "Bluetooth staat aan, Crownstone diensten gaan weer door."; },
     Crownstones_use_Bluetooth:              function() { return "Crownstones hebben Bluetooth nodig om met je telefoon te praten. Hierdoor moet het aanstaan om de app te gebruiken."; },
     Without_permission__the_a:              function() { return "Zonder toestemming kan de app niet met de Crownstones praten."; },
-    Without_permission__the_ap:             function() { return "Without permission, the app cannot communicate with the Crownstones correctly.\n\nYou will have to manually allow the permissions. Go to your phone's settings -> apps -> Crownstone -> Permissions. Set location to \"Allow all the time\", and Nearby devices to \"Allow\"."; },
+    Without_permission__the_ap:             function() { return "Zonder toestemming kan de app niet met de Crownstones praten.\n\nJe moet de permissies handmatig toestaan. Ga naar de instellingen van je telefoon: instellingen -> apps -> Crownstone -> Machtigingen. Zet locatie op \"Altijd toestaan\" en Apparaten in de buurt op \"Toestaan\"."; },
     We_are_turning_on_Bluetoo:              function() { return "We zetten Bluetooth nu aan. We zijn er bijna :)."; },
     Crownstones_use_Bluetooth_:             function() { return "Crownstones hebben Bluetooth nodig om met je telefoon te praten. Hierdoor moet het aanstaan om de app te gebruiken."; },
     Bluetooth_is_turned_on__re:             function() { return "Bluetooth staat aan, Crownstone diensten gaan weer door."; },
@@ -2513,7 +2513,7 @@ export default {
     ManualPermission_body:                  function() { return "Zonder locatiepermissie kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet handmatig de locatiepermissies voor de Crownstone-app op 'Altijd' zetten in de instellingen van je telefoon. Ga naar Instellingen -> Apps -> Crownstone -> Machtigingen en zet Locatie op aan (altijd)."; },
     Turn_on:                                function() { return "Aanzetten"; },
     Permission_required:                    function() { return "Toestemming nodig..."; },
-    ManualPermission_body_android:          function() { return "Without location and nearby devices permission, Crownstones cannot respond to your location and the app can't communicate with Crownstones correctly.\n\nYou will have to manually allow the permissions. Go to your phone's settings -> apps -> Crownstone -> Permissions. Set location to \"Allow all the time\", and Nearby devices to \"Allow\"."; },
+    ManualPermission_body_android:          function() { return "Zonder toestemming kunnen Crownstones niet op je aanwezigheid reageren en kan de app niet goed met de Crownstones communiceren.\n\nJe moet de permissies handmatig toestaan. Ga naar de instellingen van je telefoon: instellingen -> apps -> Crownstone -> Machtigingen. Zet locatie op \"Altijd toestaan\" en Apparaten in de buurt op \"Toestaan\"."; },
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
   },
   LockedStateUI:{
