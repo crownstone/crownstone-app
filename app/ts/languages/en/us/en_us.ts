@@ -1247,6 +1247,7 @@ export default {
     very_far:                               function() { return "very far" },
     Retry__:                                function() { return "Retry.." },
     Finish_:                                function() { return "Finish!" },
+    Please_wait_for_the_measurement:        function() { return "Please wait for the measurement to finish." },
     This_should_take_around__:              function() { return "This should take around 20 seconds..." },
     Waiting_to_start___:                    function() { return "Waiting to start..." },
   },

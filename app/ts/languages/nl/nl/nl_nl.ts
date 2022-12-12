@@ -2412,6 +2412,7 @@ export default {
     very_far:                               function() { return "heel ver weg"; },
     Retry__:                                function() { return "Opnieuw proberen..."; },
     Finish_:                                function() { return "Afronden!"; },
+    Please_wait_for_the_measurement:        function() { return "Wacht tot het meten klaar is." },
     This_should_take_around__:              function() { return "Dit kost zo'n 20 seconden..."; },
     Waiting_to_start___:                    function() { return "Wachten om te beginnen..."; },
     __filename: "/Users/alex/development/crownstone-app/app/ts/views/main/localization/LocalizationTransform.tsx",

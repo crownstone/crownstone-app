@@ -177,7 +177,7 @@ export class LocalizationTransform extends LiveComponent<
         return (
           <Measurement
             title={ lang("Measuring___")}
-            explanation={ "Please wait for the measurement to finish."}
+            explanation={ lang("Please_wait_for_the_measurement")}
             phase={lang("This_should_take_around__") }
             data={this.state.currentCollection}
           />
