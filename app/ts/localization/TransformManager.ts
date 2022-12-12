@@ -82,7 +82,10 @@ export class TransformManager {
         break
       case "sessionCompleted":
         this.setSessionState("FINISHED");
-        this._storeData(event.result);
+        // extra timeout to give the ui time to update.
+        setTimeout(() => {
+          this._storeData(event.result);
+        }, 1500);
         break
       case "collectionSessionReady":
         this.setSessionState("COLLECTION_STARTED");
