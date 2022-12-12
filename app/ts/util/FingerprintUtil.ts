@@ -3,11 +3,8 @@ import { Get } from "./GetUtil";
 import DeviceInfo from "react-native-device-info";
 import {xUtil} from "./StandAloneUtil";
 import {KNNsigmoid, processingParameters} from "../localization/classifiers/knn";
-import {Alert, Platform} from "react-native";
 import { TransformUtil } from "./TransformUtil";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
-import {LocalizationUtil} from "./LocalizationUtil";
-import {NavigationUtil} from "./navigation/NavigationUtil";
 const sha1 = require('sha-1');
 
 export const FINGERPRINT_SCORE_THRESHOLD = 60; // if the quality is below 60%, it will be removed when there is a manual re-train.
@@ -293,7 +290,6 @@ export const FingerprintUtil = {
       missingTransform:0,
     };
 
-    let state = core.store.getState();
     let sphere = Get.sphere(sphereId);
     let location = Get.location(sphereId, locationId);
     if (!sphere || !location) { return penalties; }

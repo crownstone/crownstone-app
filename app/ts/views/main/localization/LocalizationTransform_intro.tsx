@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocalizationTransform_intro", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { Text, View, Alert, Linking } from "react-native";
+import {Text, View, Alert, Linking, Platform} from "react-native";
 
 
 import {colors, styles, topBarHeight} from "../../styles";
@@ -42,7 +42,7 @@ export function LocalizationTransform_intro(props: {sphereId:sphereId, userId: s
 
   return (
     <SettingsBackground>
-      <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingVertical:30}}>
+      <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingTop: Platform.OS === 'ios' ? 15 : topBarHeight + 15}}>
         <Text style={styles.header}>{ lang("Lets_optimize_for_your_ph") }</Text>
         {props.userId === state.user.userId ?
           <LocalizationTransformSelf  device={device}/> :

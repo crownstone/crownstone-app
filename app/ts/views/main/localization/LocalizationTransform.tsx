@@ -10,9 +10,9 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import {TRANSFORM_MIN_SAMPLE_THRESHOLD, TransformManager} from "../../../localization/TransformManager";
 import DeviceInfo from "react-native-device-info";
 import { core } from "../../../Core";
-import {ActivityIndicator, Alert, Settings, Text, View} from "react-native";
+import {ActivityIndicator, Alert, Platform, Settings, Text, View} from "react-native";
 import { SettingsBackground } from "../../components/SettingsBackground";
-import {availableModalHeight, colors, screenWidth, styles} from "../../styles";
+import {availableModalHeight, colors, screenWidth, styles, topBarHeight} from "../../styles";
 import { Get } from "../../../util/GetUtil";
 import { ScaledImage } from "../../components/ScaledImage";
 import { NavigationUtil } from "../../../util/navigation/NavigationUtil";
@@ -243,7 +243,7 @@ lang("_Wait_for_the_host_to_ret_body"),
   render() {
     return (
       <SettingsBackground>
-        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingTop:15}}>
+        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingTop: Platform.OS === 'ios' ? 15 : topBarHeight + 15}}>
           {this.renderContent()}
         </SafeAreaView>
       </SettingsBackground>

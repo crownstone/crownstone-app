@@ -187,7 +187,8 @@ export class TransformManager {
 
     if (amountOfCompletedSessions >= TRANSFORM_MIN_SESSION_COUNT) {
       if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
-        this.finalizeSession();
+        // added a delay to ensure that the collection promise can resolve.
+        setTimeout(() => {this.finalizeSession();}, 1000);
         return;
       }
     }

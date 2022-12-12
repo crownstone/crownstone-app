@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocalizationTransform_userSelect", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import { Text, View, Alert, Linking } from "react-native";
+import {Text, View, Alert, Linking, Platform} from "react-native";
 
 
 import {colors, styles, topBarHeight} from "../../styles";
@@ -18,6 +18,7 @@ import { core } from "../../../Core";
 import {Get} from "../../../util/GetUtil";
 import {SphereDeleted} from "../../static/SphereDeleted";
 import {NavigationUtil} from "../../../util/navigation/NavigationUtil";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function LocalizationTransform_userSelect(props: {sphereId, options: {userId: string, deviceId: string, deviceString: string}[] }) {
@@ -55,13 +56,13 @@ export function LocalizationTransform_userSelect(props: {sphereId, options: {use
 
   return (
     <SettingsBackground>
-      <View style={{height:topBarHeight}}/>
-      <View style={{height:30}}/>
-      <Text style={styles.header}>{ lang("You_have_options_") }</Text>
-      <Text style={styles.boldExplanation}>{ lang("You_can_transform_the_dat") }</Text>
-      <Text style={styles.explanation}>{ lang("Select_someone_from_the_l") }</Text>
-      <View style={{height:30}}/>
-      <ListEditableItems items={items} />
+      <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center', paddingTop: Platform.OS === 'ios' ? 15 : topBarHeight + 15}}>
+        <Text style={styles.header}>{ lang("You_have_options_") }</Text>
+        <Text style={styles.boldExplanation}>{ lang("You_can_transform_the_dat") }</Text>
+        <Text style={styles.explanation}>{ lang("Select_someone_from_the_l") }</Text>
+        <View style={{height:30}}/>
+        <ListEditableItems items={items} />
+      </SafeAreaView>
     </SettingsBackground>
   );
 }
