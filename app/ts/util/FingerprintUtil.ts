@@ -132,7 +132,7 @@ export const FingerprintUtil = {
     return `${ibeacon.major}_${ibeacon.minor}`;
   },
 
-  checkToRemoveBadFingerprints: function(sphereId, locationId) {
+  checkAndRemoveBadFingerprints: function(sphereId, locationId) {
     let location = Get.location(sphereId, locationId);
     if (!location) { return; }
 
@@ -346,9 +346,11 @@ export const FingerprintUtil = {
   },
 
 
-  processFingerprint(sphereId: string, locationId: string, fingerprintRawId: string) : void {
+  getProcessFingerprintActions(sphereId: string, locationId: string, fingerprintRawId: string) : DatabaseAction[] {
+    let actions : DatabaseAction[] = [];
+
     let location = Get.location(sphereId, locationId);
-    if (!location) { return; }
+    if (!location) { return actions; }
 
     let alreadyHasProcessed = false;
     let processedId = null;
@@ -366,21 +368,23 @@ export const FingerprintUtil = {
       // check if there was a processed fingerprint for this raw fingerprint before, if so, delete it.
       let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprintRawId);
       if (processedFingerprint) {
-        core.store.dispatch({
+        actions.push({
           type: "REMOVE_PROCESSED_FINGERPRINT",
           sphereId: sphereId,
           locationId: locationId,
           fingerprintProcessedId: processedFingerprint.id
         });
       }
-      return;
+      return actions;
     }
 
     if (!alreadyHasProcessed) {
       processedId = xUtil.getUUID();
     }
 
-    core.store.dispatch({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: processedId, data: processedFingerprint});
+    actions.push({type: "ADD_PROCESSED_FINGERPRINT", sphereId, locationId, fingerprintProcessedId: processedId, data: processedFingerprint});
+
+    return actions;
   },
 
 

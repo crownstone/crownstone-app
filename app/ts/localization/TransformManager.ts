@@ -66,7 +66,7 @@ export class TransformManager {
     });
   }
 
-  _handleSseEvent(event: TransformEvents) {
+  async _handleSseEvent(event: TransformEvents) {
     if (event.type      !== 'transform') { return; }
     if (event.sessionId !== this.transformId) { return; }
     switch (event.subType) {
@@ -81,11 +81,13 @@ export class TransformManager {
         this.setSessionState("FAILED");
         break
       case "sessionCompleted":
-        this.setSessionState("FINISHED");
         // extra timeout to give the ui time to update.
-        setTimeout(() => {
-          this._storeData(event.result);
-        }, 1500);
+        await Scheduler.delay(750);
+        this.setSessionState("FINALIZING")
+        await Scheduler.delay(750);
+        this._storeData(event.result);
+        await Scheduler.delay(1500)
+        this.setSessionState("FINISHED");
         break
       case "collectionSessionReady":
         this.setSessionState("COLLECTION_STARTED");

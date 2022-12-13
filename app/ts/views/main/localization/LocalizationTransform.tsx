@@ -182,6 +182,17 @@ export class LocalizationTransform extends LiveComponent<
             data={this.state.currentCollection}
           />
         );
+      case "FINALIZING":
+        return (
+          <React.Fragment>
+            <Text style={styles.header}>{ lang("Wrapping_up") }</Text>
+            <Text style={styles.boldExplanation}>{ lang("All_datasets_collected_by") }</Text>
+            <ScaledImage source={require("../../../../assets/images/map_finished.png")} sourceWidth={1193} sourceHeight={909} targetWidth={screenWidth*0.8} />
+            <View style={{flex:1}} />
+            <ActivityIndicator size={'large'} style={{alignSelf:'center', padding:30}}/>
+            <View style={{height:30}} />
+          </React.Fragment>
+        );
       case "FINISHED":
         return (
           <React.Fragment>

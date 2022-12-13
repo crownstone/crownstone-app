@@ -29,6 +29,7 @@ type TransformSessionState = "UNINITIALIZED"      |
   "AWAITING_INVITATION_ACCEPTANCE"                |
   "SESSION_WAITING_FOR_COLLECTION_INITIALIZATION" |
   "SESSION_WAITING_FOR_COLLECTION_START"          |
+  "FINALIZING"                                    |
   "FINISHED"                                      |
   "COLLECTION_STARTED"                            |
   "WAITING_ON_OTHER_USER"                         |

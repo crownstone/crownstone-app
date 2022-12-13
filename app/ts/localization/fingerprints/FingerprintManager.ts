@@ -175,6 +175,8 @@ export class FingerprintManager {
    */
   checkProcessedFingerprints() {
     // if the sphere does not exist, clean up and stop.
+    let actions : DatabaseAction[] = [];
+
     let sphere = Get.sphere(this.sphereId);
     if (!sphere) { this.deinit(); return; }
 
@@ -184,19 +186,22 @@ export class FingerprintManager {
       for (let fingerprint of Object.values(location.fingerprints.raw)) {
         let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprint.id);
         if (!processedFingerprint || processedFingerprint.processedAt < fingerprint.updatedAt) {
-          FingerprintUtil.processFingerprint(this.sphereId, locationId, fingerprint.id);
+          actions = actions.concat(FingerprintUtil.getProcessFingerprintActions(this.sphereId, locationId, fingerprint.id));
         }
       }
 
       // check all processed fingerprints if the raw fingerprint is missing, if so, remove the processed fingerprint as well.
       for (let processedFingerprint of Object.values(location.fingerprints.processed)) {
         if (!location.fingerprints.raw[processedFingerprint.fingerprintId]) {
-          core.store.dispatch({type:"REMOVE_PROCESSED_FINGERPRINT", sphereId: this.sphereId, locationId: locationId, fingerprintProcessedId: processedFingerprint.id});
+          actions.push(({type:"REMOVE_PROCESSED_FINGERPRINT", sphereId: this.sphereId, locationId: locationId, fingerprintProcessedId: processedFingerprint.id}));
         }
       }
     }
 
 
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
   }
 
 
@@ -221,6 +226,7 @@ export class FingerprintManager {
     let sphere = Get.sphere(this.sphereId);
     let actions = [];
     for (let locationId in sphere.locations) {
+      // this will trigger an 'removeAllProcessedFingerprint' change event.
       actions.push({type:"REMOVE_ALL_PROCESSED_FINGERPRINTS", sphereId: this.sphereId, locationId});
     }
     if (actions.length > 0) {

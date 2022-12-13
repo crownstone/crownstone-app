@@ -7,6 +7,7 @@ import { FingerprintManager } from "./fingerprints/FingerprintManager";
 import {
   AMOUNT_OF_CROWNSTONES_IN_VECTOR_FOR_INDOOR_LOCALIZATION
 } from "../ExternalConfig";
+import {LOGi} from "../logging/Log";
 
 
 export class LocalizationCoreClass {
@@ -124,6 +125,7 @@ export class LocalizationCoreClass {
     return new Promise((resolve, reject) => {
       this.initClassifierTimeout();
       this.initClassifierTimeout = Scheduler.setTimeout(() => {
+        LOGi.info("LocalizationCore: Initializing classifier");
         this._initClassifier();
         resolve();
       }, 10);

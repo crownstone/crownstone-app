@@ -1227,6 +1227,7 @@ export default {
     Measuring___:                           function() { return "Measuring..." },
     Next:                                   function() { return "Next" },
     All_done_:                              function() { return "All done!" },
+    Wrapping_up:                            function() { return "Wrapping up..." },
     All_datasets_collected_by:              function() { return "All datasets collected by the other device will now be optimized for your phone!" },
     Something_went_wrong___:                function() { return "Something went wrong..." },
     Press_the_button_below_to:              function() { return "Press the button below to try again, or try again later." },

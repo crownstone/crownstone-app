@@ -2378,6 +2378,8 @@ export default {
       Finish_:                               false,
       This_should_take_around__:             false,
       Waiting_to_start___:                   false,
+      Wrapping_up:                           false,
+      Please_wait_for_the_measurement:       false,
     },
     Starting___:                            function() { return "Starten..."; },
     Connecting___:                          function() { return "Verbinden..."; },
@@ -2416,6 +2418,7 @@ export default {
     This_should_take_around__:              function() { return "Dit kost zo'n 20 seconden..."; },
     Waiting_to_start___:                    function() { return "Wachten om te beginnen..."; },
     __filename: "/Users/alex/development/crownstone-app/app/ts/views/main/localization/LocalizationTransform.tsx",
+    Wrapping_up:                            function() { return "Verwerken..." },
   },
   LocalizationTransform_intro:{
     __stringSameAsBaseLanguage: {

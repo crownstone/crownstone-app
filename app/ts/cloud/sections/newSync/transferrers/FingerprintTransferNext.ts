@@ -54,7 +54,7 @@ export const FingerprintTransferNext : TransferLocationTool<FingerprintData, Fin
 
     // If this fingerprint came from the cloud AND it is an in-hand set, remove any migrated datasets for this location.
     if (data.cloudId && data.type === 'IN_HAND') {
-      FingerprintUtil.checkToRemoveBadFingerprints(localSphereId, localLocationId);
+      FingerprintUtil.checkAndRemoveBadFingerprints(localSphereId, localLocationId);
     }
 
     return {id: newId, action};

@@ -339,6 +339,7 @@ type DatabaseEventType = 'updateActiveSphere' |
   'changeUsers'                     |
   'changeTransforms'                |
   'changeProcessedFingerprint'      |
+  'removeAllProcessedFingerprint'   |
   'changeFingerprint'               |
   'addLocation'                     |
   'changeLocations'                 |
