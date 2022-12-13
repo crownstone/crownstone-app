@@ -118,12 +118,15 @@ export class PreferenceSyncer extends SyncingBase {
 }
 
 
+interface PreferenceMap {
+  [key: string]: { value: any }
+}
 
 const PreferenceProcessor = {
   // here we'll map certain values from our state to the cloud preferences map.
   // preferences are stored per device.
   mapPreferences(state) {
-    let preferenceMap = {};
+    let preferenceMap : PreferenceMap = {};
 
     let spheres = state.spheres;
     let sphereIds = Object.keys(spheres);
