@@ -163,8 +163,8 @@ const PreferenceProcessor = {
       preferenceMap[prepareProperty(sphere, `sorted_lists`)] = {value: sortedLists};
     });
 
-    preferenceMap['localization_temporalSmoothingMethod'] = state.app.localization_temporalSmoothingMethod;
-    preferenceMap['localization_onlyOwnFingerprints']     = state.app.localization_onlyOwnFingerprints;
+    preferenceMap['localization_temporalSmoothingMethod'] = {value:state.app.localization_temporalSmoothingMethod};
+    preferenceMap['localization_onlyOwnFingerprints']     = {value:state.app.localization_onlyOwnFingerprints};
 
     return preferenceMap;
   },

@@ -155,7 +155,7 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
         Alert.alert(
           lang("Are_you_sure_"),
           lang("This_will_mark_all_datase"),
-          [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
+          [{text: lang("Cancel"), style: 'cancel'}, {text: lang("OK"), style:'destructive', onPress: () => {
               FingerprintUtil.enableExclusivity();
             }}], {cancelable: false});
 
