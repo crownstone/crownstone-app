@@ -87,16 +87,14 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
     case "LIVE":
       break;
     case "DAY":
-      // get day of the week
-      let day = new Date(startDateValue).getDay();
-
       // check if the startDate is today
-      let today = new Date().getDay();
-      let isToday = (day === today);
+      let dayCheckValue = new Date(startDateValue).setHours(0,0,0,0);
+      let today = new Date().setHours(0,0,0,0);
+      let isToday = (dayCheckValue === today);
 
       // check if startDate is yesterday
-      let yesterday = new Date(Date.now() - 24*60*60*1000).getDay();
-      let isYesterday = (day === yesterday);
+      let yesterday = new Date(Date.now() - 24*60*60*1000).setHours(0,0,0,0);
+      let isYesterday = (dayCheckValue === yesterday);
 
       indicator = xUtil.getDateFormat(startDateValue);
       if (isToday) {
