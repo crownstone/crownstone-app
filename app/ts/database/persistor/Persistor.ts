@@ -433,7 +433,7 @@ export class Persistor {
     }
 
 
-    // invalid keys are being batchRemoved. This will cascase as well.
+    // invalid keys are being batchRemoved. This will cascade as well.
     if (invalidKeys.length > 0) {
       LOGd.store("Persistor: Hydration v2 Step3, Removing invalid keys.", invalidKeys);
       return this._batchRemove(invalidKeys)

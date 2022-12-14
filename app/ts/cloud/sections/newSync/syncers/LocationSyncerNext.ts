@@ -30,6 +30,7 @@ export class LocationSyncerNext extends SyncSphereInterface<LocationData, Locati
     }
   }
 
+
   updateLocal(cloudData: cloud_Location) {
     this.actions.push(
       LocationTransferNext.getUpdateLocalAction(this.localSphereId, this.localId, LocationTransferNext.mapCloudToLocal(cloudData))
