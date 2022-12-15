@@ -82,6 +82,7 @@ export class TransformManager {
         break
       case "sessionCompleted":
         // extra timeout to give the ui time to update.
+        this.eventUnsubscriber();
         await Scheduler.delay(750);
         this.setSessionState("FINALIZING")
         await Scheduler.delay(750);
