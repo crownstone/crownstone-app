@@ -37,7 +37,6 @@ import { EditIcon, MenuButtonPlaceholder } from "../components/EditIcon";
 import { HeaderTitle }              from "../components/HeaderTitle";
 import { Get }                      from "../../util/GetUtil";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 
 const ZOOM_LEVELS = {
@@ -227,7 +226,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
 
       let activeSphere = state.spheres[activeSphereId];
       SPHERE_ID_STORE.activeSphereId = activeSphereId;
-      let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       backgroundOverride = background.main;
@@ -281,7 +279,6 @@ export class SphereOverviewContent extends LiveComponent<any, any> {
         <BackgroundCustomTopBar image={backgroundOverride} testID={"SphereOverview_noSphere"}>
           <SafeAreaView style={{flexGrow:1, alignItems:'center', justifyContent:'center', top:0, left:0, bottom:0, right:0}}>
             <View style={{height: topBarHeight}} />
-            {/*<Icon name="c1-sphere" size={120} color={colors.csBlue.hex} style={{padding:15}}/>*/}
             <Text style={styles.boldExplanation}>{ lang("Press_Edit_in_the_upper_r") }</Text>
             <View style={{flex:2}} />
           </SafeAreaView>

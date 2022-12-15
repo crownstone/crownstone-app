@@ -366,7 +366,7 @@ export const FingerprintUtil = {
     let processedFingerprint = FingerprintUtil._processFingerprint(sphereId, locationId, fingerprintRawId);
     if (!processedFingerprint) {
       // check if there was a processed fingerprint for this raw fingerprint before, if so, delete it.
-      let processedFingerprint = Get.processedFingerprintFromRawId(this.sphereId, locationId, fingerprintRawId);
+      let processedFingerprint = Get.processedFingerprintFromRawId(sphereId, locationId, fingerprintRawId);
       if (processedFingerprint) {
         actions.push({
           type: "REMOVE_PROCESSED_FINGERPRINT",
@@ -480,7 +480,8 @@ export const FingerprintUtil = {
 
 
   deleteAllFingerprints(sphereId: sphereId) {
-    let sphere = Get.sphere(this.sphereId);
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return; }
     let actions = [];
     for (let locationId in sphere.locations) {
       let location = sphere.locations[locationId];
@@ -497,7 +498,8 @@ export const FingerprintUtil = {
   },
 
   deleteAllUsedFingerprints(sphereId: sphereId) {
-    let sphere = Get.sphere(this.sphereId);
+    let sphere = Get.sphere(sphereId);
+    if (!sphere) { return; }
     let actions = [];
     for (let locationId in sphere.locations) {
       let location = sphere.locations[locationId];

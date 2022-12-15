@@ -60,6 +60,16 @@ export function SphereOverviewSideBar(props) {
         closeSideMenu={props.closeSideMenu}
         label={ lang("Localization")}
         callback={() => {
+          let state = core.store.getState();
+          if (state.app.indoorLocalizationEnabled === false) {
+            Alert.alert(
+              lang("Indoor_Localization_is_di"),
+              lang("Would_you_like_to_enable_"),
+              [{text: lang("No")}, {text: lang("Yes"), onPress: () => { NavigationUtil.launchModal("SettingsApp",{isModal:true}) }}]);
+            return;
+          }
+
+
           if (
             DataUtil.inSphere(SPHERE_ID_STORE.activeSphereId) &&
             enoughCrownstonesForIndoorLocalization(SPHERE_ID_STORE.activeSphereId) &&

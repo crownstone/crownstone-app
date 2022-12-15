@@ -109,7 +109,8 @@ export function HistoricalEnergyUsage(props : {sphereId: sphereId, mode: GRAPH_T
       calculator = EnergyIntervalCalculation.days.getNthSamplePoint;
       break;
     case "WEEK":
-      indicator = `${xUtil.getDateFormat(range.start)} - ${xUtil.getDateFormat(range.end)}`;
+      // remove 12 hours from the end since we look from midnight-midnight and that results in the day indicator of the end day be of the next day.
+      indicator = `${xUtil.getDateFormat(range.start)} - ${xUtil.getDateFormat(range.end.valueOf() - 12*3600*1000)}`;
       calculator = EnergyIntervalCalculation.weeks.getNthSamplePoint;
       break;
     case "MONTH":

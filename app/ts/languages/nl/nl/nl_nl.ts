@@ -2024,6 +2024,9 @@ export default {
       Last_2__seconds:                       false,
       Last_5___seconds:                      false,
       Last_10___seconds:                     false,
+      Done:                                  false,
+      You_can_repeat_the_optimi:             false,
+      You_will_need_to_retrain_:             false,
     },
     Advanced_Settings:                      function() { return "Geavanceerde Instellingen"; },
     SMOOTHING__REACTION_SPEED:              function() { return "GEMIDDELDEN (REACTIESNELHEID VS STABILITEIT)"; },
@@ -2054,6 +2057,9 @@ export default {
     Phone_exclusivity:                      function() { return "Telefoon exclusiviteit"; },
     This_will_mark_all_datase:              function() { return "Dit zal alle datasets die jij hebt verzameld markeren als exclusief voor jouw telefoon"; },
     unknown:                                function() { return "onbekend"; },
+    Done:                                   function() { return "Klaar!" },
+    You_can_repeat_the_optimi:              function() { return "Je kan nu opnieuw de optimalizatie procedure uitvoeren." },
+    You_will_need_to_retrain_:              function() { return "Je moet de kamers opnieuw trainen om de positiebepaling te kunnen gebruiken." },
   },
   LocalizationCrownstoneMoved:{
     __stringSameAsBaseLanguage: {
@@ -5078,6 +5084,10 @@ export default {
       Change_sphere:                         false,
       Developer:                             true,
       App_v:                                 true,
+      Indoor_Localization_is_di:             false,
+      Would_you_like_to_enable_:             false,
+      No:                                    false,
+      Yes:                                   false,
     },
     Add_items:                              function() { return "Toevoegen"; },
     Localization:                           function() { return "Positiebepaling"; },
@@ -5087,6 +5097,10 @@ export default {
     Developer:                              function() { return "Developer"; },
     App_v:                                  function() { return "App v" + arguments[0] + ""; },
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/sidebars/SphereOverviewSideBar.tsx",
+    Indoor_Localization_is_di:              function() { return "Positiebepaling staat uit" },
+    Would_you_like_to_enable_:              function() { return "Wil je het nu aanzetten?" },
+    No:                                     function() { return "Nee" },
+    Yes:                                    function() { return "Ja" },
   },
   SphereUser:{
     __stringSameAsBaseLanguage: {

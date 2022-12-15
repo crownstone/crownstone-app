@@ -26,25 +26,25 @@ export const BleUtil = {
 
 
   cancelAllSearches: function() {
-    this.cancelSearch();
-    this.cancelSetupSearch();
+    BleUtil.cancelSearch();
+    BleUtil.cancelSetupSearch();
   },
 
-  cancelSearch:        function() { this._cancelSearch(this.pendingSearch); },
-  cancelSetupSearch:   function() { this._cancelSearch(this.pendingSetupSearch); },
+  cancelSearch:        function() { BleUtil._cancelSearch(BleUtil.pendingSearch); },
+  cancelSetupSearch:   function() { BleUtil._cancelSearch(BleUtil.pendingSetupSearch); },
 
   getNearestSetupCrownstone: function(timeoutMilliseconds) {
-    this.cancelSetupSearch();
+    BleUtil.cancelSetupSearch();
 
     Bluenet.subscribeToNearest();
-    return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearestSetup, this.pendingSetupSearch, timeoutMilliseconds)
+    return BleUtil._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearestSetup, BleUtil.pendingSetupSearch, timeoutMilliseconds)
   },
 
   getNearestCrownstone: function(timeoutMilliseconds) {
-    this.cancelSearch();
+    BleUtil.cancelSearch();
 
     Bluenet.subscribeToNearest();
-    return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearest, this.pendingSearch, timeoutMilliseconds)
+    return BleUtil._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearest, BleUtil.pendingSearch, timeoutMilliseconds)
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
@@ -52,7 +52,7 @@ export const BleUtil = {
     return new Promise((resolve, reject) => {
       let measurementMap = {};
       let highFrequencyRequestUUID = xUtil.getUUID();
-      this.startHighFrequencyScanning(highFrequencyRequestUUID);
+      BleUtil.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let sortingCallback = (nearestItem) => {
         if (typeof nearestItem == 'string') {
@@ -69,8 +69,8 @@ export const BleUtil = {
 
         if (measurementMap[nearestItem.handle].count == 3) {
           LOG.info('_getNearestCrownstoneFromEvent: RESOLVING', nearestItem);
-          this._cancelSearch(stateContainer);
-          this.stopHighFrequencyScanning(highFrequencyRequestUUID);
+          BleUtil._cancelSearch(stateContainer);
+          BleUtil.stopHighFrequencyScanning(highFrequencyRequestUUID);
           resolve(nearestItem);
         }
       };
@@ -79,18 +79,18 @@ export const BleUtil = {
 
       // if we cant find something in 10 seconds, we fail.
       stateContainer.timeout = Scheduler.scheduleCallback(() => {
-        this.stopHighFrequencyScanning(highFrequencyRequestUUID);
-        this._cancelSearch(stateContainer);
+        BleUtil.stopHighFrequencyScanning(highFrequencyRequestUUID);
+        BleUtil._cancelSearch(stateContainer);
         reject(new Error("_getNearestCrownstoneFromEvent: Nothing Near"));
       }, timeoutMilliseconds, '_getNearestCrownstoneFromEvent stateContainer.timeout');
     })
   },
 
-  _detect: function(handle, topic) {
+  _detect: function(handle, topic) : Promise<crownstoneAdvertisement> {
     return new Promise((resolve, reject) => {
       let count = 0;
       let highFrequencyRequestUUID = xUtil.getUUID();
-      this.startHighFrequencyScanning(highFrequencyRequestUUID);
+      BleUtil.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
@@ -110,7 +110,7 @@ export const BleUtil = {
           cleanup.timeout = null;
         }
         cleanup.unsubscribe();
-        this.stopHighFrequencyScanning(highFrequencyRequestUUID);
+        BleUtil.stopHighFrequencyScanning(highFrequencyRequestUUID);
         resolve(advertisement);
       };
 
@@ -119,7 +119,7 @@ export const BleUtil = {
 
       // if we cant find something in 10 seconds, we fail.
       cleanup.timeout = Scheduler.scheduleCallback(() => {
-        this.stopHighFrequencyScanning(highFrequencyRequestUUID);
+        BleUtil.stopHighFrequencyScanning(highFrequencyRequestUUID);
         cleanup.unsubscribe();
         reject(new Error());
       }, 10000, 'detectCrownstone timeout');
@@ -127,14 +127,14 @@ export const BleUtil = {
   },
 
   detectCrownstone: async function(stoneHandle) : Promise<boolean> {
-    this.cancelSearch();
-    let advertisement : crownstoneAdvertisement = await this._detect(stoneHandle, core.nativeBus.topics.advertisement);
+    BleUtil.cancelSearch();
+    let advertisement : crownstoneAdvertisement = await BleUtil._detect(stoneHandle, core.nativeBus.topics.advertisement);
     return advertisement.serviceData.setupMode;
   },
 
-  detectSetupCrownstone: function(stoneHandle) : Promise<void> {
-    this.cancelSetupSearch();
-    return this._detect(stoneHandle, core.nativeBus.topics.setupAdvertisement);
+  detectSetupCrownstone: function(stoneHandle) : Promise<crownstoneAdvertisement> {
+    BleUtil.cancelSetupSearch();
+    return BleUtil._detect(stoneHandle, core.nativeBus.topics.setupAdvertisement);
   },
 
 
@@ -162,35 +162,35 @@ export const BleUtil = {
       enableTimeout = true;
     }
 
-    if (this.highFrequencyScanUsers[id] === undefined) {
-      if (Object.keys(this.highFrequencyScanUsers).length === 0) {
+    if (BleUtil.highFrequencyScanUsers[id] === undefined) {
+      if (Object.keys(BleUtil.highFrequencyScanUsers).length === 0) {
         LOGd.info("Starting HF Scanning!");
         Bluenet.startScanningForCrownstones();
       }
-      this.highFrequencyScanUsers[id] = {timeout: undefined};
+      BleUtil.highFrequencyScanUsers[id] = {timeout: undefined};
     }
 
     if (enableTimeout === true) {
-      if (typeof this.highFrequencyScanUsers[id].timeout === 'function') {
-        this.highFrequencyScanUsers[id].timeout();
-        this.highFrequencyScanUsers[id].timeout = null;
+      if (typeof BleUtil.highFrequencyScanUsers[id].timeout === 'function') {
+        BleUtil.highFrequencyScanUsers[id].timeout();
+        BleUtil.highFrequencyScanUsers[id].timeout = null;
       }
-      this.highFrequencyScanUsers[id].timeout = Scheduler.scheduleCallback(() => {
-        this.stopHighFrequencyScanning(id);
-      }, timeoutDuration, 'this.highFrequencyScanUsers[id].timeout');
+      BleUtil.highFrequencyScanUsers[id].timeout = Scheduler.scheduleCallback(() => {
+        BleUtil.stopHighFrequencyScanning(id);
+      }, timeoutDuration, 'BleUtil.highFrequencyScanUsers[id].timeout');
     }
 
-    return () => { this.stopHighFrequencyScanning(id) };
+    return () => { BleUtil.stopHighFrequencyScanning(id) };
   },
 
   stopHighFrequencyScanning: function(id) {
-    if (this.highFrequencyScanUsers[id] !== undefined) {
-      if (typeof this.highFrequencyScanUsers[id].timeout === 'function') {
-        this.highFrequencyScanUsers[id].timeout();
-        this.highFrequencyScanUsers[id].timeout = null;
+    if (BleUtil.highFrequencyScanUsers[id] !== undefined) {
+      if (typeof BleUtil.highFrequencyScanUsers[id].timeout === 'function') {
+        BleUtil.highFrequencyScanUsers[id].timeout();
+        BleUtil.highFrequencyScanUsers[id].timeout = null;
       }
-      delete this.highFrequencyScanUsers[id];
-      if (Object.keys(this.highFrequencyScanUsers).length === 0) {
+      delete BleUtil.highFrequencyScanUsers[id];
+      if (Object.keys(BleUtil.highFrequencyScanUsers).length === 0) {
         LOGd.info("Stopping HF Scanning!");
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
@@ -198,7 +198,7 @@ export const BleUtil = {
   },
 
   highFrequencyScanUsed: function() {
-    return Object.keys(this.highFrequencyScanUsers).length > 0;
+    return Object.keys(BleUtil.highFrequencyScanUsers).length > 0;
   }
 
 };

@@ -30,7 +30,7 @@ function getLabel(value: LocalizationSmoothingMethod, allValues: {label:string, 
 
 export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
   bindTopbarButtons(props);
-  useDatabaseChange(['changeLocalizationAppSettings']);
+  useDatabaseChange(['changeLocalizationAppSettings','changeTransforms','changeProcessedFingerprint']);
 
   let state = core.store.getState();
 
@@ -71,6 +71,7 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
           [{ text: lang("Cancel"), style: 'cancel' }, {
             text: lang("Delete"), style: 'destructive', onPress: () => {
               core.store.dispatch({ type: "REMOVE_ALL_TRANSFORMS" });
+              Alert.alert(lang("Done"), lang("You_can_repeat_the_optimi"),[{text: lang("OK")}]);
             }
           }], { cancelable: false });
       }
@@ -99,6 +100,7 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
           [{ text: lang("Cancel"), style: 'cancel' }, {
             text: lang("Delete"), style: 'destructive', onPress: () => {
               FingerprintUtil.deleteAllFingerprints(props.sphereId);
+              Alert.alert(lang("Done"), lang("You_will_need_to_retrain_"),[{text: lang("OK")}]);
             }
           }], { cancelable: false });
       }
@@ -120,6 +122,7 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
             lang("You_will_have_to_train_al"),
             [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
                 FingerprintUtil.deleteAllUsedFingerprints(props.sphereId);
+                Alert.alert(lang("Done"), lang("You_will_need_to_retrain_"),[{text: lang("OK")}]);
               }}], {cancelable: false});
         }
       });
@@ -137,6 +140,7 @@ export function LocalizationAdvancedSettings(props: {sphereId: sphereId}) {
           lang("You_will_have_to_train_all"),
           [{text: lang("Cancel"), style: 'cancel'}, {text: lang("Delete"), style:'destructive', onPress: () => {
               FingerprintUtil.deleteAllUsedFingerprints(props.sphereId);
+              Alert.alert(lang("Done"), lang("You_will_need_to_retrain_"),[{text: lang("OK")}]);
             }}], {cancelable: false});
       }
     });

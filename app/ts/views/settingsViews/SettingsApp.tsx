@@ -19,7 +19,7 @@ import { SliderBar }  from "../components/editComponents/SliderBar";
 import { DataUtil }   from "../../util/DataUtil";
 import { Icon }       from "../components/Icon";
 import { ListEditableItems }       from '../components/ListEditableItems'
-import { SettingsNavbarBackground} from "../components/SettingsBackground";
+import {SettingsBackground, SettingsNavbarBackground} from "../components/SettingsBackground";
 import {LocalizationCore} from "../../localization/LocalizationCore";
 import {Get} from "../../util/GetUtil";
 import { NavigationUtil } from "../../util/navigation/NavigationUtil";
@@ -28,7 +28,7 @@ import { SettingsScrollView } from "../components/SettingsScrollView";
 
 export class SettingsApp extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("App_Settings"), closeModal: props.modal});
+    return TopBarUtil.getOptions({title: lang("App_Settings"), closeModal: props.isModal});
   }
 
   unsubscribe : any;
@@ -292,6 +292,15 @@ export class SettingsApp extends LiveComponent<any, any> {
   }
 
   render() {
+    if (this.props.isModal) {
+      return (
+        <SettingsBackground>
+          <SettingsScrollView keyboardShouldPersistTaps="always">
+            <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          </SettingsScrollView>
+        </SettingsBackground>
+      );
+    }
     return (
       <SettingsNavbarBackground testID={"SettingsApp"}>
         <SettingsScrollView keyboardShouldPersistTaps="always">

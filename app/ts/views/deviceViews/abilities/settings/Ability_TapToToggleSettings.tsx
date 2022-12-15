@@ -86,7 +86,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}} />}
                 label={ lang("All_Crownstones")}
-                callback={() => { NavigationUtil.launchModal("SettingsApp", {modal:true}) }}
+                callback={() => { NavigationUtil.launchModal("SettingsApp", {isModal:true}) }}
               />
               <Separator  />
               <SliderBar

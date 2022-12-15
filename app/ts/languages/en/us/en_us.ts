@@ -1062,6 +1062,9 @@ export default {
     Phone_exclusivity:                      function() { return "Phone exclusivity" },
     This_will_mark_all_datase:              function() { return "This will mark all datasets you have trained exclusive to your device." },
     unknown:                                function() { return "unknown" },
+    Done:                                   function() { return "Done" },
+    You_can_repeat_the_optimi:              function() { return "You can repeat the optimization process now." },
+    You_will_need_to_retrain_:              function() { return "You will need to retrain the rooms to use localization." },
   },
   LocalizationCrownstoneMoved:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationCrownstoneMoved.tsx",
@@ -2632,6 +2635,10 @@ export default {
     Change_sphere:                          function() { return "Change sphere" },
     Developer:                              function() { return "Developer" },
     App_v:                                  function() { return "App v" + arguments[0] },
+    Indoor_Localization_is_di:              function() { return "Indoor Localization is disabled" },
+    Would_you_like_to_enable_:              function() { return "Would you like to enable it now?" },
+    No:                                     function() { return "No" },
+    Yes:                                    function() { return "Yes" },
   },
   SphereUser:{
     __filename: "../js/views/main/editSubviews/SphereUser.tsx",
