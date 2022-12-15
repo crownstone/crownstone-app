@@ -92,7 +92,10 @@ class NotificationParserClass {
           if (!localSphereId) { return; }
 
           // add this message to the local database. The eventEnhancer will handle the rest via the MessageCenter.
-          MessageTransferNext.createLocal(localSphereId, MessageTransferNext.mapCloudToLocal(notificationData.message));
+          let messageInLocalFormat = MessageTransferNext.mapCloudToLocal(notificationData.message);
+          if (messageInLocalFormat.triggerEvent === null) { return; }
+          if (messageInLocalFormat.cloudId === null)      { return; }
+          MessageTransferNext.createLocal(localSphereId, messageInLocalFormat);
 
           break;
         case "sphereUsersUpdated":

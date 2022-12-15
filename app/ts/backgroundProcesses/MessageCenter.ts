@@ -131,6 +131,7 @@ class MessageCenterClass {
     let unreadMessageCount = 0;
     for (let messageId in sphere.messages) {
       let message = sphere.messages[messageId];
+      if (message.triggerEvent === null)                       { continue; }
       if (message.deleted?.[MessageDeletedId]?.value === true) { continue; }
 
       if (message.read?.[MessageReadID]?.value !== true) {

@@ -542,7 +542,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
           }
           leftAction={() => { NavigationUtil.back(); }}
         >
-          <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1,paddingTop: topBarHeight-statusBarHeight}}>
+          <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1,paddingTop: Platform.OS === 'android' ? topBarHeight : topBarHeight-statusBarHeight }}>
             <SlideFadeInView visible={this.state.devAppVisible} height={120}>
               <ListEditableItems items={getDevAppItems().slice(2)} separatorIndent={true} />
             </SlideFadeInView>

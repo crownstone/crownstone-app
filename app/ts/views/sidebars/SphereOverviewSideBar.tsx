@@ -69,7 +69,6 @@ export function SphereOverviewSideBar(props) {
             return;
           }
 
-
           if (
             DataUtil.inSphere(SPHERE_ID_STORE.activeSphereId) &&
             enoughCrownstonesForIndoorLocalization(SPHERE_ID_STORE.activeSphereId) &&
