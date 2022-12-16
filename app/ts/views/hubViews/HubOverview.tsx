@@ -49,7 +49,7 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
   }
 
   unsubscribeStoreEvents;
-
+  deleted = false;
 
   constructor(props) {
     super(props);
@@ -66,6 +66,8 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
     }
 
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      if (this.deleted === true) { return; }
+
       let change = data.change;
       let state = core.store.getState();
       if (
@@ -182,11 +184,13 @@ export class HubOverview extends LiveComponent<any, { fixing: boolean }> {
       mediumIcon: <Icon name="ios-trash" size={26} color={colors.red.hex} />,
       type: 'button',
       callback: () => {
+        this.deleted = true;
         StoneUtil.remove.hub.now(this.props.sphereId, this.props.stoneId);
       }
     });
 
     items.push({label: lang("Removing_this_Hub_"), type: 'explanation', below: true});
+    items.push({type:"spacer"});
 
     return items;
   }

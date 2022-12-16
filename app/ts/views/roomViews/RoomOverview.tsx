@@ -155,12 +155,23 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       this.forceUpdate();
     }));
 
+    const redraw = () => {
+      let changedSortedList = this.sortedList.mustContain(this.getIdsInRoom());
+      if (changedSortedList) {
+        this.setState({ data: this.sortedList.getDraggableList() });
+      }
+      else {
+        this.forceUpdate();
+      }
+      return;
+    }
+
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-          return this.forceUpdate()
+          return redraw();
       }
       if (
         (change.updateActiveSphere)     ||
@@ -169,7 +180,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])
       ) {
-        return this.forceUpdate();
+        return redraw();
       }
       if (
         (change.updateStoneConfig) ||
@@ -177,8 +188,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         (change.changeHubs)        ||
         (change.changeStones)
       ) {
-        this.sortedList.mustContain(this.getIdsInRoom());
-        return this.setState({data: this.sortedList.getDraggableList()});
+        return redraw();
       }
     });
   }
@@ -342,6 +352,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
 
 
   render() {
+    console.log("RERENDER ROOMOVERVIEW");
+
     const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];

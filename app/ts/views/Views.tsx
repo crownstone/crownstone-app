@@ -103,7 +103,6 @@ import { HueOverview }                        from "../views/thirdParty/hue/HueO
 import { HueAdd }                             from "../views/thirdParty/hue/HueAdd";
 import { SetupHub }                           from "../views/addingCrownstones/SetupHub";
 import { HubOverview }                        from "../views/hubViews/HubOverview";
-import { HubEdit }                            from "../views/hubViews/HubEdit";
 import { Initializer }                        from "./startupViews/Initializer";
 import { TextInputOverlay }                   from "./overlays/TextInputOverlay";
 import { SettingsDevHub }                     from "./settingsViews/dev/SettingsDevHub";
@@ -167,7 +166,6 @@ export const Views = {
   AlexaOverview:                     AlexaOverview,
   GoogleAssistantOverview:           GoogleAssistantOverview,
   HubOverview:                       HubOverview,
-  HubEdit:                           HubEdit,
   DeviceError:                       DeviceError,
   DeviceEditAppearance:              DeviceEditAppearance,
   DeviceIconSelection:               DeviceIconSelection,

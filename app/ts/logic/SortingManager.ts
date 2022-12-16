@@ -65,12 +65,12 @@ export class SortingManager {
           else {
             let newList = [...data.sortedList];
             newList.splice(listPosition,1);
-            actions.push(actions.push({
+            actions.push({
               type:"UPDATE_SORTED_LIST",
               sphereId: sphereId,
               sortedListId: sortedListId,
               data: { sortedList: newList }
-            }));
+            });
           }
         }
       });
@@ -122,7 +122,7 @@ export class SortedList {
     this.sortedList   = sortedList;
   }
 
-  mustContain(requiredItems: string[]) {
+  mustContain(requiredItems: string[]) : boolean {
     let changeRequired = false;
     let existingItemMap = {}
     for (let i = 0; i < this.sortedList.length; i++) {
@@ -159,6 +159,8 @@ export class SortedList {
         }
       });
     }
+
+    return changeRequired;
   }
 
   update(items : string[]) {

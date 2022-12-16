@@ -65,6 +65,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
     }
 
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      if (this.deleted === true) { return; }
+
       let change = data.change;
       let state = core.store.getState();
       if (
@@ -73,8 +75,6 @@ export class  DeviceOverview extends LiveComponent<any, any> {
         (change.removeStone          && change.removeStone.stoneIds[this.props.stoneId])    ||
         (change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId])
       ) {
-        if (this.deleted) { return; }
-
         return this.forceUpdate();
       }
 

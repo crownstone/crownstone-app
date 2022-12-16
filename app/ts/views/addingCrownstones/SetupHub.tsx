@@ -605,7 +605,7 @@ export class SetupHub extends LiveComponent<{
         <CustomTopBarWrapper
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.back();} }}
-          notBack={this.state.allowBack}
+          notBack={!this.state.allowBack}
           title={lang("Setup_the_hub")}
           style={{backgroundColor:'transparent', paddingTop:0}}
         >

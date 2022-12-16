@@ -547,11 +547,16 @@ export const StoneUtil = {
           lang("_Success__arguments___OKn_body",labelText),
           [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
               SortingManager.removeFromLists(stoneId);
-              core.store.dispatch({type: "REMOVE_STONE", sphereId: sphereId, stoneId: stoneId});
               if (hub) {
                 SortingManager.removeFromLists(hub.id);
-                core.store.dispatch({type: "REMOVE_HUB", sphereId: sphereId, hubId: hub.id});
               }
+              let actions = [];
+              actions.push({type: "REMOVE_STONE", sphereId: sphereId, stoneId: stoneId});
+              if (hub) {
+                actions.push({type: "REMOVE_HUB", sphereId: sphereId, hubId: hub.id});
+              }
+
+              core.store.batchDispatch(actions);
 
               core.eventBus.emit('hideLoading');
               NavigationUtil.dismissModal();
