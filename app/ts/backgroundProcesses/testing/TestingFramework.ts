@@ -14,9 +14,9 @@ export const TestingFramework = {
     if (!json) { return; }
 
     try {
-      CloudAddresses.cloud_v1                 = json.cloud_v1          || CLOUD_ADDRESS;
-      CloudAddresses.cloud_v2                 = json.cloud_v2          || CLOUD_V2_ADDRESS;
-      CloudAddresses.sse                      = json.sse               || SSE_ADDRESS;
+      CloudAddresses.cloud_v1                 = json.cloud_v1          || CloudAddresses.cloud_v1;
+      CloudAddresses.cloud_v2                 = json.cloud_v2          || CloudAddresses.cloud_v2;
+      CloudAddresses.sse                      = json.sse               || CloudAddresses.sse;
       CameraLibrarySettings.mockImageLibrary  = json.mockImageLibrary  || false;
       CameraLibrarySettings.mockCameraLibrary = json.mockCameraLibrary || false;
       BridgeConfig.mockBluenet                = json.mockBluenet       || false;

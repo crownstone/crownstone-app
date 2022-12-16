@@ -40,12 +40,6 @@ class StoreManagerClass {
   }
 
   _init() {
-    AsyncStorage.getItem(LOGGED_IN_USER_ID_STORAGE_KEY) // this will just contain a string of the logged in user.
-      .then((userId) => {
-        this._initializeStore(userId);
-      })
-      .catch((err) => { LOGe.store("StoreManager: Could not get store from AsyncStorage", err?.message)});
-
     AsyncStorage.getItem(CLOUD_ADDRESSES_STORAGE_KEY) // this will just contain a string of the logged in user.
       .then((cloudAddresses) => {
         if (cloudAddresses !== null) {
@@ -56,6 +50,14 @@ class StoreManagerClass {
         }
       })
       .catch((err) => { LOGe.store("StoreManager: Could not get cloudAddresses from AsyncStorage", err?.message)});
+
+
+    AsyncStorage.getItem(LOGGED_IN_USER_ID_STORAGE_KEY) // this will just contain a string of the logged in user.
+      .then((userId) => {
+        this._initializeStore(userId);
+      })
+      .catch((err) => { LOGe.store("StoreManager: Could not get store from AsyncStorage", err?.message)});
+
   }
 
   async persistCloudAddresses() {
