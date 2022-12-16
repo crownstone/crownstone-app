@@ -34,6 +34,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
   }
 
   unsubscribeStoreEvents;
+  deleted = false;
+
 
   constructor(props) {
     super(props);
@@ -71,6 +73,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
         (change.removeStone          && change.removeStone.stoneIds[this.props.stoneId])    ||
         (change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId])
       ) {
+        if (this.deleted) { return; }
+
         return this.forceUpdate();
       }
 
@@ -201,8 +205,8 @@ export class  DeviceOverview extends LiveComponent<any, any> {
           lang("_Are_you_sure___Removing__body"),
           [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
             text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: async () => {
+              this.deleted = true;
               await StoneUtil.remove.crownstone.now(this.props.sphereId, this.props.stoneId).catch((err) => {});
-              NavigationUtil.back();
             }}]
         )
       }

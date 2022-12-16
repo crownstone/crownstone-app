@@ -569,7 +569,7 @@ export class SetupCrownstone extends LiveComponent<{
         <CustomTopBarWrapper
           left={Platform.OS === 'android' ? null : lang("Back")}
           leftAction={() => { if (this._interview.back() === false) { NavigationUtil.back();} }}
-          notBack={this.state.allowBack}
+          notBack={!this.state.allowBack}
           title={this.props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")}
           style={{backgroundColor:'transparent', paddingTop:0}}
         >

@@ -6,7 +6,9 @@ import * as React from "react";
 
 export function TopBarLeftIOS(props) {
   let barHeight = topBarHeight - statusBarHeight;
-  if (props.notBack !== true && props.leftAction !== undefined) {
+  if (props.notBack) { return <View style={topBarStyle.topBarLeftTouch} />; }
+
+  if (props.leftAction !== undefined) {
     if (props.leftItem !== undefined) {
       return (
         <TouchableOpacity onPress={() => {props.leftAction();}} style={{...topBarStyle.topBarLeftTouch, paddingLeft:10}} testID={"topBarLeftItem"}>

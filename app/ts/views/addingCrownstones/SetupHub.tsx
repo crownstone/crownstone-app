@@ -37,8 +37,7 @@ export class SetupHub extends LiveComponent<{
   unownedVerified: boolean
 }, any> {
   static options(props) {
-    let title = lang("Setup_the_hub");
-    return TopBarUtil.getOptions({title: title});
+    return {topBar:{visible: false}}
   }
 
   _interview: any;
@@ -61,6 +60,8 @@ export class SetupHub extends LiveComponent<{
       newStoneId:     null,
       newHubId:       null,
     };
+
+    this.state = {allowBack: true};
   }
 
   componentDidMount() {
@@ -85,8 +86,7 @@ export class SetupHub extends LiveComponent<{
 
 
   _disableBackButton() {
-    let title = lang("Pairing_with_hub");
-    TopBarUtil.updateOptions(this.props.componentId, {title: title, disableBack: true})
+    this.setState({allowBack: false});
   }
 
 
@@ -600,17 +600,22 @@ export class SetupHub extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground
-        fullScreen={true}
-        image={backgroundImage}
-        testID={'AddHub'}
-      >
-      <Interview
-        backButtonOverrideViewNameOrId={this.props.componentId}
-        ref={     (i) => { this._interview = i; }}
-        getCards={ () => { return this.getCards();}}
-        update={   () => { this.forceUpdate() }}
-      />
+      <AnimatedBackground fullScreen={true} image={backgroundImage} testID={'AddHub'}>
+        <KeepAwake />
+        <CustomTopBarWrapper
+          left={Platform.OS === 'android' ? null : lang("Back")}
+          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.back();} }}
+          notBack={this.state.allowBack}
+          title={lang("Setup_the_hub")}
+          style={{backgroundColor:'transparent', paddingTop:0}}
+        >
+          <Interview
+            backButtonOverrideViewNameOrId={this.props.componentId}
+            ref={     (i) => { this._interview = i; }}
+            getCards={ () => { return this.getCards();}}
+            update={   () => { this.forceUpdate() }}
+          />
+        </CustomTopBarWrapper>
       </AnimatedBackground>
     );
   }

@@ -552,6 +552,9 @@ export const StoneUtil = {
                 SortingManager.removeFromLists(hub.id);
                 core.store.dispatch({type: "REMOVE_HUB", sphereId: sphereId, hubId: hub.id});
               }
+
+              core.eventBus.emit('hideLoading');
+              NavigationUtil.dismissModal();
             }}]
         )
       }
