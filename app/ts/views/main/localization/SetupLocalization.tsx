@@ -131,6 +131,7 @@ function getFinishedRooms(sphereId: sphereId) {
       })
     }
   }
+  items.sort((a,b) => { return a.label > b.label ? 1 : -1});
   return items;
 }
 
@@ -152,5 +153,7 @@ function getToDoRooms(sphereId: sphereId) {
       })
     }
   }
+
+  items.sort((a,b) => { return a.label > b.label ? 1 : -1});
   return items;
 }
