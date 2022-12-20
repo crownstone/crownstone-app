@@ -7,7 +7,7 @@ import {DeviceEntry} from '../components/deviceEntries/DeviceEntry'
 import {DataUtil} from "../../util/DataUtil";
 import {
   availableScreenHeight,
-  colors, getRoomStockImage,
+  colors, getRoomStockImage, screenHeight,
   screenWidth,
   statusBarHeight,
   styles,
@@ -48,6 +48,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 const className = "RoomOverview";
+const DIMMER_BUTTON_HEIGHT = 65;
 
 interface RoomItem_stone {
   type:         'stone'
@@ -75,10 +76,6 @@ interface RoomItem_setup {
   deviceType?:    string,
 }
 type RoomItem = RoomItem_stone | RoomItem_hub | RoomItem_dfu | RoomItem_setup;
-
-export const PERSISTED_DIMMING_OVERLAY_STATE = {
-  value: false
-}
 
 export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
   unsubscribeStoreEvents : any;
@@ -121,7 +118,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     );
     this.state = {
       editMode: false,
-      dimMode: PERSISTED_DIMMING_OVERLAY_STATE.value,
+      dimMode: state.app.dimViewEnabled,
 
       dragging: false,
       data: this.sortedList.getDraggableList(),
@@ -352,8 +349,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
 
 
   render() {
-    console.log("RERENDER ROOMOVERVIEW");
-
     const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
@@ -385,7 +380,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           testID={'RoomOverview_NestableScrollContainer'}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior={'never'}
-          contentContainerStyle={{paddingTop: viewPaddingTop, paddingBottom: 2*tabBarHeight}}
         >
           <NotificationFiller visible={this.state.editMode ? false : undefined} />
           <RoomExplanation
@@ -394,7 +388,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
             locationId={  this.props.locationId  }
           />
           <NestableDraggableFlatList
-            containerStyle={{minHeight: availableScreenHeight, paddingTop: 10}}
+            style={{paddingTop: viewPaddingTop + 10, paddingBottom: tabBarHeight + DIMMER_BUTTON_HEIGHT }}
+            containerStyle={{ minHeight: screenHeight - tabBarHeight }}
             activationDistance={this.state.dragging ? 5 : 120}
             data={itemArray}
             onDragBegin={() => { this.setState({dragging: true}); }}
@@ -441,7 +436,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         { !this.state.editMode && this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => {
             this.setState({dimMode:state});
-            PERSISTED_DIMMING_OVERLAY_STATE.value = state;
+            core.store.dispatch({type:"TOGGLE_DIM_VIEW", data:state});
           }} /> }
       </BackgroundCustomTopBar>
     );
@@ -449,8 +444,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
 }
 
 function DimmerSwitch({dimMode, setDimMode}) {
-  let size = 65;
-
   let state = core.store.getState();
   let shouldHighlight = state.app.hasSeenDimmingButton === false;
 
@@ -468,17 +461,17 @@ function DimmerSwitch({dimMode, setDimMode}) {
       <Blur
         blurType={'light'}
         blurAmount={4}
-        style={{...styles.centered, width: size, height: size, borderRadius: 15, backgroundColor: dimMode ?
+        style={{...styles.centered, width: DIMMER_BUTTON_HEIGHT, height: DIMMER_BUTTON_HEIGHT, borderRadius: 15, backgroundColor: dimMode ?
             colors.green.rgba(Platform.OS === 'android' ? 0.8 : 0.5) :
             colors.blue.rgba( Platform.OS === 'android' ? 0.6 : 0.3)}}
       >
-        <SlideFadeInView style={styles.centered} visible={dimMode} height={size}>
+        <SlideFadeInView style={styles.centered} visible={dimMode} height={DIMMER_BUTTON_HEIGHT}>
           <Icon name={'md-switch'} size={50} color={colors.white.hex} />
         </SlideFadeInView>
-        <SlideFadeInView style={styles.centered} visible={!dimMode} height={size}>
+        <SlideFadeInView style={styles.centered} visible={!dimMode} height={DIMMER_BUTTON_HEIGHT}>
           <HighlightableIcon name={'ion5-ios-bulb-outline'} size={42} color={colors.white.hex} enabled={shouldHighlight} />
         </SlideFadeInView>
-        { shouldHighlight && <Blinker style={{top:0.5*size, left:0.5*size}}  /> }
+        { shouldHighlight && <Blinker style={{top:0.5*DIMMER_BUTTON_HEIGHT, left:0.5*DIMMER_BUTTON_HEIGHT}}  /> }
       </Blur>
     </TouchableOpacity>
   );

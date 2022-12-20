@@ -18,6 +18,8 @@ let defaultState : appData = {
 
   migratedDataToVersion: null,
 
+  dimViewEnabled: false,
+
   localization_temporalSmoothingMethod: 'NONE',
   localization_onlyOwnFingerprints: false,
 
@@ -44,6 +46,13 @@ export default (state = defaultState, action : DatabaseAction = {}) => {
         newState = {...state};
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
         newState.updatedAt           = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'TOGGLE_DIM_VIEW':
+      if (action.data) {
+        newState = {...state};
+        newState.dimViewEnabled = update(action.data.dimViewEnabled, newState.dimViewEnabled);;
         return newState;
       }
       return state;
