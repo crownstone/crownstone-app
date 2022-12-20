@@ -28,6 +28,8 @@ interface appData {
 
   migratedDataToVersion: null | string,
 
+  dimViewEnabled: boolean,
+
   localization_temporalSmoothingMethod: LocalizationSmoothingMethod,
   localization_onlyOwnFingerprints:     boolean,
 

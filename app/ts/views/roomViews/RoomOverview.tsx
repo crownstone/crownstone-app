@@ -77,10 +77,6 @@ interface RoomItem_setup {
 }
 type RoomItem = RoomItem_stone | RoomItem_hub | RoomItem_dfu | RoomItem_setup;
 
-export const PERSISTED_DIMMING_OVERLAY_STATE = {
-  value: false
-}
-
 export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMode: boolean, data: string[], dragging: boolean }> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
@@ -122,7 +118,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     );
     this.state = {
       editMode: false,
-      dimMode: PERSISTED_DIMMING_OVERLAY_STATE.value,
+      dimMode: state.app.dimViewEnabled,
 
       dragging: false,
       data: this.sortedList.getDraggableList(),
@@ -440,7 +436,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         { !this.state.editMode && this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => {
             this.setState({dimMode:state});
-            PERSISTED_DIMMING_OVERLAY_STATE.value = state;
+            core.store.dispatch({type:"TOGGLE_DIM_VIEW", data:state});
           }} /> }
       </BackgroundCustomTopBar>
     );

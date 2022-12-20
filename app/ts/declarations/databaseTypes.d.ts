@@ -221,6 +221,7 @@ type ACTION_TYPE = SYSTEM_ACTION_TYPES | EVENT_ACTION_TYPES      |
   'REVERT_LOGGING_DETAILS'                       |
   'SET_ACTIVE_RANDOM_DEVICE_TOKEN'               |
   'SET_ACTIVE_SPHERE'                            |
+  'TOGGLE_DIM_VIEW'                              |
   'SET_APP_IDENTIFIER'                           |
   'SET_BETA_ACCESS'                              |
   'SET_DEVELOPER_MODE'                           |
