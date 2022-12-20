@@ -4,6 +4,7 @@ exports[`Using core in tests 1`] = `
 {
   "app": {
     "activeSphere": null,
+    "dimViewEnabled": false,
     "hasSeenDeviceSettings": false,
     "hasSeenDimmingButton": false,
     "hasSeenEditLocationIcon": false,

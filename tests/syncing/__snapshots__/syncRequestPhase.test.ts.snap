@@ -344,6 +344,7 @@ exports[`Check if fingerprints are syncing 2`] = `
 {
   "app": {
     "activeSphere": null,
+    "dimViewEnabled": false,
     "hasSeenDeviceSettings": false,
     "hasSeenDimmingButton": false,
     "hasSeenEditLocationIcon": false,
