@@ -103,7 +103,6 @@ export class TransformManager {
         }
         break;
       case "collectionCompleted":
-        this.setSessionState("COLLECTION_COMPLETED");
         // check if we need more data.
         this._checkCollectionQuality(event.quality);
         break;
@@ -134,7 +133,6 @@ export class TransformManager {
     // if we have had 5 collections already, allow the user to wrap up the transform.
     let userA = quality.userA;
     let userB = quality.userB;
-
 
     let buckets = [ -50, -55, -60, -65, -70, -75, -80, -85, -90 ];
 
@@ -179,7 +177,6 @@ export class TransformManager {
     }
 
     // average the count between user A and user B
-    let averageCount = (totalCountA + totalCountB) / 2;
     let averageCloseCount = (closeCountA + closeCountB) / 2;
     let averageMediumCount = (mediumCountA + mediumCountB) / 2;
     let averageFarCount = (farCountA + farCountB) / 2;
@@ -192,15 +189,13 @@ export class TransformManager {
     let amountOfCompletedSessions = Object.keys(this.collections).length;
 
     // only the host can end the session.
-    if (this.isHost) {
-      if (amountOfCompletedSessions >= TRANSFORM_MIN_SESSION_COUNT) {
-        if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
+    if (amountOfCompletedSessions >= TRANSFORM_MIN_SESSION_COUNT) {
+      if (averageCloseCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageMediumCount > TRANSFORM_MIN_SAMPLE_THRESHOLD && averageFarCount > TRANSFORM_MIN_SAMPLE_THRESHOLD) {
+        if (this.isHost) {
           // added a delay to ensure that the collection promise can resolve.
-          setTimeout(() => {
-            this.finalizeSession();
-          }, 1000);
-          return;
+          setTimeout(() => { this.finalizeSession(); }, 1000);
         }
+        return;
       }
     }
 

@@ -57,9 +57,6 @@ export const FingerprintUtil = {
     let sphere = Get.sphere(sphereId);
     if (!sphere) { return []; }
 
-    let myDeviceId = DeviceInfo.getDeviceId();
-    let myUserId   = core.store.getState().user.userId;
-
     let options = [];
     for (let locationId in sphere.locations) {
       let locationOptions = FingerprintUtil.getOptimizationOptionsInLocation(sphereId, locationId);

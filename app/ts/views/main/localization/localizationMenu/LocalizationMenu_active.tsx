@@ -5,18 +5,12 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LocalizationMenu_active", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  View, Alert, Linking
-} from "react-native";
+import { Alert } from "react-native";
 import { Icon } from "../../../components/Icon";
-import { colors, menuStyles, screenWidth } from "../../../styles";
+import { colors } from "../../../styles";
 import { NavigationUtil } from "../../../../util/navigation/NavigationUtil";
 import { ListEditableItems } from "../../../components/ListEditableItems";
 import { SettingsBackground } from "../../../components/SettingsBackground";
-import { Get } from "../../../../util/GetUtil";
 import { FingerprintUtil } from "../../../../util/FingerprintUtil";
 import { LocalizationUtil } from "../../../../util/LocalizationUtil";
 import { SettingsScrollView } from "../../../components/SettingsScrollView";
@@ -25,7 +19,6 @@ import { SettingsScrollView } from "../../../components/SettingsScrollView";
 
 export function LocalizationMenu_active(props) {
   let items = [];
-  let secondItems = [];
 
   let locationsAttention = LocalizationUtil.getLocationsInNeedOfAttention(props.sphereId);
   let roomWarning = false;
@@ -45,7 +38,6 @@ export function LocalizationMenu_active(props) {
       icon: <Icon name='fa-mobile-phone' size={28} color={colors.red.hex}/>,
       callback: () => {
         let options = FingerprintUtil.getOptimizationOptions(props.sphereId);
-        options.push(options[0])
         if (options.length === 1) {
           NavigationUtil.navigate('LocalizationTransform_intro', { sphereId: props.sphereId, ...options[0] });
         }
