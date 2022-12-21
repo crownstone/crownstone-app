@@ -8,10 +8,9 @@ import * as React from 'react';
 import {Text, View, Alert, Linking, Platform} from "react-native";
 
 
-import {colors, styles, topBarHeight} from "../../styles";
+import {colors, screenWidth, styles, topBarHeight} from "../../styles";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { bindTopbarButtons } from "../../components/hooks/viewHooks";
-import { useDatabaseChange } from "../../components/hooks/databaseHooks";
 import { SettingsBackground } from "../../components/SettingsBackground";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { core } from "../../../Core";
@@ -61,7 +60,9 @@ export function LocalizationTransform_userSelect(props: {sphereId, options: {use
         <Text style={styles.boldExplanation}>{ lang("You_can_transform_the_dat") }</Text>
         <Text style={styles.explanation}>{ lang("Select_someone_from_the_l") }</Text>
         <View style={{height:30}}/>
-        <ListEditableItems items={items} />
+        <View style={{width: screenWidth, flex:1}}>
+          <ListEditableItems items={items} />
+        </View>
       </SafeAreaView>
     </SettingsBackground>
   );

@@ -83,7 +83,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
           if (success) {
             Alert.alert("Done!",
               "Since you disabled the developer mode, we'll return to the previous screen.",[
-                {text:"Great!", onPress: () => { NavigationUtil.back() }}], {cancelable:false}); }
+                {text:"Great!", onPress: () => { NavigationUtil.dismissModal() }}], {cancelable:false}); }
         }
       });
     }
@@ -137,6 +137,7 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
         }
       }
     });
+    devOptions.push({type:'explanation', label:"Act on switch events will toggle Crownstones based on incoming switch commands via the SSE server (when a switch command is sent to the Crownstone cloud)."})
 
 
     return (
@@ -147,7 +148,6 @@ export class SettingsDevHub extends LiveComponent<{ sphereId: string, stoneId: s
         <ListEditableItems items={devOptions} separatorIndent={true}/>
         <View style={{flex:0.1}} />
         <View style={{flex:0.25}} />
-        <DebugIcon sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
       </SettingsBackground>
     );
   }

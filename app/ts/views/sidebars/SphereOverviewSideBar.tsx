@@ -21,7 +21,17 @@ import { FingerprintUtil } from "../../util/FingerprintUtil";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 export function SphereOverviewSideBar(props) {
-  useDatabaseChange(['updateActiveSphere', 'changeSphereState', 'changeStones', "changeFingerprint", 'changeLocations', 'stoneLocationUpdated', 'changeMessage']);
+  useDatabaseChange([
+    'updateActiveSphere',
+    'changeSphereState',
+    'changeTransforms',
+    'changeStones',
+    'changeFingerprint',
+    'changeLocations',
+    'stoneLocationUpdated',
+    'changeMessage'
+  ]);
+
   let factor = 0.25;
 
   const state = core.store.getState();

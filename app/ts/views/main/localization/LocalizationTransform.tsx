@@ -84,7 +84,7 @@ export class LocalizationTransform extends LiveComponent<
       this.setState({currentCollection: collection, currentCollectionDataCount: dataCount});
     }
     this.transformManager.collectionFinished = (recommendation, collectionsFinished, stats) => {
-      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished, collectionStats: stats, currentCollection: {}});
+      this.setState({collectionRecommendation: recommendation, collectionsDone: collectionsFinished, collectionStats: stats, currentCollection: {}, sessionState: "COLLECTION_COMPLETED"});
     }
   }
 
