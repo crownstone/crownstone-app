@@ -32,10 +32,11 @@
 		android:theme="@style/AppTheme"
 		android:usesCleartextTraffic="true"
 		android:largeHeap="true"
-		android:requestLegacyExternalStorage="true"
-		android:networkSecurityConfig="@xml/network_security_config">
+		android:requestLegacyExternalStorage="true">
 		<!-- requestLegacyExternalStorage is a temp solution for image picker, see https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage -->
 		<!-- networkSecurityConfig is for Detox, see https://wix.github.io/Detox/docs/introduction/android/#setup-%EF%B8%8F -->
+		<!--android:networkSecurityConfig="@xml/network_security_config"-->
+		<!-- but since we want to be able to connect to a local cloud, we need http requests to any ip -->
 
 		<activity
 			android:name=".MainActivity"
