@@ -160,7 +160,6 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       else {
         this.forceUpdate();
       }
-      return;
     }
 
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -173,7 +172,8 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
       if (
         (change.updateActiveSphere)     ||
         (change.changeFingerprint)      ||
-        (change.changeLocations         && change.changeLocations.locationId[this.props.locationId])  ||
+        (change.changeLocations         && change.changeLocations.locationIds[this.props.locationId])  ||
+        (change.updateLocationConfig    && change.updateLocationConfig.locationIds[this.props.locationId])  ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])
       ) {
