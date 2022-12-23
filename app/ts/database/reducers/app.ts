@@ -1,4 +1,5 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
+import {Platform} from "react-native";
 
 let defaultState : appData = {
   activeSphere: null,
@@ -20,7 +21,7 @@ let defaultState : appData = {
 
   dimViewEnabled: false,
 
-  localization_temporalSmoothingMethod: 'NONE',
+  localization_temporalSmoothingMethod: Platform.OS === 'ios' ? 'NONE' : 'NONE',
   localization_onlyOwnFingerprints: false,
 
   updatedAt: 1

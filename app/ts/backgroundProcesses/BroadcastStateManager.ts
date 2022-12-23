@@ -116,7 +116,7 @@ class BroadcastStateManagerClass {
 
     // if there is 1 active sphere, ignore any and all switching of locationState
 
-    // if there are 0 present spheres, we dont care what the user does. Stop broadcasting.
+    // if there are 0 present spheres, we don't care what the user does. Stop broadcasting.
     if (amountOfPresentSpheres === 0) {
       if (activeSphereData.sphereId !== null) {
         let locationId = this._presentLocationInSphere[activeSphereData.sphereId] || null;

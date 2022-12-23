@@ -158,7 +158,7 @@ class TrackingNumberManagerClass {
     if (this.canUseDynamicBackgroundBroadcasts === null) {
       this.canUseDynamicBackgroundBroadcasts = await BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
     }
-    return this.canUseDynamicBackgroundBroadcasts
+    return this.canUseDynamicBackgroundBroadcasts;
   }
 
   async updateMyDeviceTrackingRegistration(sphereId) {
