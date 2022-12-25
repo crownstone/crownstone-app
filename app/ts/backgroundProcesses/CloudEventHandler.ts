@@ -41,6 +41,7 @@ class CloudEventHandlerClass {
   _executeEventSync() {
     if (this._eventSyncInProgress === false) {
       this._eventSyncInProgress = true;
+      LOG.info("CloudEventHandler: starting event sync.");
       syncEvents(core.store)
         .then(() => {
           this._eventSyncInProgress = false;

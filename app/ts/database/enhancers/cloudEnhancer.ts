@@ -110,7 +110,7 @@ function handleAction(action : DatabaseAction, returnValue, newState, oldState) 
       handleStoneLocationUpdateInCloud(action, newState, oldState);
       break;
     case 'UPDATE_LOCATION_CONFIG':
-      handleLocationInCloud(action, newState);
+      handleLocationInCloud(action, newState, oldState);
       break;
     case 'SET_SPHERE_TIMEZONE':
     case 'SET_SPHERE_GPS_COORDINATES':
@@ -370,8 +370,9 @@ function handleStoneLocationUpdateInCloud(action: DatabaseAction, state, oldStat
 }
 
 
-function handleLocationInCloud(action: DatabaseAction, state) {
-  if (action.data.picture) {
+function handleLocationInCloud(action: DatabaseAction, state, oldState) {
+  let locationBeforeAction = oldState.spheres?.[action.sphereId]?.locations?.[action.locationId] || {config: {}};
+  if (action.data.picture && action.data.pictureSource === "CUSTOM") {
     // in case the user has a pending delete location picture request, we will finish this immediately so a new
     // picture will not be deleted.
     core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', eventId: 'removeLocationPicture' + action.locationId });
@@ -383,9 +384,9 @@ function handleLocationInCloud(action: DatabaseAction, state) {
         sphereId: action.sphereId,
         specialType: 'uploadLocationPicture'
       }
-    });
+    })
   }
-  else if (action.data.picture === null) {
+  else if (action.data.picture === null || (action.data.pictureSource === "STOCK" && action.data.pictureId === null && locationBeforeAction.config.pictureId !== null)) {
     // in case the user has a pending upload location picture request, we will finish this immediately so a new
     // picture will not be uploaded.
     core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', eventId: 'uploadLocationPicture' + action.locationId });
