@@ -16,7 +16,7 @@ import {
 } from "../styles";
 import { DfuStateHandler }             from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry_RoomOverview } from "../components/deviceEntries/DfuDeviceEntry";
-import { RoomExplanation }             from '../components/RoomExplanation';
+import {getRoomExplanationLabel, RoomExplanation} from '../components/RoomExplanation';
 import { Permissions }                 from "../../backgroundProcesses/PermissionManager";
 import { SphereDeleted }               from "../static/SphereDeleted";
 import { RoomDeleted }                 from "../static/RoomDeleted";
@@ -373,6 +373,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
     }
 
     let itemArray = this._getItemList(stones, hubs);
+    let explanation = this.props.explanation || getRoomExplanationLabel(this.props.sphereId, this.props.locationId);
 
     return (
       <BackgroundCustomTopBar image={backgroundImage} fullScreen={true} testID={"RoomOverview"}>
@@ -382,13 +383,13 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
           contentInsetAdjustmentBehavior={'never'}
         >
           <NotificationFiller visible={this.state.editMode ? false : undefined} />
-          <RoomExplanation
-            explanation={ this.props.explanation }
+          { explanation && <RoomExplanation
+            explanation={ explanation}
             sphereId={    this.props.sphereId    }
             locationId={  this.props.locationId  }
-          />
+          /> }
           <NestableDraggableFlatList
-            style={{paddingTop: viewPaddingTop + 10, paddingBottom: tabBarHeight + DIMMER_BUTTON_HEIGHT }}
+            style={{paddingTop: explanation ? 10 : viewPaddingTop + 10, paddingBottom: tabBarHeight + DIMMER_BUTTON_HEIGHT }}
             containerStyle={{ minHeight: screenHeight - tabBarHeight }}
             activationDistance={this.state.dragging ? 5 : 120}
             data={itemArray}
