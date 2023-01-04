@@ -6,6 +6,7 @@ import { NATIVE_BUS_TOPICS } from "../Topics";
 import {Scheduler} from "../logic/Scheduler";
 import {Languages} from "../Languages";
 import { TransformUtil } from "../util/TransformUtil";
+import {LocalizationCore} from "./LocalizationCore";
 
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -321,6 +322,7 @@ export class TransformCollection {
   }
 
   startDataCollection() {
+    LocalizationCore.pauseLocalization();
     this.eventUnsubscriber = core.nativeBus.on(NATIVE_BUS_TOPICS.iBeaconAdvertisement, (data: ibeaconPackage[]) => {
       this.collectData(data);
     });
@@ -376,7 +378,8 @@ export class TransformCollection {
     this.dataListener = () => {};
     this.errorHandler = () => {};
     this.dataCount = 0;
-    this.collection = {}
+    this.collection = {};
+    LocalizationCore.resumeLocalization();
   }
 
 
