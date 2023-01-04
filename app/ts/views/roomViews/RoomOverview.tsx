@@ -436,7 +436,7 @@ export class RoomOverview extends LiveComponent<any, { editMode: boolean, dimMod
         { !this.state.editMode && this.amountOfDimmableCrownstonesInLocation > 0 && sphere.state.reachable &&
           <DimmerSwitch dimMode={this.state.dimMode} setDimMode={(state) => {
             this.setState({dimMode:state});
-            core.store.dispatch({type:"TOGGLE_DIM_VIEW", data:state});
+            core.store.dispatch({type:"TOGGLE_DIM_VIEW", data: {dimViewEnabled: state}});
           }} /> }
       </BackgroundCustomTopBar>
     );

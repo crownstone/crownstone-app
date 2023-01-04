@@ -1031,7 +1031,7 @@ export default {
     Enable_dimming__switchcra:              function() { return "Aanzetten van dimmen, switchcraft, etc."; },
     Turn_on_if_when____:                    function() { return "Ga aan als/wanneer ..."; },
     Move_the_Crownstone_to_an:              function() { return "Verplaats de Crownstone naar een andere kamer"; },
-    Unlock_Crownstone_switchL:              function() { return "Ontgrendel de Crownstone"; },
+    Unlock_Crownstone_switchL:              function() { return arguments[0] ? "Ontgrendel de Crownstone" : "Vergrendel de Crownstone"; },
     Remove_Crownstone:                      function() { return "Crownstone verwijderen"; },
     __filename: "../js/views/deviceViews/DeviceOverview.tsx",
   },
@@ -2127,7 +2127,7 @@ export default {
     _Youre_in_____arguments___right:        function() { return "Nee"; },
     Seach_for_weaknesses:                   function() { return "Zoek naar zwakke plekken"; },
     _Lets_go__:                             function() { return " Aan de slag! "; },
-    Pick_location:                          function() { return "Kies een kamer"; },
+    Pick_location:                          function() { return "Kies een kamer..."; },
     __filename: "/Users/alex/development/crownstone-app/app/ts/views/main/localization/LocalizationFindAndFix_noLocation.tsx",
   },
   LocalizationFingerprintManager:{
@@ -2299,6 +2299,7 @@ export default {
     _Better_safe_than_sorry___body:         function() { return "Blijf nog even in deze kamer en probeer het over 3 minuten nog eens."; },
     _Better_safe_than_sorry___left:         function() { return "OK"; },
     Quickfix:                               function() { return "Snelle verbetering"; },
+    Pick_location:                          function() { return "Kies een kamer..."},
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationQuickFix.tsx",
   },
   LocalizationRoomQuality:{

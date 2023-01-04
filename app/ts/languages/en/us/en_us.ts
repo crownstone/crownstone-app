@@ -1100,7 +1100,7 @@ export default {
     _Youre_in_____arguments___right:        function() { return "No" },
     Seach_for_weaknesses:                   function() { return "Seach for weaknesses" },
     _Lets_go__:                             function() { return " Let's go! " },
-    Pick_location:                          function() { return "Pick location" },
+    Pick_location:                          function() { return "Pick a room..." },
   },
   LocalizationFingerprintManager:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/LocalizationFingerprintManager.tsx",
@@ -1190,6 +1190,7 @@ export default {
     _Better_safe_than_sorry___body:         function() { return "Stay in the room a little longer and try again after 3 minutes" },
     _Better_safe_than_sorry___left:         function() { return "OK" },
     Quickfix:                               function() { return "Quickfix" },
+    Pick_location:                          function() { return "Pick a room..."}
   },
   LocalizationRoomQuality:{
     __filename: "/Users/alex/Dropbox/Crownstone/Projects/crownstone-app/app/ts/views/main/localization/localizationMenu/LocalizationMenu_active.tsx",

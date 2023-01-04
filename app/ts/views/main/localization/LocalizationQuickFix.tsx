@@ -43,7 +43,7 @@ export function LocalizationQuickFix(props: { sphereId: sphereId }) {
       <Text style={styles.explanation}>{ lang("Which_room_where_you_in_f") }</Text>
 
       <NavigationBar
-        label={ locationId === null ? "Pick location" : location.config.name }
+        label={ locationId === null ? lang("Pick_location") : location.config.name }
         callback={() => {
           OverlayUtil.callRoomSelectionOverlay(
             props.sphereId,
