@@ -21,7 +21,7 @@ let defaultState : appData = {
 
   dimViewEnabled: false,
 
-  localization_temporalSmoothingMethod: Platform.OS === 'ios' ? 'NONE' : 'NONE',
+  localization_temporalSmoothingMethod: Platform.OS === 'ios' ? 'NONE' : 'SEQUENTIAL_2',
   localization_onlyOwnFingerprints: false,
 
   updatedAt: 1
