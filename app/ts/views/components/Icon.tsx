@@ -7,7 +7,7 @@ import Entypo from 'react-native-vector-icons/dist/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import Ionicons  from 'react-native-vector-icons/dist/Ionicons';
-import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
+import {CustomIcon, CustomIcon2, CustomIcon3, RoomNumberIconSet} from '../../fonts/customIcons'
 
 import { iconCorrections } from '../../fonts/iconCorrections'
 import { Ionicons3 } from "../../fonts/ionicons3";
@@ -27,7 +27,11 @@ export function Icon(props) {
   let prefix4 = props.name.substr(0,4);
   let prefix5 = props.name.substr(0,5);
 
-  if (prefix3 == 'c1-') {
+  if (prefix3 == 'rn-') {
+    offsetStyle = offset(props,'c1');
+    return <RoomNumberIconSet  {...props} {...getProps(correctedName, offsetStyle, style)} />
+  }
+  else if (prefix3 == 'c1-') {
     offsetStyle = offset(props,'c1');
     return <CustomIcon  {...props} {...getProps(correctedName, offsetStyle, style)} />
   }
