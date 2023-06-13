@@ -1,4 +1,5 @@
 import * as VectorIcons from 'react-native-vector-icons'
+import { createIconSet } from 'react-native-vector-icons'
 
 export const glyphMapC1 = {
   'c1-syncDrives':0xf001,
@@ -346,11 +347,68 @@ export const getRandomC3Name = function() {
   return getRandomName(glyphMapC3);
 };
 
+const glyphMapRoomNumber = { 
+  'rn-1': [1],
+  'rn-2': [2],
+  'rn-3': [3],
+  'rn-4': [4],
+  'rn-5': [5],
+  'rn-6': [6],
+  'rn-7': [7],
+  'rn-8': [8],
+  'rn-9': [9],
+  'rn-10': [10],
+  'rn-11': [11],
+  'rn-12': [12],
+  'rn-13': [13],
+  'rn-14': [14],
+  'rn-15': [15],
+  'rn-16': [16],
+  'rn-17': [17],
+  'rn-18': [18],
+  'rn-19': [19],
+  'rn-20': [20],
+  'rn-21': [21],
+  'rn-22': [22],
+  'rn-23': [23],
+  'rn-24': [24],
+  'rn-25': [25],
+  'rn-26': [26],
+  'rn-27': [27],
+  'rn-28': [28],
+  'rn-29': [29],
+  'rn-30': [30],
+  'rn-31': [31],
+  'rn-32': [32],
+  'rn-33': [33],
+  'rn-34': [34],
+  'rn-35': [35],
+  'rn-36': [36],
+  'rn-37': [37],
+  'rn-38': [38],
+  'rn-39': [39],
+  'rn-40': [40],
+  'rn-41': [41],
+  'rn-42': [42],
+  'rn-43': [43],
+  'rn-44': [44],
+  'rn-45': [45],
+  'rn-46': [46],
+  'rn-47': [47],
+  'rn-48': [48],
+  'rn-49': [49],
+  'rn-50': [50],
+  'rn-51': [51],
+  'rn-52': [52],
+  'rn-53': [53],
+  'rn-54': [54],
+  'rn-55': [55]
+};
+
 export const CustomIcon = VectorIcons.createIconSet(glyphMapC1,   'Crownstone',  'Crownstone.ttf');
 export const CustomIcon2 = VectorIcons.createIconSet(glyphMapC2,  'CustomIcons', 'CustomIcons.ttf');
 export const CustomIcon3 = VectorIcons.createIconSet(glyphMapC3,  'Crownstone2', 'Crownstone2.ttf');
-
-
+export const RoomNumberIconSet = createIconSet(glyphMapRoomNumber, 'RoomNumberFont', 'RoomNumberFont.ttf');
 
 const getRandomName = function(map) {
   let keys = Object.keys(map);
