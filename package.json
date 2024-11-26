@@ -29,7 +29,7 @@
     "crownstone-sse": "5.4.1",
     "lottie-ios": "3.2.3",
     "lottie-react-native": "^5.0.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "node-hue-api": "^4.0.9",
     "react": "^17.0.2",
     "react-native": "^0.66.5",
